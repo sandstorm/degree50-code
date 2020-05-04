@@ -5,8 +5,7 @@
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
 ARG PHP_VERSION=7.4
-ARG OPENRESTY_VERSION=1.15.8.3
-ARG VARNISH_VERSION=6.4
+ARG VARNISH_VERSION=6.3
 
 
 # "php" stage
@@ -19,6 +18,7 @@ RUN apk add --no-cache \
 		file \
 		gettext \
 		git \
+		nginx \
 	;
 
 ARG APCU_VERSION=5.1.18
@@ -116,17 +116,9 @@ ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
 
 
-# "nginx" stage
-# depends on the "php" stage above
-# The OpenResty distribution of NGINX is only needed for Kubernetes compatiblity (dynamic upstream resolution)
-FROM openresty/openresty:${OPENRESTY_VERSION}-alpine AS api_platform_nginx
-
-RUN echo -e "env UPSTREAM;\n$(cat /usr/local/openresty/nginx/conf/nginx.conf)" > /usr/local/openresty/nginx/conf/nginx.conf
+# nginx in PHP container
 COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-
-WORKDIR /srv/api/public
-
-COPY --from=api_platform_php /srv/api/public ./
+RUN mkdir /run/nginx
 
 
 # "varnish" stage

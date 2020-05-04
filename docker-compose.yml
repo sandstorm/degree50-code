@@ -7,7 +7,7 @@ x-cache-from:
       - ${PHP_IMAGE:-quay.io/api-platform/php}
 
 services:
-  php:
+  api:
     build:
       context: ./api
       target: api_platform_php
@@ -27,17 +27,6 @@ services:
       # if you develop on Linux, you may use a bind-mounted host directory instead
       # - ./api/var:/srv/api/var:rw
       - dev-certs:/certs:ro,nocopy
-
-  api:
-    build:
-      context: ./api
-      target: api_platform_nginx
-      <<: *api-cache-from
-    image: ${NGINX_IMAGE:-quay.io/api-platform/nginx}
-    depends_on:
-      - php
-    volumes:
-      - ./api/public:/srv/api/public:ro
 
   vulcain:
     image: dunglas/vulcain
