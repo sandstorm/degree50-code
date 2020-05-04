@@ -20,7 +20,6 @@ services:
       start_period: 30s
     depends_on:
       - db
-      - dev-tls
     volumes:
       - ./api:/srv/api:rw,cached
       - ./api/docker/php/conf.d/api-platform.dev.ini:/usr/local/etc/php/conf.d/api-platform.ini
@@ -86,6 +85,9 @@ services:
   dev-tls:
     build:
       context: ./docker/dev-tls
+    depends_on:
+      - db
+
     volumes:
       - dev-certs:/certs:rw
     ports:

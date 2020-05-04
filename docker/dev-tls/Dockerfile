@@ -45,4 +45,5 @@ RUN set -eux; \
 		echo '        proxy_set_header X-Forwarded-Host $host;'; \
 		echo '        proxy_set_header X-Forwarded-Proto $scheme;'; \
 		echo '    }'; \
+		echo '}'; \
 	} | tee /etc/nginx/conf.d/default.conf
