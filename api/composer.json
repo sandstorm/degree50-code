@@ -7,6 +7,7 @@
         "api-platform/api-pack": "^1.1",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
+        "ramsey/uuid": "^4.0",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",
@@ -14,7 +15,8 @@
         "symfony/framework-bundle": "5.0.*",
         "symfony/mercure-bundle": "^0.2",
         "symfony/security-bundle": "5.0.*",
-        "symfony/yaml": "5.0.*"
+        "symfony/yaml": "5.0.*",
+        "webonyx/graphql-php": "^0.13.8"
     },
     "require-dev": {
         "api-platform/schema-generator": "^2.1",

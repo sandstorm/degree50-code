@@ -19,6 +19,9 @@
     "api-platform/schema-generator": {
         "version": "v2.2.2"
     },
+    "brick/math": {
+        "version": "0.8.15"
+    },
     "composer/semver": {
         "version": "1.5.1"
     },
@@ -217,6 +220,12 @@
     },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
+    },
+    "ramsey/collection": {
+        "version": "1.0.1"
+    },
+    "ramsey/uuid": {
+        "version": "4.0.1"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -497,6 +506,9 @@
     },
     "webmozart/assert": {
         "version": "1.8.0"
+    },
+    "webonyx/graphql-php": {
+        "version": "v0.13.8"
     },
     "willdurand/negotiation": {
         "version": "v2.3.1"

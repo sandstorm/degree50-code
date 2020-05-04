@@ -32,3 +32,10 @@ the course with RefId `77` is exported to `ilias-customizing/Degree40Exports/exa
 
 By executing `docker-compose exec -u www-data ilias Degree40App/bin/console degree40:import exampleCourse`,
 the course `exampleCourse` is imported.
+
+
+
+
+
+https://localhost:8443/api/graphql
+https://localhost:8443/api/graphql/graphql_playground
