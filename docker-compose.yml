@@ -39,7 +39,7 @@ services:
       # - ./api/docker/db/data:/var/lib/postgresql/data:rw
     ports:
       - target: 5432
-        published: 5432
+        published: 25432
         protocol: tcp
 
 

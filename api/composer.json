@@ -7,15 +7,18 @@
         "api-platform/api-pack": "^1.1",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
+        "sensio/framework-extra-bundle": "^5.5",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "5.0.*",
         "symfony/mercure-bundle": "^0.2",
+        "symfony/security-bundle": "5.0.*",
         "symfony/yaml": "5.0.*"
     },
     "require-dev": {
         "api-platform/schema-generator": "^2.1",
+        "doctrine/doctrine-fixtures-bundle": "^3.3",
         "symfony/maker-bundle": "^1.11",
         "symfony/profiler-pack": "^1.0"
     },
