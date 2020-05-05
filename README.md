@@ -9,32 +9,24 @@ https://hub.docker.com/r/sturai/ilias/
 
 - docker & docker-compose
 - Make
-- composer (and PHP for running composer)
 
 
 **Get Started with Development**
 
 - Initially, run `make build-docker` to build the docker container
-    - if you get ` Allowed memory size of 134217728 bytes exhausted ` during the installation, increase the memory limit of your local php installation ( https://medium.com/@stefanledin/how-to-increase-the-php-7-2-memory-limit-on-mac-os-978ebb78c543 )
-    - composer install for ilias runs some post installation php scripts where the memory limit for composer is ignored
 - run `docker-compose up -d`
-- check installation with `docker-compose logs -f ilias`
-- then, prepare ilias installation by running `make setup-ilias`
-- After installation is successful, go to `http://127.0.0.1:8080/` and log in with `root / password`
+- check installation with `docker-compose logs -f api`
+- When the container is running:
+    - import fixtures by running `make import-fixtures` (dummy data)
+    - After installation is successful, go to `http://127.0.0.1:8080/` and log in with `root / password`
+    - The JS file watcher can be executed using `make watch`
+    - The API types can be regenerated using `make build-types`
+    - The Symfony Console can be executed via `./symfony-console`
 
 
-**Exporting Courses**
-
-By executing `docker-compose exec -u www-data ilias Degree40App/bin/console degree40:export 77 exampleCourse`,
-the course with RefId `77` is exported to `ilias-customizing/Degree40Exports/exampleCourse`.
-
-**Importing Courses**
-
-By executing `docker-compose exec -u www-data ilias Degree40App/bin/console degree40:import exampleCourse`,
-the course `exampleCourse` is imported.
-
-
-
+https://localhost:8443
+https://localhost:8443/login
+https://localhost:8443/admin/
 
 
 https://localhost:8443/api/graphql

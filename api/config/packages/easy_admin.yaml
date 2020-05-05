@@ -6,4 +6,9 @@ easy_admin:
             form:
                 fields:
                     - name
-                    - { property: 'phases', type: 'collection', type_options: { entry_type: 'App\Form\InlineExercisePhaseType', by_reference: false }}
+                    -
+                        property: 'phases'
+                        type: 'collection'
+                        type_options:
+                            entry_type: 'App\Form\InlineExercisePhaseType'
+                            by_reference: false
