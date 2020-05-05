@@ -19,7 +19,9 @@ RUN apk add --no-cache \
 		gettext \
 		git \
 		nginx \
-	;
+		nodejs npm \
+	; \
+	npm install -g yarn;
 
 ARG APCU_VERSION=5.1.18
 RUN set -eux; \
@@ -77,6 +79,8 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 WORKDIR /srv/api
 
+VOLUME /srv/api/node_modules
+
 # build for production
 ARG APP_ENV=prod
 
@@ -119,7 +123,6 @@ CMD ["php-fpm"]
 # nginx in PHP container
 COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 RUN mkdir /run/nginx
-
 
 # "varnish" stage
 # does not depend on any of the above stages, but placed here to keep everything in one Dockerfile
