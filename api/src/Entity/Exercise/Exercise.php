@@ -59,7 +59,7 @@ class Exercise
     /**
      * @return Exercise[]
      */
-    public function getPhases(): iterable
+    public function getPhases(): Collection
     {
         return $this->phases;
     }

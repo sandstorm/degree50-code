@@ -2,6 +2,7 @@
 
 namespace App\Controller\Exercise;
 
+use App\Entity\Exercise\Exercise;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,20 +13,12 @@ class ExerciseController extends AbstractController
 {
     /**
      * @Route("/exercise/{id}", name="app_exercise")
-     * @ParamConverter("post", class="")
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function show(Exercise $exercise): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        $firstPhase = $exercise->getPhases()->first();
 
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('exercise/show.html.twig', ['exercise' => $exercise, 'phase' => $firstPhase]);
     }
 
     /**

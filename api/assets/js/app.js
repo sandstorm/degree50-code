@@ -19,7 +19,6 @@ import Form from "@rjsf/core";
 const log = (type) => console.log.bind(console, type);
 
 import schema from '../api-definitions/ExercisePhaseConfigSchema.json';
-console.log("SCHEMA", schema);
 const JsonSchemaEditor = () => {
   return <Form schema={schema}
                onChange={log("changed")}
@@ -28,8 +27,22 @@ const JsonSchemaEditor = () => {
 
 };
 
-console.log("EXECUTED2");
 [].forEach.call(document.querySelectorAll('[data-react-widget=JsonSchemaEditor]'), (el) => {
-  console.log("EXECUTED");
   ReactDOM.render(<JsonSchemaEditor/>, el);
+});
+
+const ShowExercisePhase = (props) => {
+  console.log("PROPS", props);
+  return <div>
+    Show exercise;
+  </div>;
+
+};
+
+
+
+[].forEach.call(document.querySelectorAll('[data-react-widget=ShowExercisePhase]'), (el) => {
+  const propsAsString = el.getAttribute('data-react-props');
+  const props = JSON.parse(JSON.parse(propsAsString));
+  ReactDOM.render(<ShowExercisePhase {...props} />, el);
 });

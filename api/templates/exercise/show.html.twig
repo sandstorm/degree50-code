@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <h2>{{ exercise.name }}</h2>
+    {{ phase.definition }}
+    <div data-react-widget="ShowExercisePhase" data-react-props="{{ phase.definition|json_encode|e('html_attr') }}">
+    </div>
+{% endblock %}
