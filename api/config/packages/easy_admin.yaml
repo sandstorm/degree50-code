@@ -14,6 +14,13 @@ easy_admin:
                         type_options:
                             entry_type: 'App\Form\InlineExercisePhaseType'
                             by_reference: false
+        Video:
+            class: App\Entity\Video
+            form:
+                fields:
+                    -
+                        property: videoFile
+                        type: 'vich_file'
     design:
         assets:
             css:
