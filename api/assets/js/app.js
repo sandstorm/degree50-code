@@ -7,8 +7,29 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import '../css/app.css';
-
+import ReactDOM from 'react-dom';
+import React from 'react';
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 
 console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
+
+import Form from "@rjsf/core";
+
+const log = (type) => console.log.bind(console, type);
+
+import schema from '../api-definitions/ExercisePhaseConfigSchema.json';
+console.log("SCHEMA", schema);
+const JsonSchemaEditor = () => {
+  return <Form schema={schema}
+               onChange={log("changed")}
+               onSubmit={log("submitted")}
+               onError={log("errors")}/>;
+
+};
+
+console.log("EXECUTED2");
+[].forEach.call(document.querySelectorAll('[data-react-widget=JsonSchemaEditor]'), (el) => {
+  console.log("EXECUTED");
+  ReactDOM.render(<JsonSchemaEditor/>, el);
+});

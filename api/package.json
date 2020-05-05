@@ -1,5 +1,6 @@
 {
     "devDependencies": {
+        "@babel/preset-react": "^7.9.4",
         "@symfony/webpack-encore": "^0.29.0",
         "core-js": "^3.0.0",
         "quicktype": "^15.0.228",
@@ -15,5 +16,11 @@
         "build": "encore production --progress",
         "build-types": "npm run build-types:ExercisePhaseConfigSchema",
         "build-types:ExercisePhaseConfigSchema": "quicktype -l ts -s schema --out assets/api-definitions/generated/ExercisePhaseConfigSchema.ts assets/api-definitions/ExercisePhaseConfigSchema.json"
+    },
+    "dependencies": {
+        "@rjsf/core": "^2.0.0",
+        "prop-types": "^15.7.2",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1"
     }
 }
