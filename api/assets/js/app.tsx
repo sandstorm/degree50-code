@@ -16,22 +16,24 @@ console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
 
 import Form from "@rjsf/core";
 
-const log = (type) => console.log.bind(console, type);
+const log = (type: any) => console.log.bind(console, type);
+
+import { JSONSchema7 } from 'json-schema';
 
 import schema from '../api-definitions/ExercisePhaseConfigSchema.json';
 const JsonSchemaEditor = () => {
-  return <Form schema={schema}
+  return <Form schema={schema as JSONSchema7}
                onChange={log("changed")}
                onSubmit={log("submitted")}
                onError={log("errors")}/>;
 
 };
 
-[].forEach.call(document.querySelectorAll('[data-react-widget=JsonSchemaEditor]'), (el) => {
+[].forEach.call(document.querySelectorAll('[data-react-widget=JsonSchemaEditor]'), (el: any) => {
   ReactDOM.render(<JsonSchemaEditor/>, el);
 });
 
-const ShowExercisePhase = (props) => {
+const ShowExercisePhase = (props: any) => {
   console.log("PROPS", props);
   return <div>
     Show exercise;
@@ -41,7 +43,7 @@ const ShowExercisePhase = (props) => {
 
 
 
-[].forEach.call(document.querySelectorAll('[data-react-widget=ShowExercisePhase]'), (el) => {
+[].forEach.call(document.querySelectorAll('[data-react-widget=ShowExercisePhase]'), (el: any) => {
   const propsAsString = el.getAttribute('data-react-props');
   const props = JSON.parse(JSON.parse(propsAsString));
   ReactDOM.render(<ShowExercisePhase {...props} />, el);

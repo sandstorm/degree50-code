@@ -2,9 +2,17 @@
     "devDependencies": {
         "@babel/preset-react": "^7.9.4",
         "@symfony/webpack-encore": "^0.29.0",
+        "@types/react-dom": "^16.9.7",
+        "autoprefixer": "^9.7.6",
         "core-js": "^3.0.0",
-        "quicktype": "^15.0.228",
+        "fork-ts-checker-webpack-plugin": "^0.4.1",
+        "json-schema-to-typescript": "^9.0.1",
+        "node-sass": "^4.14.1",
+        "postcss-loader": "^3.0.0",
         "regenerator-runtime": "^0.13.2",
+        "sass-loader": "^7.0.1",
+        "ts-loader": "^5.3.0",
+        "typescript": "^3.8.3",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -15,12 +23,18 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress",
         "build-types": "npm run build-types:ExercisePhaseConfigSchema",
-        "build-types:ExercisePhaseConfigSchema": "quicktype -l ts -s schema --out assets/api-definitions/generated/ExercisePhaseConfigSchema.ts assets/api-definitions/ExercisePhaseConfigSchema.json"
+        "build-types:ExercisePhaseConfigSchema": "json2ts -i assets/api-definitions/ExercisePhaseConfigSchema.json -o assets/api-definitions/generated/ExercisePhaseConfigSchema.ts"
     },
     "dependencies": {
         "@rjsf/core": "^2.0.0",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1"
-    }
+    },
+    "browserslist": [
+        "> 0.5%",
+        "last 2 versions",
+        "Firefox ESR",
+        "not dead"
+    ]
 }

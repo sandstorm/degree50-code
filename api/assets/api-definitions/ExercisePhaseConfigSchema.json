@@ -2,43 +2,64 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "description": "A geographical coordinate",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "mainView": {
       "oneOf": [
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["VideoPlayer"]
-            },
-            "videoUri": {
-              "type": "string"
-            },
-            "foo": {
-              "type": "string"
-            }
-          },
-          "required": ["type", "videoUri", "foo"]
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["VideoAnnotator"]
-            },
-            "videoUri": {
-              "type": "string"
-            },
-            "annotationSource": {
-              "type": "string"
-            }
-          },
-          "required": ["type", "videoUri", "annotationSource"]
-        }
+        {"$ref": "#/definitions/VideoPlayer"},
+        {"$ref": "#/definitions/VideoAnnotator"}
       ]
     }
   },
-  "required": ["mainView"]
+  "required": [
+    "mainView"
+  ],
+  "definitions": {
+    "VideoPlayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "VideoPlayer"
+          ]
+        },
+        "videoUri": {
+          "type": "string"
+        },
+        "foo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "videoUri",
+        "foo"
+      ]
+    },
+    "VideoAnnotator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "VideoAnnotator"
+          ]
+        },
+        "videoUri": {
+          "type": "string"
+        },
+        "annotationSource": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "videoUri",
+        "annotationSource"
+      ]
+    }
+  }
 }
