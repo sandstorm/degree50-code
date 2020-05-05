@@ -35,18 +35,42 @@ class Exercise
     public $name = '';
 
     /**
-     * @var Collection
-     * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExcercise")
+     * @var ExercisePhase[]
+     * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExcercise", cascade={"all"})
      * @ORM\OrderBy({"sorting" = "ASC"})
      */
-    public $phases;
+    private $phases;
 
     public function __construct() {
         $this->phases = new ArrayCollection();
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return Exercise[]
+     */
+    public function getPhases(): iterable
+    {
+        return $this->phases;
+    }
+
+    /**
+     * @param ExercisePhase[] $phases
+     */
+    public function setPhases(iterable $phases): void
+    {
+        foreach ($phases as $phase) {
+            $phase->belongsToExcercise = $this;
+        }
+        $this->phases = $phases;
     }
 }

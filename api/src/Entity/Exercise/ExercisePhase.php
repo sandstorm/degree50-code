@@ -40,11 +40,17 @@ class ExercisePhase
 
     /**
      * @var int
+     * @ORM\Column
      */
     public $sorting;
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }
