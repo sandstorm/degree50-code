@@ -13,6 +13,8 @@ class InlineExercisePhaseType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('task')
+            ->add('definition')
             ->add('sorting')
         ;
     }

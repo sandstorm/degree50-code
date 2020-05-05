@@ -41,8 +41,9 @@ class Exercise
      */
     private $phases;
 
-    public function __construct() {
+    public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
+        $this->id = $id;
     }
 
     public function getId(): ?string
@@ -72,5 +73,12 @@ class Exercise
             $phase->belongsToExcercise = $this;
         }
         $this->phases = $phases;
+    }
+
+    public function addPhase(ExercisePhase $exercisePhase): void
+    {
+        $exercisePhase->belongsToExcercise = $this;
+        $exercisePhase->sorting = $this->phases->count();
+        $this->phases->add($exercisePhase);
     }
 }

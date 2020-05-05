@@ -3,12 +3,42 @@
   "description": "A geographical coordinate",
   "type": "object",
   "properties": {
-    "latitude": {
-      "type": "number"
-    },
-    "longitude": {
-      "type": "number"
+    "mainView": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["VideoPlayer"]
+            },
+            "videoUri": {
+              "type": "string"
+            },
+            "foo": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "videoUri", "foo"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["VideoAnnotator"]
+            },
+            "videoUri": {
+              "type": "string"
+            },
+            "annotationSource": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "videoUri", "annotationSource"]
+        }
+      ]
     }
   },
-  "required": ["latitude"]
+  "required": ["mainView"]
 }

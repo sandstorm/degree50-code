@@ -24,6 +24,10 @@ https://hub.docker.com/r/sturai/ilias/
     - The Symfony Console can be executed via `./symfony-console`
 
 
+./symfony-console cache:clear
+./symfony-console make:migration
+./symfony-console doctrine:migrations:migrate
+
 https://localhost:8443
 https://localhost:8443/login
 https://localhost:8443/admin/

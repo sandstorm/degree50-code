@@ -1,0 +1,7 @@
+{
+  "mainView": {
+    "type": "VideoPlayer",
+    "videoUri": "....."
+  },
+  "....."
+}

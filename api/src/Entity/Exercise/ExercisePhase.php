@@ -22,7 +22,7 @@ class ExercisePhase
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
      */
-    private $id;
+    private string $id;
 
     /**
      * @var string A nice person
@@ -31,6 +31,21 @@ class ExercisePhase
      * @Assert\NotBlank
      */
     public $name = '';
+
+    /**
+     * @var string Aufgabenstellung
+     *
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     */
+    public $task = '';
+
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     */
+    public $definition = '';
 
     /**
      * @var Exercise
@@ -43,6 +58,11 @@ class ExercisePhase
      * @ORM\Column
      */
     public $sorting;
+
+    public function __construct(string $id = null)
+    {
+        $this->id = $id;
+    }
 
     public function getId(): ?string
     {
