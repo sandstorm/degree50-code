@@ -32,3 +32,7 @@ Alternative:
     (a.k.a. Flow Persistent Resources) 
 
 - Health Checks: https://github.com/liip/LiipMonitorBundle
+
+- Video Multi Encoding. https://github.com/aminyazdanpanah/PHP-FFmpeg-video-streaming
+
+- large file uplaods: https://github.com/1up-lab/OneupUploaderBundle/blob/master/doc/index.md
