@@ -24,4 +24,11 @@ Alternative:
     
     > N.B.: although Gaufrette is a well-known library, please note that it hasn't been updated in a while and that there are still lots of unresolved issues. One of them being a broken metadata implementation, causing us troubles.
 
-    - -> we use Flysystem. 
+    - -> we use Flysystem.
+    
+- Image Handling: https://github.com/liip/LiipImagineBundle
+
+- File Uploads: "vich/uploader-bundle"
+    (a.k.a. Flow Persistent Resources) 
+
+- Health Checks: https://github.com/liip/LiipMonitorBundle

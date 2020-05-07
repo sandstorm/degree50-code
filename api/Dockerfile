@@ -20,6 +20,7 @@ RUN apk add --no-cache \
 		git \
 		nginx \
 		nodejs npm \
+		vips-dev \
 	; \
 	npm install -g yarn;
 
@@ -42,10 +43,14 @@ RUN set -eux; \
 	pecl install \
 		apcu-${APCU_VERSION} \
 	; \
+	pecl install \
+    		vips \
+    	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
+		vips \
 	; \
 	\
 	runDeps="$( \
