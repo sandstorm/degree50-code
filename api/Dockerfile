@@ -21,6 +21,7 @@ RUN apk add --no-cache \
 		nginx \
 		nodejs npm \
 		vips-dev \
+		ffmpeg \
 	; \
 	npm install -g yarn;
 
