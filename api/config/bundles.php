@@ -18,4 +18,5 @@ return [
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
     Oneup\FlysystemBundle\OneupFlysystemBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
+    Oneup\UploaderBundle\OneupUploaderBundle::class => ['all' => true],
 ];

@@ -247,6 +247,19 @@
             "config/packages/oneup_flysystem.yaml"
         ]
     },
+    "oneup/uploader-bundle": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "b19678d1535b9fe7cdf4647fd3483455e4fca458"
+        },
+        "files": [
+            "config/packages/oneup_uploader.yaml",
+            "config/routes/oneup_uploader.yaml"
+        ]
+    },
     "pagerfanta/pagerfanta": {
         "version": "v2.1.3"
     },
