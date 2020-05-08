@@ -27,6 +27,27 @@ services:
       # - ./api/var:/srv/api/var:rw
       - dev-certs:/certs:ro,nocopy
 
+  redis:
+    image: redis:6.0.1-alpine3.11
+    ports:
+      - 16379:6379
+
+  redisinsight:
+    image: redislabs/redisinsight
+    volumes:
+      - redisinsight:/db
+    ports:
+      - 8001:8001 
+
+  redis-ui:
+    image: rediscommander/redis-commander
+    environment:
+      REDIS_HOSTS: 'redis:redis:6379:0'
+      PORT: 8900
+    ports:
+      - 8002:8900
+
+
   db:
     image: postgres:12-alpine
     environment:
@@ -61,3 +82,4 @@ services:
 volumes:
   db-data: {}
   dev-certs: {}
+  redisinsight: {}

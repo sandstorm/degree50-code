@@ -22,6 +22,7 @@ RUN apk add --no-cache \
 		nodejs npm \
 		vips-dev \
 		ffmpeg \
+		redis \ # we install Redis in the container because we want redis-cli for debugging.
 	; \
 	npm install -g yarn;
 
@@ -45,8 +46,11 @@ RUN set -eux; \
 		apcu-${APCU_VERSION} \
 	; \
 	pecl install \
-    		vips \
-    	; \
+			vips \
+		; \
+	pecl install \
+			redis \
+		; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
