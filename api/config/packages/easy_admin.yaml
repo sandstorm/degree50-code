@@ -20,7 +20,7 @@ easy_admin:
                 fields:
                     -
                         property: videoFile
-                        type: 'vich_file'
+                        type: App\Admin\Form\OneupUploaderType
     design:
         assets:
             css:

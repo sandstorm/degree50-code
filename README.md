@@ -28,6 +28,9 @@ https://hub.docker.com/r/sturai/ilias/
 ./symfony-console make:migration
 ./symfony-console doctrine:migrations:migrate
 
+
+./symfony-console messenger:consume async -vv
+
 https://localhost:8443
 https://localhost:8443/login
 https://localhost:8443/admin/

@@ -29,6 +29,9 @@ services:
     App\Admin\Controller\:
         resource: '../src/Admin/Controller'
         tags: ['controller.service_arguments']
+    App\Mediathek\Controller\:
+        resource: '../src/Mediathek/Controller'
+        tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -37,3 +40,11 @@ services:
     app.image_processing.vips:
         class: Imagine\Vips\Imagine
     liip_imagine: '@app.image_processing.vips'
+
+
+
+    app.mediathek.upload_listener:
+        class: App\Mediathek\EventListener\UploadListener
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: kernel.event_listener, event: oneup_uploader.post_persist, method: onUpload }

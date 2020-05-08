@@ -6,16 +6,16 @@ namespace App\VideoEncoding\Message;
 class WebEncodingTask
 {
 
-    private string $inputVideo;
+    private string $inputVideoFilename;
 
-    public function __construct(string $inputVideo)
+    public function __construct(string $inputVideoFilename)
     {
-        $this->inputVideo = $inputVideo;
+        $this->inputVideoFilename = $inputVideoFilename;
     }
 
-    public function getInputVideo(): string
+    public function getInputVideoFilename(): string
     {
-        return $this->inputVideo;
+        return $this->inputVideoFilename;
     }
 
 }

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Video Upload{% endblock %}
+
+{% block body %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/basic.css" />
+    <script type="text/javascript" src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+
+    <script>
+        // "videoDropzone" is the camelized version of the HTML element's ID
+        Dropzone.options.videoDropzone = {
+            paramName: "file", // The name that will be used to transfer the file
+            accept: function(file, done) {
+                if (file.name == "justinbieber.jpg") {
+                    done("Naha, you don't.");
+                }
+                else { done(); }
+            }
+        };
+    </script>
+    <form id="video-dropzone" action="{{ oneup_uploader_endpoint('videos') }}" class="dropzone" style="width:200px; height:200px; border:4px dashed black">
+    </form>
+{% endblock %}
