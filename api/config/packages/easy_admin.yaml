@@ -12,7 +12,7 @@ easy_admin:
                         property: 'phases'
                         type: 'collection'
                         type_options:
-                            entry_type: 'App\Form\InlineExercisePhaseType'
+                            entry_type: 'App\Admin\Form\InlineExercisePhaseType'
                             by_reference: false
         Video:
             class: App\Entity\Video

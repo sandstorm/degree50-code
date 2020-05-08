@@ -56,6 +56,7 @@ RUN set -eux; \
 		apcu \
 		opcache \
 		vips \
+		redis \
 	; \
 	\
 	runDeps="$( \

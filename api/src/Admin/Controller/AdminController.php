@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Admin\Controller;
 
+use App\VideoEncoding\Message\WebEncodingTask;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ class AdminController extends EasyAdminController
     public function runAction()
     {
 
+        // TODO: move this to a better place $this->dispatchMessage(new WebEncodingTask("foo"));
         $easyadmin = $this->request->attributes->get('easyadmin');
         /* @var $entity \App\Entity\Exercise\Exercise */
         $entity = $easyadmin['item'];

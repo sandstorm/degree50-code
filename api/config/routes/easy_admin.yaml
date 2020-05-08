@@ -1,4 +1,4 @@
 easy_admin_bundle:
-    resource: 'App\Controller\AdminController'
+    resource: 'App\Admin\Controller\AdminController'
     prefix: /admin
     type: annotation
