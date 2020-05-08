@@ -11,6 +11,8 @@
         // "videoDropzone" is the camelized version of the HTML element's ID
         Dropzone.options.videoDropzone = {
             paramName: "file", // The name that will be used to transfer the file
+            chunking: true,
+            chunkSize: 1000000, // 1 MB; TODO adjust.
             accept: function(file, done) {
                 if (file.name == "justinbieber.jpg") {
                     done("Naha, you don't.");
