@@ -5,11 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @ApiResource
  * @ORM\Entity
- * @Vich\Uploadable
  */
 class Video
 {
@@ -28,12 +26,6 @@ class Video
      * @var string
      */
     private $video;
-
-    /**
-     * @Vich\UploadableField(mapping="videos", fileNameProperty="video")
-     * @var File
-     */
-    private $videoFile;
 
     /**
      * @ORM\Column(type="datetime")

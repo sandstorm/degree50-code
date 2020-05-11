@@ -30,6 +30,7 @@ Alternative:
 
 - File Uploads: "vich/uploader-bundle"
     (a.k.a. Flow Persistent Resources) 
+    = -> not really needed, we use oneup_uploader
 
 - Health Checks: https://github.com/liip/LiipMonitorBundle
 

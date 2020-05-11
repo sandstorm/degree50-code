@@ -4,13 +4,10 @@ oneup_flysystem:
         default_adapter:
             local:
                 directory: '%kernel.cache_dir%/flysystem'
-        video_adapter:
-            local:
-                directory: '%kernel.project_dir%/public%app.path.videos%'
     filesystems:
         default_filesystem:
             adapter: default_adapter
             alias: League\Flysystem\Filesystem
-        video_fs:
-            adapter: video_adapter
-            mount: video_fs
+        #video_fs:
+        #    adapter: video_adapter
+        #    mount: video_fs

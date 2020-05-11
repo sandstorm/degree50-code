@@ -1,9 +1,0 @@
-vich_uploader:
-    db_driver: orm
-    storage: flysystem
-
-    mappings:
-        videos:
-            uri_prefix: '%app.path.videos%'
-            upload_destination: 'video_fs'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

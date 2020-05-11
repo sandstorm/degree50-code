@@ -4,8 +4,6 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app.path.videos: /uploads/videos
-    
     # manually configure VIPS driver
     liip_imagine.driver_service: 'app.image_processing.vips'
 
@@ -47,4 +45,4 @@ services:
         class: App\Mediathek\EventListener\UploadListener
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: kernel.event_listener, event: oneup_uploader.post_persist, method: onUpload }
+            - { name: kernel.event_listener, event: oneup_uploader.post_chunk_upload, method: onUpload }
