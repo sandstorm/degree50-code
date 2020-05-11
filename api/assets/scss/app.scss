@@ -1,6 +1,10 @@
 
 // Import of bootstrap - maybe remove it later in the project
-@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+@import "~bootstrap/scss/forms";
 
 @import "composites/login";
 
