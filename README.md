@@ -1,7 +1,4 @@
-# Degree 4.0 - ILIAS
-
-Docker container uses the following image for ILIAS:
-https://hub.docker.com/r/sturai/ilias/
+# Degree 4.0
 
 ## Development Setup
 
