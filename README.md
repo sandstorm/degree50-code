@@ -15,20 +15,29 @@
 - check installation with `docker-compose logs -f api`
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
-    - After installation is successful, go to `http://127.0.0.1:8080/` and log in with `root / password`
+    - After installation is successful, go to `https://localhost:8443/login` and log in with `admin@sandstorm.de / password`
     - The JS file watcher can be executed using `make watch`
     - The API types can be regenerated using `make build-types`
     - The Symfony Console can be executed via `./symfony-console`
 
+**Connect with database**
 
-./symfony-console cache:clear
-./symfony-console make:migration
-./symfony-console doctrine:migrations:migrate
-
-https://localhost:8443
-https://localhost:8443/login
-https://localhost:8443/admin/
+- postgres sql
+    - db: api
+    - user: api-platform
+    - db: !ChangeMe!
+    - host: localhost:25432
 
 
-https://localhost:8443/api/graphql
-https://localhost:8443/api/graphql/graphql_playground
+**Symfony commands**
+- ./symfony-console cache:clear
+- ./symfony-console make:migration
+- ./symfony-console doctrine:migrations:migrate
+
+**Imported endpoints**
+- https://localhost:8443
+- https://localhost:8443/login
+    - login with: admin@sandstorm.de / password
+- https://localhost:8443/admin/
+- https://localhost:8443/api/graphql
+- https://localhost:8443/api/graphql/graphql_playground
