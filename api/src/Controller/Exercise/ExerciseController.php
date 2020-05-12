@@ -12,13 +12,19 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class ExerciseController extends AbstractController
 {
     /**
-     * @Route("/exercise/{id}", name="app_exercise")
+     * @Route("/exercise/{id}/{phase<\d+>}", name="app_exercise")
      */
-    public function show(Exercise $exercise): Response
+    public function show(Exercise $exercise, int $phase = 0): Response
     {
-        $firstPhase = $exercise->getPhases()->first();
+        $firstPhase = $exercise->getPhases()->get($phase);
 
-        return $this->render('exercise/show.html.twig', ['exercise' => $exercise, 'phase' => $firstPhase]);
+        return $this->render('exercise/show.html.twig',
+            [
+                'exercise' => $exercise,
+                'phase' => $firstPhase,
+                'currentPhase' => $phase,
+                'amountOfPhases' => count($exercise->getPhases()) - 1
+            ]);
     }
 
     /**
