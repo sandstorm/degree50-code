@@ -1,6 +1,17 @@
 # Read the documentation: https://github.com/1up-lab/OneupUploaderBundle/blob/master/Resources/doc/index.md
 oneup_uploader:
     mappings:
-        # This is a mapping example, remove it and create your own mappings.
-        videos:
-            frontend: plupload # or any uploader you use in the frontend
+        uploaded_videos:
+            frontend: dropzone
+            storage:
+                type: flysystem
+                filesystem: oneup_flysystem.uploaded_videos_filesystem
+
+    orphanage:
+        maxage: 86400
+        directory: '%kernel.cache_dir%/uploader/orphanage'
+
+    chunks:
+        maxage: 86400
+        storage:
+            directory: '%kernel.cache_dir%/uploader/chunks'

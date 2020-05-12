@@ -30,6 +30,7 @@ https://hub.docker.com/r/sturai/ilias/
 
 
 ./symfony-console messenger:consume async -vv
+./symfony-console messenger:consume async -vv --limit=1
 
 https://localhost:8443
 https://localhost:8443/login

@@ -40,9 +40,9 @@ services:
     liip_imagine: '@app.image_processing.vips'
 
 
+    League\Flysystem\MountManager: '@oneup_flysystem.mount_manager'
 
     app.mediathek.upload_listener:
         class: App\Mediathek\EventListener\UploadListener
-        arguments: ["@doctrine.orm.entity_manager"]
         tags:
-            - { name: kernel.event_listener, event: oneup_uploader.post_chunk_upload, method: onUpload }
+            - { name: kernel.event_listener, event: oneup_uploader.post_upload, method: onUpload }

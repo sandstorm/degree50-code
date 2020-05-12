@@ -4,6 +4,7 @@
 namespace App\Mediathek\Controller;
 
 
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,8 +17,10 @@ class VideoUploadController extends AbstractController
      */
     public function videoUpload(): Response
     {
-        return $this->render('mediathek/videoUpload/videoUpload.html.twig');
+        return $this->render('mediathek/videoUpload/videoUpload.html.twig', [
+            // we generate the desired UUID for the video entity server-side, to ensure the file
+            // upload and the normal HTML form fit together properly.
+            'uuid' => Uuid::uuid4()->toString()
+        ]);
     }
-
-
 }

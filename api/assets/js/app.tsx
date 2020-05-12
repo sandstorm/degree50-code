@@ -48,3 +48,12 @@ const ShowExercisePhase = (props: any) => {
   const props = JSON.parse(JSON.parse(propsAsString));
   ReactDOM.render(<ShowExercisePhase {...props} />, el);
 });
+
+
+
+
+// src/application.js
+import { Application } from "stimulus";
+import FileuploadController from './stimulus_controllers/fileupload_controller';
+const application = Application.start();
+application.register("fileupload", FileuploadController);

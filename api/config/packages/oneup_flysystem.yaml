@@ -4,10 +4,24 @@ oneup_flysystem:
         default_adapter:
             local:
                 directory: '%kernel.cache_dir%/flysystem'
+        uploaded_videos_adapter:
+            local:
+                directory: '%kernel.project_dir%/var/data/persistent/videos/original'
+        encoded_videos_adapter:
+            local:
+                directory: '%kernel.project_dir%/public/data/encoded_videos'
     filesystems:
+        local_tmp:
+            adapter: default_adapter
+            # we need one file system to be available locally as "scratch space".
+            # this needs to be named "local_tmp" (see FileSystemService::LOCAL_TMP_FILESYSTEM_MOUNT)
+            mount: local_tmp
         default_filesystem:
             adapter: default_adapter
             alias: League\Flysystem\Filesystem
-        #video_fs:
-        #    adapter: video_adapter
-        #    mount: video_fs
+        uploaded_videos:
+            adapter: uploaded_videos_adapter
+            mount: uploaded_videos
+        encoded_videos:
+            adapter: encoded_videos_adapter
+            mount: encoded_videos

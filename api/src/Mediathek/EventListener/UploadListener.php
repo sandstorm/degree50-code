@@ -2,33 +2,57 @@
 
 
 namespace App\Mediathek\EventListener;
+use App\Utility\FileSystemService;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\Common\Persistence\ObjectManager;
+use League\Flysystem\Filesystem;
 use Oneup\UploaderBundle\Event\PostPersistEvent;
+use Oneup\UploaderBundle\Event\PostUploadEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 
 class UploadListener
 {
-    private ObjectManager $doctrineObjectManager;
-
     private MessageBusInterface $messageBus;
+    private FileSystemService $fileSystemService;
 
-    public function __construct(ObjectManager $doctrineObjectManager, MessageBusInterface $messageBus)
+    public function __construct(MessageBusInterface $messageBus, FileSystemService $fileSystemService)
     {
-        $this->doctrineObjectManager = $doctrineObjectManager;
         $this->messageBus = $messageBus;
+        $this->fileSystemService = $fileSystemService;
     }
 
 
-    public function onUpload(PostPersistEvent $event)
+    public function onUpload(PostUploadEvent $event)
     {
-        //...
+        $id = $event->getRequest()->get('id');
+        assert($id !== '', 'ID is set');
 
-        //if everything went fine
+        $fileSystem = $event->getFile()->getFileSystem();
+
+
+
+        assert($fileSystem instanceof Filesystem, "FileSystem must be a Flysystem FileSystem");
+        $mountPrefix = $this->fileSystemService->getMountPrefixForFilesystem($fileSystem);
+
+        $newFileName = sprintf('%s.%s',
+            $id,
+            $event->getFile()->getExtension()
+        );
+
+        $outputDirectory = sprintf('encoded_videos://%s',
+            $id
+        );
+
+        $renamingSuccessful = $fileSystem->rename($event->getFile()->getPathname(), $newFileName);
+        assert($renamingSuccessful, 'Renaming the file did not work');
+
         $response = $event->getResponse();
 
-        $this->messageBus->dispatch(new WebEncodingTask($event->getFile()->getPathname()));
+        $this->messageBus->dispatch(new WebEncodingTask(
+            $mountPrefix . '://' . $newFileName,
+            $outputDirectory
+        ));
 
         $response['success'] = true;
         return $response;
