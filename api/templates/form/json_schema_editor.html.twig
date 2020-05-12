@@ -8,7 +8,7 @@
  #}
 {% block _exercise_phases_entry_definition_widget %}
     <div class="json-schema-editor">
-        <input {{ block('widget_attributes') }} type="text" value="{{ value }}" />
+        <input {{ block('widget_attributes') }} type="hidden" value="{{ value }}" />
         <div data-id="{{ id }}" data-react-widget="JsonSchemaEditor" data-react-props="{{ value|json_encode|e('html_attr') }}"></div>
     </div>
 
