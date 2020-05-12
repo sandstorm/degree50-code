@@ -12,6 +12,7 @@ ARG VARNISH_VERSION=6.3
 FROM php:${PHP_VERSION}-fpm-alpine AS api_platform_php
 
 # persistent / runtime deps
+# we install Redis in the container because we want redis-cli for debugging.
 RUN apk add --no-cache \
 		acl \
 		fcgi \
@@ -22,7 +23,7 @@ RUN apk add --no-cache \
 		nodejs npm \
 		vips-dev \
 		ffmpeg \
-		redis \ # we install Redis in the container because we want redis-cli for debugging.
+		redis \
 	; \
 	npm install -g yarn;
 

@@ -4,6 +4,7 @@
         "@symfony/webpack-encore": "^0.29.0",
         "@types/react-dom": "^16.9.7",
         "autoprefixer": "^9.7.6",
+        "bootstrap": "^4.4.1",
         "core-js": "^3.0.0",
         "fork-ts-checker-webpack-plugin": "^0.4.1",
         "json-schema-to-typescript": "^9.0.1",
