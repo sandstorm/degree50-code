@@ -21,16 +21,26 @@ const log = (type: any) => console.log.bind(console, type);
 import { JSONSchema7 } from 'json-schema';
 
 import schema from '../api-definitions/ExercisePhaseConfigSchema.json';
-const JsonSchemaEditor = () => {
-  return <Form schema={schema as JSONSchema7}
-               onChange={log("changed")}
-               onSubmit={log("submitted")}
+
+const onChange = ({formData}:any, formFieldId:string) => {
+  const propsAsString = JSON.stringify(JSON.stringify(formData));
+  const inputField = document.getElementById(formFieldId);
+  inputField.setAttribute('value', propsAsString);
+};
+
+const JsonSchemaEditor = (props: any) => {
+  return <Form schema={schema as JSONSchema7} formData={props.formData}
+               onChange={(formData:object) => onChange(formData, props.formFieldId)}
+               onSubmit={onChange}
                onError={log("errors")}/>;
 
 };
 
 [].forEach.call(document.querySelectorAll('[data-react-widget=JsonSchemaEditor]'), (el: any) => {
-  ReactDOM.render(<JsonSchemaEditor/>, el);
+  const propsAsString = el.getAttribute('data-react-props');
+  const props = JSON.parse(JSON.parse(propsAsString));
+  const formFieldId = el.getAttribute('data-id');
+  ReactDOM.render(<JsonSchemaEditor  formData = {props} formFieldId = {formFieldId} />, el);
 });
 
 const ShowExercisePhase = (props: any) => {
@@ -40,8 +50,6 @@ const ShowExercisePhase = (props: any) => {
   </div>;
 
 };
-
-
 
 [].forEach.call(document.querySelectorAll('[data-react-widget=ShowExercisePhase]'), (el: any) => {
   const propsAsString = el.getAttribute('data-react-props');

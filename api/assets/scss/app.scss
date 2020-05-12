@@ -17,7 +17,8 @@
 // components
 
 // composites
-@import "composites/login";
+@import "composites/login/login";
+@import "composites/form/json-schema-editor";
 
 body {
 }
