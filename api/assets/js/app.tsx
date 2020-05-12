@@ -23,7 +23,7 @@ import { JSONSchema7 } from 'json-schema';
 import schema from '../api-definitions/ExercisePhaseConfigSchema.json';
 
 const onChange = ({formData}:any, formFieldId:string) => {
-  const propsAsString = JSON.stringify(JSON.stringify(formData));
+  const propsAsString = JSON.stringify(formData);
   const inputField = document.getElementById(formFieldId);
   inputField.setAttribute('value', propsAsString);
 };
