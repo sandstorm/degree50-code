@@ -1,0 +1,14 @@
+<nav aria-label="Navigation für die Phasen einer Aufgabe">
+    <ul class="pagination">
+        {% for i in 0..amountOfPhases %}
+
+            {% if currentPhase == i %}
+                <li class="page-item active">
+            {% else %}
+                <li class="page-item">
+            {% endif %}
+                <a class="page-link" href="{{ path('app_exercise', {id: exercise.id, phase: i}) }}">{{ i + 1 }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
