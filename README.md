@@ -45,3 +45,4 @@
 - https://localhost:8443/admin/
 - https://localhost:8443/api/graphql
 - https://localhost:8443/api/graphql/graphql_playground
+- https://localhost:8443/subtitle-editor
