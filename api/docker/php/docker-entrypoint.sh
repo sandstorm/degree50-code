@@ -24,9 +24,9 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 
 	if [ "$APP_ENV" != 'prod' ]; then
 		composer install --prefer-dist --no-progress --no-suggest --no-interaction
-		yarn
-		yarn build-types
-		yarn encore dev
+		#yarn
+		#yarn build-types
+		#yarn encore dev
 	fi
 
 	echo "Waiting for db to be ready..."
