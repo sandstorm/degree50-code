@@ -45,7 +45,7 @@ class VideoUploadController extends AbstractController
             return $this->redirectToRoute('app_videoplayer', ['id' => $video->getId()]);
         }
 
-        return $this->render('mediathek/videoUpload/videoUpload.html.twig', [
+        return $this->render('Mediathek/VideoUpload/VideoUpload.html.twig', [
             // we generate the desired UUID for the video entity server-side, to ensure the file
             // upload and the normal HTML form fit together properly.
             'uuid' => $videoUuid,

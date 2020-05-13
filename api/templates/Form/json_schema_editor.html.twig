@@ -11,5 +11,4 @@
         <input {{ block('widget_attributes') }} type="hidden" value="{{ value }}" />
         <div data-id="{{ id }}" data-react-widget="JsonSchemaEditor" data-react-props="{{ value|json_encode|e('html_attr') }}"></div>
     </div>
-
 {% endblock %}

@@ -16,7 +16,7 @@ class VideoPlayerController extends AbstractController
      */
     public function videoPlayer(Video $video): Response
     {
-        return $this->render('mediathek/videoUpload/videoPlayer.html.twig', [
+        return $this->render('Mediathek/VideoUpload/VideoPlayer.html.twig', [
             'video' => $video,
         ]);
     }

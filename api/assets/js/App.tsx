@@ -6,7 +6,7 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import '../scss/app.scss';
+import '../scss/App.scss';
 import ReactDOM from 'react-dom';
 import React from 'react';
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
@@ -43,7 +43,7 @@ const JsonSchemaEditor = (props: any) => {
   ReactDOM.render(<JsonSchemaEditor  formData = {props} formFieldId = {formFieldId} />, el);
 });
 
-import widgets from './Widgets/index';
+import widgets from './Widgets/Index';
 
 Object.entries(widgets).forEach(([widgetName, ReactWidget]) => {
     [].forEach.call(document.querySelectorAll(`[data-react-widget=${widgetName}]`), (el: any) => {
@@ -53,11 +53,9 @@ Object.entries(widgets).forEach(([widgetName, ReactWidget]) => {
     });
 });
 
-
-
 // src/application.js
 import { Application } from "stimulus";
-import FileuploadController from './stimulus_controllers/fileupload_controller';
+import FileuploadController from './StimulusControllers/FileUploadController';
 const application = Application.start();
 application.register("fileupload", FileuploadController);
 

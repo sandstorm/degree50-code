@@ -3,7 +3,7 @@ declare module '*.json' {
     export default value;
 }
 
-declare module 'stimulus_controllers/*' {
+declare module 'StimulusControllers/*' {
     const value: any;
     export default value;
 }

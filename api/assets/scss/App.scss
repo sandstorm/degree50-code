@@ -10,17 +10,14 @@
 @import "~bootstrap/scss/grid";
 
 
-@import "general-styles/variables";
-@import "general-styles/functions";
-@import "general-styles/layout";
-@import "general-styles/mixins";
-@import "general-styles/typography";
+@import "GeneralStyles/Variables";
+@import "GeneralStyles/Functions";
+@import "GeneralStyles/Layout";
+@import "GeneralStyles/Mixins";
+@import "GeneralStyles/Typography";
 
 // components
 
 // composites
-@import "composites/login/login";
-@import "composites/form/json-schema-editor";
-
-body {
-}
+@import "Composites/Login/Login";
+@import "Composites/Form/JsonSchemaEditor";
