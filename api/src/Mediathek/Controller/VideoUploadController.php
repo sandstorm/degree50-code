@@ -36,12 +36,13 @@ class VideoUploadController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $video = $form->getData();
+            assert($video instanceof Video);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($video);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_videoupload');
+            return $this->redirectToRoute('app_videoplayer', ['id' => $video->getId()]);
         }
 
         return $this->render('mediathek/videoUpload/videoUpload.html.twig', [

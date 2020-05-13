@@ -57,6 +57,7 @@ class WebEncodingHandler implements MessageHandlerInterface
             ->save($localOutputDirectory . '/dash.mpd'); // It can be passed a path to the method or it can be null
 
         $ffmpegVideo->hls()
+            ->fragmentedMP4()
             ->x264()
             ->autoGenerateRepresentations([720, 360]) // You can limit the number of representatons
             ->save($localOutputDirectory . '/hls.m3u8');

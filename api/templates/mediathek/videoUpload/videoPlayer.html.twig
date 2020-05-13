@@ -6,5 +6,5 @@
 
     <a href="{{ video.encodedVideoDirectory | virtualized_file_url }}/dash.mpd">Dash</a>
     <a href="{{ video.encodedVideoDirectory | virtualized_file_url }}/hls.m3u8">HLS</a>
-
+    <div data-react-widget="VideoPlayer" data-react-props="{{ { 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] } | json_encode|e('html_attr')}}"></div>
 {% endblock %}

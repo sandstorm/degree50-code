@@ -43,20 +43,15 @@ const JsonSchemaEditor = (props: any) => {
   ReactDOM.render(<JsonSchemaEditor  formData = {props} formFieldId = {formFieldId} />, el);
 });
 
-const ShowExercisePhase = (props: any) => {
-  console.log("PROPS", props);
-  return <div>
-    Show exercise;
-  </div>;
+import widgets from './Widgets/index';
 
-};
-
-[].forEach.call(document.querySelectorAll('[data-react-widget=ShowExercisePhase]'), (el: any) => {
-  const propsAsString = el.getAttribute('data-react-props');
-  const props = JSON.parse(JSON.parse(propsAsString));
-  ReactDOM.render(<ShowExercisePhase {...props} />, el);
+Object.entries(widgets).forEach(([widgetName, ReactWidget]) => {
+    [].forEach.call(document.querySelectorAll(`[data-react-widget=${widgetName}]`), (el: any) => {
+        const propsAsString = el.getAttribute('data-react-props');
+        const props = propsAsString ? JSON.parse(propsAsString) : {};
+        ReactDOM.render(<ReactWidget {...props} />, el);
+    });
 });
-
 
 
 
@@ -65,3 +60,6 @@ import { Application } from "stimulus";
 import FileuploadController from './stimulus_controllers/fileupload_controller';
 const application = Application.start();
 application.register("fileupload", FileuploadController);
+
+
+

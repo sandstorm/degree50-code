@@ -14,7 +14,7 @@ class VirtualizedFile
      * @var string file name in the form "storage_prefix://filename"
      * @ORM\Column(type="string", nullable=true)
      */
-    private string $virtualPathAndFilename;
+    private ?string $virtualPathAndFilename;
 
     public function getVirtualPathAndFilename(): string
     {
