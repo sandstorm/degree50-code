@@ -3,29 +3,30 @@
 namespace App\VideoEncoding\Message;
 
 
+use App\Entity\VirtualizedFile;
+
 class WebEncodingTask
 {
 
-    private string $inputVideoFilename;
-    private string $outputDirectory;
+    private string $videoId;
 
-    public function __construct(string $inputVideoFilename, string $outputDirectory)
+    private VirtualizedFile $desiredOutputDirectory;
+
+    public function __construct(string $videoId, VirtualizedFile $desiredOutputDirectory)
     {
-        $this->inputVideoFilename = $inputVideoFilename;
-        $this->outputDirectory = $outputDirectory;
+        $this->videoId = $videoId;
+        $this->desiredOutputDirectory = $desiredOutputDirectory;
     }
 
-
-    public function getInputVideoFilename(): string
+    public function getVideoId(): string
     {
-        return $this->inputVideoFilename;
+        return $this->videoId;
     }
 
-    public function getOutputDirectory(): string
+    public function getDesiredOutputDirectory(): VirtualizedFile
     {
-        return $this->outputDirectory;
+        return $this->desiredOutputDirectory;
     }
-
 
 
 }

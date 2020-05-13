@@ -4,10 +4,10 @@
 namespace App\VideoEncoding\MessageHandler;
 
 
-use App\Utility\FileSystemService;
+use App\Core\FileSystemService;
+use App\Repository\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
-use League\Flysystem\Filesystem;
-use League\Flysystem\MountManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
@@ -15,17 +15,27 @@ class WebEncodingHandler implements MessageHandlerInterface
 {
     private LoggerInterface $logger;
     private FileSystemService $fileSystemService;
+    private VideoRepository $videoRepository;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(LoggerInterface $logger, FileSystemService $fileSystemService)
+    public function __construct(LoggerInterface $logger, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
         $this->fileSystemService = $fileSystemService;
+        $this->videoRepository = $videoRepository;
+        $this->entityManager = $entityManager;
     }
 
 
     public function __invoke(WebEncodingTask $encodingTask)
     {
-        $inputVideoFilename = $this->fileSystemService->fetchIfNeededAndGetLocalPath($encodingTask->getInputVideoFilename());
+        $video = $this->videoRepository->find($encodingTask->getVideoId());
+        if ($video === null) {
+            $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
+            return;
+        }
+
+        $inputVideoFilename = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
 
         $config = [
             'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
@@ -39,18 +49,23 @@ class WebEncodingHandler implements MessageHandlerInterface
 
         $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
 
-        $video = $ffmpeg->open($inputVideoFilename);
+        $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
 
-        $video->dash()
+        $ffmpegVideo->dash()
             ->x264() // Format of the video. Alternatives: hevc() and vp9()
             ->autoGenerateRepresentations() // Auto generate representations
             ->save($localOutputDirectory . '/dash.mpd'); // It can be passed a path to the method or it can be null
 
-        $video->hls()
+        $ffmpegVideo->hls()
             ->x264()
             ->autoGenerateRepresentations([720, 360]) // You can limit the number of representatons
             ->save($localOutputDirectory . '/hls.m3u8');
 
-        $this->fileSystemService->moveDirectory($outputDirectory, $encodingTask->getOutputDirectory());
+
+        $this->fileSystemService->moveDirectory($outputDirectory, $encodingTask->getDesiredOutputDirectory());
+
+        $video->setEncodedVideoDirectory($encodingTask->getDesiredOutputDirectory());
+        $this->entityManager->persist($video);
+        $this->entityManager->flush();
     }
 }

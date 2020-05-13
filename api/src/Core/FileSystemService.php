@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Utility;
+namespace App\Core;
 
 use App\DependencyInjection\Compiler\FileSystemCompilerPass;
+use App\Entity\VirtualizedFile;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
@@ -25,9 +26,11 @@ class FileSystemService
     /**
      * This method is called from {@see FileSystemCompilerPass}
      *
+     * @param Filesystem $filesystem
+     * @param string $mountPrefix
      * @internal
      */
-    public function registerFilesystem(Filesystem $filesystem, $mountPrefix)
+    public function registerFilesystem(Filesystem $filesystem, string $mountPrefix): void
     {
         $this->mountPrefixesAndFilesystems[$mountPrefix] = $filesystem;
     }
@@ -55,45 +58,45 @@ class FileSystemService
      * @return string a local path to the file.
      * @throws \League\Flysystem\FileExistsException
      */
-    public function fetchIfNeededAndGetLocalPath(string $inputFilename): string
+    public function fetchIfNeededAndGetLocalPath(VirtualizedFile $inputFile): string
     {
-        if ($this->mountManager->getAdapter($inputFilename) instanceof Local) {
+        if ($this->mountManager->getAdapter($inputFile->getVirtualPathAndFilename()) instanceof Local) {
 
             // we do not need to do anything with a local file.
-            return $this->localPath($inputFilename);
+            return $this->localPath($inputFile);
         }
 
-        [, $filename] = explode('://', $inputFilename, 2);
-        $this->mountManager->copy($inputFilename, self::LOCAL_TMP_FILESYSTEM_MOUNT . $filename);
+        $localTemporaryDirectory = $this->generateUniqueTemporaryDirectory();
+        $localTemporaryFile = $localTemporaryDirectory->appendPathSegment($inputFile->getBasename());
 
-        return $this->localPath(self::LOCAL_TMP_FILESYSTEM_MOUNT . $filename);
+        $this->mountManager->copy($inputFile->getVirtualPathAndFilename(), $localTemporaryFile);
+
+        return $this->localPath($localTemporaryFile);
     }
 
-    public function generateUniqueTemporaryDirectory(): string
+    public function generateUniqueTemporaryDirectory(): VirtualizedFile
     {
-        $directory = self::LOCAL_TMP_FILESYSTEM_MOUNT . Uuid::uuid4()->toString();
-        $result = $this->mountManager->createDir($directory);
+        $directory = VirtualizedFile::fromMountPointAndFilename(self::LOCAL_TMP_FILESYSTEM_MOUNT, Uuid::uuid4()->toString());
+        $result = $this->mountManager->createDir($directory->getVirtualPathAndFilename());
         assert($result, 'directory ' . $directory . ' could not be created');
         return $directory;
     }
 
-    public function localPath($inputFilename): string
+    public function localPath(VirtualizedFile $inputFilename): string
     {
-        [, $filename] = explode('://', $inputFilename, 2);
-        $adapter = $this->mountManager->getAdapter($inputFilename);
+        $adapter = $this->mountManager->getAdapter($inputFilename->getVirtualPathAndFilename());
 
         if (!$adapter instanceof Local) {
             throw new \RuntimeException('File ' . $inputFilename . ' is not available locally.');
         }
 
-        return $adapter->applyPathPrefix($filename);
+        return $adapter->applyPathPrefix($inputFilename->getRelativePathAndFilename());
     }
 
-    public function moveDirectory($inputDirectory, $outputDirectory)
+    public function moveDirectory(VirtualizedFile $inputDirectory, VirtualizedFile $outputDirectory): void
     {
-        [$inputPrefix, ] = explode('://', $inputDirectory, 2);
-        foreach ($this->mountManager->listContents($inputDirectory, true) as $file) {
-            $result = $this->mountManager->move($inputPrefix . '://' . $file['path'], $outputDirectory . '/' . $file['basename']);
+        foreach ($this->mountManager->listContents($inputDirectory->getVirtualPathAndFilename(), true) as $file) {
+            $result = $this->mountManager->move($inputDirectory->getMountPoint() . '://' . $file['path'], $outputDirectory->getVirtualPathAndFilename() . '/' . $file['basename']);
             assert($result, 'Moving files failed');
         }
     }

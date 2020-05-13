@@ -5,4 +5,8 @@
 {% block body %}
 
     <div data-controller="fileupload" data-fileupload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}" data-fileupload-id="{{ uuid }}"></div>
+
+
+    {{ form(form) }}
+
 {% endblock %}

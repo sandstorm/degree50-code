@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
 /**
  * @ApiResource
  * @ORM\Entity
@@ -13,68 +12,110 @@ class Video
 {
 
     /**
-     * @var string The entity Id
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="guid")
      */
-    private $id;
+    private string $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @var string
+     * @ORM\Column(type="text")
      */
-    private $video;
+    private string $title = '';
 
     /**
-     * @ORM\Column(type="datetime")
-     * @var \DateTime
+     * @ORM\Column(type="text")
      */
-    private $updatedAt;
+    private string $description = '';
+
+    /**
+     * @ORM\Embedded(class=VirtualizedFile::class)
+     */
+    private ?VirtualizedFile $uploadedVideoFile;
+
+    /**
+     * @ORM\Embedded(class=VirtualizedFile::class)
+     */
+    private ?VirtualizedFile $encodedVideoDirectory;
+
+    /**
+     * Video constructor.
+     * @param string $id
+     */
+    public function __construct(string $id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return string
      */
-    public function getVideo(): ?string
-    {
-        return $this->video;
-    }
-
-    /**
-     * @param string $video
-     */
-    public function setVideo(?string $video): void
-    {
-        $this->video = $video;
-    }
-
-    /**
-     * @return File
-     */
-    public function getVideoFile(): ?File
-    {
-        return $this->videoFile;
-    }
-
-    /**
-     * @param File $videoFile
-     */
-    public function setVideoFile(File $videoFile): void
-    {
-        $this->videoFile = $videoFile;
-
-        // VERY IMPORTANT:
-        // It is required that at least one field changes if you are using Doctrine,
-        // otherwise the event listeners won't be called and the file is lost
-        if ($videoFile) {
-            // if 'updatedAt' is not defined in your entity, use another property
-            $this->updatedAt = new \DateTime('now');
-        }
-    }
-
-    public function getId(): ?string
+    public function getId(): string
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return ?VirtualizedFile
+     */
+    public function getUploadedVideoFile(): ?VirtualizedFile
+    {
+        return $this->uploadedVideoFile;
+    }
+
+    /**
+     * @param VirtualizedFile $uploadedVideoFile
+     */
+    public function setUploadedVideoFile(VirtualizedFile $uploadedVideoFile): void
+    {
+        $this->uploadedVideoFile = $uploadedVideoFile;
+    }
+
+    /**
+     * @return ?VirtualizedFile
+     */
+    public function getEncodedVideoDirectory(): ?VirtualizedFile
+    {
+        return $this->encodedVideoDirectory;
+    }
+
+    /**
+     * @param VirtualizedFile $encodedVideoDirectory
+     */
+    public function setEncodedVideoDirectory(VirtualizedFile $encodedVideoDirectory): void
+    {
+        $this->encodedVideoDirectory = $encodedVideoDirectory;
     }
 }
