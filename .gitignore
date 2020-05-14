@@ -3,3 +3,5 @@
 /docker-compose.override.yml
 /.idea
 /api/public/uploads/videos
+supervisord.log
+supervisord.pid

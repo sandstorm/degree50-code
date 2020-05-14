@@ -8,5 +8,8 @@ import-fixtures:
 build-types:
 	docker-compose exec api yarn build-types
 
+yarn:
+	docker-compose exec api yarn
+
 watch:
 	docker-compose exec api yarn encore dev --watch

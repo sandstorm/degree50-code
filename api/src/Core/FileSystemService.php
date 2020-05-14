@@ -15,7 +15,7 @@ class FileSystemService
     private MountManager $mountManager;
 
     // name of file system mount which is guaranteed to be locally available
-    const LOCAL_TMP_FILESYSTEM_MOUNT = 'local_tmp://';
+    const LOCAL_TMP_FILESYSTEM_MOUNT = 'local_tmp';
 
     public function __construct(MountManager $mountManager)
     {

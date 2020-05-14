@@ -14,8 +14,8 @@ export default class extends Controller {
 
     new Dropzone(this.element, {
       url: endpoint,
-      chunking: true,
-      chunkSize: 1000000, // 1 MB; TODO adjust.
+      //chunking: true,
+      //chunkSize: 1000000, // 1 MB; TODO adjust.
       params: {
         id: id
       },
