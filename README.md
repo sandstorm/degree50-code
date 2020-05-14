@@ -15,7 +15,7 @@
 - check installation with `docker-compose logs -f api`
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
-    - After installation is successful, go to `https://localhost:8443/login` and log in with `admin@sandstorm.de / password`
+    - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
     - Run the assets build (locally) using `cd api && nvm use && yarn`
     - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
     - The API types can be regenerated using `make build-types`
@@ -23,14 +23,11 @@
 
 **Connect with database**
 
-- postgres sql
+- mariadb
     - db: api
     - user: api-platform
     - db: !ChangeMe!
-    - host: localhost:25432
-
-
-
+    - host: localhost:13306
 
 **Symfony commands**
 - ./symfony-console cache:clear
@@ -49,4 +46,4 @@
 - http://localhost:8080/admin/
 - http://localhost:8080/api/graphql
 - http://localhost:8080/api/graphql/graphql_playground
-- http://localhost:8443/subtitle-editor
+- http://localhost:8080/subtitle-editor

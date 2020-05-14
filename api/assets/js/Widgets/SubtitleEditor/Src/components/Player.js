@@ -14,12 +14,13 @@ const Player = styled.div`
 
 export default React.memo(
     function({ options, setPlayer, setCurrentTime }) {
+        console.log(options);
         return (
             <Player>
                 <ArtplayerComponent
                     style={{
                         width: '100%',
-                        height: '100%',
+                        height: '200px',
                     }}
                     option={{
                         url: options.videoUrl,
