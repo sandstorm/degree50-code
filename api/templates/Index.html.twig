@@ -1,0 +1,11 @@
+{% extends 'Base.html.twig' %}
+
+{% block title %}Index{% endblock %}
+
+{% block body %}
+
+    <a href="/admin">Administration</a>
+
+    <h2>Mediathek</h2>
+    <a href="{{ path('app_videoupload') }}">Video Upload</a>
+{% endblock %}

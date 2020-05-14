@@ -1,0 +1,12 @@
+{% extends 'Base.html.twig' %}
+
+{% block title %}Video Upload{% endblock %}
+
+{% block body %}
+
+    <div data-controller="fileupload" data-fileupload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}" data-fileupload-id="{{ uuid }}"></div>
+
+
+    {{ form(form) }}
+
+{% endblock %}

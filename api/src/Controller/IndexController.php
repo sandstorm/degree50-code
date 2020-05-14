@@ -14,6 +14,6 @@ class IndexController extends AbstractController
      */
     public function login(): Response
     {
-        return $this->render('index.html.twig');
+        return $this->render('Index.html.twig');
     }
 }

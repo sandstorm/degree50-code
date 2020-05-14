@@ -16,12 +16,10 @@ class ExerciseController extends AbstractController
      */
     public function show(Exercise $exercise, int $phase = 0): Response
     {
-        $firstPhase = $exercise->getPhases()->get($phase);
-
-        return $this->render('exercise/show.html.twig',
+        return $this->render('Exercise/Show.html.twig',
             [
                 'exercise' => $exercise,
-                'phase' => $firstPhase,
+                'phase' => $exercise->getPhases()->get($phase),
                 'currentPhase' => $phase,
                 'amountOfPhases' => count($exercise->getPhases()) - 1
             ]);

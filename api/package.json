@@ -28,11 +28,23 @@
     },
     "dependencies": {
         "@rjsf/core": "^2.0.0",
+        "artplayer-react": "^3.5.4",
+        "babel-loader": "^8.1.0",
         "dropzone": "^5.7.0",
+        "duration-time-conversion": "^1.0.1",
+        "lodash": "^4.17.15",
+        "normalize.css": "^8.0.1",
+        "nprogress": "^0.2.0",
+        "option-validator": "^2.0.5",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
+        "react-i18nify": "^3.1.6",
+        "react-scripts": "^3.4.1",
+        "react-toastify": "^6.0.4",
+        "react-virtualized": "^9.21.2",
         "stimulus": "^1.1.1",
+        "styled-components": "^5.1.0",
         "video.js": "^7.7.6"
     },
     "browserslist": [

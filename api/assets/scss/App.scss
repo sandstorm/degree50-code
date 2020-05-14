@@ -1,0 +1,24 @@
+
+// Import of bootstrap - maybe remove it later in the project
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/pagination";
+@import "~bootstrap/scss/grid";
+
+
+@import "GeneralStyles/Variables";
+@import "GeneralStyles/Functions";
+@import "GeneralStyles/Layout";
+@import "GeneralStyles/Mixins";
+@import "GeneralStyles/Typography";
+
+// components
+
+// composites
+@import "Composites/Login/Login";
+@import "Composites/Form/JsonSchemaEditor";
+@import "Composites/SubtitleEditor/SubtitleEditor";
