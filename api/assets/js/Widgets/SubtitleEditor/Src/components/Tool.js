@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import languages from '../translate/languages';
 import { Translate } from 'react-i18nify';
 
 const Tool = styled.div`
@@ -47,29 +46,9 @@ const Tool = styled.div`
     }
 `;
 
-export default function({ language, options, setOption, translateSubtitles, timeOffsetSubtitles }) {
+export default function({ timeOffsetSubtitles }) {
     return (
         <Tool>
-            <div className="item">
-                <div className="title">
-                    <Translate value="google-translate" />
-                </div>
-                <div className="value">
-                    <select
-                        value={options.translationLanguage}
-                        onChange={event => setOption({ translationLanguage: event.target.value })}
-                    >
-                        {(languages[language] || languages.en).map(item => (
-                            <option key={item.key} value={item.key}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={() => translateSubtitles()}>
-                        <Translate value="confirm" />
-                    </button>
-                </div>
-            </div>
             <div className="item">
                 <div className="title">
                     <Translate value="time-offset" />

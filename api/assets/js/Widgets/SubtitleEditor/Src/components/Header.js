@@ -1,9 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { names, getName } from '../i18n';
 import Upload from './Upload';
-import Help from './Help';
-import Donate from './Donate';
 import Dialog from './Dialog';
 import { downloadFile } from '../utils';
 import { vttToUrl, subToVtt } from '../subtitle';
@@ -20,12 +17,6 @@ const Header = styled.div`
 `;
 
 const Left = styled.div`
-    display: flex;
-    align-items: center;
-    height: 100%;
-`;
-
-const Right = styled.div`
     display: flex;
     align-items: center;
     height: 100%;
@@ -121,43 +112,10 @@ export default function(props) {
                     <i className="icon-trash-empty"></i>
                     <Translate value="clear" />
                 </Menu>
-                <Menu onClick={() => props.setOption({ helpDialog: true })}>
-                    <i className="icon-help-circled"></i>
-                    <Translate value="help" />
-                </Menu>
-                <Menu onClick={() => props.setOption({ donateDialog: true })}>
-                    <i className="icon-money"></i>
-                    <Translate value="donate" />
-                </Menu>
-                <Menu onClick={() => window.open('https://github.com/zhw2590582/SubPlayer')}>
-                    <i className="icon-github"></i> Github
-                </Menu>
             </Left>
-            <Right>
-                <I18n>
-                    <i className="icon-language"></i>
-                    <select value={getName(props.language)} onChange={event => props.updateLang(event.target.value)}>
-                        {Object.keys(names).map(key => (
-                            <option key={key} value={key}>
-                                {names[key]}
-                            </option>
-                        ))}
-                    </select>
-                </I18n>
-            </Right>
             {props.options.uploadDialog ? (
                 <Dialog title={t('open')} onClose={() => props.setOption({ uploadDialog: false })}>
                     <Upload {...props} />
-                </Dialog>
-            ) : null}
-            {props.options.helpDialog ? (
-                <Dialog title={t('help')} onClose={() => props.setOption({ helpDialog: false })}>
-                    <Help {...props} />
-                </Dialog>
-            ) : null}
-            {props.options.donateDialog ? (
-                <Dialog title={t('donate')} onClose={() => props.setOption({ donateDialog: false })}>
-                    <Donate {...props} />
                 </Dialog>
             ) : null}
         </Header>
