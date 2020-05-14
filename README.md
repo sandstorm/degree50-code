@@ -16,8 +16,8 @@
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
     - After installation is successful, go to `https://localhost:8443/login` and log in with `admin@sandstorm.de / password`
-    - Install JS dependencies using `make yarn`
-    - The JS file watcher can be executed using `make watch`
+    - Restart the yarn stuff using `docker-compose restart -t 0 assets`
+    - See the TypeScript build errors using `docker-compose logs -f assets`
     - The API types can be regenerated using `make build-types`
     - The Symfony Console can be executed via `./symfony-console`
 

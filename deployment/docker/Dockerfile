@@ -3,14 +3,13 @@ FROM php:7.4.5-fpm-buster
 
 # Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips
 RUN apt-get update -y && \
-    apt-get install --no-install-recommends -y libicu-dev libxslt1-dev nginx-light libvips42 libvips-dev supervisor procps redis ffmpeg nodejs npm unzip git acl libpq-dev && \
+    apt-get install --no-install-recommends -y libicu-dev libxslt1-dev nginx-light libvips42 libvips-dev supervisor procps redis ffmpeg unzip git acl libpq-dev && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* && \
     docker-php-ext-install intl bcmath pdo pdo_mysql mysqli xsl && \
     pecl install vips && \
     echo "extension=vips.so" > /usr/local/etc/php/conf.d/vips.ini && \
-    pecl install redis && docker-php-ext-enable redis && \
-    npm install -g yarn;
+    pecl install redis && docker-php-ext-enable redis;
 
 # install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -35,7 +34,6 @@ RUN mkdir -p /var/lib/nginx /usr/local/var/log/ & \
     chown -R www-data /var/lib/nginx /usr/local/var/log/ /etc/nginx/
 
 WORKDIR /app
-VOLUME /app/node_modules
 
 # build for production
 ARG APP_ENV=prod
