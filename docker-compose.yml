@@ -16,6 +16,8 @@ services:
       - db
     volumes:
       - ./api:/app:rw,cached
+      # we had problems with non-updating build assets; so we mount this as non-cached.
+      - ./api/public/build/:/app/public/build:ro
       - app-var:/app/var
 
   redis:
