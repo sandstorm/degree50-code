@@ -22,7 +22,7 @@ class ExercisePhase
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
      */
-    private string $id;
+    private ?string $id;
 
     /**
      * @var string A nice person

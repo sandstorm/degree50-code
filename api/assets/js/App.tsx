@@ -14,37 +14,9 @@ import React from 'react';
 
 console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
 
-import Form from "@rjsf/core";
-
-const log = (type: any) => console.log.bind(console, type);
-
-import { JSONSchema7 } from 'json-schema';
-
-import schema from '../api-definitions/ExercisePhaseConfigSchema.json';
-
-const onChange = ({formData}:any, formFieldId:string) => {
-  const propsAsString = JSON.stringify(formData);
-  const inputField = document.getElementById(formFieldId);
-  inputField.setAttribute('value', propsAsString);
-};
-
-const JsonSchemaEditor = (props: any) => {
-  return <Form schema={schema as JSONSchema7} formData={props.formData}
-               onChange={(formData:object) => onChange(formData, props.formFieldId)}
-               onSubmit={onChange}
-               onError={log("errors")}/>;
-
-};
-
-[].forEach.call(document.querySelectorAll('[data-react-widget=JsonSchemaEditor]'), (el: any) => {
-  const propsAsString = el.getAttribute('data-react-props');
-  const props = JSON.parse(JSON.parse(propsAsString));
-  const formFieldId = el.getAttribute('data-id');
-  ReactDOM.render(<JsonSchemaEditor  formData = {props} formFieldId = {formFieldId} />, el);
-});
-
 import widgets from './Widgets/Index';
 
+// TODO get rid of this block; because that will be loaded through Stimulus.
 Object.entries(widgets).forEach(([widgetName, ReactWidget]) => {
     [].forEach.call(document.querySelectorAll(`[data-react-widget=${widgetName}]`), (el: any) => {
         const propsAsString = el.getAttribute('data-react-props');
@@ -56,8 +28,10 @@ Object.entries(widgets).forEach(([widgetName, ReactWidget]) => {
 // src/application.js
 import { Application } from "stimulus";
 import FileuploadController from './StimulusControllers/FileUploadController';
+import ReactController from './StimulusControllers/ReactController';
 const application = Application.start();
 application.register("fileupload", FileuploadController);
+application.register("react", ReactController);
 
 
 

@@ -17,7 +17,7 @@ services:
     volumes:
       - ./api:/app:rw,cached
       - app-var:/app/var
-      - app-node-modules:/app/node_modules
+      - app-node-modules:/app/node_modules:nocopy
 
   redis:
     image: redis:6.0.1-alpine3.11

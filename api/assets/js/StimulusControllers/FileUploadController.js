@@ -1,7 +1,6 @@
 import { Controller } from "stimulus"
 const Dropzone = require('dropzone/dist/min/dropzone.min');
 import 'dropzone/dist/dropzone.css';
-window.D = Dropzone;
 
 Dropzone.autoDiscover = false;
 
