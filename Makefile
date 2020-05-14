@@ -7,9 +7,3 @@ import-fixtures:
 
 build-types:
 	docker-compose exec assets yarn build-types
-
-yarn:
-	cd api && nvm use && yarn
-
-watch:
-	cd api && yarn encore dev --watch
