@@ -2,7 +2,7 @@ import React from 'react';
 
 import Form from "@rjsf/core";
 
-import StringField from '@rjsf/core/lib/components/fields/StringField';
+import SchemaField from '@rjsf/core/lib/components/fields/SchemaField';
 
 const log = (type: any) => console.log.bind(console, type);
 
@@ -15,21 +15,34 @@ const onChange = ({ formData }: any, formFieldId: string) => {
 };
 
 import schema from '../../../api-definitions/ExercisePhaseConfigSchema.json';
+import AutocompleteDropdown from '../../Components/AutocompleteDropdown/AutocompleteDropdown';
 
 const VideoAutocomplete = (props: any) => {
-
+    // TODO: PROPS mapping
+    return <AutocompleteDropdown />
 };
 
 const CustomStringField = (props: any) => {
-    if (props.schema['ui:reactWidget']) {
-
+    if (props.schema['type'] === 'string' && props.schema['enum']?.length === 1) {
+        if (props.value !== props.schema['enum'][0]) {
+            window.setTimeout(() => {
+                props.onChange(props.schema['enum'][0]);
+            }, 1);
+        }
+        return null;
     }
-    console.log("PROPS", props.schema);
-    return <StringField {...props} />;
+
+    console.log(props.schema['ui:widget']);
+    if (props.schema['ui:widget'] === 'VideoAutocompleteDropdown') {
+        console.log("CALLED");
+        return <VideoAutocomplete {...props} />
+    }
+
+    return <SchemaField {...props} />;
 }
 
 const fields = {
-    StringField: CustomStringField
+    SchemaField: CustomStringField
 };
 
 const JsonSchemaEditor = (props: any) => {

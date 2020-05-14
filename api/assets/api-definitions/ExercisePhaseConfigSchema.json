@@ -34,7 +34,7 @@
         },
         "videoUri": {
           "type": "string",
-          "ui:widget": "Foo"
+          "ui:widget": "VideoAutocompleteDropdown"
         },
         "foo": {
           "type": "string"

@@ -1,6 +1,8 @@
 import { Controller } from "stimulus"
 import ReactDOM from 'react-dom';
 import React from 'react';
+import { ApolloProvider } from '@apollo/react-hooks';
+import {client} from '../ApolloGraphqlClient';
 
 import widgets from '../Widgets/Index';
 export default class extends Controller {
@@ -10,6 +12,10 @@ export default class extends Controller {
 
     const ReactWidget = widgets[widgetName];
     const props = propsAsString ? JSON.parse(propsAsString) : {};
-    ReactDOM.render(<ReactWidget {...props} />, this.element);
+    ReactDOM.render(
+      <ApolloProvider client={client}>
+        <ReactWidget {...props} />
+      </ApolloProvider>
+      , this.element);
   }
 }

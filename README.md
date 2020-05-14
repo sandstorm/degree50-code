@@ -47,3 +47,10 @@
 - http://localhost:8080/api/graphql
 - http://localhost:8080/api/graphql/graphql_playground
 - http://localhost:8080/subtitle-editor
+
+
+
+**Graphql**
+
+make build-types
+

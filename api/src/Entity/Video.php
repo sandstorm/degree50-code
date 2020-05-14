@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource
@@ -20,6 +22,7 @@ class Video
 
     /**
      * @ORM\Column(type="text")
+     * @ApiFilter(SearchFilter::class, strategy="ipartial")
      */
     private string $title = '';
 
