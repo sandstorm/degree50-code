@@ -1,97 +1,113 @@
 .subtitle-editor-block {
   position: absolute;
-  z-index: 9;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 100%;
+
   pointer-events: none;
+  z-index: 9;
+}
 
-  .contextmenu {
-    position: absolute;
-    z-index: 4;
-    left: 0;
-    top: 0;
-    pointer-events: all;
+.subtitle-editor-block__contextmenu {
+  position: absolute;
+  left: 0;
+  top: 0;
 
-    .contextmenu-item {
-      height: 30px;
-      padding: 0 10px;
-      line-height: 30px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #ccc;
-      user-select: none;
-      background-color: rgba(0, 0, 0, 0.75);
-      transition: all 0.2s ease;
-      &:hover {
-        color: #fff;
-        background-color: #2196f3;
-      }
-    }
+  z-index: 4;
+  pointer-events: all;
+}
+
+.subtitle-editor-block__contextmenu-item {
+  height: 30px;
+  padding: 0 10px;
+
+  line-height: 30px;
+  font-size: 12px;
+  color: $theme__color__grey;
+
+  background-color: transparentize($theme__color__black, 0.75);
+
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $theme__color__white;
+
+    background-color: $theme__color__blue;
+  }
+}
+
+.subtitle-editor-block__item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  color: $theme__color__white;
+  font-size: 13px;
+  text-shadow: 0 1px 0 transparentize($theme__color__black, 0.5);
+
+  background-color: transparentize($theme__color__white, 0.2);
+  border-left: 1px solid transparentize($theme__color__white, 0.2);
+  border-right: 1px solid transparentize($theme__color__white, 0.2);
+
+  overflow: hidden;
+  user-select: none;
+  cursor: move;
+  pointer-events: all;
+
+
+  &:hover {
+    background-color: transparentize($theme__color__white, 0.3);
   }
 
-  .sub-item {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #fff;
-    font-size: 13px;
-    cursor: move;
-    user-select: none;
-    pointer-events: all;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-    background-color: rgba(255, 255, 255, 0.2);
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  &--highlight {
+    background-color: transparentize($theme__color__blue, 0.5);
+    border-left: 1px solid transparentize($theme__color__blue, 0.5);
+    border-right: 1px solid transparentize($theme__color__blue, 0.5);
+  }
 
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-    }
+  &--illegal {
+    background-color: transparentize($theme__color__red, 0.5);
+  }
+}
 
-    &.sub-highlight {
-      background-color: rgba(33, 150, 243, 0.5);
-      border-left: 1px solid rgba(33, 150, 243, 0.5);
-      border-right: 1px solid rgba(33, 150, 243, 0.5);
-    }
+.subtitle-editor-block__text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 20px;
 
-    &.sub-illegal {
-      background-color: rgba(199, 81, 35, 0.5);
-    }
+  word-break: break-all;
 
-    .sub-handle {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      height: 100%;
-      cursor: col-resize;
-      user-select: none;
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-    }
+  p {
+    margin: 5px 0;
 
-    .sub-text {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      word-break: break-all;
-      width: 100%;
-      height: 100%;
-      padding: 0 20px;
-      p {
-        margin: 5px 0;
-        line-height: 1;
-      }
-    }
+    line-height: 1;
+  }
+}
+
+.subtitle-editor-block__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+
+  cursor: col-resize;
+  user-select: none;
+
+  &:hover {
+    background-color: transparentize($theme__color__white, 0.1);
   }
 }

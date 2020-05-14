@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
 
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: transparentize($theme__color__black, 0.8);
 
   z-index: 999;
 }
@@ -21,7 +21,7 @@
   margin-top: -10px;
 
   background-color: $theme__color__blue--dark;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 3px 0 transparentize($theme__color__black, 0.5);
   border-radius: 3px;
 
   transition: all 0.2s ease 0s;
@@ -43,7 +43,7 @@
   margin-bottom: 10px;
 
   font-size: $base__fontSize--larger;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 0 transparentize($theme__color__black, 0.5);
   color: $theme__color__white;
 
   border-bottom: 1px solid $theme__color__black;

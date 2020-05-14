@@ -17,7 +17,7 @@
   padding: 0 15px;
 
   color: $theme__color__white;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 0 transparentize($theme__color__black, 0.5);
   text-decoration: none;
 
   border-right: 1px solid $theme__color__black;
@@ -39,7 +39,7 @@
   padding: 0 25px;
 
   color: $theme__color__white;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 0 transparentize($theme__color__black, 0.5);
 
   border-right: 1px solid $theme__color__black;
 

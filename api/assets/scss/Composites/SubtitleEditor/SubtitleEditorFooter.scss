@@ -1,80 +1,78 @@
-.subtitle-editor-footer {
+.subtitle-editor-timeline {
   display: flex;
   flex-direction: column;
   height: 200px;
+}
 
-  .timeline-header {
+.subtitle-editor-timeline__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 35px;
+
+  font-size: $base__fontSize--tiny;
+  color: transparentize($theme__color__white, 0.5);
+
+  border-bottom: 1px solid $theme__color__black;
+  background-color: transparentize($theme__color__black, 0.3);
+}
+
+.subtitle-editor-timeline__header-left {
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  .item {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 35px;
-    font-size: 12px;
-    border-bottom: 1px solid #000;
-    color: rgba(255, 255, 255, 0.5);
-    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0 10px;
+    height: 100%;
 
-    .timeline-header-left {
+    border-right: 1px solid $theme__color__black;
+
+    .name {
       display: flex;
       align-items: center;
-      height: 100%;
-      .item {
-        display: flex;
-        padding: 0 10px;
-        height: 100%;
-        border-right: 1px solid #000;
+      margin-right: 10px;
+    }
 
-        .name {
-          display: flex;
-          align-items: center;
-          margin-right: 10px;
-        }
+    .value {
+      display: flex;
+      align-items: center;
 
-        .value {
-          display: flex;
-          align-items: center;
+      input[type='checkbox'] {
+        outline: none;
+      }
 
-          input[type='checkbox'] {
-            outline: none;
-          }
+      input[type='range'] {
+        height: 3px;
+        width: 100px;
 
-          input[type='range'] {
-            height: 3px;
-            width: 100px;
-            outline: none;
-            appearance: none;
-            background-color: rgba(255, 255, 255, 0.2);
-          }
+        outline: none;
+        appearance: none;
+        background-color: transparentize($theme__color__white, 0.2);
+      }
 
-          select {
-            outline: none;
-          }
-        }
+      select {
+        outline: none;
       }
     }
-
-    .timeline-header-right {
-      display: flex;
-      align-items: center;
-      height: 100%;
-      padding: 0 15px;
-      border-left: 1px solid #000;
-    }
   }
+}
 
-  .timeline-body {
-    position: relative;
-    flex: 1;
+.subtitle-editor-timeline__body {
+  position: relative;
+  flex: 1;
 
-    .waveform {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      user-select: none;
-      pointer-events: none;
-    }
+  .waveform {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    user-select: none;
+    pointer-events: none;
   }
 }

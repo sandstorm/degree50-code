@@ -2,11 +2,11 @@
   .item {
     margin-bottom: 20px;
     .title {
-      color: #fff;
+      color: $theme__color__white;
       font-size: 14px;
       padding: 5px 10px;
       margin-bottom: 10px;
-      border-left: 2px solid #03a9f4;
+      border-left: 2px solid $theme__color__blue;
     }
     .content {
       padding: 0 10px;
@@ -20,8 +20,8 @@
           padding: 0 10px;
           outline: none;
           border: none;
-          color: #fff;
-          background-color: #363952;
+          color: $theme__color__white;
+          background-color: $theme__color__blue--dark;
         }
         .file {
           display: flex;
@@ -34,8 +34,8 @@
           line-height: 1;
           height: 100%;
           width: 100px;
-          color: #fff;
-          background-color: #2196f3;
+          color: $theme__color__white;
+          background-color: $theme__color__blue;
 
           input {
             position: absolute;
@@ -51,14 +51,14 @@
       }
       .info {
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.5);
+        color: transparentize($theme__color__white, 0.5);
         margin-bottom: 10px;
       }
       .warning {
         font-size: 12px;
         padding: 5px;
-        color: #fff;
-        background-color: rgba(199, 81, 35, 0.5);
+        color: $theme__color__white;
+        background-color: transparentize($theme__color__red, 0.5);
         border: 1px solid $theme__color__red;
       }
     }

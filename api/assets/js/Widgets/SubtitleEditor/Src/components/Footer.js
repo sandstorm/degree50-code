@@ -47,9 +47,9 @@ export default function(props) {
     });
 
     return (
-        <div className="subtitle-editor-footer">
-            <div className="timeline-header">
-                <div className="timeline-header-left">
+        <div className="subtitle-editor-timeline">
+            <div className="subtitle-editor-timeline__header">
+                <div className="subtitle-editor-timeline__header-left">
                     <div className="item">
                         <div className="name">
                             <Translate value="audio-waveform" />
@@ -171,7 +171,7 @@ export default function(props) {
                     </div>
                 </div>
             </div>
-            <div className="timeline-body">
+            <div className="subtitle-editor-timeline__body">
                 {props.player ? (
                     <Waveform
                         {...props}

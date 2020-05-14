@@ -209,9 +209,9 @@ export default React.memo(
                         return (
                             <div
                                 className={[
-                                    'sub-item',
-                                    key === currentIndex ? 'sub-highlight' : '',
-                                    checkSubtitle(sub) ? 'sub-illegal' : '',
+                                    'subtitle-editor-block__item',
+                                    key === currentIndex ? 'subtitle-editor-block__item--highlight' : '',
+                                    checkSubtitle(sub) ? 'subtitle-editor-block__item--illegal' : '',
                                 ]
                                     .join(' ')
                                     .trim()}
@@ -229,20 +229,20 @@ export default React.memo(
                                 onContextMenu={event => onContextMenu(sub, event)}
                             >
                                 <div
-                                    className="sub-handle"
+                                    className="subtitle-editor-block__handle"
                                     style={{
                                         left: 0,
                                         width: gridGap,
                                     }}
                                     onMouseDown={event => onMouseDown(sub, event, 'left')}
                                 ></div>
-                                <div className="sub-text" onMouseDown={event => onMouseDown(sub, event)}>
+                                <div className="subtitle-editor-block__text" onMouseDown={event => onMouseDown(sub, event)}>
                                     {sub.text.split(/\r?\n/).map((line, index) => (
                                         <p key={index}>{line}</p>
                                     ))}
                                 </div>
                                 <div
-                                    className="sub-handle"
+                                    className="subtitle-editor-block__handle"
                                     style={{
                                         right: 0,
                                         width: gridGap,
@@ -255,7 +255,7 @@ export default React.memo(
                 </div>
                 <div
                     ref={$contextMenuRef}
-                    className="contextmenu"
+                    className="subtitle-editor-block__contextmenu"
                     style={{
                         visibility: contextMenu ? 'visible' : 'hidden',
                         left: contextMenuX,
@@ -263,7 +263,7 @@ export default React.memo(
                     }}
                 >
                     <div
-                        className="contextmenu-item"
+                        className="subtitle-editor-block__contextmenu-item"
                         onClick={() => {
                             removeSubtitle(lastSub);
                             setContextMenu(false);
@@ -272,7 +272,7 @@ export default React.memo(
                         <Translate value="delete" />
                     </div>
                     <div
-                        className="contextmenu-item"
+                        className="subtitle-editor-block__contextmenu-item"
                         onClick={() => {
                             addSubtitle(hasSubtitle(lastSub) + 1);
                             setContextMenu(false);
@@ -281,7 +281,7 @@ export default React.memo(
                         <Translate value="insert" />
                     </div>
                     <div
-                        className="contextmenu-item"
+                        className="subtitle-editor-block__contextmenu-item"
                         onClick={() => {
                             mergeSubtitle(lastSub);
                             setContextMenu(false);
