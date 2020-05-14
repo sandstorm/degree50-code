@@ -51,10 +51,11 @@ class WebEncodingHandler implements MessageHandlerInterface
 
         $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
 
-        $ffmpegVideo->dash()
+        /*$ffmpegVideo->dash()
             ->x264() // Format of the video. Alternatives: hevc() and vp9()
             ->autoGenerateRepresentations() // Auto generate representations
             ->save($localOutputDirectory . '/dash.mpd'); // It can be passed a path to the method or it can be null
+        */
 
         $ffmpegVideo->hls()
             ->fragmentedMP4()

@@ -12,12 +12,30 @@ export default class extends Controller {
 
     this.element.classList.add('dropzone');
 
+    console.log("CHUNKED");
+
     new Dropzone(this.element, {
       url: endpoint,
-      //chunking: true,
-      //chunkSize: 1000000, // 1 MB; TODO adjust.
-      params: {
-        id: id
+      chunking: true,
+      chunkSize: 10000000, // 10 MB
+      params: function params(files, xhr, chunk) {
+        if (chunk) {
+          return {
+            id: id,
+
+            dzuuid: chunk.file.upload.uuid,
+            dzchunkindex: chunk.index,
+            dztotalfilesize: chunk.file.size,
+            dzchunksize: this.options.chunkSize,
+            dztotalchunkcount: chunk.file.upload.totalChunkCount,
+            dzchunkbyteoffset: chunk.index * this.options.chunkSize
+          };
+        }
+
+        return {
+          id: id
+        };
+
       },
       accept: function(file, done) {
         if (file.name == "justinbieber.jpg") {

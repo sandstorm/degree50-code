@@ -5,3 +5,4 @@
 /api/public/uploads/videos
 supervisord.log
 supervisord.pid
+/api/updates.db
