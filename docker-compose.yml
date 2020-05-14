@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: ./
-      dockerfile: deployment/docker/Dockerfile 
+      dockerfile: deployment/docker/Dockerfile
 #    healthcheck:
 #      interval: 10s
 #      timeout: 3s
@@ -17,11 +17,12 @@ services:
     volumes:
       - ./api:/app:rw,cached
       - app-var:/app/var
+      - app-node-modules:/app/node_modules
 
   redis:
     image: redis:6.0.1-alpine3.11
     ports:
-      - 16379:6379 
+      - 16379:6379
 
   redis-ui:
     image: rediscommander/redis-commander
@@ -49,3 +50,4 @@ services:
 volumes:
   app-var: {}
   db-data: {}
+  app-node-modules: {}
