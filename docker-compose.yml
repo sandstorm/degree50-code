@@ -32,28 +32,6 @@ services:
       - 8002:8900
 
   #####
-  # assets build (watcher)
-  assets:
-    build:
-      context: .
-      dockerfile: ./deployment/assets-build/Dockerfile
-    volumes:
-      - ./api/webpack.config.js:/app/webpack.config.js:ro
-      - ./api/tsconfig.json:/app/tsconfig.json:ro
-      - ./api/yarn.lock:/app/yarn.lock:rw
-      - ./api/package.json:/app/package.json:rw
-      - ./api/postcss.config.js:/app/postcss.config.js:rw
-      - ./api/assets:/app/assets:ro
-      - ./api/public/build:/app/public/build:rw
-      # The node modules folder is an extra (writable) volume to not be part of the outer volume.
-      # This is an optimization to NOT include the huge node_modules in the synchronization between host and guest
-      # NOTE: for this to work, the node_modules folder as mount target must EXIST when being mounted; so it is checked into git (with an empty placeholder file)
-      - assets-node-modules:/app/node_modules
-      # Explicitly set up Yarn cache for faster fetching of packages
-      - yarn-cache:/app/.yarn-cache/:cached
-
-
-  #####
   # DB
   db:
     image: mariadb:10.2.25
@@ -70,5 +48,3 @@ services:
 volumes:
   app-var: {}
   db-data: {}
-  assets-node-modules: {}
-  yarn-cache: {}

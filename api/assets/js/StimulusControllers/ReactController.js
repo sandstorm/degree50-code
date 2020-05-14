@@ -6,7 +6,7 @@ import widgets from '../Widgets/Index';
 
 export default class extends Controller {
   connect() {
-    console.log("CONNECT42");
+    console.log("CONNECT434");
     const widgetName = this.data.get('widget');
     console.log(widgetName);
     const propsAsString = this.data.get('props');

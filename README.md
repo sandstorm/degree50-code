@@ -16,8 +16,8 @@
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
     - After installation is successful, go to `https://localhost:8443/login` and log in with `admin@sandstorm.de / password`
-    - Restart the yarn stuff using `docker-compose restart -t 0 assets`
-    - See the TypeScript build errors using `docker-compose logs -f assets`
+    - Run the assets build (locally) using `make yarn`
+    - Run the assets watcher (locally) using `make watch`
     - The API types can be regenerated using `make build-types`
     - The Symfony Console can be executed via `./symfony-console`
 
