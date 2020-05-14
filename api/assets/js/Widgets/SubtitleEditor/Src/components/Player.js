@@ -1,22 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
 import ArtplayerComponent from 'artplayer-react';
-
-const Player = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 70%;
-    width: 100%;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.5);
-`;
 
 export default React.memo(
     function({ options, setPlayer, setCurrentTime }) {
         console.log(options);
         return (
-            <Player>
+            <div className="subtitle-editor-player">
                 <ArtplayerComponent
                     style={{
                         width: '100%',
@@ -56,7 +45,7 @@ export default React.memo(
                         });
                     }}
                 />
-            </Player>
+            </div>
         );
     },
     () => true,

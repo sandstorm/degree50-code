@@ -1,32 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import styled from 'styled-components';
 import Sub from '../subtitle/sub';
 import { secondToTime, getKeyCode } from '../utils';
 import { t } from 'react-i18nify';
-
-const Metronome = styled.div`
-    position: absolute;
-    z-index: 8;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    user-select: none;
-
-    .templet {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        height: 100%;
-        background-color: rgba(76, 175, 80, 0.5);
-        border-left: 1px solid rgba(76, 175, 80, 0.8);
-        border-right: 1px solid rgba(76, 175, 80, 0.8);
-        user-select: none;
-        pointer-events: none;
-    }
-`;
 
 function findIndex(subs, startTime) {
     return subs.findIndex((item, index) => {
@@ -144,10 +119,10 @@ export default function({ render, metronome, currentTime, subtitles, addSubtitle
     }, [onKeyDown, onDocumentClick, onDocumentMouseUp]);
 
     return (
-        <Metronome onMouseDown={onMouseDown} onMouseMove={onMouseMove} ref={$metronomeRef}>
+        <div className="subtitle-editor-metronome" onMouseDown={onMouseDown} onMouseMove={onMouseMove} ref={$metronomeRef}>
             {player && player.playing && metronomeStartTime && metronome && currentTime > metronomeStartTime ? (
                 <div
-                    className="templet"
+                    className="template"
                     style={{
                         left: render.padding * gridGap + (metronomeStartTime - render.beginTime) * gridGap * 10,
                         width: (currentTime - metronomeStartTime) * gridGap * 10,
@@ -156,13 +131,13 @@ export default function({ render, metronome, currentTime, subtitles, addSubtitle
             ) : null}
             {player && !player.playing && drogStartTime && drogEndTime && drogEndTime > drogStartTime ? (
                 <div
-                    className="templet"
+                    className="template"
                     style={{
                         left: render.padding * gridGap + (drogStartTime - render.beginTime) * gridGap * 10,
                         width: (drogEndTime - drogStartTime) * gridGap * 10,
                     }}
                 ></div>
             ) : null}
-        </Metronome>
+        </div>
     );
 }

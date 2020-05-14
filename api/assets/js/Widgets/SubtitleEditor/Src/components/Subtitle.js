@@ -1,74 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import styled from 'styled-components';
 import { Table } from 'react-virtualized';
 import debounce from 'lodash/debounce';
 import unescape from 'lodash/unescape';
 import clamp from 'lodash/clamp';
 import { timeToSecond, secondToTime } from '../utils';
-
-const Subtitle = styled.div`
-    .ReactVirtualized__Table {
-        font-size: 12px;
-        .ReactVirtualized__Table__Grid {
-            outline: none;
-        }
-        .ReactVirtualized__Table__row {
-            transition: all 0.2s ease;
-            &.odd {
-                background-color: rgb(35, 40, 64);
-            }
-            &.highlight {
-                background-color: #2196f3;
-            }
-            &.illegal {
-                background-color: #c75123;
-            }
-            .row {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                color: #fff;
-                height: 100%;
-                padding: 10px 5px;
-                border-bottom: 1px solid #000;
-            }
-        }
-
-        .input,
-        .textarea {
-            border: none;
-            width: 100%;
-            color: #fff;
-            font-size: 12px;
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            resize: none;
-            outline: none;
-        }
-
-        .input {
-            height: 25px;
-            line-height: 25px;
-            cursor: col-resize;
-            user-select: none;
-        }
-
-        .textarea {
-            padding: 5px;
-            height: 100%;
-            line-height: 1.5;
-        }
-
-        .operation {
-            i {
-                font-size: 12px;
-                cursor: pointer;
-            }
-        }
-    }
-`;
 
 export default function({
     player,
@@ -131,8 +66,9 @@ export default function({
     }, [resize]);
 
     return (
-        <Subtitle>
+        <div className="subtitles">
             <Table
+                className="subtitles__table"
                 headerHeight={40}
                 width={width}
                 height={height}
@@ -146,10 +82,10 @@ export default function({
                         <div
                             key={props.key}
                             className={[
-                                props.className,
-                                props.index % 2 ? 'odd' : '',
-                                currentIndex === props.index ? 'highlight' : '',
-                                checkSubtitle(props.rowData) ? 'illegal' : '',
+                                'subtitles__row',
+                                props.index % 2 ? 'subtitles__row--odd' : '',
+                                currentIndex === props.index ? 'subtitles__row--highlight' : '',
+                                checkSubtitle(props.rowData) ? 'subtitles__row--illegal' : '',
                             ]
                                 .join(' ')
                                 .trim()}
@@ -161,20 +97,15 @@ export default function({
                                 }
                             }}
                         >
-                            <div className="row operation" style={{ width: 30 }}>
+                            <div className="subtitles__column subtitles__column--operation" style={{ width: 30 }}>
                                 <i
                                     className="icon-trash-empty"
                                     onClick={() => removeSubtitle(props.rowData)}
                                     style={{ marginBottom: 5 }}
                                 ></i>
-                                <i
-                                    className="icon-language"
-                                    onClick={() => translateSubtitle(props.rowData)}
-                                    style={{ marginBottom: 5 }}
-                                ></i>
                                 <i className="icon-plus" onClick={() => addSubtitle(props.index + 1)}></i>
                             </div>
-                            <div className="row time" style={{ width: 150 }} onMouseUp={onMouseUp}>
+                            <div className="subtitles__column subtitles__column--time" style={{ width: 150 }} onMouseUp={onMouseUp}>
                                 <div
                                     className="input"
                                     onMouseDown={event => onMouseDown(event, props.rowData, 'start')}
@@ -191,10 +122,10 @@ export default function({
                                     {props.rowData.end}
                                 </div>
                             </div>
-                            <div className="row duration" style={{ width: 70 }}>
+                            <div className="subtitles__column subtitles__column--duration">
                                 {props.rowData.duration}
                             </div>
-                            <div className="row text" style={{ flex: 1 }}>
+                            <div className="subtitles__column subtitles__column--text">
                                 <textarea
                                     maxLength={200}
                                     spellCheck={false}
@@ -207,6 +138,6 @@ export default function({
                     );
                 }}
             ></Table>
-        </Subtitle>
+        </div>
     );
 }

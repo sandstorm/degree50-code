@@ -1,0 +1,56 @@
+.subtitle-editor-header {
+  position: relative;
+  display: flex;
+  height: 50px;
+  align-items: center;
+
+  background-color: $theme__color__blue--dark;
+  border-bottom: 1px solid $theme__color__black;
+}
+
+.subtitle-editor-header__logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 22px;
+  height: 100%;
+  padding: 0 15px;
+
+  color: $theme__color__white;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+
+  border-right: 1px solid $theme__color__black;
+
+  cursor: pointer;
+  transition: all 0.2s ease 0s;
+
+  &:hover {
+    background-color: $theme__color__blue;
+  }
+}
+
+.subtitle-editor-header__menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  height: 100%;
+  padding: 0 25px;
+
+  color: $theme__color__white;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+
+  border-right: 1px solid $theme__color__black;
+
+  transition: all 0.2s ease 0s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $theme__color__blue;
+  }
+
+  i {
+    margin-right: 5px;
+  }
+}

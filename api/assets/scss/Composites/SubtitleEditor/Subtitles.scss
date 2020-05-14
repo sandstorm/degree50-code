@@ -1,0 +1,95 @@
+.subtitles {
+  background-color: $theme__color__blue--dark;
+
+  .ReactVirtualized__Table__Grid {
+    outline: none;
+  }
+}
+
+.subtitles__table {
+  font-size: $base__fontSize--tiny;
+}
+
+.subtitles__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  transition: all 0.2s ease;
+
+  &--odd {
+    background-color: $theme__color__grey--dark;
+  }
+
+  &--highlight {
+    background-color: $theme__color__blue;
+  }
+
+  &--illegal {
+    background-color: $theme__color__red;
+  }
+}
+
+.subtitles__column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px 5px;
+
+  color: $theme__color__white;
+
+  border-bottom: 1px solid $theme__color__black;
+
+  .input,
+  .textarea {
+    width: 100%;
+
+    color: #fff;
+    font-size: $base__fontSize--tiny;
+    text-align: center;
+
+    background-color: rgba(0, 0, 0, 0.4);
+    border: none;
+    border: 1px solid $theme__color__white;
+    resize: none;
+    outline: none;
+  }
+
+  .input {
+    height: 25px;
+    line-height: 25px;
+
+    cursor: col-resize;
+    user-select: none;
+  }
+
+  .textarea {
+    padding: 5px;
+    height: 100%;
+
+    line-height: 1.5;
+  }
+
+  &--operation {
+    width: 30px;
+
+    i {
+      font-size: 12px;
+      cursor: pointer;
+    }
+  }
+
+  &--time {
+    width: 150px;
+  }
+
+  &--duration {
+    width: 70px;
+  }
+
+  &--text {
+    flex: 1;
+  }
+}

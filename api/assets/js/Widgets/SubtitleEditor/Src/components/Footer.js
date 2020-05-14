@@ -1,91 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import WF from '../waveform';
 import { sleep } from '../utils';
 import Block from './Block';
 import Metronome from './Metronome';
 import { Translate } from 'react-i18nify';
-
-const Footer = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 200px;
-
-    .timeline-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 35px;
-        font-size: 12px;
-        border-bottom: 1px solid #000;
-        color: rgba(255, 255, 255, 0.5);
-        background-color: rgba(0, 0, 0, 0.3);
-
-        .timeline-header-left {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            .item {
-                display: flex;
-                padding: 0 10px;
-                height: 100%;
-                border-right: 1px solid #000;
-
-                .name {
-                    display: flex;
-                    align-items: center;
-                    margin-right: 10px;
-                }
-
-                .value {
-                    display: flex;
-                    align-items: center;
-
-                    input[type='checkbox'] {
-                        outline: none;
-                    }
-
-                    input[type='range'] {
-                        height: 3px;
-                        width: 100px;
-                        outline: none;
-                        appearance: none;
-                        background-color: rgba(255, 255, 255, 0.2);
-                    }
-
-                    select {
-                        outline: none;
-                    }
-                }
-            }
-        }
-
-        .timeline-header-right {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            padding: 0 15px;
-            border-left: 1px solid #000;
-        }
-    }
-
-    .timeline-body {
-        position: relative;
-        flex: 1;
-
-        .waveform {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            user-select: none;
-            pointer-events: none;
-        }
-    }
-`;
 
 let wf = null;
 const Waveform = React.memo(
@@ -129,7 +47,7 @@ export default function(props) {
     });
 
     return (
-        <Footer>
+        <div className="subtitle-editor-footer">
             <div className="timeline-header">
                 <div className="timeline-header-left">
                     <div className="item">
@@ -266,6 +184,6 @@ export default function(props) {
                 <Metronome {...props} render={render} metronome={metronome} setMetronome={setMetronome} />
                 <Block {...props} render={render} />
             </div>
-        </Footer>
+        </div>
     );
 }

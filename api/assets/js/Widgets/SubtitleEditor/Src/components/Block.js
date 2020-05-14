@@ -1,106 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
 import isEqual from 'lodash/isEqual';
 import { notify, secondToTime, getKeyCode } from '../utils';
 import { t, Translate } from 'react-i18nify';
-
-const Block = styled.div`
-    position: absolute;
-    z-index: 9;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-
-    .contextmenu {
-        position: absolute;
-        z-index: 4;
-        left: 0;
-        top: 0;
-        pointer-events: all;
-
-        .contextmenu-item {
-            height: 30px;
-            padding: 0 10px;
-            line-height: 30px;
-            cursor: pointer;
-            font-size: 12px;
-            color: #ccc;
-            user-select: none;
-            background-color: rgba(0, 0, 0, 0.75);
-            transition: all 0.2s ease;
-            &:hover {
-                color: #fff;
-                background-color: #2196f3;
-            }
-        }
-    }
-
-    .sub-item {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: #fff;
-        font-size: 13px;
-        cursor: move;
-        user-select: none;
-        pointer-events: all;
-        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-        background-color: rgba(255, 255, 255, 0.2);
-        border-left: 1px solid rgba(255, 255, 255, 0.2);
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
-
-        &:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        &.sub-highlight {
-            background-color: rgba(33, 150, 243, 0.5);
-            border-left: 1px solid rgba(33, 150, 243, 0.5);
-            border-right: 1px solid rgba(33, 150, 243, 0.5);
-        }
-
-        &.sub-illegal {
-            background-color: rgba(199, 81, 35, 0.5);
-        }
-
-        .sub-handle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            height: 100%;
-            cursor: col-resize;
-            user-select: none;
-            &:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-        }
-
-        .sub-text {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            word-break: break-all;
-            width: 100%;
-            height: 100%;
-            padding: 0 20px;
-            p {
-                margin: 5px 0;
-                line-height: 1;
-            }
-        }
-    }
-`;
 
 function getCurrentSubs(subs, beginTime, duration) {
     return subs.filter(item => {
@@ -302,7 +203,7 @@ export default React.memo(
         }, [onDocumentClick, onDocumentMouseMove, onDocumentMouseUp, onKeyDown]);
 
         return (
-            <Block ref={$blockRef}>
+            <div className="subtitle-editor-block" ref={$blockRef}>
                 <div ref={$subsRef}>
                     {currentSubs.map((sub, key) => {
                         return (
@@ -389,7 +290,7 @@ export default React.memo(
                         <Translate value="merge" />
                     </div>
                 </div>
-            </Block>
+            </div>
         );
     },
     (prevProps, nextProps) => {

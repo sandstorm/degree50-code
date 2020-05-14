@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import GlobalStyle from './GlobalStyle';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -273,7 +272,6 @@ export default function() {
 
     return (
         <React.Fragment>
-            <GlobalStyle />
             <Header {...props} />
             <Main {...props} />
             <Footer {...props} />
