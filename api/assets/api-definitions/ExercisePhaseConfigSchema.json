@@ -1,13 +1,20 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "description": "A geographical coordinate",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "mainView": {
+      "title": "Hauptinhalts-Ansicht",
+      "description": "Was soll als Hauptinhalt dargestellt werden?",
       "oneOf": [
-        {"$ref": "#/definitions/VideoPlayer"},
-        {"$ref": "#/definitions/VideoAnnotator"}
+        {
+          "title": "Video-Player",
+          "$ref": "#/definitions/VideoPlayer"
+        },
+        {
+          "title": "Video-Anmerkungen",
+          "$ref": "#/definitions/VideoAnnotator"
+        }
       ]
     }
   },
@@ -26,7 +33,8 @@
           ]
         },
         "videoUri": {
-          "type": "string"
+          "type": "string",
+          "ui:widget": "Foo"
         },
         "foo": {
           "type": "string"
