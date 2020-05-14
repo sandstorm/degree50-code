@@ -9,13 +9,10 @@ import { secondToTime, notify } from '../utils';
 import { getSubFromVttUrl, vttToUrlUseWorker } from '../subtitle';
 import Storage from '../utils/storage';
 import isEqual from 'lodash/isEqual';
-import NProgress from 'nprogress';
 import { ToastContainer } from 'react-toastify';
-import translate, { googleTranslate } from '../translate';
 import { t, setLocale } from 'react-i18nify';
 
 const history = [];
-let inTranslation = false;
 const storage = new Storage();
 const worker = new Worker(vttToUrlUseWorker());
 
@@ -40,8 +37,6 @@ export default function() {
     const [options, setOptions] = useState({
         videoUrl: '/sample.mp4',
         subtitleUrl: '/sample.vtt',
-        helpDialog: false,
-        donateDialog: false,
         uploadDialog: false,
         translationLanguage: 'en',
     });
@@ -249,56 +244,6 @@ export default function() {
         notify(t('clear-success'));
     }, [player, removeSubtitles]);
 
-    // Translate a subtitle
-    const translateSubtitle = useCallback(
-        async sub => {
-            if (!inTranslation) {
-                const index = hasSubtitle(sub);
-                if (index < 0) return;
-                try {
-                    inTranslation = true;
-                    NProgress.start().set(0.5);
-                    const text = await googleTranslate(sub.text, options.translationLanguage);
-                    if (text) {
-                        updateSubtitle(sub, 'text', text);
-                        notify(t('translation-success'));
-                    }
-                    inTranslation = false;
-                    NProgress.done();
-                } catch (error) {
-                    notify(error.message, 'error');
-                    inTranslation = false;
-                    NProgress.done();
-                }
-            } else {
-                notify(t('translation-progress'), 'error');
-            }
-        },
-        [hasSubtitle, updateSubtitle, options.translationLanguage],
-    );
-
-    // Translate all subtitles
-    const translateSubtitles = useCallback(async () => {
-        if (!inTranslation) {
-            const subs = copySubtitles();
-            if (subs.length && subs.length <= 1000) {
-                inTranslation = true;
-                try {
-                    updateSubtitles(await translate(subs, options.translationLanguage));
-                    notify(t('translation-success'));
-                    inTranslation = false;
-                } catch (error) {
-                    notify(error.message, 'error');
-                    inTranslation = false;
-                }
-            } else {
-                notify(t('translation-limit'), 'error');
-            }
-        } else {
-            notify(t('translation-progress'), 'error');
-        }
-    }, [copySubtitles, updateSubtitles, options.translationLanguage]);
-
     const props = {
         player,
         options,
@@ -323,8 +268,6 @@ export default function() {
         cleanSubtitles,
         updateSubtitles,
         removeSubtitles,
-        translateSubtitle,
-        translateSubtitles,
         timeOffsetSubtitles,
     };
 
@@ -332,7 +275,7 @@ export default function() {
         <React.Fragment>
             <GlobalStyle />
             <Header {...props} />
-            {/*<Main {...props} />*/}
+            <Main {...props} />
             <Footer {...props} />
             <ToastContainer />
         </React.Fragment>
