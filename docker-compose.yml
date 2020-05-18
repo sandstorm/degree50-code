@@ -15,7 +15,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./api:/app:rw
+      - ./api:/app:rw,cached
       # we had problems with non-updating build assets; so we mount this as non-cached.
       #- ./api/public/build/:/app/public/build:ro
       - app-var:/app/var
