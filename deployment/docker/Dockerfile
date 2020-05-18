@@ -9,7 +9,9 @@ RUN apt-get update -y && \
     docker-php-ext-install intl bcmath pdo pdo_mysql mysqli xsl && \
     pecl install vips && \
     echo "extension=vips.so" > /usr/local/etc/php/conf.d/vips.ini && \
-    pecl install redis && docker-php-ext-enable redis;
+    pecl install redis && docker-php-ext-enable redis && \
+    docker-php-ext-install opcache && docker-php-ext-enable opcache && \
+    pecl install apcu && docker-php-ext-enable apcu
 
 # install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -60,7 +62,7 @@ RUN set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
-VOLUME /api/var
+VOLUME /app/var
 
 COPY --from=fluent/fluent-bit:1.4 /fluent-bit/bin/fluent-bit /usr/bin/fluent-bit
 COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
