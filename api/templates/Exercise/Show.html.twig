@@ -7,6 +7,7 @@
     <h2>{{ exercise.name }}</h2>
     {{ phase.definition }}
     <div data-react-widget="ShowExercisePhase" data-react-props="{{ phase.definition|json_encode|e('html_attr') }}">
+        Loading react part...
     </div>
 
     {{ include('Exercise/Pagination.html.twig', {exercise: exercise, currentPhase: currentPhase, amountOfPhases: amountOfPhases}) }}
