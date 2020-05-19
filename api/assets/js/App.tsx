@@ -12,18 +12,6 @@ import React from 'react';
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
-
-import widgets from './Widgets/Index';
-
-// TODO get rid of this block; because that will be loaded through Stimulus.
-Object.entries(widgets).forEach(([widgetName, ReactWidget]) => {
-    [].forEach.call(document.querySelectorAll(`[data-react-widget=${widgetName}]`), (el: any) => {
-        const propsAsString = el.getAttribute('data-react-props');
-        const props = propsAsString ? JSON.parse(propsAsString) : {};
-        ReactDOM.render(<ReactWidget {...props} />, el);
-    });
-});
 
 // src/application.js
 import { Application } from "stimulus";

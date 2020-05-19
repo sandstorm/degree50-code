@@ -1,8 +1,11 @@
 import React from 'react';
+import widgets from '../Index';
 
 const ShowExercisePhase = (props: any) => {
+    const mainView = props.mainView.type;
+    const ReactWidget = widgets[mainView];
     return <div>
-        Show exercise;
+        <ReactWidget {...props} />
     </div>;
 
 };
