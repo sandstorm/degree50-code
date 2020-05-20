@@ -3,9 +3,9 @@
 
 namespace App\Mediathek\EventListener;
 use App\Core\FileSystemService;
-use App\Entity\Video;
+use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
-use App\Repository\VideoRepository;
+use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\Filesystem;

@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Account;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -21,7 +21,7 @@ class AccountFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $account = new Account();
+        $account = new User();
         $account->setEmail('admin@sandstorm.de');
         $account->setPassword($this->passwordEncoder->encodePassword($account, 'password'));
         $manager->persist($account);

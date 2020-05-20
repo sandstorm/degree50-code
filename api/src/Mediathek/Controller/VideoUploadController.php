@@ -4,9 +4,9 @@
 namespace App\Mediathek\Controller;
 
 
-use App\Entity\Video;
+use App\Entity\Video\Video;
 use App\Mediathek\Form\VideoType;
-use App\Repository\VideoRepository;
+use App\Repository\Video\VideoRepository;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

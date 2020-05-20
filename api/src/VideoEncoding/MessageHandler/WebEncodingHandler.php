@@ -5,7 +5,7 @@ namespace App\VideoEncoding\MessageHandler;
 
 
 use App\Core\FileSystemService;
-use App\Repository\VideoRepository;
+use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;

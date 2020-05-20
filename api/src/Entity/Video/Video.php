@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Video;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Entity\VirtualizedFile;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource
@@ -40,6 +41,11 @@ class Video
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
     private ?VirtualizedFile $encodedVideoDirectory;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Video\VideoSubtitles", cascade={"persist", "remove"})
+     */
+    private $subtitles;
 
     /**
      * Video constructor.
@@ -120,5 +126,17 @@ class Video
     public function setEncodedVideoDirectory(VirtualizedFile $encodedVideoDirectory): void
     {
         $this->encodedVideoDirectory = $encodedVideoDirectory;
+    }
+
+    public function getSubtitles(): ?VideoSubtitles
+    {
+        return $this->subtitles;
+    }
+
+    public function setSubtitles(?VideoSubtitles $subtitles): self
+    {
+        $this->subtitles = $subtitles;
+
+        return $this;
     }
 }

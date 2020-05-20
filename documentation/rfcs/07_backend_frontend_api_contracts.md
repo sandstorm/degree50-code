@@ -16,7 +16,7 @@ Alternative:
 # Symfony Components
 
 - Gaufrette vs Flysystem:
-    https://github.com/dustin10/VichUploaderBundle/blob/master/docs/storage/gaufrette.md
+    https://github.com/dustin10/VichUploaderBundle/blob/Mmaster/docs/storage/gaufrette.md
 
     > N.B.: although Gaufrette is a well-known library, please note that it hasn't been updated in a while and that there are still lots of unresolved issues. One of them being a broken metadata implementation, causing us troubles.
 

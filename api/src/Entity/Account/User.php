@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Account;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AccountRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Account\UserRepository")
  */
-class Account implements UserInterface
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -32,6 +34,16 @@ class Account implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Account\CourseRole", mappedBy="user", orphanRemoval=true)
+     */
+    private Collection $courseRoles;
+
+    public function __construct()
+    {
+        $this->courseRoles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -114,5 +126,36 @@ class Account implements UserInterface
     public function __toString()
     {
         return $this->email;
+    }
+
+    /**
+     * @return Collection|CourseRole[]
+     */
+    public function getCourseRoles(): Collection
+    {
+        return $this->courseRoles;
+    }
+
+    public function addCourseRole(CourseRole $courseRole): self
+    {
+        if (!$this->courseRoles->contains($courseRole)) {
+            $this->courseRoles[] = $courseRole;
+            $courseRole->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCourseRole(CourseRole $courseRole): self
+    {
+        if ($this->courseRoles->contains($courseRole)) {
+            $this->courseRoles->removeElement($courseRole);
+            // set the owning side to null (unless already changed)
+            if ($courseRole->getUser() === $this) {
+                $courseRole->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

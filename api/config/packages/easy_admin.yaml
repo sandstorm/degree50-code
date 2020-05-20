@@ -14,13 +14,6 @@ easy_admin:
                         type_options:
                             entry_type: 'App\Admin\Form\InlineExercisePhaseType'
                             by_reference: false
-        Video:
-            class: App\Entity\Video
-            form:
-                fields:
-                    -
-                        property: videoFile
-                        type: App\Admin\Form\OneupUploaderType
     design:
         assets:
             css:
