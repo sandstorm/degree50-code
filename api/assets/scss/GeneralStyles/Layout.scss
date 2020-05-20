@@ -7,3 +7,17 @@ html, body {
 *, *::before, *::after {
     box-sizing: border-box;
 }
+
+.main {
+    height: 100vh;
+    width: 100vw;
+    padding-top: 58px;
+}
+
+.main-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    overflow: hidden;
+}

@@ -7,5 +7,6 @@ export default {
     'VideoPlayer': VideoPlayer,
     'ShowExercisePhase': ShowExercisePhase,
     'SubtitleEditor': SubtitleEditor,
+    'VideoAnnotator': SubtitleEditor, // currently the same, will be a slightly different component later on
     'ExercisePhaseDefinitionEditor': ExercisePhaseDefinitionEditor
 };

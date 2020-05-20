@@ -8,8 +8,13 @@
         {% endblock %}
     </head>
     <body>
-        <div class="container">
-            {% block body %}{% endblock %}
+        {{ include('Partials/Header.html.twig') }}
+        <div class="main">
+            <div class="main-inner">
+                <div class="container">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
         </div>
 
         {% block javascripts %}
