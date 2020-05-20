@@ -26,7 +26,7 @@
 - mariadb
     - db: api
     - user: api-platform
-    - db: !ChangeMe!
+    - pw: !ChangeMe!
     - host: localhost:13306
 
 **Symfony commands**

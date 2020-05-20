@@ -4,6 +4,7 @@ namespace App\Entity\Account;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -17,6 +18,14 @@ class CourseRole
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column
+     * @Assert\NotBlank
+     */
+    public $name = '';
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="courseRoles")
@@ -57,5 +66,21 @@ class CourseRole
         $this->course = $course;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 }

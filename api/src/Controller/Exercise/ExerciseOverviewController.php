@@ -16,6 +16,17 @@ class ExerciseOverviewController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('ExerciseOverview/Index.html.twig');
+        $sidebarItems = [
+            '2020' => ['label' => '2020', 'items' => [
+                'Seminar 1', 'Seminar 2', 'Seminar 3'
+            ]],
+            '2019' => ['label' => '2019', 'items' => [
+                'Seminar 1', 'Seminar 2', 'Seminar 3'
+            ]]
+        ];
+
+        return $this->render('ExerciseOverview/Index.html.twig', [
+            'sidebarItems' => $sidebarItems
+        ]);
     }
 }

@@ -16,8 +16,8 @@ easy_admin:
                             by_reference: false
     design:
         assets:
-            css:
-                - 'build/app.css'
+            #css:
+            #   - 'build/app.css'
             js:
                 - /build/runtime.js
                 - /build/vendors~app.js
