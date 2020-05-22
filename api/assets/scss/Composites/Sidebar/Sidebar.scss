@@ -8,6 +8,17 @@
   background-color: $theme__color__grey;
 
   overflow-y: scroll;
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+
+    ul {
+      margin-left: 10px;
+    }
+  }
 }
 
 .content-with-sidebar {

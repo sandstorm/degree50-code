@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Account\Course;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -40,6 +41,12 @@ class Exercise
      * @ORM\OrderBy({"sorting" = "ASC"})
      */
     private $phases;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Account\Course", inversedBy="exercises")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $course;
 
     public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
@@ -80,5 +87,37 @@ class Exercise
         $exercisePhase->belongsToExcercise = $this;
         $exercisePhase->sorting = $this->phases->count();
         $this->phases->add($exercisePhase);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return Course
+     */
+    public function getCourse(): ?Course
+    {
+        return $this->course;
+    }
+
+    /**
+     * @param Course $course
+     */
+    public function setCourse($course): void
+    {
+        $this->course = $course;
     }
 }

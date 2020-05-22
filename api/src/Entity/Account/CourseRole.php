@@ -21,6 +21,7 @@ class CourseRole
 
     /**
      * @var string
+     * TODO can be DOZENT OR STUDENT
      *
      * @ORM\Column
      * @Assert\NotBlank

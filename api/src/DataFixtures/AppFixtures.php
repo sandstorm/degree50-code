@@ -14,6 +14,9 @@ class AppFixtures extends Fixture
         $exercise = new Exercise("e1");
         $exercise->name = 'Analyse eines Videos zu einer Fördersituation, indem unter einem bestimmten Blickwinkel ein Analytical Shortfilm aus dem Video erstellt wird';
 
+        // this reference returns the User object created in UserFixtures
+        $exercise->setCourse($this->getReference(AccountFixtures::COURSE_REFERENCE));
+
         $exercise_p1 = new ExercisePhase("e1-p1");
         $exercise_p1->name = "Vorbereitung (alleine)";
         $exercise_p1->task = '

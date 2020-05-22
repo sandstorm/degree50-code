@@ -2,8 +2,9 @@ easy_admin:
     entities:
         # List the entity class name you want to manage
         Exercise:
-            list: 
+            list:
                 actions: ['run']
+                fields: ['name', 'course.name']
             class: App\Entity\Exercise\Exercise
             form:
                 fields:

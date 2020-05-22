@@ -1,0 +1,16 @@
+<div class="sidebar">
+    <ul>
+        {% for item in sidebarItems %}
+            <li class="sidebar-item">
+                <a href="#">{{ item.label }}</a>
+                <ul>
+                    {% for itemLvl2 in item.items %}
+                        <li class="sidebar-item">
+                            <a href="#">{{ itemLvl2 }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

@@ -3,6 +3,8 @@
 namespace App\Entity\Account;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Exercise\Exercise;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,6 +32,19 @@ class Course
     public $name = '';
 
     /**
+     * @var DateTime
+     *
+     * @ORM\Column(type="datetime")
+     * @Assert\NotBlank
+     */
+    public $creationDate;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Exercise", mappedBy="course", orphanRemoval=true)
+     */
+    private $exercises;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Account\CourseRole", mappedBy="course", orphanRemoval=true)
      */
     private Collection $courseRoles;
@@ -37,6 +52,8 @@ class Course
     public function __construct()
     {
         $this->courseRoles = new ArrayCollection();
+        $this->exercises = new ArrayCollection();
+        $this->creationDate = new DateTime();
     }
 
     public function getId(): ?int
@@ -89,5 +106,52 @@ class Course
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreationDate(): DateTime
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCreationDateYear(): int
+    {
+        return $this->creationDate->format('Y');
+    }
+
+    /**
+     * @return Collection|Exercise[]
+     */
+    public function getExercises(): Collection
+    {
+        return $this->exercises;
+    }
+
+    public function addExercise(Exercise $exercise): self
+    {
+        if (!$this->exercises->contains($exercise)) {
+            $this->exercises[] = $exercise;
+            $exercise->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExercise(Exercise $exercise): self
+    {
+        if ($this->exercises->contains($exercise)) {
+            $this->exercises->removeElement($exercise);
+            // set the owning side to null (unless already changed)
+            if ($exercise->getCourse() === $this) {
+                $exercise->setCourse(null);
+            }
+        }
+
+        return $this;
     }
 }
