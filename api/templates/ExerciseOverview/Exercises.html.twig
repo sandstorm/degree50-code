@@ -1,0 +1,7 @@
+{% for exercise in exercises %}
+    <div class="tile">
+        <div class="tile__content">
+            <a href="{{ path('app_exercise', {id: exercise.id}) }}">{{ exercise.name }}</a>
+        </div>
+    </div>
+{% endfor %}

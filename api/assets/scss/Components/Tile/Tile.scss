@@ -1,0 +1,21 @@
+.tile {
+  height: 200px;
+  width: 200px;
+  padding: 10px;
+
+  background-color: $theme__color__grey;
+  border: 1px solid $theme__color__grey--dark;
+
+  overflow: hidden;
+  cursor: pointer;
+
+  @include transition(border-color 250ms ease-in);
+
+  &:hover {
+    border-color: $theme__color__green;
+  }
+}
+
+.tile__content {
+
+}

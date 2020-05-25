@@ -12,7 +12,8 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $exercise = new Exercise("e1");
-        $exercise->name = 'Analyse eines Videos zu einer Fördersituation, indem unter einem bestimmten Blickwinkel ein Analytical Shortfilm aus dem Video erstellt wird';
+        $exercise->name = 'Analyse eines Videos zu einer Fördersituation';
+        $exercise->description = 'Analyse eines Videos zu einer Fördersituation, indem unter einem bestimmten Blickwinkel ein Analytical Shortfilm aus dem Video erstellt wird';
 
         // this reference returns the User object created in UserFixtures
         $exercise->setCourse($this->getReference(AccountFixtures::COURSE_REFERENCE));
