@@ -158,4 +158,9 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function isDozent(): bool
+    {
+        return true;
+    }
 }

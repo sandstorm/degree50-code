@@ -6,6 +6,17 @@
     {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: course}) }}
     <div class="content-with-sidebar">
         <h3>Alle Aufgaben für {{ course.name }}</h3>
-        {{ include('ExerciseOverview/Exercises.html.twig', {exercises: course.exercises}) }}
+        <div class="tiles">
+            {{ include('ExerciseOverview/Exercises.html.twig', {exercises: course.exercises}) }}
+
+            {% if app.user.isDozent %}
+                <div class="tile">
+                    <div class="tile__content">
+                        <a href="{{ path('app_exercise-new', {courseId: course.id}) }}">Neue Aufgabe</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
     </div>
 {% endblock %}

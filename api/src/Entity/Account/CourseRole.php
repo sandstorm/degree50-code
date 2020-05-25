@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CourseRole
 {
+    const ROLES = ['DOZENT', 'STUDENT'];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -21,10 +23,10 @@ class CourseRole
 
     /**
      * @var string
-     * TODO can be DOZENT OR STUDENT
      *
      * @ORM\Column
      * @Assert\NotBlank
+     * @Assert\Choice(choices=CourseRole::ROLES, message="Choose a valid role.")
      */
     public $name = '';
 
