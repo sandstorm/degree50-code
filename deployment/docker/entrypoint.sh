@@ -15,7 +15,7 @@ until bin/console doctrine:query:sql "SELECT 1" > /dev/null 2>&1; do
 done
 
 if ls -A src/Migrations/*.php > /dev/null 2>&1; then
-	bin/console doctrine:migrations:migrate --no-interaction
+	bin/console doctrine:migrations:migrate --no-interaction || echo "!!!!!!!!! ERROR running Doctrine migrations. Run them after starting and fix the errors."
 fi
 
 /usr/bin/supervisord
