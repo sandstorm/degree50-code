@@ -34,6 +34,27 @@ class ExerciseOverviewController extends AbstractController
      */
     public function index(): Response
     {
+        return $this->render('ExerciseOverview/Index.html.twig', [
+            'sidebarItems' => $this->getSideBarItems()
+        ]);
+    }
+
+    /**
+     * @Route("/exercise-overview/{id}", name="app_exercise-overview-show-course")
+     */
+    public function showExercise(Course $course): Response
+    {
+        return $this->render('ExerciseOverview/ShowExercise.html.twig', [
+            'sidebarItems' => $this->getSideBarItems(),
+            'course' => $course
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    private function getSideBarItems(): array
+    {
         /* @var $user User */
         $user = $this->getUser();
         $courses = $this->courseRepository->findAllByUser($user);
@@ -43,13 +64,11 @@ class ExerciseOverviewController extends AbstractController
         foreach($courses as $course) {
             $creationDateYear = $course->getCreationDateYear();
             if (!array_key_exists($creationDateYear, $sidebarItems)) {
-                $sidebarItems[$creationDateYear] = ['label' => $creationDateYear, 'items' => []];
+                $sidebarItems[$creationDateYear] = ['label' => $creationDateYear, 'courses' => []];
             }
-            array_push($sidebarItems[$creationDateYear]['items'], $course->getName());
+            array_push($sidebarItems[$creationDateYear]['courses'], $course);
         }
 
-        return $this->render('ExerciseOverview/Index.html.twig', [
-            'sidebarItems' => $sidebarItems
-        ]);
+        return $sidebarItems;
     }
 }

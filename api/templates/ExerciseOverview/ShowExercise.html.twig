@@ -1,0 +1,19 @@
+{% extends 'BaseFullscreen.html.twig' %}
+
+{% block title %}Aufgaben Übersicht{% endblock %}
+
+{% block body %}
+    {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems}) }}
+    <div class="content-with-sidebar">
+        <h2> {{ course.name }} </h2>
+
+        <h3>Aufgaben</h3>
+        <ul>
+        {% for exercise in course.exercises %}
+            <li class="tile">
+                <a href="{{ path('app_exercise', {id: exercise.id}) }}">{{ exercise.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

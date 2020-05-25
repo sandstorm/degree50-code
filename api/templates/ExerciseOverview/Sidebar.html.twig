@@ -4,9 +4,9 @@
             <li class="sidebar-item">
                 <a href="#">{{ item.label }}</a>
                 <ul>
-                    {% for itemLvl2 in item.items %}
+                    {% for course in item.courses %}
                         <li class="sidebar-item">
-                            <a href="#">{{ itemLvl2 }}</a>
+                            <a class="nav-link" href="{{ path('app_exercise-overview-show-course', {id: course.id}) }}">{{ course.name }}</a>
                         </li>
                     {% endfor %}
                 </ul>
