@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200522135239 extends AbstractMigration
+final class Version20200525101306 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -28,7 +28,7 @@ final class Version20200522135239 extends AbstractMigration
         $this->addSql('ALTER TABLE autosaved_solution CHANGE owner_id owner_id INT DEFAULT NULL, CHANGE solution solution JSON NOT NULL');
         $this->addSql('ALTER TABLE exercise_phase CHANGE belongs_to_excercise_id belongs_to_excercise_id CHAR(36) DEFAULT NULL COMMENT \'(DC2Type:guid)\'');
         $this->addSql('ALTER TABLE exercise_phase_team CHANGE solution_id solution_id INT DEFAULT NULL, CHANGE current_editor_id current_editor_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE exercise CHANGE course_id course_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE exercise ADD course_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE exercise ADD CONSTRAINT FK_AEDAD51C591CC992 FOREIGN KEY (course_id) REFERENCES course (id)');
         $this->addSql('CREATE INDEX IDX_AEDAD51C591CC992 ON exercise (course_id)');
         $this->addSql('ALTER TABLE solution CHANGE solution solution JSON NOT NULL');
@@ -43,7 +43,7 @@ final class Version20200522135239 extends AbstractMigration
         $this->addSql('ALTER TABLE autosaved_solution CHANGE owner_id owner_id INT DEFAULT NULL, CHANGE solution solution LONGTEXT CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_bin`');
         $this->addSql('ALTER TABLE exercise DROP FOREIGN KEY FK_AEDAD51C591CC992');
         $this->addSql('DROP INDEX IDX_AEDAD51C591CC992 ON exercise');
-        $this->addSql('ALTER TABLE exercise CHANGE course_id course_id INT NOT NULL');
+        $this->addSql('ALTER TABLE exercise DROP course_id');
         $this->addSql('ALTER TABLE exercise_phase CHANGE belongs_to_excercise_id belongs_to_excercise_id CHAR(36) CHARACTER SET utf8mb4 DEFAULT \'NULL\' COLLATE `utf8mb4_unicode_ci` COMMENT \'(DC2Type:guid)\'');
         $this->addSql('ALTER TABLE exercise_phase_team CHANGE solution_id solution_id INT DEFAULT NULL, CHANGE current_editor_id current_editor_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE solution CHANGE solution solution LONGTEXT CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_bin`');
