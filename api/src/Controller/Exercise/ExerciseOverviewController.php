@@ -6,6 +6,7 @@ use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Repository\Account\CourseRepository;
+use App\Repository\Exercise\ExerciseRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,14 +20,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ExerciseOverviewController extends AbstractController
 {
     private CourseRepository $courseRepository;
+    private ExerciseRepository $exerciseRepository;
 
     /**
-     * ExerciseOverviewController constructor.
      * @param CourseRepository $courseRepository
+     * @param ExerciseRepository $exerciseRepository
      */
-    public function __construct(CourseRepository $courseRepository)
+    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository)
     {
         $this->courseRepository = $courseRepository;
+        $this->exerciseRepository = $exerciseRepository;
     }
 
     /**
@@ -35,7 +38,8 @@ class ExerciseOverviewController extends AbstractController
     public function index(): Response
     {
         return $this->render('ExerciseOverview/Index.html.twig', [
-            'sidebarItems' => $this->getSideBarItems()
+            'sidebarItems' => $this->getSideBarItems(),
+            'exercises' => $this->exerciseRepository->findAll(),
         ]);
     }
 

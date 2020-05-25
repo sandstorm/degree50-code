@@ -3,11 +3,9 @@
 {% block title %}Aufgaben Übersicht{% endblock %}
 
 {% block body %}
-    {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems}) }}
+    {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: false}) }}
     <div class="content-with-sidebar">
-        Übersicht
+        <h3>Alle Aufgaben...</h3>
+        {{ include('ExerciseOverview/Exercises.html.twig', {exercises: exercises}) }}
     </div>
-
-
-
 {% endblock %}

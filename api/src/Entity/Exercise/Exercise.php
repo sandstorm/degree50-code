@@ -36,6 +36,13 @@ class Exercise
     public $name = '';
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    public $description = '';
+
+    /**
      * @var ExercisePhase[]
      * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExcercise", cascade={"all"})
      * @ORM\OrderBy({"sorting" = "ASC"})
@@ -119,5 +126,21 @@ class Exercise
     public function setCourse($course): void
     {
         $this->course = $course;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
     }
 }

@@ -9,6 +9,7 @@ easy_admin:
             form:
                 fields:
                     - name
+                    - description
                     -
                         property: 'phases'
                         type: 'collection'
