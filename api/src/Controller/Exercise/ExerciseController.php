@@ -16,6 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ExerciseController extends AbstractController
 {
     /**
+     * @IsGranted("view", subject="exercise")
      * @Route("/exercise/{id}/{phase<\d+>}", name="app_exercise")
      */
     public function show(Exercise $exercise, int $phase = 0): Response

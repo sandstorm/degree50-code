@@ -154,4 +154,9 @@ class Course
 
         return $this;
     }
+
+    public function __sleep()
+    {
+        return [];
+    }
 }
