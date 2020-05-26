@@ -46,9 +46,9 @@ class ExerciseOverviewController extends AbstractController
     /**
      * @Route("/exercise-overview/{id}", name="app_exercise-overview-show-course")
      */
-    public function showExercise(Course $course): Response
+    public function showExercisesForCourse(Course $course): Response
     {
-        return $this->render('ExerciseOverview/ShowExercise.html.twig', [
+        return $this->render('ExerciseOverview/ShowExercisesForCourse.html.twig', [
             'sidebarItems' => $this->getSideBarItems(),
             'course' => $course
         ]);

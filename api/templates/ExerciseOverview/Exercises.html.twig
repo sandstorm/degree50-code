@@ -1,7 +1,8 @@
 {% for exercise in exercises %}
-    <div class="tile">
+    <a href="{{ path('app_exercise', {id: exercise.id}) }}" class="tile">
         <div class="tile__content">
-            <a href="{{ path('app_exercise', {id: exercise.id}) }}">{{ exercise.name }}</a>
+            <i class="tile__icon fas fa-film"></i>
+            <span>{{ exercise.name }}</span>
         </div>
-    </div>
+    </a>
 {% endfor %}

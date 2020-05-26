@@ -52,10 +52,10 @@ class ExerciseController extends AbstractController
     public function new(Request $request): Response
     {
         $courseId = $request->query->get('courseId', null);
+        $course = $this->courseRepository->find($courseId);
 
-        // creates a task object and initializes some data for this example
         $exercise = new Exercise();
-        $exercise->setName('Neue Aufgabe');
+        $exercise->setCourse($course);
         $form = $this->createForm(ExerciseType::class, $exercise);
 
         return $this->render('Exercise/New.html.twig', [

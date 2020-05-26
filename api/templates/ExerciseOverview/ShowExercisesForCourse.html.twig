@@ -5,16 +5,20 @@
 {% block body %}
     {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: course}) }}
     <div class="content-with-sidebar">
-        <h3>Alle Aufgaben für {{ course.name }}</h3>
+        <header class="content-with-sidebar__header">
+            <h3>Alle Aufgaben für {{ course.name }}</h3>
+        </header>
+
         <div class="tiles">
             {{ include('ExerciseOverview/Exercises.html.twig', {exercises: course.exercises}) }}
 
             {% if app.user.isDozent %}
-                <div class="tile">
+                <a href="{{ path('app_exercise-new', {courseId: course.id}) }}" class="tile tile--active">
                     <div class="tile__content">
-                        <a href="{{ path('app_exercise-new', {courseId: course.id}) }}">Neue Aufgabe</a>
+                        <i class="tile__icon fas fa-plus-circle"></i>
+                        <span>Neue Aufgabe</span>
                     </div>
-                </div>
+                </a>
             {% endif %}
         </div>
 

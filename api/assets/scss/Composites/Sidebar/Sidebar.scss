@@ -29,3 +29,9 @@
 
   overflow-y: scroll;
 }
+
+.content-with-sidebar__header {
+  margin-bottom: 20px;
+
+  border-bottom: 1px solid $theme__color__grey--dark;
+}
