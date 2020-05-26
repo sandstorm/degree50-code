@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Form;
+namespace App\Exercise\Form;
 
 use App\Entity\Exercise\Exercise;
 use Symfony\Component\Form\AbstractType;

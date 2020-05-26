@@ -34,7 +34,7 @@ class CourseRole
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="courseRoles")
      * @ORM\JoinColumn(nullable=false)
      */
-    private User $user;
+    private ?User $user = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\Course", inversedBy="courseRoles")
@@ -47,7 +47,7 @@ class CourseRole
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }

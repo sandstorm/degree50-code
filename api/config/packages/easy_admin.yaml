@@ -1,27 +1,15 @@
 easy_admin:
     entities:
-        # List the entity class name you want to manage
-        User:
-            class: App\Entity\Account\User
+        Course:
+            class: App\Entity\Account\Course
             form:
                 fields:
-                    - email
-                    - password
-
-                            #        Exercise:
-                            #            list:
-                            #                fields: ['name', 'course.name']
-                            #            class: App\Entity\Exercise\Exercise
-                            #            form:
-                            #                fields:
-                            #                    - name
-                            #                    - description
-                            #                    -
-                            #                        property: 'phases'
-                            #                        type: 'collection'
-                            #                        type_options:
-                            #                            entry_type: 'App\Admin\Form\InlineExercisePhaseType'
-                            #                            by_reference: false
+                    - name
+                    -   property: 'courseRoles'
+                        type: collection
+                        type_options:
+                            entry_type: 'App\Admin\Form\InlineCourseRoleType'
+                            by_reference: false
 
     design:
         assets:

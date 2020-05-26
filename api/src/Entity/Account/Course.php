@@ -45,7 +45,7 @@ class Course
     private $exercises;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Account\CourseRole", mappedBy="course", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Account\CourseRole", mappedBy="course", cascade={"all"}, orphanRemoval=true)
      */
     private Collection $courseRoles;
 
