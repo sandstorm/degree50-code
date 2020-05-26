@@ -59,9 +59,7 @@ class ExerciseOverviewController extends AbstractController
      */
     private function getSideBarItems(): array
     {
-        /* @var $user User */
-        $user = $this->getUser();
-        $courses = $this->courseRepository->findAllByUser($user);
+        $courses = $this->courseRepository->findAll();
 
         $sidebarItems = [];
         /* @var $course Course */
