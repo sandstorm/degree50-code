@@ -3,21 +3,21 @@ controllers_mediathek:
     type: annotation
     prefix:
         en: '/en'
-        de: '/de'
+        de: '/'
 
 controllers_account:
     resource: ../../src/Account/Controller/
     type: annotation
     prefix:
         en: '/en'
-        de: '/de'
+        de: '/'
 
 controllers_exercise:
     resource: ../../src/Exercise/Controller/
     type: annotation
     prefix:
         en: '/en'
-        de: '/de'
+        de: '/'
 
 kernel:
     resource: ../../src/Kernel.php
