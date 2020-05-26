@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Exercise;
+namespace App\Exercise\Controller;
 
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
@@ -33,7 +33,7 @@ class ExerciseOverviewController extends AbstractController
     }
 
     /**
-     * @Route("/exercise-overview/", name="app_exercise-overview")
+     * @Route("/", name="app_exercise-overview")
      */
     public function index(): Response
     {

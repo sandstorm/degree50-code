@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Exercise;
+namespace App\Exercise\Controller;
 
 use App\Admin\Form\ExerciseType;
 use App\Entity\Exercise\Exercise;

@@ -21,14 +21,14 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller'
-        tags: ['controller.service_arguments']
-    App\Admin\Controller\:
-        resource: '../src/Admin/Controller'
-        tags: ['controller.service_arguments']
     App\Mediathek\Controller\:
         resource: '../src/Mediathek/Controller'
+        tags: ['controller.service_arguments']
+    App\Account\Controller\:
+        resource: '../src/Account/Controller'
+        tags: ['controller.service_arguments']
+    App\Exercise\Controller\:
+        resource: '../src/Exercise/Controller'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
