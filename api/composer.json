@@ -22,6 +22,7 @@
         "symfony/mercure-bundle": "^0.2",
         "symfony/messenger": "5.0.*",
         "symfony/security-bundle": "5.0.*",
+        "symfony/translation": "5.0.*",
         "symfony/webpack-encore-bundle": "^1.7",
         "symfony/yaml": "5.0.*",
         "webonyx/graphql-php": "^0.13.8"

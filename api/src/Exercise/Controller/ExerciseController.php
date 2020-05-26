@@ -52,14 +52,69 @@ class ExerciseController extends AbstractController
     public function new(Request $request): Response
     {
         $courseId = $request->query->get('courseId', null);
-        $course = $this->courseRepository->find($courseId);
 
         $exercise = new Exercise();
-        $exercise->setCourse($course);
+        $course = null;
+        if ($courseId) {
+            $course = $this->courseRepository->find($courseId);
+            $exercise->setCourse($course);
+        }
+
         $form = $this->createForm(ExerciseType::class, $exercise);
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$exercise` variable has also been updated
+            $exercise = $form->getData();
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($exercise);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'Aufgabe erfolgreich gespeichert!'
+            );
+
+            return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
+        }
+
         return $this->render('Exercise/New.html.twig', [
-            'form' => $form->createView(),
+            'course' => $course,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @IsGranted("view", subject="exercise")
+     * @Route("/exercise/edit/{id}", name="app_exercise-edit")
+     */
+    public function edit(Request $request, Exercise $exercise): Response
+    {
+        $form = $this->createForm(ExerciseType::class, $exercise);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$exercise` variable has also been updated
+            $exercise = $form->getData();
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($exercise);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'Aufgabe erfolgreich gespeichert!'
+            );
+
+            return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
+        }
+
+        return $this->render('Exercise/Edit.html.twig', [
+            'exercise' => $exercise,
+            'form' => $form->createView()
         ]);
     }
 }

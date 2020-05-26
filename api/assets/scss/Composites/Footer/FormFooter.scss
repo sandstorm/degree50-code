@@ -1,0 +1,15 @@
+.form-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+
+  background-color: $theme__color__grey;
+
+  .form-group {
+    margin: 0 !important;
+  }
+}
