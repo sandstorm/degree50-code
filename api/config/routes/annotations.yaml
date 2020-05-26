@@ -1,15 +1,23 @@
 controllers_mediathek:
     resource: ../../src/Mediathek/Controller/
     type: annotation
+    prefix:
+        en: '/en'
+        de: '/de'
 
 controllers_account:
     resource: ../../src/Account/Controller/
     type: annotation
+    prefix:
+        en: '/en'
+        de: '/de'
 
 controllers_exercise:
     resource: ../../src/Exercise/Controller/
     type: annotation
-
+    prefix:
+        en: '/en'
+        de: '/de'
 
 kernel:
     resource: ../../src/Kernel.php

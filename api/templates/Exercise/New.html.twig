@@ -1,11 +1,12 @@
+{% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 
-{% block title %}Neue Aufgabe anlegen{% endblock %}
+{% block title %}{% trans %}exercise.new.title{% endtrans %}{% endblock %}
 
 {% block body %}
     <div class="container">
         <header class="content-header content-header--center">
-            <h3>Neue Aufgabe anlegen</h3>
+            <h3>{% trans %}exercise.new.title{% endtrans %}</h3>
         </header>
     </div>
 
