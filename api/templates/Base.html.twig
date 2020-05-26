@@ -11,6 +11,7 @@
         {{ include('Partials/Header.html.twig') }}
         <div class="main">
             <div class="main-inner">
+                {{ include('Partials/FlashMessages.html.twig') }}
                 <div class="container">
                     {% block body %}{% endblock %}
                 </div>

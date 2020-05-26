@@ -1,0 +1,27 @@
+.btn {
+
+}
+
+// tmp bootstrap override
+.btn-primary {
+  background-color: $theme__color__green;
+  border-color: $theme__color__green--dark;
+
+  &:hover, &:focus, &:active {
+    background-color: $theme__color__green--dark;
+    border-color: $theme__color__green--dark;
+  }
+}
+
+.btn-outline-primary {
+  border-color: $theme__color__green--dark;
+
+  color: $theme__color__green--dark;
+
+  &:hover, &:focus, &:active {
+    background-color: $theme__color__green;
+    border-color: $theme__color__green--dark;
+
+    color: $theme__color__white;
+  }
+}

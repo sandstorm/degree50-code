@@ -1,11 +1,11 @@
 {% extends 'BaseFullscreen.html.twig' %}
 
-{% block title %}Neue Aufgabe anlegen{% endblock %}
+{% block title %}Aufgabe bearbeiten{% endblock %}
 
 {% block body %}
     <div class="container">
         <header class="content-header content-header--center">
-            <h3>Neue Aufgabe anlegen</h3>
+            <h3>Aufgabe bearbeiten</h3>
         </header>
     </div>
 
@@ -20,7 +20,7 @@
 
 
             <footer class="form-footer">
-                <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: course.id}) }}">Zurück zur Übersicht</a>
+                <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">Zurück zur Übersicht</a>
                 {{ form_row(form.save, { 'label': 'Aufgabe speichern' }) }}
             </footer>
         {{ form_end(form) }}

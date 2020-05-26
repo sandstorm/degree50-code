@@ -15,11 +15,16 @@
 // components
 @import "Components/SidebarItem/SidebarItem";
 @import "Components/Tile/Tile";
+@import "Components/Button/Button";
+@import "Components/Link/Link";
 
 // composites
 @import "Composites/Login/Login";
 @import "Composites/Form/JsonSchemaEditor";
+@import "Composites/Form/ExerciseForm";
 @import "Composites/Header/Header";
+@import "Composites/Header/ContentHeader";
+@import "Composites/Footer/FormFooter";
 @import "Composites/Sidebar/Sidebar";
 @import "Composites/Tiles/Tiles";
 
