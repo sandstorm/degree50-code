@@ -8,11 +8,15 @@ use App\Entity\Video\Video;
 use App\Mediathek\Form\VideoType;
 use App\Repository\Video\VideoRepository;
 use Ramsey\Uuid\Uuid;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @IsGranted("ROLE_USER")
+ */
 class VideoUploadController extends AbstractController
 {
     /**
