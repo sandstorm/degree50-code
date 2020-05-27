@@ -1,13 +1,13 @@
 {% trans_default_domain 'forms' %}
 {% extends 'BaseNoHeader.html.twig' %}
 
-{% block title %}{% trans %}exercisePhase.new.title{% endtrans %}{% endblock %}
+{% block title %}{% trans %}exercisePhase.edit.title{% endtrans %}{% endblock %}
 
 {% block body %}
     <div class="container">
         <header class="content-header content-header--center">
             {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
-            <h3>{% trans %}exercisePhase.new.title{% endtrans %} / {{ phaseTypeTransVar | trans }} </h3>
+            <h3>{% trans %}exercisePhase.edit.title{% endtrans %} / {{ phaseTypeTransVar | trans }} </h3>
         </header>
     </div>
 
@@ -16,11 +16,32 @@
         <div class="exercise-form__left">
             {{ form_errors(form) }}
 
+            {{ form_row(form.isGroupPhase) }}
             {{ form_row(form.name) }}
             {{ form_row(form.task) }}
         </div>
         <div class="exercise-form__right">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link active" href="#videos" aria-controls="videos" role="tab" data-toggle="tab">Videos</a>
+                </li>
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link" href="#material" aria-controls="material" role="tab" data-toggle="tab">Material</a>
+                </li>
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link" href="#fragen" aria-controls="fragen" role="tab" data-toggle="tab">Fragen</a>
+                </li>
+                <li role="presentation" class="nav-item">
+                    <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab" data-toggle="tab">Komponenten</a>
+                </li>
+            </ul>
 
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="videos">Videos</div>
+                <div role="tabpanel" class="tab-pane" id="material">Material</div>
+                <div role="tabpanel" class="tab-pane" id="fragen">Fragen</div>
+                <div role="tabpanel" class="tab-pane" id="komponenten">Komponenten</div>
+            </div>
         </div>
 
         <footer class="form-footer">

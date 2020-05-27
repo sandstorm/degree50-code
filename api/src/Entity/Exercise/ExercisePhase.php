@@ -28,6 +28,12 @@ class ExercisePhase
     private ?string $id;
 
     /**
+     * @var bool
+     * @ORM\Column
+     */
+    public $isGroupPhase = false;
+
+    /**
      * @var string
      *
      * @ORM\Column
@@ -208,6 +214,22 @@ class ExercisePhase
     public function setTask(string $task): void
     {
         $this->task = $task;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGroupPhase(): bool
+    {
+        return $this->isGroupPhase;
+    }
+
+    /**
+     * @param bool $isGroupPhase
+     */
+    public function setIsGroupPhase(bool $isGroupPhase): void
+    {
+        $this->isGroupPhase = $isGroupPhase;
     }
 
 }

@@ -119,4 +119,23 @@ class ExerciseController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @IsGranted("view", subject="exercise")
+     * @Route("/exercise/delete/{id}", name="app_exercise-delete")
+     */
+    public function delete(Exercise $exercise): Response
+    {
+        $courseId = $exercise->getCourse()->getId();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($exercise);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans('exercise.delete.messages.success', [], 'forms')
+        );
+
+        return $this->redirectToRoute('app_exercise-overview-show-course', ['id' => $courseId]);
+    }
 }

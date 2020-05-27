@@ -3,6 +3,8 @@ exercise:
     name: 'Titel der Aufgabe'
     description: 'Lernauftrag / Beschreibung'
     submit: 'Aufgabe speichern'
+  show:
+    title: 'Aufgabe starten'
   new:
     back: 'Zurück zur Übersicht'
     title: 'Neue Aufgabe anlegen'
@@ -12,9 +14,14 @@ exercise:
     title: 'Aufgabe bearbeiten'
     messages:
       success: 'Aufgabe erfolgreich gespeichert!'
+  delete:
+    title: 'Aufgabe löschen'
+    messages:
+      success: 'Aufgabe erfolgreich gelöscht!'
 
 exercisePhase:
   labels:
+    isGroupPhase: 'Gruppenarbeit'
     name: 'Titel der Phase'
     task: 'Lernauftrag / Beschreibung'
     submit: 'Phase speichern'

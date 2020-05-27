@@ -2,6 +2,8 @@
   position: fixed;
   width: 100%;
 
+  border-bottom: 1px solid $theme__color__grey--dark;
+
   z-index: 9000;
 
   .navbar {

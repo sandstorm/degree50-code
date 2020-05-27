@@ -9,9 +9,7 @@
 import '../scss/App.scss';
 import ReactDOM from 'react-dom';
 import React from 'react';
-// Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
-// import $ from 'jquery';
-
+import 'bootstrap';
 
 // src/application.js
 import { Application } from "stimulus";

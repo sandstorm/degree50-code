@@ -1,15 +1,24 @@
 .tile {
-  display: inline-block;
+  position: relative;
+  display: block;
   height: 200px;
   width: 200px;
-  padding: 10px;
   margin-right: 20px;
   margin-bottom: 20px;
 
   background-color: $theme__color__grey;
 
-  overflow: hidden;
   cursor: pointer;
+
+  input[type='checkbox'] {
+    display: none;
+
+    &:checked ~ .tile__actions {
+      display: block;
+
+      transform: scaleY(1);
+    }
+  }
 
   &:hover {
     text-decoration: none;
@@ -31,6 +40,12 @@
 }
 
 .tile__content {
+  display: block;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+
   text-align: center;
 }
 
@@ -40,4 +55,32 @@
   margin-bottom: 20px;
 
   font-size: 4em;
+}
+
+.tile__actions {
+  position: absolute;
+  height: auto;
+  width: 100%;
+
+  background-color: $theme__color__white;
+  border: 1px solid $theme__color__green;
+
+  transform: scaleY(0);
+  transform-origin: top left;
+  transition-duration: 0.2s;
+  z-index: 100;
+
+  a {
+    display: block;
+    width: 100%;
+    padding: 5px;
+
+    border-bottom: 1px solid $theme__color__green;
+
+    text-decoration: none;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
 }

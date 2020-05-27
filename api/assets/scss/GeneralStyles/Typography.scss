@@ -41,3 +41,15 @@ h6 {
     font-weight: 400;
     line-height: $base__lineHeight;
 }
+
+.color-success {
+    color: $theme__color__green;
+}
+
+.color-warning {
+    color: $theme__color__orange;
+}
+
+.color-alert {
+    color: $theme__color__red;
+}

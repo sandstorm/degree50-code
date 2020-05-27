@@ -19,21 +19,22 @@
                 {{ form_row(form.description) }}
             </div>
             <div class="exercise-form__right">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Phasen</a>
-
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="nav-item">
+                        <a class="nav-link active" href="#phasen" aria-controls="phasen" role="tab" data-toggle="tab">Phasen</a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
-                    <ul class="list">
-                    {% for exercisePhase in exercise.phases %}
-                        <li><span>{{ exercisePhase.name }}</span> <div class="list__actions"><a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}</a></div></li>
-                    {% endfor %}
-                    </ul>
+                    <div role="tabpanel" class="tab-pane active" id="phasen">
+                        <ul class="list">
+                            {% for exercisePhase in exercise.phases %}
+                                <li><span>{{ exercisePhase.name }}</span> <div class="list__actions"><a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}</a></div></li>
+                            {% endfor %}
+                        </ul>
 
-                    <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-new', {id: exercise.id}) }}"><i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>
+                        <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-new', {id: exercise.id}) }}"><i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>
+                    </div>
                 </div>
             </div>
 

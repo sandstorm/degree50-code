@@ -5,3 +5,9 @@ a, a.nav-link {
     color: $theme__color__green--dark;
   }
 }
+
+a.color-alert {
+  &:hover, &:active, &:focus {
+    color: darken($theme__color__red, 20%);
+  }
+}
