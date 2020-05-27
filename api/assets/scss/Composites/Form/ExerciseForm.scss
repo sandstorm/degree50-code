@@ -1,6 +1,24 @@
-.new-exercise-form {
-
-  textarea#exercise_description {
+.exercise-form {
+  textarea#exercise_description, textarea#exercise_phase_task {
     min-height: 400px;
   }
+
+  > form {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.exercise-form__left, .exercise-form__right {
+  padding: 20px;
+}
+
+.exercise-form__left {
+  width: 40%;
+
+  border-right: 1px solid $theme__color__grey;
+}
+
+.exercise-form__right {
+  width: 60%;
 }

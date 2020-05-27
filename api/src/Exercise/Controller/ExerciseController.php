@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -19,15 +20,18 @@ class ExerciseController extends AbstractController
 {
     private CourseRepository $courseRepository;
     private ExerciseRepository $exerciseRepository;
+    private TranslatorInterface $translator;
 
     /**
      * @param CourseRepository $courseRepository
      * @param ExerciseRepository $exerciseRepository
+     * @param TranslatorInterface $translator
      */
-    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository)
+    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator)
     {
         $this->courseRepository = $courseRepository;
         $this->exerciseRepository = $exerciseRepository;
+        $this->translator = $translator;
     }
     /**
      * @IsGranted("view", subject="exercise")
@@ -72,7 +76,7 @@ class ExerciseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Aufgabe erfolgreich gespeichert!'
+                $this->translator->trans('exercise.new.messages.success', [], 'forms')
             );
 
             return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
@@ -104,7 +108,7 @@ class ExerciseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Aufgabe erfolgreich gespeichert!'
+                $this->translator->trans('exercise.edit.messages.success', [], 'forms')
             );
 
             return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);

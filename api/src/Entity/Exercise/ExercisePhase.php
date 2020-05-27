@@ -6,7 +6,6 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -17,6 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ExercisePhase
 {
+    const PHASE_TYPES = ['VIDEO_ANALYSE']; // TODO
+
     /**
      * @var string The entity Id
      *
@@ -27,7 +28,7 @@ class ExercisePhase
     private ?string $id;
 
     /**
-     * @var string A nice person
+     * @var string
      *
      * @ORM\Column
      * @Assert\NotBlank
@@ -44,8 +45,16 @@ class ExercisePhase
 
     /**
      * @var string
-     * @ORM\Column(type="text")
+     *
+     * @ORM\Column
      * @Assert\NotBlank
+     * @Assert\Choice(choices=ExercisePhase::PHASE_TYPES, message="Choose a valid type.")
+     */
+    public $type = '';
+
+    /**
+     * @var string
+     * @ORM\Column(type="text")
      */
     public $definition = '';
 
@@ -112,4 +121,93 @@ class ExercisePhase
 
         return $this;
     }
+
+    /**
+     * @return Exercise
+     */
+    public function getBelongsToExcercise(): Exercise
+    {
+        return $this->belongsToExcercise;
+    }
+
+    /**
+     * @param Exercise $belongsToExcercise
+     */
+    public function setBelongsToExcercise(Exercise $belongsToExcercise): void
+    {
+        $this->belongsToExcercise = $belongsToExcercise;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeLabel(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSorting(): int
+    {
+        return $this->sorting;
+    }
+
+    /**
+     * @param int $sorting
+     */
+    public function setSorting(int $sorting): void
+    {
+        $this->sorting = $sorting;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTask(): string
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param string $task
+     */
+    public function setTask(string $task): void
+    {
+        $this->task = $task;
+    }
+
 }

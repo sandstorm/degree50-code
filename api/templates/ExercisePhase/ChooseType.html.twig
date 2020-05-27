@@ -1,0 +1,35 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseNoHeader.html.twig' %}
+
+{% block title %}{% trans %}exercisePhase.new.title{% endtrans %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}exercisePhase.new.title{% endtrans %} / Typ auswählen</h3>
+        </header>
+    </div>
+
+    <div class="container">
+        <div class="tiles">
+            {% for type in types %}
+                <a href="{{ path('app_exercise-phase-new-set-type', {id: exercise.id, type: type.id}) }}" class="tile">
+                    <div class="tile__content">
+                        <i class="tile__icon {{ type.iconClass}}"></i>
+                        <span>
+                        {{ type.label }}
+                    </span>
+                    </div>
+                </a>
+            {% endfor %}
+
+        </div>
+
+
+    </div>
+
+    <footer class="form-footer">
+        <a class="btn btn-outline-primary" href="{{ path('app_exercise-edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+    </footer>
+
+{% endblock %}

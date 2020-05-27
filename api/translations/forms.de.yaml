@@ -1,3 +1,31 @@
 exercise:
+  labels:
+    name: 'Titel der Aufgabe'
+    description: 'Lernauftrag / Beschreibung'
+    submit: 'Aufgabe speichern'
   new:
+    back: 'Zurück zur Übersicht'
     title: 'Neue Aufgabe anlegen'
+    messages:
+      success: 'Aufgabe erfolgreich angelegt!'
+  edit:
+    title: 'Aufgabe bearbeiten'
+    messages:
+      success: 'Aufgabe erfolgreich gespeichert!'
+
+exercisePhase:
+  labels:
+    name: 'Titel der Phase'
+    task: 'Lernauftrag / Beschreibung'
+    submit: 'Phase speichern'
+  types:
+    VIDEO_ANALYSE:
+      label: 'Videoanalyse'
+      iconClass: 'fas fa-film'
+  new:
+    back: 'Zurück zur Aufgabe'
+    title: 'Phase hinzufügen'
+  edit:
+    title: 'Phase bearbeiten'
+    messages:
+      success: 'Phase erfolgreich gespeichert!'

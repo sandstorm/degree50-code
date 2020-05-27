@@ -17,6 +17,7 @@
 @import "Components/Tile/Tile";
 @import "Components/Button/Button";
 @import "Components/Link/Link";
+@import "Components/Tab/Tab";
 
 // composites
 @import "Composites/Login/Login";
@@ -27,6 +28,8 @@
 @import "Composites/Footer/FormFooter";
 @import "Composites/Sidebar/Sidebar";
 @import "Composites/Tiles/Tiles";
+@import "Composites/List/List";
+@import "Composites/FlashMessages/FlashMessages";
 
 @import "Composites/SubtitleEditor/SubtitleEditor";
 @import "Composites/SubtitleEditor/Subtitles";

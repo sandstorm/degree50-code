@@ -1,27 +1,45 @@
+{% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 
-{% block title %}Aufgabe bearbeiten{% endblock %}
+{% block title %}{% trans %}exercise.edit.title{% endtrans %}{% endblock %}
 
 {% block body %}
     <div class="container">
         <header class="content-header content-header--center">
-            <h3>Aufgabe bearbeiten</h3>
+            <h3>{% trans %}exercise.edit.title{% endtrans %}</h3>
         </header>
     </div>
 
-    <div class="new-exercise-form">
+    <div class="exercise-form">
         {{ form_start(form) }}
-            <div class="container">
+            <div class="exercise-form__left">
                 {{ form_errors(form) }}
 
-                {{ form_row(form.name, { 'label': 'Titel der Aufgabe' }) }}
-                {{ form_row(form.description, { 'label': 'Lernauftrag / Beschreibung' }) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+            </div>
+            <div class="exercise-form__right">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Phasen</a>
+
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <ul class="list">
+                    {% for exercisePhase in exercise.phases %}
+                        <li><span>{{ exercisePhase.name }}</span> <div class="list__actions"><a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}</a></div></li>
+                    {% endfor %}
+                    </ul>
+
+                    <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-new', {id: exercise.id}) }}"><i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>
+                </div>
             </div>
 
-
             <footer class="form-footer">
-                <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">Zurück zur Übersicht</a>
-                {{ form_row(form.save, { 'label': 'Aufgabe speichern' }) }}
+                <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+                {{ form_row(form.save) }}
             </footer>
         {{ form_end(form) }}
     </div>

@@ -8,12 +8,10 @@
         {% endblock %}
     </head>
     <body>
-        <div class="main">
+        <div class="main main--no-header">
             <div class="main-inner">
                 {{ include('Partials/FlashMessages.html.twig') }}
-                <div class="container">
-                    {% block body %}{% endblock %}
-                </div>
+                {% block body %}{% endblock %}
             </div>
         </div>
 

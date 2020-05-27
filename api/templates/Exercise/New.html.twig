@@ -10,19 +10,19 @@
         </header>
     </div>
 
-    <div class="new-exercise-form">
+    <div class="exercise-form">
         {{ form_start(form) }}
             <div class="container">
                 {{ form_errors(form) }}
 
-                {{ form_row(form.name, { 'label': 'Titel der Aufgabe' }) }}
-                {{ form_row(form.description, { 'label': 'Lernauftrag / Beschreibung' }) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
             </div>
 
 
             <footer class="form-footer">
-                <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: course.id}) }}">Zurück zur Übersicht</a>
-                {{ form_row(form.save, { 'label': 'Aufgabe speichern' }) }}
+                <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+                {{ form_row(form.save) }}
             </footer>
         {{ form_end(form) }}
     </div>
