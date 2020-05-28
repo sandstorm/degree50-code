@@ -1,0 +1,24 @@
+{% extends 'BaseWithSidebar.html.twig' %}
+
+{% block title %}Mediathek{% endblock %}
+
+{% block sidebar %}
+    {{ include('Mediathek/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: false}) }}
+{% endblock %}
+
+{% block body %}
+    <header class="content-header">
+        <h3>Alle Videos...</h3>
+    </header>
+
+    <div class="tiles">
+        {{ include('Mediathek/Videos.html.twig', {videos: videos}) }}
+
+        <a href="{{ path('app_videoupload') }}" class="tile tile--active">
+            <div class="tile__content">
+                <i class="tile__icon fas fa-plus-circle"></i>
+                <span>Neues Video</span>
+            </div>
+        </a>
+    </div>
+{% endblock %}

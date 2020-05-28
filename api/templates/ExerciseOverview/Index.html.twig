@@ -1,16 +1,17 @@
-{% extends 'BaseFullscreen.html.twig' %}
+{% extends 'BaseWithSidebar.html.twig' %}
 
 {% block title %}Aufgaben Übersicht{% endblock %}
 
-{% block body %}
+{% block sidebar %}
     {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: false}) }}
-    <div class="content-with-sidebar">
-        <header class="content-header">
-            <h3>Alle Aufgaben...</h3>
-        </header>
+{% endblock %}
 
-        <div class="tiles">
-            {{ include('ExerciseOverview/Exercises.html.twig', {exercises: exercises}) }}
-        </div>
+{% block body %}
+    <header class="content-header">
+        <h3>Alle Aufgaben...</h3>
+    </header>
+
+    <div class="tiles">
+        {{ include('ExerciseOverview/Exercises.html.twig', {exercises: exercises}) }}
     </div>
 {% endblock %}

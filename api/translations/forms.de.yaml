@@ -36,3 +36,13 @@ exercisePhase:
     title: 'Phase bearbeiten'
     messages:
       success: 'Phase erfolgreich gespeichert!'
+
+video:
+  show:
+    title: 'Video abspielen'
+  edit:
+    title: 'Video bearbeiten'
+  subtitle:
+    title: 'Untertitel bearbeiten'
+  delete:
+    title: 'Video löschen'

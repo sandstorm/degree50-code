@@ -1,26 +1,26 @@
-{% extends 'BaseFullscreen.html.twig' %}
+{% extends 'BaseWithSidebar.html.twig' %}
 
 {% block title %}Aufgaben Übersicht{% endblock %}
 
-{% block body %}
+{% block sidebar %}
     {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: course}) }}
-    <div class="content-with-sidebar">
-        <header class="content-header">
-            <h3>Alle Aufgaben für {{ course.name }}</h3>
-        </header>
+{% endblock %}
 
-        <div class="tiles">
-            {{ include('ExerciseOverview/Exercises.html.twig', {exercises: course.exercises}) }}
+{% block body %}
+    <header class="content-header">
+        <h3>Alle Aufgaben für {{ course.name }}</h3>
+    </header>
 
-            {% if app.user.isDozent %}
-                <a href="{{ path('app_exercise-new', {courseId: course.id}) }}" class="tile tile--active">
-                    <div class="tile__content">
-                        <i class="tile__icon fas fa-plus-circle"></i>
-                        <span>Neue Aufgabe</span>
-                    </div>
-                </a>
-            {% endif %}
-        </div>
+    <div class="tiles">
+        {{ include('ExerciseOverview/Exercises.html.twig', {exercises: course.exercises}) }}
 
+        {% if app.user.isDozent %}
+            <a href="{{ path('app_exercise-new', {courseId: course.id}) }}" class="tile tile--active">
+                <div class="tile__content">
+                    <i class="tile__icon fas fa-plus-circle"></i>
+                    <span>Neue Aufgabe</span>
+                </div>
+            </a>
+        {% endif %}
     </div>
 {% endblock %}
