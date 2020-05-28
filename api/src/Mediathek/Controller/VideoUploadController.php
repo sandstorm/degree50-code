@@ -7,6 +7,7 @@ namespace App\Mediathek\Controller;
 use App\Entity\Video\Video;
 use App\Mediathek\Form\VideoType;
 use App\Repository\Video\VideoRepository;
+use App\Twig\AppRuntime;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,5 +56,44 @@ class VideoUploadController extends AbstractController
             'uuid' => $videoUuid,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/video/edit/{id}", name="app_video-edit")
+     */
+    public function edit(Request $request, Video $video): Response
+    {
+        $form = $this->createForm(VideoType::class, $video);
+
+        return $this->render('Mediathek/VideoUpload/Edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/video/delete/{id}", name="app_video-delete")
+     */
+    public function delete(AppRuntime $appRuntime, Video $video): Response
+    {
+
+        /* @var \App\Entity\VirtualizedFile $encodedDirectory */
+        $encodedDirectory = $video->getEncodedVideoDirectory();
+        var_dump($appRuntime->virtualizedFileUrl($encodedDirectory));
+        // TODO remove file?
+        // TODO check for usage of the video
+        return $this->redirectToRoute('app_mediathek-index');
+        die;
+        if ($video) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($video);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('video.delete.messages.success', [], 'forms')
+            );
+        }
+
+        return $this->redirectToRoute('app_mediathek-index');
     }
 }

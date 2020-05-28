@@ -1,22 +1,19 @@
 {% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 
-{% block title %}{% trans %}video.upload.title{% endtrans %}{% endblock %}
+{% block title %}{% trans %}video.edit.title{% endtrans %}{% endblock %}
 
 {% block body %}
     <div class="container">
         <header class="content-header content-header--center">
-            <h3>{% trans %}video.upload.title{% endtrans %}</h3>
+            <h3>{% trans %}video.edit.title{% endtrans %}</h3>
         </header>
-        <div data-controller="fileupload" data-fileupload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}" data-fileupload-id="{{ uuid }}"></div>
     </div>
-
     {{ form_start(form) }}
         <div class="container">
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
         </div>
-
 
         <footer class="form-footer">
             <a class="btn btn-outline-primary" href="{{ path('app_mediathek-index') }}">{% trans %}video.upload.back{% endtrans %}</a>

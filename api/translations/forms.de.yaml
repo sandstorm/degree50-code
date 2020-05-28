@@ -38,6 +38,13 @@ exercisePhase:
       success: 'Phase erfolgreich gespeichert!'
 
 video:
+  labels:
+    title: 'Titel'
+    description: 'Beschreibung'
+    submit: 'Video speichern'
+  upload:
+    title: 'Video hochladen'
+    back: 'Zurück zur Übersicht'
   show:
     title: 'Video abspielen'
   edit:
@@ -46,3 +53,5 @@ video:
     title: 'Untertitel bearbeiten'
   delete:
     title: 'Video löschen'
+    messages:
+      success: 'Video erfolgreich gelöscht!'
