@@ -29,7 +29,19 @@
                     <div role="tabpanel" class="tab-pane active" id="phasen">
                         <ul class="list">
                             {% for exercisePhase in exercise.phases %}
-                                <li><span>{{ exercisePhase.name }}</span> <div class="list__actions"><a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}</a></div></li>
+                                {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
+                                <li>
+                                    {% if exercisePhase.isGroupPhase %}
+                                        <i class="fas fa-users" title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
+                                    {% else %}
+                                        <i class="fas fa-user"></i>
+                                    {% endif %}
+                                    <span>Typ: {{ phaseTypeTransVar | trans }}</span>
+                                    <span>{{ exercisePhase.name }}</span>
+                                    <div class="list__actions">
+                                        <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}</a>
+                                    </div>
+                                </li>
                             {% endfor %}
                         </ul>
 

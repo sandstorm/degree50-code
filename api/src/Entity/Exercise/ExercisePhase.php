@@ -6,17 +6,25 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\InheritanceType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * This is a dummy entity. Remove it!
- *
  * @ApiResource(paginationEnabled=false)
  * @ORM\Entity
+ * @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="phaseType", type="string")
+ * @DiscriminatorMap({
+ *     "exercisePhase" = "App\Entity\Exercise\ExercisePhase",
+ *     "videoAnalysis" = "App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis"
+ * })
  */
 class ExercisePhase
 {
-    const PHASE_TYPES = ['VIDEO_ANALYSE']; // TODO
+    const VIDEO_ANALYSE = 'VIDEO_ANALYSE';
+    const PHASE_TYPES = [ExercisePhase::VIDEO_ANALYSE];
 
     /**
      * @var string The entity Id
@@ -231,5 +239,4 @@ class ExercisePhase
     {
         $this->isGroupPhase = $isGroupPhase;
     }
-
 }

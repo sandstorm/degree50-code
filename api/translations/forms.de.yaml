@@ -24,6 +24,7 @@ exercisePhase:
     isGroupPhase: 'Gruppenarbeit'
     name: 'Titel der Phase'
     task: 'Lernauftrag / Beschreibung'
+    videos: 'Videos'
     submit: 'Phase speichern'
   types:
     VIDEO_ANALYSE:

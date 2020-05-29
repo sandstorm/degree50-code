@@ -3,9 +3,11 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\ExerciseType;
 use App\Entity\Exercise\Exercise;
+use App\Exercise\Form\VideoAnalysisType;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -64,10 +66,16 @@ class ExercisePhaseController extends AbstractController
      */
     public function setType(Request $request, Exercise $exercise): Response
     {
+        $type = $request->query->get('type', null);
         $exercisePhase = new ExercisePhase();
+        switch ($type) {
+            case ExercisePhase::VIDEO_ANALYSE :
+                $exercisePhase = new VideoAnalysis();
+                break;
+        }
+
         $exercisePhase->setBelongsToExcercise($exercise);
 
-        $type = $request->query->get('type', null);
 
         if ($type != null) {
             $exercisePhase->setType($type);
@@ -92,6 +100,12 @@ class ExercisePhaseController extends AbstractController
     public function edit(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
     {
         $form = $this->createForm(ExercisePhaseType::class, $exercisePhase);
+        switch ($exercisePhase->getType()) {
+            case ExercisePhase::VIDEO_ANALYSE :
+                // TODO shitty naming
+                $form = $this->createForm(VideoAnalysisType::class, $exercisePhase);
+                break;
+        }
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

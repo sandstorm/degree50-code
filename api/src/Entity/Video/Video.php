@@ -5,7 +5,10 @@ namespace App\Entity\Video;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\VirtualizedFile;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource
@@ -48,12 +51,18 @@ class Video
     private $subtitles;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis", mappedBy="videos")
+     */
+    private $videoAnalysisTypes;
+
+    /**
      * Video constructor.
      * @param string $id
      */
     public function __construct(string $id)
     {
         $this->id = $id;
+        $this->videoAnalysisTypes = new ArrayCollection();
     }
 
     /**
@@ -136,6 +145,34 @@ class Video
     public function setSubtitles(?VideoSubtitles $subtitles): self
     {
         $this->subtitles = $subtitles;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VideoAnalysis[]
+     */
+    public function getVideoAnalysisTypes(): Collection
+    {
+        return $this->videoAnalysisTypes;
+    }
+
+    public function addVideoAnalysisType(VideoAnalysis $videoAnalysisType): self
+    {
+        if (!$this->videoAnalysisTypes->contains($videoAnalysisType)) {
+            $this->videoAnalysisTypes[] = $videoAnalysisType;
+            $videoAnalysisType->addVideo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideoAnalysisType(VideoAnalysis $videoAnalysisType): self
+    {
+        if ($this->videoAnalysisTypes->contains($videoAnalysisType)) {
+            $this->videoAnalysisTypes->removeElement($videoAnalysisType);
+            $videoAnalysisType->removeVideo($this);
+        }
 
         return $this;
     }
