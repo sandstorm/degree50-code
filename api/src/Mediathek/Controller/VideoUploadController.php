@@ -47,6 +47,11 @@ class VideoUploadController extends AbstractController
             $entityManager->persist($video);
             $entityManager->flush();
 
+            $this->addFlash(
+                'success',
+                $this->translator->trans('video.upload.messages.success', [], 'forms')
+            );
+
             return $this->redirectToRoute('app_videoplayer', ['id' => $video->getId()]);
         }
 
@@ -65,7 +70,25 @@ class VideoUploadController extends AbstractController
     {
         $form = $this->createForm(VideoType::class, $video);
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $video = $form->getData();
+            assert($video instanceof Video);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($video);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('video.edit.messages.success', [], 'forms')
+            );
+
+            return $this->redirectToRoute('app_mediathek-index');
+        }
+
         return $this->render('Mediathek/VideoUpload/Edit.html.twig', [
+            'video' => $video,
             'form' => $form->createView()
         ]);
     }

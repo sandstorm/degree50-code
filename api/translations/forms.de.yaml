@@ -46,10 +46,14 @@ video:
   upload:
     title: 'Video hochladen'
     back: 'Zurück zur Übersicht'
+    messages:
+      success: 'Video erfolgreich gespeichert!'
   show:
     title: 'Video abspielen'
   edit:
     title: 'Video bearbeiten'
+    messages:
+      success: 'Video erfolgreich gespeichert!'
   subtitle:
     title: 'Untertitel bearbeiten'
   delete:
