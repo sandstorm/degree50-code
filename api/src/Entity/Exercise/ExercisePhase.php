@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(paginationEnabled=false)
  * @ORM\Entity
- * @InheritanceType("JOINED")
+ * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="phaseType", type="string")
  * @DiscriminatorMap({
  *     "exercisePhase" = "App\Entity\Exercise\ExercisePhase",
