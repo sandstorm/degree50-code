@@ -26,8 +26,9 @@ exercisePhase:
     task: 'Lernauftrag / Beschreibung'
     videos: 'Videos'
     submit: 'Phase speichern'
+    type: 'Typ'
   types:
-    VIDEO_ANALYSE:
+    videoAnalysis:
       label: 'Videoanalyse'
       iconClass: 'fas fa-film'
   new:
@@ -37,6 +38,10 @@ exercisePhase:
     title: 'Phase bearbeiten'
     messages:
       success: 'Phase erfolgreich gespeichert!'
+  delete:
+    title: 'Phase löschen'
+    messages:
+      success: 'Phase erfolgreich gelöscht!'
 
 video:
   labels:

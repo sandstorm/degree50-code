@@ -27,22 +27,36 @@
 
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="phasen">
-                        <ul class="list">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans %}exercisePhase.labels.type{% endtrans %}</th>
+                                    <th>{% trans %}exercisePhase.labels.name{% endtrans %}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
                             {% for exercisePhase in exercise.phases %}
                                 {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
-                                <li>
-                                    {% if exercisePhase.isGroupPhase %}
-                                        <i class="fas fa-users" title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
-                                    {% else %}
-                                        <i class="fas fa-user"></i>
-                                    {% endif %}
-                                    <span>Typ: {{ phaseTypeTransVar | trans }}</span>
-                                    <span>{{ exercisePhase.name }}</span>
-                                    <div class="list__actions">
+                                <tr>
+                                    <td>
+                                        {% if exercisePhase.isGroupPhase %}
+                                            <i class="fas fa-users" title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-user"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ phaseTypeTransVar | trans }}</td>
+                                    <td>{{ exercisePhase.name }}</td>
+                                    <td class="text-right">
+                                        <a class="btn btn-outline-danger btn-sm" href="{{ path('app_exercise-phase-delete', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.title{% endtrans %}</a>
                                         <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}</a>
-                                    </div>
-                                </li>
+                                    </td>
+                                </tr>
                             {% endfor %}
+                        </table>
+                        <ul class="list">
+
                         </ul>
 
                         <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-new', {id: exercise.id}) }}"><i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>

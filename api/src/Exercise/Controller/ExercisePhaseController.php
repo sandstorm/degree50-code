@@ -5,11 +5,8 @@ namespace App\Exercise\Controller;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Exercise\Form\ExercisePhaseType;
-use App\Exercise\Form\ExerciseType;
 use App\Entity\Exercise\Exercise;
 use App\Exercise\Form\VideoAnalysisType;
-use App\Repository\Account\CourseRepository;
-use App\Repository\Exercise\ExerciseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,19 +20,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ExercisePhaseController extends AbstractController
 {
-    private CourseRepository $courseRepository;
-    private ExerciseRepository $exerciseRepository;
     private TranslatorInterface $translator;
 
     /**
-     * @param CourseRepository $courseRepository
-     * @param ExerciseRepository $exerciseRepository
      * @param TranslatorInterface $translator
      */
-    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator)
     {
-        $this->courseRepository = $courseRepository;
-        $this->exerciseRepository = $exerciseRepository;
         $this->translator = $translator;
     }
 
@@ -76,9 +67,7 @@ class ExercisePhaseController extends AbstractController
 
         $exercisePhase->setBelongsToExcercise($exercise);
 
-
         if ($type != null) {
-            $exercisePhase->setType($type);
             $exercisePhase->setSorting(count($exercise->getPhases()));
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -128,5 +117,25 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @IsGranted("view", subject="exercise")
+     * @Route("/exercise/edit/{id}/phase/delete/{phase_id}", name="app_exercise-phase-delete")
+     * @Entity("exercisePhase", expr="repository.find(phase_id)")
+     */
+    public function delete(Exercise $exercise, ExercisePhase $exercisePhase): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($exercisePhase);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans('exercisePhase.delete.messages.success', [], 'forms')
+        );
+
+        return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
+
     }
 }

@@ -22,3 +22,7 @@
 .exercise-form__right {
   width: 60%;
 }
+
+label.required:before {
+  content: "*";
+}

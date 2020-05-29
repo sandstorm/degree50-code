@@ -16,7 +16,10 @@ class ExercisePhaseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('isGroupPhase', CheckboxType::class, ['label' => "exercisePhase.labels.isGroupPhase", 'translation_domain' => 'forms'])
+            ->add('isGroupPhase', CheckboxType::class, [
+                'required' => false,
+                'label' => "exercisePhase.labels.isGroupPhase",
+                'translation_domain' => 'forms'])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             ->add('task', TextareaType::class, ['label' => "exercisePhase.labels.task", 'translation_domain' => 'forms'])
             ->add('save', SubmitType::class, ['label' => 'exercisePhase.labels.submit', 'translation_domain' => 'forms']);

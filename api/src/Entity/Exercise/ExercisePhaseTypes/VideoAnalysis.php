@@ -23,6 +23,15 @@ class VideoAnalysis extends ExercisePhase
         parent::__construct($id);
         $this->videos = new ArrayCollection();
     }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this::VIDEO_ANALYSE;
+    }
+
     /**
      * @return Collection|Video[]
      */

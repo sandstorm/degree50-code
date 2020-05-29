@@ -22,7 +22,7 @@
         </div>
         <div class="exercise-form__right">
             <ul class="nav nav-tabs" role="tablist">
-                {% if exercisePhase.type == 'VIDEO_ANALYSE' %}
+                {% if exercisePhase.type == 'videoAnalysis' %}
                     <li role="presentation" class="nav-item">
                         <a class="nav-link active" href="#videos" aria-controls="videos" role="tab" data-toggle="tab">Videos</a>
                     </li>
@@ -39,7 +39,7 @@
             </ul>
 
             <div class="tab-content">
-                {% if exercisePhase.type == 'VIDEO_ANALYSE' %}
+                {% if exercisePhase.type == 'videoAnalysis' %}
                     <div role="tabpanel" class="tab-pane active" id="videos">
                         <h4>Videos</h4>
                         {{ form_row(form.videos) }}

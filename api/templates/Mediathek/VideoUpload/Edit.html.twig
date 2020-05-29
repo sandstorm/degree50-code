@@ -15,6 +15,14 @@
         <div class="container">
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
+
+            <hr />
+            <h4>Video wird in folgenden Aufgaben/Phasen verwendet</h4>
+            <ul>
+            {% for phase in video.videoAnalysisTypes %}
+                <li>{{ phase.belongsToExcercise.name }} / {{ phase.name }}</li>
+            {% endfor %}
+            </ul>
         </div>
 
         <footer class="form-footer">

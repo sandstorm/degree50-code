@@ -23,8 +23,27 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ExercisePhase
 {
-    const VIDEO_ANALYSE = 'VIDEO_ANALYSE';
+    // types of phases
+    const VIDEO_ANALYSE = 'videoAnalysis';
     const PHASE_TYPES = [ExercisePhase::VIDEO_ANALYSE];
+
+    // components for phases
+    const VIDEO_PLAYER = 'videoPlayer';
+    const DOCUMENT_UPLOAD = 'documentUpload';
+    const CHAT = 'chat';
+    const SHARED_DOCUMENT = 'sharedDocument';
+    const VIDEO_CODE = 'videoCode';
+
+    const PHASE_COMPONENTS = [
+        ExercisePhase::VIDEO_PLAYER,
+        ExercisePhase::DOCUMENT_UPLOAD,
+        ExercisePhase::VIDEO_CODE
+    ];
+
+    const PHASE_COMPONENTS_GROUP = ExercisePhase::PHASE_COMPONENTS + [
+        ExercisePhase::CHAT,
+        ExercisePhase::SHARED_DOCUMENT,
+    ];
 
     /**
      * @var string The entity Id
@@ -56,15 +75,6 @@ class ExercisePhase
      * @Assert\NotBlank
      */
     public $task = '';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column
-     * @Assert\NotBlank
-     * @Assert\Choice(choices=ExercisePhase::PHASE_TYPES, message="Choose a valid type.")
-     */
-    public $type = '';
 
     /**
      * @var string
@@ -153,30 +163,6 @@ class ExercisePhase
     }
 
     /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeLabel(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
-    /**
      * @return int
      */
     public function getSorting(): int
@@ -238,5 +224,15 @@ class ExercisePhase
     public function setIsGroupPhase(bool $isGroupPhase): void
     {
         $this->isGroupPhase = $isGroupPhase;
+    }
+
+    /**
+     * Override in extending class
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'exercisePhase';
     }
 }
