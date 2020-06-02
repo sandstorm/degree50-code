@@ -30,20 +30,9 @@ class ExercisePhase
     // components for phases
     const VIDEO_PLAYER = 'videoPlayer';
     const DOCUMENT_UPLOAD = 'documentUpload';
+    const VIDEO_CODE = 'videoCode';
     const CHAT = 'chat';
     const SHARED_DOCUMENT = 'sharedDocument';
-    const VIDEO_CODE = 'videoCode';
-
-    const PHASE_COMPONENTS = [
-        ExercisePhase::VIDEO_PLAYER,
-        ExercisePhase::DOCUMENT_UPLOAD,
-        ExercisePhase::VIDEO_CODE
-    ];
-
-    const PHASE_COMPONENTS_GROUP = ExercisePhase::PHASE_COMPONENTS + [
-        ExercisePhase::CHAT,
-        ExercisePhase::SHARED_DOCUMENT,
-    ];
 
     /**
      * @var string The entity Id
@@ -98,6 +87,13 @@ class ExercisePhase
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\ExercisePhaseTeam", mappedBy="exercisePhase", cascade={"all"})
      */
     private $teams;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(type="simple_array")
+     */
+    public $components = '';
 
     public function __construct(string $id = null)
     {
@@ -235,4 +231,22 @@ class ExercisePhase
     {
         return 'exercisePhase';
     }
+
+    /**
+     * @return array
+     */
+    public function getComponents(): array
+    {
+        return $this->components;
+    }
+
+    /**
+     * @param array $components
+     */
+    public function setComponents(array $components): void
+    {
+        $this->components = $components;
+    }
+
+
 }

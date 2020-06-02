@@ -13,6 +13,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoAnalysis extends ExercisePhase
 {
+    const PHASE_COMPONENTS = [
+        ExercisePhase::VIDEO_PLAYER,
+        ExercisePhase::DOCUMENT_UPLOAD,
+        ExercisePhase::VIDEO_CODE
+    ];
+
+    const PHASE_COMPONENTS_GROUP = VideoAnalysis::PHASE_COMPONENTS + [
+        ExercisePhase::CHAT,
+        ExercisePhase::SHARED_DOCUMENT,
+    ];
+
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Video\Video", inversedBy="videoAnalysisTypes")
      */
@@ -30,6 +41,18 @@ class VideoAnalysis extends ExercisePhase
     public function getType(): string
     {
         return $this::VIDEO_ANALYSE;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedComponents(): array
+    {
+        if ($this->isGroupPhase()) {
+            return $this::PHASE_COMPONENTS_GROUP;
+        } else {
+            return $this::PHASE_COMPONENTS;
+        }
     }
 
     /**

@@ -2,9 +2,11 @@
 
 namespace App\Exercise\Form;
 
+use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Video\Video;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,12 +15,26 @@ class VideoAnalysisType extends ExercisePhaseType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
+        $choices = [];
+        foreach(VideoAnalysis::PHASE_COMPONENTS as $component) {
+            $choices[$component] = $component;
+        }
         $builder
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
                 'choice_label' => 'title',
                 'multiple' => true,
                 'label' => "exercisePhase.labels.videos", 'translation_domain' => 'forms'
+            ])
+            ->add('components', ChoiceType::class, [
+                'label' => "exercisePhase.labels.components", 'translation_domain' => 'forms',
+                'choices' => $choices,
+                'multiple' => true,
+                'expanded' => true,
+                'choice_label' => function ($choice, $key, $value) {
+                    return 'exercisePhase.components.' . $key . '.label';
+                },
+                'choice_translation_domain' => 'forms'
             ]);
     }
 

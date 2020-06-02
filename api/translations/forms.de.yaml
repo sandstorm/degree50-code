@@ -25,12 +25,24 @@ exercisePhase:
     name: 'Titel der Phase'
     task: 'Lernauftrag / Beschreibung'
     videos: 'Videos'
+    components: 'Komponenten'
     submit: 'Phase speichern'
     type: 'Typ'
   types:
     videoAnalysis:
       label: 'Videoanalyse'
       iconClass: 'fas fa-film'
+  components:
+    videoPlayer:
+      label: 'Videoplayer'
+    chat:
+      label: 'Chat'
+    documentUpload:
+      label: 'Dokumenten-Upload'
+    videoCode:
+      label: 'Videokodierung'
+    sharedDocument:
+      label: 'Geteiltes Dokument'
   new:
     back: 'Zurück zur Aufgabe'
     title: 'Phase hinzufügen'
