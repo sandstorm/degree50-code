@@ -24,10 +24,10 @@ class VideoAnalysisType extends ExercisePhaseType
                 'class' => Video::class,
                 'choice_label' => 'title',
                 'multiple' => true,
-                'label' => "exercisePhase.labels.videos", 'translation_domain' => 'forms'
+                'label' => false
             ])
             ->add('components', ChoiceType::class, [
-                'label' => "exercisePhase.labels.components", 'translation_domain' => 'forms',
+                'label' => false,
                 'choices' => $choices,
                 'multiple' => true,
                 'expanded' => true,

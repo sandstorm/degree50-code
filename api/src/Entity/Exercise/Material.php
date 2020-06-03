@@ -46,6 +46,7 @@ class Material
     private $uploadAt;
 
     /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * @var File
      *
      * @Vich\UploadableField(mapping="exercise_material", fileNameProperty="link")

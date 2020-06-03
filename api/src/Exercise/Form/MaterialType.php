@@ -4,6 +4,7 @@ namespace App\Exercise\Form;
 
 use App\Entity\Exercise\Material;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
@@ -25,13 +26,16 @@ class MaterialType extends AbstractType
         $router = $this->router;
 
         $builder
-            ->add('name')
+            ->add('name', TextType::class, ['label' =>"material.labels.name", 'translation_domain' => 'forms'])
             ->add('file', VichFileType::class, [
                 'download_uri' => static function (Material $material) use ($router) {
                     return $router->generate('app_material-download', ['id' => $material->getId()]);
                 },
-                'label' => false,
-                'required' => false,
+                'label' => "material.labels.file",
+                'translation_domain' => 'forms',
+                'attr' => ['placeholder' => "material.labels.selectFile"],
+                'download_label' => 'form.label.download',
+                'required' => true,
                 'allow_delete' => true,
                 'asset_helper' => true,
             ]);

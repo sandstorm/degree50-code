@@ -24,6 +24,14 @@ export default class extends Controller {
                 // add a new tag form (see next code block)
                 addTagForm($collectionHolder, $newLinkLi);
             });
+
+            // file / label handling for bootstrap styled forms
+            $('.vich-file input[type="file"]').change( function() {
+                let filename = $(this)[0].value;
+                const idx = filename.lastIndexOf("\\");
+                filename = filename.substr(idx+1);
+                $(this).next('label').html(filename);
+            });
         });
     }
 }
@@ -36,7 +44,7 @@ function addTagForm($collectionHolder, $newLinkLi) {
     const index = $collectionHolder.data('index');
 
     let newForm = prototype;
-    newForm = newForm.replace(/__name__label__/g, index);
+    newForm = newForm.replace(/__name__label__/g, '');
 
     // increase the index with one for the next item
     $collectionHolder.data('index', index + 1);

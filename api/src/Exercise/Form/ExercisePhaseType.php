@@ -23,6 +23,7 @@ class ExercisePhaseType extends AbstractType
                 'translation_domain' => 'forms'
             ])
             ->add('material', CollectionType::class, [
+                'attr' => ['class' => 'form-collection'],
                 'label' => false,
                 'entry_type' => MaterialType::class,
                 'allow_add' => true,

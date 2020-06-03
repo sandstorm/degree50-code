@@ -1,3 +1,8 @@
+form:
+  label:
+    delete: 'Löschen'
+    download: 'Datei herunterladen'
+
 exercise:
   labels:
     name: 'Titel der Aufgabe'
@@ -78,3 +83,9 @@ video:
     title: 'Video löschen'
     messages:
       success: 'Video erfolgreich gelöscht!'
+
+material:
+  labels:
+    name: 'Name des Dokuments/Materials'
+    file: 'Datei'
+    selectFile: 'Datei auswählen'
