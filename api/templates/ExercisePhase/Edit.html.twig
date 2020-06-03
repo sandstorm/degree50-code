@@ -28,7 +28,7 @@
                     </li>
                 {% endif %}
                 <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#material" aria-controls="material" role="tab" data-toggle="tab">Material</a>
+                    <a class="nav-link" href="#material" aria-controls="material" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %}</a>
                 </li>
                 <li role="presentation" class="nav-item">
                     <a class="nav-link" href="#fragen" aria-controls="fragen" role="tab" data-toggle="tab">Fragen</a>
@@ -44,7 +44,11 @@
                         {{ form_row(form.videos) }}
                     </div>
                 {% endif %}
-                <div role="tabpanel" class="tab-pane" id="material">Material</div>
+                <div role="tabpanel" class="tab-pane" id="material">
+                    <div data-controller="collectionHandling">
+                        {{ form_row(form.material) }}
+                    </div>
+                </div>
                 <div role="tabpanel" class="tab-pane" id="fragen">Fragen</div>
                 <div role="tabpanel" class="tab-pane" id="komponenten">
                     {{ form_row(form.components) }}

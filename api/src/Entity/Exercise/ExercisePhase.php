@@ -89,16 +89,23 @@ class ExercisePhase
     private $teams;
 
     /**
-     * @var array
+     * @var array|null
      *
-     * @ORM\Column(type="simple_array")
+     * @ORM\Column(type="simple_array", nullable=TRUE)
      */
     public $components = '';
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Material", mappedBy="exercisePhase", cascade={"persist", "remove"})
+     * @Assert\Valid()
+     */
+    private $material;
 
     public function __construct(string $id = null)
     {
         $this->id = $id;
         $this->teams = new ArrayCollection();
+        $this->material = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -233,9 +240,9 @@ class ExercisePhase
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getComponents(): array
+    public function getComponents(): ?array
     {
         return $this->components;
     }
@@ -248,5 +255,31 @@ class ExercisePhase
         $this->components = $components;
     }
 
+    /**
+     * @param Material $material
+     *
+     * @return ExercisePhase
+     */
+    public function addMaterial(Material $material): self
+    {
+        $this->material->add($material);
+        $material->setExercisePhase($this);
+        return $this;
+    }
 
+    /**
+     * @param Material $material
+     */
+    public function removeMaterial(Material $material): self
+    {
+        $this->material->removeElement($material);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMaterial(): Collection
+    {
+        return $this->material;
+    }
 }

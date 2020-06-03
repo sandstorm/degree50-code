@@ -26,6 +26,7 @@ exercisePhase:
     task: 'Lernauftrag / Beschreibung'
     videos: 'Videos'
     components: 'Komponenten'
+    material: 'Material'
     submit: 'Phase speichern'
     type: 'Typ'
   types:
