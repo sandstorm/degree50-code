@@ -14,10 +14,12 @@ class ExerciseVoter extends Voter
 {
 
     const VIEW = 'view';
+    const EDIT = 'edit';
+    const DELETE = 'delete';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::VIEW])) {
+        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE])) {
             return false;
         }
 
@@ -42,6 +44,8 @@ class ExerciseVoter extends Voter
         switch ($attribute) {
             case self::VIEW:
                 return $this->canView($exercise, $user);
+            case self::EDIT or self::DELETE:
+                return $this->canEditOrDelete($exercise, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -52,4 +56,11 @@ class ExerciseVoter extends Voter
     {
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $exercise->getCourse());
     }
+
+    private function canEditOrDelete(Exercise $exercise, User $user)
+    {
+        return $user === $exercise->getCreator();
+    }
+
+    // TODO can delete
 }

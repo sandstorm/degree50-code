@@ -91,7 +91,7 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * @IsGranted("view", subject="exercise")
+     * @IsGranted("edit", subject="exercise")
      * @Route("/exercise/edit/{id}", name="app_exercise-edit")
      */
     public function edit(Request $request, Exercise $exercise): Response
@@ -123,7 +123,7 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * @IsGranted("view", subject="exercise")
+     * @IsGranted("delete", subject="exercise")
      * @Route("/exercise/delete/{id}", name="app_exercise-delete")
      */
     public function delete(Exercise $exercise): Response
