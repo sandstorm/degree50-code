@@ -1,0 +1,17 @@
+{% trans_default_domain 'forms' %}
+
+<footer class="footer">
+    {% if currentPhase == 0 %}
+        <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+    {% else %}
+        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercise.id, phase: currentPhase - 1}) }}">Vorherige Phase</a>
+    {% endif %}
+
+    <span>Phase {{ currentPhase + 1 }} / {{ amountOfPhases + 1 }}</span>
+
+    {% if currentPhase < amountOfPhases %}
+        <a class="btn btn-primary" href="{{ path('app_exercise', {id: exercise.id, phase: currentPhase + 1}) }}">Nächste Phase</a>
+    {% else %}
+        <a class="btn btn-primary" href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">Aufgabe abschließen</a>
+    {% endif %}
+</footer>

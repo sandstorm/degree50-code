@@ -1,14 +1,25 @@
-{% extends 'Base.html.twig' %}
+{% extends 'BaseFullscreen.html.twig' %}
 
 {% block title %}{{ exercise.name }}{% endblock %}
 
 {% block body %}
-    {{ include('Exercise/Pagination.html.twig', {exercise: exercise, currentPhase: currentPhase, amountOfPhases: amountOfPhases}) }}
-    <h2>{{ exercise.name }}</h2>
-    {{ phase.definition }}
-    <div data-controller="react" data-react-widget="ShowExercisePhase" data-react-props="{{ phase.definition }}">
-        Loading react part...
+    <div class="container">
+        <h2 class="text-center">Phase {{ currentPhase + 1 }}: {{ phase.name }}</h2>
+        <p class="text-center">
+            {{ phase.task }}
+        </p>
+        <hr />
+        <h4>Bisherigen Ergebnisse deiner Seminargruppe: </h4>
+        <div class="tiles">
+            <div tabindex="0" class="tile tile--active">
+                <div class="tile__content">
+                    <i class="tile__icon fas fa-play"></i>
+                    <span>Phase starten</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    {{ include('Exercise/Pagination.html.twig', {exercise: exercise, currentPhase: currentPhase, amountOfPhases: amountOfPhases}) }}
+    {{ include('Exercise/Footer.html.twig', {exercise: exercise, currentPhase: currentPhase, amountOfPhases: amountOfPhases}) }}
+
 {% endblock %}
