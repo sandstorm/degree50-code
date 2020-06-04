@@ -4,6 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Account\Course;
+use App\Entity\Account\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,6 +55,12 @@ class Exercise
      * @ORM\JoinColumn(nullable=true)
      */
     private $course;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdExercises")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $creator;
 
     public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
@@ -142,5 +149,17 @@ class Exercise
     public function setDescription(string $description): void
     {
         $this->description = $description;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
+
+        return $this;
     }
 }

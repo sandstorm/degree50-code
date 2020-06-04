@@ -2,6 +2,7 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Account\User;
 use App\Exercise\Form\ExerciseType;
 use App\Entity\Exercise\Exercise;
 use App\Repository\Account\CourseRepository;
@@ -56,6 +57,10 @@ class ExerciseController extends AbstractController
         $courseId = $request->query->get('courseId', null);
 
         $exercise = new Exercise();
+        /* @var $user User */
+        $user = $this->getUser();
+        $exercise->setCreator($user);
+
         $course = null;
         if ($courseId) {
             $course = $this->courseRepository->find($courseId);

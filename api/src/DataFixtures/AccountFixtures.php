@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AccountFixtures extends Fixture
 {
     public const COURSE_REFERENCE = 'course';
+    public const CREATOR_REFERENCE = 'creator';
 
     /**
      * @var UserPasswordEncoderInterface
@@ -37,6 +38,8 @@ class AccountFixtures extends Fixture
         $account->setEmail('admin@sandstorm.de');
         $account->setPassword($this->passwordEncoder->encodePassword($account, 'password'));
         $manager->persist($account);
+
+        $this->addReference(self::CREATOR_REFERENCE, $account);
 
         $courseRole = new CourseRole();
         $courseRole->setName('DOZENT');

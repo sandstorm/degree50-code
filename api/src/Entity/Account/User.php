@@ -2,6 +2,7 @@
 
 namespace App\Entity\Account;
 
+use App\Entity\Exercise\Exercise;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -42,9 +43,15 @@ class User implements UserInterface
      */
     private Collection $courseRoles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Exercise", mappedBy="creator")
+     */
+    private Collection $createdExercises;
+
     public function __construct()
     {
         $this->courseRoles = new ArrayCollection();
+        $this->createdExercises = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,6 +170,15 @@ class User implements UserInterface
 
     public function isDozent(): bool
     {
+        // TODO
         return true;
+    }
+
+    /**
+     * @return Collection|Exercise[]
+     */
+    public function getCreatedExercises(): Collection
+    {
+        return $this->createdExercises;
     }
 }
