@@ -18,8 +18,8 @@ class Course
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="guid")
      */
     private $id;
 
@@ -49,8 +49,9 @@ class Course
      */
     private Collection $courseRoles;
 
-    public function __construct()
+    public function __construct($id = null)
     {
+        $this->id = $id;
         $this->courseRoles = new ArrayCollection();
         $this->exercises = new ArrayCollection();
         $this->creationDate = new DateTime();

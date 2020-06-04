@@ -22,7 +22,7 @@ class Exercise
      * @var string The entity Id
      *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="guid")
      */
     private $id;

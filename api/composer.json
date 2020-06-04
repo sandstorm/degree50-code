@@ -29,7 +29,6 @@
     },
     "require-dev": {
         "api-platform/schema-generator": "^2.1",
-        "dama/doctrine-test-bundle": "^6.3",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "friends-of-behat/mink": "^1.8",
         "friends-of-behat/mink-browserkit-driver": "^1.4",

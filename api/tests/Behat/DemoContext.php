@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
+use App\Entity\Account\Course;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Video\Video;
 use Behat\Behat\Context\Context;
@@ -11,7 +12,10 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Session;
 use Behat\Mink\WebAssert;
 use DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Migrator;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -26,50 +30,28 @@ use Symfony\Component\Routing\RouterInterface;
 final class DemoContext implements Context
 {
 
+    use DatabaseFixtureContextTrait;
+
     private Session $minkSession;
 
     private RouterInterface $router;
 
-    private EntityManagerInterface $entityManager;
+    protected EntityManagerInterface $entityManager;
+    protected KernelInterface $kernel;
 
-    public function __construct(Session $minkSession, RouterInterface $router, EntityManagerInterface $entityManager)
+    /**
+     * DemoContext constructor.
+     * @param Session $minkSession
+     * @param RouterInterface $router
+     * @param EntityManagerInterface $entityManager
+     * @param KernelInterface $kernel
+     */
+    public function __construct(Session $minkSession, RouterInterface $router, EntityManagerInterface $entityManager, KernelInterface $kernel)
     {
         $this->minkSession = $minkSession;
         $this->router = $router;
         $this->entityManager = $entityManager;
-    }
-
-
-    /**
-     * @BeforeSuite
-     */
-    public static function beforeSuite()
-    {
-        StaticDriver::setKeepStaticConnections(true);
-    }
-
-    /**
-     * @BeforeScenario
-     */
-    public function beforeScenario()
-    {
-        StaticDriver::beginTransaction();
-    }
-
-    /**
-     * @AfterScenario
-     */
-    public function afterScenario()
-    {
-        StaticDriver::rollBack();
-    }
-
-    /**
-     * @AfterSuite
-     */
-    public static function afterSuite()
-    {
-        StaticDriver::setKeepStaticConnections(false);
+        $this->kernel = $kernel;
     }
 
 
@@ -138,6 +120,15 @@ final class DemoContext implements Context
     public function iHaveAnExercise($exerciseId)
     {
         $this->entityManager->persist(new Exercise($exerciseId));
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given I have a course with ID :courseId
+     */
+    public function iHaveAnCourseWithID($courseId)
+    {
+        $this->entityManager->persist(new Course($courseId));
         $this->entityManager->flush();
     }
 }
