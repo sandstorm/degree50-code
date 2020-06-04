@@ -2,6 +2,7 @@
 
 namespace App\Entity\Exercise;
 
+use App\Core\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,14 +17,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 class Material
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @var string
@@ -60,15 +54,6 @@ class Material
      * @ORM\JoinColumn(nullable=true)
      */
     private $exercisePhase;
-
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * @param string $name

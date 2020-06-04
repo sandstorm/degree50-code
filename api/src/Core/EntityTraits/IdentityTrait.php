@@ -1,0 +1,34 @@
+<?php
+
+
+namespace App\Core\EntityTraits;
+
+
+use Ramsey\Uuid\Uuid;
+
+trait IdentityTrait
+{
+    /**
+     * @var string The entity Id
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="guid")
+     */
+    private $id;
+
+    private function generateOrSetId(?string $id = null)
+    {
+        $this->id = $id ?: Uuid::uuid4()->toString();
+    }
+
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    public function __construct(?string $id = null)
+    {
+        $this->generateOrSetId($id);
+    }
+}

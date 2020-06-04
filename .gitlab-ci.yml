@@ -1,6 +1,25 @@
 stages:
+  - test
   - package
   - deploy
+
+test_app:
+  stage: test
+  image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+  tags:
+      - docker
+      - privileged
+  services:
+      - mysql:latest
+  variables:
+      MYSQL_DATABASE: "test_db"
+      MYSQL_ROOT_PASSWORD: "password"
+      DATABASE_URL: mysql://root:password@mysql/test_db
+  script:
+      - cd api
+      - composer install
+      - vendor/bin/phpat phpat.yaml
+      - vendor/bin/behat
 
 package_app:
   stage: package

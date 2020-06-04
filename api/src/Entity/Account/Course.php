@@ -3,6 +3,7 @@
 namespace App\Entity\Account;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,12 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Course
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @var string
@@ -49,16 +45,12 @@ class Course
      */
     private Collection $courseRoles;
 
-    public function __construct()
+    public function __construct($id = null)
     {
+        $this->generateOrSetId($id);
         $this->courseRoles = new ArrayCollection();
         $this->exercises = new ArrayCollection();
         $this->creationDate = new DateTime();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Entity\Video;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,22 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoCutList
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @ORM\Column(type="json")
      */
     private $cutList = [];
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getCutList(): ?array
     {

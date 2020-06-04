@@ -2,6 +2,7 @@
 
 namespace App\Entity\Account;
 
+use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,12 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -54,16 +50,12 @@ class User implements UserInterface
      */
     private $createdVideos;
 
-    public function __construct()
+    public function __construct(?string $id = null)
     {
         $this->courseRoles = new ArrayCollection();
         $this->createdExercises = new ArrayCollection();
         $this->createdVideos = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
+        $this->generateOrSetId($id);
     }
 
     public function getEmail(): ?string

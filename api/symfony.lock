@@ -37,26 +37,17 @@
     "brick/math": {
         "version": "0.8.15"
     },
+    "carlosas/phpat": {
+        "version": "0.6.1"
+    },
+    "carlosas/simple-event-dispatcher": {
+        "version": "0.1.0"
+    },
     "composer/semver": {
         "version": "1.5.1"
     },
     "composer/xdebug-handler": {
         "version": "1.4.1"
-    },
-    "container-interop/container-interop": {
-        "version": "1.2.0"
-    },
-    "dama/doctrine-test-bundle": {
-        "version": "4.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "4.0",
-            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
-        },
-        "files": [
-            "config/packages/test/dama_doctrine_test_bundle.yaml"
-        ]
     },
     "doctrine/annotations": {
         "version": "1.0",
@@ -152,6 +143,9 @@
     "doctrine/reflection": {
         "version": "1.2.1"
     },
+    "doctrine/sql-formatter": {
+        "version": "1.1.0"
+    },
     "easycorp/easyadmin-bundle": {
         "version": "2.0",
         "recipe": {
@@ -224,9 +218,6 @@
     },
     "jcupitt/vips": {
         "version": "v1.0.5"
-    },
-    "jdorn/sql-formatter": {
-        "version": "v1.2.17"
     },
     "jms/metadata": {
         "version": "2.2.0"
@@ -328,6 +319,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.1.0"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "0.4.7"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -547,6 +541,9 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.15.0"
+    },
+    "symfony/polyfill-php80": {
+        "version": "v1.17.0"
     },
     "symfony/process": {
         "version": "v5.0.7"

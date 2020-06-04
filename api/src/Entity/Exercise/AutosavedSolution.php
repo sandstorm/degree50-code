@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,12 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AutosavedSolution
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @ORM\Column(type="json")
@@ -39,11 +35,6 @@ class AutosavedSolution
      * @ORM\JoinColumn(nullable=false)
      */
     private $team;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getSolution(): ?array
     {

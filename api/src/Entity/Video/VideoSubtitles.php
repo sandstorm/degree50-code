@@ -2,6 +2,7 @@
 
 namespace App\Entity\Video;
 
+use App\Core\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,22 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoSubtitles
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @ORM\Column(type="json")
      */
     private $subtitles = [];
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getSubtitles(): ?array
     {
