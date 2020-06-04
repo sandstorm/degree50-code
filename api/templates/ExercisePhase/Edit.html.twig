@@ -22,36 +22,44 @@
         </div>
         <div class="exercise-form__right">
             <ul class="nav nav-tabs" role="tablist">
-                {% if exercisePhase.type == 'VIDEO_ANALYSE' %}
+                {% if exercisePhase.type == 'videoAnalysis' %}
                     <li role="presentation" class="nav-item">
-                        <a class="nav-link active" href="#videos" aria-controls="videos" role="tab" data-toggle="tab">Videos</a>
+                        <a class="nav-link active" href="#videos" aria-controls="videos" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.videos{% endtrans %} ({{ exercisePhase.videos|length }})</a>
                     </li>
                 {% endif %}
                 <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#material" aria-controls="material" role="tab" data-toggle="tab">Material</a>
+                    <a class="nav-link" href="#material" aria-controls="material" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %} ({{ exercisePhase.material|length }})</a>
                 </li>
                 <li role="presentation" class="nav-item">
                     <a class="nav-link" href="#fragen" aria-controls="fragen" role="tab" data-toggle="tab">Fragen</a>
                 </li>
                 <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab" data-toggle="tab">Komponenten</a>
+                    <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %} ({{ exercisePhase.components|length }})</a>
                 </li>
             </ul>
 
             <div class="tab-content">
-                {% if exercisePhase.type == 'VIDEO_ANALYSE' %}
+                {% if exercisePhase.type == 'videoAnalysis' %}
                     <div role="tabpanel" class="tab-pane active" id="videos">
-                        <h4>Videos</h4>
+                        <h4>{% trans %}exercisePhase.labels.videos{% endtrans %}</h4>
                         {{ form_row(form.videos) }}
                     </div>
                 {% endif %}
-                <div role="tabpanel" class="tab-pane" id="material">Material</div>
+                <div role="tabpanel" class="tab-pane" id="material">
+                    <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
+                    <div data-controller="collectionHandling">
+                        {{ form_row(form.material) }}
+                    </div>
+                </div>
                 <div role="tabpanel" class="tab-pane" id="fragen">Fragen</div>
-                <div role="tabpanel" class="tab-pane" id="komponenten">Komponenten</div>
+                <div role="tabpanel" class="tab-pane" id="komponenten">
+                    <h4>{% trans %}exercisePhase.labels.components{% endtrans %}</h4>
+                    {{ form_row(form.components) }}
+                </div>
             </div>
         </div>
 
-        <footer class="form-footer">
+        <footer class="footer">
             <a class="btn btn-outline-primary" href="{{ path('app_exercise-edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
             {{ form_row(form.save) }}
         </footer>

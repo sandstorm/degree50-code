@@ -3,16 +3,12 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\Course;
-use App\Entity\Account\User;
-use App\Entity\Exercise\Exercise;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -63,7 +59,7 @@ class ExerciseOverviewController extends AbstractController
 
         $sidebarItems = [];
         /* @var $course Course */
-        foreach($courses as $course) {
+        foreach ($courses as $course) {
             $creationDateYear = $course->getCreationDateYear();
             if (!array_key_exists($creationDateYear, $sidebarItems)) {
                 $sidebarItems[$creationDateYear] = ['label' => $creationDateYear, 'courses' => []];

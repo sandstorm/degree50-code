@@ -10,12 +10,14 @@
             <a href="{{ path('app_exercise', {id: exercise.id}) }}">
                 <i class="fas fa-play"></i> {% trans %}exercise.show.title{% endtrans %}
             </a>
-            <a href="{{ path('app_exercise-edit', {id: exercise.id}) }}">
-                <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
-            </a>
-            <a href="{{ path('app_exercise-delete', {id: exercise.id}) }}" class="color-alert">
-                <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
-            </a>
+            {% if exercise.creator == app.user %}
+                <a href="{{ path('app_exercise-edit', {id: exercise.id}) }}">
+                    <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
+                </a>
+                <a href="{{ path('app_exercise-delete', {id: exercise.id}) }}" class="color-alert">
+                    <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
+                </a>
+            {% endif %}
         </div>
     </div>
 {% endfor %}

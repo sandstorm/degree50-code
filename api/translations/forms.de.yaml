@@ -1,3 +1,8 @@
+form:
+  label:
+    delete: 'Löschen'
+    download: 'Datei herunterladen'
+
 exercise:
   labels:
     name: 'Titel der Aufgabe'
@@ -25,11 +30,25 @@ exercisePhase:
     name: 'Titel der Phase'
     task: 'Lernauftrag / Beschreibung'
     videos: 'Videos'
+    components: 'Komponenten'
+    material: 'Material'
     submit: 'Phase speichern'
+    type: 'Typ'
   types:
-    VIDEO_ANALYSE:
+    videoAnalysis:
       label: 'Videoanalyse'
       iconClass: 'fas fa-film'
+  components:
+    videoPlayer:
+      label: 'Videoplayer'
+    chat:
+      label: 'Chat'
+    documentUpload:
+      label: 'Dokumenten-Upload'
+    videoCode:
+      label: 'Videokodierung'
+    sharedDocument:
+      label: 'Geteiltes Dokument'
   new:
     back: 'Zurück zur Aufgabe'
     title: 'Phase hinzufügen'
@@ -37,6 +56,10 @@ exercisePhase:
     title: 'Phase bearbeiten'
     messages:
       success: 'Phase erfolgreich gespeichert!'
+  delete:
+    title: 'Phase löschen'
+    messages:
+      success: 'Phase erfolgreich gelöscht!'
 
 video:
   labels:
@@ -60,3 +83,9 @@ video:
     title: 'Video löschen'
     messages:
       success: 'Video erfolgreich gelöscht!'
+
+material:
+  labels:
+    name: 'Name des Dokuments/Materials'
+    file: 'Datei'
+    selectFile: 'Datei auswählen'

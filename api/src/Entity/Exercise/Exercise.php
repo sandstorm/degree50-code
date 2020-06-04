@@ -4,6 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Account\Course;
+use App\Entity\Account\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource
  * @ORM\Entity
  */
-class Exercise
+class Exercise implements ExerciseInterface
 {
     /**
      * @var string The entity Id
@@ -55,9 +56,20 @@ class Exercise
      */
     private $course;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdExercises")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $creator;
+
     public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
         $this->id = $id;
+    }
+
+    public function getType(): string
+    {
+        return 'unspecified';
     }
 
     public function getId(): ?string
@@ -142,5 +154,24 @@ class Exercise
     public function setDescription(string $description): void
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return User
+     */
+    public function getCreator(): User
+    {
+        return $this->creator;
+    }
+
+    /**
+     * @param User $creator
+     * @return $this
+     */
+    public function setCreator(User $creator): self
+    {
+        $this->creator = $creator;
+
+        return $this;
     }
 }

@@ -23,8 +23,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ExercisePhase
 {
-    const VIDEO_ANALYSE = 'VIDEO_ANALYSE';
-    const PHASE_TYPES = [ExercisePhase::VIDEO_ANALYSE];
+    // types of phases
+    const VIDEO_ANALYSE = 'videoAnalysis';
+    const PHASE_TYPES = [self::VIDEO_ANALYSE];
+
+    // components for phases
+    const VIDEO_PLAYER = 'videoPlayer';
+    const DOCUMENT_UPLOAD = 'documentUpload';
+    const VIDEO_CODE = 'videoCode';
+    const CHAT = 'chat';
+    const SHARED_DOCUMENT = 'sharedDocument';
 
     /**
      * @var string The entity Id
@@ -59,15 +67,6 @@ class ExercisePhase
 
     /**
      * @var string
-     *
-     * @ORM\Column
-     * @Assert\NotBlank
-     * @Assert\Choice(choices=ExercisePhase::PHASE_TYPES, message="Choose a valid type.")
-     */
-    public $type = '';
-
-    /**
-     * @var string
      * @ORM\Column(type="text")
      */
     public $definition = '';
@@ -89,10 +88,24 @@ class ExercisePhase
      */
     private $teams;
 
+    /**
+     * @var array|null
+     *
+     * @ORM\Column(type="simple_array", nullable=TRUE)
+     */
+    public $components = '';
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Material", mappedBy="exercisePhase", cascade={"persist", "remove"})
+     * @Assert\Valid()
+     */
+    private $material;
+
     public function __construct(string $id = null)
     {
         $this->id = $id;
         $this->teams = new ArrayCollection();
+        $this->material = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -150,30 +163,6 @@ class ExercisePhase
     public function setBelongsToExcercise(Exercise $belongsToExcercise): void
     {
         $this->belongsToExcercise = $belongsToExcercise;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeLabel(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
     }
 
     /**
@@ -238,5 +227,59 @@ class ExercisePhase
     public function setIsGroupPhase(bool $isGroupPhase): void
     {
         $this->isGroupPhase = $isGroupPhase;
+    }
+
+    /**
+     * Override in extending class
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'exercisePhase';
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getComponents(): ?array
+    {
+        return $this->components;
+    }
+
+    /**
+     * @param array $components
+     */
+    public function setComponents(array $components): void
+    {
+        $this->components = $components;
+    }
+
+    /**
+     * @param Material $material
+     *
+     * @return ExercisePhase
+     */
+    public function addMaterial(Material $material): self
+    {
+        $this->material->add($material);
+        $material->setExercisePhase($this);
+        return $this;
+    }
+
+    /**
+     * @param Material $material
+     */
+    public function removeMaterial(Material $material): self
+    {
+        $this->material->removeElement($material);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMaterial(): Collection
+    {
+        return $this->material;
     }
 }

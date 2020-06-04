@@ -1,0 +1,28 @@
+.form-collection {
+  > fieldset > .col-form-label {
+    display: none;
+  }
+
+  > fieldset > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .form-group {
+      width: 45%;
+      flex-basis: 45%;
+    }
+  }
+
+  .col-form-label {
+    padding: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  > .form-group {
+    padding: 10px;
+
+    background-color: $theme__color__grey;
+    border: 1px solid $theme__color__grey--darker;
+  }
+}

@@ -1,15 +1,22 @@
-.form-footer {
+.footer {
   position: fixed;
   bottom: 0;
   width: 100%;
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   padding: 10px;
 
   background-color: $theme__color__grey;
 
+  z-index: 9999;
+
   .form-group {
     margin: 0 !important;
+  }
+
+  .pagination {
+    margin-bottom: 0;
   }
 }

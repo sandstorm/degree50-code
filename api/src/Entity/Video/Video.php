@@ -5,6 +5,7 @@ namespace App\Entity\Video;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\VirtualizedFile;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,6 +55,12 @@ class Video
      * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis", mappedBy="videos")
      */
     private $videoAnalysisTypes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdVideos")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $creator;
 
     /**
      * Video constructor.
@@ -173,6 +180,18 @@ class Video
             $this->videoAnalysisTypes->removeElement($videoAnalysisType);
             $videoAnalysisType->removeVideo($this);
         }
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
 
         return $this;
     }

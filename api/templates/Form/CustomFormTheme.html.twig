@@ -1,7 +1,21 @@
 {% use 'bootstrap_4_layout.html.twig' %}
+{% extends '@!VichUploader/Form/fields.html.twig' %}
 
 {# ... override only the blocks you are interested in #}
 
 {% block submit_widget %}
     {{ parent() }}
+{% endblock %}
+
+{% block vich_file_widget %}
+    <div class="vich-file">
+        {{ form_widget(form.file) }}
+        {% if form.delete is defined %}
+            {{ form_row(form.delete) }}
+        {% endif %}
+
+        {% if download_uri %}
+            <a class="btn btn-outline-primary btn-sm" href="{{ download_uri }}">{{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}</a>
+        {% endif %}
+    </div>
 {% endblock %}
