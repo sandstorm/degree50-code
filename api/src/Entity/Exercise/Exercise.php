@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource
  * @ORM\Entity
  */
-class Exercise
+class Exercise implements ExerciseInterface
 {
     /**
      * @var string The entity Id
@@ -58,13 +58,18 @@ class Exercise
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdExercises")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $creator;
 
     public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
         $this->id = $id;
+    }
+
+    public function getType(): string
+    {
+        return 'unspecified';
     }
 
     public function getId(): ?string
@@ -151,12 +156,19 @@ class Exercise
         $this->description = $description;
     }
 
-    public function getCreator(): ?User
+    /**
+     * @return User
+     */
+    public function getCreator(): User
     {
         return $this->creator;
     }
 
-    public function setCreator(?User $creator): self
+    /**
+     * @param User $creator
+     * @return $this
+     */
+    public function setCreator(User $creator): self
     {
         $this->creator = $creator;
 

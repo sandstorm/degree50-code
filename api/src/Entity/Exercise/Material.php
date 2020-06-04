@@ -11,6 +11,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * Material
  *
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
 class Material
@@ -102,11 +103,11 @@ class Material
     }
 
     /**
-     * @param \DateTime $uploadAt
+     * @ORM\PrePersist
      */
-    public function setUploadAt($uploadAt)
+    public function setUploadedAtValue()
     {
-        $this->uploadAt = $uploadAt;
+        $this->uploadAt = new \DateTime();
     }
 
     /**

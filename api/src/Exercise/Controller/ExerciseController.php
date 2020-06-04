@@ -57,9 +57,6 @@ class ExerciseController extends AbstractController
         $courseId = $request->query->get('courseId', null);
 
         $exercise = new Exercise();
-        /* @var $user User */
-        $user = $this->getUser();
-        $exercise->setCreator($user);
 
         $course = null;
         if ($courseId) {
