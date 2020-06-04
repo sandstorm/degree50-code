@@ -5,6 +5,7 @@ namespace App\Entity\Video;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\VirtualizedFile;
@@ -17,13 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Video
 {
-
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\Column(type="guid")
-     */
-    private string $id;
+    use IdentityTrait;
 
     /**
      * @ORM\Column(type="text")
@@ -68,16 +63,8 @@ class Video
      */
     public function __construct(string $id)
     {
-        $this->id = $id;
+        $this->generateOrSetId($id);
         $this->videoAnalysisTypes = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getId(): string
-    {
-        return $this->id;
     }
 
     /**

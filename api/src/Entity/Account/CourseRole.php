@@ -3,6 +3,7 @@
 namespace App\Entity\Account;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,16 +13,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CourseRole
 {
+    use IdentityTrait;
+
     const DOZENT = 'DOZENT';
     const STUDENT = 'STUDENT';
     const ROLES = [self::DOZENT, self::STUDENT];
-
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @var string
@@ -43,11 +39,6 @@ class CourseRole
      * @ORM\JoinColumn(nullable=false)
      */
     private Course $course;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getUser(): ?User
     {

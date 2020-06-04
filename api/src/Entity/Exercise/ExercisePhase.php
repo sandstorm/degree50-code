@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,6 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ExercisePhase
 {
+    use IdentityTrait;
+
     // types of phases
     const VIDEO_ANALYSE = 'videoAnalysis';
     const PHASE_TYPES = [self::VIDEO_ANALYSE];
@@ -33,15 +36,6 @@ class ExercisePhase
     const VIDEO_CODE = 'videoCode';
     const CHAT = 'chat';
     const SHARED_DOCUMENT = 'sharedDocument';
-
-    /**
-     * @var string The entity Id
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="guid")
-     */
-    private ?string $id;
 
     /**
      * @var bool
@@ -103,14 +97,9 @@ class ExercisePhase
 
     public function __construct(string $id = null)
     {
-        $this->id = $id;
+        $this->generateOrSetId($id);
         $this->teams = new ArrayCollection();
         $this->material = new ArrayCollection();
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
     }
 
     public function __toString()

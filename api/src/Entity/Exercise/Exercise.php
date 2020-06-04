@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,14 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Exercise implements ExerciseInterface
 {
-    /**
-     * @var string The entity Id
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\Column(type="guid")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @var string A nice person
@@ -64,17 +58,12 @@ class Exercise implements ExerciseInterface
 
     public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
-        $this->id = $id;
+        $this->generateOrSetId($id);
     }
 
     public function getType(): string
     {
         return 'unspecified';
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
     }
 
     public function __toString()

@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,12 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Solution
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @ORM\Column(type="json")
@@ -27,11 +23,6 @@ class Solution
      * @ORM\OneToOne(targetEntity="App\Entity\Exercise\ExercisePhaseTeam", mappedBy="solution")
      */
     private $team;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getSolution(): ?array
     {

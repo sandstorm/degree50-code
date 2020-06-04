@@ -14,8 +14,12 @@ test:
 	docker-compose exec -e APP_ENV=test api bin/console doctrine:schema:drop --force
 	# TODO: was not possible to use migrations here :(
 	docker-compose exec -e APP_ENV=test api bin/console doctrine:schema:create -n
+	docker-compose exec api vendor/bin/phpat phpat.yaml
 	docker-compose exec api vendor/bin/behat
 
+
+testArchitecture:
+	docker-compose exec api vendor/bin/phpat phpat.yaml
 
 testBehat:
 	docker-compose exec api vendor/bin/behat

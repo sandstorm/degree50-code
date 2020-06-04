@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,12 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ExercisePhaseTeam
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdentityTrait;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhase", inversedBy="teams")
@@ -47,15 +43,11 @@ class ExercisePhaseTeam
      */
     private $autosavedSolutions;
 
-    public function __construct()
+    public function __construct(?string $id = null)
     {
         $this->members = new ArrayCollection();
         $this->autosavedSolutions = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
+        $this->generateOrSetId($id);
     }
 
     public function getExercisePhase(): ?ExercisePhase
