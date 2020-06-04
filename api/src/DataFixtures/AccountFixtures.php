@@ -27,49 +27,53 @@ class AccountFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         // add one course for admin
-        $course = new Course();
-        $course->setName('Seminar Mathe 1');
-        $manager->persist($course);
-
+        $course = $this->createCourse($manager, 'Seminar Mathe 1');
         // other fixtures can get this object using the AccountFixtures::COURSE_REFERENCE constant
         $this->addReference(self::COURSE_REFERENCE, $course);
 
+        $dozent = $this->createUser($manager, 'admin@sandstorm.de');
+        $this->addReference(self::CREATOR_REFERENCE, $dozent);
+
+        $this->createCourseRole($manager, CourseRole::DOZENT, $course, $dozent);
+
+        // add second course for admin
+        $course2 = $this->createCourse($manager, 'Seminar Mathe 2');
+        $this->createCourseRole($manager, CourseRole::DOZENT, $course2, $dozent);
+
+        // student user
+        $student = $this->createUser($manager, 'student@sandstorm.de');
+        $this->createCourseRole($manager, CourseRole::STUDENT, $course, $student);
+
+        $manager->flush();
+    }
+
+    private function createUser(ObjectManager $manager, string $userName): User
+    {
         $account = new User();
-        $account->setEmail('admin@sandstorm.de');
+        $account->setEmail($userName);
         $account->setPassword($this->passwordEncoder->encodePassword($account, 'password'));
         $manager->persist($account);
 
-        $this->addReference(self::CREATOR_REFERENCE, $account);
+        return $account;
+    }
 
+    private function createCourse(ObjectManager $manager, string $name): Course
+    {
+        $course = new Course();
+        $course->setName($name);
+        $manager->persist($course);
+
+        return $course;
+    }
+
+    private function createCourseRole(ObjectManager $manager, string $name, Course $course, User $user): CourseRole
+    {
         $courseRole = new CourseRole();
-        $courseRole->setName('DOZENT');
+        $courseRole->setName($name);
         $courseRole->setCourse($course);
-        $courseRole->setUser($account);
+        $courseRole->setUser($user);
         $manager->persist($courseRole);
 
-        // add second course for admin
-        $course2 = new Course();
-        $course2->setName('Seminar Mathe 2');
-        $manager->persist($course2);
-
-        $courseRole2 = new CourseRole();
-        $courseRole2->setName('DOZENT');
-        $courseRole2->setCourse($course2);
-        $courseRole2->setUser($account);
-        $manager->persist($courseRole2);
-
-        // student user
-        $account2 = new User();
-        $account2->setEmail('student@sandstorm.de');
-        $account2->setPassword($this->passwordEncoder->encodePassword($account2, 'password'));
-        $manager->persist($account2);
-
-        $courseRole3 = new CourseRole();
-        $courseRole3->setName('STUDENT');
-        $courseRole3->setCourse($course);
-        $courseRole3->setUser($account2);
-        $manager->persist($courseRole3);
-
-        $manager->flush();
+        return $courseRole;
     }
 }

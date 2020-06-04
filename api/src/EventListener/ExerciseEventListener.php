@@ -32,6 +32,8 @@ class ExerciseEventListener
     {
         /* @var User $currentUser */
         $currentUser = $this->security->getUser();
-        $exercise->setCreator($currentUser);
+        if ($currentUser instanceof User) {
+            $exercise->setCreator($currentUser);
+        }
     }
 }

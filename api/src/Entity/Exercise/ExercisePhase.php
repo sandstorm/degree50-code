@@ -25,7 +25,7 @@ class ExercisePhase
 {
     // types of phases
     const VIDEO_ANALYSE = 'videoAnalysis';
-    const PHASE_TYPES = [ExercisePhase::VIDEO_ANALYSE];
+    const PHASE_TYPES = [self::VIDEO_ANALYSE];
 
     // components for phases
     const VIDEO_PLAYER = 'videoPlayer';

@@ -12,7 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CourseRole
 {
-    const ROLES = ['DOZENT', 'STUDENT'];
+    const DOZENT = 'DOZENT';
+    const STUDENT = 'STUDENT';
+    const ROLES = [self::DOZENT, self::STUDENT];
 
     /**
      * @ORM\Id()
