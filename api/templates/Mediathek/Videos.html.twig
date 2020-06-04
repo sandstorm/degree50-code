@@ -10,15 +10,17 @@
             <a href="{{ path('app_videoplayer', {id: video.id}) }}">
                 <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
             </a>
-            <a href="{{ path('app_video-edit', {id: video.id}) }}">
-                <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
-            </a>
-            <a href="{{ path('app_subtitle-editor') }}">
-                <i class="fas fa-pencil-alt"></i> {% trans %}video.subtitle.title{% endtrans %}
-            </a>
-            <a href="{{ path('app_video-delete', {id: video.id}) }}" class="color-alert">
-                <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
-            </a>
+            {% if video.creator == app.user %}
+                <a href="{{ path('app_video-edit', {id: video.id}) }}">
+                    <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
+                </a>
+                <a href="{{ path('app_subtitle-editor') }}">
+                    <i class="fas fa-pencil-alt"></i> {% trans %}video.subtitle.title{% endtrans %}
+                </a>
+                <a href="{{ path('app_video-delete', {id: video.id}) }}" class="color-alert">
+                    <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
+                </a>
+            {% endif %}
         </div>
     </div>
 {% endfor %}

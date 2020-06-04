@@ -3,6 +3,7 @@
 namespace App\Entity\Account;
 
 use App\Entity\Exercise\Exercise;
+use App\Entity\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -48,10 +49,16 @@ class User implements UserInterface
      */
     private Collection $createdExercises;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Video\Video", mappedBy="creator")
+     */
+    private $createdVideos;
+
     public function __construct()
     {
         $this->courseRoles = new ArrayCollection();
         $this->createdExercises = new ArrayCollection();
+        $this->createdVideos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,5 +187,13 @@ class User implements UserInterface
     public function getCreatedExercises(): Collection
     {
         return $this->createdExercises;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getCreatedVideos(): Collection
+    {
+        return $this->createdVideos;
     }
 }

@@ -14,12 +14,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @IsGranted("ROLE_USER")
  */
 class VideoUploadController extends AbstractController
 {
+    private TranslatorInterface $translator;
+
+    /**
+     * VideoUploadController constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @Route("/video/uploads/{videoUuid}", name="app_videoupload")
      */
@@ -64,6 +76,7 @@ class VideoUploadController extends AbstractController
     }
 
     /**
+     * @IsGranted("edit", subject="video")
      * @Route("/video/edit/{id}", name="app_video-edit")
      */
     public function edit(Request $request, Video $video): Response
@@ -94,6 +107,7 @@ class VideoUploadController extends AbstractController
     }
 
     /**
+     * @IsGranted("delete", subject="video")
      * @Route("/video/delete/{id}", name="app_video-delete")
      */
     public function delete(AppRuntime $appRuntime, Video $video): Response
