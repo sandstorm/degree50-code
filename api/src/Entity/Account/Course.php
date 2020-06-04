@@ -53,11 +53,6 @@ class Course
         $this->creationDate = new DateTime();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     /**
      * @return Collection|CourseRole[]
      */

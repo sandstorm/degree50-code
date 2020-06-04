@@ -66,3 +66,7 @@ services:
 
                 # set the 'lazy' option to TRUE to only instantiate listeners when they are used
                 lazy: true
+
+    App\Security\ParamConverter\DoctrineCustomParamConverter:
+        arguments:
+            $expressionLanguage: '@sensio_framework_extra.converter.doctrine.orm.expression_language'

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\Behat;
 
 use App\Entity\Account\Course;
+use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\Material;
 use App\Entity\Video\Video;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
@@ -20,6 +23,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -106,6 +113,36 @@ final class DemoContext implements Context
     }
 
     /**
+     * @Given I am logged in as :username
+     */
+    public function iAmLoggedInAs($username)
+    {
+        $user = $this->entityManager->find(User::class, $username);
+        if (!$user) {
+            $user = new User($username);
+            $user->setEmail($username);
+            $user->setPassword('password');
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        /* @var $tokenStorage \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface */
+        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
+        $tokenStorage->setToken(new UsernamePasswordToken($username, 'foo', 'foo'));
+        $tokenStorage->getToken()->setUser($user);
+    }
+
+    /**
+     * @Given I am not logged in
+     */
+    public function iAmNotLoggedIn()
+    {
+        /* @var $tokenStorage \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface */
+        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
+        $tokenStorage->setToken(null);
+    }
+
+    /**
      * @Given I have a video with ID :videoId
      */
     public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId)
@@ -129,6 +166,31 @@ final class DemoContext implements Context
     public function iHaveAnCourseWithID($courseId)
     {
         $this->entityManager->persist(new Course($courseId));
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given I have an exercise phase :exercisePhaseId belonging to exercise :exerciseId
+     */
+    public function iHaveAnExercisePhaseBelongingToExercise($exercisePhaseId, $exerciseId)
+    {
+        /* @var $exercise Exercise */
+        $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
+        $exercise->addPhase(new ExercisePhase($exercisePhaseId));
+
+        $this->entityManager->persist($exercise);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given I have a material with ID :materialId
+     */
+    public function iHaveAMaterialWithId($materialId)
+    {
+        $material = new Material($materialId);
+        $material->setLink('link');
+
+        $this->entityManager->persist($material);
         $this->entityManager->flush();
     }
 }

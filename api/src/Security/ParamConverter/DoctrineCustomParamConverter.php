@@ -49,10 +49,8 @@ class DoctrineCustomParamConverter extends DoctrineParamConverter
             $this->entityManager->getFilters()->disable('exercise_doctrine_filter');
             $this->entityManager->getFilters()->disable('course_doctrine_filter');
 
-dump("JAJAJA");
             // if a NotFoundHttpException is triggered, this is re-thrown.
             parent::apply($request, $configuration);
-            die("FOUND");
         }
     }
 }
