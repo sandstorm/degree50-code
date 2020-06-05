@@ -7,10 +7,13 @@
             <span>{{ exercise.name }}</span>
         </label>
         <div class="tile__actions">
-            <a href="{{ path('app_exercise', {id: exercise.id}) }}">
-                <i class="fas fa-play"></i> {% trans %}exercise.show.title{% endtrans %}
-            </a>
-            {% if exercise.creator == app.user %}
+            {% if is_granted('view', exercise) %}
+                <a href="{{ path('app_exercise', {id: exercise.id}) }}">
+                    <i class="fas fa-play"></i> {% trans %}exercise.show.title{% endtrans %}
+                </a>
+            {% endif %}
+
+            {% if is_granted('edit', exercise) %}
                 <a href="{{ path('app_exercise-edit', {id: exercise.id}) }}">
                     <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
                 </a>

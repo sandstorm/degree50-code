@@ -167,12 +167,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function isDozent(): bool
-    {
-        // TODO
-        return true;
-    }
-
     /**
      * @return Collection|Exercise[]
      */

@@ -4,6 +4,7 @@
 namespace App\Security\Voter;
 
 
+use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
@@ -12,18 +13,18 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ExerciseVoter extends Voter
 {
-
     const VIEW = 'view';
+    const CREATE = 'create';
     const EDIT = 'edit';
     const DELETE = 'delete';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE])) {
+        if (!in_array($attribute, [self::VIEW, self::CREATE, self::EDIT, self::DELETE])) {
             return false;
         }
 
-        if (!$subject instanceof Exercise) {
+        if (!$subject instanceof Exercise && !$subject instanceof Course) {
             return false;
         }
 
@@ -38,12 +39,23 @@ class ExerciseVoter extends Voter
             return false;
         }
 
-        /** @var Exercise $exercise */
-        $exercise = $subject;
+        if ($subject instanceof Exercise) {
+            /** @var Exercise $exercise */
+            $exercise = $subject;
+        }
+
+        if ($subject instanceof Course) {
+            /** @var Course $course */
+            $course = $subject;
+        } else {
+            $course = $exercise->getCourse();
+        }
 
         switch ($attribute) {
             case self::VIEW:
-                return $this->canView($exercise, $user);
+                return $this->canView($course, $user);
+            case self::CREATE:
+                return $this->canCreate($course, $user);
             case self::EDIT or self::DELETE:
                 return $this->canEditOrDelete($exercise, $user);
         }
@@ -52,9 +64,14 @@ class ExerciseVoter extends Voter
     }
 
 
-    private function canView(Exercise $exercise, User $user)
+    private function canView(Course $course, User $user)
     {
-        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $exercise->getCourse());
+        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course);
+    }
+
+    private function canCreate(Course $course, User $user)
+    {
+        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getName() == CourseRole::DOZENT);
     }
 
     private function canEditOrDelete(Exercise $exercise, User $user)

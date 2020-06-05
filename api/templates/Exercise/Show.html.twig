@@ -5,6 +5,7 @@
 {% block body %}
     <div class="container">
         <h2 class="text-center">Phase {{ currentPhase + 1 }}: {{ phase.name }}</h2>
+        <p class="text-center"><strong>{% if phase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong></p>
         <p class="text-center">
             {{ phase.task }}
         </p>

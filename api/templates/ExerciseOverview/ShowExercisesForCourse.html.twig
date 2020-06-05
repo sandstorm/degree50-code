@@ -14,7 +14,7 @@
     <div class="tiles">
         {{ include('ExerciseOverview/Exercises.html.twig', {exercises: course.exercises}) }}
 
-        {% if app.user.isDozent %}
+        {% if is_granted('create', course) %}
             <a href="{{ path('app_exercise-new', {courseId: course.id}) }}" class="tile tile--active">
                 <div class="tile__content">
                     <i class="tile__icon fas fa-plus-circle"></i>
