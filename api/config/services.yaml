@@ -70,3 +70,14 @@ services:
     App\Security\ParamConverter\DoctrineCustomParamConverter:
         arguments:
             $expressionLanguage: '@sensio_framework_extra.converter.doctrine.orm.expression_language'
+
+
+    App\EventStore\DoctrineIntegratedEventStore:
+        arguments:
+            $schemaDirectory: '%kernel.project_dir%/events/'
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+
+    App\EventStore\Storage\Doctrine\DoctrineEventStorage:
+        arguments:
+            $options: {}

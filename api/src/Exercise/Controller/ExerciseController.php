@@ -3,6 +3,7 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
+use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
 use App\Entity\Exercise\Exercise;
 use App\Repository\Account\CourseRepository;
@@ -22,17 +23,19 @@ class ExerciseController extends AbstractController
     private CourseRepository $courseRepository;
     private ExerciseRepository $exerciseRepository;
     private TranslatorInterface $translator;
+    private DoctrineIntegratedEventStore $eventStore;
 
     /**
      * @param CourseRepository $courseRepository
      * @param ExerciseRepository $exerciseRepository
      * @param TranslatorInterface $translator
      */
-    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator)
+    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
     {
         $this->courseRepository = $courseRepository;
         $this->exerciseRepository = $exerciseRepository;
         $this->translator = $translator;
+        $this->eventStore = $eventStore;
     }
     /**
      * @IsGranted("view", subject="exercise")
@@ -72,6 +75,13 @@ class ExerciseController extends AbstractController
             // but, the original `$exercise` variable has also been updated
             $exercise = $form->getData();
 
+            $this->eventStore->addEvent('ExerciseCreated', [
+                'exerciseId' => $exercise->getId(),
+                'courseId' => $courseId,
+                'name' => $exercise->getName(),
+                'description' => $exercise->getDescription(),
+            ]);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($exercise);
             $entityManager->flush();
@@ -102,7 +112,14 @@ class ExerciseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$exercise` variable has also been updated
+            /** @var Exercise $exercise */
             $exercise = $form->getData();
+
+            $this->eventStore->addEvent('ExerciseNameOrDescriptionUpdated', [
+                'exerciseId' => $exercise->getId(),
+                'name' => $exercise->getName(),
+                'description' => $exercise->getDescription(),
+            ]);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($exercise);
@@ -129,6 +146,12 @@ class ExerciseController extends AbstractController
     public function delete(Exercise $exercise): Response
     {
         $courseId = $exercise->getCourse()->getId();
+
+        $this->eventStore->addEvent('ExerciseDeleted', [
+            'exerciseId' => $exercise->getId(),
+            'courseId' => $courseId,
+        ]);
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($exercise);
         $entityManager->flush();

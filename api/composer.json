@@ -12,6 +12,7 @@
         "liip/imagine-bundle": "^2.3",
         "oneup/flysystem-bundle": "^3.4",
         "oneup/uploader-bundle": "^3.0",
+        "opis/json-schema": "^1.0",
         "ramsey/uuid": "^4.0",
         "rokka/imagine-vips": "^0.11.0",
         "sensio/framework-extra-bundle": "^5.5",
@@ -27,7 +28,8 @@
         "symfony/webpack-encore-bundle": "^1.7",
         "symfony/yaml": "5.0.*",
         "vich/uploader-bundle": "^1.13",
-        "webonyx/graphql-php": "^0.13.8"
+        "webonyx/graphql-php": "^0.13.8",
+        "ext-json": "*"
     },
     "require-dev": {
         "api-platform/schema-generator": "^2.1",

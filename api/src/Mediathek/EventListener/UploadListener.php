@@ -5,6 +5,7 @@ namespace App\Mediathek\EventListener;
 use App\Core\FileSystemService;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
+use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,13 +20,15 @@ class UploadListener
     private FileSystemService $fileSystemService;
     private EntityManagerInterface $entityManager;
     private VideoRepository $videoRepository;
+    private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(MessageBusInterface $messageBus, FileSystemService $fileSystemService, EntityManagerInterface $entityManager, VideoRepository $videoRepository)
+    public function __construct(MessageBusInterface $messageBus, FileSystemService $fileSystemService, EntityManagerInterface $entityManager, VideoRepository $videoRepository, DoctrineIntegratedEventStore $eventStore)
     {
         $this->messageBus = $messageBus;
         $this->fileSystemService = $fileSystemService;
         $this->entityManager = $entityManager;
         $this->videoRepository = $videoRepository;
+        $this->eventStore = $eventStore;
     }
 
 
@@ -58,6 +61,11 @@ class UploadListener
         $response = $event->getResponse();
 
         $video->setUploadedVideoFile($uploadedVideoFile);
+
+        $this->eventStore->addEvent('VideoUploaded', [
+            'videoId' => $video->getId(),
+            'uploadedVideoFile' => $video->getUploadedVideoFile()->getVirtualPathAndFilename(),
+        ]);
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
