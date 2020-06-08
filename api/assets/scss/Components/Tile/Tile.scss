@@ -1,14 +1,10 @@
+$tileHeight: 200px;
+
 .tile {
   position: relative;
-  display: block;
-  height: 200px;
-  width: 200px;
+  height: $tileHeight;
   margin-right: 20px;
   margin-bottom: 20px;
-
-  background-color: $theme__color__grey;
-
-  cursor: pointer;
 
   input[type='checkbox'] {
     display: none;
@@ -22,31 +18,45 @@
 
   &:hover {
     text-decoration: none;
-
-    span {
-      text-decoration: underline;
-    }
   }
 
   &--active {
-    background-color: $theme__color__green;
+    .tile__content {
+      background-color: $theme__color__green;
 
-    color: $theme__color__white;
-
-    &:hover {
       color: $theme__color__white;
     }
+
+    .tile__extension {
+      border-color: $theme__color__green;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+  }
+
+  &--with-extension {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
   }
 }
 
 .tile__content {
+  width: $tileHeight;
   display: block;
   margin: 0;
-  width: 100%;
   height: 100%;
   padding: 10px;
 
   text-align: center;
+
+  background-color: $theme__color__grey;
+
+  &:hover {
+    color: $theme__color__white;
+  }
 }
 
 .tile__icon {
@@ -83,4 +93,18 @@
       border-bottom: none;
     }
   }
+}
+
+.tile__extension {
+  height: $tileHeight;
+  width: 400px;
+  padding: 10px;
+
+  border: 1px solid $theme__color__grey;
+}
+
+.tile__extension-actions {
+  width: 100%;
+
+  text-align: right;
 }

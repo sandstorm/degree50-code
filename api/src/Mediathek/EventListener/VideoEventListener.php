@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventListener;
+namespace App\Mediathek\EventListener;
 
 use App\Entity\Account\User;
 use App\Entity\Video\Video;

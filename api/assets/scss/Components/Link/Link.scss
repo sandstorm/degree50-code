@@ -4,6 +4,10 @@ a, a.nav-link {
   &:hover, &:active, &:focus {
     color: $theme__color__green--dark;
   }
+
+  i {
+    text-decoration: none !important;
+  }
 }
 
 a.color-alert {

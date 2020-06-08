@@ -39,7 +39,7 @@ class ExercisePhase
 
     /**
      * @var bool
-     * @ORM\Column
+     * @ORM\Column(type="boolean")
      */
     public $isGroupPhase = false;
 

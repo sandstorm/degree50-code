@@ -43,6 +43,12 @@ class ExercisePhaseTeam
      */
     private $autosavedSolutions;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Account\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $creator;
+
     public function __construct(?string $id = null)
     {
         $this->members = new ArrayCollection();
@@ -139,6 +145,18 @@ class ExercisePhaseTeam
                 $autosavedSolution->setTeam(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
 
         return $this;
     }

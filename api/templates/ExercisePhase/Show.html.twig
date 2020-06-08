@@ -1,0 +1,16 @@
+{% extends 'BaseNoHeader.html.twig' %}
+
+{% block title %}{{ exercisePhase.name }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        Komponenten rendern:
+        {% for component in exercisePhase.components %}
+            {{ component }}
+        {% endfor %}
+    </div>
+
+    <footer class="footer">
+        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting}) }}">Zurück</a>
+    </footer>
+{% endblock %}
