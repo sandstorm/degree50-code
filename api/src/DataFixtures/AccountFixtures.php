@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
+use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -18,10 +19,12 @@ class AccountFixtures extends Fixture
      * @var UserPasswordEncoderInterface
      */
     private $passwordEncoder;
+    private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, DoctrineIntegratedEventStore $eventStore)
     {
         $this->passwordEncoder = $passwordEncoder;
+        $this->eventStore = $eventStore;
     }
 
     public function load(ObjectManager $manager)
@@ -44,6 +47,7 @@ class AccountFixtures extends Fixture
         $student = $this->createUser($manager, 'student@sandstorm.de');
         $this->createCourseRole($manager, CourseRole::STUDENT, $course, $student);
 
+        $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
     }
 

@@ -27,18 +27,18 @@ final class WritableEvent
     /**
      * @var array
      */
-    private $data;
+    private $payload;
 
     /**
      * @var array
      */
     private $metadata;
 
-    public function __construct(string $identifier, string $type, array $data, array $metadata)
+    public function __construct(string $identifier, string $type, array $payload, array $metadata)
     {
         $this->identifier = $identifier;
         $this->type = $type;
-        $this->data = $data;
+        $this->payload = $payload;
         $this->metadata = $metadata;
     }
 
@@ -52,9 +52,9 @@ final class WritableEvent
         return $this->type;
     }
 
-    public function getData(): array
+    public function getPayload(): array
     {
-        return $this->data;
+        return $this->payload;
     }
 
     public function getMetadata(): array

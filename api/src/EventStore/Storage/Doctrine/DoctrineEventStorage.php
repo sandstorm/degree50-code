@@ -52,9 +52,6 @@ class DoctrineEventStorage implements EventStorageInterface
      */
     public function commit(WritableEvents $events): void
     {
-        if ($this->connection->getTransactionNestingLevel() !== 1) {
-            throw new \RuntimeException('A transaction is active already, can\'t commit events!', 1547829131);
-        }
         try {
             foreach ($events as $event) {
                 $this->commitEvent($event);
@@ -77,7 +74,7 @@ class DoctrineEventStorage implements EventStorageInterface
             [
                 'id' => $event->getIdentifier(),
                 'type' => $event->getType(),
-                'payload' => json_encode($event->getData(), JSON_PRETTY_PRINT),
+                'payload' => json_encode($event->getPayload(), JSON_PRETTY_PRINT),
                 'metadata' => json_encode($metadata, JSON_PRETTY_PRINT),
                 'recordedat' => new \DateTimeImmutable()
             ],

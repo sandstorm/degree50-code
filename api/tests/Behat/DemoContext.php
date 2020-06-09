@@ -10,6 +10,7 @@ use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\Material;
 use App\Entity\Video\Video;
+use App\EventStore\DoctrineIntegratedEventStore;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Session;
@@ -45,6 +46,7 @@ final class DemoContext implements Context
 
     protected EntityManagerInterface $entityManager;
     protected KernelInterface $kernel;
+    private DoctrineIntegratedEventStore $eventStore;
 
     /**
      * DemoContext constructor.
@@ -53,11 +55,12 @@ final class DemoContext implements Context
      * @param EntityManagerInterface $entityManager
      * @param KernelInterface $kernel
      */
-    public function __construct(Session $minkSession, RouterInterface $router, EntityManagerInterface $entityManager, KernelInterface $kernel)
+    public function __construct(Session $minkSession, RouterInterface $router, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, KernelInterface $kernel)
     {
         $this->minkSession = $minkSession;
         $this->router = $router;
         $this->entityManager = $entityManager;
+        $this->eventStore = $eventStore;
         $this->kernel = $kernel;
     }
 
@@ -123,6 +126,7 @@ final class DemoContext implements Context
             $user->setEmail($username);
             $user->setPassword('password');
             $this->entityManager->persist($user);
+            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         }
 
@@ -148,6 +152,7 @@ final class DemoContext implements Context
     public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId)
     {
         $this->entityManager->persist(new Video($videoId));
+        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -157,6 +162,7 @@ final class DemoContext implements Context
     public function iHaveAnExercise($exerciseId)
     {
         $this->entityManager->persist(new Exercise($exerciseId));
+        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -166,6 +172,7 @@ final class DemoContext implements Context
     public function iHaveAnCourseWithID($courseId)
     {
         $this->entityManager->persist(new Course($courseId));
+        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -179,6 +186,7 @@ final class DemoContext implements Context
         $exercise->addPhase(new ExercisePhase($exercisePhaseId));
 
         $this->entityManager->persist($exercise);
+        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -191,6 +199,7 @@ final class DemoContext implements Context
         $material->setLink('link');
 
         $this->entityManager->persist($material);
+        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 }
