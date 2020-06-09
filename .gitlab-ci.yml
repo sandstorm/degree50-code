@@ -1,35 +1,52 @@
 stages:
-  - test
-  - package
-  - deploy
+    - build
+    - test
+    - package
+    - deploy
+
+build_js:
+    stage: build
+    image: node:12.18.0-stretch 
+    script:
+        - cd api
+        - yarn
+        - yarn encore production
+    artifacts:
+        expire_in: 1 week
+        paths:
+            - api/public/build
+    cache:
+        key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG-build-js"
+        paths:
+            - api/node_modules
 
 test_app:
-  stage: test
-  image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
-  tags:
-      - docker
-      - privileged
-  services:
-      - mysql:latest
-  variables:
-      MYSQL_DATABASE: "test_db"
-      MYSQL_ROOT_PASSWORD: "password"
-      DATABASE_URL: mysql://root:password@mysql/test_db
-  script:
-      - cd api
-      - composer install
-      - vendor/bin/phpat phpat.yaml
-      - vendor/bin/behat
+    stage: test
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    tags:
+        - docker
+        - privileged
+    services:
+        - mysql:latest
+    variables:
+        MYSQL_DATABASE: "test_db"
+        MYSQL_ROOT_PASSWORD: "password"
+        DATABASE_URL: mysql://root:password@mysql/test_db
+    script:
+        - cd api
+        - composer install
+        - vendor/bin/phpat phpat.yaml
+        - vendor/bin/behat
 
 package_app:
-  stage: package
-  image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
-  only:
-    - master
-  tags:
-    - docker
-    - privileged
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - bash ./build_prod.sh $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
-    - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+    stage: package
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
+    only:
+        - master
+    tags:
+        - docker
+        - privileged
+    script:
+        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+        - bash ./build_prod.sh $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG

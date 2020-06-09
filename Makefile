@@ -11,9 +11,6 @@ build-types:
 	cd api && ./node_modules/.bin/apollo client:codegen --target typescript  '--includes=assets/js/**/*.tsx' --localSchemaFile=assets/api-definitions/schema.graphql --tagName=gql --addTypename --globalTypesFile=assets/js/Types/graphql-global-types.ts
 
 test:
-	docker-compose exec -e APP_ENV=test api bin/console doctrine:schema:drop --force
-	# TODO: was not possible to use migrations here :(
-	docker-compose exec -e APP_ENV=test api bin/console doctrine:schema:create -n
 	docker-compose exec api vendor/bin/phpat phpat.yaml
 	docker-compose exec api vendor/bin/behat
 
