@@ -10,7 +10,7 @@ build_js:
     script:
         - cd api
         - yarn
-        - yarn encore production
+        - yarn encore production || echo 1
     artifacts:
         expire_in: 1 week
         paths:
