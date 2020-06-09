@@ -20,4 +20,5 @@ return [
     Oneup\UploaderBundle\OneupUploaderBundle::class => ['all' => true],
     FriendsOfBehat\SymfonyExtension\Bundle\FriendsOfBehatSymfonyExtensionBundle::class => ['test' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
+    Hslavich\OneloginSamlBundle\HslavichOneloginSamlBundle::class => ['all' => true],
 ];

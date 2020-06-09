@@ -1,14 +1,22 @@
 {
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/ppatrik/OneloginSamlBundle"
+        }
+    ],
     "require": {
         "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "aminyazdanpanah/php-ffmpeg-video-streaming": "^1.2",
         "api-platform/api-pack": "^1.1",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "easycorp/easyadmin-bundle": "^2.3",
         "guzzlehttp/guzzle": "^6.3",
+        "hslavich/oneloginsaml-bundle": "dev-master",
         "liip/imagine-bundle": "^2.3",
         "oneup/flysystem-bundle": "^3.4",
         "oneup/uploader-bundle": "^3.0",
@@ -28,8 +36,7 @@
         "symfony/webpack-encore-bundle": "^1.7",
         "symfony/yaml": "5.0.*",
         "vich/uploader-bundle": "^1.13",
-        "webonyx/graphql-php": "^0.13.8",
-        "ext-json": "*"
+        "webonyx/graphql-php": "^0.13.8"
     },
     "require-dev": {
         "api-platform/schema-generator": "^2.1",

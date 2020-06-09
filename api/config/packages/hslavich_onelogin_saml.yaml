@@ -1,0 +1,96 @@
+# all taken from https://github.com/onelogin/php-saml
+hslavich_onelogin_saml:
+    # Basic settings
+    idp:
+        entityId: 'https://sso.itmc.tu-dortmund.de:443/openam'
+        singleSignOnService:
+            url: 'https://sso.itmc.tu-dortmund.de:443/openam/SSOPOST/metaAlias/idp'
+            binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
+        singleLogoutService:
+            url: 'https://sso.itmc.tu-dortmund.de:443/openam/IDPSloPOST/metaAlias/idp'
+            binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
+        x509cert: |
+            MIIKAzCCCOugAwIBAgIMIUP6OqYWZFwSkRDOMA0GCSqGSIb3DQEBCwUAMIGNMQswCQYDVQQGEwJE
+            RTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1
+            bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEds
+            b2JhbCBJc3N1aW5nIENBMB4XDTE5MDcwOTExMzgyNFoXDTIxMTAxMDExMzgyNFowgZoxCzAJBgNV
+            BAYTAkRFMRwwGgYDVQQIDBNOb3JkcmhlaW4tV2VzdGZhbGVuMREwDwYDVQQHDAhEb3J0bXVuZDEp
+            MCcGA1UECgwgVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgRG9ydG11bmQxDTALBgNVBAsMBElUTUMx
+            IDAeBgNVBAMMF3Nzby5pdG1jLnR1LWRvcnRtdW5kLmRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+            MIIBCgKCAQEAu7eU0UIUmVScfVghqLiUZHrPxw9oIJxeYDQETqPlDikt6DEgGV0pq7Y/BntCXzGC
+            vkI4TS7YUHGloXIqhWxJlqNp/bkc8gYZw/u8kXI3gPS1ByBE+eePwMgVnHfIwP4vJG6UJArDtine
+            OYgQHYXhevHcTMlmkaNrLXPbjDSCWjbLO5/XVdOHWlbGPC1C6wXjGHHnc+qeXuLqORBxRVr3ojn3
+            aZNMh/oTQ4i5dtRPdisS/1902GzKcTD+OIfOuwm7/UrBUPPmwWDjI2Ri4DeyI2CSm7dhskmfZj1p
+            Nj7LuBMjvX6owtHCz3bN1Sc1c34YQ+FYjqQGrmU/zAMcOSmQAQIDAQABo4IGUjCCBk4wVwYDVR0g
+            BFAwTjAIBgZngQwBAgIwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAQBg4rBgEEAYGt
+            IYIsAQEEBDAQBg4rBgEEAYGtIYIsAgEEBDAJBgNVHRMEAjAAMA4GA1UdDwEB/wQEAwIFoDAdBgNV
+            HSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwHQYDVR0OBBYEFLIy/fbVqvzg4oQrlY4DNA6Fu/Vk
+            MB8GA1UdIwQYMBaAFGs6mIv58lOJ2uCtsjIeCR/oqjt0MIGqBgNVHREEgaIwgZ+CF3Nzby5pdG1j
+            LnR1LWRvcnRtdW5kLmRlghhzc28xLml0bWMudHUtZG9ydG11bmQuZGWCGHNzbzIuaXRtYy50dS1k
+            b3J0bXVuZC5kZYIYc3NvMy5pdG1jLnR1LWRvcnRtdW5kLmRlghhzc280Lml0bWMudHUtZG9ydG11
+            bmQuZGWCHHNzb3N0YWdlLml0bWMudHUtZG9ydG11bmQuZGUwgY0GA1UdHwSBhTCBgjA/oD2gO4Y5
+            aHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jcmwvY2FjcmwuY3Js
+            MD+gPaA7hjlodHRwOi8vY2RwMi5wY2EuZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9j
+            YWNybC5jcmwwgdsGCCsGAQUFBwEBBIHOMIHLMDMGCCsGAQUFBzABhidodHRwOi8vb2NzcC5wY2Eu
+            ZGZuLmRlL09DU1AtU2VydmVyL09DU1AwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAxLnBjYS5kZm4u
+            ZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSQYIKwYBBQUHMAKGPWh0
+            dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5j
+            cnQwggNcBgorBgEEAdZ5AgQCBIIDTASCA0gDRgB2AKrnC388uNVmyGwvFpecn0RfaasOtFNVibL3
+            egMBBPPNAAABa9aHJSIAAAQDAEcwRQIhAMLDsjC4c4AEyUZowzxZ4eUpcHgQSSp7iTodRXq1sePs
+            AiA+rKepXV3x3FE7McE0HIcCrL7WrIy09Q+cpLE7sNhUDAB1AG9Tdqwx8DEZ2JkApFEV/3cVHBHZ
+            AsEAKQaNsgiaN9kTAAABa9aHJY4AAAQDAEYwRAIgVZkOT/hR345N03t8M9hOCkALNC7utz4g5zt/
+            USq8VfMCIENvxSF6PguiOstdUjPhWQhhV4vIJ0h7dJho59rbEKnOAHYAVYHUwhaQNgFK6gubVzxT
+            8MDkOHhwJQgXL6OqHQcT0wwAAAFr1ocmpQAABAMARzBFAiEAxjmWR401Lb23r0/0n0HAbd4QnrFW
+            07fLnXBDfm+eunMCIFxDHyAVH981hdLe/h8lyhx2OyTvVRagwqOx/XqZDqvoAHUA7ku9t3XOYLrh
+            Qmkfq+GeZqMPfl+wctiDAMR7iXqo/csAAAFr1oclZAAABAMARjBEAiA7zERn6NYLGCy8LGkobJc/
+            g3+cFjYCHHiclAjZjXXwAwIgG59B8m/x/wl1bfZfTRgvR+9But9jq0EuC7FxRNZzkzYAdQCkuQmQ
+            tBhYFIe7E6LMZ3AKPDWYBPkb37jjd80OyA3cEAAAAWvWhyVmAAAEAwBGMEQCIDtw4FcS9I1InJpy
+            N5+/wB/IReklbk6uAnuFpvRj1b68AiAqTT5H24Lkje8H1sHKdP/fGWMFWLFCYFUOfcFBDpeuQgB2
+            ALvZ37wfinG1k5Qjl6qSe0c4V5UKq1LoGpCWZDaOHtGFAAABa9aHJXAAAAQDAEcwRQIhAM8Dctgr
+            dGD+OpgYHPXMivOLYKxPeR8aja8v5GsXWsNyAiAmTP9pUiJvmVaSmggKtnkaq0mdc8LCBP4scC5i
+            S9uK/gB3AESUZS6w7s6vxEAH2Kj+KMDa5oK+2MsxtT/TM5a1toGoAAABa9aHKxkAAAQDAEgwRgIh
+            ALlHZmtCjHF6Dydxj9ptbXnxo/FIjXA/HPVyM4nG3S0qAiEAjfc1Cs58+t3MTENETqqz+FgkxVhR
+            WYRJcSOer5CpjncwDQYJKoZIhvcNAQELBQADggEBAFanjbswQlBoaC5OE0dHfKKSp/yB1S+Vx0a/
+            B0WTyMyKMBYo5jmSnlxI88s8FruL0gAHluV6VNHgRnX2y4Oce7GRsDNOc0PfUSBDPKfA13DXWe0r
+            cmyJ18oOgJpAdFsbbFVIUv3XZx5FVf5WQeavg6dfAEDYMxvnxkI2obPD97D4VPaYC17NuZs4jlvC
+            wsoehIjb6dNe4BKoTP+edRPpkdKnVtwnLU39HAE6W04ExUtoDZyhEL9/QC1Xs5IQlLMxtBrT8IVu
+            6q4FVaiEzOxNFi7irOBgQzWba/TxMkWvnMJWbRAHHSAl7giwPeFXYi4lIWsNh604mKGUx1Tv9PrN
+            4DI=
+    sp:
+        entityId: 'http://myapp.com/saml/metadata'
+        assertionConsumerService:
+            url: 'http://myapp.com/saml/acs'
+            binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
+        singleLogoutService:
+            url: 'http://myapp.com/saml/logout'
+            binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'
+        privateKey: ''
+    # Optional settings
+    baseurl: 'http://myapp.com'
+    strict: true
+    debug: true
+    security:
+        nameIdEncrypted:       false
+        authnRequestsSigned:   false
+        logoutRequestSigned:   false
+        logoutResponseSigned:  false
+        wantMessagesSigned:    false
+        wantAssertionsSigned:  false
+        wantNameIdEncrypted:   false
+        requestedAuthnContext: true
+        signMetadata: false
+        wantXMLValidation: true
+        signatureAlgorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
+        digestAlgorithm: 'http://www.w3.org/2001/04/xmlenc#sha256'
+    contactPerson:
+        technical:
+            givenName: 'Tech User'
+            emailAddress: 'techuser@example.com'
+        support:
+            givenName: 'Support User'
+            emailAddress: 'supportuser@example.com'
+    organization:
+        en:
+            name: 'Example'
+            displayname: 'Example'
+            url: 'http://example.com'
