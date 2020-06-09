@@ -299,6 +299,9 @@
             "config/routes/oneup_uploader.yaml"
         ]
     },
+    "opis/json-schema": {
+        "version": "1.0.18"
+    },
     "pagerfanta/pagerfanta": {
         "version": "v2.1.3"
     },

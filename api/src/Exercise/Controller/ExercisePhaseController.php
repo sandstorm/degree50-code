@@ -4,6 +4,9 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\Entity\Exercise\Material;
+use App\Entity\Video\Video;
+use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Entity\Exercise\Exercise;
 use App\Exercise\Form\VideoAnalysisType;
@@ -21,13 +24,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ExercisePhaseController extends AbstractController
 {
     private TranslatorInterface $translator;
+    private DoctrineIntegratedEventStore $eventStore;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
     {
         $this->translator = $translator;
+        $this->eventStore = $eventStore;
     }
 
     /**
@@ -80,6 +85,11 @@ class ExercisePhaseController extends AbstractController
         if ($type != null) {
             $exercisePhase->setSorting(count($exercise->getPhases()));
 
+            $this->eventStore->addEvent('ExercisePhaseCreated', [
+                'exercisePhaseId' => $exercisePhase->getId(),
+                'type' => $type
+            ]);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($exercisePhase);
             $entityManager->flush();
@@ -109,6 +119,26 @@ class ExercisePhaseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $exercisePhase = $form->getData();
 
+            switch ($exercisePhase->getType()) {
+                case ExercisePhase::VIDEO_ANALYSE :
+                    /* @var $exercisePhase VideoAnalysis */
+                    $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
+                        'exercisePhaseId' => $exercisePhase->getId(),
+                        'name' => $exercisePhase->getName(),
+                        'task' => $exercisePhase->getTask(),
+                        'isGroupPhase' => $exercisePhase->isGroupPhase(),
+                        'material' => $exercisePhase->getMaterial()->map(fn(Material $material) => [
+                            'materialId' => $material->getId(),
+                            'name' => $material->getName(),
+                            'link' => $material->getLink()
+                        ])->toArray(),
+                        'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
+                            'videoId' => $video->getId()
+                        ])->toArray(),
+                        'components' => $exercisePhase->getComponents()
+                    ]);
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($exercisePhase);
             $entityManager->flush();
@@ -135,6 +165,10 @@ class ExercisePhaseController extends AbstractController
      */
     public function delete(Exercise $exercise, ExercisePhase $exercisePhase): Response
     {
+        $this->eventStore->addEvent('ExercisePhaseDeleted', [
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($exercisePhase);
         $entityManager->flush();

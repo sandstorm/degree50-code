@@ -5,6 +5,7 @@ namespace App\Mediathek\Controller;
 
 
 use App\Entity\Video\Video;
+use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Form\VideoType;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
@@ -22,14 +23,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class VideoUploadController extends AbstractController
 {
     private TranslatorInterface $translator;
+    private DoctrineIntegratedEventStore $eventStore;
 
-    /**
-     * VideoUploadController constructor.
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
     {
         $this->translator = $translator;
+        $this->eventStore = $eventStore;
     }
 
     /**
@@ -54,6 +53,12 @@ class VideoUploadController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $video = $form->getData();
             assert($video instanceof Video);
+
+            $this->eventStore->addEvent('VideoNameAndDescriptionAdded', [
+                'videoId' => $video->getId(),
+                'title' => $video->getTitle(),
+                'description' => $video->getDescription(),
+            ]);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($video);

@@ -5,11 +5,20 @@ namespace App\DataFixtures;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    private DoctrineIntegratedEventStore $eventStore;
+
+    public function __construct(DoctrineIntegratedEventStore $eventStore)
+    {
+        $this->eventStore = $eventStore;
+    }
+
     public function load(ObjectManager $manager)
     {
         $exercise = new Exercise("e1");
@@ -56,6 +65,7 @@ class AppFixtures extends Fixture
 
         $manager->persist($exercise);
 
+        $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
     }
 }

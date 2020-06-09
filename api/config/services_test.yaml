@@ -1,3 +1,5 @@
+parameters:
+    app.event_store.throw_exceptions: true
 services:
     _defaults:
         autowire: true

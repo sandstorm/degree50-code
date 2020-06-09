@@ -6,6 +6,7 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Entity\Exercise\Exercise;
 use App\Exercise\Form\ExerciseType;
@@ -24,13 +25,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ExercisePhaseTeamController extends AbstractController
 {
     private TranslatorInterface $translator;
+    private DoctrineIntegratedEventStore $eventStore;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
     {
         $this->translator = $translator;
+        $this->eventStore = $eventStore;
     }
 
     /**
@@ -57,8 +60,15 @@ class ExercisePhaseTeamController extends AbstractController
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
 
+        $this->eventStore->addEvent('MemberAddedToTeam', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'userId' => $user->getId(),
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($exercisePhaseTeam);
+
         $entityManager->flush();
 
         $this->addFlash(

@@ -6,6 +6,7 @@
 parameters:
     # manually configure VIPS driver
     liip_imagine.driver_service: 'app.image_processing.vips'
+    app.event_store.throw_exceptions: false
 
 services:
     # default configuration for services in *this* file
@@ -80,3 +81,15 @@ services:
     App\Security\ParamConverter\DoctrineCustomParamConverter:
         arguments:
             $expressionLanguage: '@sensio_framework_extra.converter.doctrine.orm.expression_language'
+
+
+    App\EventStore\DoctrineIntegratedEventStore:
+        arguments:
+            $schemaDirectory: '%kernel.project_dir%/events/'
+            $throwExceptionOnFailure: '%app.event_store.throw_exceptions%'
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+
+    App\EventStore\Storage\Doctrine\DoctrineEventStorage:
+        arguments:
+            $options: {}

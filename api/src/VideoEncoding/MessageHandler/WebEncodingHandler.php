@@ -5,6 +5,7 @@ namespace App\VideoEncoding\MessageHandler;
 
 
 use App\Core\FileSystemService;
+use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,13 +18,15 @@ class WebEncodingHandler implements MessageHandlerInterface
     private FileSystemService $fileSystemService;
     private VideoRepository $videoRepository;
     private EntityManagerInterface $entityManager;
+    private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(LoggerInterface $logger, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager)
+    public function __construct(LoggerInterface $logger, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore)
     {
         $this->logger = $logger;
         $this->fileSystemService = $fileSystemService;
         $this->videoRepository = $videoRepository;
         $this->entityManager = $entityManager;
+        $this->eventStore = $eventStore;
     }
 
 
@@ -67,6 +70,12 @@ class WebEncodingHandler implements MessageHandlerInterface
         $this->fileSystemService->moveDirectory($outputDirectory, $encodingTask->getDesiredOutputDirectory());
 
         $video->setEncodedVideoDirectory($encodingTask->getDesiredOutputDirectory());
+
+        $this->eventStore->addEvent('VideoEncodedCompletely', [
+            'videoId' => $video->getId(),
+            'encodedVideoDirectory' => $encodingTask->getDesiredOutputDirectory()->getVirtualPathAndFilename(),
+        ]);
+
         $this->entityManager->persist($video);
         $this->entityManager->flush();
     }
