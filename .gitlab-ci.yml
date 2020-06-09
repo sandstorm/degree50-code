@@ -48,5 +48,5 @@ package_app:
         - privileged
     script:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-        - bash ./build_prod.sh $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        - docker build -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
