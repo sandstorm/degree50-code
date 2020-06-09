@@ -35,7 +35,7 @@ class MaterialType extends AbstractType
                 'translation_domain' => 'forms',
                 'attr' => ['placeholder' => "material.labels.selectFile"],
                 'download_label' => 'form.label.download',
-                'required' => true,
+                'required' => false,
                 'allow_delete' => true,
                 'asset_helper' => true,
             ]);

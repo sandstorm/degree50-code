@@ -36,6 +36,16 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
+     * @Route("/exercise-phase/{id}", name="app_exercise-phase-show")
+     */
+    public function show(ExercisePhase $exercisePhase): Response
+    {
+        return $this->render('ExercisePhase/Show.html.twig', [
+            'exercisePhase' => $exercisePhase,
+        ]);
+    }
+
+    /**
      * @IsGranted("view", subject="exercise")
      * @Route("/exercise/edit/{id}/phase/new", name="app_exercise-phase-new")
      */
@@ -101,7 +111,6 @@ class ExercisePhaseController extends AbstractController
         $form = $this->createForm(ExercisePhaseType::class, $exercisePhase);
         switch ($exercisePhase->getType()) {
             case ExercisePhase::VIDEO_ANALYSE :
-                // TODO shitty naming
                 $form = $this->createForm(VideoAnalysisType::class, $exercisePhase);
                 break;
         }

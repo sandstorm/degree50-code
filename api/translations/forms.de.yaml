@@ -89,3 +89,9 @@ material:
     name: 'Name des Dokuments/Materials'
     file: 'Datei'
     selectFile: 'Datei auswählen'
+
+exercisePhaseTeam:
+  new:
+    messages:
+      success: 'Neue Gruppe angelegt!'
+      alreadyCreatedATeam: 'Du hast bereits eine Gruppe angelegt!'

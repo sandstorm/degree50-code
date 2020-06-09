@@ -22,6 +22,7 @@ class VideoAnalysisType extends ExercisePhaseType
         $builder
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
+                'required' => false,
                 'choice_label' => 'title',
                 'multiple' => true,
                 'label' => false

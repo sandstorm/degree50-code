@@ -30,7 +30,7 @@ class AppFixtures extends Fixture
         $exercise->setCreator($this->getReference(AccountFixtures::CREATOR_REFERENCE));
 
         $exercise_p1 = new VideoAnalysis("e1-p1");
-        $exercise_p1->setIsGroupPhase(false);
+        $exercise_p1->isGroupPhase = false;
         $exercise_p1->name = "Vorbereitung";
         $exercise_p1->task = '
         Studierende schauen sich die Videoszene
@@ -41,7 +41,7 @@ class AppFixtures extends Fixture
         $exercise->addPhase($exercise_p1);
 
         $exercise_p2 = new VideoAnalysis("e1-p2");
-        $exercise_p1->setIsGroupPhase(true);
+        $exercise_p2->isGroupPhase = true;
         $exercise_p2->name = "Erstellen eines Analytical Shortfilms";
         $exercise_p2->task = '
             Erstellen Sie gemeinsam (in 3er-Gruppen) einen Analytical Shortfilm (Zusammenschnitt von 3-5 min. aus kurzen Szenen aus einem längeren „Roh“-Video) aus Ihrem Blickwinkel.
@@ -53,7 +53,7 @@ class AppFixtures extends Fixture
         $exercise->addPhase($exercise_p2);
 
         $exercise_p3 = new VideoAnalysis("e1-p3");
-        $exercise_p1->setIsGroupPhase(true);
+        $exercise_p3->isGroupPhase = true;
         $exercise_p3->name = "Austausch über die erstellten Filme";
         $exercise_p3->task = '
         Konkreter Arbeitsauftrag:
