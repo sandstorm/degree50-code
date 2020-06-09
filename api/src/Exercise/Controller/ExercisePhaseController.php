@@ -131,10 +131,10 @@ class ExercisePhaseController extends AbstractController
                             'materialId' => $material->getId(),
                             'name' => $material->getName(),
                             'link' => $material->getLink()
-                        ]),
+                        ])->toArray(),
                         'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
                             'videoId' => $video->getId()
-                        ]),
+                        ])->toArray(),
                         'components' => $exercisePhase->getComponents()
                     ]);
             }
