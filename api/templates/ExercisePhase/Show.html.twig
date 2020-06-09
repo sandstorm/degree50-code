@@ -12,5 +12,6 @@
 
     <footer class="footer">
         <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting}) }}">Zurück</a>
+        <a class="btn btn-primary" href="{{ path('app_exercise-phase-share-result', {id: exercisePhase.id, team_id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
     </footer>
 {% endblock %}

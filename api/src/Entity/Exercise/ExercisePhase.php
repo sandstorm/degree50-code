@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "videoAnalysis" = "App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis"
  * })
  */
-class ExercisePhase
+class ExercisePhase implements ExerciseInterface
 {
     use IdentityTrait;
 

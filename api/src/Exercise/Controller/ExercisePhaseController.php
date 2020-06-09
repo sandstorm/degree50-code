@@ -3,8 +3,10 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Exercise\Material;
+use App\Entity\Exercise\Solution;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
@@ -36,13 +38,40 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @Route("/exercise-phase/{id}", name="app_exercise-phase-show")
+     * @Route("/exercise-phase/show/{id}/{team_id}", name="app_exercise-phase-show")
+     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
-    public function show(ExercisePhase $exercisePhase): Response
+    public function show(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         return $this->render('ExercisePhase/Show.html.twig', [
             'exercisePhase' => $exercisePhase,
+            'exercisePhaseTeam' => $exercisePhaseTeam,
         ]);
+    }
+
+    /**
+     * @Route("/exercise-phase/share-result/{id}/{team_id}", name="app_exercise-phase-share-result")
+     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
+     */
+    public function shareResult(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        $solution = new Solution();
+        $solution->setTeam($exercisePhaseTeam);
+        // just temporary
+        $solution->setSolution(['solution' => true]);
+
+        $this->eventStore->addEvent('SolutionShared', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'solutionId' => $solution->getId()
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($solution);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+
     }
 
     /**

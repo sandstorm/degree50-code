@@ -95,3 +95,9 @@ exercisePhaseTeam:
     messages:
       success: 'Neue Gruppe angelegt!'
       alreadyCreatedATeam: 'Du hast bereits eine Gruppe angelegt!'
+  join:
+    messages:
+      success: 'Gruppe beigetreten'
+  leave:
+    messages:
+      success: 'Gruppe verlassen'

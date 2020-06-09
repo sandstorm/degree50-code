@@ -2,17 +2,16 @@
 
 namespace App\Exercise\Controller;
 
-use App\Entity\Account\User;
+use App\Entity\Exercise\Exercise;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
-use App\Entity\Exercise\Exercise;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -37,6 +36,7 @@ class ExerciseController extends AbstractController
         $this->translator = $translator;
         $this->eventStore = $eventStore;
     }
+
     /**
      * @IsGranted("view", subject="exercise")
      * @Route("/exercise/show/{id}/{phase<\d+>}", name="app_exercise")

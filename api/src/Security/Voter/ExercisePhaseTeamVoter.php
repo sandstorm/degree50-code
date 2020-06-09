@@ -46,8 +46,6 @@ class ExercisePhaseTeamVoter extends Voter
             $exercisePhase = $subject;
         }
 
-
-
         switch ($attribute) {
             case self::JOIN:
                 return $this->canJoin($exercisePhaseTeam, $user);
@@ -61,17 +59,7 @@ class ExercisePhaseTeamVoter extends Voter
 
     private function canJoin(ExercisePhaseTeam $exercisePhaseTeam, User $user)
     {
-        if ($exercisePhaseTeam->getMembers()->contains($user)) {
-            return false;
-        }
-
-        if (!$this->canCreate($exercisePhaseTeam->getExercisePhase(), $user)) {
-            return false;
-        }
-
-        // if user has created a other team...?
-
-        return true;
+        return $this->canCreate($exercisePhaseTeam->getExercisePhase(), $user);
     }
 
     private function canCreate(ExercisePhase $exercisePhase, User $user)
@@ -79,6 +67,10 @@ class ExercisePhaseTeamVoter extends Voter
         $existingTeams = $exercisePhase->getTeams();
         $canCreate = true;
         foreach($existingTeams as $team) {
+            if($team->getMembers()->contains($user)) {
+                $canCreate = false;
+            }
+
             if ($team->getCreator() === $user) {
                 $canCreate = false;
             }

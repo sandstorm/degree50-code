@@ -73,6 +73,11 @@ class ExercisePhaseTeam
         return $this->solution;
     }
 
+    public function hasSolution(): bool
+    {
+        return !!$this->solution;
+    }
+
     public function setSolution(?Solution $solution): self
     {
         $this->solution = $solution;

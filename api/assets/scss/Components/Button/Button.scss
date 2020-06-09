@@ -3,7 +3,7 @@
 }
 
 // tmp bootstrap override
-.btn-primary {
+.btn-primary, .btn-primary.disabled, .btn-primary:disabled {
   background-color: $theme__color__green;
   border-color: $theme__color__green--dark;
 

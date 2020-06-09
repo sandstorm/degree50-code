@@ -30,29 +30,29 @@
                                 <span>Neue Gruppe anlegen</span>
                             </div>
                         </div>
-
                     {% endif %}
-
                 </div>
                 <div class="col-9">
                     <div class="tiles">
                         {% for team in phase.teams %}
                             <div tabindex="0" class="tile tile--with-extension tile--active">
-                                <a class="tile__content" href="#">
+                                <div class="tile__content">
                                     <i class="tile__icon fas fa-users"></i>
                                     <span>Gruppe von {{ team.creator.username }}</span>
-                                </a>
+                                </div>
                                 <div class="tile__extension">
-                                    Mitglider: <br />
-                                    {% for member in team.members %}
-                                        {{ member.username }} <br />
-                                    {% endfor %}
-
+                                    <div class="tile__extension-content">
+                                        <strong>Mitglider:</strong> <br />
+                                        {% for member in team.members %}
+                                            {{ member.username }} <br />
+                                        {% endfor %}
+                                    </div>
                                     <div class="tile__extension-actions">
                                         {% if is_granted('join', team) %}
-                                            <a class="btn btn-primary btn-sm" href="#">Gruppe beitreten</a>
+                                            <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-team-join', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe beitreten</a>
                                         {% else %}
-                                            <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id }) }}">Phase starten</a>
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-team-leave', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe verlassen</a>
+                                            <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id }) }}">Phase starten</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -65,16 +65,36 @@
         {% else %}
             <h4>Bisherigen Ergebnisse deiner Seminargruppe: </h4>
             <div class="tiles">
-                <div tabindex="0" class="tile tile--active">
-                    <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id }) }}">
-                        <i class="tile__icon fas fa-play"></i>
-                        <span>Phase starten</span>
-                    </a>
-                </div>
+                {% if is_granted('create', phase) %}
+                    <div tabindex="0" class="tile tile--active" >
+                        <a class="tile__content" href="{{ path('app_exercise-phase-team-new', {id: phase.id}) }}">
+                            <i class="tile__icon fas fa-play"></i>
+                            <span>Phase starten</span>
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% for team in phase.teams %}
+                    {% if team.creator == app.user %}
+                        <div tabindex="0" class="tile tile--active" >
+                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id }) }}">
+                                <i class="tile__icon fas fa-play"></i>
+                                <span>Mein Ergebnis</span>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div tabindex="0" class="tile" >
+                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team': team }) }}">
+                                <i class="tile__icon fas fa-user"></i>
+                                <span>{{ team.creator.username }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
         {% endif %}
     </div>
 
-    {{ include('Exercise/Footer.html.twig', {exercise: exercise, currentPhase: currentPhase, amountOfPhases: amountOfPhases}) }}
+    {{ include('Exercise/Footer.html.twig', {exercise: exercise, exercisePhase: phase, currentPhaseIndex: currentPhase, amountOfPhases: amountOfPhases}) }}
 
 {% endblock %}
