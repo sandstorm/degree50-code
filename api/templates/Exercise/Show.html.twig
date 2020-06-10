@@ -84,7 +84,7 @@
                         </div>
                     {% else %}
                         <div tabindex="0" class="tile" >
-                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team': team }) }}">
+                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id }) }}">
                                 <i class="tile__icon fas fa-user"></i>
                                 <span>{{ team.creator.username }}</span>
                             </a>

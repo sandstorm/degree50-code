@@ -3,11 +3,8 @@
 {% block title %}{{ exercisePhase.name }}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        Komponenten rendern:
-        {% for component in exercisePhase.components %}
-            {{ component }}
-        {% endfor %}
+    <div data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, components: exercisePhase.components} |json_encode|e('html_attr') }}">
+        Komponenten rendern ...
     </div>
 
     <footer class="footer">

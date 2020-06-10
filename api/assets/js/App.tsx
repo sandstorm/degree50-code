@@ -16,8 +16,10 @@ import { Application } from "stimulus";
 import FileuploadController from './StimulusControllers/FileUploadController';
 import ReactController from './StimulusControllers/ReactController';
 import CollectionHandlingController from './StimulusControllers/CollectionHandlingController';
+import ExercisePhaseController from './StimulusControllers/ExercisePhaseController';
 const application = Application.start();
 application.register("fileupload", FileuploadController);
 application.register("react", ReactController);
 application.register("collectionHandling", CollectionHandlingController);
+application.register("exercisePhase", ExercisePhaseController);
 

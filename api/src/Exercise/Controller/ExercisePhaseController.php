@@ -46,6 +46,7 @@ class ExercisePhaseController extends AbstractController
         return $this->render('ExercisePhase/Show.html.twig', [
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
+            'solution' => $exercisePhaseTeam->getSolution()
         ]);
     }
 
