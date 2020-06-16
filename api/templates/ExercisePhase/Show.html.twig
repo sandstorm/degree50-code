@@ -3,12 +3,13 @@
 {% block title %}{{ exercisePhase.name }}{% endblock %}
 
 {% block body %}
-    <div data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, components: exercisePhase.components} |json_encode|e('html_attr') }}">
+    <div data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, config: config} |json_encode|e('html_attr') }}">
         Komponenten rendern ...
     </div>
 
     <footer class="footer">
         <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting}) }}">Zurück</a>
+        <span>Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
         <a class="btn btn-primary" href="{{ path('app_exercise-phase-share-result', {id: exercisePhase.id, team_id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
     </footer>
 {% endblock %}

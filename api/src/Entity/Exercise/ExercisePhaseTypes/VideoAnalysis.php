@@ -40,7 +40,7 @@ class VideoAnalysis extends ExercisePhase
      */
     public function getType(): string
     {
-        return $this::VIDEO_ANALYSE;
+        return $this::TYPE_VIDEO_ANALYSE;
     }
 
     /**

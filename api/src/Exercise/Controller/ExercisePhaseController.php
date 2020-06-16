@@ -2,6 +2,7 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
@@ -10,14 +11,14 @@ use App\Entity\Exercise\Solution;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
-use App\Entity\Exercise\Exercise;
 use App\Exercise\Form\VideoAnalysisType;
+use App\Twig\AppRuntime;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -27,14 +28,16 @@ class ExercisePhaseController extends AbstractController
 {
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
+    private AppRuntime $appRuntime;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
+        $this->appRuntime = $appRuntime;
     }
 
     /**
@@ -43,7 +46,31 @@ class ExercisePhaseController extends AbstractController
      */
     public function show(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
+        // config for the ui to render the react components
+        $config = [
+            'title' => $exercisePhase->getName(),
+            'description' => $exercisePhase->getTask(),
+            'components' => $exercisePhase->getComponents(),
+            'material' => array_map(function (Material $entry) {
+                return [
+                    'id' => $entry->getId(),
+                    'name' => $entry->getName(),
+                    'url' => $this->generateUrl('app_material-download', ['id' => $entry->getId()])
+                ];
+            }, $exercisePhase->getMaterial()->toArray()),
+            'videos' => array_map(function (Video $video) {
+                $videoUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
+                return [
+                    'id' => $video->getId(),
+                    'name' => $video->getTitle(),
+                    'description' => $video->getDescription(),
+                    'url' => $videoUrl . '/hls.m3u8'
+                ];
+            }, $exercisePhase->getVideos()->toArray())
+        ];
+
         return $this->render('ExercisePhase/Show.html.twig', [
+            'config' => $config,
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'solution' => $exercisePhaseTeam->getSolution()
@@ -82,7 +109,7 @@ class ExercisePhaseController extends AbstractController
     public function new(Request $request, Exercise $exercise): Response
     {
         $types = [];
-        foreach(ExercisePhase::PHASE_TYPES as $type) {
+        foreach (ExercisePhase::PHASE_TYPES as $type) {
             array_push($types, [
                 'id' => $type,
                 'iconClass' => $this->translator->trans('exercisePhase.types.' . $type . '.iconClass', [], 'forms'),
@@ -105,7 +132,7 @@ class ExercisePhaseController extends AbstractController
         $type = $request->query->get('type', null);
         $exercisePhase = new ExercisePhase();
         switch ($type) {
-            case ExercisePhase::VIDEO_ANALYSE :
+            case ExercisePhase::TYPE_VIDEO_ANALYSE :
                 $exercisePhase = new VideoAnalysis();
                 break;
         }
@@ -140,7 +167,7 @@ class ExercisePhaseController extends AbstractController
     {
         $form = $this->createForm(ExercisePhaseType::class, $exercisePhase);
         switch ($exercisePhase->getType()) {
-            case ExercisePhase::VIDEO_ANALYSE :
+            case ExercisePhase::TYPE_VIDEO_ANALYSE :
                 $form = $this->createForm(VideoAnalysisType::class, $exercisePhase);
                 break;
         }
@@ -150,7 +177,7 @@ class ExercisePhaseController extends AbstractController
             $exercisePhase = $form->getData();
 
             switch ($exercisePhase->getType()) {
-                case ExercisePhase::VIDEO_ANALYSE :
+                case ExercisePhase::TYPE_VIDEO_ANALYSE :
                     /* @var $exercisePhase VideoAnalysis */
                     $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
                         'exercisePhaseId' => $exercisePhase->getId(),

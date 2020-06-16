@@ -7,7 +7,6 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import '../scss/App.scss';
-import ReactDOM from 'react-dom';
 import React from 'react';
 import 'bootstrap';
 

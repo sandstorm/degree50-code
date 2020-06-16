@@ -27,8 +27,8 @@ class ExercisePhase implements ExerciseInterface
     use IdentityTrait;
 
     // types of phases
-    const VIDEO_ANALYSE = 'videoAnalysis';
-    const PHASE_TYPES = [self::VIDEO_ANALYSE];
+    const TYPE_VIDEO_ANALYSE = 'videoAnalysis';
+    const PHASE_TYPES = [self::TYPE_VIDEO_ANALYSE];
 
     // components for phases
     const VIDEO_PLAYER = 'videoPlayer';
