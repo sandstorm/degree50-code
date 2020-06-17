@@ -1,5 +1,4 @@
 import React from 'react';
-import {Counter} from "./Components/Counter/Counter";
 import {Toolbar} from "./Components/Toolbar/Toolbar";
 import {Modal} from "./Components/Modal/Modal";
 
@@ -17,7 +16,6 @@ type Props = {
 export function ExercisePhaseApp({solution, config}: Props) {
     return (
         <div className={'exercise-phase'}>
-            <Counter />
             <Toolbar components={config.components} />
             <Modal text={''} title={''} />
         </div>

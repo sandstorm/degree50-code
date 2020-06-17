@@ -12,16 +12,19 @@ type Props = {
 export function ModalInner({title, text, isVisible, toggleVisibility}: Props) {
     return (
         <div className={(isVisible === true) ? 'modal modal--is-visible' : 'modal'} aria-label={title}>
-            <header className={'modal__header'}>
-                <h3>{title}</h3>
-            </header>
-            <div className={'modal__content'}>
-                {text}
-
+            <div className={'modal__inner'}>
+                <header className={'modal__header'}>
+                    <h3>{title}</h3>
+                </header>
+                <div className={'modal__content-wrapper'}>
+                    <div className={'modal__content'}>
+                        {text}
+                    </div>
+                </div>
+                <footer className={'modal__footer'}>
+                    <button className={'btn btn-primary'} type='button' onClick={toggleVisibility}>Close</button>
+                </footer>
             </div>
-            <footer className={'modal__footer'}>
-                <button className={'btn btn-primary'} type='button' onClick={toggleVisibility}>Close</button>
-            </footer>
         </div>
     );
 }
