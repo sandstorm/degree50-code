@@ -19,7 +19,6 @@ export const toolbarSlice = createSlice({
             } else {
                 state.activeToolbarItem = action.payload;
             }
-
         },
     },
 });

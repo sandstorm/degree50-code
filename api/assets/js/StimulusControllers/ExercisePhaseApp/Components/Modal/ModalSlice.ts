@@ -3,10 +3,14 @@ import { RootState } from '../../Store/Store';
 
 interface ModalState {
     isVisible: boolean;
+    title: string,
+    content: string
 }
 
 const initialState: ModalState = {
     isVisible: false,
+    title: '',
+    content: ''
 };
 
 export const modalSlice = createSlice({
@@ -14,14 +18,21 @@ export const modalSlice = createSlice({
     initialState,
     reducers: {
         toggleVisibility: (state) => {
-            console.log('toggle', state.isVisible);
             state.isVisible = !state.isVisible
         },
+        setTitle: (state, action: PayloadAction<string>) => {
+            state.title = action.payload
+        },
+        setContent: (state, action: PayloadAction<string>) => {
+            state.content = action.payload
+        }
     },
 });
 
-export const { toggleVisibility } = modalSlice.actions;
+export const { toggleVisibility, setTitle, setContent } = modalSlice.actions;
 
 export const selectIsVisible = (state: RootState) => state.modal.isVisible;
+export const selectTitle = (state: RootState) => state.modal.title;
+export const selectContent = (state: RootState) => state.modal.content;
 
 export default modalSlice.reducer;

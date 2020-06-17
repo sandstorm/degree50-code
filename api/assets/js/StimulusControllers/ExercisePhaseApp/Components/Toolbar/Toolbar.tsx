@@ -1,52 +1,83 @@
 import React from 'react';
 import {ToolbarItem} from "./ToolbarItem";
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {selectActiveToolbarItem, toggleComponent} from "./ToolbarSlice";
 import {
+    setTitle,
+    setContent,
     toggleVisibility
 } from '../Modal/ModalSlice';
+import {RootState} from "../../Store/Store";
+import {ComponentTypesEnum} from "../../Store/ComponentTypesEnum";
+import {ComponentId, Config, selectConfig} from "../Config/ConfigSlice";
 
-type Props = {
-    components: string[],
-    toggleComponent: any
-    activeToolbarItem: string
+const mapStateToProps = (state: RootState) => ({
+    activeToolbarItem: selectActiveToolbarItem(state),
+    config: selectConfig(state)
+});
+
+const mapDispatchToProps = (dispatch: any, ) => ({
+    toggleComponent: (componentId: ComponentId) => {
+        dispatch(toggleComponent(componentId))
+    }
+});
+
+type AdditionalProps = {
 }
 
-export function ToolbarInner({components, toggleComponent, activeToolbarItem}: Props) {
-    const toolbarItems = components.map((component: string, index: number) =>
-        <ToolbarItem key={index} componentId={component} activeToolbarItem={activeToolbarItem} toggleComponent={toggleComponent}/>
-    );
+export type Component = {
+    id: ComponentId
+    isMandatory: boolean
+    label: string
+    icon: string
+    onClick: (dispatch: any,component: Component, config: Config) => void
+}
 
-    const dispatchModal = useDispatch();
-    const toggleComponentWrapper = (componentId: string) => {
-        toggleComponent(componentId)
-        // TODO robert fragen ob das geil ist...
-        dispatchModal(toggleVisibility());
+type ToolbarProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+
+const possibleComponentsForToolbar: Array<Component> = [
+    {
+        id: ComponentTypesEnum.TASK,
+        isMandatory: true,
+        label: 'Aufgabenstellung',
+        icon: 'fas fa-tasks',
+        onClick: (dispatch, component, config) => {
+            dispatch(toggleVisibility());
+            dispatch(setTitle(config.title));
+            dispatch(setContent(config.description));
+        }
+    },
+    {
+        id: ComponentTypesEnum.DOCUMENT_UPLOAD,
+        isMandatory: false,
+        label: 'Dokumenten-Upload',
+        icon: 'fas fa-file-upload',
+        onClick: (dispatch, component, config) => {
+            console.log('test', component.id)
+        }
+    }
+]
+
+const Toolbar: React.FC<ToolbarProps> = ({...props}) => {
+    const dispatch = useDispatch();
+    const toggleComponentWrapper = (component: Component) => {
+        props.toggleComponent(component.id)
+        component.onClick(dispatch, component, props.config);
     };
 
+    const toolbarItemsToRender = Object.values(possibleComponentsForToolbar).map(function(component: Component) {
+        if (props.config.components.includes(component.id) || component.isMandatory) {
+            return <ToolbarItem key={component.id} component={component} toggleComponent={toggleComponentWrapper}/>
+        }
+    });
     return (
         <div className={'toolbar'}>
-            <ToolbarItem componentId={'task'} activeToolbarItem={activeToolbarItem} toggleComponent={toggleComponentWrapper}/>
-            {/*{toolbarItems}*/}
+            {toolbarItemsToRender}
         </div>
     );
 }
 
-const mapStateToProps = (state: any) => {
-    return {
-        activeToolbarItem: selectActiveToolbarItem(state),
-    };
-};
-
-const mapDispatchToProps = (dispatch: any) => {
-    return {
-        toggleComponent: (componentId: string) => {
-            dispatch(toggleComponent(componentId))
-        },
-    };
-};
-
-export const Toolbar = connect(
+export default connect(
     mapStateToProps,
-    mapDispatchToProps
-)(ToolbarInner);
+    mapDispatchToProps,
+)(Toolbar);

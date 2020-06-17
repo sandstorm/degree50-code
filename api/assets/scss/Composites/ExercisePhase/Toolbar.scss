@@ -1,7 +1,7 @@
 .toolbar {
   position: fixed;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: nowrap;
   right: 0;
   top: 40px;
@@ -14,6 +14,7 @@
 }
 
 .toolbar-item {
+  margin-bottom: 20px;
   padding: 10px;
   width: 80px;
   height: 80px;
@@ -28,7 +29,7 @@
 
   cursor: pointer;
 
-  &:hover, &--active {
+  &:hover, &:active, &:focus {
     background-color: $theme__color__green;
 
     color: $theme__color__white;

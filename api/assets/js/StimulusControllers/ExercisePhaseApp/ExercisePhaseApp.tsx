@@ -1,23 +1,23 @@
 import React from 'react';
-import {Toolbar} from "./Components/Toolbar/Toolbar";
-import {Modal} from "./Components/Modal/Modal";
+import Modal from "./Components/Modal/Modal";
+import Toolbar from "./Components/Toolbar/Toolbar";
+import {Config, setConfig} from "./Components/Config/ConfigSlice";
+import { useDispatch } from "react-redux";
 
 type Props = {
     solution: any
-    config: {
-        title: string,
-        description: string,
-        components: string[],
-        material: Array<object>,
-        videos: Array<object>
-    }
+    config: Config
 }
 
-export function ExercisePhaseApp({solution, config}: Props) {
+export const ExercisePhaseApp: React.FC<Props> = ({...props}) => {
+    const dispatch = useDispatch();
+    // set initial config to the store
+    dispatch(setConfig(props.config))
+
     return (
         <div className={'exercise-phase'}>
-            <Toolbar components={config.components} />
-            <Modal text={''} title={''} />
+            <Toolbar />
+            <Modal />
         </div>
     );
 }

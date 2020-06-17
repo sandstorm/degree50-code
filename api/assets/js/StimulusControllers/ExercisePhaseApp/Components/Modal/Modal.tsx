@@ -1,15 +1,28 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {selectIsVisible, toggleVisibility} from "./ModalSlice";
+import {selectIsVisible, selectTitle, selectContent, toggleVisibility} from "./ModalSlice";
 
-type Props = {
-    title: string,
-    text: string,
-    isVisible: boolean,
-    toggleVisibility: any
+const mapStateToProps = (state: any) => {
+    return {
+        isVisible: selectIsVisible(state),
+        title: selectTitle(state),
+        content: selectContent(state),
+    };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        toggleVisibility: () => dispatch(toggleVisibility()),
+    };
+};
+
+type AdditionalProps = {
+    // currently none
 }
 
-export function ModalInner({title, text, isVisible, toggleVisibility}: Props) {
+type ModalProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+
+const Modal: React.FC<ModalProps> = ({title, content, isVisible, toggleVisibility}) => {
     return (
         <div className={(isVisible === true) ? 'modal modal--is-visible' : 'modal'} aria-label={title}>
             <div className={'modal__inner'}>
@@ -18,7 +31,7 @@ export function ModalInner({title, text, isVisible, toggleVisibility}: Props) {
                 </header>
                 <div className={'modal__content-wrapper'}>
                     <div className={'modal__content'}>
-                        {text}
+                        {content}
                     </div>
                 </div>
                 <footer className={'modal__footer'}>
@@ -29,20 +42,7 @@ export function ModalInner({title, text, isVisible, toggleVisibility}: Props) {
     );
 }
 
-const mapStateToProps = (state: any) => {
-    return {
-        isVisible: selectIsVisible(state),
-    };
-};
-
-const mapDispatchToProps = (dispatch: any) => {
-    return {
-        toggleVisibility: () => dispatch(toggleVisibility()),
-    };
-};
-
-
-export const Modal = connect(
+export default connect(
     mapStateToProps,
-    mapDispatchToProps
-)(ModalInner);
+    mapDispatchToProps,
+)(Modal);
