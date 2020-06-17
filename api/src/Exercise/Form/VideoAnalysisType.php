@@ -16,7 +16,14 @@ class VideoAnalysisType extends ExercisePhaseType
     {
         parent::buildForm($builder, $options);
         $choices = [];
-        foreach(VideoAnalysis::PHASE_COMPONENTS as $component) {
+        $components = VideoAnalysis::PHASE_COMPONENTS;
+
+        /* @var VideoAnalysis $data */
+        $data = $options['data'];
+        if ($data->isGroupPhase()) {
+            $components = VideoAnalysis::PHASE_COMPONENTS_GROUP;
+        }
+        foreach($components as $component) {
             $choices[$component] = $component;
         }
         $builder

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   decrement,
   increment,
@@ -8,28 +8,24 @@ import {
   selectCount,
 } from './counterSlice';
 
-export function CounterInner({
-  count,
-  increment,
-  decrement,
-  incrementByAmount,
-  incrementAsync,
-}) {
-  const [incrementAmount, setIncrementAmount] = useState("2");
+export function Counter() {
+  const count = useSelector(selectCount);
+  const dispatch = useDispatch();
+  const [incrementAmount, setIncrementAmount] = useState('2');
 
   return (
     <div>
       <div>
         <button
           aria-label="Increment value"
-          onClick={() => increment()}
+          onClick={() => dispatch(increment())}
         >
           +
         </button>
         <span>{count}</span>
         <button
           aria-label="Decrement value"
-          onClick={() => decrement()}
+          onClick={() => dispatch(decrement())}
         >
           -
         </button>
@@ -42,13 +38,13 @@ export function CounterInner({
         />
         <button
           onClick={() =>
-            incrementByAmount(Number(incrementAmount) || 0)
+            dispatch(incrementByAmount(Number(incrementAmount) || 0))
           }
         >
           Add Amount
         </button>
         <button
-          onClick={() => incrementAsync(Number(incrementAmount) || 0)}
+          onClick={() => dispatch(incrementAsync(Number(incrementAmount) || 0))}
         >
           Add Async
         </button>
@@ -56,23 +52,3 @@ export function CounterInner({
     </div>
   );
 }
-
-const mapStateToProps = (state: any) => {
-  return {
-    count: selectCount(state),
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    increment: () => dispatch(increment()),
-    decrement: () => dispatch(decrement()),
-    incrementByAmount: (amount: number) => dispatch(incrementByAmount(amount)),
-    incrementAsync: (amount: number) => dispatch(incrementAsync(amount)),
-  };
-};
-
-export const Counter = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CounterInner);

@@ -1,12 +1,25 @@
 import React from 'react';
 import {Counter} from "./Components/Counter/Counter";
+import {Toolbar} from "./Components/Toolbar/Toolbar";
+import {Modal} from "./Components/Modal/Modal";
 
-export function ExercisePhaseApp(props: any) {
-    console.log (props);
+type Props = {
+    solution: any
+    config: {
+        title: string,
+        description: string,
+        components: string[],
+        material: Array<object>,
+        videos: Array<object>
+    }
+}
+
+export function ExercisePhaseApp({solution, config}: Props) {
     return (
-        <div>
+        <div className={'exercise-phase'}>
             <Counter />
-            Hier kommt React
+            <Toolbar components={config.components} />
+            <Modal text={''} title={''} />
         </div>
     );
 }

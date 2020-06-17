@@ -49,9 +49,11 @@ class VideoAnalysis extends ExercisePhase
     public function getAllowedComponents(): array
     {
         if ($this->isGroupPhase()) {
-            return $this::PHASE_COMPONENTS_GROUP;
+            dump(self::PHASE_COMPONENTS_GROUP);
+            return self::PHASE_COMPONENTS_GROUP;
         } else {
-            return $this::PHASE_COMPONENTS;
+            dump(self::PHASE_COMPONENTS_GROUP);
+            return self::PHASE_COMPONENTS;
         }
     }
 

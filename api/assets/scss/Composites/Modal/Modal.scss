@@ -1,0 +1,31 @@
+.modal {
+  position: fixed;
+  display: none;
+  width: 500px;
+  left: 50%;
+  margin-left: -250px;
+  top: 10%;
+  min-height: 400px;
+  max-height: 90vh;
+
+  background-color: $theme__color__white;
+  border: 1px solid $theme__color__grey--darker;
+
+  z-index: 9999;
+
+  &--is-visible {
+    display: block;
+  }
+}
+
+.modal__header {
+
+}
+
+.modal__content {
+
+}
+
+.modal__footer {
+
+}
