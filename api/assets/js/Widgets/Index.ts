@@ -1,10 +1,8 @@
-import VideoPlayer from "./VideoPlayer/VideoPlayer";
 import SubtitleEditor from "./SubtitleEditor/SubtitleEditor";
-import ExercisePhaseDefinitionEditor from "./ExercisePhaseDefinitionEditor/ExercisePhaseDefinitionEditor";
+import VideoPlayer from "../StimulusControllers/ExercisePhaseApp/Components/VideoPlayer/VideoPlayer";
 
 export default {
     'VideoPlayer': VideoPlayer,
     'SubtitleEditor': SubtitleEditor,
     'VideoAnnotator': SubtitleEditor, // currently the same, will be a slightly different component later on
-    'ExercisePhaseDefinitionEditor': ExercisePhaseDefinitionEditor
 };

@@ -1,5 +1,7 @@
-.video-js {
-  width: 100%;
-  min-height: 400px;
-  margin-bottom: 20px;
+.video-player {
+  min-height: 200px;
+
+  .video-js {
+    width: 100%;
+  }
 }

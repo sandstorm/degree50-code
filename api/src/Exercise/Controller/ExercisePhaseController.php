@@ -50,6 +50,7 @@ class ExercisePhaseController extends AbstractController
         $config = [
             'title' => $exercisePhase->getName(),
             'description' => $exercisePhase->getTask(),
+            'type' => $exercisePhase->getType(),
             'components' => $exercisePhase->getComponents(),
             'material' => array_map(function (Material $entry) {
                 return [

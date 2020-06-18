@@ -2,19 +2,15 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {selectIsVisible, selectTitle, selectContent, toggleVisibility} from "./ModalSlice";
 
-const mapStateToProps = (state: any) => {
-    return {
-        isVisible: selectIsVisible(state),
-        title: selectTitle(state),
-        content: selectContent(state),
-    };
-};
+const mapStateToProps = (state: any) => ({
+    isVisible: selectIsVisible(state),
+    title: selectTitle(state),
+    content: selectContent(state),
+});
 
-const mapDispatchToProps = (dispatch: any) => {
-    return {
-        toggleVisibility: () => dispatch(toggleVisibility()),
-    };
-};
+const mapDispatchToProps = (dispatch: any) => ({
+    toggleVisibility: () => dispatch(toggleVisibility()),
+});
 
 type AdditionalProps = {
     // currently none
