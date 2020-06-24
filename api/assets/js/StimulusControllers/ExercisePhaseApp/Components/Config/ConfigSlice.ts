@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../Store/Store';
 import {Video} from "../VideoPlayer/VideoPlayerWrapper";
+import {Material} from "../MaterialViewer/MaterialViewer";
 
 export type ComponentId = string
 export type Config = {
@@ -8,7 +9,7 @@ export type Config = {
     description: string
     type: string
     components: Array<ComponentId>
-    material: Array<object>
+    material: Array<Material>
     videos: Array<Video>
 }
 

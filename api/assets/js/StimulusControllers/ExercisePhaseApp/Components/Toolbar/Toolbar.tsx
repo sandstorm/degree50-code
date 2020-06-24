@@ -64,7 +64,17 @@ const possibleComponentsForToolbar: Array<Component> = [
             dispatch(toggleOverlayVisibility())
             dispatch(setOverlayComponent(component.id))
         }
-    }
+    },
+    {
+        id: ComponentTypesEnum.MATERIAL_VIEWER,
+        isMandatory: true,
+        label: 'Material',
+        icon: 'fas fa-folder-open',
+        onClick: (dispatch, component, config) => {
+            dispatch(toggleOverlayVisibility())
+            dispatch(setOverlayComponent(component.id))
+        }
+    },
 ]
 
 const Toolbar: React.FC<ToolbarProps> = ({...props}) => {

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {selectComponent, selectIsVisible, toggleOverlayVisibility} from "./OverlaySlice";
 import FileUpload from "../FileUpload/FileUpload";
 import {ComponentTypesEnum} from "../../Store/ComponentTypesEnum";
+import MaterialViewer from "../MaterialViewer/MaterialViewer";
 
 const mapStateToProps = (state: any) => ({
     isVisible: selectIsVisible(state),
@@ -25,6 +26,9 @@ const Overlay: React.FC<OverlayProps> = ({...props}) => {
     switch(props.component) {
         case ComponentTypesEnum.DOCUMENT_UPLOAD:
             componentToRender = <FileUpload />
+            break;
+        case ComponentTypesEnum.MATERIAL_VIEWER:
+            componentToRender = <MaterialViewer />
             break;
         default:
 

@@ -2,5 +2,6 @@
 
 export const ComponentTypesEnum = {
     TASK: 'task',
-    DOCUMENT_UPLOAD: 'documentUpload'
+    DOCUMENT_UPLOAD: 'documentUpload',
+    MATERIAL_VIEWER: 'materialViewer',
 }
