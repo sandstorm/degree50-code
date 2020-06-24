@@ -34,6 +34,13 @@ class Material
     private $link;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="mimeType", type="string", length=255)
+     */
+    private $mimeType;
+
+    /**
      * @var \DateTimeInterface|null
      *
      * @ORM\Column(name="uploadAt", type="datetime")
@@ -96,6 +103,14 @@ class Material
     }
 
     /**
+     * @ORM\PrePersist
+     */
+    public function setMimeTypeValue()
+    {
+        $this->mimeType = $this->getFile()->getMimeType();
+    }
+
+    /**
      * @return \DateTimeInterface
      */
     public function getUploadAt()
@@ -136,5 +151,13 @@ class Material
     public function getExercisePhase()
     {
         return $this->exercisePhase;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMimeType(): string
+    {
+        return $this->mimeType;
     }
 }

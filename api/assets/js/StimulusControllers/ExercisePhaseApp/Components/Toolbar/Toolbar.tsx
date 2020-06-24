@@ -61,7 +61,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Dokumenten-Upload',
         icon: 'fas fa-file-upload',
         onClick: (dispatch, component, config) => {
-            dispatch(toggleOverlayVisibility())
+            dispatch(toggleOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
         }
     },
@@ -71,7 +71,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Material',
         icon: 'fas fa-folder-open',
         onClick: (dispatch, component, config) => {
-            dispatch(toggleOverlayVisibility())
+            dispatch(toggleOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
         }
     },

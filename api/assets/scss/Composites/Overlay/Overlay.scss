@@ -10,6 +10,7 @@
 
   background-color: $theme__color__white;
   border-left: 1px solid $theme__color__grey--darker;
+  box-shadow: -5px 0px 5px 0px transparentize($theme__color__black, 0.5);
 
   z-index: 7000;
 

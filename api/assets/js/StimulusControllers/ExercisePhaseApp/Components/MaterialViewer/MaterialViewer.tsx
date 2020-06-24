@@ -18,10 +18,12 @@ type MaterialViewerProps = AdditionalProps & ReturnType<typeof mapStateToProps> 
 export type Material = {
     id: string
     name: string
+    type: string
     url: string
 }
 
 const MaterialViewer: React.FC<MaterialViewerProps> = ({...props}) => {
+    console.log(props.config.material)
     const materialTiles = props.config.material.map(function(material: Material) {
         return <a key={material.id} className={'tile'} href={material.url}><div className={'tile__content'}><i className={'tile__icon fas fa-file-pdf'}></i><span>{material.name}</span></div></a>
     });
@@ -29,7 +31,7 @@ const MaterialViewer: React.FC<MaterialViewerProps> = ({...props}) => {
     return (
         <div className={'material-viewer'}>
             <div className={'tiles'}>
-                {materialTiles}
+                {materialTiles.length > 0 ? materialTiles : 'Kein Material zur Verfügung'}
             </div>
         </div>
     );

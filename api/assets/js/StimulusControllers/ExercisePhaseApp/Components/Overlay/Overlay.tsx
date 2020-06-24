@@ -36,7 +36,7 @@ const Overlay: React.FC<OverlayProps> = ({...props}) => {
 
     return (
         <div className={(props.isVisible === true) ? 'overlay overlay--is-visible' : 'overlay'}>
-            <button className={'overlay__close btn btn-primary'} type="button" onClick={props.toggleOverlayVisibility}><i className={'fas fa-times'}></i></button>
+            <button className={'overlay__close btn'} type="button" onClick={props.toggleOverlayVisibility}><i className={'fas fa-times'}></i></button>
             <div className={'overlay__content'}>
                 {componentToRender}
             </div>
