@@ -5,8 +5,12 @@ import {selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selec
 import {
     setTitle,
     setContent,
-    toggleVisibility
+    toggleModalVisibility
 } from '../Modal/ModalSlice';
+import {
+    toggleOverlayVisibility,
+    setOverlayComponent
+} from '../Overlay/OverlaySlice';
 import {RootState} from "../../Store/Store";
 import {ComponentTypesEnum} from "../../Store/ComponentTypesEnum";
 import {ComponentId, Config, selectConfig} from "../Config/ConfigSlice";
@@ -46,9 +50,9 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Aufgabenstellung',
         icon: 'fas fa-tasks',
         onClick: (dispatch, component, config) => {
-            dispatch(toggleVisibility());
-            dispatch(setTitle(config.title));
-            dispatch(setContent(config.description));
+            dispatch(toggleModalVisibility())
+            dispatch(setTitle(config.title))
+            dispatch(setContent(config.description))
         }
     },
     {
@@ -57,7 +61,8 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Dokumenten-Upload',
         icon: 'fas fa-file-upload',
         onClick: (dispatch, component, config) => {
-            console.log('test', component.id)
+            dispatch(toggleOverlayVisibility())
+            dispatch(setOverlayComponent(component.id))
         }
     }
 ]
@@ -66,7 +71,8 @@ const Toolbar: React.FC<ToolbarProps> = ({...props}) => {
     const dispatch = useDispatch();
     const toggleComponentWrapper = (component: Component) => {
         props.toggleComponent(component.id)
-        component.onClick(dispatch, component, props.config);
+        component.onClick(dispatch, component, props.config)
+        props.toggleToolbarVisibility()
     };
 
     const toolbarItemsToRender = Object.values(possibleComponentsForToolbar).map(function(component: Component) {
@@ -76,7 +82,7 @@ const Toolbar: React.FC<ToolbarProps> = ({...props}) => {
     });
     return (
         <div className={(props.isVisible === true) ? 'toolbar toolbar--is-visible' : 'toolbar'}>
-            <button type="button" className={'toolbar__toggle'} onClick={props.toggleToolbarVisibility}><i className={(props.isVisible === true) ? 'fas fa-chevron-right' : 'fas fa-chevron-left'}></i></button>
+            <button aria-label="Toolbar öffnen/schließen" type="button" className={'toolbar__toggle'} onClick={props.toggleToolbarVisibility}><i className={(props.isVisible === true) ? 'fas fa-chevron-right' : 'fas fa-chevron-left'}></i></button>
             {toolbarItemsToRender}
         </div>
     );

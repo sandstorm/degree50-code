@@ -22,9 +22,7 @@ type VideoAnalysisProps = AdditionalProps & ReturnType<typeof mapStateToProps> &
 
 const VideoAnalysis: React.FC<VideoAnalysisProps> = ({...props}) => {
     return (
-        <div className={'exercise-phase__main'}>
-            <VideoPlayerWrapper />
-        </div>
+        <VideoPlayerWrapper />
     );
 }
 

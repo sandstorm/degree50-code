@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {selectIsVisible, selectTitle, selectContent, toggleVisibility} from "./ModalSlice";
+import {selectIsVisible, selectTitle, selectContent, toggleModalVisibility} from "./ModalSlice";
 
 const mapStateToProps = (state: any) => ({
     isVisible: selectIsVisible(state),
@@ -9,7 +9,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    toggleVisibility: () => dispatch(toggleVisibility()),
+    toggleModalVisibility: () => dispatch(toggleModalVisibility()),
 });
 
 type AdditionalProps = {
@@ -18,20 +18,20 @@ type AdditionalProps = {
 
 type ModalProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
-const Modal: React.FC<ModalProps> = ({title, content, isVisible, toggleVisibility}) => {
+const Modal: React.FC<ModalProps> = ({...props}) => {
     return (
-        <div className={(isVisible === true) ? 'modal modal--is-visible' : 'modal'} aria-label={title}>
+        <div className={(props.isVisible === true) ? 'modal modal--is-visible' : 'modal'} aria-label={props.title}>
             <div className={'modal__inner'}>
                 <header className={'modal__header'}>
-                    <h3>{title}</h3>
+                    <h3>{props.title}</h3>
                 </header>
                 <div className={'modal__content-wrapper'}>
                     <div className={'modal__content'}>
-                        {content}
+                        {props.content}
                     </div>
                 </div>
                 <footer className={'modal__footer'}>
-                    <button className={'btn btn-primary'} type='button' onClick={toggleVisibility}>Close</button>
+                    <button className={'btn btn-primary'} type='button' onClick={props.toggleModalVisibility}>Close</button>
                 </footer>
             </div>
         </div>

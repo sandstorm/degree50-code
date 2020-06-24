@@ -5,6 +5,7 @@ import {Config, setConfig} from "./Components/Config/ConfigSlice";
 import { useDispatch } from "react-redux";
 import VideoAnalysis from "./Domain/ExercisePhases/VideoAnalysis";
 import {ExercisePhaseTypesEnum} from "./Store/ExercisePhaseTypesEnum";
+import Overlay from "./Components/Overlay/Overlay";
 
 type Props = {
     solution: any
@@ -29,7 +30,10 @@ export const ExercisePhaseApp: React.FC<Props> = ({...props}) => {
 
     return (
         <div className={'exercise-phase ' + phaseTypeCssClass}>
-            {exercisePhase}
+            <div className={'exercise-phase__main'}>
+                {exercisePhase}
+            </div>
+            <Overlay />
             <Toolbar />
             <Modal />
         </div>

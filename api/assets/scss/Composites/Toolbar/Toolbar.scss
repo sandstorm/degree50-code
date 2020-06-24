@@ -15,6 +15,7 @@ $toolbarWidth: 100px;
   border: 1px solid $theme__color__grey--darker;
 
   transition: right 0.2s ease 0s;
+  z-index: 8000;
 
   &--is-visible {
     right: 0;

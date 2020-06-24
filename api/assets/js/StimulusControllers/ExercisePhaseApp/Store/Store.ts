@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import toolbarReducer from '../Components/Toolbar/ToolbarSlice';
 import modalReducer from '../Components/Modal/ModalSlice';
 import configReducer from '../Components/Config/ConfigSlice';
+import overlayReducer from '../Components/Overlay/OverlaySlice';
 import videoPlayerWrapperReducer from '../Components/VideoPlayer/VideoPlayerWrapperSlice';
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     toolbar: toolbarReducer,
     modal: modalReducer,
     config: configReducer,
+    overlay: overlayReducer,
     videoPlayerWrapper: videoPlayerWrapperReducer,
   },
 });
