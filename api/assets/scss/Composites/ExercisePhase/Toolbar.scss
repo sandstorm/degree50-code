@@ -1,13 +1,31 @@
+$toolbarWidth: 100px;
+
 .toolbar {
   position: fixed;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  right: 0;
+  right: -$toolbarWidth;
   top: 40px;
-  width: 100px;
+  width: $toolbarWidth;
   min-height: 300px;
   padding: 10px;
+
+  background-color: $theme__color__grey;
+  border: 1px solid $theme__color__grey--darker;
+
+  transition: right 0.2s ease 0s;
+
+  &--is-visible {
+    right: 0;
+  }
+}
+
+.toolbar__toggle {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: -40px;
 
   background-color: $theme__color__grey;
   border: 1px solid $theme__color__grey--darker;
@@ -16,8 +34,8 @@
 .toolbar-item {
   margin-bottom: 20px;
   padding: 10px;
-  width: 80px;
-  height: 80px;
+  width: $toolbarWidth - 20px;
+  height: $toolbarWidth - 20px;
   display: flex;
   justify-content: center;
   align-items: center;

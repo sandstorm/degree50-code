@@ -1,7 +1,7 @@
 import React from 'react';
 import {ToolbarItem} from "./ToolbarItem";
 import {connect, useDispatch, useSelector} from 'react-redux';
-import {selectActiveToolbarItem, toggleComponent} from "./ToolbarSlice";
+import {selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible} from "./ToolbarSlice";
 import {
     setTitle,
     setContent,
@@ -13,12 +13,16 @@ import {ComponentId, Config, selectConfig} from "../Config/ConfigSlice";
 
 const mapStateToProps = (state: RootState) => ({
     activeToolbarItem: selectActiveToolbarItem(state),
+    isVisible: selectIsVisible(state),
     config: selectConfig(state)
 });
 
 const mapDispatchToProps = (dispatch: any, ) => ({
     toggleComponent: (componentId: ComponentId) => {
         dispatch(toggleComponent(componentId))
+    },
+    toggleToolbarVisibility: () => {
+        dispatch(toggleToolbarVisibility())
     }
 });
 
@@ -71,7 +75,8 @@ const Toolbar: React.FC<ToolbarProps> = ({...props}) => {
         }
     });
     return (
-        <div className={'toolbar'}>
+        <div className={(props.isVisible === true) ? 'toolbar toolbar--is-visible' : 'toolbar'}>
+            <button type="button" className={'toolbar__toggle'} onClick={props.toggleToolbarVisibility}><i className={(props.isVisible === true) ? 'fas fa-chevron-right' : 'fas fa-chevron-left'}></i></button>
             {toolbarItemsToRender}
         </div>
     );
