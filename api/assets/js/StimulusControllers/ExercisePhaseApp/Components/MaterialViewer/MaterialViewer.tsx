@@ -72,9 +72,9 @@ const MaterialViewer: React.FC<MaterialViewerProps> = ({...props}) => {
                             navigation = {{
                                 css: {
                                     navbarWrapper: 'pdf-viewer__navbar',
-                                    previousPageBtn: 'btn btn-sm btn-primary',
+                                    previousPageBtn: 'btn btn-sm btn-primary pdf-viewer__prev-page',
                                     pageIndicator: 'pdf-viewer__pages',
-                                    nextPageBtn: 'btn btn-sm btn-primary',
+                                    nextPageBtn: 'btn btn-sm btn-primary pdf-viewer__next-page',
                                 },
                             }}
                         />
