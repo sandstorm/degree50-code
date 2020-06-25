@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect, useDispatch} from 'react-redux';
 import {selectConfig} from "../Config/ConfigSlice";
+// @ts-ignore
 import PDFViewer from 'pdf-viewer-reactjs'
 import {selectActiveMaterial, setActiveMaterial} from "./MaterialViewerSlice";
 import {
@@ -69,6 +70,13 @@ const MaterialViewer: React.FC<MaterialViewerProps> = ({...props}) => {
                             loader={
                                 <h2 className={'pdf-viewer__loader'}><i className={'fas fa-spinner fa-spin'}></i></h2>
                             }
+                            alert={(err: any) => (
+                                <div className={'pdf-viewer__error'}>
+                                    <h4>
+                                        Dokument konte nicht geladen werden
+                                    </h4>
+                                </div>
+                            )}
                             navigation = {{
                                 css: {
                                     navbarWrapper: 'pdf-viewer__navbar',

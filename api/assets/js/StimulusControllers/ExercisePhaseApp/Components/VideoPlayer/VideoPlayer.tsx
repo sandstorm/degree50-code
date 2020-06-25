@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-ignore
 import videojs from 'video.js';
 
 require('!style-loader!css-loader!video.js/dist/video-js.css');
