@@ -1,6 +1,6 @@
 import React from 'react';
 import {ToolbarItem} from "./ToolbarItem";
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import {selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible} from "./ToolbarSlice";
 import {
     setTitle,

@@ -3,6 +3,7 @@ import toolbarReducer from '../Components/Toolbar/ToolbarSlice';
 import modalReducer from '../Components/Modal/ModalSlice';
 import configReducer from '../Components/Config/ConfigSlice';
 import overlayReducer from '../Components/Overlay/OverlaySlice';
+import materialViewerReducer from '../Components/MaterialViewer/MaterialViewerSlice';
 import videoPlayerWrapperReducer from '../Components/VideoPlayer/VideoPlayerWrapperSlice';
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     modal: modalReducer,
     config: configReducer,
     overlay: overlayReducer,
+    materialViewer: materialViewerReducer,
     videoPlayerWrapper: videoPlayerWrapperReducer,
   },
 });
