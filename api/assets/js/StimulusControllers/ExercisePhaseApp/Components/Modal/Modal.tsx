@@ -1,11 +1,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {selectIsVisible, selectTitle, selectContent, toggleModalVisibility} from "./ModalSlice";
+import {selectIsVisible, selectTitle, selectContent, selectComponent, toggleModalVisibility} from "./ModalSlice";
+import ExerciseDescription from "../ExerciseDescription/ExerciseDescription";
+import {ComponentTypesEnum} from "../../Store/ComponentTypesEnum";
 
 const mapStateToProps = (state: any) => ({
     isVisible: selectIsVisible(state),
     title: selectTitle(state),
     content: selectContent(state),
+    component: selectComponent(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -19,6 +22,15 @@ type AdditionalProps = {
 type ModalProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
 const Modal: React.FC<ModalProps> = ({...props}) => {
+
+    let componentToRender = null
+    switch(props.component) {
+        case ComponentTypesEnum.EXERCISE_DESCRIPTION:
+            componentToRender = <ExerciseDescription />
+            break;
+        default:
+    }
+
     return (
         <div className={(props.isVisible === true) ? 'modal modal--is-visible' : 'modal'} aria-label={props.title}>
             <div className={'modal__inner'}>
@@ -28,6 +40,7 @@ const Modal: React.FC<ModalProps> = ({...props}) => {
                 <div className={'modal__content-wrapper'}>
                     <div className={'modal__content'}>
                         {props.content}
+                        {componentToRender ? componentToRender : ''}
                     </div>
                 </div>
                 <footer className={'modal__footer'}>

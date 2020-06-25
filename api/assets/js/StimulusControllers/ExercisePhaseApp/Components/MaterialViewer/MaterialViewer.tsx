@@ -23,9 +23,8 @@ export type Material = {
 }
 
 const MaterialViewer: React.FC<MaterialViewerProps> = ({...props}) => {
-    console.log(props.config.material)
     const materialTiles = props.config.material.map(function(material: Material) {
-        return <a key={material.id} className={'tile'} href={material.url}><div className={'tile__content'}><i className={'tile__icon fas fa-file-pdf'}></i><span>{material.name}</span></div></a>
+        return <a key={material.id} className={'tile tile--small'} href={material.url}><div className={'tile__content'}><i className={'tile__icon fas fa-file-pdf'}></i><span>{material.name}</span></div></a>
     });
 
     return (

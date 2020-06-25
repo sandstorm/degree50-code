@@ -4,7 +4,7 @@ import {connect, useDispatch, useSelector} from 'react-redux';
 import {selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible} from "./ToolbarSlice";
 import {
     setTitle,
-    setContent,
+    setComponent,
     toggleModalVisibility
 } from '../Modal/ModalSlice';
 import {
@@ -14,6 +14,7 @@ import {
 import {RootState} from "../../Store/Store";
 import {ComponentTypesEnum} from "../../Store/ComponentTypesEnum";
 import {ComponentId, Config, selectConfig} from "../Config/ConfigSlice";
+import ExerciseDescription from "../ExerciseDescription/ExerciseDescription";
 
 const mapStateToProps = (state: RootState) => ({
     activeToolbarItem: selectActiveToolbarItem(state),
@@ -52,7 +53,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         onClick: (dispatch, component, config) => {
             dispatch(toggleModalVisibility())
             dispatch(setTitle(config.title))
-            dispatch(setContent(config.description))
+            dispatch(setComponent(ComponentTypesEnum.EXERCISE_DESCRIPTION))
         }
     },
     {

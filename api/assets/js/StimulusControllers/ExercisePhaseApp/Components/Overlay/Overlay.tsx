@@ -31,7 +31,6 @@ const Overlay: React.FC<OverlayProps> = ({...props}) => {
             componentToRender = <MaterialViewer />
             break;
         default:
-
     }
 
     return (
