@@ -2,6 +2,7 @@
 
 namespace App\Repository\Exercise;
 
+use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,32 +20,18 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
         parent::__construct($registry, ExercisePhaseTeam::class);
     }
 
-    // /**
-    //  * @return ExercisePhaseTeam[] Returns an array of ExercisePhaseTeam objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param User $member
+     * @return ExercisePhaseTeam[]|\iterable
+     */
+    public function findByMember(User $member): iterable
     {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere(':member MEMBER OF e.members')
+            ->setParameter('member', $member)
             ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?ExercisePhaseTeam
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

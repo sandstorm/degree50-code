@@ -3,7 +3,7 @@
 {% block title %}{{ exercisePhase.name }}{% endblock %}
 
 {% block body %}
-    <div data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, config: config, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
+    <div data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
         Komponenten rendern ...
     </div>
     <footer class="footer">

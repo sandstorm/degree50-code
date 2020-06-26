@@ -12,6 +12,7 @@ use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
+use App\Exercise\LiveSync\LiveSyncService;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,15 +30,17 @@ class ExercisePhaseController extends AbstractController
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private AppRuntime $appRuntime;
+    private LiveSyncService $liveSyncService;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->appRuntime = $appRuntime;
+        $this->liveSyncService = $liveSyncService;
     }
 
     /**
@@ -70,12 +73,26 @@ class ExercisePhaseController extends AbstractController
             }, $exercisePhase->getVideos()->toArray())
         ];
 
+        $response = new Response();
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($this->getUser()));
+
         return $this->render('ExercisePhase/Show.html.twig', [
             'config' => $config,
+            'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'solution' => $exercisePhaseTeam->getSolution()
-        ]);
+        ], $response);
+    }
+
+    /**
+     * @Route("/exercise-phase/livesync/{id}/{team_id}", name="app_exercise-phase-livesync")
+     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
+     */
+    public function liveSync(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        $this->liveSyncService->publish($exercisePhaseTeam, ['some' => 'payload']);
+        return Response::create('OK');
     }
 
     /**
@@ -100,7 +117,6 @@ class ExercisePhaseController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
-
     }
 
     /**
