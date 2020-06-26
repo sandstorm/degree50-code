@@ -54,9 +54,7 @@ const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({...props}) => {
         {activeVideo.description}
     </div>
 
-    console.log (props.activeVideoIndex)
     const setVideo = (videos: Array<Video>, index: number) => {
-        console.log(videos.length, index)
         if (index < 0) {
             return
         }
@@ -64,7 +62,6 @@ const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({...props}) => {
             return
         }
 
-        console.log('set new video')
         props.setVideo(videos[index])
         props.setVideoIndex(index)
     }

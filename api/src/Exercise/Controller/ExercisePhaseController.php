@@ -59,6 +59,7 @@ class ExercisePhaseController extends AbstractController
                 return [
                     'id' => $entry->getId(),
                     'name' => $entry->getName(),
+                    'type' => $entry->getMimeType(),
                     'url' => $this->generateUrl('app_material-download', ['id' => $entry->getId()])
                 ];
             }, $exercisePhase->getMaterial()->toArray()),
@@ -201,11 +202,11 @@ class ExercisePhaseController extends AbstractController
                         'name' => $exercisePhase->getName(),
                         'task' => $exercisePhase->getTask(),
                         'isGroupPhase' => $exercisePhase->isGroupPhase(),
-                        'material' => $exercisePhase->getMaterial()->map(fn(Material $material) => [
-                            'materialId' => $material->getId(),
-                            'name' => $material->getName(),
-                            'link' => $material->getLink()
-                        ])->toArray(),
+//                        'material' => $exercisePhase->getMaterial()->map(fn(Material $material) => [
+//                            'materialId' => $material->getId(),
+//                            'name' => $material->getName(),
+//                            'link' => $material->getLink()
+//                        ])->toArray(),
                         'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
                             'videoId' => $video->getId()
                         ])->toArray(),

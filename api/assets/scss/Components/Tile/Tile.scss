@@ -1,8 +1,10 @@
 $tileHeight: 200px;
+$tileHeight--small: 150px;
 
 .tile {
   position: relative;
   height: $tileHeight;
+  width: $tileHeight;
   margin-right: 20px;
   margin-bottom: 20px;
 
@@ -41,10 +43,15 @@ $tileHeight: 200px;
     flex-direction: row;
     flex-wrap: nowrap;
   }
+
+  &--small {
+    height: $tileHeight--small;
+    width: $tileHeight--small;
+  }
 }
 
 .tile__content {
-  width: $tileHeight;
+  width: 100%;
   display: block;
   margin: 0;
   height: 100%;
