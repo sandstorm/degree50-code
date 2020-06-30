@@ -8,9 +8,6 @@ import { t, Translate } from 'react-i18nify';
 export default function(props) {
     return (
         <div className="subtitle-editor-header">
-            <div className="subtitle-editor-header__logo" href="/">
-                <i className="icon-cc"></i>
-            </div>
             <div className="subtitle-editor-header__menu-item" onClick={() => props.setOption({ uploadDialog: true })}>
                 <i className="icon-upload"></i>
                 <Translate value="open" />

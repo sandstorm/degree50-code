@@ -15,7 +15,7 @@ const history = [];
 const storage = new Storage();
 const worker = new Worker(vttToUrlUseWorker());
 
-export default function() {
+export default function({...props}) {
     // Player instance
     const [player, setPlayer] = useState(null);
 
@@ -34,7 +34,7 @@ export default function() {
 
     // All options
     const [options, setOptions] = useState({
-        videoUrl: '/sample.mp4',
+        videoUrl: props.videos[0].url,
         subtitleUrl: '/sample.vtt',
         uploadDialog: false,
         translationLanguage: 'en',
@@ -243,7 +243,7 @@ export default function() {
         notify(t('clear-success'));
     }, [player, removeSubtitles]);
 
-    const props = {
+    const propsForEditor = {
         player,
         options,
         language,
@@ -272,9 +272,9 @@ export default function() {
 
     return (
         <React.Fragment>
-            <Header {...props} />
-            <Main {...props} />
-            <Footer {...props} />
+            <Header {...propsForEditor} />
+            <Main {...propsForEditor} />
+            <Footer {...propsForEditor} />
             <ToastContainer />
         </React.Fragment>
     );

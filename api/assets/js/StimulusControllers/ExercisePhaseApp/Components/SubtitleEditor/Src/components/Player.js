@@ -1,9 +1,9 @@
 import React from 'react';
 import ArtplayerComponent from 'artplayer-react';
+import Hls from 'hls.js'
 
 export default React.memo(
     function({ options, setPlayer, setCurrentTime }) {
-        console.log(options);
         return (
             <div className="subtitle-editor-player">
                 <ArtplayerComponent
@@ -13,6 +13,16 @@ export default React.memo(
                     }}
                     option={{
                         url: options.videoUrl,
+                        customType: {
+                            m3u8: function(video, url) {
+                                var hls = new Hls();
+                                hls.loadSource(url);
+                                hls.attachMedia(video);
+                                if (!video.src) {
+                                    video.src = url;
+                                }
+                            },
+                        },
                         loop: true,
                         autoSize: true,
                         aspectRatio: true,

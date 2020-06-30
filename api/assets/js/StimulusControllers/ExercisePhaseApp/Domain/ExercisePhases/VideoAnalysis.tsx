@@ -1,10 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import VideoPlayerWrapper from "../../Components/VideoPlayer/VideoPlayerWrapper";
+import SubtitleEditor from "../../Components/SubtitleEditor/SubtitleEditor";
+import {selectConfig} from "../../Components/Config/ConfigSlice";
 
 const mapStateToProps = (state: any) => {
     return {
-
+        videos: selectConfig(state).videos,
     };
 };
 
@@ -22,7 +24,7 @@ type VideoAnalysisProps = AdditionalProps & ReturnType<typeof mapStateToProps> &
 
 const VideoAnalysis: React.FC<VideoAnalysisProps> = ({...props}) => {
     return (
-        <VideoPlayerWrapper />
+        <SubtitleEditor videos={props.videos} />
     );
 }
 

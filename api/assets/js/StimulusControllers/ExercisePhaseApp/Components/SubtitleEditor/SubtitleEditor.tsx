@@ -9,15 +9,39 @@ import './Src/fontello/css/fontello.css';
 import 'nprogress/nprogress.css';
 import 'react-virtualized/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
+import {Video} from "../VideoPlayer/VideoPlayerWrapper";
+import {connect} from 'react-redux';
 
 setTranslations(i18n);
 NProgress.configure({ minimum: 0, showSpinner: false });
 serviceWorker.unregister();
 
-export default class SubtitleEditor extends React.Component {
-    render() {
-        return (
-            <App />
-        )
-    }
+const mapStateToProps = (state: any) => {
+    return {
+    };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+
+    };
+};
+
+type AdditionalProps = {
+    // currently none
+    videos: Array<Video>
 }
+
+type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+
+
+const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = ({...props}) => {
+    return (
+        <App {...props} />
+    )
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(SubtitleEditorWrapper)

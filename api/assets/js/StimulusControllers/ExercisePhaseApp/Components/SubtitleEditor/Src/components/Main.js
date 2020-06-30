@@ -8,7 +8,7 @@ export default function(props) {
         <div className="subtitle-editor__main">
             <div className="subtitle-editor__player">
                 <Player {...props} />
-                <Tool {...props} />
+                {/*<Tool {...props} />*/}
             </div>
             <div className="subtitle-editor__subtitles">
                 <Subtitle {...props} />

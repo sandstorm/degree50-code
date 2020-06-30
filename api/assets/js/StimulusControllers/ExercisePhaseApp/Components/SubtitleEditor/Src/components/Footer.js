@@ -52,61 +52,6 @@ export default function(props) {
                 <div className="subtitle-editor-timeline__header-left">
                     <div className="item">
                         <div className="name">
-                            <Translate value="audio-waveform" />
-                        </div>
-                        <div className="value">
-                            <input
-                                defaultChecked={true}
-                                type="checkbox"
-                                onChange={event => {
-                                    if (!wf) return;
-                                    wf.setOptions({
-                                        wave: event.target.checked,
-                                    });
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className="item">
-                        <div className="name">
-                            <Translate value="file-size" />
-                        </div>
-                        <div className="value" style={{ color: '#FF5722' }}>
-                            {((fileSize || 0) / 1024 / 1024).toFixed(2)} M
-                        </div>
-                    </div>
-                    <div className="item">
-                        <div className="name">
-                            <Translate value="decoding-progress" />
-                        </div>
-                        <div className="value" style={{ color: '#FF5722' }}>
-                            {((decodeing || 0) * 100).toFixed(2)}%
-                        </div>
-                    </div>
-                    <div className="item">
-                        <div className="name">
-                            <Translate value="render-channel" />
-                        </div>
-                        <div className="value">
-                            <select
-                                defaultValue={0}
-                                onChange={event => {
-                                    if (!wf) return;
-                                    wf.changeChannel(Number(event.target.value || 0));
-                                }}
-                            >
-                                {Array(channelNum)
-                                    .fill()
-                                    .map((_, index) => (
-                                        <option key={index} value={index}>
-                                            {index + 1}
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="item">
-                        <div className="name">
                             <Translate value="unit-duration" />
                         </div>
                         <div className="value">
@@ -146,18 +91,6 @@ export default function(props) {
                         </div>
                     </div>
                     <div className="item">
-                        <div className="name">
-                            <Translate value="space-metronome" />
-                        </div>
-                        <div className="value">
-                            {metronome ? (
-                                <span style={{ color: '#4CAF50' }}>ON</span>
-                            ) : (
-                                <span style={{ color: '#FF5722' }}>OFF</span>
-                            )}
-                        </div>
-                    </div>
-                    <div className="item">
                         <div
                             style={{ cursor: 'pointer' }}
                             className="value"
@@ -181,7 +114,7 @@ export default function(props) {
                         setRender={setRender}
                     />
                 ) : null}
-                <Metronome {...props} render={render} metronome={metronome} setMetronome={setMetronome} />
+                {/*<Metronome {...props} render={render} metronome={metronome} setMetronome={setMetronome} />*/}
                 <Block {...props} render={render} />
             </div>
         </div>

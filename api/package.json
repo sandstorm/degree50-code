@@ -48,6 +48,7 @@
         "dropzone": "^5.7.0",
         "duration-time-conversion": "^1.0.1",
         "graphql": "^14.3.1",
+        "hls.js": "^0.13.2",
         "lodash": "^4.17.15",
         "normalize.css": "^8.0.1",
         "nprogress": "^0.2.0",
