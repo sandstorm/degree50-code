@@ -30,11 +30,6 @@ const en = {
     'help-issue': 'You can ask any questions on Github Issue:',
     'help-email': 'Or contact me via email:',
 
-    'donate-info':
-        'Or you can buy me a cup of coffee to encourage me to continue to update and improve the subtitle editor.',
-    'donate-weChatPay': 'WeChat Pay:',
-    'donate-alipay': 'Alipay:',
-
     'history-rollback': 'History rollback successful',
     'history-empty': 'History is empty',
 

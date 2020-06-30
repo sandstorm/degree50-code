@@ -47,14 +47,17 @@ export const ExercisePhaseApp: React.FC<Props> = ({...props}) => {
     }
 
     return (
-        <div className={'exercise-phase ' + phaseTypeCssClass}>
-            <div className={'exercise-phase__main'}>
-                {exercisePhase}
+        <div>
+            <div className={'exercise-phase ' + phaseTypeCssClass} aria-hidden="false">
+                <div className={'exercise-phase__main'}>
+                    {exercisePhase}
+                </div>
+                <Overlay />
+                <Toolbar />
+                <a href={props.liveSyncConfig.exercisePhaseLiveSyncSubmitUrl} target="_blank">send SSE test message</a>
             </div>
-            <Overlay />
-            <Toolbar />
             <Modal />
-            <a href={props.liveSyncConfig.exercisePhaseLiveSyncSubmitUrl} target="_blank">send SSE test message</a>
         </div>
+
     );
 }

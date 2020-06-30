@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {selectIsVisible, selectTitle, selectContent, selectComponent, toggleModalVisibility} from "./ModalSlice";
 import ExerciseDescription from "../ExerciseDescription/ExerciseDescription";
 import {ComponentTypesEnum} from "../../Store/ComponentTypesEnum";
+import FocusLock from 'react-focus-lock';
 
 const mapStateToProps = (state: any) => ({
     isVisible: selectIsVisible(state),
@@ -32,22 +33,24 @@ const Modal: React.FC<ModalProps> = ({...props}) => {
     }
 
     return (
-        <div className={(props.isVisible === true) ? 'modal modal--is-visible' : 'modal'} aria-label={props.title}>
-            <div className={'modal__inner'}>
-                <header className={'modal__header'}>
-                    <h3>{props.title}</h3>
-                </header>
-                <div className={'modal__content-wrapper'}>
-                    <div className={'modal__content'}>
-                        {props.content}
-                        {componentToRender ? componentToRender : ''}
+        <FocusLock disabled={!props.isVisible}>
+            <div role="dialog" className={(props.isVisible === true) ? 'modal modal--is-visible' : 'modal'} aria-label={props.title}>
+                <div className={'modal__inner'}>
+                    <header className={'modal__header'}>
+                        <h3>{props.title}</h3>
+                    </header>
+                    <div className={'modal__content-wrapper'}>
+                        <div className={'modal__content'}>
+                            {props.content}
+                            {componentToRender ? componentToRender : ''}
+                        </div>
                     </div>
+                    <footer className={'modal__footer'}>
+                        <button className={'btn btn-primary'} type='button' onClick={props.toggleModalVisibility}>Close</button>
+                    </footer>
                 </div>
-                <footer className={'modal__footer'}>
-                    <button className={'btn btn-primary'} type='button' onClick={props.toggleModalVisibility}>Close</button>
-                </footer>
             </div>
-        </div>
+        </FocusLock>
     );
 }
 
