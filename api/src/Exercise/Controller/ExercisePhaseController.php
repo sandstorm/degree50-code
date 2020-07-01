@@ -91,7 +91,7 @@ class ExercisePhaseController extends AbstractController
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'solution' => $exercisePhaseTeam->getSolution()
+            'solution' => $exercisePhaseTeam->getSolution()->getSolution()
         ], $response);
     }
 
@@ -111,20 +111,11 @@ class ExercisePhaseController extends AbstractController
      */
     public function shareResult(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        $solution = new Solution();
-        $solution->setTeam($exercisePhaseTeam);
-        // just temporary
-        $solution->setSolution(['solution' => true]);
-
         $this->eventStore->addEvent('SolutionShared', [
             'exercisePhaseId' => $exercisePhase->getId(),
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'solutionId' => $solution->getId()
+            'solutionId' => $exercisePhaseTeam->getSolution()->getId()
         ]);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($solution);
-        $entityManager->flush();
 
         return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
     }
@@ -270,8 +261,25 @@ class ExercisePhaseController extends AbstractController
      * @Route("/exercise-phase/update-solution/{id}/{team_id}", name="app_exercise-phase-update-solution")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
-    public function updateSolution(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function updateSolution(Request $request, ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
+        $solutionFromJson = json_decode($request->getContent(), true);
+
+        // TODO use autoSavedSolutions...
+        $solution = $exercisePhaseTeam->getSolution();
+        $solution->setSolution($solutionFromJson['solution']);
+
+        // disable event log for autosave
+        $this->eventStore->addEvent('SolutionShared', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'solutionId' => $solution->getId()
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($solution);
+        $entityManager->flush();
+
         return Response::create('OK');
     }
 }

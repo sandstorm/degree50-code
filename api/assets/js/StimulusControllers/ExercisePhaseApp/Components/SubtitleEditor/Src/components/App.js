@@ -68,7 +68,7 @@ export default function({...props}) {
     const updateSubtitles = useCallback(
         (subs, saveToHistory = true) => {
             if (subs.length && !isEqual(subs, subtitles)) {
-                dispatch(setAnnotations(subToJson(subs)));
+                dispatch(setAnnotations(JSON.parse(JSON.stringify(subs))));
                 dispatch(sendSolutionState());
 
                 setSubtitles(subs);
@@ -82,7 +82,7 @@ export default function({...props}) {
                 }
 
                 // Save to storage
-                storage.set('subtitles', subs);
+                //storage.set('subtitles', subs);
 
                 // Convert subtitles to vtt url
                 worker.postMessage(subs);
@@ -93,9 +93,11 @@ export default function({...props}) {
 
     // Initialize subtitles from url or storage
     const initSubtitles = useCallback(async () => {
-        // TODO get from state
+        const stateSubs = props.subtitles;
         const storageSubs = storage.get('subtitles');
-        if (storageSubs && storageSubs.length) {
+        if(stateSubs) {
+            updateSubtitles(stateSubs.map(item => new Sub(item.start, item.end, item.text)));
+        } else if (storageSubs && storageSubs.length) {
             updateSubtitles(storageSubs.map(item => new Sub(item.start, item.end, item.text)));
         } else {
             const subs = await getSubFromVttUrl(options.subtitleUrl);

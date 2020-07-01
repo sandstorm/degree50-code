@@ -1,20 +1,21 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AppThunk, RootState} from '../../Store/Store';
-import {ApiEndpoints} from "../Config/ConfigSlice";
+import axios from 'axios'
+import {Subtitle} from "../SubtitleEditor/SubtitleEditor";
 
 export type Solution = {
-    annotations: string
+    annotations: Array<Subtitle>
 }
 
 const initialState: Solution = {
-    annotations: '',
+    annotations: [],
 };
 
 export const solutionSlice = createSlice({
     name: 'solution',
     initialState,
     reducers: {
-        setAnnotations: (state, action: PayloadAction<string>) => {
+        setAnnotations: (state, action: PayloadAction<Array<Subtitle>>) => {
             state.annotations = action.payload
         },
         setSolution: (state, action: PayloadAction<Solution>) => {
@@ -23,7 +24,7 @@ export const solutionSlice = createSlice({
     },
 });
 
-export const { setAnnotations, setSolution } = solutionSlice.actions;
+export const {setAnnotations, setSolution} = solutionSlice.actions;
 
 export const selectSolution = (state: RootState) => state.solution;
 
@@ -32,10 +33,15 @@ export default solutionSlice.reducer;
 // THUNKS
 export const sendSolutionState = (): AppThunk => async (dispatch, getState) => {
     const solution = getState().solution
-    const updateSolutionEndpoint = getState().config.apiEndpoints
-    console.log(solution, updateSolutionEndpoint.updateSolution)
-    //dispatch(syncStart())
-    // send req
-    //const response = await (await fetch()).json()
-    //dispatch(snycComplete())
+    const updateSolutionEndpoint = getState().config.apiEndpoints.updateSolution
+
+    axios.post(updateSolutionEndpoint, {
+        solution: solution,
+    })
+        .then(function (response) {
+            console.log(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }

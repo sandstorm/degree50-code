@@ -16,8 +16,15 @@ setTranslations(i18n);
 NProgress.configure({ minimum: 0, showSpinner: false });
 serviceWorker.unregister();
 
+export type Subtitle = {
+    start: string
+    end: string
+    text: string
+}
+
 const mapStateToProps = (state: any) => {
     return {
+
     };
 };
 
@@ -30,6 +37,7 @@ const mapDispatchToProps = (dispatch: any) => {
 type AdditionalProps = {
     // currently none
     videos: Array<Video>
+    subtitles: Array<Subtitle>
 }
 
 type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>

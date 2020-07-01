@@ -5,6 +5,7 @@ namespace App\Exercise\Controller;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use App\Entity\Exercise\Solution;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -37,6 +38,8 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function new(Request $request, ExercisePhase $exercisePhase): Response
     {
+        $entityManager = $this->getDoctrine()->getManager();
+
         /* @var User $user */
         $user = $this->getUser();
         $exercise = $exercisePhase->getBelongsToExcercise();
@@ -56,13 +59,19 @@ class ExercisePhaseTeamController extends AbstractController
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
 
+        $solution = new Solution();
+        $solution->setTeam($exercisePhaseTeam);
+        $solution->setSolution(null);
+
+        $entityManager->persist($solution);
+
         $this->eventStore->addEvent('MemberAddedToTeam', [
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
             'userId' => $user->getId(),
             'exercisePhaseId' => $exercisePhase->getId()
         ]);
 
-        $entityManager = $this->getDoctrine()->getManager();
+
         $entityManager->persist($exercisePhaseTeam);
 
         $entityManager->flush();
