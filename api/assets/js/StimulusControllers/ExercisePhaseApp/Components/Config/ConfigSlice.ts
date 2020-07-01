@@ -4,6 +4,9 @@ import {Video} from "../VideoPlayer/VideoPlayerWrapper";
 import {Material} from "../MaterialViewer/MaterialViewer";
 
 export type ComponentId = string
+export type ApiEndpoints = {
+    updateSolution: string
+}
 export type Config = {
     title: string
     description: string
@@ -11,6 +14,7 @@ export type Config = {
     components: Array<ComponentId>
     material: Array<Material>
     videos: Array<Video>
+    apiEndpoints: ApiEndpoints
 }
 
 const initialState: Config = {
@@ -19,7 +23,8 @@ const initialState: Config = {
     type: '',
     components: [],
     material: [],
-    videos: []
+    videos: [],
+    apiEndpoints: null
 };
 
 export const configSlice = createSlice({
@@ -33,6 +38,7 @@ export const configSlice = createSlice({
             state.components = action.payload.components
             state.material = action.payload.material
             state.videos = action.payload.videos
+            state.apiEndpoints = action.payload.apiEndpoints
         }
     },
 });

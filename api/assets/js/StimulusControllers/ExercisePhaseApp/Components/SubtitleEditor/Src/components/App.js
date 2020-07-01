@@ -5,11 +5,13 @@ import Footer from './Footer';
 import Sub from '../subtitle/sub';
 import clamp from 'lodash/clamp';
 import { secondToTime, notify } from '../utils';
-import { getSubFromVttUrl, vttToUrlUseWorker } from '../subtitle';
+import {getSubFromVttUrl, subToJson, vttToUrlUseWorker} from '../subtitle';
 import Storage from '../utils/storage';
 import isEqual from 'lodash/isEqual';
 import { ToastContainer } from 'react-toastify';
 import { t, setLocale } from 'react-i18nify';
+import {sendSolutionState, setAnnotations} from "../../../Solution/SolutionSlice";
+import {useDispatch} from "react-redux";
 
 const history = [];
 const storage = new Storage();
@@ -62,9 +64,13 @@ export default function({...props}) {
     );
 
     // Only way to update all subtitles
+    const dispatch = useDispatch();
     const updateSubtitles = useCallback(
         (subs, saveToHistory = true) => {
             if (subs.length && !isEqual(subs, subtitles)) {
+                dispatch(setAnnotations(subToJson(subs)));
+                dispatch(sendSolutionState());
+
                 setSubtitles(subs);
 
                 // Save 100 subtitles to history
@@ -87,6 +93,7 @@ export default function({...props}) {
 
     // Initialize subtitles from url or storage
     const initSubtitles = useCallback(async () => {
+        // TODO get from state
         const storageSubs = storage.get('subtitles');
         if (storageSubs && storageSubs.length) {
             updateSubtitles(storageSubs.map(item => new Sub(item.start, item.end, item.text)));

@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import toolbarReducer from '../Components/Toolbar/ToolbarSlice';
 import modalReducer from '../Components/Modal/ModalSlice';
 import configReducer from '../Components/Config/ConfigSlice';
+import solutionReducer from '../Components/Solution/SolutionSlice';
 import overlayReducer from '../Components/Overlay/OverlaySlice';
 import materialViewerReducer from '../Components/MaterialViewer/MaterialViewerSlice';
 import videoPlayerWrapperReducer from '../Components/VideoPlayer/VideoPlayerWrapperSlice';
@@ -11,11 +12,12 @@ export const store = configureStore({
     toolbar: toolbarReducer,
     modal: modalReducer,
     config: configReducer,
+    solution: solutionReducer,
     overlay: overlayReducer,
     materialViewer: materialViewerReducer,
     videoPlayerWrapper: videoPlayerWrapperReducer,
   },
-});
+})
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk<ReturnType = void> = ThunkAction<
@@ -23,4 +25,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   RootState,
   unknown,
   Action<string>
->;
+>
+
+export type Dispatch = typeof store.dispatch

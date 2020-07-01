@@ -6,6 +6,7 @@ import {useDispatch} from "react-redux";
 import VideoAnalysis from "./Domain/ExercisePhases/VideoAnalysis";
 import {ExercisePhaseTypesEnum} from "./Store/ExercisePhaseTypesEnum";
 import Overlay from "./Components/Overlay/Overlay";
+import {Solution, setSolution} from "./Components/Solution/SolutionSlice";
 
 type LiveSyncConfig = {
     mercureEndpoint: string
@@ -14,7 +15,7 @@ type LiveSyncConfig = {
 }
 
 type Props = {
-    solution: any
+    solution: Solution
     config: Config
     liveSyncConfig: LiveSyncConfig
 }
@@ -23,6 +24,7 @@ export const ExercisePhaseApp: React.FC<Props> = ({...props}) => {
     const dispatch = useDispatch()
     // set initial config to the store
     dispatch(setConfig(props.config))
+    dispatch(setSolution(props.solution))
 
     // TODO: I am quite sure the SSE channel should not be created directly
     //       in the react component, as it is a side-effect.

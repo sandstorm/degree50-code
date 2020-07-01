@@ -58,6 +58,10 @@ export function subToVtt(sub) {
     );
 }
 
+export function subToJson(sub) {
+    return JSON.stringify(sub);
+}
+
 export async function getVttFromFile(file) {
     return new Promise(resolve => {
         const reader = new FileReader();

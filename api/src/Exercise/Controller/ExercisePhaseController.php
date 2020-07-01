@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -31,16 +32,18 @@ class ExercisePhaseController extends AbstractController
     private DoctrineIntegratedEventStore $eventStore;
     private AppRuntime $appRuntime;
     private LiveSyncService $liveSyncService;
+    private RouterInterface $router;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->appRuntime = $appRuntime;
         $this->liveSyncService = $liveSyncService;
+        $this->router = $router;
     }
 
     /**
@@ -55,6 +58,12 @@ class ExercisePhaseController extends AbstractController
             'description' => $exercisePhase->getTask(),
             'type' => $exercisePhase->getType(),
             'components' => $exercisePhase->getComponents(),
+            'apiEndpoints' => [
+              'updateSolution' => $this->router->generate('app_exercise-phase-update-solution', [
+                  'id' => $exercisePhase->getId(),
+                  'team_id' => $exercisePhaseTeam->getId()
+              ])
+            ],
             'material' => array_map(function (Material $entry) {
                 return [
                     'id' => $entry->getId(),
@@ -178,7 +187,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @Route("/exercise/edit/{id}/phase/edit/{phase_id}", name="app_exercise-phase-edit")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/edit", name="app_exercise-phase-edit")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
     public function edit(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
@@ -235,7 +244,7 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/edit/{id}/phase/delete/{phase_id}", name="app_exercise-phase-delete")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/delete", name="app_exercise-phase-delete")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
     public function delete(Exercise $exercise, ExercisePhase $exercisePhase): Response
@@ -255,5 +264,14 @@ class ExercisePhaseController extends AbstractController
 
         return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
 
+    }
+
+    /**
+     * @Route("/exercise-phase/update-solution/{id}/{team_id}", name="app_exercise-phase-update-solution")
+     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
+     */
+    public function updateSolution(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        return Response::create('OK');
     }
 }
