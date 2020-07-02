@@ -9,7 +9,7 @@
     </head>
     <body>
         {{ include('Partials/Header.html.twig') }}
-        <div class="main">
+        <div class="main main--with-header {% block layoutCssClass %}{% endblock %}">
             <div class="main-inner">
                 {% block sidebar %}{% endblock %}
                 <div class="content-with-sidebar">
