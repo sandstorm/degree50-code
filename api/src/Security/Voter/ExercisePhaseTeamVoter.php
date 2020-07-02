@@ -14,10 +14,11 @@ class ExercisePhaseTeamVoter extends Voter
 {
     const JOIN = 'join';
     const CREATE = 'create';
+    const SHOW = 'show';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::JOIN, self::CREATE])) {
+        if (!in_array($attribute, [self::JOIN, self::CREATE, self::SHOW])) {
             return false;
         }
 
@@ -47,6 +48,8 @@ class ExercisePhaseTeamVoter extends Voter
         }
 
         switch ($attribute) {
+            case self::SHOW:
+                return $this->canShow($exercisePhaseTeam, $user);
             case self::JOIN:
                 return $this->canJoin($exercisePhaseTeam, $user);
             case self::CREATE:
@@ -54,6 +57,11 @@ class ExercisePhaseTeamVoter extends Voter
         }
 
         throw new \LogicException('This code should not be reached!');
+    }
+
+    private function canShow(ExercisePhaseTeam $exercisePhaseTeam, User $user)
+    {
+        return $exercisePhaseTeam->getMembers()->contains($user);
     }
 
 

@@ -52,7 +52,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("show", subject="exercisePhase")
+     * @IsGranted("show", subject="exercisePhaseTeam")
      * @Route("/exercise-phase/show/{id}/{team_id}", name="app_exercise-phase-show")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
