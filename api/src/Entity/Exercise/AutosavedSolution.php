@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource()
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\Exercise\AutosavedSolutionRepository")
  */
 class AutosavedSolution
@@ -21,6 +22,8 @@ class AutosavedSolution
     private $solution = [];
 
     /**
+     * @var \DateTimeImmutable|null
+     *
      * @ORM\Column(type="datetimetz_immutable")
      */
     private $update_timestamp;
@@ -53,11 +56,12 @@ class AutosavedSolution
         return $this->update_timestamp;
     }
 
-    public function setUpdateTimestamp(\DateTimeImmutable $update_timestamp): self
+    /**
+     * @ORM\PrePersist
+     */
+    public function setUpdateTimestampValue()
     {
-        $this->update_timestamp = $update_timestamp;
-
-        return $this;
+        $this->update_timestamp = new \DateTimeImmutable();
     }
 
     public function getOwner(): ?User

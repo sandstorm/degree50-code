@@ -12,11 +12,14 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ExercisePhaseVoter extends Voter
 {
+    const SHOW = 'show';
     const NEXT = 'next';
+    const DELETE = 'delete';
+    const UPDATE_SOLUTION = 'updateSolution';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::NEXT])) {
+        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::UPDATE_SOLUTION])) {
             return false;
         }
 
@@ -43,16 +46,37 @@ class ExercisePhaseVoter extends Voter
         }
 
         switch ($attribute) {
+            case self::SHOW:
+                return $this->canShow($exercisePhase, $user);
+            case self::UPDATE_SOLUTION:
+                return $this->canUpdateSolution($exercisePhase, $user);
             case self::NEXT:
                 return $this->canGetToNextPhase($exercisePhase, $user);
+            case self::DELETE:
+                return $this->canDelete($exercisePhase, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
+    private function canShow(ExercisePhase $exercisePhase, User $user)
+    {
+        return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->getMembers()->contains($user));
+    }
 
     private function canGetToNextPhase(ExercisePhase $exercisePhase, User $user)
     {
         return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user));
+    }
+
+    // TODO can only delete exercisePhases which have no results/teams
+    private function canDelete(ExercisePhase $exercisePhase, User $user)
+    {
+        return $user === $exercisePhase->getBelongsToExcercise()->getCreator();
+    }
+
+    private function canUpdateSolution(ExercisePhase $exercisePhase, User $user)
+    {
+        return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->getMembers()->contains($user));
     }
 }

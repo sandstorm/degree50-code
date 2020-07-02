@@ -2,6 +2,8 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Account\User;
+use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
@@ -13,6 +15,7 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
 use App\Exercise\LiveSync\LiveSyncService;
+use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,20 +36,23 @@ class ExercisePhaseController extends AbstractController
     private AppRuntime $appRuntime;
     private LiveSyncService $liveSyncService;
     private RouterInterface $router;
+    private AutosavedSolutionRepository $autosavedSolutionRepository;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->appRuntime = $appRuntime;
         $this->liveSyncService = $liveSyncService;
         $this->router = $router;
+        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
     }
 
     /**
+     * @IsGranted("show", subject="exercisePhase")
      * @Route("/exercise-phase/show/{id}/{team_id}", name="app_exercise-phase-show")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
@@ -111,11 +117,29 @@ class ExercisePhaseController extends AbstractController
      */
     public function shareResult(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $solution = $exercisePhaseTeam->getSolution() ? $exercisePhaseTeam->getSolution() : new Solution();
+        $solution->setTeam($exercisePhaseTeam);
+
+        // use solution of the latest autosaved one
+        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy([], ['update_timestamp' => 'desc']);
+        $solution->setSolution($latestAutosavedSolution->getSolution());
+
+        // remove autosaved solutions
+        $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();
+        foreach ($autosavedSolutions as $autosavedSolution) {
+            $entityManager->remove($autosavedSolution);
+        }
+
         $this->eventStore->addEvent('SolutionShared', [
             'exercisePhaseId' => $exercisePhase->getId(),
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'solutionId' => $exercisePhaseTeam->getSolution()->getId()
+            'solutionId' => $solution->getId()
         ]);
+
+        $entityManager->persist($solution);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
     }
@@ -178,6 +202,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
+     * @IsGranted("edit", subject="exercise")
      * @Route("/exercise/edit/{id}/phase/{phase_id}/edit", name="app_exercise-phase-edit")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
@@ -234,7 +259,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("view", subject="exercise")
+     * @IsGranted("delete", subject="exercisePhase")
      * @Route("/exercise/edit/{id}/phase/{phase_id}/delete", name="app_exercise-phase-delete")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
@@ -258,6 +283,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
+     * @IsGranted("updateSolution", subject="exercisePhase")
      * @Route("/exercise-phase/update-solution/{id}/{team_id}", name="app_exercise-phase-update-solution")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
@@ -265,19 +291,16 @@ class ExercisePhaseController extends AbstractController
     {
         $solutionFromJson = json_decode($request->getContent(), true);
 
-        // TODO use autoSavedSolutions...
-        $solution = $exercisePhaseTeam->getSolution();
-        $solution->setSolution($solutionFromJson['solution']);
+        $autosaveSolution = new AutosavedSolution();
+        $autosaveSolution->setTeam($exercisePhaseTeam);
+        $autosaveSolution->setSolution($solutionFromJson['solution']);
+        /* @var User $user */
+        $user = $this->getUser();
+        $autosaveSolution->setOwner($user);
 
-        // disable event log for autosave
-        $this->eventStore->addEvent('SolutionShared', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'solutionId' => $solution->getId()
-        ]);
-
+        $this->eventStore->disableEventPublishingForNextFlush();
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($solution);
+        $entityManager->persist($autosaveSolution);
         $entityManager->flush();
 
         return Response::create('OK');

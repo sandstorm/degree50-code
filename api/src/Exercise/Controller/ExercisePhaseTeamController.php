@@ -59,18 +59,11 @@ class ExercisePhaseTeamController extends AbstractController
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
 
-        $solution = new Solution();
-        $solution->setTeam($exercisePhaseTeam);
-        $solution->setSolution(null);
-
-        $entityManager->persist($solution);
-
         $this->eventStore->addEvent('MemberAddedToTeam', [
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
             'userId' => $user->getId(),
             'exercisePhaseId' => $exercisePhase->getId()
         ]);
-
 
         $entityManager->persist($exercisePhaseTeam);
 

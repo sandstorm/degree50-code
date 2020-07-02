@@ -41,9 +41,9 @@ class Material
     private $mimeType;
 
     /**
-     * @var \DateTimeInterface|null
+     * @var \DateTimeImmutable|null
      *
-     * @ORM\Column(name="uploadAt", type="datetime")
+     * @ORM\Column(name="uploadAt", type="datetimetz_immutable")
      */
     private $uploadAt;
 
@@ -99,7 +99,7 @@ class Material
      */
     public function setUploadedAtValue()
     {
-        $this->uploadAt = new \DateTime();
+        $this->uploadAt = new \DateTimeImmutable();
     }
 
     /**
@@ -111,7 +111,7 @@ class Material
     }
 
     /**
-     * @return \DateTimeInterface
+     * @return \DateTimeImmutable
      */
     public function getUploadAt()
     {
