@@ -1,48 +1,37 @@
-import React from 'react';
-import {ToolbarItem} from "./ToolbarItem";
-import {connect, useDispatch} from 'react-redux';
-import {selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible} from "./ToolbarSlice";
-import {
-    setTitle,
-    setComponent,
-    toggleModalVisibility
-} from '../Modal/ModalSlice';
-import {
-    toggleOverlayVisibility,
-    setOverlayComponent
-} from '../Overlay/OverlaySlice';
-import {RootState} from "../../Store/Store";
-import {ComponentTypesEnum} from "../../Store/ComponentTypesEnum";
-import {ComponentId, Config, selectConfig} from "../Config/ConfigSlice";
-import ExerciseDescription from "../ExerciseDescription/ExerciseDescription";
+import React from 'react'
+import { ToolbarItem } from './ToolbarItem'
+import { connect } from 'react-redux'
+import { selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible } from './ToolbarSlice'
+import { setTitle, setComponent, toggleModalVisibility } from '../Modal/ModalSlice'
+import { setOverlayVisibility, setOverlayComponent } from '../Overlay/OverlaySlice'
+import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
+import { ComponentTypesEnum } from '../../Store/ComponentTypesEnum'
+import { ComponentId, Config, selectConfig } from '../Config/ConfigSlice'
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: AppState) => ({
     activeToolbarItem: selectActiveToolbarItem(state),
     isVisible: selectIsVisible(state),
-    config: selectConfig(state)
-});
+    config: selectConfig(state),
+})
 
-const mapDispatchToProps = (dispatch: any, ) => ({
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
     toggleComponent: (componentId: ComponentId) => {
         dispatch(toggleComponent(componentId))
     },
     toggleToolbarVisibility: () => {
         dispatch(toggleToolbarVisibility())
-    }
-});
-
-type AdditionalProps = {
-}
+    },
+})
 
 export type Component = {
-    id: ComponentId
+    id: ComponentTypesEnum
     isMandatory: boolean
     label: string
     icon: string
-    onClick: (dispatch: any,component: Component, config: Config) => void
+    onClick: (dispatch: AppDispatch, component: Component, config: Config) => void
 }
 
-type ToolbarProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+type ToolbarProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
 const possibleComponentsForToolbar: Array<Component> = [
     {
@@ -54,7 +43,7 @@ const possibleComponentsForToolbar: Array<Component> = [
             dispatch(toggleModalVisibility())
             dispatch(setTitle(config.title))
             dispatch(setComponent(ComponentTypesEnum.EXERCISE_DESCRIPTION))
-        }
+        },
     },
     {
         id: ComponentTypesEnum.DOCUMENT_UPLOAD,
@@ -62,9 +51,9 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Dokumenten-Upload',
         icon: 'fas fa-file-upload',
         onClick: (dispatch, component, config) => {
-            dispatch(toggleOverlayVisibility(true))
+            dispatch(setOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
-        }
+        },
     },
     {
         id: ComponentTypesEnum.MATERIAL_VIEWER,
@@ -72,34 +61,39 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Material',
         icon: 'fas fa-folder-open',
         onClick: (dispatch, component, config) => {
-            dispatch(toggleOverlayVisibility(true))
+            dispatch(setOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
-        }
+        },
     },
 ]
 
-const Toolbar: React.FC<ToolbarProps> = ({...props}) => {
-    const dispatch = useDispatch();
+const Toolbar: React.FC<ToolbarProps> = (props) => {
+    const dispatch = useAppDispatch()
     const toggleComponentWrapper = (component: Component) => {
         props.toggleComponent(component.id)
         component.onClick(dispatch, component, props.config)
         props.toggleToolbarVisibility()
-    };
+    }
 
-    const toolbarItemsToRender = Object.values(possibleComponentsForToolbar).map(function(component: Component) {
-        if (props.config.components.includes(component.id) || component.isMandatory) {
-            return <ToolbarItem key={component.id} component={component} toggleComponent={toggleComponentWrapper}/>
-        }
-    });
+    const toolbarItemsToRender = possibleComponentsForToolbar
+        .filter((component) => props.config.components.includes(component.id) || component.isMandatory)
+        .map((component) => (
+            <ToolbarItem key={component.id} component={component} toggleComponent={toggleComponentWrapper} />
+        ))
+
     return (
-        <div className={(props.isVisible === true) ? 'toolbar toolbar--is-visible' : 'toolbar'}>
-            <button aria-label="Toolbar öffnen/schließen" type="button" className={'toolbar__toggle'} onClick={props.toggleToolbarVisibility}><i className={(props.isVisible === true) ? 'fas fa-chevron-right' : 'fas fa-chevron-left'}></i></button>
+        <div className={props.isVisible === true ? 'toolbar toolbar--is-visible' : 'toolbar'}>
+            <button
+                aria-label="Toolbar öffnen/schließen"
+                type="button"
+                className={'toolbar__toggle'}
+                onClick={props.toggleToolbarVisibility}
+            >
+                <i className={props.isVisible === true ? 'fas fa-chevron-right' : 'fas fa-chevron-left'}></i>
+            </button>
             {toolbarItemsToRender}
         </div>
-    );
+    )
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(Toolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbar)

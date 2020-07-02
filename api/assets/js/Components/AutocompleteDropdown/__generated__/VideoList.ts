@@ -8,25 +8,25 @@
 // ====================================================
 
 export interface VideoList_videos_edges_node {
-  __typename: "Video";
-  _id: string;
-  title: string;
+    __typename: 'Video'
+    _id: string
+    title: string
 }
 
 export interface VideoList_videos_edges {
-  __typename: "VideoEdge";
-  node: VideoList_videos_edges_node | null;
+    __typename: 'VideoEdge'
+    node: VideoList_videos_edges_node | null
 }
 
 export interface VideoList_videos {
-  __typename: "VideoConnection";
-  edges: (VideoList_videos_edges | null)[] | null;
+    __typename: 'VideoConnection'
+    edges: (VideoList_videos_edges | null)[] | null
 }
 
 export interface VideoList {
-  videos: VideoList_videos | null;
+    videos: VideoList_videos | null
 }
 
 export interface VideoListVariables {
-  title: string;
+    title: string
 }

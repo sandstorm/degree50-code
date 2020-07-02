@@ -1,5 +1,3 @@
-
-
-export const ExercisePhaseTypesEnum = {
-    VIDEO_ANALYSIS: 'videoAnalysis',
+export enum ExercisePhaseTypesEnum {
+    VIDEO_ANALYSIS = 'videoAnalysis',
 }

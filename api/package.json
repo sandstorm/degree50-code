@@ -34,27 +34,46 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress",
         "build-types": "npm run build-types:ExercisePhaseConfigSchema",
-        "build-types:ExercisePhaseConfigSchema": "json2ts -i assets/api-definitions/ExercisePhaseConfigSchema.json -o assets/api-definitions/generated/ExercisePhaseConfigSchema.ts"
+        "build-types:ExercisePhaseConfigSchema": "json2ts -i assets/api-definitions/ExercisePhaseConfigSchema.json -o assets/api-definitions/generated/ExercisePhaseConfigSchema.ts",
+        "lint": "eslint ./assets/js/**/*.ts* && ./node_modules/.bin/prettier --check \"assets/js/**/*.{tsx,ts}\"",
+        "lint:fix": "eslint ./assets/js/**/*.ts* --fix && ./node_modules/.bin/prettier --write \"assets/js/**/*.{tsx,ts}\""
     },
     "dependencies": {
         "@apollo/react-hooks": "^3.1.5",
         "@reduxjs/toolkit": "^1.3.6",
         "@rjsf/core": "^2.0.0",
+        "@types/pdf-viewer-reactjs": "^2.0.0",
         "@types/react": "^16.9.35",
+        "@types/video.js": "^7.3.10",
+        "@typescript-eslint/eslint-plugin": "^3.5.0",
+        "@typescript-eslint/parser": "^3.5.0",
         "apollo-boost": "^0.4.9",
         "artplayer-react": "^3.5.4",
         "axios": "^0.19.2",
+        "babel-eslint": "^10.1.0",
         "babel-loader": "^8.1.0",
         "downshift": "^5.3.0",
         "dropzone": "^5.7.0",
         "duration-time-conversion": "^1.0.1",
+        "eslint": "^7.3.1",
+        "eslint-config-prettier": "^6.11.0",
+        "eslint-config-react-app": "^5.2.1",
+        "eslint-plugin-flowtype": "^5.2.0",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-jsx-a11y": "^6.3.1",
+        "eslint-plugin-prettier": "^3.1.4",
+        "eslint-plugin-react": "^7.20.3",
+        "eslint-plugin-react-hooks": "^4.0.5",
         "graphql": "^14.3.1",
         "hls.js": "^0.13.2",
+        "husky": "^4.2.5",
+        "immutable": "^4.0.0-rc.12",
         "lodash": "^4.17.15",
         "normalize.css": "^8.0.1",
         "nprogress": "^0.2.0",
         "option-validator": "^2.0.5",
         "pdf-viewer-reactjs": "^2.0.7",
+        "prettier": "^2.0.5",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
@@ -70,10 +89,67 @@
         "styled-components": "^5.1.0",
         "video.js": "^7.7.6"
     },
-    "browserslist": [
-        "> 0.5%",
-        "last 2 versions",
-        "Firefox ESR",
-        "not dead"
-    ]
+    "eslintConfig": {
+        "parser": "@typescript-eslint/parser",
+        "extends": [
+            "react-app",
+            "plugin:@typescript-eslint/recommended",
+            "prettier/@typescript-eslint",
+            "plugin:prettier/recommended"
+        ],
+        "plugins": [
+            "prettier",
+            "react",
+            "@typescript-eslint",
+            "react-hooks"
+        ],
+        "parserOptions": {
+            "ecmaFeatures": {
+                "jsx": true
+            },
+            "ecmaVersion": 2018,
+            "sourceType": "module"
+        },
+        "rules": {
+            "react-hooks/rules-of-hooks": "error",
+            "react-hooks/exhaustive-deps": "warn",
+            "@typescript-eslint/explicit-function-return-type": "off",
+            "@typescript-eslint/explicit-module-boundary-types": "off",
+            "@typescript-eslint/ban-ts-comment": "off"
+        },
+        "settings": {
+            "react": {
+                "version": "detect"
+            }
+        },
+        "ignorePatterns": [
+            "*.js",
+            "*.json"
+        ]
+    },
+    "prettier": {
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": true,
+        "printWidth": 120
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "yarn lint",
+            "pre-push": "yarn lint"
+        }
+    }
 }

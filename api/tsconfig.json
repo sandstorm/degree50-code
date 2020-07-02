@@ -1,15 +1,17 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "module": "commonjs",
-    "target": "es6",
-    "jsx": "react",
-    "baseUrl": "./assets/js"
-  },
-  "exclude": [
-    "public/**"
-  ],
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./assets/js",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "jsx": "react",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "target": "es6"
+    },
+    "exclude": ["public/**", "node_modules"]
 }

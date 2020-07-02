@@ -1,19 +1,20 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../Store/Store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppState } from '../../Store/Store'
+import { ComponentTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
 
 interface ModalState {
     isVisible: boolean
     title: string
     content: string
-    component: string
+    component?: ComponentTypesEnum
 }
 
 const initialState: ModalState = {
     isVisible: false,
     title: '',
     content: '',
-    component: null,
-};
+    component: undefined,
+}
 
 export const modalSlice = createSlice({
     name: 'modal',
@@ -28,17 +29,17 @@ export const modalSlice = createSlice({
         setContent: (state, action: PayloadAction<string>) => {
             state.content = action.payload
         },
-        setComponent: (state, action: PayloadAction<string>) => {
+        setComponent: (state, action: PayloadAction<ComponentTypesEnum>) => {
             state.component = action.payload
         },
     },
-});
+})
 
-export const { toggleModalVisibility, setTitle, setContent, setComponent } = modalSlice.actions;
+export const { toggleModalVisibility, setTitle, setContent, setComponent } = modalSlice.actions
 
-export const selectIsVisible = (state: RootState) => state.modal.isVisible;
-export const selectTitle = (state: RootState) => state.modal.title;
-export const selectContent = (state: RootState) => state.modal.content;
-export const selectComponent = (state: RootState) => state.modal.component;
+export const selectIsVisible = (state: AppState) => state.modal.isVisible
+export const selectTitle = (state: AppState) => state.modal.title
+export const selectContent = (state: AppState) => state.modal.content
+export const selectComponent = (state: AppState) => state.modal.component
 
-export default modalSlice.reducer;
+export default modalSlice.reducer

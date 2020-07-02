@@ -1,39 +1,40 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../Store/Store';
-import {overlaySizesEnum} from "./Overlay";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppState } from '../../Store/Store'
+import { overlaySizesEnum } from './Overlay'
+import { ComponentTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
 
 interface OverlayState {
     isVisible: boolean
-    component: string,
-    size: string,
+    component?: ComponentTypesEnum
+    size: string
 }
 
 const initialState: OverlayState = {
     isVisible: false,
-    component: '',
+    component: undefined,
     size: overlaySizesEnum.DEFAULT,
-};
+}
 
 export const overlaySlice = createSlice({
     name: 'overlay',
     initialState,
     reducers: {
-        toggleOverlayVisibility: (state, action: PayloadAction<boolean>) => {
+        setOverlayVisibility: (state, action: PayloadAction<boolean>) => {
             state.isVisible = action.payload
         },
-        setOverlayComponent: (state, action: PayloadAction<string>) => {
+        setOverlayComponent: (state, action: PayloadAction<ComponentTypesEnum>) => {
             state.component = action.payload
         },
         setOverlaySize: (state, action: PayloadAction<string>) => {
             state.size = action.payload
         },
     },
-});
+})
 
-export const { toggleOverlayVisibility, setOverlayComponent, setOverlaySize } = overlaySlice.actions;
+export const { setOverlayVisibility, setOverlayComponent, setOverlaySize } = overlaySlice.actions
 
-export const selectIsVisible = (state: RootState) => state.overlay.isVisible;
-export const selectComponent = (state: RootState) => state.overlay.component;
-export const selectSize = (state: RootState) => state.overlay.size;
+export const selectIsVisible = (state: AppState) => state.overlay.isVisible
+export const selectComponent = (state: AppState) => state.overlay.component
+export const selectSize = (state: AppState) => state.overlay.size
 
-export default overlaySlice.reducer;
+export default overlaySlice.reducer

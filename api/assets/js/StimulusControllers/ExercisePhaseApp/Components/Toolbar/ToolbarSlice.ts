@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../Store/Store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppState } from '../../Store/Store'
 
 interface ToolbarState {
     activeToolbarItem: string
@@ -7,9 +7,9 @@ interface ToolbarState {
 }
 
 const initialState: ToolbarState = {
-    activeToolbarItem: null,
+    activeToolbarItem: '',
     isVisible: false,
-};
+}
 
 export const toolbarSlice = createSlice({
     name: 'toolbar',
@@ -17,20 +17,20 @@ export const toolbarSlice = createSlice({
     reducers: {
         toggleComponent: (state, action: PayloadAction<string>) => {
             if (state.activeToolbarItem === action.payload) {
-                state.activeToolbarItem = null
+                state.activeToolbarItem = ''
             } else {
                 state.activeToolbarItem = action.payload
             }
         },
         toggleToolbarVisibility: (state) => {
             state.isVisible = !state.isVisible
-        }
+        },
     },
-});
+})
 
-export const { toggleComponent, toggleToolbarVisibility } = toolbarSlice.actions;
+export const { toggleComponent, toggleToolbarVisibility } = toolbarSlice.actions
 
-export const selectActiveToolbarItem = (state: RootState) => state.toolbar.activeToolbarItem;
-export const selectIsVisible = (state: RootState) => state.toolbar.isVisible;
+export const selectActiveToolbarItem = (state: AppState) => state.toolbar.activeToolbarItem
+export const selectIsVisible = (state: AppState) => state.toolbar.isVisible
 
-export default toolbarSlice.reducer;
+export default toolbarSlice.reducer
