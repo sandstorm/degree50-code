@@ -1,22 +1,20 @@
-import React from 'react';
-import {connect, useDispatch} from 'react-redux';
-import {selectConfig} from "../Config/ConfigSlice";
-// @ts-ignore
+import React from 'react'
+import { connect } from 'react-redux'
+import { selectConfig } from '../Config/ConfigSlice'
 import PDFViewer from 'pdf-viewer-reactjs'
-import {selectActiveMaterial, setActiveMaterial} from "./MaterialViewerSlice";
-import {
-    setOverlaySize
-} from '../Overlay/OverlaySlice';
-import {overlaySizesEnum} from "../Overlay/Overlay";
+import { selectActiveMaterial, setActiveMaterial } from './MaterialViewerSlice'
+import { setOverlaySize } from '../Overlay/OverlaySlice'
+import { overlaySizesEnum } from '../Overlay/Overlay'
+import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
     config: selectConfig(state),
-    activeMaterial: selectActiveMaterial(state)
-});
+    activeMaterial: selectActiveMaterial(state),
+})
 
-const mapDispatchToProps = (dispatch: any) => ({
-    setActiveMaterial: (material: Material) => dispatch(setActiveMaterial(material)),
-});
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+    setActiveMaterial: (material?: Material) => dispatch(setActiveMaterial(material)),
+})
 
 type AdditionalProps = {
     // currently none
@@ -31,53 +29,73 @@ export type Material = {
     url: string
 }
 
-const MaterialViewer: React.FC<MaterialViewerProps> = ({...props}) => {
-    const dispatch = useDispatch();
-    const setActiveMaterialWrapper = (material: Material) => {
+const MaterialViewer: React.FC<MaterialViewerProps> = (props) => {
+    const dispatch = useAppDispatch()
+    const setActiveMaterialWrapper = (material?: Material) => {
         props.setActiveMaterial(material)
-        if (material === null) {
+        if (material === undefined) {
             dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
         } else {
             dispatch(setOverlaySize(overlaySizesEnum.LARGE))
         }
     }
 
-    const materialTiles = props.config.material.map(function(material: Material) {
-        return <a key={material.id} className={'tile tile--small'} onClick={() => setActiveMaterialWrapper(material)}><div className={'tile__content'}><i className={'tile__icon fas fa-file-pdf'}></i><span>{material.name}</span></div></a>
-    });
+    const materialTiles = props.config.material.map(function (material: Material) {
+        return (
+            <div
+                role="button"
+                key={material.id}
+                className={'tile tile--small'}
+                onClick={() => setActiveMaterialWrapper(material)}
+            >
+                <div className={'tile__content'}>
+                    <i className={'tile__icon fas fa-file-pdf'}></i>
+                    <span>{material.name}</span>
+                </div>
+            </div>
+        )
+    })
 
     return (
         <div className={'material-viewer'}>
-            {props.activeMaterial ?
+            {props.activeMaterial ? (
                 <div className={'material-viewer'}>
                     <header className={'material-viewer__header'}>
                         <h4>{props.activeMaterial.name}</h4>
                     </header>
 
                     <div className={'material-viewer__actions'}>
-                        <button className={'btn btn-sm btn-outline-primary'} type="button" onClick={() => setActiveMaterialWrapper(null)}><i className={'fas fa-chevron-left'}></i> Zurück</button>
-                        <a className={'btn btn-sm btn-primary'} href={props.activeMaterial.url}><i className={'fas fa-download'}></i> Download</a>
+                        <button
+                            className={'btn btn-sm btn-outline-primary'}
+                            type="button"
+                            onClick={() => setActiveMaterialWrapper(undefined)}
+                        >
+                            <i className={'fas fa-chevron-left'}></i> Zurück
+                        </button>
+                        <a className={'btn btn-sm btn-primary'} href={props.activeMaterial.url}>
+                            <i className={'fas fa-download'}></i> Download
+                        </a>
                     </div>
 
-                    {props.activeMaterial.type === 'application/pdf' ?
+                    {props.activeMaterial.type === 'application/pdf' ? (
                         <PDFViewer
-                            document = {{
+                            document={{
                                 url: props.activeMaterial.url,
                             }}
-                            hideZoom = {true}
-                            hideRotation = {true}
-                            css = 'pdf-viewer'
+                            hideZoom={true}
+                            hideRotation={true}
+                            css="pdf-viewer"
                             loader={
-                                <h2 className={'pdf-viewer__loader'}><i className={'fas fa-spinner fa-spin'}></i></h2>
+                                <h2 className={'pdf-viewer__loader'}>
+                                    <i className={'fas fa-spinner fa-spin'}></i>
+                                </h2>
                             }
-                            alert={(err: any) => (
+                            alert={() => (
                                 <div className={'pdf-viewer__error'}>
-                                    <h4>
-                                        Dokument konte nicht geladen werden
-                                    </h4>
+                                    <h4>Dokument konte nicht geladen werden</h4>
                                 </div>
                             )}
-                            navigation = {{
+                            navigation={{
                                 css: {
                                     navbarWrapper: 'pdf-viewer__navbar',
                                     previousPageBtn: 'btn btn-sm btn-primary pdf-viewer__prev-page',
@@ -86,22 +104,15 @@ const MaterialViewer: React.FC<MaterialViewerProps> = ({...props}) => {
                                 },
                             }}
                         />
-                        :
-                        null
-                    }
-
+                    ) : null}
                 </div>
-                :
+            ) : (
                 <div className={'tiles'}>
                     {materialTiles.length > 0 ? materialTiles : 'Kein Material zur Verfügung'}
                 </div>
-            }
-
+            )}
         </div>
-    );
+    )
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(MaterialViewer);
+export default connect(mapStateToProps, mapDispatchToProps)(MaterialViewer)

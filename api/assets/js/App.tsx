@@ -1,3 +1,5 @@
+// @ts-nocheck -- WHY: importing js modules
+
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -6,19 +8,17 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import '../scss/App.scss';
-import React from 'react';
-import 'bootstrap';
+import '../scss/App.scss'
+import 'bootstrap'
+import { Application } from 'stimulus'
+import FileuploadController from './StimulusControllers/FileUploadController'
+import ReactController from './StimulusControllers/ReactController'
+import CollectionHandlingController from './StimulusControllers/CollectionHandlingController'
+import ExercisePhaseController from './StimulusControllers/ExercisePhaseController'
 
-// src/application.js
-import { Application } from "stimulus";
-import FileuploadController from './StimulusControllers/FileUploadController';
-import ReactController from './StimulusControllers/ReactController';
-import CollectionHandlingController from './StimulusControllers/CollectionHandlingController';
-import ExercisePhaseController from './StimulusControllers/ExercisePhaseController';
-const application = Application.start();
-application.register("fileupload", FileuploadController);
-application.register("react", ReactController);
-application.register("collectionHandling", CollectionHandlingController);
-application.register("exercisePhase", ExercisePhaseController);
+const application = Application.start()
 
+application.register('fileupload', FileuploadController)
+application.register('react', ReactController)
+application.register('collectionHandling', CollectionHandlingController)
+application.register('exercisePhase', ExercisePhaseController)

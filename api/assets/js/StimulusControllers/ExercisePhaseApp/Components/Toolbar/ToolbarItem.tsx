@@ -1,15 +1,20 @@
-import React from 'react';
-import {Component} from "./Toolbar";
+import React from 'react'
+import { Component } from './Toolbar'
 
 type Props = {
-    component: any,
+    component: Component
     toggleComponent: (component: Component) => void
 }
 
-export function ToolbarItem({component, toggleComponent}: Props) {
+export function ToolbarItem({ component, toggleComponent }: Props) {
     return (
-        <div className={'toolbar-item'} title={component.label} aria-label={component.label} onClick={() => toggleComponent(component)}>
+        <div
+            className={'toolbar-item'}
+            title={component.label}
+            aria-label={component.label}
+            onClick={() => toggleComponent(component)}
+        >
             <i className={component.icon}></i>
         </div>
-    );
+    )
 }

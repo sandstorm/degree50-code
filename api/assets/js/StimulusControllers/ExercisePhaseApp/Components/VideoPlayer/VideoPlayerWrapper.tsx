@@ -1,8 +1,9 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {selectConfig} from "../Config/ConfigSlice";
-import VideoPlayer from "./VideoPlayer";
-import {selectActiveVideo, selectActiveVideoIndex, setVideo, setVideoIndex} from "./VideoPlayerWrapperSlice";
+import React, { useState, useMemo } from 'react'
+import { connect } from 'react-redux'
+import { selectConfig } from '../Config/ConfigSlice'
+import VideoPlayer from './VideoPlayer'
+import { AppState } from '../../Store/Store'
+import { VideoJsPlayerOptions } from 'video.js'
 
 export type Video = {
     id: string
@@ -11,82 +12,71 @@ export type Video = {
     url: string
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
     videos: selectConfig(state).videos,
-    activeVideo: selectActiveVideo(state),
-    activeVideoIndex: selectActiveVideoIndex(state),
 })
 
-const mapDispatchToProps = (dispatch: any, ) => ({
-    setVideo: (video: Video) => {
-        dispatch(setVideo(video))
-    },
-    setVideoIndex: (index: number) => {
-        dispatch(setVideoIndex(index))
-    }
-})
+type VideoPlayerProps = ReturnType<typeof mapStateToProps>
 
-type AdditionalProps = {
-    // currently none
-}
+const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({ videos }) => {
+    const [activeVideoIndex, setActiveVideoIndex] = useState(0)
 
-type VideoPlayerProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+    const activeVideo = videos[activeVideoIndex]
 
-const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({...props}) => {
+    // recalculates when and only when the activeVideo changes
+    const videoPlayerOptions: VideoJsPlayerOptions = useMemo(
+        () => ({
+            autoplay: false,
+            controls: true,
+            sources: [
+                {
+                    src: activeVideo.url,
+                },
+            ],
+        }),
+        [activeVideo]
+    )
 
-    let activeVideo = props.activeVideo
-    // select first if no active video is in state
-    if(!activeVideo) {
-        activeVideo = props.videos[0]
-    }
-
-    const videoPlayerOptions = {
-        autoplay: false,
-        controls: true,
-        sources: [{
-            src: activeVideo.url,
-        }]
-    }
-
-    const video = <div key={activeVideo.id} className={'video-player-wrapper__video'}>
-        <header><h4>{activeVideo.name}</h4></header>
-        <VideoPlayer {...videoPlayerOptions} />
-        {activeVideo.description}
-    </div>
-
-    const setVideo = (videos: Array<Video>, index: number) => {
-        if (index < 0) {
-            return
-        }
-        if (index > videos.length - 1) {
-            return
+    const actions = useMemo(() => {
+        const hasNextVideo = activeVideoIndex < videos.length - 1
+        const handleNext = () => {
+            if (hasNextVideo) {
+                setActiveVideoIndex(activeVideoIndex + 1)
+            }
         }
 
-        props.setVideo(videos[index])
-        props.setVideoIndex(index)
-    }
-
-    let actions = null;
-    if (props.videos.length > 1) {
-        const prevButtonDisabled = props.activeVideoIndex === 0
-        const nextButtonDisabled = props.activeVideoIndex === props.videos.length - 1
-        actions = <div className={'video-player-wrapper__actions'}>
-            <button className={'btn btn-primary'} disabled={prevButtonDisabled} onClick={() => setVideo(props.videos, props.activeVideoIndex - 1)}>Vorheriges Video</button>
-            <button className={'btn btn-primary'} disabled={nextButtonDisabled} onClick={() => setVideo(props.videos, props.activeVideoIndex + 1)}>Nächstes Video</button>
-        </div>
-    }
+        const hasPreviousVideo = activeVideoIndex > 0
+        const handlePrevious = () => {
+            if (hasPreviousVideo) {
+                setActiveVideoIndex(activeVideoIndex - 1)
+            }
+        }
+        return (
+            <div className={'video-player-wrapper__actions'}>
+                <button className={'btn btn-primary'} disabled={!hasPreviousVideo} onClick={handlePrevious}>
+                    Vorheriges Video
+                </button>
+                <button className={'btn btn-primary'} disabled={!hasNextVideo} onClick={handleNext}>
+                    Nächstes Video
+                </button>
+            </div>
+        )
+    }, [videos, activeVideoIndex])
 
     return (
-        <div className='video-player-wrapper' aria-label={''}>
+        <div className="video-player-wrapper" aria-label={''}>
             <div className={'video-player-wrapper__videos'}>
-                {video}
+                <div key={activeVideo.id} className={'video-player-wrapper__video'}>
+                    <header>
+                        <h4>{activeVideo.name}</h4>
+                    </header>
+                    <VideoPlayer {...videoPlayerOptions} />
+                    {activeVideo.description}
+                </div>
             </div>
             {actions}
         </div>
-    );
+    )
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(VideoPlayerWrapper)
+export default connect(mapStateToProps)(VideoPlayerWrapper)

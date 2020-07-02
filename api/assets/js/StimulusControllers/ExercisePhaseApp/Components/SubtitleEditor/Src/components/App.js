@@ -1,23 +1,23 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, {useState, useMemo, useCallback, useEffect} from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import Sub from '../subtitle/sub';
 import clamp from 'lodash/clamp';
-import { secondToTime, notify } from '../utils';
+import {secondToTime, notify} from '../utils';
 import {getSubFromVttUrl, subToJson, vttToUrlUseWorker} from '../subtitle';
 import Storage from '../utils/storage';
 import isEqual from 'lodash/isEqual';
-import { ToastContainer } from 'react-toastify';
-import { t, setLocale } from 'react-i18nify';
+import {ToastContainer} from 'react-toastify';
+import {t, setLocale} from 'react-i18nify';
 import {sendSolutionState, setAnnotations} from "../../../Solution/SolutionSlice";
-import {useDispatch} from "react-redux";
+import {useAppDispatch} from '../../../../Store/Store';
 
 const history = [];
 const storage = new Storage();
 const worker = new Worker(vttToUrlUseWorker());
 
-export default function({...props}) {
+export default function (props) {
     // Player instance
     const [player, setPlayer] = useState(null);
 
@@ -64,7 +64,7 @@ export default function({...props}) {
     );
 
     // Only way to update all subtitles
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const updateSubtitles = useCallback(
         (subs, saveToHistory = true) => {
             if (subs.length && !isEqual(subs, subtitles)) {
@@ -95,7 +95,7 @@ export default function({...props}) {
     const initSubtitles = useCallback(async () => {
         const stateSubs = props.subtitles;
         const storageSubs = storage.get('subtitles');
-        if(stateSubs) {
+        if (stateSubs) {
             updateSubtitles(stateSubs.map(item => new Sub(item.start, item.end, item.text)));
         } else if (storageSubs && storageSubs.length) {
             updateSubtitles(storageSubs.map(item => new Sub(item.start, item.end, item.text)));
@@ -145,7 +145,7 @@ export default function({...props}) {
             const index = hasSubtitle(sub);
             if (index < 0) return;
             const subs = copySubtitles();
-            const { clone } = sub;
+            const {clone} = sub;
             if (typeof key === 'object') {
                 Object.assign(clone, key);
             } else {

@@ -2,3 +2,5 @@
 #   We forked the SubtitleEditor and it's completely written in js.
 #   To minimize disruption in early development we ignore js files.
 *.js
+
+*.json

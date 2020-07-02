@@ -1,33 +1,29 @@
-import React, {useCallback} from 'react';
-import {connect} from 'react-redux';
-import {selectConfig} from "../Config/ConfigSlice";
+import React from 'react'
+import { connect } from 'react-redux'
+import { selectConfig } from '../Config/ConfigSlice'
+import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 
-const mapStateToProps = (state: any) => ({
-    config: selectConfig(state)
-});
+const mapStateToProps = (state: AppState) => ({
+    config: selectConfig(state),
+})
 
-const mapDispatchToProps = (dispatch: any) => ({
-});
+const mapDispatchToProps = (dispatch: AppDispatch) => ({})
 
 type AdditionalProps = {
     // currently none
 }
 
-type ExerciseDescriptionProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+type ExerciseDescriptionProps = AdditionalProps &
+    ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>
 
-const ExerciseDescription: React.FC<ExerciseDescriptionProps> = ({...props}) => {
-
+const ExerciseDescription: React.FC<ExerciseDescriptionProps> = ({ config }) => {
     return (
         <div>
-            <h3>{props.config.title}</h3>
-            <p>
-                {props.config.description}
-            </p>
+            <h3>{config.title}</h3>
+            <p>{config.description}</p>
         </div>
-    );
+    )
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(ExerciseDescription);
+export default connect(mapStateToProps, mapDispatchToProps)(ExerciseDescription)

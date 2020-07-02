@@ -1768,6 +1768,11 @@
     "@types/testing-library__dom" "*"
     pretty-format "^25.1.0"
 
+"@types/video.js@^7.3.10":
+  version "7.3.10"
+  resolved "https://registry.yarnpkg.com/@types/video.js/-/video.js-7.3.10.tgz#95e563f5f21821d4f4bccf7343c359093e81895d"
+  integrity sha512-RJKdtmUMb8WFDe+btAeBW9NVUJ/nksb+/1S+Tca7HNwnRv9iEwt802hgRSAcFj6+sL/eNi264zcBjbBHP5yQVw==
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"

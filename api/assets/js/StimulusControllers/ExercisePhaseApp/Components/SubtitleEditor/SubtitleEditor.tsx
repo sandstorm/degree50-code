@@ -1,20 +1,24 @@
-import React from 'react';
-import App from './Src/components/App';
-import NProgress from 'nprogress';
-import * as serviceWorker from './Src/serviceWorker';
-import { setTranslations } from 'react-i18nify';
-import i18n from './Src/i18n';
-import 'normalize.css';
-import './Src/fontello/css/fontello.css';
-import 'nprogress/nprogress.css';
-import 'react-virtualized/styles.css';
-import 'react-toastify/dist/ReactToastify.css';
-import {Video} from "../VideoPlayer/VideoPlayerWrapper";
-import {connect} from 'react-redux';
+import React from 'react'
+// @ts-ignore
+import App from './Src/components/App'
+// @ts-ignore
+import NProgress from 'nprogress'
+// @ts-ignore
+import * as serviceWorker from './Src/serviceWorker'
+import { setTranslations } from 'react-i18nify'
+// @ts-ignore
+import i18n from './Src/i18n'
+import 'normalize.css'
+import './Src/fontello/css/fontello.css'
+import 'nprogress/nprogress.css'
+import 'react-virtualized/styles.css'
+import 'react-toastify/dist/ReactToastify.css'
+import { Video } from '../VideoPlayer/VideoPlayerWrapper'
+import { connect } from 'react-redux'
 
-setTranslations(i18n);
-NProgress.configure({ minimum: 0, showSpinner: false });
-serviceWorker.unregister();
+setTranslations(i18n)
+NProgress.configure({ minimum: 0, showSpinner: false })
+serviceWorker.unregister()
 
 export type Subtitle = {
     start: string
@@ -23,16 +27,12 @@ export type Subtitle = {
 }
 
 const mapStateToProps = (state: any) => {
-    return {
-
-    };
-};
+    return {}
+}
 
 const mapDispatchToProps = (dispatch: any) => {
-    return {
-
-    };
-};
+    return {}
+}
 
 type AdditionalProps = {
     // currently none
@@ -42,14 +42,8 @@ type AdditionalProps = {
 
 type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
-
-const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = ({...props}) => {
-    return (
-        <App {...props} />
-    )
+const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
+    return <App {...props} />
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(SubtitleEditorWrapper)
+export default connect(mapStateToProps, mapDispatchToProps)(SubtitleEditorWrapper)
