@@ -12,22 +12,14 @@ use App\Entity\Exercise\Material;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Session;
 use Behat\Mink\WebAssert;
 use DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver;
-use Doctrine\Migrations\DependencyFactory;
-use Doctrine\Migrations\Migrator;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -197,6 +189,10 @@ final class DemoContext implements Context
     {
         $material = new Material($materialId);
         $material->setLink('link');
+        $fileName = tempnam(sys_get_temp_dir(), 'foo');
+        file_put_contents($fileName, 'my file');
+        $file = new File($fileName);
+        $material->setFile($file);
 
         $this->entityManager->persist($material);
         $this->eventStore->disableEventPublishingForNextFlush();

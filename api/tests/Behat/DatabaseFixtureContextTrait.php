@@ -34,16 +34,19 @@ trait DatabaseFixtureContextTrait
             try {
                 $app = new Application($this->kernel);
                 $cmd = $app->find('doctrine:migrations:migrate');
-                $cmd->run(new ArrayInput([]), new NullOutput());
+                $input = new ArrayInput([]);
+                $input->setInteractive(false);
+                $cmd->run($input, new NullOutput());
                 $needsTruncate = true;
             } catch (DBALException $exception) {
-
                 $schemaTool = new SchemaTool($this->entityManager);
                 $schemaTool->dropDatabase();
 
                 $app = new Application($this->kernel);
                 $cmd = $app->find('doctrine:migrations:migrate');
-                $cmd->run(new ArrayInput([]), new NullOutput());
+                $input = new ArrayInput([]);
+                $input->setInteractive(false);
+                $cmd->run($input, new NullOutput());
 
                 $needsTruncate = false;
             }

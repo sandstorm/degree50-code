@@ -48,6 +48,9 @@
 - http://localhost:8080/api/graphql/graphql_playground
 - http://localhost:8080/subtitle-editor
 
+**Running Behat**
+
+make test
 
 
 **Graphql**
