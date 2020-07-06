@@ -57,7 +57,8 @@ deploy-prod:
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
     when: manual
     tags:
-        - docker-privileged
+        - docker
+        - privileged
     script:
         - eval $(ssh-agent -s)
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
