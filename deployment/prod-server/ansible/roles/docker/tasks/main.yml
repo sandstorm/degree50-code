@@ -13,3 +13,7 @@
   apt:
       name: "docker-ce"
       update_cache: yes
+
+- name: "APT - install 'docker-compose'"
+  apt:
+      name: "docker-compose"
