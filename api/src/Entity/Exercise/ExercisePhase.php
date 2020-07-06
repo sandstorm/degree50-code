@@ -4,6 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Video\VideoCode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -95,11 +96,17 @@ class ExercisePhase implements ExerciseInterface
      */
     private $material;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=VideoCode::class, mappedBy="exercisePhases")
+     */
+    private $videoCodes;
+
     public function __construct(string $id = null)
     {
         $this->generateOrSetId($id);
         $this->teams = new ArrayCollection();
         $this->material = new ArrayCollection();
+        $this->videoCodes = new ArrayCollection();
     }
 
     public function __toString()
@@ -270,5 +277,33 @@ class ExercisePhase implements ExerciseInterface
     public function getMaterial(): Collection
     {
         return $this->material;
+    }
+
+    /**
+     * @return Collection|VideoCode[]
+     */
+    public function getVideoCodes(): Collection
+    {
+        return $this->videoCodes;
+    }
+
+    public function addVideoCode(VideoCode $videoCode): self
+    {
+        if (!$this->videoCodes->contains($videoCode)) {
+            $this->videoCodes[] = $videoCode;
+            $videoCode->addExercisePhase($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideoCode(VideoCode $videoCode): self
+    {
+        if ($this->videoCodes->contains($videoCode)) {
+            $this->videoCodes->removeElement($videoCode);
+            $videoCode->removeExercisePhase($this);
+        }
+
+        return $this;
     }
 }

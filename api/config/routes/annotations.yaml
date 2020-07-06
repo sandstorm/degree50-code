@@ -19,6 +19,14 @@ controllers_exercise:
         en: '/en'
         de: '/'
 
+controllers_easy-admin:
+    resource: ../../src/Admin/Controller/
+    type: annotation
+    prefix:
+        en: '/en'
+        de: '/'
+
+
 kernel:
     resource: ../../src/Kernel.php
     type: annotation
