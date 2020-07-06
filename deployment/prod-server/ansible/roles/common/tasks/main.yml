@@ -33,3 +33,14 @@
       state: present
       # user not allowed to become root (if no password is set); so SET ONE MANUALLY after creation!
       password: !
+
+- include: sysadmin.yml
+  vars:
+      user: deployment
+      fullName: Gitlab Deployment
+      uid: 1020
+      # is ADMIN:
+      group: docker
+      state: present
+      # user not allowed to become root (if no password is set); so SET ONE MANUALLY after creation!
+      password: !

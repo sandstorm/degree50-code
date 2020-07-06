@@ -82,8 +82,25 @@ Host degree40.tu-dortmund.de
 
 **Connect**
 
-- Run `ssh root@degree40-prod`
-- Touch your Yubikey
+- Run `ssh [your-username]@degree40.tu-dortmund.de`
+- Touch your Yubikey TWICE
 - enter the root password from the vault (or have your SSH key added; then touch the yubikey again.)
 
 **Ansible Setup**
+
+The ansible setup is run from the local computer; not from any CI pipeline (so far).
+
+```
+cd deployment/prod-server/ansible
+ansible-playbook -i inventories/production.yml -K server.yml
+```
+
+Ansible takes care of:
+
+- adding/configuring users
+- hardening the server (SSH config; TODO firewall)
+- installing `docker`
+
+**Deployment via Gitlab CI**
+
+- 

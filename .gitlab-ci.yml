@@ -50,3 +50,18 @@ package_app:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - docker build -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+
+
+deploy-prod:
+    stage: deploy
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
+    when: manual
+    tags:
+        - docker-privileged
+    script:
+        - eval $(ssh-agent -s)
+        - ssh-add $SSH_PRIVATE_DEPLOY_KEY
+        - mkdir -p ~/.ssh
+        - ssh-keyscan -H degree40.tu-dortmund.de >> ~/.ssh/known_hosts
+        - scp docker-compose-prod-tu-dortmund.yaml deploy@degree40.tu-dortmund.de:~/docker-compose.yaml
+        - ssh deploy@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"

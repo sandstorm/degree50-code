@@ -1,0 +1,49 @@
+##################################################
+##### PRODUCTION ENVIRONMENT           ##########
+##################################################
+
+# Public ports:
+#  - 80 -> API
+#  - 13306 -> maria DB (used for Neos)
+version: '3.4'
+
+services:
+  api:
+    image: docker-hub.sandstorm.de/degree-4.0/code:master
+    #    healthcheck:
+    #      interval: 10s
+    #      timeout: 3s
+    #      retries: 3
+    #      start_period: 30s
+    ports:
+      - 80:8080
+    depends_on:
+      - db
+
+  redis:
+    image: redis:6.0.1-alpine3.11
+    ports:
+      - 6379
+
+  redis-ui:
+    image: rediscommander/redis-commander
+    environment:
+      REDIS_HOSTS: 'redis:redis:6379:0'
+      PORT: 8900
+    ports:
+      - 8002:8900
+
+  #####
+  # DB
+  db:
+    image: mariadb:10.2.25
+    ports:
+      - 13306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: '!ChangeMe!'
+      MYSQL_DATABASE: api
+      MYSQL_USER: api-platform
+      MYSQL_PASSWORD: '!ChangeMe!'
+    volumes:
+      - /home/deploy/data/mysql:/var/lib/mysql:rw
+
