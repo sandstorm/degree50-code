@@ -77,14 +77,14 @@ services:
       REDIS_HOSTS: 'redis:redis:6379:0'
       PORT: 8900
     ports:
-      - 8002:8900
+      - 8900
 
   #####
   # DB
   db:
     image: mariadb:10.2.25
     ports:
-      - 13306:3306
+      - 3306
     environment:
       MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
       MYSQL_DATABASE: api
