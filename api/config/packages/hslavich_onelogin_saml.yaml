@@ -57,16 +57,16 @@ hslavich_onelogin_saml:
             6q4FVaiEzOxNFi7irOBgQzWba/TxMkWvnMJWbRAHHSAl7giwPeFXYi4lIWsNh604mKGUx1Tv9PrN
             4DI=
     sp:
-        entityId: 'http://myapp.com/saml/metadata'
+        entityId: 'https://degree40.tu-dortmund.de/saml/metadata'
         assertionConsumerService:
-            url: 'http://myapp.com/saml/acs'
+            url: 'https://degree40.tu-dortmund.de/saml/acs'
             binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
         singleLogoutService:
-            url: 'http://myapp.com/saml/logout'
+            url: 'https://degree40.tu-dortmund.de/saml/logout'
             binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'
         privateKey: ''
     # Optional settings
-    baseurl: 'http://myapp.com'
+    baseurl: 'https://degree40.tu-dortmund.de/'
     strict: true
     debug: true
     security:
