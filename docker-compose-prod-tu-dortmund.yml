@@ -22,7 +22,11 @@ services:
     command: |
       --providers.docker=true
       --entryPoints.web.address=:80
+      # see https://docs.traefik.io/routing/entrypoints/#redirection - default redirect to HTTPS
+      --entryPoints.web.http.redirections.entypoint.to=websecure
+      --entrypoints.web.http.redirections.entryPoint.scheme=https
       --entryPoints.websecure.address=:443
+      # default let's encrypt certificate resolvers
       --certificatesResolvers.letsencrypt.acme.email=technik@sandstorm-media.de
       --certificatesResolvers.letsencrypt.acme.storage=/data/acme.json
       --certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint=web
