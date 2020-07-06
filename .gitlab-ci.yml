@@ -7,8 +7,6 @@ stages:
 build_js:
     stage: build
     image: node:12.18.0-stretch
-    only:
-        - master
     script:
         - cd api
         - yarn
@@ -25,8 +23,6 @@ build_js:
 test_app:
     stage: test
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
-    only:
-        - master
     tags:
         - docker
         - privileged
@@ -45,8 +41,6 @@ test_app:
 package_app:
     stage: package
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
-    only:
-        - master
     tags:
         - docker
         - privileged
@@ -59,6 +53,8 @@ package_app:
 deploy-prod:
     stage: deploy
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
+    only:
+        - master
     tags:
         - docker
         - privileged
