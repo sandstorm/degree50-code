@@ -1,0 +1,7 @@
+# ansible-playbook -i inventories/production.yml -k -K frontend.yml video_bridge.yml
+---
+- hosts: degree40.tu-dortmund.de
+  remote_user: "{{ login_user }}"
+  become: yes
+  roles:
+    - common

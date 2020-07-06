@@ -57,3 +57,33 @@ make test
 
 make build-types
 
+
+## Connecting via SSH to the production server
+
+**Prerequisites**
+
+You need an account on gitlab-worker.sandstorm.de - try connecting via `ssh -p 29418 gitlab-worker.sandstorm.de` (TOUCH YUBIKEY!)
+
+**Setup**
+
+You need the following entries in `~/.ssh/config`:
+
+(replace YOUR-USERNAME-ON-GITLAB-WORKER with the right username)
+
+```
+Host gitlab-worker.sandstorm.de
+  Port 29418
+  User YOUR-USERNAME-ON-GITLAB-WORKER
+  ForwardAgent yes
+
+Host degree40.tu-dortmund.de
+  ProxyJump gitlab-worker.sandstorm.de
+```
+
+**Connect**
+
+- Run `ssh root@degree40-prod`
+- Touch your Yubikey
+- enter the root password from the vault (or have your SSH key added; then touch the yubikey again.)
+
+**Ansible Setup**
