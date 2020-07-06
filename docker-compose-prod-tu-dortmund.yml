@@ -54,10 +54,16 @@ services:
     #      start_period: 30s
     environment:
       TRUSTED_HOSTS: degree40.tu-dortmund.de
+      DATABASE_URL: 'mysql://api-platform:${MYSQL_PASSWORD}@db/api'
+      APP_SECRET: '${APP_SECRET}'
+      LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: '${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}'
     ports:
       - 8080
     depends_on:
       - db
+    volumes:
+    - /home/deploment/data/app/var/data:/app/var/data
+    - /home/deploment/data/app/public/data:/app/public/data
 
   redis:
     image: redis:6.0.1-alpine3.11
@@ -79,10 +85,10 @@ services:
     ports:
       - 13306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: '!ChangeMe!'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
       MYSQL_DATABASE: api
       MYSQL_USER: api-platform
-      MYSQL_PASSWORD: '!ChangeMe!'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
     volumes:
       - /home/deployment/data/mysql:/var/lib/mysql:rw
 
