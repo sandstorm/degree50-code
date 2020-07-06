@@ -1,6 +1,6 @@
 all:
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    login_user: root
+    login_user: sebastian
   hosts:
     degree40.tu-dortmund.de: 
