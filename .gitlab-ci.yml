@@ -6,7 +6,7 @@ stages:
 
 build_js:
     stage: build
-    image: node:12.18.0-stretch 
+    image: node:12.18.0-stretch
     script:
         - cd api
         - yarn
@@ -41,8 +41,6 @@ test_app:
 package_app:
     stage: package
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
-    only:
-        - master
     tags:
         - docker
         - privileged
@@ -55,13 +53,16 @@ package_app:
 deploy-prod:
     stage: deploy
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
-    when: manual
+    only:
+        - master
     tags:
-        - docker-privileged
+        - docker
+        - privileged
     script:
         - eval $(ssh-agent -s)
+        - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
         - mkdir -p ~/.ssh
         - ssh-keyscan -H degree40.tu-dortmund.de >> ~/.ssh/known_hosts
-        - scp docker-compose-prod-tu-dortmund.yaml deploy@degree40.tu-dortmund.de:~/docker-compose.yaml
-        - ssh deploy@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"
+        - scp docker-compose-prod-tu-dortmund.yml deployment@degree40.tu-dortmund.de:~/docker-compose.yml
+        - ssh deployment@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"

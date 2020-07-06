@@ -92,6 +92,10 @@ The ansible setup is run from the local computer; not from any CI pipeline (so f
 
 ```
 cd deployment/prod-server/ansible
+
+# !! ensure login_user is set to your user, and you can run `sudo`
+edit inventories/production.yml # and change the login_user to your login user on the server
+
 ansible-playbook -i inventories/production.yml -K server.yml
 ```
 

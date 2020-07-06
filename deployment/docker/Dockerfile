@@ -54,8 +54,11 @@ RUN composer dump-env prod; \
 # copy only specifically what we need
 COPY api/bin bin/
 COPY api/config config/
+COPY api/events events/
 COPY api/public public/
 COPY api/src src/
+COPY api/templates templates/
+COPY api/translations translations/
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
