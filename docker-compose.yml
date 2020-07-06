@@ -16,6 +16,7 @@ services:
       - db
     env:
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-dev
+      JWT_KEY: changeme-dev
     volumes:
       - ./api:/app:rw,cached
       # we had problems with non-updating build assets; so we mount this as non-cached.

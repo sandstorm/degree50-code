@@ -57,6 +57,7 @@ services:
       DATABASE_URL: 'mysql://api-platform:${MYSQL_PASSWORD}@db/api'
       APP_SECRET: '${APP_SECRET}'
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: '${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}'
+      JWT_KEY: '${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}'
     ports:
       - 8080
     depends_on:
