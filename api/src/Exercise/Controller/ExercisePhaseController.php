@@ -218,11 +218,10 @@ class ExercisePhaseController extends AbstractController
                         'name' => $exercisePhase->getName(),
                         'task' => $exercisePhase->getTask(),
                         'isGroupPhase' => $exercisePhase->isGroupPhase(),
-//                        'material' => $exercisePhase->getMaterial()->map(fn(Material $material) => [
-//                            'materialId' => $material->getId(),
-//                            'name' => $material->getName(),
-//                            'link' => $material->getLink()
-//                        ])->toArray(),
+                        'material' => $exercisePhase->getMaterial()->map(fn(Material $material) => [
+                            'materialId' => $material->getId(),
+                            'name' => $material->getName()
+                        ])->toArray(),
                         'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
                             'videoId' => $video->getId()
                         ])->toArray(),

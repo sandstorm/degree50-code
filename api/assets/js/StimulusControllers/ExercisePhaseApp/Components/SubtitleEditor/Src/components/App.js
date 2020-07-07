@@ -87,6 +87,9 @@ export default function (props) {
 
                 // Convert subtitles to vtt url
                 worker.postMessage(subs);
+            } else {
+                // init with one subtitle if non is existing
+                updateSubtitles([new Sub('00:00:00.000', '00:00:01.000', t('Text'))]);
             }
         },
         [setSubtitles, subtitles],
