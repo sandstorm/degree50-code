@@ -57,3 +57,54 @@ make test
 
 make build-types
 
+
+## Connecting via SSH to the production server
+
+**Prerequisites**
+
+You need an account on gitlab-worker.sandstorm.de - try connecting via `ssh -p 29418 gitlab-worker.sandstorm.de` (TOUCH YUBIKEY!)
+
+**Setup**
+
+You need the following entries in `~/.ssh/config`:
+
+(replace YOUR-USERNAME-ON-GITLAB-WORKER with the right username)
+
+```
+Host gitlab-worker.sandstorm.de
+  Port 29418
+  User YOUR-USERNAME-ON-GITLAB-WORKER
+  ForwardAgent yes
+
+Host degree40.tu-dortmund.de
+  ProxyJump gitlab-worker.sandstorm.de
+```
+
+**Connect**
+
+- Run `ssh [your-username]@degree40.tu-dortmund.de`
+- Touch your Yubikey TWICE
+- enter the root password from the vault (or have your SSH key added; then touch the yubikey again.)
+
+**Ansible Setup**
+
+The ansible setup is run from the local computer; not from any CI pipeline (so far).
+
+```
+cd deployment/prod-server/ansible
+
+# !! ensure login_user is set to your user, and you can run `sudo`
+edit inventories/production.yml # and change the login_user to your login user on the server
+
+ansible-playbook -i inventories/production.yml -K server.yml
+```
+
+Ansible takes care of:
+
+- adding/configuring users
+- hardening the server (SSH config; TODO firewall)
+- installing `docker`
+
+**Deployment via Gitlab CI**
+
+- 

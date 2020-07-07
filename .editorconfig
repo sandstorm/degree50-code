@@ -51,6 +51,11 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = false
 
+[docker-compose*.{yaml,yml}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+
 [api/helm/api/**.yaml]
 indent_style = space
 indent_size = 2

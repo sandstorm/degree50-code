@@ -25,7 +25,7 @@ class Course
      * @ORM\Column
      * @Assert\NotBlank
      */
-    public $name = '';
+    public string $name = '';
 
     /**
      * @var DateTime

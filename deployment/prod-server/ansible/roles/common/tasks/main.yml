@@ -1,0 +1,46 @@
+
+- include: ssh_configuration.yml
+      
+- include: sysadmin.yml
+  vars:
+      user: sebastian
+      fullName: Sebastian Kurfuerst
+      uid: 1011
+      state: present
+      # is ADMIN:
+      group: admin
+      # user not allowed to become root (if no password is set); so SET ONE MANUALLY after creation!
+      password: !
+
+- include: sysadmin.yml
+  vars:
+      user: michael
+      fullName: Michael Berhorst
+      uid: 1012
+      # is ADMIN:
+      group: admin
+      state: present
+      # user not allowed to become root (if no password is set); so SET ONE MANUALLY after creation!
+      password: !
+
+- include: sysadmin.yml
+  vars:
+      user: robert
+      fullName: Robert Baruck
+      uid: 1013
+      # is ADMIN:
+      group: admin
+      state: present
+      # user not allowed to become root (if no password is set); so SET ONE MANUALLY after creation!
+      password: !
+
+- include: sysadmin.yml
+  vars:
+      user: deployment
+      fullName: Gitlab Deployment
+      uid: 1020
+      # is ADMIN:
+      group: docker
+      state: present
+      # user not allowed to become root (if no password is set); so SET ONE MANUALLY after creation!
+      password: !

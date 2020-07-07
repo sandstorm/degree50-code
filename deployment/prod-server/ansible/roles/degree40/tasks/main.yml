@@ -1,0 +1,6 @@
+- name: configure .env for prod docker (with secrets)
+  template:
+    src: env.j2
+    dest: /home/deployment/.env
+    mode: 0600
+    owner: deployment

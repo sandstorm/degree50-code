@@ -1,0 +1,27 @@
+# ansible-playbook --ask-vault-pass -i inventories/production.yml -K server.yml
+---
+-   hosts: degree40.tu-dortmund.de
+    remote_user: "{{ login_user }}"
+    become: yes
+    roles:
+        - common
+    tags:
+        - common
+
+-   hosts: degree40.tu-dortmund.de
+    remote_user: "{{ login_user }}"
+    become: yes
+    roles:
+        - docker
+    tags:
+        - docker
+
+-   hosts: degree40.tu-dortmund.de
+    remote_user: "{{ login_user }}"
+    become: yes
+    vars_files:
+        - encrypted/secrets.yml
+    roles:
+        - degree40
+    tags:
+        - degree40

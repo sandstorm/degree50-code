@@ -6,8 +6,9 @@ stages:
 
 build_js:
     stage: build
-    image: node:12.18.0-stretch 
+    image: node:12.18.0-stretch
     script:
+        - yarn config set cache-folder .yarn
         - cd api
         - yarn
         - yarn encore production || echo 1
@@ -19,6 +20,7 @@ build_js:
         key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG-build-js"
         paths:
             - api/node_modules
+            - .yarn
 
 test_app:
     stage: test
@@ -41,8 +43,6 @@ test_app:
 package_app:
     stage: package
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
-    only:
-        - master
     tags:
         - docker
         - privileged
@@ -50,3 +50,21 @@ package_app:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - docker build -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+
+
+deploy-prod:
+    stage: deploy
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
+    only:
+        - master
+    tags:
+        - docker
+        - privileged
+    script:
+        - eval $(ssh-agent -s)
+        - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
+        - ssh-add $SSH_PRIVATE_DEPLOY_KEY
+        - mkdir -p ~/.ssh
+        - ssh-keyscan -H degree40.tu-dortmund.de >> ~/.ssh/known_hosts
+        - scp docker-compose-prod-tu-dortmund.yml deployment@degree40.tu-dortmund.de:~/docker-compose.yml
+        - ssh deployment@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"

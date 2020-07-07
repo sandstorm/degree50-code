@@ -1,0 +1,13 @@
+- name: user "{{ user }}"
+  user: name={{ user }} comment="{{ fullName }}" uid={{ uid }} state={{ state }} force=true remove=true shell=/bin/bash group={{ group }} password={{ password }} update_password=on_create
+  tags: users
+
+- name: Set Authorized Keys for {{ user }}
+  file: state=directory dest=/home/{{ user }}/.ssh/ mode=0700 owner={{ user }}
+  when: state == 'present'
+  tags: users
+
+- name: Set Authorized Keys for {{ user }}
+  copy: src=authorized_keys_{{ user }} dest=/home/{{ user }}/.ssh/authorized_keys mode=0600 owner={{ user }}
+  when: state == 'present'
+  tags: users
