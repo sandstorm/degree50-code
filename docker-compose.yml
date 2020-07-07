@@ -14,7 +14,7 @@ services:
       - 8080:8080
     depends_on:
       - db
-    env:
+    environment:
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-dev
       JWT_KEY: changeme-dev
     volumes:
