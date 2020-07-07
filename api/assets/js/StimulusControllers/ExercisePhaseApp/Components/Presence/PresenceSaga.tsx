@@ -38,14 +38,11 @@ function* flow(action: ReturnType<typeof initPresenceAction>) {
 
         // @ts-ignore -- Why: typescript thinks it's "possibly null"
         eventSource.onopen = () => {
-            const subscriptions = Axios.get(
-                '/.well-known/mercure/subscriptions/exercisePhaseTeam-2191372a-9a5f-4515-ac0b-7fc62ebe8f22',
-                {
-                    headers: {
-                        'Content-Type': 'application/ld+json',
-                    },
-                }
-            )
+            const subscriptions = Axios.get('/.well-known/mercure/subscriptions/' + action.payload, {
+                headers: {
+                    'Content-Type': 'application/ld+json',
+                },
+            })
             console.log(subscriptions)
         }
 
