@@ -15,6 +15,7 @@
         "api-platform/api-pack": "^1.1",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "easycorp/easyadmin-bundle": "^3.0",
+        "firebase/php-jwt": "^5.2",
         "guzzlehttp/guzzle": "^6.3",
         "hslavich/oneloginsaml-bundle": "dev-master",
         "liip/imagine-bundle": "^2.3",
