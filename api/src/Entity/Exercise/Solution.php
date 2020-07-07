@@ -24,6 +24,19 @@ class Solution
      */
     private $team;
 
+    /**
+     * Solution constructor.
+     */
+    public function __construct(string $id = null)
+    {
+        $solutionPrototype = [
+            'annotations' => []
+        ];
+        $this->solution = $solutionPrototype;
+        $this->generateOrSetId($id);
+    }
+
+
     public function getSolution(): ?array
     {
         return $this->solution;

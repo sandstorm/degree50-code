@@ -3,13 +3,11 @@ import { AppState } from '../../Store/Store'
 
 type LiveSyncConfigState = {
     topic: string
-    exercisePhaseLiveSyncSubmitUrl: string
     mercureEndpoint: string
 }
 
 const initialState: LiveSyncConfigState = {
     topic: '',
-    exercisePhaseLiveSyncSubmitUrl: '',
     mercureEndpoint: '',
 }
 

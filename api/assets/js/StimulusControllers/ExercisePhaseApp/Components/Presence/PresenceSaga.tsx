@@ -43,7 +43,7 @@ function* flow(action: ReturnType<typeof initPresenceAction>) {
                     'Content-Type': 'application/ld+json',
                 },
             })
-            console.log(subscriptions)
+            console.log('subscriptions', subscriptions)
         }
 
         yield take(disconnectPresenceAction)
@@ -72,6 +72,7 @@ function* connect(topic: string) {
 function* handleIO(eventSource: EventSource) {
     while (true) {
         eventSource.onmessage = () => {
+            console.log('new message')
             // TODO if we get any message here -> fetch new presence state from API if we cannot put all relevant info into payload
         }
 

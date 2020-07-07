@@ -15,10 +15,11 @@ class ExercisePhaseTeamVoter extends Voter
     const JOIN = 'join';
     const CREATE = 'create';
     const SHOW = 'show';
+    const LEAVE = 'leave';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::JOIN, self::CREATE, self::SHOW])) {
+        if (!in_array($attribute, [self::JOIN, self::CREATE, self::SHOW, self::LEAVE])) {
             return false;
         }
 
@@ -54,23 +55,41 @@ class ExercisePhaseTeamVoter extends Voter
                 return $this->canJoin($exercisePhaseTeam, $user);
             case self::CREATE:
                 return $this->canCreate($exercisePhase, $user);
+            case self::LEAVE:
+                return $this->canLeave($exercisePhaseTeam, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canShow(ExercisePhaseTeam $exercisePhaseTeam, User $user)
+    private function canLeave(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
+    {
+        // does the owner can leave its own team, yes or no?
+        if ($exercisePhaseTeam->getCreator() === $user) {
+            return false;
+        }
+        return $exercisePhaseTeam->getMembers()->contains($user);
+    }
+
+    private function canShow(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
         return $exercisePhaseTeam->getMembers()->contains($user);
     }
 
-
-    private function canJoin(ExercisePhaseTeam $exercisePhaseTeam, User $user)
+    private function canJoin(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
-        return $this->canCreate($exercisePhaseTeam->getExercisePhase(), $user);
+        $existingTeams = $exercisePhaseTeam->getExercisePhase()->getTeams();
+        $canJoin = true;
+        foreach($existingTeams as $team) {
+            if($team->getMembers()->contains($user)) {
+                $canJoin = false;
+            }
+        }
+
+        return $canJoin;
     }
 
-    private function canCreate(ExercisePhase $exercisePhase, User $user)
+    private function canCreate(ExercisePhase $exercisePhase, User $user): bool
     {
         $existingTeams = $exercisePhase->getTeams();
         $canCreate = true;

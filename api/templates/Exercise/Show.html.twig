@@ -50,8 +50,11 @@
                                     <div class="tile__extension-actions">
                                         {% if is_granted('join', team) %}
                                             <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-team-join', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe beitreten</a>
-                                        {% else %}
+                                        {% endif %}
+                                        {% if is_granted('leave', team) %}
                                             <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-team-leave', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe verlassen</a>
+                                        {% endif %}
+                                        {% if is_granted('show', team) %}
                                             <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id }) }}">Phase starten</a>
                                         {% endif %}
                                     </div>

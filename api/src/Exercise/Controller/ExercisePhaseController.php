@@ -9,7 +9,6 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Exercise\Material;
-use App\Entity\Exercise\Solution;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
@@ -104,16 +103,6 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @Route("/exercise-phase/livesync/{id}/{team_id}", name="app_exercise-phase-livesync")
-     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
-     */
-    public function liveSync(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
-    {
-        $this->liveSyncService->publish($exercisePhaseTeam, ['some' => 'payload']);
-        return Response::create('OK');
-    }
-
-    /**
      * @Route("/exercise-phase/share-result/{id}/{team_id}", name="app_exercise-phase-share-result")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
@@ -121,7 +110,7 @@ class ExercisePhaseController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $solution = $exercisePhaseTeam->getSolution() ? $exercisePhaseTeam->getSolution() : new Solution();
+        $solution = $exercisePhaseTeam->getSolution();
         $solution->setTeam($exercisePhaseTeam);
 
         // use solution of the latest autosaved one
@@ -305,6 +294,8 @@ class ExercisePhaseController extends AbstractController
         $entityManager->persist($autosaveSolution);
         $entityManager->flush();
 
+        // push solution to other clients
+        $this->liveSyncService->publish($exercisePhaseTeam, $solutionFromJson);
         return Response::create('OK');
     }
 }
