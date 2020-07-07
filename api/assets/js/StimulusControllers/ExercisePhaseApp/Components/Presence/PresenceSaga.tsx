@@ -42,8 +42,8 @@ function* flow(action: ReturnType<typeof initPresenceAction>) {
                 '/.well-known/mercure/subscriptions/exercisePhaseTeam-2191372a-9a5f-4515-ac0b-7fc62ebe8f22',
                 {
                     headers: {
-                        'Content-Type': 'application/ld+json'
-                    }
+                        'Content-Type': 'application/ld+json',
+                    },
                 }
             )
             console.log(subscriptions)
