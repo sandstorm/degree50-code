@@ -40,6 +40,9 @@ class LiveSyncService
         $exercisePhaseTeamTopicIdentifiers = [];
         foreach ($exercisePhaseTeams as $exercisePhaseTeam) {
             $exercisePhaseTeamTopicIdentifiers[] = self::buildMercureTopicIdentifier($exercisePhaseTeam);
+
+            // we also need to enable access to the subscription API
+            $exercisePhaseTeamTopicIdentifiers[] = '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam);
         }
 
         $payload = self::getBaseJwtPayload();

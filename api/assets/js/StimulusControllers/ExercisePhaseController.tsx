@@ -21,7 +21,7 @@ export default class extends Controller {
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(setSolution(solution))
         // TODO get url from config later
-        store.dispatch(initPresenceAction('exercisePhaseTeam-56d063fb-e7d0-4eb3-a113-ba17bc31b35'))
+        store.dispatch(initPresenceAction(liveSyncConfig.topic))
 
         ReactDOM.render(
             <React.StrictMode>

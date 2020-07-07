@@ -37,13 +37,17 @@ function* flow(action: ReturnType<typeof initPresenceAction>) {
         yield put(presenceActions.setConnectionState(ConnectionState.CONNECTED))
 
         // @ts-ignore -- Why: typescript thinks it's "possibly null"
-        eventSource.onopen(() => {
-            console.log('opened')
+        eventSource.onopen = () => {
             const subscriptions = Axios.get(
-                'localhost:8080/.well-known/mercure/subscriptions?topic=exercisePhaseTeam-56d063fb-e7d0-4eb3-a113-ba17bc31b3'
+                '/.well-known/mercure/subscriptions/exercisePhaseTeam-2191372a-9a5f-4515-ac0b-7fc62ebe8f22',
+                {
+                    headers: {
+                        'Content-Type': 'application/ld+json'
+                    }
+                }
             )
             console.log(subscriptions)
-        })
+        }
 
         yield take(disconnectPresenceAction)
         eventSource.close()
