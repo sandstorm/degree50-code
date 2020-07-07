@@ -91,13 +91,15 @@ class ExercisePhaseController extends AbstractController
 
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($this->getUser()));
+        $solution = $exercisePhaseTeam->getSolution();
 
         return $this->render('ExercisePhase/Show.html.twig', [
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'solution' => $exercisePhaseTeam->getSolution()->getSolution()
+            // TODO Solution constructor / factory
+            'solution' => $solution ? $solution->getSolution() : \GuzzleHttp\json_encode(array('annotations' => []))
         ], $response);
     }
 

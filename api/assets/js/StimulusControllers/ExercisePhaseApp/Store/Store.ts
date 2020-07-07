@@ -1,4 +1,4 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, getDefaultMiddleware } from '@reduxjs/toolkit'
 import toolbarReducer from '../Components/Toolbar/ToolbarSlice'
 import modalReducer from '../Components/Modal/ModalSlice'
 import configReducer from '../Components/Config/ConfigSlice'
@@ -8,6 +8,11 @@ import overlayReducer from '../Components/Overlay/OverlaySlice'
 import materialViewerReducer from '../Components/MaterialViewer/MaterialViewerSlice'
 import presenceReducer from '../Components/Presence/PresenceSlice'
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux'
+import createSagaMiddleware from 'redux-saga'
+import { all, spawn, call } from 'redux-saga/effects'
+import presenceSaga from '../Components/Presence/PresenceSaga'
+
+const sagaMiddleWare = createSagaMiddleware()
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +25,25 @@ export const store = configureStore({
         materialViewer: materialViewerReducer,
         presence: presenceReducer,
     },
+    middleware: [...getDefaultMiddleware(), sagaMiddleWare],
+})
+// TODO clean up
+const sagas = [presenceSaga]
+sagaMiddleWare.run(function* rootSaga() {
+    yield all(
+        sagas.map((saga) =>
+            spawn(function* () {
+                while (true) {
+                    try {
+                        yield call(saga)
+                        break
+                    } catch (e) {
+                        console.error(e)
+                    }
+                }
+            })
+        )
+    )
 })
 
 export type AppState = ReturnType<typeof store.getState>

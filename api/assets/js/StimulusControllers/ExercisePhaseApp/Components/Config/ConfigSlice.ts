@@ -8,7 +8,6 @@ export type ComponentId = ComponentTypesEnum
 
 export type ApiEndpoints = {
     updateSolution: string
-    presence: string
 }
 
 export type Config = {
@@ -30,7 +29,6 @@ const initialState: Config = {
     videos: [],
     apiEndpoints: {
         updateSolution: '',
-        presence: '',
     },
 }
 

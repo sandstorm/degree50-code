@@ -22,7 +22,7 @@ RUN set -eux; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
-COPY --from=dunglas/mercure /mercure /usr/bin/mercure
+COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
 
 # application entrypoint
 ADD /deployment/docker/entrypoint.sh /

@@ -7,6 +7,7 @@ import { ExercisePhaseApp } from './ExercisePhaseApp/ExercisePhaseApp'
 import { hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setSolution } from './ExercisePhaseApp/Components/Solution/SolutionSlice'
 import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
+import { initPresenceAction } from './ExercisePhaseApp/Components/Presence/PresenceSaga'
 
 export default class extends Controller {
     connect() {
@@ -19,6 +20,8 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(setSolution(solution))
+        // TODO get url from config later
+        store.dispatch(initPresenceAction(liveSyncConfig.topic))
 
         ReactDOM.render(
             <React.StrictMode>
