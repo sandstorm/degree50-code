@@ -35,8 +35,9 @@ export default function (props) {
     const [subtitles, setSubtitles] = useState([]);
 
     // All options
+    const firstVideoUrl = (props.videos[0]) ? props.videos[0].url : ''
     const [options, setOptions] = useState({
-        videoUrl: props.videos[0].url,
+        videoUrl: firstVideoUrl,
         subtitleUrl: '/sample.vtt',
         uploadDialog: false,
         translationLanguage: 'en',
@@ -281,7 +282,7 @@ export default function (props) {
 
     return (
         <React.Fragment>
-            <Header {...propsForEditor} />
+            {/*<Header {...propsForEditor} />*/}
             <Main {...propsForEditor} />
             <Footer {...propsForEditor} />
             <ToastContainer />

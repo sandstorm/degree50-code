@@ -3,10 +3,11 @@ import { ToolbarItem } from './ToolbarItem'
 import { connect } from 'react-redux'
 import { selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible } from './ToolbarSlice'
 import { setTitle, setComponent, toggleModalVisibility } from '../Modal/ModalSlice'
-import { setOverlayVisibility, setOverlayComponent } from '../Overlay/OverlaySlice'
+import { setOverlayVisibility, setOverlayComponent, setOverlaySize } from '../Overlay/OverlaySlice'
 import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
 import { ComponentTypesEnum } from '../../Store/ComponentTypesEnum'
 import { ComponentId, Config, selectConfig } from '../Config/ConfigSlice'
+import { overlaySizesEnum } from '../Overlay/Overlay'
 
 const mapStateToProps = (state: AppState) => ({
     activeToolbarItem: selectActiveToolbarItem(state),
@@ -46,16 +47,6 @@ const possibleComponentsForToolbar: Array<Component> = [
         },
     },
     {
-        id: ComponentTypesEnum.DOCUMENT_UPLOAD,
-        isMandatory: false,
-        label: 'Dokumenten-Upload',
-        icon: 'fas fa-file-upload',
-        onClick: (dispatch, component, config) => {
-            dispatch(setOverlayVisibility(true))
-            dispatch(setOverlayComponent(component.id))
-        },
-    },
-    {
         id: ComponentTypesEnum.MATERIAL_VIEWER,
         isMandatory: true,
         label: 'Material',
@@ -63,6 +54,29 @@ const possibleComponentsForToolbar: Array<Component> = [
         onClick: (dispatch, component, config) => {
             dispatch(setOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
+            dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
+        },
+    },
+    {
+        id: ComponentTypesEnum.VIDEO_PLAYER,
+        isMandatory: false,
+        label: 'Videos',
+        icon: 'fas fa-file-video',
+        onClick: (dispatch, component, config) => {
+            dispatch(setOverlayVisibility(true))
+            dispatch(setOverlayComponent(component.id))
+            dispatch(setOverlaySize(overlaySizesEnum.LARGE))
+        },
+    },
+    {
+        id: ComponentTypesEnum.DOCUMENT_UPLOAD,
+        isMandatory: false,
+        label: 'Dokumenten-Upload',
+        icon: 'fas fa-file-upload',
+        onClick: (dispatch, component, config) => {
+            dispatch(setOverlayVisibility(true))
+            dispatch(setOverlayComponent(component.id))
+            dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
         },
     },
 ]

@@ -44,7 +44,8 @@ class DashboardController extends AbstractDashboardController
 
     public function configureCrud(): Crud
     {
-        return Crud::new();
+        return Crud::new()
+            ->setFormThemes(['Form/CustomFormTheme.html.twig', '@EasyAdmin/crud/form_theme.html.twig']);
     }
 
     public function configureMenuItems(): iterable

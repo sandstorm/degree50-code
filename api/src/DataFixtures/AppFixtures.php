@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\Entity\Video\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -62,10 +63,26 @@ class AppFixtures extends Fixture
                 Szenen Ihrer Filme allgemeine Kennzeichen für gelungene bzw. weniger gelungene Fördermomente ableiten. Halten Sie Ihre Ergebnisse – jeder für sich – in der Tabelle fest (AB 4 Kennzeichen gelungener/ weniger gelungener Fördermomente).
         ';
         $exercise->addPhase($exercise_p3);
-
         $manager->persist($exercise);
+
+        $this->createVideoCodes($manager);
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
+    }
+
+    private function createVideoCodes(ObjectManager $manager): void
+    {
+        $videoCode1 = new VideoCode();
+        $videoCode1->setName('Gelungene Momente der Förderung');
+        $videoCode1->setColor('#4cdc70');
+
+        $manager->persist($videoCode1);
+
+        $videoCode2 = new VideoCode();
+        $videoCode2->setName('Weniger gelungene Momente der Förderung');
+        $videoCode2->setColor('#de3b3b');
+
+        $manager->persist($videoCode2);
     }
 }

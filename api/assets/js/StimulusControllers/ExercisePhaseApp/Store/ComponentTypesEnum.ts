@@ -3,4 +3,5 @@ export enum ComponentTypesEnum {
     DOCUMENT_UPLOAD = 'documentUpload',
     MATERIAL_VIEWER = 'materialViewer',
     EXERCISE_DESCRIPTION = 'exerciseDescription',
+    VIDEO_PLAYER = 'videoPlayer',
 }

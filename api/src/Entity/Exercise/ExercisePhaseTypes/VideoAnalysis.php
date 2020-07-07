@@ -16,10 +16,9 @@ class VideoAnalysis extends ExercisePhase
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
         ExercisePhase::DOCUMENT_UPLOAD,
-        ExercisePhase::VIDEO_CODE
     ];
 
-    const PHASE_COMPONENTS_GROUP = VideoAnalysis::PHASE_COMPONENTS + [
+    const PHASE_COMPONENTS_GROUP = [
         ExercisePhase::CHAT,
         ExercisePhase::SHARED_DOCUMENT,
     ];
@@ -49,10 +48,8 @@ class VideoAnalysis extends ExercisePhase
     public function getAllowedComponents(): array
     {
         if ($this->isGroupPhase()) {
-            dump(self::PHASE_COMPONENTS_GROUP);
-            return self::PHASE_COMPONENTS_GROUP;
+            return array_merge(self::PHASE_COMPONENTS, self::PHASE_COMPONENTS_GROUP);
         } else {
-            dump(self::PHASE_COMPONENTS_GROUP);
             return self::PHASE_COMPONENTS;
         }
     }

@@ -35,7 +35,6 @@ const mapDispatchToProps = (dispatch: any) => {
 }
 
 type AdditionalProps = {
-    // currently none
     videos: Array<Video>
     subtitles: Array<Subtitle>
 }
