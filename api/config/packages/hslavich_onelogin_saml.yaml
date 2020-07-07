@@ -64,7 +64,8 @@ hslavich_onelogin_saml:
         singleLogoutService:
             url: 'https://degree40.tu-dortmund.de/saml/logout'
             binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'
-        privateKey: ''
+        x509cert: '%env(file:SAML_CRT_FILE)%'
+        privateKey: '%env(file:SAML_KEY_FILE)%'
     # Optional settings
     baseurl: 'https://degree40.tu-dortmund.de/'
     strict: true
