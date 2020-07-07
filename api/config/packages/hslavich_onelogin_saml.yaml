@@ -66,6 +66,9 @@ hslavich_onelogin_saml:
             binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'
         x509cert: '%env(file:SAML_CRT_FILE)%'
         privateKey: '%env(file:SAML_KEY_FILE)%'
+
+        # discussed with Dennis Stracke / ITMC
+        NameIDFormat: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
     # Optional settings
     baseurl: 'https://degree40.tu-dortmund.de/'
     strict: true
@@ -86,10 +89,7 @@ hslavich_onelogin_saml:
     contactPerson:
         technical:
             givenName: 'Tech User'
-            emailAddress: 'techuser@example.com'
-        support:
-            givenName: 'Support User'
-            emailAddress: 'supportuser@example.com'
+            emailAddress: 'technik@sandstorm.de'
     organization:
         en:
             name: 'Example'
