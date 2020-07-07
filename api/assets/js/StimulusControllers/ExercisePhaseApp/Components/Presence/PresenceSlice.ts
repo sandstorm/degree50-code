@@ -3,8 +3,9 @@ import { AppThunk, AppState } from '../../Store/Store'
 import Axios from 'axios'
 
 export enum ConnectionState {
-    CONNECTED,
-    NOT_CONNECTED,
+    CONNECTED = 'CONNECTED',
+    NOT_CONNECTED = 'NOT_CONNECTED',
+    CONNECTING = 'CONNECTING',
 }
 
 export type TeamMemberId = string
@@ -14,53 +15,47 @@ export type TeamMember = {
     connectionState: ConnectionState
 }
 
-type PresenceState = {
+export type PresenceState = {
     teamMemberIds: Array<TeamMemberId>
     teamMembersById: Record<TeamMemberId, TeamMember>
+    error?: string
+    connectionState: ConnectionState
+    topic: string
 }
+
+export type PresencePayload = Pick<PresenceState, 'teamMemberIds'> & Pick<PresenceState, 'teamMembersById'>
 
 const initialState: PresenceState = {
     teamMemberIds: [],
     teamMembersById: {},
+    error: undefined,
+    connectionState: ConnectionState.NOT_CONNECTED,
+    topic: '',
 }
 
 const PresenceSlice = createSlice({
     name: 'Presence',
     initialState,
     reducers: {
-        setPresenceState: (state: PresenceState, action: PayloadAction<PresenceState>): PresenceState => ({
+        setPresenceState: (state: PresenceState, action: PayloadAction<PresencePayload>): PresenceState => ({
             ...state,
             ...action.payload,
+        }),
+        setConnectionState: (state: PresenceState, action: PayloadAction<ConnectionState>): PresenceState => ({
+            ...state,
+            connectionState: action.payload,
+        }),
+        setError: (state: PresenceState, action: PayloadAction<PresenceState['error']>): PresenceState => ({
+            ...state,
+            error: action.payload,
         }),
     },
 })
 
-export const { setPresenceState } = PresenceSlice.actions
+export const presenceActions = PresenceSlice.actions
 export default PresenceSlice.reducer
 
 // Selectors
 
 export const selectTeamMemberIds = (state: AppState) => state.presence.teamMemberIds
 export const selectTeamMemberById = (id: TeamMemberId, state: AppState) => state.presence.teamMembersById[id]
-
-// Thunks
-
-export const fetchPresence = (): AppThunk => async (dispatch, getState) => {
-    const presenceEndpoint = getState().config.apiEndpoints.presence
-    const response = await Axios.get<PresenceState>(presenceEndpoint)
-
-    dispatch(setPresenceState(response.data))
-}
-
-export const listenForPresenceChange = (): AppThunk => async (dispatch, getState) => {
-    // setup SSE for presence topic
-    const mercureUrl = new URL(getState().liveSyncConfig.mercureEndpoint, document.location.toString())
-    mercureUrl.searchParams.append('topic', getState().liveSyncConfig.topics.presence)
-
-    const eventSource = new EventSource(mercureUrl.toString())
-
-    // if we get any message here -> fetch new presence state from API
-    eventSource.onmessage = () => {
-        dispatch(fetchPresence())
-    }
-}

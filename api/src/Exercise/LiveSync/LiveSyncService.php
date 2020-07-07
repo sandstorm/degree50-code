@@ -45,6 +45,7 @@ class LiveSyncService
         $payload = self::getBaseJwtPayload();
         $payload['mercure'] = [
             "subscribe" => $exercisePhaseTeamTopicIdentifiers
+            // TODO payload: { userID, ... }
         ];
 
         $jwt = JWT::encode($payload, $this->jwtPrivateSigningKey);
