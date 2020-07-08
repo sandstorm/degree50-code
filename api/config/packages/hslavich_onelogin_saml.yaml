@@ -70,7 +70,9 @@ hslavich_onelogin_saml:
 
     # optional settings begin here.
 
-    # DO NOT CONFIGURE baseurl here; this will break single signon via SAML
+    # NOTE: we need to configure the base URL for SAML to work, as we are behind a reverse proxy.
+    # !!! the URL must be EXACTLY like this, INCLUDING the trailing slash.
+    baseurl: 'https://degree40.tu-dortmund.de/saml/'
     strict: true
     debug: false
     security:
