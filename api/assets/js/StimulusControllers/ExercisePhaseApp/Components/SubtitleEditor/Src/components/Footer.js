@@ -70,38 +70,7 @@ export default function(props) {
                             />
                         </div>
                     </div>
-                    <div className="item">
-                        <div className="name">
-                            <Translate value="height-zoom" />
-                        </div>
-                        <div className="value">
-                            <input
-                                defaultValue="1"
-                                type="range"
-                                min="0.1"
-                                max="2"
-                                step="0.1"
-                                onChange={event => {
-                                    if (!wf) return;
-                                    wf.setOptions({
-                                        waveScale: Number(event.target.value || 1),
-                                    });
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className="item">
-                        <div
-                            style={{ cursor: 'pointer' }}
-                            className="value"
-                            onClick={() => {
-                                if (!wf) return;
-                                wf.exportImage();
-                            }}
-                        >
-                            <Translate value="export-image" />
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div className="subtitle-editor-timeline__body">

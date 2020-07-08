@@ -61,13 +61,7 @@ class LiveSyncService
     {
         return [
             'mercureEndpoint' => '/.well-known/mercure',
-            'topic' => self::buildMercureTopicIdentifier($exercisePhaseTeam),
-
-            // TODO: maybe this config needs to be moved somewhere else? unsure.
-            'exercisePhaseLiveSyncSubmitUrl' => $this->router->generate('app_exercise-phase-livesync', [
-                'id' => $exercisePhaseTeam->getExercisePhase()->getId(),
-                'team_id' => $exercisePhaseTeam->getId()
-            ])
+            'topic' => self::buildMercureTopicIdentifier($exercisePhaseTeam)
         ];
     }
 
@@ -88,7 +82,6 @@ class LiveSyncService
 
     public function publish(ExercisePhaseTeam $exercisePhaseTeam, array $data)
     {
-
         $update = new Update(
             self::buildMercureTopicIdentifier($exercisePhaseTeam),
             json_encode($data),

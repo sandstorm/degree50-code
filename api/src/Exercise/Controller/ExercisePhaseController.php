@@ -9,7 +9,6 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Exercise\Material;
-use App\Entity\Exercise\Solution;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
@@ -91,26 +90,22 @@ class ExercisePhaseController extends AbstractController
 
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($this->getUser()));
-        $solution = $exercisePhaseTeam->getSolution();
+
+        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy([], ['update_timestamp' => 'desc']);
+        $sharedSolution = $exercisePhaseTeam->getSolution();
+
+        $solution = $sharedSolution->getSolution();
+        if ($latestAutosavedSolution && $latestAutosavedSolution->getUpdateTimestamp() > $sharedSolution->getUpdateTimestamp()) {
+            $solution = $latestAutosavedSolution->getSolution();
+        }
 
         return $this->render('ExercisePhase/Show.html.twig', [
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            // TODO Solution constructor / factory
-            'solution' => $solution ? $solution->getSolution() : \GuzzleHttp\json_encode(array('annotations' => []))
+            'solution' => $solution
         ], $response);
-    }
-
-    /**
-     * @Route("/exercise-phase/livesync/{id}/{team_id}", name="app_exercise-phase-livesync")
-     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
-     */
-    public function liveSync(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
-    {
-        $this->liveSyncService->publish($exercisePhaseTeam, ['some' => 'payload']);
-        return Response::create('OK');
     }
 
     /**
@@ -121,12 +116,13 @@ class ExercisePhaseController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $solution = $exercisePhaseTeam->getSolution() ? $exercisePhaseTeam->getSolution() : new Solution();
+        $solution = $exercisePhaseTeam->getSolution();
         $solution->setTeam($exercisePhaseTeam);
 
         // use solution of the latest autosaved one
         $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy([], ['update_timestamp' => 'desc']);
         $solution->setSolution($latestAutosavedSolution->getSolution());
+        $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
 
         // remove autosaved solutions
         $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();
@@ -229,11 +225,10 @@ class ExercisePhaseController extends AbstractController
                         'name' => $exercisePhase->getName(),
                         'task' => $exercisePhase->getTask(),
                         'isGroupPhase' => $exercisePhase->isGroupPhase(),
-//                        'material' => $exercisePhase->getMaterial()->map(fn(Material $material) => [
-//                            'materialId' => $material->getId(),
-//                            'name' => $material->getName(),
-//                            'link' => $material->getLink()
-//                        ])->toArray(),
+                        'material' => $exercisePhase->getMaterial()->map(fn(Material $material) => [
+                            'materialId' => $material->getId(),
+                            'name' => $material->getName()
+                        ])->toArray(),
                         'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
                             'videoId' => $video->getId()
                         ])->toArray(),
@@ -305,6 +300,8 @@ class ExercisePhaseController extends AbstractController
         $entityManager->persist($autosaveSolution);
         $entityManager->flush();
 
+        // push solution to other clients
+        $this->liveSyncService->publish($exercisePhaseTeam, $solutionFromJson);
         return Response::create('OK');
     }
 }

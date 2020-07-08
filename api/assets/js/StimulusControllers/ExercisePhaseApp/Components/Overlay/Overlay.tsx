@@ -5,6 +5,7 @@ import FileUpload from '../FileUpload/FileUpload'
 import { ComponentTypesEnum } from '../../Store/ComponentTypesEnum'
 import MaterialViewer from '../MaterialViewer/MaterialViewer'
 import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
+import VideoPlayerWrapper from '../VideoPlayer/VideoPlayerWrapper'
 
 const mapStateToProps = (state: AppState) => ({
     isVisible: selectIsVisible(state),
@@ -36,6 +37,9 @@ const Overlay: React.FC<OverlayProps> = (props) => {
             break
         case ComponentTypesEnum.MATERIAL_VIEWER:
             componentToRender = <MaterialViewer />
+            break
+        case ComponentTypesEnum.VIDEO_PLAYER:
+            componentToRender = <VideoPlayerWrapper />
             break
         default:
     }

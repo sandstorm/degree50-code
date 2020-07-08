@@ -59,6 +59,9 @@ class ExercisePhaseTeamController extends AbstractController
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
 
+        $solution = new Solution();
+        $exercisePhaseTeam->setSolution($solution);
+
         $this->eventStore->addEvent('MemberAddedToTeam', [
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
             'userId' => $user->getId(),
@@ -66,6 +69,7 @@ class ExercisePhaseTeamController extends AbstractController
         ]);
 
         $entityManager->persist($exercisePhaseTeam);
+        $entityManager->persist($solution);
 
         $entityManager->flush();
 
@@ -115,6 +119,7 @@ class ExercisePhaseTeamController extends AbstractController
     }
 
     /**
+     * @IsGranted("leave", subject="exercisePhaseTeam")
      * @Route("/exercise-phase/{id}/team/{team_id}/leave", name="app_exercise-phase-team-leave")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */

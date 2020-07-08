@@ -40,7 +40,7 @@ export const sendSolutionState = (): AppThunk => async (dispatch, getState) => {
             solution: solution,
         })
         .then(function (response) {
-            console.log(response.data)
+            console.log('Update Solution', response.data)
         })
         .catch(function (error) {
             console.log(error)

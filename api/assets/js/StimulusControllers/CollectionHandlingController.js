@@ -26,14 +26,19 @@ export default class extends Controller {
             });
 
             // file / label handling for bootstrap styled forms
-            $('.vich-file input[type="file"]').change( function() {
-                let filename = $(this)[0].value;
-                const idx = filename.lastIndexOf("\\");
-                filename = filename.substr(idx+1);
-                $(this).next('label').html(filename);
-            });
+            appendFileLabelHandler();
         });
     }
+}
+
+function appendFileLabelHandler() {
+    $('.vich-file input[type="file"]').off('change');
+    $('.vich-file input[type="file"]').on('change', function() {
+        let filename = $(this)[0].value;
+        const idx = filename.lastIndexOf("\\");
+        filename = filename.substr(idx+1);
+        $(this).next('label').html(filename);
+    });
 }
 
 function addTagForm($collectionHolder, $newLinkLi) {
@@ -52,4 +57,5 @@ function addTagForm($collectionHolder, $newLinkLi) {
     // Display the form in the page in an li, before the "Add a tag" link li
     var $newFormLi = $('<fieldset class="form-group"></fieldset>').append(newForm);
     $newLinkLi.before($newFormLi);
+    appendFileLabelHandler();
 }

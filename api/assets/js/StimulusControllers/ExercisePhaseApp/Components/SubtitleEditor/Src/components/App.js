@@ -2,6 +2,7 @@ import React, {useState, useMemo, useCallback, useEffect} from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
+import VideoCodes from './VideoCodes';
 import Sub from '../subtitle/sub';
 import clamp from 'lodash/clamp';
 import {secondToTime, notify} from '../utils';
@@ -35,8 +36,9 @@ export default function (props) {
     const [subtitles, setSubtitles] = useState([]);
 
     // All options
+    const firstVideoUrl = (props.videos[0]) ? props.videos[0].url : ''
     const [options, setOptions] = useState({
-        videoUrl: props.videos[0].url,
+        videoUrl: firstVideoUrl,
         subtitleUrl: '/sample.vtt',
         uploadDialog: false,
         translationLanguage: 'en',
@@ -86,6 +88,10 @@ export default function (props) {
 
                 // Convert subtitles to vtt url
                 worker.postMessage(subs);
+            } else {
+                if (subs.length === 0) {
+                    setSubtitles([new Sub('00:00:00.000', '00:00:01.000', t('Text'))])
+                }
             }
         },
         [setSubtitles, subtitles],
@@ -281,9 +287,10 @@ export default function (props) {
 
     return (
         <React.Fragment>
-            <Header {...propsForEditor} />
+            {/*<Header {...propsForEditor} />*/}
             <Main {...propsForEditor} />
             <Footer {...propsForEditor} />
+            <VideoCodes {...propsForEditor} />
             <ToastContainer />
         </React.Fragment>
     );

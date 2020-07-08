@@ -16,20 +16,17 @@ class VideoAnalysisType extends ExercisePhaseType
     {
         parent::buildForm($builder, $options);
         $choices = [];
-        $components = VideoAnalysis::PHASE_COMPONENTS;
 
         /* @var VideoAnalysis $data */
         $data = $options['data'];
-        if ($data->isGroupPhase()) {
-            $components = VideoAnalysis::PHASE_COMPONENTS_GROUP;
-        }
+        $components = $data->getAllowedComponents();
         foreach($components as $component) {
             $choices[$component] = $component;
         }
         $builder
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
-                'required' => false,
+                'required' => true,
                 'choice_label' => 'title',
                 'multiple' => true,
                 'label' => false

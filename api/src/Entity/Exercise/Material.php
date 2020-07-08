@@ -124,9 +124,6 @@ class Material
     public function setFile(File $file = null): void
     {
         $this->file = $file;
-        if (null !== $file) {
-            $this->uploadAt = new \DateTime();
-        }
     }
 
     /**
