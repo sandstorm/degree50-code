@@ -2,6 +2,7 @@ import React, {useState, useMemo, useCallback, useEffect} from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
+import VideoCodes from './VideoCodes';
 import Sub from '../subtitle/sub';
 import clamp from 'lodash/clamp';
 import {secondToTime, notify} from '../utils';
@@ -88,8 +89,9 @@ export default function (props) {
                 // Convert subtitles to vtt url
                 worker.postMessage(subs);
             } else {
-                // init with one subtitle if non is existing
-                updateSubtitles([new Sub('00:00:00.000', '00:00:01.000', t('Text'))]);
+                if (subs.length === 0) {
+                    setSubtitles([new Sub('00:00:00.000', '00:00:01.000', t('Text'))])
+                }
             }
         },
         [setSubtitles, subtitles],
@@ -288,6 +290,7 @@ export default function (props) {
             {/*<Header {...propsForEditor} />*/}
             <Main {...propsForEditor} />
             <Footer {...propsForEditor} />
+            <VideoCodes {...propsForEditor} />
             <ToastContainer />
         </React.Fragment>
     );

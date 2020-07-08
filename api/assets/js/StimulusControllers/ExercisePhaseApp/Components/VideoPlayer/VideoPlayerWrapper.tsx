@@ -51,6 +51,9 @@ const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({ videos }) => {
                 setActiveVideoIndex(activeVideoIndex - 1)
             }
         }
+        if (videos.length === 1) {
+            return null
+        }
         return (
             <div className={'video-player-wrapper__actions'}>
                 <button className={'btn btn-primary'} disabled={!hasPreviousVideo} onClick={handlePrevious}>

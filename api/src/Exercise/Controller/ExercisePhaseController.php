@@ -90,15 +90,21 @@ class ExercisePhaseController extends AbstractController
 
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($this->getUser()));
-        $solution = $exercisePhaseTeam->getSolution();
+
+        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy([], ['update_timestamp' => 'desc']);
+        $sharedSolution = $exercisePhaseTeam->getSolution();
+
+        $solution = $sharedSolution->getSolution();
+        if ($latestAutosavedSolution && $latestAutosavedSolution->getUpdateTimestamp() > $sharedSolution->getUpdateTimestamp()) {
+            $solution = $latestAutosavedSolution->getSolution();
+        }
 
         return $this->render('ExercisePhase/Show.html.twig', [
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            // TODO Solution constructor / factory
-            'solution' => $solution ? $solution->getSolution() : \GuzzleHttp\json_encode(array('annotations' => []))
+            'solution' => $solution
         ], $response);
     }
 
@@ -116,6 +122,7 @@ class ExercisePhaseController extends AbstractController
         // use solution of the latest autosaved one
         $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy([], ['update_timestamp' => 'desc']);
         $solution->setSolution($latestAutosavedSolution->getSolution());
+        $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
 
         // remove autosaved solutions
         $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();

@@ -25,6 +25,13 @@ class Solution
     private $team;
 
     /**
+     * @var \DateTimeImmutable|null
+     *
+     * @ORM\Column(type="datetimetz_immutable")
+     */
+    private $update_timestamp;
+
+    /**
      * Solution constructor.
      */
     public function __construct(string $id = null)
@@ -34,6 +41,7 @@ class Solution
         ];
         $this->solution = $solutionPrototype;
         $this->generateOrSetId($id);
+        $this->update_timestamp = new \DateTimeImmutable();
     }
 
 
@@ -65,5 +73,21 @@ class Solution
         }
 
         return $this;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getUpdateTimestamp(): ?\DateTimeImmutable
+    {
+        return $this->update_timestamp;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $update_timestamp
+     */
+    public function setUpdateTimestamp(?\DateTimeImmutable $update_timestamp): void
+    {
+        $this->update_timestamp = $update_timestamp;
     }
 }
