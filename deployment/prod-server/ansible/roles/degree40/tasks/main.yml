@@ -5,21 +5,3 @@
     mode: 0600
     owner: deployment
 
-- name: Ensure /home/deployment/certs exists
-  file:
-      path: "/home/deployment/certs"
-      state: directory
-
-- name: configure certs for SSO
-  template:
-      src: saml.crt.j2
-      dest: /home/deployment/certs/saml.crt
-      mode: 0400
-      owner: root
-
-- name: configure certs for SSO
-  template:
-      src: saml.pem.j2
-      dest: /home/deployment/certs/saml.pem
-      mode: 0400
-      owner: root

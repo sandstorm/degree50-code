@@ -58,6 +58,22 @@ make test
 make build-types
 
 
+## Testing the SAML Authentication locally
+ 
+In order to test the SAML authentication locally, you need the following `/etc/hosts` entry:
+
+```
+127.0.0.1 degree40.tu-dortmund.de
+```
+
+- now, browse to [https://degree40.tu-dortmund.de](https://degree40.tu-dortmund.de) and accept the certificate warning.
+- then, press the `SAML Login` link, and log in at TU dortmund (credentials in vault)
+
+After testing, **remember to remove the `/etc/hosts` entry again** - as you still want to access the staging system.
+
+The development container contains a self-signed SSL certificate and nginx is serving via SSL on port 8443 - so everything
+is prepared for testing the SAML authentication locally.
+
 ## Connecting via SSH to the production server
 
 **Prerequisites**

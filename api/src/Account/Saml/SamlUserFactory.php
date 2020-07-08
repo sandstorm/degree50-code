@@ -1,0 +1,38 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Account\Saml;
+
+use App\Entity\Account\User;
+use App\EventStore\DoctrineIntegratedEventStore;
+use Hslavich\OneloginSamlBundle\Security\Authentication\Token\SamlTokenInterface;
+use Hslavich\OneloginSamlBundle\Security\User\SamlUserFactoryInterface;
+
+/**
+ * Create new users if they do not exist locally
+ */
+class SamlUserFactory implements SamlUserFactoryInterface
+{
+    private DoctrineIntegratedEventStore $eventStore;
+
+    public function __construct(DoctrineIntegratedEventStore $eventStore)
+    {
+        $this->eventStore = $eventStore;
+    }
+
+    public function createUser(SamlTokenInterface $token)
+    {
+        $attributes = $token->getAttributes();
+
+        $userIdentifier = $attributes['mail'][0];
+
+        $user = new User();
+        $user->setRoles(array('ROLE_SSO_USER'));
+        $user->setPassword('notused');
+        $user->setEmail($userIdentifier);
+
+        $this->eventStore->disableEventPublishingForNextFlush();
+
+        return $user;
+    }
+}

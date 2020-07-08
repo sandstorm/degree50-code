@@ -102,3 +102,6 @@ services:
     App\Exercise\LiveSync\MercureJwtProvider:
         arguments:
             $jwtPrivateSigningKey: '%app.live_sync.jwt_private_signing_key%'
+
+    saml_user_factory:
+        class: App\Account\Saml\SamlUserFactory

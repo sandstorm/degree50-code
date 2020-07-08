@@ -64,15 +64,15 @@ hslavich_onelogin_saml:
         singleLogoutService:
             url: 'https://degree40.tu-dortmund.de/saml/logout'
             binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'
-        x509cert: '%env(file:SAML_CRT_FILE)%'
-        privateKey: '%env(file:SAML_KEY_FILE)%'
 
         # discussed with Dennis Stracke / ITMC
         NameIDFormat: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-    # Optional settings
-    baseurl: 'https://degree40.tu-dortmund.de/'
+
+    # optional settings begin here.
+
+    # DO NOT CONFIGURE baseurl here; this will break single signon via SAML
     strict: true
-    debug: true
+    debug: false
     security:
         nameIdEncrypted:       false
         authnRequestsSigned:   false

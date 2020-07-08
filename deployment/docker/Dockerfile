@@ -67,6 +67,11 @@ RUN set -eux; \
 	chmod +x bin/console; sync
 VOLUME /app/var
 
+# generate a dummy self-signed SSL certificate; so SAML can be tested locally.
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -subj "/C=DE/ST=Sachsen/L=Dresden/O=Global Security/OU=IT Department/CN=degree40.tu-dortmund.de" \
+  -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+
 COPY --from=fluent/fluent-bit:1.4 /fluent-bit/bin/fluent-bit /usr/bin/fluent-bit
 COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
 COPY /deployment/config-files/fluentbit.conf /etc/fluentbit.conf

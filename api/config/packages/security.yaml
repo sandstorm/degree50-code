@@ -17,13 +17,32 @@ security:
         main:
             anonymous: lazy
             provider: app_user_provider
+
+            # we allow logging in both via SAML (Single Signon) and via form_login.
+            saml:
+                username_attribute: mail
+                check_path: /saml/acs
+                login_path: /saml/login
+                failure_path: /login
+                always_use_default_target_path: true
+                user_factory: saml_user_factory
+                persist_user: true
+
+            form_login:
+                login_path: /login
+                check_path: /login_check
+                always_use_default_target_path: true
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
             logout:
-                path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
+                # this URL must match the `app_logout` route.
+                # DO NOT CHANGE THE URL, ass the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
+                path: /saml/logout
+                # for logout, we both trigger the classic session-based logout, and as well the SAML logout.
+                handlers:
+                    - 'security.logout.handler.session'
+                    - 'hslavich_onelogin_saml.saml_logout'
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

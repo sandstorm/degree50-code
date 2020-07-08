@@ -58,8 +58,6 @@ services:
       APP_SECRET: '${APP_SECRET}'
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: '${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}'
       JWT_KEY: '${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}'
-      SAML_CRT_FILE: '/certs/saml.crt'
-      SAML_KEY_FILE: '/certs/saml.pem'
     ports:
       - 8080
     depends_on:
@@ -68,12 +66,12 @@ services:
     - /home/deployment/data/app/var/data:/app/var/data
     - /home/deployment/data/app/public/data:/app/public/data
     - /home/deployment/data/app/config/secrets:/app/config/secrets
-    - /home/deployment/certs:/certs:ro
 
   redis:
     image: redis:6.0.1-alpine3.11
     ports:
-      - 6379
+      # Redis will only be exposed to LOCALHOST, so it can be accessed via SSH tunnel
+      - 127.0.0.1:6379:6379
 
   redis-ui:
     image: rediscommander/redis-commander
@@ -88,7 +86,8 @@ services:
   db:
     image: mariadb:10.2.25
     ports:
-      - 3306
+      # MySQL will only be exposed to LOCALHOST, so it can be accessed via SSH tunnel
+      - 127.0.0.1:3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
       MYSQL_DATABASE: api
