@@ -96,3 +96,9 @@ services:
     volumes:
       - /home/deployment/data/mysql:/var/lib/mysql:rw
 
+networks:
+  default:
+    ipam:
+      config:
+        # must match TRUSTED_PROXIES .env
+        - subnet: 172.16.0.0/16
