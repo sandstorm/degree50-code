@@ -1,0 +1,30 @@
+.subtitle-editor__tabs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  background-color: $theme__color__black;
+
+
+  li {
+    a {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+
+      background-color: $theme__color__black;
+
+      color: $theme__color__white;
+
+      cursor: pointer;
+
+      &.active, &:hover {
+        background-color: $theme__color__green;
+
+        color: $theme__color__white;
+      }
+    }
+  }
+}

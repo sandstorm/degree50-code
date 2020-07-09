@@ -2,7 +2,6 @@ import React, {useState, useMemo, useCallback, useEffect} from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import VideoCodes from './VideoCodes';
 import Sub from '../subtitle/sub';
 import clamp from 'lodash/clamp';
 import {secondToTime, notify} from '../utils';
@@ -33,7 +32,10 @@ export default function (props) {
     const [currentTime, setCurrentTime] = useState(0);
 
     // All subtitles
-    const [subtitles, setSubtitles] = useState([]);
+    if (props.subtitles.length === 0) {
+        props.subtitles = [new Sub('00:00:00.000', '00:00:01.000', t('Kommentar'))]
+    }
+    const subtitles = props.subtitles.map(item => new Sub(item.start, item.end, item.text))
 
     // All options
     const firstVideoUrl = (props.videos[0]) ? props.videos[0].url : ''
@@ -66,55 +68,45 @@ export default function (props) {
     );
 
     // Only way to update all subtitles
-    const dispatch = useAppDispatch();
-    const updateSubtitles = useCallback(
-        (subs, saveToHistory = true) => {
-            if (subs.length && !isEqual(subs, subtitles)) {
-                dispatch(setAnnotations(JSON.parse(JSON.stringify(subs))));
-                dispatch(sendSolutionState());
 
-                setSubtitles(subs);
+    const updateSubtitles = (subs, saveToHistory = true) => {
+        if (subs.length && !isEqual(subs, subtitles)) {
+            props.updateSubtitles(subs);
 
-                // Save 100 subtitles to history
-                if (saveToHistory) {
-                    if (history.length >= 100) {
-                        history.shift();
-                    }
-                    history.push(subs.map(sub => sub.clone));
+            // Save 100 subtitles to history
+            if (saveToHistory) {
+                if (history.length >= 100) {
+                    history.shift();
                 }
-
-                // Save to storage
-                //storage.set('subtitles', subs);
-
-                // Convert subtitles to vtt url
-                worker.postMessage(subs);
-            } else {
-                if (subs.length === 0) {
-                    setSubtitles([new Sub('00:00:00.000', '00:00:01.000', t('Text'))])
-                }
+                history.push(subs.map(sub => sub.clone));
             }
-        },
-        [setSubtitles, subtitles],
-    );
+
+            // Save to storage
+            //storage.set('subtitles', subs);
+
+            // Convert subtitles to vtt url
+            //worker.postMessage(subs);
+        }
+    }
 
     // Initialize subtitles from url or storage
-    const initSubtitles = useCallback(async () => {
-        const stateSubs = props.subtitles;
-        const storageSubs = storage.get('subtitles');
-        if (stateSubs) {
-            updateSubtitles(stateSubs.map(item => new Sub(item.start, item.end, item.text)));
-        } else if (storageSubs && storageSubs.length) {
-            updateSubtitles(storageSubs.map(item => new Sub(item.start, item.end, item.text)));
-        } else {
-            const subs = await getSubFromVttUrl(options.subtitleUrl);
-            updateSubtitles(subs);
-        }
-    }, [options.subtitleUrl, updateSubtitles]);
+    // const initSubtitles = useCallback(async () => {
+    //     const stateSubs = props.subtitles;
+    //     const storageSubs = storage.get('subtitles');
+    //     if (stateSubs) {
+    //         updateSubtitles(stateSubs.map(item => new Sub(item.start, item.end, item.text)));
+    //     } else if (storageSubs && storageSubs.length) {
+    //         updateSubtitles(storageSubs.map(item => new Sub(item.start, item.end, item.text)));
+    //     } else {
+    //         const subs = await getSubFromVttUrl(options.subtitleUrl);
+    //         updateSubtitles(subs);
+    //     }
+    // }, [options.subtitleUrl, updateSubtitles]);
 
     // Run only once
     useEffect(() => {
-        initSubtitles();
         updateLang(language);
+        setCurrentIndex(subtitles.findIndex(item => item.startTime <= currentTime && item.endTime > currentTime))
         if (player && !worker.onmessage) {
             worker.onmessage = event => {
                 player.subtitle.switch(event.data);
@@ -126,7 +118,7 @@ export default function (props) {
     // Update current index from current time
     useMemo(() => {
         setCurrentIndex(subtitles.findIndex(item => item.startTime <= currentTime && item.endTime > currentTime));
-    }, [subtitles, currentTime, setCurrentIndex]);
+    }, [currentTime, setCurrentIndex]);
 
     // Detect if the subtitle exists
     const hasSubtitle = useCallback(sub => subtitles.indexOf(sub), [subtitles]);
@@ -290,7 +282,6 @@ export default function (props) {
             {/*<Header {...propsForEditor} />*/}
             <Main {...propsForEditor} />
             <Footer {...propsForEditor} />
-            <VideoCodes {...propsForEditor} />
             <ToastContainer />
         </React.Fragment>
     );

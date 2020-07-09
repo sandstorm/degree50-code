@@ -5,10 +5,12 @@ import { Subtitle } from '../SubtitleEditor/SubtitleEditor'
 
 export type Solution = {
     annotations: Array<Subtitle>
+    videoCodes: Array<Subtitle>
 }
 
 const initialState: Solution = {
     annotations: [],
+    videoCodes: [],
 }
 
 export const solutionSlice = createSlice({
@@ -18,8 +20,12 @@ export const solutionSlice = createSlice({
         setAnnotations: (state, action: PayloadAction<Array<Subtitle>>) => {
             state.annotations = action.payload
         },
+        setVideoCodes: (state, action: PayloadAction<Array<Subtitle>>) => {
+            state.videoCodes = action.payload
+        },
         setSolution: (state, action: PayloadAction<Solution>) => {
             state.annotations = action.payload.annotations
+            state.videoCodes = action.payload.videoCodes
         },
     },
 })

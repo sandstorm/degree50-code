@@ -15,6 +15,8 @@ import 'react-virtualized/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { connect } from 'react-redux'
+import { sendSolutionState, setAnnotations } from '../Solution/SolutionSlice'
+import { useAppDispatch } from '../../Store/Store'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
@@ -42,7 +44,13 @@ type AdditionalProps = {
 type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
 const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
-    return <App {...props} />
+    const dispatch = useAppDispatch()
+    const updateSubtitles = (subtitles: any) => {
+        dispatch(setAnnotations(JSON.parse(JSON.stringify(subtitles))))
+        // @ts-ignore
+        dispatch(sendSolutionState())
+    }
+    return <App videos={props.videos} subtitles={props.subtitles} updateSubtitles={updateSubtitles} />
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubtitleEditorWrapper)

@@ -10,11 +10,13 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Exercise\Material;
 use App\Entity\Video\Video;
+use App\Entity\Video\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
+use App\Repository\Video\VideoCodeRepository;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -36,11 +38,12 @@ class ExercisePhaseController extends AbstractController
     private LiveSyncService $liveSyncService;
     private RouterInterface $router;
     private AutosavedSolutionRepository $autosavedSolutionRepository;
+    private VideoCodeRepository $videoCodeRepository;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository, VideoCodeRepository $videoCodeRepository)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -48,6 +51,7 @@ class ExercisePhaseController extends AbstractController
         $this->liveSyncService = $liveSyncService;
         $this->router = $router;
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
+        $this->videoCodeRepository = $videoCodeRepository;
     }
 
     /**
@@ -69,6 +73,14 @@ class ExercisePhaseController extends AbstractController
                   'team_id' => $exercisePhaseTeam->getId()
               ])
             ],
+            'videoCodes' => array_map(function (VideoCode $videoCode) {
+                return [
+                    'id' => $videoCode->getId(),
+                    'name' => $videoCode->getName(),
+                    'description' => $videoCode->getDescription(),
+                    'color' => $videoCode->getColor(),
+                ];
+            }, $exercisePhase->getVideoCodes()->toArray()),
             'material' => array_map(function (Material $entry) {
                 return [
                     'id' => $entry->getId(),
@@ -234,6 +246,12 @@ class ExercisePhaseController extends AbstractController
                         ])->toArray(),
                         'components' => $exercisePhase->getComponents()
                     ]);
+            }
+
+            // TODO expose videocodes to the ui
+            $videoCodes = $this->videoCodeRepository->findAll();
+            foreach ($videoCodes as $videoCode) {
+                $exercisePhase->addVideoCode($videoCode);
             }
 
             $entityManager = $this->getDoctrine()->getManager();

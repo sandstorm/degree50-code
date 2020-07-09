@@ -37,7 +37,8 @@ class Solution
     public function __construct(string $id = null)
     {
         $solutionPrototype = [
-            'annotations' => []
+            'annotations' => [],
+            'videoCodes' => []
         ];
         $this->solution = $solutionPrototype;
         $this->generateOrSetId($id);

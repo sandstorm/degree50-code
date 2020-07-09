@@ -10,6 +10,13 @@ export type ApiEndpoints = {
     updateSolution: string
 }
 
+export type VideoCode = {
+    id: string
+    name: string
+    description: string
+    color: string
+}
+
 export type Config = {
     title: string
     description: string
@@ -17,6 +24,7 @@ export type Config = {
     components: Array<ComponentId>
     material: Array<Material>
     videos: Array<Video>
+    videoCodes: Array<VideoCode>
     apiEndpoints: ApiEndpoints
 }
 
@@ -27,6 +35,7 @@ const initialState: Config = {
     components: [],
     material: [],
     videos: [],
+    videoCodes: [],
     apiEndpoints: {
         updateSolution: '',
     },

@@ -82,6 +82,24 @@ class VideoCode
         return $this->exercisePhases;
     }
 
+    public function addExercisePhase(ExercisePhase $exercisePhase): self
+    {
+        if (!$this->exercisePhases->contains($exercisePhase)) {
+            $this->exercisePhases[] = $exercisePhase;
+        }
+
+        return $this;
+    }
+
+    public function removeExercisePhase(ExercisePhase $exercisePhase): self
+    {
+        if ($this->exercisePhases->contains($exercisePhase)) {
+            $this->exercisePhases->removeElement($exercisePhase);
+        }
+
+        return $this;
+    }
+
     public function getColor(): ?string
     {
         return $this->color;
