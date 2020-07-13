@@ -6,3 +6,24 @@
 supervisord.log
 supervisord.pid
 /api/updates.db
+
+
+node_modules
+/video-poc/dist/
+/video-poc/.cache
+
+# Optional npm cache directory
+.npm
+
+# https://github.com/github/gitignore/blob/master/Global/Vim.gitignore
+# ======================================================================================================================
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
