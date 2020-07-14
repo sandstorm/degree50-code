@@ -94,13 +94,27 @@ Host gitlab-worker.sandstorm.de
 
 Host degree40.tu-dortmund.de
   ProxyJump gitlab-worker.sandstorm.de
+  LocalForward 23306 127.0.0.1:3306
 ```
 
 **Connect**
 
 - Run `ssh [your-username]@degree40.tu-dortmund.de`
 - Touch your Yubikey TWICE
-- enter the root password from the vault (or have your SSH key added; then touch the yubikey again.)
+- Now, you can become the **deployment** user (which runs `docker-compose`):
+  `sudo su - deployment`
+- To enter the container, use the following commmand:
+  `docker-compose exec api /bin/bash`
+
+**Connect to the Production Database**
+
+- Run the SSH command as above(`ssh [your-username]@degree40.tu-dortmund.de`), keep the connection open
+- Connect (e.g. in Sequel Pro or IntelliJ) using the following settings:
+  - Host: 127.0.0.1
+  - Port: 23306
+  - User: api-platform
+  - Password: see bitwarden vault
+  - DB: api
 
 **Ansible Setup**
 
