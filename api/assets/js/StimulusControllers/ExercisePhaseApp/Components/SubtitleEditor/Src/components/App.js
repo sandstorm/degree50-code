@@ -1,21 +1,23 @@
 import React, {useState, useMemo, useCallback, useEffect} from 'react';
-import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import Sub from '../subtitle/sub';
 import clamp from 'lodash/clamp';
 import {secondToTime, notify} from '../utils';
-import {getSubFromVttUrl, subToJson, vttToUrlUseWorker} from '../subtitle';
+import {vttToUrlUseWorker} from '../subtitle';
 import Storage from '../utils/storage';
 import isEqual from 'lodash/isEqual';
 import {ToastContainer} from 'react-toastify';
 import {t, setLocale} from 'react-i18nify';
-import {sendSolutionState, setAnnotations} from "../../../Solution/SolutionSlice";
-import {useAppDispatch} from '../../../../Store/Store';
 
 const history = [];
 const storage = new Storage();
 const worker = new Worker(vttToUrlUseWorker());
+
+export const Tabs = {
+    ANNOTATIONS: 'annotations',
+    VIDEO_CODES: 'videoCodes',
+}
 
 export default function (props) {
     // Player instance
@@ -31,11 +33,19 @@ export default function (props) {
     // Subtitle currently playing time
     const [currentTime, setCurrentTime] = useState(0);
 
+    const [activeTab, setActiveTab] = useState(Tabs.ANNOTATIONS);
+
     // All subtitles
     if (props.subtitles.length === 0) {
         props.subtitles = [new Sub('00:00:00.000', '00:00:01.000', t('Kommentar'))]
     }
-    const subtitles = props.subtitles.map(item => new Sub(item.start, item.end, item.text))
+    let subtitles = []
+
+    if (activeTab === Tabs.ANNOTATIONS) {
+        subtitles = props.subtitles.map(item => new Sub(item.start, item.end, item.text))
+    } else if (activeTab === Tabs.VIDEO_CODES) {
+        subtitles = props.videoCodes.map(item => new Sub(item.start, item.end, item.text, item.color))
+    }
 
     // All options
     const firstVideoUrl = (props.videos[0]) ? props.videos[0].url : ''
@@ -71,7 +81,15 @@ export default function (props) {
 
     const updateSubtitles = (subs, saveToHistory = true) => {
         if (subs.length && !isEqual(subs, subtitles)) {
-            props.updateSubtitles(subs);
+            if (activeTab === Tabs.ANNOTATIONS) {
+                props.updateSubtitles(subs);
+                // Convert subtitles to vtt url
+                worker.postMessage(subs);
+            }
+
+            if (activeTab === Tabs.VIDEO_CODES) {
+                props.updateVideoCodes(subs);
+            }
 
             // Save 100 subtitles to history
             if (saveToHistory) {
@@ -83,9 +101,6 @@ export default function (props) {
 
             // Save to storage
             //storage.set('subtitles', subs);
-
-            // Convert subtitles to vtt url
-            //worker.postMessage(subs);
         }
     }
 
@@ -112,6 +127,7 @@ export default function (props) {
                 player.subtitle.switch(event.data);
             };
         }
+        worker.postMessage(props.subtitles.map(item => new Sub(item.start, item.end, item.text)));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [player]);
 
@@ -192,6 +208,19 @@ export default function (props) {
         [copySubtitles, updateSubtitles],
     );
 
+    const addVideoCode = useCallback(
+        (index, videoCode) => {
+            const subs = copySubtitles();
+            const previous = subs[index - 1];
+            const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001';
+            const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001';
+            const sub = new Sub(start, end, videoCode.name, videoCode.color);
+            subs.splice(index, 0, sub);
+            updateSubtitles(subs);
+        },
+        [copySubtitles, updateSubtitles],
+    );
+
     // Merge two subtitles
     const mergeSubtitle = useCallback(
         sub => {
@@ -250,6 +279,14 @@ export default function (props) {
         notify(t('clear-success'));
     }, [player, removeSubtitles]);
 
+    // TODO change tabs here and switch subtitles to videoCodes
+    const updateActiveTab = useCallback(
+        value => {
+            setActiveTab(value);
+        },
+        [setActiveTab],
+    );
+
     const propsForEditor = {
         player,
         options,
@@ -257,6 +294,7 @@ export default function (props) {
         subtitles,
         currentTime,
         currentIndex,
+        activeTab,
 
         setOption,
         setPlayer,
@@ -275,6 +313,8 @@ export default function (props) {
         updateSubtitles,
         removeSubtitles,
         timeOffsetSubtitles,
+        updateActiveTab,
+        addVideoCode,
     };
 
     return (

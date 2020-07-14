@@ -2,10 +2,11 @@ import clamp from 'lodash/clamp';
 import { timeToSecond, secondToTime } from '../utils';
 
 export default class Sub {
-    constructor(start, end, text) {
+    constructor(start, end, text, color = null) {
         this.start = start;
         this.end = end;
         this.text = text;
+        this.color = color;
     }
 
     get check() {
@@ -13,7 +14,7 @@ export default class Sub {
     }
 
     get clone() {
-        return new Sub(this.start, this.end, this.text);
+        return new Sub(this.start, this.end, this.text, this.color);
     }
 
     get startTime() {

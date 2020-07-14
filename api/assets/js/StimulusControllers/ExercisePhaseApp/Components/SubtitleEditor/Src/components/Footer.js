@@ -83,7 +83,7 @@ export default function(props) {
                         setRender={setRender}
                     />
                 ) : null}
-                {/*<Metronome {...props} render={render} metronome={metronome} setMetronome={setMetronome} />*/}
+                <Metronome {...props} render={render} metronome={metronome} setMetronome={setMetronome} />
                 <Block {...props} render={render} />
             </div>
         </div>

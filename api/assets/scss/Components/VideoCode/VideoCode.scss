@@ -1,0 +1,15 @@
+.video-code {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+
+  text-align: center;
+
+  span {
+    display: inline-block;
+    padding: 5px;
+
+    background-color: transparentize($theme__color__white, 0.7);
+  }
+}

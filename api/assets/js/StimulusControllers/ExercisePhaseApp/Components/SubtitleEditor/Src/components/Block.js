@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import isEqual from 'lodash/isEqual';
 import { notify, secondToTime, getKeyCode } from '../utils';
 import { t, Translate } from 'react-i18nify';
+import {Tabs} from "./App";
 
 function getCurrentSubs(subs, beginTime, duration) {
     return subs.filter(item => {
@@ -34,8 +35,9 @@ export default React.memo(
         hasSubtitle,
         mergeSubtitle,
         updateSubtitle,
+        activeTab,
     }) {
-        const [contextMenu, setContextMenu] = useState(false);
+        const [contextMenuIsVisible, setContextMenuVisibility] = useState(false);
         const [contextMenuX, setContextMenuX] = useState(0);
         const [contextMenuY, setContextMenuY] = useState(0);
 
@@ -62,7 +64,7 @@ export default React.memo(
                     : event.pageX;
             setContextMenuX(left);
             setContextMenuY(top);
-            setContextMenu(true);
+            setContextMenuVisibility(true);
         };
 
         const onDocumentClick = useCallback(
@@ -70,11 +72,11 @@ export default React.memo(
                 if (event.composedPath) {
                     const composedPath = event.composedPath() || [];
                     if (composedPath.includes($contextMenuRef.current)) {
-                        setContextMenu(false);
+                        setContextMenuVisibility(false);
                     }
                 }
             },
-            [$contextMenuRef, setContextMenu],
+            [$contextMenuRef, setContextMenuVisibility],
         );
 
         const onMouseDown = (sub, event, type) => {
@@ -202,6 +204,61 @@ export default React.memo(
             };
         }, [onDocumentClick, onDocumentMouseMove, onDocumentMouseUp, onKeyDown]);
 
+        const contextMenuDeleteButton = <div
+                className="subtitle-editor-block__contextmenu-item"
+                onClick={() => {
+                    removeSubtitle(lastSub);
+                    setContextMenuVisibility(false);
+                }}
+            >
+                <Translate value="delete" />
+            </div>
+        const contextMenuInsertButton = <div
+                className="subtitle-editor-block__contextmenu-item"
+                onClick={() => {
+                    addSubtitle(hasSubtitle(lastSub) + 1);
+                    setContextMenuVisibility(false);
+                }}
+            >
+                <Translate value="insert" />
+            </div>
+        const contextMenuMergeButton = <div
+                className="subtitle-editor-block__contextmenu-item"
+                onClick={() => {
+                    mergeSubtitle(lastSub);
+                    setContextMenuVisibility(false);
+                }}
+            >
+                <Translate value="merge" />
+            </div>
+        let contextMenu = <div
+                ref={$contextMenuRef}
+                className="subtitle-editor-block__contextmenu"
+                style={{
+                    visibility: contextMenuIsVisible ? 'visible' : 'hidden',
+                    left: contextMenuX,
+                    top: contextMenuY,
+                }}
+            >
+                {contextMenuDeleteButton}
+                {contextMenuInsertButton}
+                {contextMenuMergeButton}
+            </div>
+
+        if (activeTab === Tabs.VIDEO_CODES) {
+            contextMenu = <div
+                ref={$contextMenuRef}
+                className="subtitle-editor-block__contextmenu"
+                style={{
+                    visibility: contextMenuIsVisible ? 'visible' : 'hidden',
+                    left: contextMenuX,
+                    top: contextMenuY,
+                }}
+            >
+                {contextMenuDeleteButton}
+            </div>
+        }
+
         return (
             <div className="subtitle-editor-block" ref={$blockRef}>
                 <div ref={$subsRef}>
@@ -217,12 +274,14 @@ export default React.memo(
                                     .trim()}
                                 key={key}
                                 style={{
+                                    backgroundColor: (sub.color) ? sub.color : '',
                                     left: render.padding * gridGap + (sub.startTime - render.beginTime) * gridGap * 10,
                                     width: (sub.endTime - sub.startTime) * gridGap * 10,
                                 }}
                                 onClick={() => {
-                                    setContextMenu(false);
-                                    if (player.duration >= sub.startTime) {
+                                    setContextMenuVisibility(false);
+                                    // TODO player not set on init?
+                                    if (player && player.duration >= sub.startTime) {
                                         player.seek = sub.startTime + 0.001;
                                     }
                                 }}
@@ -253,43 +312,7 @@ export default React.memo(
                         );
                     })}
                 </div>
-                <div
-                    ref={$contextMenuRef}
-                    className="subtitle-editor-block__contextmenu"
-                    style={{
-                        visibility: contextMenu ? 'visible' : 'hidden',
-                        left: contextMenuX,
-                        top: contextMenuY,
-                    }}
-                >
-                    <div
-                        className="subtitle-editor-block__contextmenu-item"
-                        onClick={() => {
-                            removeSubtitle(lastSub);
-                            setContextMenu(false);
-                        }}
-                    >
-                        <Translate value="delete" />
-                    </div>
-                    <div
-                        className="subtitle-editor-block__contextmenu-item"
-                        onClick={() => {
-                            addSubtitle(hasSubtitle(lastSub) + 1);
-                            setContextMenu(false);
-                        }}
-                    >
-                        <Translate value="insert" />
-                    </div>
-                    <div
-                        className="subtitle-editor-block__contextmenu-item"
-                        onClick={() => {
-                            mergeSubtitle(lastSub);
-                            setContextMenu(false);
-                        }}
-                    >
-                        <Translate value="merge" />
-                    </div>
-                </div>
+                {contextMenu}
             </div>
         );
     },

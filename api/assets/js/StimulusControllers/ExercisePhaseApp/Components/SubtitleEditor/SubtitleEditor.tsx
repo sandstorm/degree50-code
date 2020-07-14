@@ -15,8 +15,9 @@ import 'react-virtualized/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { connect } from 'react-redux'
-import { sendSolutionState, setAnnotations } from '../Solution/SolutionSlice'
+import { sendSolutionState, setAnnotations, setVideoCodes } from '../Solution/SolutionSlice'
 import { useAppDispatch } from '../../Store/Store'
+import { VideoCode } from '../Config/ConfigSlice'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
@@ -26,6 +27,7 @@ export type Subtitle = {
     start: string
     end: string
     text: string
+    color: string
 }
 
 const mapStateToProps = (state: any) => {
@@ -39,18 +41,32 @@ const mapDispatchToProps = (dispatch: any) => {
 type AdditionalProps = {
     videos: Array<Video>
     subtitles: Array<Subtitle>
+    videoCodes: Array<Subtitle>
 }
 
 type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
 const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
     const dispatch = useAppDispatch()
-    const updateSubtitles = (subtitles: any) => {
+    const updateSubtitles = (subtitles: Array<Subtitle>) => {
         dispatch(setAnnotations(JSON.parse(JSON.stringify(subtitles))))
         // @ts-ignore
         dispatch(sendSolutionState())
     }
-    return <App videos={props.videos} subtitles={props.subtitles} updateSubtitles={updateSubtitles} />
+    const updateVideoCodes = (videoCodes: Array<Subtitle>) => {
+        dispatch(setVideoCodes(JSON.parse(JSON.stringify(videoCodes))))
+        // @ts-ignore
+        dispatch(sendSolutionState())
+    }
+    return (
+        <App
+            videos={props.videos}
+            subtitles={props.subtitles}
+            videoCodes={props.videoCodes}
+            updateSubtitles={updateSubtitles}
+            updateVideoCodes={updateVideoCodes}
+        />
+    )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubtitleEditorWrapper)

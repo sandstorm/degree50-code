@@ -30,7 +30,7 @@ export const solutionSlice = createSlice({
     },
 })
 
-export const { setAnnotations, setSolution } = solutionSlice.actions
+export const { setAnnotations, setVideoCodes, setSolution } = solutionSlice.actions
 
 export const selectSolution = (state: AppState) => state.solution
 
