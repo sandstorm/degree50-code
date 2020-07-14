@@ -10,8 +10,6 @@ type ExercisePhaseProps = {
 }
 
 export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type }) => {
-    const phaseTypeCssClass = 'exercise-phase--' + type
-
     let exercisePhase = null
     switch (type) {
         case ExercisePhaseTypesEnum.VIDEO_ANALYSIS:
@@ -20,10 +18,11 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type }) => {
         default:
     }
 
+    // TODO set aria-hidden="false" when modal is open
     return (
-        <div>
-            <div className={'exercise-phase ' + phaseTypeCssClass} aria-hidden="false">
-                <div className={'exercise-phase__main'}>{exercisePhase}</div>
+        <div className={'exercise-phase__inner'}>
+            <div className={'exercise-phase__content'} aria-hidden="false">
+                {exercisePhase}
                 <Overlay />
                 <Toolbar />
             </div>

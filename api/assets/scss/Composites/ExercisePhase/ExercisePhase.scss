@@ -1,6 +1,12 @@
 .exercise-phase {
+  height: 100%;
 }
 
-.exercise-phase__main {
+.exercise-phase__inner {
+  height: 100%;
+}
+
+.exercise-phase__content {
   width: 100%;
+  height: 100%;
 }

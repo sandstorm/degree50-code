@@ -26,11 +26,12 @@
   justify-content: space-between;
   flex: 1;
 
-  border-bottom: 1px solid $theme__color__black;
+  background-color: $theme__color__black;
 }
 
 .subtitle-editor__section {
   height: 100%;
+  position: relative;
 }
 
 .subtitle-editor__left {
@@ -39,10 +40,30 @@
   align-items: center;
   justify-content: center;
   width: 50%;
+  height: 100%;
 }
 
 .subtitle-editor__right {
   flex: 1;
+
+  background-color: $theme__color__blue--dark;
+
+  .subtitle-editor__section-header {
+    position: relative;
+
+    z-index: 10;
+  }
+
+  .subtitle-editor__section-content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    padding-top: 40px;
+    top: 0;
+
+    overflow: hidden;
+    overflow-y: scroll;
+  }
 }
 
 .subtitle-editor__section-content {

@@ -20,6 +20,7 @@ export const Tabs = {
 }
 
 export default function (props) {
+    const height = props.height
     // Player instance
     const [player, setPlayer] = useState(null);
 
@@ -295,6 +296,7 @@ export default function (props) {
         currentTime,
         currentIndex,
         activeTab,
+        height,
 
         setOption,
         setPlayer,

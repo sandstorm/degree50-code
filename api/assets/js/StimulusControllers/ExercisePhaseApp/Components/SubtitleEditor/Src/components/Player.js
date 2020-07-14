@@ -1,15 +1,16 @@
 import React from 'react';
 import ArtplayerComponent from 'artplayer-react';
 import Hls from 'hls.js'
+import isEqual from 'lodash/isEqual';
 
 export default React.memo(
-    function({ options, setPlayer, setCurrentTime }) {
+    function({ options, setPlayer, setCurrentTime, height }) {
         return (
             <div className="subtitle-editor-player">
                 <ArtplayerComponent
                     style={{
                         width: '100%',
-                        height: '200px',
+                        height: height + 'px',
                     }}
                     option={{
                         url: options.videoUrl,
@@ -58,5 +59,9 @@ export default React.memo(
             </div>
         );
     },
-    () => true,
+    (prevProps, nextProps) => {
+        return (
+            isEqual(prevProps.height, nextProps.height)
+        );
+    },
 );

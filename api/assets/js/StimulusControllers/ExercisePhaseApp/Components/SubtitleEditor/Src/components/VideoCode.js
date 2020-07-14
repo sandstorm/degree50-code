@@ -12,8 +12,8 @@ export default function(props) {
     const videoCodes = config.videoCodes
         .map((videoCode) => (
             <div className={'video-code'} key={videoCode.id} title={videoCode.description} style={{backgroundColor: videoCode.color}}>
-                <span>{videoCode.name}</span>
                 <button type='button' className={'btn'} onClick={() => {addVideoCode(videoCode)}}><i className={'fas fa-plus'}></i></button>
+                <span>{videoCode.name}</span>
             </div>
         ))
 

@@ -5,7 +5,7 @@
 {% block layoutCssClass %}main--with-footer{% endblock %}
 
 {% block body %}
-    <div data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
+    <div class="exercise-phase" data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
         <div class="loading-screen">
             <i class="fas fa-spinner fa-spin"></i>
         </div>

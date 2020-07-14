@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 // @ts-ignore
 import App from './Src/components/App'
 // @ts-ignore
@@ -17,7 +17,6 @@ import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { connect } from 'react-redux'
 import { sendSolutionState, setAnnotations, setVideoCodes } from '../Solution/SolutionSlice'
 import { useAppDispatch } from '../../Store/Store'
-import { VideoCode } from '../Config/ConfigSlice'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
@@ -58,8 +57,16 @@ const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
         // @ts-ignore
         dispatch(sendSolutionState())
     }
+
+    const [height, setHeight] = useState(0)
+
+    useEffect(() => {
+        setHeight(document.getElementsByClassName('exercise-phase__inner')[0].clientHeight)
+    })
+
     return (
         <App
+            height={height}
             videos={props.videos}
             subtitles={props.subtitles}
             videoCodes={props.videoCodes}
