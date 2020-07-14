@@ -77,7 +77,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -104,7 +104,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -181,5 +181,21 @@ class User implements UserInterface
     public function getCreatedVideos(): Collection
     {
         return $this->createdVideos;
+    }
+
+    public function setIsAdmin(bool $isAdmin): void
+    {
+        if ($isAdmin) {
+            $this->roles[] = 'ROLE_ADMIN';
+        } else {
+            $this->roles = array_filter($this->roles, function($role) {
+                return $role !== 'ROLE_ADMIN';
+            });
+        }
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->roles);
     }
 }

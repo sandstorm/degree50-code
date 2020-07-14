@@ -4,6 +4,7 @@ namespace App\Admin\Form;
 
 use App\Entity\Account\CourseRole;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,6 +14,12 @@ class InlineCourseRoleType extends AbstractType
     {
         $builder
             ->add('user')
+            ->add('name', ChoiceType::class, [
+                'choices' => [
+                    CourseRole::STUDENT => 'Student',
+                    CourseRole::DOZENT => 'Dozent',
+                ]
+            ])
         ;
     }
 

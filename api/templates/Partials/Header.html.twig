@@ -13,9 +13,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_mediathek-index') }}">Mediathek</a>
                 </li>
+                {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item">
                     <a class="nav-link" href="/admin">Administration</a>
                 </li>
+                {% endif %}
                 <li class="nav-item" style="display: none;">
                     <a class="nav-link" href="{{ path('app_subtitle-editor') }}">Subtitle Editor</a>
                 </li>

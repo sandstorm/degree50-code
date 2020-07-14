@@ -34,7 +34,7 @@ class AccountFixtures extends Fixture
         // other fixtures can get this object using the AccountFixtures::COURSE_REFERENCE constant
         $this->addReference(self::COURSE_REFERENCE, $course);
 
-        $dozent = $this->createUser($manager, 'admin@sandstorm.de');
+        $dozent = $this->createUser($manager, 'admin@sandstorm.de', ['ROLE_ADMIN']);
         $this->addReference(self::CREATOR_REFERENCE, $dozent);
 
         $this->createCourseRole($manager, CourseRole::DOZENT, $course, $dozent);
@@ -51,10 +51,11 @@ class AccountFixtures extends Fixture
         $manager->flush();
     }
 
-    private function createUser(ObjectManager $manager, string $userName): User
+    private function createUser(ObjectManager $manager, string $userName, $roles = []): User
     {
         $account = new User();
         $account->setEmail($userName);
+        $account->setRoles($roles);
         $account->setPassword($this->passwordEncoder->encodePassword($account, 'password'));
         $manager->persist($account);
 

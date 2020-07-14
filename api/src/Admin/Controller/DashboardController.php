@@ -3,17 +3,21 @@
 namespace App\Admin\Controller;
 
 use App\Entity\Account\Course;
+use App\Entity\Account\User;
 use App\Entity\Video\VideoCode;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
-
+/**
+ * @IsGranted("ROLE_ADMIN")
+ */
 class DashboardController extends AbstractDashboardController
 {
     /**
@@ -50,6 +54,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
+        yield MenuItem::linkToCrud('User', 'fas fa-folder-open', User::class);
         yield MenuItem::linkToCrud('VideoCode', 'fas fa-folder-open', VideoCode::class);
         yield MenuItem::linkToCrud('Course', 'fas fa-folder-open', Course::class);
     }

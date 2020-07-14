@@ -3,6 +3,7 @@
 namespace App\Admin\EventSubscriber;
 
 use App\EventStore\DoctrineIntegratedEventStore;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -25,6 +26,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         return [
             BeforeEntityPersistedEvent::class => ['disableEventPublishingForNextFlush'],
             BeforeEntityUpdatedEvent::class => ['disableEventPublishingForNextFlush'],
+            BeforeEntityDeletedEvent::class => ['disableEventPublishingForNextFlush'],
         ];
     }
 
