@@ -16,8 +16,8 @@ class InlineCourseRoleType extends AbstractType
             ->add('user')
             ->add('name', ChoiceType::class, [
                 'choices' => [
-                    CourseRole::STUDENT => 'Student',
-                    CourseRole::DOZENT => 'Dozent',
+                    'Student' => CourseRole::STUDENT,
+                    'Dozent' => CourseRole::DOZENT,
                 ]
             ])
         ;
