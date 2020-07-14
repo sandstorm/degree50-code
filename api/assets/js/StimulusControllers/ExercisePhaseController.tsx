@@ -8,6 +8,7 @@ import { hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setSolution } from './ExercisePhaseApp/Components/Solution/SolutionSlice'
 import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
 import { initPresenceAction } from './ExercisePhaseApp/Components/Presence/PresenceSaga'
+import { presenceActions, PresenceState, TeamMember } from './ExercisePhaseApp/Components/Presence/PresenceSlice'
 
 export default class extends Controller {
     connect() {
@@ -20,8 +21,18 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(setSolution(solution))
-        // TODO get url from config later
-        store.dispatch(initPresenceAction(liveSyncConfig.topic))
+        store.dispatch(initPresenceAction())
+        store.dispatch(
+            presenceActions.setTeamMembers(
+                liveSyncConfig.teamMembers.reduce(
+                    (acc: PresenceState['teamMembersById'], teamMember: TeamMember) => ({
+                        ...acc,
+                        [teamMember.id]: teamMember,
+                    }),
+                    {}
+                )
+            )
+        )
 
         ReactDOM.render(
             <React.StrictMode>

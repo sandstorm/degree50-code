@@ -41,14 +41,22 @@ class LiveSyncService
         foreach ($exercisePhaseTeams as $exercisePhaseTeam) {
             $exercisePhaseTeamTopicIdentifiers[] = self::buildMercureTopicIdentifier($exercisePhaseTeam);
 
+            // we also need to enable access to the subscription topic
+            $exercisePhaseTeamTopicIdentifiers[] = self::buildPresenceTopicIdentifier($exercisePhaseTeam);
+
             // we also need to enable access to the subscription API
-            $exercisePhaseTeamTopicIdentifiers[] = '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam);
+            $exercisePhaseTeamTopicIdentifiers[] = self::buildSubscriptionAPIEndpoint($exercisePhaseTeam);
         }
 
         $payload = self::getBaseJwtPayload();
         $payload['mercure'] = [
-            "subscribe" => $exercisePhaseTeamTopicIdentifiers
-            // TODO payload: { userID, ... }
+            "subscribe" => $exercisePhaseTeamTopicIdentifiers,
+            "payload" => [
+                "user" => [
+                    "id" => $user->getId(),
+                    "name" => $user->getUsername()
+                ]
+            ]
         ];
 
         $jwt = JWT::encode($payload, $this->jwtPrivateSigningKey);
@@ -60,14 +68,34 @@ class LiveSyncService
     public function getClientSideLiveSyncConfig(ExercisePhaseTeam $exercisePhaseTeam): array
     {
         return [
+            'topics' => [
+                'solution' => self::buildMercureTopicIdentifier($exercisePhaseTeam),
+                'presence' => self::buildPresenceTopicIdentifier($exercisePhaseTeam)
+            ],
             'mercureEndpoint' => '/.well-known/mercure',
-            'topic' => self::buildMercureTopicIdentifier($exercisePhaseTeam)
+            'subscriptionsEndpoint' => self::buildSubscriptionAPIEndpoint($exercisePhaseTeam),
+            'teamMembers' => array_map(function (User $member) {
+                return [
+                    'id' => $member->getId(),
+                    'name' => $member->getUsername()
+                ];
+            }, $exercisePhaseTeam->getMembers()->toArray())
         ];
     }
 
     private static function buildMercureTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam)
     {
         return 'exercisePhaseTeam-' . $exercisePhaseTeam->getId();
+    }
+
+    private static function buildPresenceTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam)
+    {
+        return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam) . '/{subscription}';
+    }
+
+    private static function buildSubscriptionAPIEndpoint(ExercisePhaseTeam $exercisePhaseTeam)
+    {
+        return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam);
     }
 
     public static function getBaseJwtPayload(): array

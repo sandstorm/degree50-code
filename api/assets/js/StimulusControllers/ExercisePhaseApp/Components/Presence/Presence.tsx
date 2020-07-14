@@ -3,8 +3,7 @@ import TeamMembersList from './TeamMembersList'
 
 const Presence: React.FC = () => {
     return (
-        <div>
-            <h1>Presence</h1>
+        <div className="presence">
             <TeamMembersList />
         </div>
     )

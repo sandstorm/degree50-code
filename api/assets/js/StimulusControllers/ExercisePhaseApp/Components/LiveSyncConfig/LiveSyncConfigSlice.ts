@@ -2,13 +2,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../Store/Store'
 
 type LiveSyncConfigState = {
-    topic: string
+    topics: {
+        solution: string
+        presence: string
+    }
     mercureEndpoint: string
+    subscriptionsEndpoint: string
 }
 
 const initialState: LiveSyncConfigState = {
-    topic: '',
+    topics: {
+        solution: '',
+        presence: '',
+    },
     mercureEndpoint: '',
+    subscriptionsEndpoint: '',
 }
 
 const LiveSyncConfigSlice = createSlice({
@@ -28,5 +36,4 @@ const LiveSyncConfigSlice = createSlice({
 export const { hydrateLiveSyncConfig } = LiveSyncConfigSlice.actions
 export default LiveSyncConfigSlice.reducer
 
-export const selectMercureEndpoint = (state: AppState) => state.liveSyncConfig.mercureEndpoint
-export const selectTopic = (state: AppState) => state.liveSyncConfig.topic
+export const selectLiveSyncConfig = (state: AppState) => state.liveSyncConfig

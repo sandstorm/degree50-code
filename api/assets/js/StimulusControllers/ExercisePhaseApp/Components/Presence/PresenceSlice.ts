@@ -1,49 +1,62 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppThunk, AppState } from '../../Store/Store'
-import Axios from 'axios'
+import { AppState } from '../../Store/Store'
 
 export enum ConnectionState {
     CONNECTED = 'CONNECTED',
-    NOT_CONNECTED = 'NOT_CONNECTED',
-    CONNECTING = 'CONNECTING',
+    DISCONNECTED = 'DISCONNECTED',
+    UNKNOWN = 'UNKNOWN',
 }
 
 export type TeamMemberId = string
 export type TeamMember = {
     id: TeamMemberId
     name: string
-    connectionState: ConnectionState
 }
 
 export type PresenceState = {
     teamMemberIds: Array<TeamMemberId>
     teamMembersById: Record<TeamMemberId, TeamMember>
+    teamMemberConnectionState: Record<TeamMemberId, ConnectionState>
     error?: string
-    connectionState: ConnectionState
-    topic: string
+    isConnecting: boolean
 }
-
-export type PresencePayload = Pick<PresenceState, 'teamMemberIds'> & Pick<PresenceState, 'teamMembersById'>
 
 const initialState: PresenceState = {
     teamMemberIds: [],
     teamMembersById: {},
+    teamMemberConnectionState: {},
     error: undefined,
-    connectionState: ConnectionState.NOT_CONNECTED,
-    topic: '',
+    isConnecting: false,
 }
 
 const PresenceSlice = createSlice({
     name: 'Presence',
     initialState,
     reducers: {
-        setPresenceState: (state: PresenceState, action: PayloadAction<PresencePayload>): PresenceState => ({
+        setTeamMembers: (
+            state: PresenceState,
+            action: PayloadAction<PresenceState['teamMembersById']>
+        ): PresenceState => ({
             ...state,
-            ...action.payload,
+            teamMemberIds: Object.keys(action.payload).reduce(
+                (teamMemberIds, id) => (teamMemberIds.includes(id) ? teamMemberIds : [...teamMemberIds, id]),
+                state.teamMemberIds
+            ),
+            teamMembersById: {
+                ...state.teamMembersById,
+                ...action.payload,
+            },
         }),
-        setConnectionState: (state: PresenceState, action: PayloadAction<ConnectionState>): PresenceState => ({
+        setTeamMemberConnectionState: (
+            state: PresenceState,
+            action: PayloadAction<PresenceState['teamMemberConnectionState']>
+        ): PresenceState => ({
             ...state,
-            connectionState: action.payload,
+            teamMemberConnectionState: action.payload,
+        }),
+        setIsConnecting: (state: PresenceState, action: PayloadAction<boolean>): PresenceState => ({
+            ...state,
+            isConnecting: action.payload,
         }),
         setError: (state: PresenceState, action: PayloadAction<PresenceState['error']>): PresenceState => ({
             ...state,
@@ -59,3 +72,6 @@ export default PresenceSlice.reducer
 
 export const selectTeamMemberIds = (state: AppState) => state.presence.teamMemberIds
 export const selectTeamMemberById = (id: TeamMemberId, state: AppState) => state.presence.teamMembersById[id]
+export const selectTeamMemberConnectionStateById = (id: TeamMemberId, state: AppState) =>
+    state.presence.teamMemberConnectionState[id]
+export const selectIsConnecting = (state: AppState) => state.presence.isConnecting
