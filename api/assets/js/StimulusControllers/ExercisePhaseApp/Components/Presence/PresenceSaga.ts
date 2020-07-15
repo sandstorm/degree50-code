@@ -5,8 +5,8 @@ import Axios from 'axios'
 import { ConnectionState, presenceActions, PresenceState } from './PresenceSlice'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 
-export const initPresenceAction = createAction('Presence/init')
-export const disconnectPresenceAction = createAction('Presence/disconnect')
+export const initPresenceAction = createAction('Presence/Saga/init')
+export const disconnectPresenceAction = createAction('Presence/Saga/disconnect')
 
 export default function* presenceSaga() {
     yield takeLatest(initPresenceAction.type, presenceListener)
@@ -18,10 +18,6 @@ function* presenceListener() {
     yield put(presenceActions.setIsConnecting(true))
 
     try {
-        // WHY: we need to subscribe to the solution - we do it here until there the solution connection is build
-        // TODO remove once solution connection is build
-        const solutionEventSource = yield* connectSolution()
-
         // setup SSE for presence topic
         const mercureUrl = new URL(lifeSyncConfig.mercureEndpoint, document.location.toString())
         mercureUrl.searchParams.append('topic', lifeSyncConfig.topics.presence)
@@ -38,15 +34,6 @@ function* presenceListener() {
         yield put(presenceActions.setError(e.message ?? e))
         yield put(presenceActions.setIsConnecting(false))
     }
-}
-
-function* connectSolution() {
-    const lifeSyncConfig = selectLiveSyncConfig(yield select())
-    const mercureUrl = new URL(lifeSyncConfig.mercureEndpoint, document.location.toString())
-
-    mercureUrl.searchParams.append('topic', lifeSyncConfig.topics.solution)
-
-    return new EventSource(mercureUrl.toString())
 }
 
 function connect(eventSource: EventSource) {
