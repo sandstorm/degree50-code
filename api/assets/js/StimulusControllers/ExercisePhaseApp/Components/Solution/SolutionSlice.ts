@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppThunk, AppState } from '../../Store/Store'
-import axios from 'axios'
+import { AppState } from '../../Store/Store'
 import { Subtitle } from '../SubtitleEditor/SubtitleEditor'
 
 export type Solution = {
@@ -35,20 +34,3 @@ export const { setAnnotations, setVideoCodes, setSolution } = solutionSlice.acti
 export const selectSolution = (state: AppState) => state.solution
 
 export default solutionSlice.reducer
-
-// THUNKS
-export const sendSolutionState = (): AppThunk => async (dispatch, getState) => {
-    const solution = getState().solution
-    const updateSolutionEndpoint = getState().config.apiEndpoints.updateSolution
-
-    axios
-        .post(updateSolutionEndpoint, {
-            solution: solution,
-        })
-        .then(function (response) {
-            console.log('Update Solution', response.data)
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
-}

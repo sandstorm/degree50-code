@@ -9,6 +9,7 @@ import { setSolution } from './ExercisePhaseApp/Components/Solution/SolutionSlic
 import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
 import { initPresenceAction } from './ExercisePhaseApp/Components/Presence/PresenceSaga'
 import { presenceActions, PresenceState, TeamMember } from './ExercisePhaseApp/Components/Presence/PresenceSlice'
+import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/SolutionSaga'
 
 export default class extends Controller {
     connect() {
@@ -21,6 +22,9 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(setSolution(solution))
+
+        // TODO only in TeamPhase
+        store.dispatch(initSolutionSyncAction())
         store.dispatch(initPresenceAction())
         store.dispatch(
             presenceActions.setTeamMembers(

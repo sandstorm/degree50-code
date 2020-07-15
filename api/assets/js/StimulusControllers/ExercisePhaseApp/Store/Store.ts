@@ -12,6 +12,7 @@ import createSagaMiddleware from 'redux-saga'
 import { select } from 'redux-saga/effects'
 import { all, spawn, call } from 'redux-saga/effects'
 import presenceSaga from '../Components/Presence/PresenceSaga'
+import solutionSaga from '../Components/Solution/SolutionSaga'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -28,8 +29,8 @@ export const store = configureStore({
     },
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
 })
-// TODO clean up
-const sagas = [presenceSaga]
+
+const sagas = [presenceSaga, solutionSaga]
 sagaMiddleWare.run(function* rootSaga() {
     yield all(
         sagas.map((saga) =>

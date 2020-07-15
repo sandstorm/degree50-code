@@ -15,8 +15,9 @@ import 'react-virtualized/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { connect } from 'react-redux'
-import { sendSolutionState, setAnnotations, setVideoCodes } from '../Solution/SolutionSlice'
+import { setAnnotations, setVideoCodes } from '../Solution/SolutionSlice'
 import { useAppDispatch } from '../../Store/Store'
+import { syncSolutionAction } from '../Solution/SolutionSaga'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
@@ -50,12 +51,12 @@ const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
     const updateSubtitles = (subtitles: Array<Subtitle>) => {
         dispatch(setAnnotations(JSON.parse(JSON.stringify(subtitles))))
         // @ts-ignore
-        dispatch(sendSolutionState())
+        dispatch(syncSolutionAction())
     }
     const updateVideoCodes = (videoCodes: Array<Subtitle>) => {
         dispatch(setVideoCodes(JSON.parse(JSON.stringify(videoCodes))))
         // @ts-ignore
-        dispatch(sendSolutionState())
+        dispatch(syncSolutionAction())
     }
 
     const [height, setHeight] = useState(0)
