@@ -23,6 +23,12 @@ html, body {
     &--with-footer {
         padding-bottom: 58px;
     }
+
+    &--without-scrollbar {
+        .main-inner {
+            overflow-y: hidden;
+        }
+    }
 }
 
 .main-inner {

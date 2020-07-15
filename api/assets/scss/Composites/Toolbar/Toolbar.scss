@@ -1,28 +1,30 @@
-$toolbarWidth: 100px;
+$toolbarWidth: 50px;
 
 .toolbar {
-  position: fixed;
+  position: absolute;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  right: -$toolbarWidth;
-  top: 40px;
+  right: 0;
+  top: 0;
   width: $toolbarWidth;
-  min-height: 300px;
-  padding: 10px;
+  height: 100%;
+  padding: 5px;
+  padding-top: 20px;
 
-  background-color: $theme__color__grey;
-  border: 1px solid $theme__color__grey--darker;
+  background-color: $theme__color__white;
+  outline: 1px solid $theme__color__grey--darker;
 
-  transition: right 0.2s ease 0s;
+
+  transition: width 0.2s ease 0s;
   z-index: 8000;
 
   &--is-visible {
-    right: 0;
   }
 }
 
 .toolbar__toggle {
+  display: none;
   width: 40px;
   height: 40px;
   position: absolute;
@@ -33,24 +35,12 @@ $toolbarWidth: 100px;
 }
 
 .toolbar-item {
-  margin-bottom: 20px;
-  padding: 10px;
-  width: $toolbarWidth - 20px;
-  height: $toolbarWidth - 20px;
+  margin-bottom: 10px;
+  width: $toolbarWidth - 10px;
+  height: $toolbarWidth - 10px;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  border: 1px solid $theme__color__green;
-  background-color: $theme__color__white;
-
-  font-size: 2em;
-
-  cursor: pointer;
-
-  &:hover, &:active, &:focus {
-    background-color: $theme__color__green;
-
-    color: $theme__color__white;
-  }
+  font-size: 1.5em;
 }

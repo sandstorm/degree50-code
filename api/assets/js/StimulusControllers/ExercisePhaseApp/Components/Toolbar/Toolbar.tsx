@@ -30,10 +30,18 @@ export type Component = {
     label: string
     icon: string
     isVisible: (config: Config) => boolean
-    onClick: (dispatch: AppDispatch, component: Component, config: Config) => void
+    onClick: (dispatch: AppDispatch, component: Component, config: Config, closeComponent: boolean) => void
 }
 
 type ToolbarProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+
+const toggleOverlayVisibility = (dispatch: AppDispatch, closeComponent: boolean) => {
+    if (closeComponent) {
+        dispatch(setOverlayVisibility(false))
+    } else {
+        dispatch(setOverlayVisibility(true))
+    }
+}
 
 const possibleComponentsForToolbar: Array<Component> = [
     {
@@ -44,8 +52,8 @@ const possibleComponentsForToolbar: Array<Component> = [
         isVisible: (config: Config) => {
             return true
         },
-        onClick: (dispatch, component, config) => {
-            dispatch(setOverlayVisibility(true))
+        onClick: (dispatch, component, config, closeComponent) => {
+            toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.SMALL))
         },
@@ -58,7 +66,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         isVisible: (config: Config) => {
             return true
         },
-        onClick: (dispatch, component, config) => {
+        onClick: (dispatch, component, config, closeComponent) => {
             dispatch(toggleModalVisibility())
             dispatch(setTitle(config.title))
             dispatch(setComponent(ComponentTypesEnum.EXERCISE_DESCRIPTION))
@@ -72,8 +80,8 @@ const possibleComponentsForToolbar: Array<Component> = [
         isVisible: (config: Config) => {
             return config.isGroupPhase
         },
-        onClick: (dispatch, component, config) => {
-            dispatch(setOverlayVisibility(true))
+        onClick: (dispatch, component, config, closeComponent) => {
+            toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
         },
@@ -86,8 +94,8 @@ const possibleComponentsForToolbar: Array<Component> = [
         isVisible: (config: Config) => {
             return true
         },
-        onClick: (dispatch, component, config) => {
-            dispatch(setOverlayVisibility(true))
+        onClick: (dispatch, component, config, closeComponent) => {
+            toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.LARGE))
         },
@@ -100,8 +108,8 @@ const possibleComponentsForToolbar: Array<Component> = [
         isVisible: (config: Config) => {
             return true
         },
-        onClick: (dispatch, component, config) => {
-            dispatch(setOverlayVisibility(true))
+        onClick: (dispatch, component, config, closeComponent) => {
+            toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
         },
@@ -112,7 +120,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     const dispatch = useAppDispatch()
     const toggleComponentWrapper = (component: Component) => {
         props.toggleComponent(component.id)
-        component.onClick(dispatch, component, props.config)
+        component.onClick(dispatch, component, props.config, props.activeToolbarItem === component.id)
         props.toggleToolbarVisibility()
     }
 

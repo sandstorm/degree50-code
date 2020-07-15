@@ -8,13 +8,13 @@ type Props = {
 
 export function ToolbarItem({ component, toggleComponent }: Props) {
     return (
-        <div
-            className={'toolbar-item'}
+        <button
+            className={'toolbar-item btn btn-primary'}
             title={component.label}
             aria-label={component.label}
             onClick={() => toggleComponent(component)}
         >
             <i className={component.icon}></i>
-        </div>
+        </button>
     )
 }
