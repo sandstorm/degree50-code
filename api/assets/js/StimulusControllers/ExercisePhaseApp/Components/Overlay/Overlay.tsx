@@ -6,6 +6,7 @@ import { ComponentTypesEnum } from '../../Store/ComponentTypesEnum'
 import MaterialViewer from '../MaterialViewer/MaterialViewer'
 import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import VideoPlayerWrapper from '../VideoPlayer/VideoPlayerWrapper'
+import Presence from '../Presence/Presence'
 
 const mapStateToProps = (state: AppState) => ({
     isVisible: selectIsVisible(state),
@@ -40,6 +41,9 @@ const Overlay: React.FC<OverlayProps> = (props) => {
             break
         case ComponentTypesEnum.VIDEO_PLAYER:
             componentToRender = <VideoPlayerWrapper />
+            break
+        case ComponentTypesEnum.PRESENCE:
+            componentToRender = <Presence />
             break
         default:
     }

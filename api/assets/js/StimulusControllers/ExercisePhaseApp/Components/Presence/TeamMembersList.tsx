@@ -8,11 +8,11 @@ type TeamMembersListProps = ReturnType<typeof mapStateToProps>
 
 const TeamMembersList: React.FC<TeamMembersListProps> = ({ isConnecting, teamMemberIds }) => {
     return (
-        <div>
+        <div className={'presence__team-members'}>
             {isConnecting ? (
                 'connecting ...'
             ) : teamMemberIds.length > 0 ? (
-                <ul className="presence__team-member-list">
+                <ul>
                     {teamMemberIds.map((id) => (
                         <TeamMembersListItem teamMemberId={id} key={id} />
                     ))}

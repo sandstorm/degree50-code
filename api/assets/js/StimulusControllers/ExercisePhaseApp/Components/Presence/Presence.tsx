@@ -1,12 +1,22 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import TeamMembersList from './TeamMembersList'
+import { AppState } from '../../Store/Store'
+import { selectTeamMemberIds } from './PresenceSlice'
 
-const Presence: React.FC = () => {
+type PresenceProps = ReturnType<typeof mapStateToProps>
+
+const Presence: React.FC<PresenceProps> = ({ teamMemberIds }) => {
     return (
-        <div className="presence">
+        <div className={'presence'}>
+            <header className={'presence__header'}>Online: {teamMemberIds.length}</header>
             <TeamMembersList />
         </div>
     )
 }
 
-export default Presence
+const mapStateToProps = (state: AppState) => ({
+    teamMemberIds: selectTeamMemberIds(state),
+})
+
+export default connect(mapStateToProps)(Presence)

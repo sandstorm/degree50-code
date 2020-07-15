@@ -29,6 +29,7 @@ export type Component = {
     isMandatory: boolean
     label: string
     icon: string
+    isVisible: (config: Config) => boolean
     onClick: (dispatch: AppDispatch, component: Component, config: Config) => void
 }
 
@@ -36,10 +37,27 @@ type ToolbarProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDi
 
 const possibleComponentsForToolbar: Array<Component> = [
     {
+        id: ComponentTypesEnum.PRESENCE,
+        isMandatory: true,
+        label: 'Gruppenmitglieder',
+        icon: 'fas fa-users',
+        isVisible: (config: Config) => {
+            return true
+        },
+        onClick: (dispatch, component, config) => {
+            dispatch(setOverlayVisibility(true))
+            dispatch(setOverlayComponent(component.id))
+            dispatch(setOverlaySize(overlaySizesEnum.SMALL))
+        },
+    },
+    {
         id: ComponentTypesEnum.TASK,
         isMandatory: true,
         label: 'Aufgabenstellung',
         icon: 'fas fa-tasks',
+        isVisible: (config: Config) => {
+            return true
+        },
         onClick: (dispatch, component, config) => {
             dispatch(toggleModalVisibility())
             dispatch(setTitle(config.title))
@@ -51,6 +69,9 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: true,
         label: 'Material',
         icon: 'fas fa-folder-open',
+        isVisible: (config: Config) => {
+            return config.isGroupPhase
+        },
         onClick: (dispatch, component, config) => {
             dispatch(setOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
@@ -62,6 +83,9 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: false,
         label: 'Videos',
         icon: 'fas fa-file-video',
+        isVisible: (config: Config) => {
+            return true
+        },
         onClick: (dispatch, component, config) => {
             dispatch(setOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
@@ -73,6 +97,9 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: false,
         label: 'Dokumenten-Upload',
         icon: 'fas fa-file-upload',
+        isVisible: (config: Config) => {
+            return true
+        },
         onClick: (dispatch, component, config) => {
             dispatch(setOverlayVisibility(true))
             dispatch(setOverlayComponent(component.id))
@@ -91,6 +118,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
     const toolbarItemsToRender = possibleComponentsForToolbar
         .filter((component) => props.config.components.includes(component.id) || component.isMandatory)
+        .filter((component) => component.isVisible(props.config))
         .map((component) => (
             <ToolbarItem key={component.id} component={component} toggleComponent={toggleComponentWrapper} />
         ))

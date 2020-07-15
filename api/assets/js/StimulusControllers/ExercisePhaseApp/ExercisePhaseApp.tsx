@@ -4,7 +4,6 @@ import Toolbar from './Components/Toolbar/Toolbar'
 import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { ExercisePhaseTypesEnum } from './Store/ExercisePhaseTypesEnum'
 import Overlay from './Components/Overlay/Overlay'
-import Presence from './Components/Presence/Presence'
 
 type ExercisePhaseProps = {
     type: ExercisePhaseTypesEnum
@@ -26,7 +25,6 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type }) => {
                 {exercisePhase}
                 <Overlay />
                 <Toolbar />
-                <Presence />
             </div>
             <Modal />
         </div>

@@ -21,6 +21,7 @@ export type Config = {
     title: string
     description: string
     type: string
+    isGroupPhase: boolean
     components: Array<ComponentId>
     material: Array<Material>
     videos: Array<Video>
@@ -32,6 +33,7 @@ const initialState: Config = {
     title: '',
     description: '',
     type: '',
+    isGroupPhase: false,
     components: [],
     material: [],
     videos: [],

@@ -67,6 +67,7 @@ class ExercisePhaseController extends AbstractController
             'description' => $exercisePhase->getTask(),
             'type' => $exercisePhase->getType(),
             'components' => $exercisePhase->getComponents(),
+            'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'apiEndpoints' => [
               'updateSolution' => $this->router->generate('app_exercise-phase-update-solution', [
                   'id' => $exercisePhase->getId(),

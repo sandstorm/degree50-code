@@ -1,25 +1,40 @@
-$width: 350px;
+$header__height: 40px;
 
 .presence {
-    position: fixed;
-    left: calc(50% - #{$width}/2);
-    top: 0;
-    height: 100px;
-    width: $width;
-    padding: 8px;
-
-    background-color: $theme__color__white;
-    border-left: 1px solid $theme__color__grey--darker;
-    box-shadow: -5px 0px 5px 0px transparentize($theme__color__black, 0.5);
-
-    z-index: 8000;
-    transition: top 0.2s ease;
+    width: 100%;
 }
 
-.overlay__content {
-    padding-left: 20px;
-    padding-right: 20px;
-    height: 100%;
+.presence__header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: $header__height;
+    margin-bottom: 20px;
 
-    overflow: hidden;
+    border-bottom: 1px solid $theme__color__green;
+
+    font-weight: bold;
+}
+
+.presence__team-members {
+
+}
+
+.presence__team-member {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &--connected {
+        i.presence__connection-state {
+            color: $theme__color__green;
+        }
+    }
+
+    &--disconnected {
+        i.presence__connection-state {
+            color: $theme__color__red;
+        }
+    }
 }
