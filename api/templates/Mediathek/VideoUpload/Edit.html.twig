@@ -2,6 +2,7 @@
 {% extends 'BaseFullscreen.html.twig' %}
 
 {% block title %}{% trans %}video.edit.title{% endtrans %}{% endblock %}
+{% block layoutCssClass %}main--with-footer{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -9,19 +10,21 @@
             <h3>{% trans %}video.edit.title{% endtrans %}</h3>
         </header>
 
-        <div data-controller="react" data-react-widget="VideoPlayerWrapper" data-react-props="{{ { 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] } | json_encode|e('html_attr')}}"></div>
+        <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] } | json_encode|e('html_attr')}}"></div>
     </div>
     {{ form_start(form) }}
         <div class="container">
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
-
+            {{ form_row(form.courses) }}
             <hr />
             <h4>Video wird in folgenden Aufgaben/Phasen verwendet</h4>
             <ul>
-            {% for phase in video.videoAnalysisTypes %}
-                <li>{{ phase.belongsToExcercise.name }} / {{ phase.name }}</li>
-            {% endfor %}
+                {% for phase in video.videoAnalysisTypes %}
+                    <li>{{ phase.belongsToExcercise.name }} / {{ phase.name }}</li>
+                {% else %}
+                    <li>Bisher in keiner Phase verwendet</li>
+                {% endfor %}
             </ul>
         </div>
 

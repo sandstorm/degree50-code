@@ -65,6 +65,7 @@ video:
   labels:
     title: 'Titel'
     description: 'Beschreibung'
+    courses: 'Kurse mit Berechtigung für dieses Video'
     submit: 'Video speichern'
   upload:
     title: 'Video hochladen'

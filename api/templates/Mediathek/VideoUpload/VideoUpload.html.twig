@@ -2,6 +2,7 @@
 {% extends 'BaseFullscreen.html.twig' %}
 
 {% block title %}{% trans %}video.upload.title{% endtrans %}{% endblock %}
+{% block layoutCssClass %}main--with-footer{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -16,8 +17,6 @@
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
         </div>
-
-
         <footer class="footer">
             <a class="btn btn-outline-primary" href="{{ path('app_mediathek-index') }}">{% trans %}video.upload.back{% endtrans %}</a>
             {{ form_row(form.save) }}

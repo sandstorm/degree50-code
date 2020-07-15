@@ -5,6 +5,7 @@ namespace App\Entity\Account;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
+use App\Entity\Video\Video;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -38,12 +39,17 @@ class Course
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Exercise", mappedBy="course", orphanRemoval=true)
      */
-    private $exercises;
+    private Collection $exercises;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Account\CourseRole", mappedBy="course", cascade={"all"}, orphanRemoval=true)
      */
     private Collection $courseRoles;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="Courses")
+     */
+    private Collection $videos;
 
     public function __construct($id = null)
     {
@@ -51,6 +57,7 @@ class Course
         $this->courseRoles = new ArrayCollection();
         $this->exercises = new ArrayCollection();
         $this->creationDate = new DateTime();
+        $this->videos = new ArrayCollection();
     }
 
     /**
@@ -150,5 +157,33 @@ class Course
     public function __sleep()
     {
         return [];
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->addCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->contains($video)) {
+            $this->videos->removeElement($video);
+            $video->removeCourse($this);
+        }
+
+        return $this;
     }
 }

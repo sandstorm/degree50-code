@@ -3,7 +3,7 @@ import Main from './Main';
 import Footer from './Footer';
 import Sub from '../subtitle/sub';
 import clamp from 'lodash/clamp';
-import {secondToTime, notify} from '../utils';
+import {secondToTime, notify, timeToSecond} from '../utils';
 import {vttToUrlUseWorker} from '../subtitle';
 import Storage from '../utils/storage';
 import isEqual from 'lodash/isEqual';
@@ -202,6 +202,7 @@ export default function (props) {
                 const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001';
                 const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001';
                 const sub = new Sub(start, end, t('subtitle-text'));
+                //setCurrentTime(timeToSecond(start));
                 subs.splice(index, 0, sub);
             }
             updateSubtitles(subs);
@@ -216,6 +217,7 @@ export default function (props) {
             const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001';
             const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001';
             const sub = new Sub(start, end, videoCode.name, videoCode.color);
+            player.seek = timeToSecond(start)
             subs.splice(index, 0, sub);
             updateSubtitles(subs);
         },

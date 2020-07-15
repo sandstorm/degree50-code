@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\VirtualizedFile;
@@ -58,6 +59,11 @@ class Video
     private $creator;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="videos")
+     */
+    private Collection $courses;
+
+    /**
      * Video constructor.
      * @param string $id
      */
@@ -65,6 +71,7 @@ class Video
     {
         $this->generateOrSetId($id);
         $this->videoAnalysisTypes = new ArrayCollection();
+        $this->courses = new ArrayCollection();
     }
 
     /**
@@ -179,6 +186,32 @@ class Video
     public function setCreator(?User $creator): self
     {
         $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Course[]
+     */
+    public function getCourses(): Collection
+    {
+        return $this->courses;
+    }
+
+    public function addCourse(Course $course): self
+    {
+        if (!$this->courses->contains($course)) {
+            $this->courses[] = $course;
+        }
+
+        return $this;
+    }
+
+    public function removeCourse(Course $course): self
+    {
+        if ($this->courses->contains($course)) {
+            $this->courses->removeElement($course);
+        }
 
         return $this;
     }

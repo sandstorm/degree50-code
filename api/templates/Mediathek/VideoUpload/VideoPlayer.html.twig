@@ -1,9 +1,14 @@
 {% extends 'Base.html.twig' %}
 
-{% block title %}Video Player{% endblock %}
+{% block title %}Video - {{ video.title }}{% endblock %}
 
 {% block body %}
-    <a href="{{ video.encodedVideoDirectory | virtualized_file_url }}/dash.mpd">Dash</a>
-    <a href="{{ video.encodedVideoDirectory | virtualized_file_url }}/hls.m3u8">HLS</a>
+    <h2>Titel: {{ video.title }}</h2>
+    <p>
+        Beschreibung: {{ video.description }}
+    </p>
     <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] } | json_encode|e('html_attr')}}"></div>
+    <hr />
+    <a class="btn btn-primary" href="{{ video.encodedVideoDirectory | virtualized_file_url }}/dash.mpd">Download als .mpd (dash)</a>
+    <a class="btn btn-primary" href="{{ video.encodedVideoDirectory | virtualized_file_url }}/hls.m3u8">Download als .m3u8 (hls)</a>
 {% endblock %}
