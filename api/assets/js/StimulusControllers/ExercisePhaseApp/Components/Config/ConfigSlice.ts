@@ -21,6 +21,7 @@ export type Config = {
     title: string
     description: string
     type: string
+    userId: string
     isGroupPhase: boolean
     components: Array<ComponentId>
     material: Array<Material>
@@ -33,6 +34,7 @@ const initialState: Config = {
     title: '',
     description: '',
     type: '',
+    userId: '',
     isGroupPhase: false,
     components: [],
     material: [],

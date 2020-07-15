@@ -61,12 +61,16 @@ class ExercisePhaseController extends AbstractController
      */
     public function show(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
+        /* @var User $user */
+        $user = $this->getUser();
+
         // config for the ui to render the react components
         $config = [
             'title' => $exercisePhase->getName(),
             'description' => $exercisePhase->getTask(),
             'type' => $exercisePhase->getType(),
             'components' => $exercisePhase->getComponents(),
+            'userId' => $user->getId(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'apiEndpoints' => [
               'updateSolution' => $this->router->generate('app_exercise-phase-update-solution', [
