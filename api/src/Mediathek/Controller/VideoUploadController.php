@@ -117,15 +117,15 @@ class VideoUploadController extends AbstractController
      */
     public function delete(AppRuntime $appRuntime, Video $video): Response
     {
-
         /* @var \App\Entity\VirtualizedFile $encodedDirectory */
         $encodedDirectory = $video->getEncodedVideoDirectory();
-        var_dump($appRuntime->virtualizedFileUrl($encodedDirectory));
         // TODO remove file?
         // TODO check for usage of the video
-        return $this->redirectToRoute('app_mediathek-index');
-        die;
         if ($video) {
+            $this->eventStore->addEvent('VideoDeleted', [
+                'videoId' => $video->getId(),
+            ]);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($video);
             $entityManager->flush();

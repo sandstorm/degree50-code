@@ -41,16 +41,26 @@ class VideoVoter extends Voter
         $video = $subject;
 
         switch ($attribute) {
-            case self::EDIT or self::DELETE:
-                return $this->canEditOrDelete($video, $user);
+            case self::EDIT:
+                return $this->canEdit($video, $user);
+            case self::DELETE:
+                return $this->canDelete($video, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
 
-    private function canEditOrDelete(Video $video, User $user)
+    private function canEdit(Video $video, User $user)
     {
+        return $user === $video->getCreator();
+    }
+
+    private function canDelete(Video $video, User $user)
+    {
+        if (count($video->getVideoAnalysisTypes()) >= 0) {
+            return false;
+        }
         return $user === $video->getCreator();
     }
 }

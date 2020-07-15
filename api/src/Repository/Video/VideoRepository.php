@@ -2,6 +2,7 @@
 
 namespace App\Repository\Video;
 
+use App\Entity\Account\Course;
 use App\Entity\Video\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,5 +18,19 @@ class VideoRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Video::class);
+    }
+
+    /**
+     * @param Course $course
+     * @return Video[]|\iterable
+     */
+    public function findByCourse(Course $course): iterable
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere(':course MEMBER OF v.courses')
+            ->setParameter('course', $course)
+            ->orderBy('v.title', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }

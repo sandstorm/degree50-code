@@ -5,6 +5,7 @@ namespace App\Exercise\Form;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Video\Video;
+use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -12,20 +13,40 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class VideoAnalysisType extends ExercisePhaseType
 {
+    private VideoRepository $videoRepository;
+
+    /**
+     * VideoAnalysisType constructor.
+     * @param VideoRepository $videoRepository
+     */
+    public function __construct(VideoRepository $videoRepository)
+    {
+        $this->videoRepository = $videoRepository;
+    }
+
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
-        $choices = [];
 
         /* @var VideoAnalysis $data */
         $data = $options['data'];
         $components = $data->getAllowedComponents();
+        $componentChoices = [];
         foreach($components as $component) {
-            $choices[$component] = $component;
+            $componentChoices[$component] = $component;
         }
+
+        $currentCourse = $data->getBelongsToExcercise()->getCourse();
+        // TODO maybe use a VideoDoctrineFilter like the CourseDoctrineFilter.php
+        // depending on the user, you only see videos that are assigned to courses you are a member of
+        // but thats maybe a good way for the mediathek but not for the creation of exercises...?
+        $videoChoices = $this->videoRepository->findByCourse($currentCourse);
+
         $builder
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
+                'choices' => $videoChoices,
                 'required' => true,
                 'choice_label' => 'title',
                 'multiple' => true,
@@ -33,7 +54,7 @@ class VideoAnalysisType extends ExercisePhaseType
             ])
             ->add('components', ChoiceType::class, [
                 'label' => false,
-                'choices' => $choices,
+                'choices' => $componentChoices,
                 'multiple' => true,
                 'expanded' => true,
                 'choice_label' => function ($choice, $key, $value) {
