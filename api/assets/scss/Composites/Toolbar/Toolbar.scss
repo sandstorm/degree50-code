@@ -35,6 +35,7 @@ $toolbarWidth: 50px;
 }
 
 .toolbar-item {
+  position: relative;
   margin-bottom: 10px;
   width: $toolbarWidth - 10px;
   height: $toolbarWidth - 10px;
@@ -43,4 +44,25 @@ $toolbarWidth: 50px;
   align-items: center;
 
   font-size: 1.5em;
+}
+
+.toolbar-item__counter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  right: -6px;
+  top: -7px;
+
+  background-color: $theme__color__red;
+  border: 1px solid $theme__color__white;
+  border-radius: 50%;
+
+  font-size: $base__fontSize--tiny;
+  color: $theme__color__white;
+
+  z-index: 10;
+
 }

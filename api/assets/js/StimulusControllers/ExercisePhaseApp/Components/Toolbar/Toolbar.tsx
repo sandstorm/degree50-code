@@ -8,6 +8,7 @@ import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
 import { ComponentTypesEnum } from '../../Store/ComponentTypesEnum'
 import { ComponentId, Config, selectConfig } from '../Config/ConfigSlice'
 import { overlaySizesEnum } from '../Overlay/Overlay'
+import { PresenceToolbarItem } from './PresenceToolbarItem'
 
 const mapStateToProps = (state: AppState) => ({
     activeToolbarItem: selectActiveToolbarItem(state),
@@ -127,9 +128,17 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     const toolbarItemsToRender = possibleComponentsForToolbar
         .filter((component) => props.config.components.includes(component.id) || component.isMandatory)
         .filter((component) => component.isVisible(props.config))
-        .map((component) => (
-            <ToolbarItem key={component.id} component={component} toggleComponent={toggleComponentWrapper} />
-        ))
+        .map((component) =>
+            component.id === ComponentTypesEnum.PRESENCE ? (
+                <PresenceToolbarItem
+                    key={component.id}
+                    component={component}
+                    toggleComponent={toggleComponentWrapper}
+                />
+            ) : (
+                <ToolbarItem key={component.id} component={component} toggleComponent={toggleComponentWrapper} />
+            )
+        )
 
     return (
         <div className={props.isVisible === true ? 'toolbar toolbar--is-visible' : 'toolbar'}>

@@ -1,12 +1,16 @@
 import React from 'react'
 import { Component } from './Toolbar'
+import { useAppSelector } from '../../Store/Store'
+import { selectTeamMemberIds } from '../Presence/PresenceSlice'
 
 type ToolbarItemProps = {
     component: Component
     toggleComponent: (component: Component) => void
 }
 
-export function ToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
+export function PresenceToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
+    const onlineTeamMembers = useAppSelector(selectTeamMemberIds)
+
     return (
         <button
             className={'toolbar-item btn btn-primary'}
@@ -14,6 +18,7 @@ export function ToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
             aria-label={component.label}
             onClick={() => toggleComponent(component)}
         >
+            <span className={'toolbar-item__counter'}>{onlineTeamMembers.length}</span>
             <i className={component.icon} />
         </button>
     )
