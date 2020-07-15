@@ -9,6 +9,7 @@ import materialViewerReducer from '../Components/MaterialViewer/MaterialViewerSl
 import presenceReducer from '../Components/Presence/PresenceSlice'
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux'
 import createSagaMiddleware from 'redux-saga'
+import { select } from 'redux-saga/effects'
 import { all, spawn, call } from 'redux-saga/effects'
 import presenceSaga from '../Components/Presence/PresenceSaga'
 
@@ -53,3 +54,17 @@ export type AppDispatch = typeof store.dispatch
 
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
 export const useAppDispatch = () => useDispatch<AppDispatch>()
+
+/**
+ * WHY: yield select() returns any so we wrap this to get type safety
+ *
+ * @example
+ *  const state = yield* selectState() // state: AppState
+ *
+ * @example with redux selector
+ *  const mercureEndpoint = selectMercureEndpoint(yield* selectState()) // mercureEndpoint: string
+ */
+export function* selectState() {
+    const state: AppState = yield select()
+    return state
+}

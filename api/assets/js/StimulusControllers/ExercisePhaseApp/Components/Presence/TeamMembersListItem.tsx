@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
-import { TeamMemberId, selectTeamMemberById, ConnectionState } from './PresenceSlice'
+import {
+    TeamMemberId,
+    selectTeamMemberById,
+    ConnectionState,
+    selectTeamMemberConnectionStateById,
+} from './PresenceSlice'
 
 type TeamMembersListItemOwnProps = {
     teamMemberId: TeamMemberId
@@ -9,27 +14,27 @@ type TeamMembersListItemOwnProps = {
 
 type TeamMembersListItemProps = ReturnType<typeof mapStateToProps>
 
-// TODO should be own component
-const ConnectionStateRenderer: React.FC<{ connectionState: ConnectionState }> = ({ connectionState }) => {
+const renderConnectionState = (connectionState: ConnectionState) => {
     switch (connectionState) {
         case ConnectionState.CONNECTED:
-            return <em>'online'</em>
-        case ConnectionState.NOT_CONNECTED:
+            return 'online'
+        case ConnectionState.DISCONNECTED:
         default:
-            return <em>'offline'</em>
+            return 'offline'
     }
 }
 
-const TeamMembersListItem: React.FC<TeamMembersListItemProps> = ({ teamMember }) => {
-    return (
-        <li>
-            `${teamMember.name}: ${<ConnectionStateRenderer connectionState={teamMember.connectionState} />}`
-        </li>
-    )
+const TeamMembersListItem: React.FC<TeamMembersListItemProps> = ({ teamMember, connectionState }) => {
+    const className = `team_member-list__item${
+        connectionState === ConnectionState.CONNECTED ? '--connected' : '--disconnected'
+    }`
+
+    return <li className={className}>{`${teamMember.name}: ${renderConnectionState(connectionState)}`}</li>
 }
 
 const mapStateToProps = (state: AppState, ownProps: TeamMembersListItemOwnProps) => ({
     teamMember: selectTeamMemberById(ownProps.teamMemberId, state),
+    connectionState: selectTeamMemberConnectionStateById(ownProps.teamMemberId, state),
 })
 
 export default connect(mapStateToProps)(TeamMembersListItem)
