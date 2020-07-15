@@ -10,33 +10,36 @@ import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncCon
 import { initPresenceAction } from './ExercisePhaseApp/Components/Presence/PresenceSaga'
 import { presenceActions, PresenceState, TeamMember } from './ExercisePhaseApp/Components/Presence/PresenceSlice'
 import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/SolutionSaga'
+import { Config } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 
 export default class extends Controller {
     connect() {
         const propsAsString = this.data.get('props')
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-        const { config, liveSyncConfig, solution } = props
+        const { liveSyncConfig, solution } = props
+        const config = props.config as Config
 
         // set initial Redux state
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(setSolution(solution))
 
-        // TODO only in TeamPhase
-        store.dispatch(initSolutionSyncAction())
-        store.dispatch(initPresenceAction())
-        store.dispatch(
-            presenceActions.setTeamMembers(
-                liveSyncConfig.teamMembers.reduce(
-                    (acc: PresenceState['teamMembersById'], teamMember: TeamMember) => ({
-                        ...acc,
-                        [teamMember.id]: teamMember,
-                    }),
-                    {}
+        if (config.isGroupPhase) {
+            store.dispatch(initSolutionSyncAction())
+            store.dispatch(initPresenceAction())
+            store.dispatch(
+                presenceActions.setTeamMembers(
+                    liveSyncConfig.teamMembers.reduce(
+                        (acc: PresenceState['teamMembersById'], teamMember: TeamMember) => ({
+                            ...acc,
+                            [teamMember.id]: teamMember,
+                        }),
+                        {}
+                    )
                 )
             )
-        )
+        }
 
         ReactDOM.render(
             <React.StrictMode>

@@ -51,7 +51,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Gruppenmitglieder',
         icon: 'fas fa-users',
         isVisible: (config: Config) => {
-            return true
+            return config.isGroupPhase
         },
         onClick: (dispatch, component, config, closeComponent) => {
             toggleOverlayVisibility(dispatch, closeComponent)
@@ -79,7 +79,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         label: 'Material',
         icon: 'fas fa-folder-open',
         isVisible: (config: Config) => {
-            return config.isGroupPhase
+            return true
         },
         onClick: (dispatch, component, config, closeComponent) => {
             toggleOverlayVisibility(dispatch, closeComponent)

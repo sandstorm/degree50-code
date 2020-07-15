@@ -3,6 +3,7 @@ import { AppState } from '../../Store/Store'
 import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
+import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
 
 export type ComponentId = ComponentTypesEnum
 
@@ -20,7 +21,7 @@ export type VideoCode = {
 export type Config = {
     title: string
     description: string
-    type: string
+    type: ExercisePhaseTypesEnum
     userId: string
     isGroupPhase: boolean
     components: Array<ComponentId>
@@ -33,7 +34,7 @@ export type Config = {
 const initialState: Config = {
     title: '',
     description: '',
-    type: '',
+    type: ExercisePhaseTypesEnum.VIDEO_ANALYSIS,
     userId: '',
     isGroupPhase: false,
     components: [],
