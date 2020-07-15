@@ -37,13 +37,13 @@ export default function (props) {
     const [activeTab, setActiveTab] = useState(Tabs.ANNOTATIONS);
 
     // All subtitles
-    if (props.subtitles.length === 0) {
-        props.subtitles = [new Sub('00:00:00.000', '00:00:01.000', t('Kommentar'))]
-    }
     let subtitles = []
 
     if (activeTab === Tabs.ANNOTATIONS) {
         subtitles = props.subtitles.map(item => new Sub(item.start, item.end, item.text))
+        if (subtitles.length === 0) {
+            subtitles = [new Sub('00:00:00.000', '00:00:01.000', t('Kommentar'))]
+        }
     } else if (activeTab === Tabs.VIDEO_CODES) {
         subtitles = props.videoCodes.map(item => new Sub(item.start, item.end, item.text, item.color))
     }
