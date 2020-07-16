@@ -1,5 +1,14 @@
 .dropzone {
   margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  border: 1px dashed $theme__color__grey--darker;
+  border: 1px dashed $theme__color__grey--dark;
+
+  &.dz-clickable {
+    i {
+      display: none;
+    }
+  }
 }

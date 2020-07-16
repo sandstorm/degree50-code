@@ -11,12 +11,13 @@ export default class extends Controller {
 
         this.element.classList.add('dropzone');
 
-        console.log("CHUNKED");
-
         new Dropzone(this.element, {
             url: endpoint,
             chunking: true,
             chunkSize: 10000000, // 10 MB
+            dictDefaultMessage: 'Hier klicken um Video hochzuladen',
+            maxFiles: 1,
+            acceptedFiles: 'video/*',
             params: function params(files, xhr, chunk) {
                 if (chunk) {
                     return {
@@ -43,6 +44,5 @@ export default class extends Controller {
                 else {done();}
             }
         });
-        console.log("INITED");
     }
 }

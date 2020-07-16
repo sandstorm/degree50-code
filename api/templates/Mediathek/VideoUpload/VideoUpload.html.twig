@@ -9,7 +9,9 @@
         <header class="content-header content-header--center">
             <h3>{% trans %}video.upload.title{% endtrans %}</h3>
         </header>
-        <div data-controller="fileupload" data-fileupload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}" data-fileupload-id="{{ uuid }}"></div>
+        <div class="dropzone" data-controller="fileupload" data-fileupload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}" data-fileupload-id="{{ uuid }}">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
     </div>
 
     {{ form_start(form) }}
