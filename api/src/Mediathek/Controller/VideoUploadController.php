@@ -93,6 +93,12 @@ class VideoUploadController extends AbstractController
             $video = $form->getData();
             assert($video instanceof Video);
 
+            $this->eventStore->addEvent('VideoNameAndDescriptionUpdated', [
+                'videoId' => $video->getId(),
+                'title' => $video->getTitle(),
+                'description' => $video->getDescription(),
+            ]);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($video);
             $entityManager->flush();

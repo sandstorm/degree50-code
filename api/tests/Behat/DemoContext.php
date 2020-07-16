@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Behat;
 
 use App\Entity\Account\Course;
+use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
@@ -33,9 +34,7 @@ final class DemoContext implements Context
     use DatabaseFixtureContextTrait;
 
     private Session $minkSession;
-
     private RouterInterface $router;
-
     protected EntityManagerInterface $entityManager;
     protected KernelInterface $kernel;
     private DoctrineIntegratedEventStore $eventStore;
@@ -83,7 +82,6 @@ final class DemoContext implements Context
     public function aDemoScenarioSendsARequestTo(string $routeName): void
     {
         $this->minkSession->visit($this->router->generate($routeName));
-
     }
 
     /**
@@ -139,21 +137,33 @@ final class DemoContext implements Context
     }
 
     /**
-     * @Given I have a video with ID :videoId
+     * @Given I have a video with ID :videoId belonging to course :courseId
      */
-    public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId)
+    public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId, $courseId)
     {
-        $this->entityManager->persist(new Video($videoId));
+        /* @var $course Course */
+        $course = $this->entityManager->find(Course::class, $courseId);
+
+        $video = new Video($videoId);
+        $video->addCourse($course);
+
+        $this->entityManager->persist($video);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
-     * @Given I have an exercise with ID :exerciseId
+     * @Given I have an exercise with ID :exerciseId belonging to course :courseId
      */
-    public function iHaveAnExercise($exerciseId)
+    public function iHaveAnExercise($exerciseId, $courseId)
     {
-        $this->entityManager->persist(new Exercise($exerciseId));
+        /* @var $course Course */
+        $course = $this->entityManager->find(Course::class, $courseId);
+
+        $exercise = new Exercise($exerciseId);
+        $exercise->setCourse($course);
+
+        $this->entityManager->persist($exercise);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
@@ -163,7 +173,19 @@ final class DemoContext implements Context
      */
     public function iHaveAnCourseWithID($courseId)
     {
-        $this->entityManager->persist(new Course($courseId));
+        $user = $this->entityManager->find(User::class, 'foo@bar.de');
+
+        $course = new Course($courseId);
+        $courseRole = new CourseRole();
+        $courseRole->setUser($user);
+        $courseRole->setCourse($course);
+        $courseRole->setName(CourseRole::DOZENT);
+
+        $this->entityManager->persist($courseRole);
+
+        $course->addCourseRole($courseRole);
+
+        $this->entityManager->persist($course);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
