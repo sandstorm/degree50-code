@@ -26,12 +26,12 @@
                     <li role="presentation" class="nav-item">
                         <a class="nav-link active" href="#videos" aria-controls="videos" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.videos{% endtrans %} ({{ exercisePhase.videos|length }})</a>
                     </li>
+                    <li role="presentation" class="nav-item">
+                        <a class="nav-link" href="#videoCodes" aria-controls="videoCodes" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.videoCodes{% endtrans %} ({{ exercisePhase.videoCodes|length }})</a>
+                    </li>
                 {% endif %}
                 <li role="presentation" class="nav-item">
                     <a class="nav-link" href="#material" aria-controls="material" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %} ({{ exercisePhase.material|length }})</a>
-                </li>
-                <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#fragen" aria-controls="fragen" role="tab" data-toggle="tab">Fragen</a>
                 </li>
                 <li role="presentation" class="nav-item">
                     <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %} ({{ exercisePhase.components|length }})</a>
@@ -44,6 +44,11 @@
                         <h4>{% trans %}exercisePhase.labels.videos{% endtrans %}</h4>
                         {{ form_row(form.videos) }}
                     </div>
+                    <div role="tabpanel" class="tab-pane" id="videoCodes">
+                        <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
+                        <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
+                        {{ form_row(form.videoCodes) }}
+                    </div>
                 {% endif %}
                 <div role="tabpanel" class="tab-pane" id="material">
                     <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
@@ -51,7 +56,6 @@
                         {{ form_row(form.material) }}
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="fragen">Fragen</div>
                 <div role="tabpanel" class="tab-pane" id="komponenten">
                     <h4>{% trans %}exercisePhase.labels.components{% endtrans %}</h4>
                     {{ form_row(form.components) }}

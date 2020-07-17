@@ -5,6 +5,7 @@ namespace App\Exercise\Form;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Video\Video;
+use App\Entity\Video\VideoCode;
 use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -49,6 +50,13 @@ class VideoAnalysisType extends ExercisePhaseType
                 'choices' => $videoChoices,
                 'required' => true,
                 'choice_label' => 'title',
+                'multiple' => true,
+                'label' => false
+            ])
+            ->add('videoCodes', EntityType::class, [
+                'class' => VideoCode::class,
+                'required' => false,
+                'choice_label' => 'name',
                 'multiple' => true,
                 'label' => false
             ])

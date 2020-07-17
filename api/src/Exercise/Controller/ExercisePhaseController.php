@@ -251,6 +251,9 @@ class ExercisePhaseController extends AbstractController
                         'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
                             'videoId' => $video->getId()
                         ])->toArray(),
+                        'videoCodes' => $exercisePhase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
+                            'videoCodeId' => $videoCode->getId()
+                        ])->toArray(),
                         'components' => $exercisePhase->getComponents()
                     ]);
             }
