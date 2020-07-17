@@ -30,6 +30,7 @@ exercisePhase:
     name: 'Titel der Phase'
     task: 'Lernauftrag / Beschreibung'
     videos: 'Videos'
+    videoCodes: 'Video-Codes'
     components: 'Komponenten'
     material: 'Material'
     submit: 'Phase speichern'
