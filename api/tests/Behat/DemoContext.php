@@ -146,6 +146,7 @@ final class DemoContext implements Context
 
         $video = new Video($videoId);
         $video->addCourse($course);
+        $video->setDataPrivacyAccepted(true);
 
         $this->entityManager->persist($video);
         $this->eventStore->disableEventPublishingForNextFlush();

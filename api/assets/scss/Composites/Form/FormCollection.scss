@@ -30,3 +30,13 @@
 select[multiple] {
   min-height: 200px;
 }
+
+.form__data-privacy {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 0.375rem 0.75rem;
+
+  border: 1px solid $theme__color__grey--darker;
+  border-radius: 4px;
+}

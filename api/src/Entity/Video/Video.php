@@ -66,6 +66,11 @@ class Video
     private Collection $courses;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $dataPrivacyAccepted;
+
+    /**
      * Video constructor.
      * @param string $id
      */
@@ -214,6 +219,18 @@ class Video
         if ($this->courses->contains($course)) {
             $this->courses->removeElement($course);
         }
+
+        return $this;
+    }
+
+    public function getDataPrivacyAccepted(): ?bool
+    {
+        return $this->dataPrivacyAccepted;
+    }
+
+    public function setDataPrivacyAccepted(bool $dataPrivacyAccepted): self
+    {
+        $this->dataPrivacyAccepted = $dataPrivacyAccepted;
 
         return $this;
     }

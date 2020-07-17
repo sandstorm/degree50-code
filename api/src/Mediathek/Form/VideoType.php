@@ -7,6 +7,7 @@ use App\Entity\Video\Video;
 use App\Repository\Account\CourseRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,6 +21,8 @@ class VideoType extends AbstractType
         $builder
             ->add('title', TextType::class, ['label' => "video.labels.title", 'translation_domain' => 'forms'])
             ->add('description', TextareaType::class, ['label' => "video.labels.description", 'translation_domain' => 'forms', 'required' => false])
+            // TODO own type with link to data-privacy
+            ->add('dataPrivacyAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyAccepted", 'translation_domain' => 'forms', 'required' => true])
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
                 'required' => true,
@@ -31,6 +34,7 @@ class VideoType extends AbstractType
                 'group_by' => function (Course $choice, $key, $value) {
                     return $choice->getCreationDateYear();
                 },
+                'help' => 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden.',
                 'query_builder' => function (CourseRepository $courseRepository) {
                     return $courseRepository->createQueryBuilder('c')
                         ->orderBy('c.name', 'ASC');
