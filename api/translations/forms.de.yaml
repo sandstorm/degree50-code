@@ -67,6 +67,7 @@ video:
     title: 'Titel'
     description: 'Beschreibung'
     courses: 'Kurse mit Berechtigung für dieses Video'
+    dataPrivacyAccepted: 'Datenschutzbestimmung akzeptiert'
     submit: 'Video speichern'
   upload:
     title: 'Video hochladen'

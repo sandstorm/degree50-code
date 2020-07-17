@@ -19,6 +19,10 @@
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
             {{ form_row(form.courses) }}
+            <div class="form__data-privacy">
+                {{ form_row(form.dataPrivacyAccepted) }}
+                <a href="{{ path('app_data-privacy') }}" target="_blank">Datenschutzbestimmung ansehen</a>
+            </div>
         </div>
         <footer class="footer">
             <a class="btn btn-outline-primary" href="{{ path('app_mediathek-index') }}">{% trans %}video.upload.back{% endtrans %}</a>
