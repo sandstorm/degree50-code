@@ -138,8 +138,10 @@ class ExercisePhaseController extends AbstractController
 
         // use solution of the latest autosaved one
         $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy([], ['update_timestamp' => 'desc']);
-        $solution->setSolution($latestAutosavedSolution->getSolution());
-        $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
+        if ($latestAutosavedSolution) {
+            $solution->setSolution($latestAutosavedSolution->getSolution());
+            $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
+        }
 
         // remove autosaved solutions
         $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();

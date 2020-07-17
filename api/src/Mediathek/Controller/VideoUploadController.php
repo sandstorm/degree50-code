@@ -40,6 +40,9 @@ class VideoUploadController extends AbstractController
             $videoUuid = Uuid::uuid4()->toString();
         }
 
+        // we need to disable the video-filter here, cause the uploaded video has already created an video db entry
+        // but without courses set. With the filter active we could not find the existing db entry at this point.
+        $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
         $video = $videoRepository->find($videoUuid);
         if (!$video) {
             $video = new Video($videoUuid);
@@ -57,7 +60,7 @@ class VideoUploadController extends AbstractController
             $this->eventStore->addEvent('VideoNameAndDescriptionAdded', [
                 'videoId' => $video->getId(),
                 'title' => $video->getTitle(),
-                'description' => $video->getDescription(),
+                'description' => $video->getDescription() ? $video->getDescription() : '',
             ]);
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -96,7 +99,7 @@ class VideoUploadController extends AbstractController
             $this->eventStore->addEvent('VideoNameAndDescriptionUpdated', [
                 'videoId' => $video->getId(),
                 'title' => $video->getTitle(),
-                'description' => $video->getDescription(),
+                'description' => $video->getDescription() ? $video->getDescription() : '',
             ]);
 
             $entityManager = $this->getDoctrine()->getManager();

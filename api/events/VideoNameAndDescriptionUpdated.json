@@ -14,8 +14,7 @@
   },
   "required": [
     "videoId",
-    "title",
-    "description"
+    "title"
   ],
   "additionalProperties": false
 }
