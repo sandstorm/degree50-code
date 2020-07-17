@@ -28,9 +28,11 @@ class Video
     private string $title = '';
 
     /**
-     * @ORM\Column(type="text")
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
      */
-    private string $description = '';
+    private ?string $description = '';
 
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
@@ -93,7 +95,7 @@ class Video
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -101,7 +103,7 @@ class Video
     /**
      * @param string $description
      */
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }

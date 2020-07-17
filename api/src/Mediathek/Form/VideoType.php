@@ -19,7 +19,7 @@ class VideoType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, ['label' => "video.labels.title", 'translation_domain' => 'forms'])
-            ->add('description', TextareaType::class, ['label' => "video.labels.description", 'translation_domain' => 'forms'])
+            ->add('description', TextareaType::class, ['label' => "video.labels.description", 'translation_domain' => 'forms', 'required' => false])
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
                 'required' => true,
