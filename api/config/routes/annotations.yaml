@@ -12,6 +12,14 @@ controllers_account:
         en: '/en'
         de: '/'
 
+
+controllers_standard:
+    resource: ../../src/Standard/Controller/
+    type: annotation
+    prefix:
+        en: '/en'
+        de: '/'
+
 controllers_exercise:
     resource: ../../src/Exercise/Controller/
     type: annotation

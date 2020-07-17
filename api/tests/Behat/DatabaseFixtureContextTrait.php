@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Behat;
 
 use Doctrine\DBAL\DBALException;
-use Doctrine\Migrations\Migrator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
