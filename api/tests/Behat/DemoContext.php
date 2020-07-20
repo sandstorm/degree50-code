@@ -102,7 +102,7 @@ final class DemoContext implements Context
      */
     public function iAmRedirectedToTheLoginPage()
     {
-        $this->assertSession()->pageTextContains('Sign in');
+        $this->assertSession()->pageTextContains('Einloggen');
     }
 
     /**
