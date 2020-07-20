@@ -1,27 +1,13 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {{ include('Partials/Header.html.twig') }}
-        <div class="main main--with-header {% block layoutCssClass %}{% endblock %}">
-            <div class="main-inner">
-                {% block sidebar %}{% endblock %}
-                <div class="content-with-sidebar">
-                    {{ include('Partials/FlashMessages.html.twig') }}
-                    {% block body %}{% endblock %}
-                </div>
-
+{% extends 'Layouts/Default.html.twig' %}
+{% block main %}
+    {{ include('Partials/Header.html.twig') }}
+    <main class="main main--with-header {% block layoutCssClass %}{% endblock %}">
+        <div class="main-inner">
+            {% block sidebar %}{% endblock %}
+            <div class="content-with-sidebar">
+                {{ include('Partials/FlashMessages.html.twig') }}
+                {% block body %}{% endblock %}
             </div>
         </div>
-
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </body>
-</html>
+    </main>
+{% endblock %}
