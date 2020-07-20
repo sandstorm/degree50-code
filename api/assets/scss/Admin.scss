@@ -1,0 +1,17 @@
+@import "GeneralStyles/Variables";
+@import "GeneralStyles/Functions";
+@import "GeneralStyles/Layout";
+@import "GeneralStyles/Mixins";
+@import "GeneralStyles/Typography";
+
+@import "Composites/Header/Header";
+@import "Composites/Navigation/Navigation";
+
+.main-header {
+  position: relative;
+  border-bottom: none;
+
+  .navigation {
+    background-color: transparent;
+  }
+}
