@@ -1,29 +1,29 @@
-<header class="header">
-    <nav class="navbar navbar-expand-lg">
-        <a class="navbar-brand" href="/">Degree 4.0</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+<header class="main-header">
+    <nav class="navigation" role="navigation">
+        <a class="navigation__brand" href="/">Degree 4.0</a>
+        <button class="navigation__toggler" type="button" data-toggle="collapse" data-target="#navigation"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <i class="fas fa-bars"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_exercise-overview') }}">Übersicht</a>
+        <div class="navigation__inner" id="navigation">
+            <ul class="navigation__items">
+                <li class="navigation__item">
+                    <a href="{{ path('app_exercise-overview') }}">Übersicht</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_mediathek-index') }}">Mediathek</a>
+                <li class="navigation__item">
+                    <a href="{{ path('app_mediathek-index') }}">Mediathek</a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin">Administration</a>
+                <li class="navigation__item">
+                    <a href="/admin">Administration</a>
                 </li>
                 {% endif %}
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="{{ path('app_subtitle-editor') }}">Subtitle Editor</a>
+                <li class="navigation__item" style="display: none;">
+                    <a href="{{ path('app_subtitle-editor') }}">Subtitle Editor</a>
                 </li>
             </ul>
 
-            <div class="my-2 my-lg-0">
+            <div class="navigation__user navigation__item">
                 <i class="fas fa-user"></i> {{ app.user.username }}
                 <a href="{{ path('app_logout') }}">Logout</a>
             </div>

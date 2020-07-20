@@ -1,0 +1,60 @@
+.navigation {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  padding: 0.5rem 1rem;
+
+  background-color: $theme__color__grey;
+}
+
+.navigation__brand {
+  display: inline-block;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+.navigation__toggler {
+  display: none;
+  padding: 0.25rem 0.75rem;
+
+  background-color: transparent;
+  border: 1px solid $theme__color__green;
+  border-radius: 0.25rem;
+
+  font-size: 1.25rem;
+  line-height: 1;
+
+  @include mq(medium) {
+    display: block;
+  }
+}
+
+.navigation__inner {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @include mq(medium) {
+    display: none;
+  }
+}
+
+.navigation__items {
+  display: flex;
+}
+
+.navigation__item {
+  display: block;
+  padding: 0.5rem 1rem;
+}
+
+.navigation__user {
+
+}
