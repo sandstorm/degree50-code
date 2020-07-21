@@ -240,6 +240,7 @@ class ExercisePhaseController extends AbstractController
             $exercisePhase = $form->getData();
 
             switch ($exercisePhase->getType()) {
+
                 case ExercisePhase::TYPE_VIDEO_ANALYSE :
                     /* @var $exercisePhase VideoAnalysis */
                     $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
@@ -259,12 +260,6 @@ class ExercisePhaseController extends AbstractController
                         ])->toArray(),
                         'components' => $exercisePhase->getComponents()
                     ]);
-            }
-
-            // TODO expose videocodes to the ui
-            $videoCodes = $this->videoCodeRepository->findAll();
-            foreach ($videoCodes as $videoCode) {
-                $exercisePhase->addVideoCode($videoCode);
             }
 
             $entityManager = $this->getDoctrine()->getManager();

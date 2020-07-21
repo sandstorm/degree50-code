@@ -97,7 +97,7 @@ class ExercisePhase implements ExerciseInterface
     private $material;
 
     /**
-     * @ORM\ManyToMany(targetEntity=VideoCode::class, mappedBy="exercisePhases")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Video\VideoCode", inversedBy="exercisePhases")
      */
     private $videoCodes;
 
