@@ -11,8 +11,14 @@
         </div>
     </div>
     <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting}) }}">Zurück</a>
+        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting, showSolution: config.readOnly}) }}">Zurück</a>
         <span>Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
-        <a class="btn btn-primary" href="{{ path('app_exercise-phase-share-result', {id: exercisePhase.id, team_id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
+        {% if config.readOnly %}
+            <a class="btn btn-primary disabled" href="#">Ergebnis teilen</a>
+        {% else %}
+            {% if is_granted('updateSolution', exercisePhaseTeam) %}
+                <a class="btn btn-primary" href="{{ path('app_exercise-phase-share-result', {id: exercisePhase.id, team_id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
+            {% endif %}
+        {% endif %}
     </footer>
 {% endblock %}

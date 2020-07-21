@@ -15,11 +15,10 @@ class ExercisePhaseVoter extends Voter
     const SHOW = 'show';
     const NEXT = 'next';
     const DELETE = 'delete';
-    const UPDATE_SOLUTION = 'updateSolution';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::UPDATE_SOLUTION])) {
+        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE])) {
             return false;
         }
 
@@ -48,8 +47,6 @@ class ExercisePhaseVoter extends Voter
         switch ($attribute) {
             case self::SHOW:
                 return $this->canShow($exercisePhase, $user);
-            case self::UPDATE_SOLUTION:
-                return $this->canUpdateSolution($exercisePhase, $user);
             case self::NEXT:
                 return $this->canGetToNextPhase($exercisePhase, $user);
             case self::DELETE:
@@ -66,6 +63,9 @@ class ExercisePhaseVoter extends Voter
 
     private function canGetToNextPhase(ExercisePhase $exercisePhase, User $user)
     {
+        if ($exercisePhase->getBelongsToExcercise()->getCreator() === $user) {
+            return true;
+        }
         return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user));
     }
 
@@ -73,10 +73,5 @@ class ExercisePhaseVoter extends Voter
     private function canDelete(ExercisePhase $exercisePhase, User $user)
     {
         return $user === $exercisePhase->getBelongsToExcercise()->getCreator();
-    }
-
-    private function canUpdateSolution(ExercisePhase $exercisePhase, User $user)
-    {
-        return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->getMembers()->contains($user));
     }
 }

@@ -29,8 +29,9 @@ class AccountFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        // add one course for admin
         $course = $this->createCourse($manager, 'Seminar Mathe 1');
+        $course2 = $this->createCourse($manager, 'Seminar Mathe 2');
+
         // other fixtures can get this object using the AccountFixtures::COURSE_REFERENCE constant
         $this->addReference(self::COURSE_REFERENCE, $course);
 
@@ -38,14 +39,14 @@ class AccountFixtures extends Fixture
         $this->addReference(self::CREATOR_REFERENCE, $dozent);
 
         $this->createCourseRole($manager, CourseRole::DOZENT, $course, $dozent);
-
-        // add second course for admin
-        $course2 = $this->createCourse($manager, 'Seminar Mathe 2');
         $this->createCourseRole($manager, CourseRole::DOZENT, $course2, $dozent);
 
         // student user
         $student = $this->createUser($manager, 'student@sandstorm.de');
         $this->createCourseRole($manager, CourseRole::STUDENT, $course, $student);
+
+        $student2 = $this->createUser($manager, 'student2@sandstorm.de');
+        $this->createCourseRole($manager, CourseRole::STUDENT, $course, $student2);
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();

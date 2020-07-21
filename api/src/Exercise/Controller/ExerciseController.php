@@ -41,14 +41,29 @@ class ExerciseController extends AbstractController
      * @IsGranted("view", subject="exercise")
      * @Route("/exercise/show/{id}/{phase<\d+>}", name="app_exercise")
      */
-    public function show(Exercise $exercise, int $phase = 0): Response
+    public function show(Request $request, Exercise $exercise, int $phase = 0): Response
     {
-        return $this->render('Exercise/Show.html.twig',
+        $showSolution = $request->get('showSolution');
+
+        $template = 'Exercise/Show.html.twig';
+        if ($showSolution) {
+            if ($this->getUser() !== $exercise->getCreator()) {
+                $this->addFlash(
+                    'danger',
+                    $this->translator->trans('exercise.showSolution.messages.error', [], 'forms')
+                );
+                return $this->redirectToRoute('app_exercise-overview-show-course', ['id' => $exercise->getCourse()->getId()]);
+            }
+            $template = 'Exercise/ShowSolution.html.twig';
+        }
+
+        return $this->render($template,
             [
                 'exercise' => $exercise,
                 'phase' => $exercise->getPhases()->get($phase),
                 'currentPhase' => $phase,
-                'amountOfPhases' => count($exercise->getPhases()) - 1
+                'amountOfPhases' => count($exercise->getPhases()) - 1,
+                'showSolution' => $showSolution
             ]);
     }
 

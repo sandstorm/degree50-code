@@ -16,10 +16,11 @@ class ExercisePhaseTeamVoter extends Voter
     const CREATE = 'create';
     const SHOW = 'show';
     const LEAVE = 'leave';
+    const UPDATE_SOLUTION = 'updateSolution';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::JOIN, self::CREATE, self::SHOW, self::LEAVE])) {
+        if (!in_array($attribute, [self::JOIN, self::CREATE, self::SHOW, self::LEAVE, self::UPDATE_SOLUTION])) {
             return false;
         }
 
@@ -57,6 +58,8 @@ class ExercisePhaseTeamVoter extends Voter
                 return $this->canCreate($exercisePhase, $user);
             case self::LEAVE:
                 return $this->canLeave($exercisePhaseTeam, $user);
+            case self::UPDATE_SOLUTION:
+                return $this->canUpdateSolution($exercisePhaseTeam, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -71,8 +74,12 @@ class ExercisePhaseTeamVoter extends Voter
         return $exercisePhaseTeam->getMembers()->contains($user);
     }
 
+    // TODO: anyone can view a result
     private function canShow(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
+        if ($exercisePhaseTeam->getExercisePhase()->getBelongsToExcercise()->getCreator() === $user) {
+            return true;
+        }
         return $exercisePhaseTeam->getMembers()->contains($user);
     }
 
@@ -104,5 +111,10 @@ class ExercisePhaseTeamVoter extends Voter
         }
 
         return $canCreate;
+    }
+
+    private function canUpdateSolution(ExercisePhaseTeam $exercisePhaseTeam, User $user)
+    {
+        return $exercisePhaseTeam->getMembers()->contains($user);
     }
 }

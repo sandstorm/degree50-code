@@ -14,13 +14,14 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ExerciseVoter extends Voter
 {
     const VIEW = 'view';
+    const SHOW_SOLUTION = 'showSolution';
     const CREATE = 'create';
     const EDIT = 'edit';
     const DELETE = 'delete';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::VIEW, self::CREATE, self::EDIT, self::DELETE])) {
+        if (!in_array($attribute, [self::VIEW, self::SHOW_SOLUTION, self::CREATE, self::EDIT, self::DELETE])) {
             return false;
         }
 
@@ -56,7 +57,7 @@ class ExerciseVoter extends Voter
                 return $this->canView($course, $user);
             case self::CREATE:
                 return $this->canCreate($course, $user);
-            case self::EDIT or self::DELETE:
+            case self::EDIT or self::DELETE or self::SHOW_SOLUTION:
                 return $this->canEditOrDelete($exercise, $user);
         }
 

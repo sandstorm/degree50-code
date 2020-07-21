@@ -24,6 +24,7 @@ export type Config = {
     type: ExercisePhaseTypesEnum
     userId: string
     isGroupPhase: boolean
+    readOnly: boolean
     components: Array<ComponentId>
     material: Array<Material>
     videos: Array<Video>
@@ -37,6 +38,7 @@ const initialState: Config = {
     type: ExercisePhaseTypesEnum.VIDEO_ANALYSIS,
     userId: '',
     isGroupPhase: false,
+    readOnly: false,
     components: [],
     material: [],
     videos: [],

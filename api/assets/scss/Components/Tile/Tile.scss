@@ -3,8 +3,6 @@ $tileHeight--small: 150px;
 
 .tile {
   position: relative;
-  height: $tileHeight;
-  width: $tileHeight;
   margin-right: 20px;
   margin-bottom: 20px;
 
@@ -45,16 +43,18 @@ $tileHeight--small: 150px;
   }
 
   &--small {
-    height: $tileHeight--small;
-    width: $tileHeight--small;
+    .tile__content {
+      height: $tileHeight--small;
+      width: $tileHeight--small;
+    }
   }
 }
 
 .tile__content {
-  width: 100%;
+  height: $tileHeight;
+  width: $tileHeight;
   display: block;
   margin: 0;
-  height: 100%;
   padding: 10px;
 
   text-align: center;
@@ -62,8 +62,10 @@ $tileHeight--small: 150px;
   background-color: $theme__color__grey;
 
   &:hover {
-    color: $theme__color__white;
+    background-color: $theme__color__green;
+
     text-decoration: none;
+    color: $theme__color__white;
   }
 }
 
