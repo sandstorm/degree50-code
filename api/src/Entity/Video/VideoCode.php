@@ -33,7 +33,7 @@ class VideoCode
     private ?string $description = '';
 
     /**
-     * @ORM\ManyToMany(targetEntity=ExercisePhase::class, inversedBy="videoCodes")
+     * @ORM\ManyToMany(targetEntity=ExercisePhase::class, mappedBy="videoCodes")
      */
     private Collection $exercisePhases;
 
@@ -80,24 +80,6 @@ class VideoCode
     public function getExercisePhases(): Collection
     {
         return $this->exercisePhases;
-    }
-
-    public function addExercisePhase(ExercisePhase $exercisePhase): self
-    {
-        if (!$this->exercisePhases->contains($exercisePhase)) {
-            $this->exercisePhases[] = $exercisePhase;
-        }
-
-        return $this;
-    }
-
-    public function removeExercisePhase(ExercisePhase $exercisePhase): self
-    {
-        if ($this->exercisePhases->contains($exercisePhase)) {
-            $this->exercisePhases->removeElement($exercisePhase);
-        }
-
-        return $this;
     }
 
     public function getColor(): ?string

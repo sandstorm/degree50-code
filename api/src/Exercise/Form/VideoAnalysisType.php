@@ -6,6 +6,7 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoCode;
+use App\Repository\Video\VideoCodeRepository;
 use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -15,14 +16,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class VideoAnalysisType extends ExercisePhaseType
 {
     private VideoRepository $videoRepository;
+    private VideoCodeRepository $videoCodeRepository;
 
     /**
      * VideoAnalysisType constructor.
      * @param VideoRepository $videoRepository
      */
-    public function __construct(VideoRepository $videoRepository)
+    public function __construct(VideoRepository $videoRepository, VideoCodeRepository $videoCodeRepository)
     {
         $this->videoRepository = $videoRepository;
+        $this->videoCodeRepository = $videoCodeRepository;
     }
 
 
@@ -38,11 +41,8 @@ class VideoAnalysisType extends ExercisePhaseType
             $componentChoices[$component] = $component;
         }
 
-        $currentCourse = $data->getBelongsToExcercise()->getCourse();
-        // TODO maybe use a VideoDoctrineFilter like the CourseDoctrineFilter.php
-        // depending on the user, you only see videos that are assigned to courses you are a member of
-        // but thats maybe a good way for the mediathek but not for the creation of exercises...?
-        $videoChoices = $this->videoRepository->findByCourse($currentCourse);
+        $videoChoices = $this->videoRepository->findByCourse($data->getBelongsToExcercise()->getCourse());
+        $videoCodeChoices = $this->videoCodeRepository->findAll();
 
         $builder
             ->add('videos', EntityType::class, [
@@ -55,6 +55,7 @@ class VideoAnalysisType extends ExercisePhaseType
             ])
             ->add('videoCodes', EntityType::class, [
                 'class' => VideoCode::class,
+                'choices' => $videoCodeChoices,
                 'required' => false,
                 'choice_label' => 'name',
                 'multiple' => true,
