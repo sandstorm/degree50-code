@@ -7,8 +7,16 @@
     <p>
         Beschreibung: {{ video.description }}
     </p>
-    <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] } | json_encode|e('html_attr')}}"></div>
-    <hr />
-    <a class="btn btn-primary" href="{{ video.encodedVideoDirectory | virtualized_file_url }}/dash.mpd">Download als .mpd (dash)</a>
-    <a class="btn btn-primary" href="{{ video.encodedVideoDirectory | virtualized_file_url }}/hls.m3u8">Download als .m3u8 (hls)</a>
+    {% if video.encodingFinished %}
+        <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] } | json_encode|e('html_attr')}}"></div>
+        <hr />
+        <a class="btn btn-primary" href="{{ video.encodedVideoDirectory | virtualized_file_url }}/dash.mpd">Download als .mpd (dash)</a>
+        <a class="btn btn-primary" href="{{ video.encodedVideoDirectory | virtualized_file_url }}/hls.m3u8">Download als .m3u8 (hls)</a>
+    {% else %}
+        <div class="alert alert-danger">
+            Video-Encoding läuft noch...
+        </div>
+    {% endif %}
+
+
 {% endblock %}

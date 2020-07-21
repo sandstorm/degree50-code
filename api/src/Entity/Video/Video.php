@@ -71,6 +71,11 @@ class Video
     private $dataPrivacyAccepted;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $encodingFinished;
+
+    /**
      * Video constructor.
      * @param string $id
      */
@@ -79,6 +84,7 @@ class Video
         $this->generateOrSetId($id);
         $this->videoAnalysisTypes = new ArrayCollection();
         $this->courses = new ArrayCollection();
+        $this->encodingFinished = false;
     }
 
     /**
@@ -233,5 +239,21 @@ class Video
         $this->dataPrivacyAccepted = $dataPrivacyAccepted;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEncodingFinished(): bool
+    {
+        return $this->encodingFinished;
+    }
+
+    /**
+     * @param bool $encodingFinished
+     */
+    public function setEncodingFinished(bool $encodingFinished): void
+    {
+        $this->encodingFinished = $encodingFinished;
     }
 }
