@@ -50,20 +50,21 @@ const en = {
     'subtitle-text': '[Subtitle Text]',
     'time-offset': 'Time Offset:',
     'google-translate': 'Google Translate:',
-};
+}
 
 export default {
     en,
-};
+}
 
 export const names = {
     en: 'EN',
-};
+}
 
-export const getName = key => {
+export const getName = (key: string) => {
     return (
+        // @ts-ignore disable-line
         {
             en: 'en',
         }[key] || 'en'
-    );
-};
+    )
+}

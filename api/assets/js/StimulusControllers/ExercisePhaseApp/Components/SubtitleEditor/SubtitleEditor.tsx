@@ -27,7 +27,7 @@ export type Subtitle = {
     start: string
     end: string
     text: string
-    color: string
+    color: string | null
 }
 
 const mapStateToProps = (state: any) => {
