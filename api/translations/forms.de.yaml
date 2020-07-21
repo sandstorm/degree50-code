@@ -15,6 +15,10 @@ exercise:
     title: 'Neue Aufgabe anlegen'
     messages:
       success: 'Aufgabe erfolgreich angelegt!'
+  showSolution:
+    title: 'Lösungen ansehen'
+    messages:
+      error: 'Lösung kann nicht angesehen werden!'
   edit:
     title: 'Aufgabe bearbeiten'
     messages:

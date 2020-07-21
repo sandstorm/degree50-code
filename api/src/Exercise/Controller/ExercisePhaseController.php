@@ -59,10 +59,12 @@ class ExercisePhaseController extends AbstractController
      * @Route("/exercise-phase/show/{id}/{team_id}", name="app_exercise-phase-show")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
-    public function show(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function show(Request $request, ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         /* @var User $user */
         $user = $this->getUser();
+
+        $readOnly = $request->get('readOnly');
 
         // config for the ui to render the react components
         $config = [
@@ -72,6 +74,7 @@ class ExercisePhaseController extends AbstractController
             'components' => $exercisePhase->getComponents(),
             'userId' => $user->getId(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
+            'readOnly' => $readOnly,
             'apiEndpoints' => [
               'updateSolution' => $this->router->generate('app_exercise-phase-update-solution', [
                   'id' => $exercisePhase->getId(),
@@ -308,7 +311,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("updateSolution", subject="exercisePhase")
+     * @IsGranted("updateSolution", subject="exercisePhaseTeam")
      * @Route("/exercise-phase/update-solution/{id}/{team_id}", name="app_exercise-phase-update-solution")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */

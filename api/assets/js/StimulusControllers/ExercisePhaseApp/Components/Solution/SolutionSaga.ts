@@ -67,6 +67,10 @@ function* handleMessages(channel: EventChannel<unknown>) {
 function* syncSolution() {
     const solution = selectSolution(yield select())
     const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution
+    // stop updating the solution if read only mode
+    if (selectConfig(yield select()).readOnly) {
+        return
+    }
 
     yield Axios.post(updateSolutionEndpoint, {
         solution: solution,
