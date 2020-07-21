@@ -32,6 +32,7 @@ class WebEncodingHandler implements MessageHandlerInterface
 
     public function __invoke(WebEncodingTask $encodingTask)
     {
+        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($encodingTask->getVideoId());
         if ($video === null) {
             $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
@@ -70,6 +71,7 @@ class WebEncodingHandler implements MessageHandlerInterface
         $this->fileSystemService->moveDirectory($outputDirectory, $encodingTask->getDesiredOutputDirectory());
 
         $video->setEncodedVideoDirectory($encodingTask->getDesiredOutputDirectory());
+        $video->setEncodingFinished(true);
 
         $this->eventStore->addEvent('VideoEncodedCompletely', [
             'videoId' => $video->getId(),

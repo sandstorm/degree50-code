@@ -61,6 +61,7 @@ class UploadListener
         $response = $event->getResponse();
 
         $video->setUploadedVideoFile($uploadedVideoFile);
+        $video->setDataPrivacyAccepted(false);
 
         $this->eventStore->addEvent('VideoUploaded', [
             'videoId' => $video->getId(),
