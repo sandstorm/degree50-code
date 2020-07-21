@@ -11,12 +11,12 @@ export type TeamMemberId = string
 export type TeamMember = {
     id: TeamMemberId
     name: string
+    connectionState: ConnectionState
 }
 
 export type PresenceState = {
     teamMemberIds: Array<TeamMemberId>
     teamMembersById: Record<TeamMemberId, TeamMember>
-    teamMemberConnectionState: Record<TeamMemberId, ConnectionState>
     error?: string
     isConnecting: boolean
 }
@@ -24,7 +24,6 @@ export type PresenceState = {
 const initialState: PresenceState = {
     teamMemberIds: [],
     teamMembersById: {},
-    teamMemberConnectionState: {},
     error: undefined,
     isConnecting: false,
 }
@@ -38,21 +37,8 @@ const PresenceSlice = createSlice({
             action: PayloadAction<PresenceState['teamMembersById']>
         ): PresenceState => ({
             ...state,
-            teamMemberIds: Object.keys(action.payload).reduce(
-                (teamMemberIds, id) => (teamMemberIds.includes(id) ? teamMemberIds : [...teamMemberIds, id]),
-                state.teamMemberIds
-            ),
-            teamMembersById: {
-                ...state.teamMembersById,
-                ...action.payload,
-            },
-        }),
-        setTeamMemberConnectionState: (
-            state: PresenceState,
-            action: PayloadAction<PresenceState['teamMemberConnectionState']>
-        ): PresenceState => ({
-            ...state,
-            teamMemberConnectionState: action.payload,
+            teamMemberIds: Object.keys(action.payload),
+            teamMembersById: action.payload,
         }),
         setIsConnecting: (state: PresenceState, action: PayloadAction<boolean>): PresenceState => ({
             ...state,
@@ -72,6 +58,5 @@ export default PresenceSlice.reducer
 
 export const selectTeamMemberIds = (state: AppState) => state.presence.teamMemberIds
 export const selectTeamMemberById = (id: TeamMemberId, state: AppState) => state.presence.teamMembersById[id]
-export const selectTeamMemberConnectionStateById = (id: TeamMemberId, state: AppState) =>
-    state.presence.teamMemberConnectionState[id]
+export const selectTeamMembersById = (state: AppState) => state.presence.teamMembersById
 export const selectIsConnecting = (state: AppState) => state.presence.isConnecting

@@ -13,6 +13,7 @@ import { select } from 'redux-saga/effects'
 import { all, spawn, call } from 'redux-saga/effects'
 import presenceSaga from '../Components/Presence/PresenceSaga'
 import solutionSaga from '../Components/Solution/SolutionSaga'
+import currentEditorReducer from '../Components/Presence/CurrentEditorSlice'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -26,6 +27,7 @@ export const store = configureStore({
         overlay: overlayReducer,
         materialViewer: materialViewerReducer,
         presence: presenceReducer,
+        currentEditor: currentEditorReducer,
     },
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
 })

@@ -5,6 +5,8 @@ import Axios from 'axios'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 import { Solution, setSolution, selectSolution } from './SolutionSlice'
 import { selectConfig } from '../Config/ConfigSlice'
+import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
+import { initPresenceAction } from '../Presence/PresenceSaga'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -26,7 +28,8 @@ function* solutionSyncListener() {
         const eventSource = new EventSource(mercureUrl.toString())
         const eventChannel = yield call(connect, eventSource)
 
-        // TODO if is leader -> do not listen
+        yield put(initPresenceAction())
+
         const messageHandler = yield fork(handleMessages, eventChannel)
 
         // wait for disconnect by user
@@ -40,7 +43,7 @@ function* solutionSyncListener() {
 function connect(eventSource: EventSource) {
     return eventChannel((emit) => {
         eventSource.onmessage = (ev) => {
-            emit(updateSolutionAction(ev.data)) // the payload is irrelevant because we call the subscription api anyways
+            emit(updateSolutionAction(ev.data))
         }
 
         return () => {
@@ -53,7 +56,14 @@ function* handleMessages(channel: EventChannel<unknown>) {
     try {
         while (true) {
             const action = yield take(channel)
-            const solution: Solution = yield JSON.parse(action.payload).solution
+
+            // set currentEditor
+            const eventData = yield JSON.parse(action.payload)
+            const currentEditor: string = eventData.currentEditor
+            yield put(setCurrentEditorId(currentEditor))
+
+            // set solution
+            const solution: Solution = eventData.solution
             yield put(setSolution(solution))
         }
     } finally {
@@ -64,15 +74,21 @@ function* handleMessages(channel: EventChannel<unknown>) {
     }
 }
 
+/**
+ * Upload solution if user is currentEditor
+ */
 function* syncSolution() {
-    const solution = selectSolution(yield select())
-    const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution
-    // stop updating the solution if read only mode
-    if (selectConfig(yield select()).readOnly) {
-        return
-    }
+    const config = selectConfig(yield select())
+    if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
+        const solution = selectSolution(yield select())
+        const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution
 
-    yield Axios.post(updateSolutionEndpoint, {
-        solution: solution,
-    })
+        try {
+            yield Axios.post(updateSolutionEndpoint, {
+                solution,
+            })
+        } catch (e) {
+            console.warn('>>>>> updateSolution', e)
+        }
+    }
 }
