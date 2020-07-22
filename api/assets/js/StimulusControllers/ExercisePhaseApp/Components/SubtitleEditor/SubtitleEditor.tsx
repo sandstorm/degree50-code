@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import { setAnnotations, setVideoCodes } from '../Solution/SolutionSlice'
 import { useAppDispatch, useAppSelector } from '../../Store/Store'
 import { syncSolutionAction } from '../Solution/SolutionSaga'
-import { selectConfig } from '../Config/ConfigSlice'
+import { selectConfig, selectUserId } from '../Config/ConfigSlice'
 import { selectCurrentEditorId } from '../Presence/CurrentEditorSlice'
 
 setTranslations(i18n)
@@ -49,7 +49,7 @@ type AdditionalProps = {
 type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
 const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
-    const userId = useAppSelector(selectConfig).userId
+    const userId = useAppSelector(selectUserId)
     const currentEditorId = useAppSelector(selectCurrentEditorId)
     const dispatch = useAppDispatch()
     const updateSubtitles = (subtitles: Array<Subtitle>) => {

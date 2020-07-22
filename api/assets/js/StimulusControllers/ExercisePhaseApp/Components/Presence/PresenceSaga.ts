@@ -1,4 +1,4 @@
-import { call, cancel, cancelled, fork, put, select, take, takeLatest, debounce } from 'redux-saga/effects'
+import { call, cancel, cancelled, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import { eventChannel, EventChannel } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
@@ -11,13 +11,18 @@ import {
 } from './PresenceSlice'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 import { selectCurrentEditorId } from './CurrentEditorSlice'
-import { selectConfig } from '../Config/ConfigSlice'
-import { selectSolution } from '../Solution/SolutionSlice'
+import { selectConfig, selectUserId } from '../Config/ConfigSlice'
 
 export const initPresenceAction = createAction('Presence/Saga/init')
 export const disconnectPresenceAction = createAction('Presence/Saga/disconnect')
 const eventStreamOpenedAction = createAction('Presence/Saga/eventStreamOpened')
 const eventStreamMessageAction = createAction('Presence/Saga/eventStreamMessage')
+export const promoteUserToCurrentEditorAction = createAction(
+    'Presence/Saga/promoteUserToCurrentEditor',
+    (userId: string) => ({
+        payload: { userId },
+    })
+)
 
 /**
  * TODO:
@@ -30,6 +35,7 @@ export default function* presenceSaga() {
     yield takeLatest(initPresenceAction, presenceListener)
     yield takeLatest(eventStreamOpenedAction, fetchSubscriptions)
     yield debounce(PRESENCE_DEBOUNCE_MS, eventStreamMessageAction, fetchSubscriptions)
+    yield takeLatest(promoteUserToCurrentEditorAction, promoteUserToCurrentEditor)
 }
 
 // presenceListenerLifeCycle
@@ -178,7 +184,7 @@ function* fetchSubscriptions() {
 
     // if the currentEditor leaves the next teamMember automatically becomes the currentEditor
     const currentEditorId = selectCurrentEditorId(yield select())
-    const userId = selectConfig(yield select()).userId
+    const userId = selectUserId(yield select())
 
     if (currentEditorId && updatedTeamMembers[currentEditorId].connectionState !== ConnectionState.CONNECTED) {
         const newEditorId = getNewEditorId(updatedTeamMembers)
@@ -187,11 +193,27 @@ function* fetchSubscriptions() {
             try {
                 Axios.post(selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
                     currentEditorCandidateId: newEditorId,
-                    solution: selectSolution(yield select()),
                 })
             } catch (e) {
                 console.warn('>>>>> updateCurrentEditor', e)
             }
+        }
+    }
+}
+
+function* promoteUserToCurrentEditor(action: ReturnType<typeof promoteUserToCurrentEditorAction>) {
+    const userId = selectUserId(yield select())
+    const currentEditorId = selectCurrentEditorId(yield select())
+
+    const { userId: userIdToPromote } = action.payload
+
+    if (userId === currentEditorId) {
+        try {
+            Axios.post(selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
+                currentEditorCandidateId: userIdToPromote,
+            })
+        } catch (e) {
+            console.warn('>>>>> updateCurrentEditor', e)
         }
     }
 }
