@@ -57,7 +57,7 @@
                                         {% if is_granted('show', team) %}
                                             <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id }) }}">Phase starten</a>
                                         {% else %}
-                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'readOnly': true }) }}">Ergebnis ansehen</a>
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis ansehen</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -89,7 +89,7 @@
                         </div>
                     {% else %}
                         <div tabindex="0" class="tile" >
-                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'readOnly': true }) }}">
+                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">
                                 <i class="tile__icon fas fa-user"></i>
                                 <span>Ergebnis von <br />{{ team.creator.username }}</span>
                             </a>
