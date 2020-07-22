@@ -77,7 +77,8 @@ class LiveSyncService
             'teamMembers' => array_map(function (User $member) {
                 return [
                     'id' => $member->getId(),
-                    'name' => $member->getUsername()
+                    'name' => $member->getUsername(),
+                    'connectionState' => 'UNKNOWN'
                 ];
             }, $exercisePhaseTeam->getMembers()->toArray())
         ];

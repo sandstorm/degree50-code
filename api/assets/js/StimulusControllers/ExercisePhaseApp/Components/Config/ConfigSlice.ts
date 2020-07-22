@@ -9,6 +9,7 @@ export type ComponentId = ComponentTypesEnum
 
 export type ApiEndpoints = {
     updateSolution: string
+    updateCurrentEditor: string
 }
 
 export type VideoCode = {
@@ -45,6 +46,7 @@ const initialState: Config = {
     videoCodes: [],
     apiEndpoints: {
         updateSolution: '',
+        updateCurrentEditor: '',
     },
 }
 

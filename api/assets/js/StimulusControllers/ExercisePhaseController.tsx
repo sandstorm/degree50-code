@@ -7,17 +7,17 @@ import { ExercisePhaseApp } from './ExercisePhaseApp/ExercisePhaseApp'
 import { hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setSolution } from './ExercisePhaseApp/Components/Solution/SolutionSlice'
 import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
-import { initPresenceAction } from './ExercisePhaseApp/Components/Presence/PresenceSaga'
 import { presenceActions, PresenceState, TeamMember } from './ExercisePhaseApp/Components/Presence/PresenceSlice'
 import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { Config } from './ExercisePhaseApp/Components/Config/ConfigSlice'
+import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 
 export default class extends Controller {
     connect() {
         const propsAsString = this.data.get('props')
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-        const { liveSyncConfig, solution } = props
+        const { liveSyncConfig, solution, currentEditor } = props
         const config = props.config as Config
 
         // set initial Redux state
@@ -26,8 +26,8 @@ export default class extends Controller {
         store.dispatch(setSolution(solution))
 
         if (config.isGroupPhase && !config.readOnly) {
+            store.dispatch(setCurrentEditorId(currentEditor))
             store.dispatch(initSolutionSyncAction())
-            store.dispatch(initPresenceAction())
             store.dispatch(
                 presenceActions.setTeamMembers(
                     liveSyncConfig.teamMembers.reduce(
