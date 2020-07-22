@@ -8,6 +8,10 @@
 
 .subtitles__table {
   font-size: $base__fontSize--tiny;
+
+  > div {
+    width: 100% !important;
+  }
 }
 
 .subtitles__row {

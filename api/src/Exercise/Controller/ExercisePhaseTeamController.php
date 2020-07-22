@@ -3,10 +3,13 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\Solution;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Exercise\LiveSync\LiveSyncService;
+use App\Repository\Exercise\AutosavedSolutionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,14 +25,22 @@ class ExercisePhaseTeamController extends AbstractController
 {
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
+    private AutosavedSolutionRepository $autosavedSolutionRepository;
+    private LiveSyncService $liveSyncService;
 
     /**
+     * ExercisePhaseTeamController constructor.
      * @param TranslatorInterface $translator
+     * @param DoctrineIntegratedEventStore $eventStore
+     * @param AutosavedSolutionRepository $autosavedSolutionRepository
+     * @param LiveSyncService $liveSyncService
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
+        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
+        $this->liveSyncService = $liveSyncService;
     }
 
     /**
@@ -147,7 +158,124 @@ class ExercisePhaseTeamController extends AbstractController
 
         // TODO change route from int to id of phase
         return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
-
     }
 
+    /**
+     * @Route("/exercise-phase/share-result/{id}", name="app_exercise-phase-team-share-result")
+     */
+    public function shareResult(ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $solution = $exercisePhaseTeam->getSolution();
+        $solution->setTeam($exercisePhaseTeam);
+
+        // use solution of the latest autosaved one
+        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(['team' => $exercisePhaseTeam], ['update_timestamp' => 'desc']);
+        if ($latestAutosavedSolution) {
+            $solution->setSolution($latestAutosavedSolution->getSolution());
+            $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
+        }
+
+        // remove autosaved solutions
+        $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();
+        foreach ($autosavedSolutions as $autosavedSolution) {
+            $entityManager->remove($autosavedSolution);
+        }
+
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+        $this->eventStore->addEvent('SolutionShared', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'solutionId' => $solution->getId()
+        ]);
+
+        $entityManager->persist($solution);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+    }
+
+    /**
+     * Try to create a new AutosaveSolution and then publish the most recent version of the solution.
+     *
+     * @IsGranted("updateSolution", subject="exercisePhaseTeam")
+     * @Route("/exercise-phase/update-solution/{id}", name="app_exercise-phase-team-update-solution")
+     */
+    public function updateSolution(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        /* @var User $user */
+        $user = $this->getUser();
+        $response = null;
+        $solutionFromJson = json_decode($request->getContent(), true);
+
+        // If current user is not current editor && there is a solution -> discard
+        if ($user === $exercisePhaseTeam->getCurrentEditor()) {
+            $autosaveSolution = new AutosavedSolution();
+            $autosaveSolution->setTeam($exercisePhaseTeam);
+            $autosaveSolution->setSolution($solutionFromJson['solution']);
+            $autosaveSolution->setOwner($user);
+
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($autosaveSolution);
+            $entityManager->flush();
+
+            $response = Response::create('OK');
+        } else {
+            $response = Response::create('Not editor!', Response::HTTP_FORBIDDEN);
+        }
+
+        // Why: send solution even if the user was not allowed to
+        // This will reset the state in the client to the actual state
+
+        $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
+
+        // push solution to clients
+        $this->liveSyncService->publish($exercisePhaseTeam, ['solution' => $solution, 'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()]);
+
+        return $response;
+    }
+
+    /**
+     * Try to update the currentEditor of the TeamPhase and then publish the most recent solution
+     *
+     * @IsGranted("updateSolution", subject="exercisePhaseTeam")
+     * @Route("/exercise-phase/update-current-editor/{id}", name="app_exercise-phase-team-update-current-editor")
+     */
+    public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        $user = $this->getUser();
+        // get teamMember with the candidate id
+        $currentEditorCandidateIdFromJson = json_decode($request->getContent(), true)['currentEditorCandidateId'];
+        $currentEditorCandidate = $exercisePhaseTeam->getMembers()->filter(function (User $member) use ($currentEditorCandidateIdFromJson) {
+            return $member->getId() === $currentEditorCandidateIdFromJson;
+        })->first();
+
+        if ($currentEditorCandidate) {
+            $isAlreadySet = $currentEditorCandidate === $exercisePhaseTeam->getCurrentEditor();
+            $userIsCandidate = $currentEditorCandidate === $user;
+            $userIsCurrentEditor = $user === $exercisePhaseTeam->getCurrentEditor();
+
+            // let only future currentEditor make the change
+            if (!$isAlreadySet && ($userIsCandidate || $userIsCurrentEditor)) {
+                $exercisePhaseTeam->setCurrentEditor($currentEditorCandidate);
+                // Why: We do not need the event info about the currentEditor
+                $this->eventStore->disableEventPublishingForNextFlush();
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($exercisePhaseTeam);
+                $entityManager->flush();
+
+                $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
+
+                // push new state to clients
+                $this->liveSyncService->publish($exercisePhaseTeam, ['solution' => $solution, 'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()]);
+                return Response::create('OK');
+            } else {
+                return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);
+            }
+        } else {
+            return Response::create('currentEditor candidate is not member of exercisePhaseTeam!', Response::HTTP_FORBIDDEN);
+        }
+    }
 }
