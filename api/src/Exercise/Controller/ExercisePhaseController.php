@@ -397,11 +397,10 @@ class ExercisePhaseController extends AbstractController
         if ($currentEditorCandidate) {
             $isAlreadySet = $currentEditorCandidate === $exercisePhaseTeam->getCurrentEditor();
             $userIsCandidate = $currentEditorCandidate === $user;
+            $userIsCurrentEditor = $user === $exercisePhaseTeam->getCurrentEditor();
 
             // let only future currentEditor make the change
-            if ($isAlreadySet || !$userIsCandidate) {
-                return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);
-            } else {
+            if (!$isAlreadySet && ($userIsCandidate || $userIsCurrentEditor)) {
                 $exercisePhaseTeam->setCurrentEditor($currentEditorCandidate);
                 // Why: We do not need the event info about the currentEditor
                 $this->eventStore->disableEventPublishingForNextFlush();
@@ -414,6 +413,8 @@ class ExercisePhaseController extends AbstractController
                 // push new state to clients
                 $this->liveSyncService->publish($exercisePhaseTeam, ['solution' => $solution, 'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()]);
                 return Response::create('OK');
+            } else {
+                return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);
             }
         } else {
             return Response::create('currentEditor candidate is not member of exercisePhaseTeam!', Response::HTTP_FORBIDDEN);

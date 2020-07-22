@@ -64,5 +64,6 @@ export const configSlice = createSlice({
 export const { hydrateConfig } = configSlice.actions
 
 export const selectConfig = (state: AppState) => state.config
+export const selectUserId = (state: AppState) => state.config.userId
 
 export default configSlice.reducer
