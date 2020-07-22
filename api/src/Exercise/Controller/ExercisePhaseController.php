@@ -64,7 +64,7 @@ class ExercisePhaseController extends AbstractController
         /* @var User $user */
         $user = $this->getUser();
 
-        $readOnly = $request->get('readOnly');
+        $showSolution = $request->get('showSolution');
 
         // config for the ui to render the react components
         $config = [
@@ -74,7 +74,7 @@ class ExercisePhaseController extends AbstractController
             'components' => $exercisePhase->getComponents(),
             'userId' => $user->getId(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
-            'readOnly' => $readOnly,
+            'readOnly' => $showSolution,
             'apiEndpoints' => [
               'updateSolution' => $this->router->generate('app_exercise-phase-update-solution', [
                   'id' => $exercisePhase->getId(),
@@ -119,7 +119,12 @@ class ExercisePhaseController extends AbstractController
             $solution = $latestAutosavedSolution->getSolution();
         }
 
-        return $this->render('ExercisePhase/Show.html.twig', [
+        $template = 'ExercisePhase/Show.html.twig';
+        if ($showSolution) {
+            $template = 'ExercisePhase/ShowSolution.html.twig';
+        }
+
+        return $this->render($template, [
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,

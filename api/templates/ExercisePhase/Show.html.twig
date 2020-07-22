@@ -5,20 +5,16 @@
 {% block layoutCssClass %}main--with-footer main--without-scrollbar{% endblock %}
 
 {% block body %}
-    <div class="exercise-phase" data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
+    <div class="exercise-phase exercise-phase--with-toolbar" data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
         <div class="loading-screen">
             <i class="fas fa-spinner fa-spin"></i>
         </div>
     </div>
     <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting, showSolution: config.readOnly}) }}">Zurück</a>
+        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting}) }}">Zurück</a>
         <span>Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
-        {% if config.readOnly %}
-            <a class="btn btn-primary disabled" href="#">Ergebnis teilen</a>
-        {% else %}
-            {% if is_granted('updateSolution', exercisePhaseTeam) %}
-                <a class="btn btn-primary" href="{{ path('app_exercise-phase-share-result', {id: exercisePhase.id, team_id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
-            {% endif %}
+        {% if is_granted('updateSolution', exercisePhaseTeam) %}
+            <a class="btn btn-primary" href="{{ path('app_exercise-phase-share-result', {id: exercisePhase.id, team_id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
         {% endif %}
     </footer>
 {% endblock %}

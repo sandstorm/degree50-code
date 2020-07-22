@@ -25,7 +25,7 @@ export default class extends Controller {
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(setSolution(solution))
 
-        if (config.isGroupPhase) {
+        if (config.isGroupPhase && !config.readOnly) {
             store.dispatch(initSolutionSyncAction())
             store.dispatch(initPresenceAction())
             store.dispatch(
@@ -44,7 +44,7 @@ export default class extends Controller {
         ReactDOM.render(
             <React.StrictMode>
                 <Provider store={store}>
-                    <ExercisePhaseApp type={config.type} />
+                    <ExercisePhaseApp type={config.type} readOnly={config.readOnly} />
                 </Provider>
             </React.StrictMode>,
             this.element
