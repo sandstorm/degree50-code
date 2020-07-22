@@ -16,8 +16,10 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { connect } from 'react-redux'
 import { setAnnotations, setVideoCodes } from '../Solution/SolutionSlice'
-import { useAppDispatch } from '../../Store/Store'
+import { useAppDispatch, useAppSelector } from '../../Store/Store'
 import { syncSolutionAction } from '../Solution/SolutionSaga'
+import { selectConfig } from '../Config/ConfigSlice'
+import { selectCurrentEditorId } from '../Presence/CurrentEditorSlice'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
@@ -47,16 +49,24 @@ type AdditionalProps = {
 type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
 const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
+    const userId = useAppSelector(selectConfig).userId
+    const currentEditorId = useAppSelector(selectCurrentEditorId)
     const dispatch = useAppDispatch()
     const updateSubtitles = (subtitles: Array<Subtitle>) => {
-        dispatch(setAnnotations(JSON.parse(JSON.stringify(subtitles))))
-        // @ts-ignore
-        dispatch(syncSolutionAction())
+        // Why: only change state if user is currentEditor
+        if (userId === currentEditorId) {
+            dispatch(setAnnotations(JSON.parse(JSON.stringify(subtitles))))
+            // @ts-ignore
+            dispatch(syncSolutionAction())
+        }
     }
     const updateVideoCodes = (videoCodes: Array<Subtitle>) => {
-        dispatch(setVideoCodes(JSON.parse(JSON.stringify(videoCodes))))
-        // @ts-ignore
-        dispatch(syncSolutionAction())
+        // Why: only change state if user is currentEditor
+        if (userId === currentEditorId) {
+            dispatch(setVideoCodes(JSON.parse(JSON.stringify(videoCodes))))
+            // @ts-ignore
+            dispatch(syncSolutionAction())
+        }
     }
 
     const [height, setHeight] = useState(0)
