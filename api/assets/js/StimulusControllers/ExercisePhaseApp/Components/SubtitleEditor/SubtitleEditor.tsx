@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import { setAnnotations, setVideoCodes } from '../Solution/SolutionSlice'
 import { useAppDispatch, useAppSelector } from '../../Store/Store'
 import { syncSolutionAction } from '../Solution/SolutionSaga'
-import { selectConfig, selectUserId } from '../Config/ConfigSlice'
+import { selectReadOnly, selectUserId } from '../Config/ConfigSlice'
 import { selectCurrentEditorId } from '../Presence/CurrentEditorSlice'
 
 setTranslations(i18n)
@@ -50,11 +50,12 @@ type SubtitleEditorProps = AdditionalProps & ReturnType<typeof mapStateToProps> 
 
 const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
     const userId = useAppSelector(selectUserId)
+    const readOnly = useAppSelector(selectReadOnly)
     const currentEditorId = useAppSelector(selectCurrentEditorId)
     const dispatch = useAppDispatch()
     const updateSubtitles = (subtitles: Array<Subtitle>) => {
         // Why: only change state if user is currentEditor
-        if (userId === currentEditorId) {
+        if (userId === currentEditorId || !readOnly) {
             dispatch(setAnnotations(JSON.parse(JSON.stringify(subtitles))))
             // @ts-ignore
             dispatch(syncSolutionAction())
@@ -62,7 +63,7 @@ const SubtitleEditorWrapper: React.FC<SubtitleEditorProps> = (props) => {
     }
     const updateVideoCodes = (videoCodes: Array<Subtitle>) => {
         // Why: only change state if user is currentEditor
-        if (userId === currentEditorId) {
+        if (userId === currentEditorId || !readOnly) {
             dispatch(setVideoCodes(JSON.parse(JSON.stringify(videoCodes))))
             // @ts-ignore
             dispatch(syncSolutionAction())

@@ -23,7 +23,11 @@ const renderConnectionState = (connectionState: ConnectionState) => {
 }
 
 const renderUserRoleState = (currentEditor: TeamMemberId | undefined, teamMemberId: TeamMemberId) => {
-    return currentEditor === teamMemberId ? <i className="fas fa-crown" /> : null
+    return currentEditor === teamMemberId ? (
+        <i className="fas fa-crown presence__team-member-role" />
+    ) : (
+        <i className="fas fa-user presence__team-member-role" />
+    )
 }
 
 const TeamMembersListItem: React.FC<TeamMembersListItemProps> = ({
@@ -38,16 +42,19 @@ const TeamMembersListItem: React.FC<TeamMembersListItemProps> = ({
 
     const canBePromotedToCurrentEditor =
         teamMember.connectionState === ConnectionState.CONNECTED && teamMember.id !== currentEditor
-
     const isCurrentEditor = userId === currentEditor
 
     return (
         <li className={className}>
             <span>
-                {teamMember.name} {renderUserRoleState(currentEditor, teamMember.id)}
+                {renderUserRoleState(currentEditor, teamMember.id)} {teamMember.name}
             </span>
-            {isCurrentEditor && (
-                <button disabled={!canBePromotedToCurrentEditor} onClick={promoteTeamMemberToCurrentEditor}>
+            {isCurrentEditor && canBePromotedToCurrentEditor && (
+                <button
+                    className={'btn btn-outline-primary btn-sm'}
+                    disabled={!canBePromotedToCurrentEditor}
+                    onClick={promoteTeamMemberToCurrentEditor}
+                >
                     Promote
                 </button>
             )}
