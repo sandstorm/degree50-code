@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import isEqual from 'lodash/isEqual'
-import { notify, secondToTime, getKeyCode } from '../utils'
+import { notify, secondToTime, getKeyCode } from '../../../utils'
 import { t, Translate } from 'react-i18nify'
-import { Tabs } from './App'
-import Sub from '../subtitle/sub'
-import { Render } from './Footer'
+import { Tabs } from '../../App'
+import MediaItem from '../../../subtitle/MediatItem'
+import { RenderConfig } from '../MediaTrack'
 
-function getCurrentSubs(subs: Sub[], beginTime: number, duration: number): Sub[] {
+function getCurrentSubs(subs: MediaItem[], timelineStartTime: number, duration: number): MediaItem[] {
     return subs.filter((item) => {
         return (
-            (item.startTime >= beginTime && item.startTime <= beginTime + duration) ||
-            (item.endTime >= beginTime && item.endTime <= beginTime + duration)
+            (item.startTime >= timelineStartTime && item.startTime <= timelineStartTime + duration) ||
+            (item.endTime >= timelineStartTime && item.endTime <= timelineStartTime + duration)
         )
     })
 }
 
 let lastTarget: HTMLElement | null | undefined = undefined
-let lastSub: Sub | undefined = undefined
+let lastSub: MediaItem | undefined = undefined
 let lastType = ''
 let lastX = 0
 let lastIndex = -1
@@ -29,19 +29,19 @@ type Props = {
         seek: number
         duration: number
     }
-    subtitles: Sub[]
-    render: Render
+    subtitles: MediaItem[]
+    render: RenderConfig
     currentTime: number
-    checkSubtitle: (sub: Sub) => boolean
-    removeSubtitle: (sub?: Sub) => void
-    addSubtitle: (index: number, sub?: Sub) => void
-    updateSubtitle: (sub: Sub | undefined, key: string | Object, value?: string) => void // FIXME refine key
-    hasSubtitle: (sub?: Sub) => number
-    mergeSubtitle: (sub?: Sub) => void
+    checkSubtitle: (sub: MediaItem) => boolean
+    removeSubtitle: (sub?: MediaItem) => void
+    addSubtitle: (index: number, sub?: MediaItem) => void
+    updateSubtitle: (sub: MediaItem | undefined, key: string | Object, value?: string) => void // FIXME refine key
+    hasSubtitle: (sub?: MediaItem) => number
+    mergeSubtitle: (sub?: MediaItem) => void
     activeTab: string
 }
 
-const Block = ({
+const MediaItems = ({
     player,
     subtitles,
     render,
@@ -61,11 +61,11 @@ const Block = ({
     const $blockRef: React.RefObject<HTMLDivElement> = React.createRef()
     const $contextMenuRef: React.RefObject<HTMLDivElement> = React.createRef()
     const $subsRef: React.RefObject<HTMLDivElement> = React.createRef()
-    const currentSubs = getCurrentSubs(subtitles, render.beginTime, render.duration)
+    const currentSubs = getCurrentSubs(subtitles, render.timelineStartTime, render.duration)
     const gridGap = document.body.clientWidth / render.gridNum
     const currentIndex = currentSubs.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime)
 
-    const onContextMenu = (sub: Sub, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const onContextMenu = (sub: MediaItem, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         lastSub = sub
         event.preventDefault()
         const $subs = event.target as HTMLDivElement
@@ -99,7 +99,7 @@ const Block = ({
     )
 
     // FIXME refine type
-    const onMouseDown = (sub: Sub, event: React.MouseEvent<HTMLDivElement, MouseEvent>, type: string = '') => {
+    const onMouseDown = (sub: MediaItem, event: React.MouseEvent<HTMLDivElement, MouseEvent>, type: string = '') => {
         isDroging = true
         lastSub = sub
         lastType = type
@@ -324,7 +324,9 @@ const Block = ({
                             key={key}
                             style={{
                                 backgroundColor: sub.color ? sub.color : '',
-                                left: render.padding * gridGap + (sub.startTime - render.beginTime) * gridGap * 10,
+                                left:
+                                    render.padding * gridGap +
+                                    (sub.startTime - render.timelineStartTime) * gridGap * 10,
                                 width: (sub.endTime - sub.startTime) * gridGap * 10,
                             }}
                             onClick={() => {
@@ -369,7 +371,7 @@ const Block = ({
     )
 }
 
-export default React.memo(Block, (prevProps, nextProps) => {
+export default React.memo(MediaItems, (prevProps, nextProps) => {
     return (
         isEqual(prevProps.subtitles, nextProps.subtitles) &&
         isEqual(prevProps.render, nextProps.render) &&

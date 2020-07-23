@@ -1,5 +1,5 @@
 import { getExt, secondToTime } from '../utils'
-import Sub from './sub'
+import MediaItem from './MediatItem'
 
 export function checkIsFile(source: unknown): boolean {
     return source instanceof File
@@ -204,7 +204,7 @@ export async function getSubFromVttUrl(url: string) {
                     // FIXME
                     // @ts-ignore disable-line
                     const text = item.text
-                    return new Sub(start, end, text)
+                    return new MediaItem(start, end, text)
                 })
             )
         }

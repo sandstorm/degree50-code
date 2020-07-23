@@ -1,4 +1,4 @@
-.subtitle-editor-block {
+.video-editor__media-items {
   position: absolute;
   top: 0;
   right: 0;
@@ -11,7 +11,7 @@
   z-index: 9;
 }
 
-.subtitle-editor-block__contextmenu {
+.video-editor__media-items__contextmenu {
   position: absolute;
   left: 0;
   top: 0;
@@ -20,7 +20,7 @@
   pointer-events: all;
 }
 
-.subtitle-editor-block__contextmenu-item {
+.video-editor__media-items__contextmenu-item {
   height: 30px;
   padding: 0 10px;
 
@@ -41,7 +41,7 @@
   }
 }
 
-.subtitle-editor-block__item {
+.video-editor__media-items__item {
   position: absolute;
   top: 0;
   left: 0;
@@ -80,7 +80,7 @@
   }
 }
 
-.subtitle-editor-block__text {
+.video-editor__media-items__text {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -98,7 +98,7 @@
   }
 }
 
-.subtitle-editor-block__handle {
+.video-editor__media-items__handle {
   position: absolute;
   top: 0;
   bottom: 0;

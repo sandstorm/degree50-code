@@ -1,24 +1,24 @@
 import React from 'react'
 import unescape from 'lodash/unescape'
-import Sub from '../subtitle/sub'
+import MediaItem from '../subtitle/MediatItem'
 
 type Props = {
     key: string
     index: number
     style: Object
     currentIndex: number
-    checkSubtitle: (sub: Sub) => boolean
-    rowData: Sub
+    checkSubtitle: (sub: MediaItem) => boolean
+    rowData: MediaItem
     player?: {
         pause: boolean
         duration: number
         seek: number
     }
-    removeSubtitle: (sub: Sub) => void
-    addSubtitle: (index: number, sub?: Sub) => void
-    updateSubtitle: (sub: Sub, key: string, value: string) => void
-    onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: Sub | null, key: string) => void
-    onMouseMove: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: Sub | null, key: string) => void
+    removeSubtitle: (sub: MediaItem) => void
+    addSubtitle: (index: number, sub?: MediaItem) => void
+    updateSubtitle: (sub: MediaItem, key: string, value: string) => void
+    onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: MediaItem | null, key: string) => void
+    onMouseMove: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: MediaItem | null, key: string) => void
     onMouseUp: () => void
 }
 

@@ -3,18 +3,18 @@ import { Table } from 'react-virtualized'
 import debounce from 'lodash/debounce'
 import clamp from 'lodash/clamp'
 import { timeToSecond, secondToTime } from '../utils'
-import Sub from '../subtitle/sub'
+import MediaItem from '../subtitle/MediatItem'
 import SubtitleRow from './SubtitleRow'
 import { Player } from './types'
 
 export type Props = {
     player?: Player
-    subtitles: Sub[]
-    addSubtitle: (index: number, sub?: Sub) => void
+    subtitles: MediaItem[]
+    addSubtitle: (index: number, sub?: MediaItem) => void
     currentIndex: number
-    updateSubtitle: (sub: Sub | null, key: string, lastValue: string) => void
-    removeSubtitle: (sub: Sub) => void
-    checkSubtitle: (sub: Sub) => boolean
+    updateSubtitle: (sub: MediaItem | null, key: string, lastValue: string) => void
+    removeSubtitle: (sub: MediaItem) => void
+    checkSubtitle: (sub: MediaItem) => boolean
 }
 
 const Subtitle = ({
@@ -28,18 +28,18 @@ const Subtitle = ({
 }: Props) => {
     let isDroging = false
     let lastPageX = 0
-    let lastSub: Sub | null = null
+    let lastSub: MediaItem | null = null
     let lastKey = ''
     let lastValue = ''
 
-    function onMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: Sub | null, key: string) {
+    function onMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: MediaItem | null, key: string) {
         isDroging = true
         lastPageX = event.pageX
         lastSub = sub
         lastKey = key
     }
 
-    function onMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: Sub | null, key: string) {
+    function onMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: MediaItem | null, key: string) {
         if (isDroging) {
             const time = Number(((event.pageX - lastPageX) / 10).toFixed(3))
 
