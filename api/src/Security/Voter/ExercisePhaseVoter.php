@@ -15,10 +15,11 @@ class ExercisePhaseVoter extends Voter
     const SHOW = 'show';
     const NEXT = 'next';
     const DELETE = 'delete';
+    const SHOW_SOLUTIONS = 'showSolutions';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE])) {
+        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::SHOW_SOLUTIONS])) {
             return false;
         }
 
@@ -51,6 +52,9 @@ class ExercisePhaseVoter extends Voter
                 return $this->canGetToNextPhase($exercisePhase, $user);
             case self::DELETE:
                 return $this->canDelete($exercisePhase, $user);
+            case self::SHOW_SOLUTIONS:
+                return $this->canShowSolutions($exercisePhase, $user);
+
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -71,6 +75,11 @@ class ExercisePhaseVoter extends Voter
 
     // TODO can only delete exercisePhases which have no results/teams
     private function canDelete(ExercisePhase $exercisePhase, User $user)
+    {
+        return $user === $exercisePhase->getBelongsToExcercise()->getCreator();
+    }
+
+    private function canShowSolutions(ExercisePhase $exercisePhase, User $user)
     {
         return $user === $exercisePhase->getBelongsToExcercise()->getCreator();
     }

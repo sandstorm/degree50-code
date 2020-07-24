@@ -36,6 +36,7 @@
 @import "Composites/VideoPlayer/VideoPlayerWrapper";
 @import "Composites/ExercisePhase/ExercisePhase";
 @import "Composites/ExercisePhase/VideoAnalysis";
+@import "Composites/Solutions/Solutions";
 @import "Composites/Toolbar/Toolbar";
 @import "Composites/Modal/Modal";
 @import "Composites/Overlay/Overlay";
@@ -44,6 +45,8 @@
 @import "Composites/LoadingScreen/LoadingScreen";
 @import "Composites/Presence/Presence";
 @import "Composites/Navigation/Navigation";
+@import "Composites/Teams/Teams";
+@import "Composites/Teams/Team";
 
 @import "Composites/SubtitleEditor/SubtitleEditor";
 @import "Composites/SubtitleEditor/Subtitles";

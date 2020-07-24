@@ -1,0 +1,16 @@
+{% extends 'BaseNoHeader.html.twig' %}
+
+{% block title %}{{ exercisePhase.name }}{% endblock %}
+
+{% block layoutCssClass %}main--with-footer main--without-scrollbar{% endblock %}
+
+{% block body %}
+    <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {solutions: solutions, config: config} |json_encode|e('html_attr') }}">
+        <div class="loading-screen">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </div>
+    <footer class="footer">
+        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting, showSolution: true}) }}">Zurück</a>
+    </footer>
+{% endblock %}

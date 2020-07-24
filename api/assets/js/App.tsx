@@ -15,6 +15,7 @@ import FileuploadController from './StimulusControllers/FileUploadController'
 import ReactController from './StimulusControllers/ReactController'
 import CollectionHandlingController from './StimulusControllers/CollectionHandlingController'
 import ExercisePhaseController from './StimulusControllers/ExercisePhaseController'
+import SolutionsController from './StimulusControllers/SolutionsController'
 
 const application = Application.start()
 
@@ -22,3 +23,4 @@ application.register('fileupload', FileuploadController)
 application.register('react', ReactController)
 application.register('collectionHandling', CollectionHandlingController)
 application.register('exercisePhase', ExercisePhaseController)
+application.register('solutions', SolutionsController)
