@@ -3,7 +3,6 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
-use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
@@ -67,51 +66,18 @@ class ExercisePhaseController extends AbstractController
         $showSolution = $request->get('showSolution');
 
         // config for the ui to render the react components
-        $config = [
-            'title' => $exercisePhase->getName(),
-            'description' => $exercisePhase->getTask(),
-            'type' => $exercisePhase->getType(),
-            'components' => $exercisePhase->getComponents(),
-            'userId' => $user->getId(),
-            'isGroupPhase' => $exercisePhase->isGroupPhase(),
-            'readOnly' => $showSolution,
-            'apiEndpoints' => [
-                'updateSolution' => $this->router->generate('app_exercise-phase-team-update-solution', [
-                    'id' => $exercisePhaseTeam->getId()
-                ]),
-                'updateCurrentEditor' => $this->router->generate('app_exercise-phase-team-update-current-editor', [
-                    'id' => $exercisePhaseTeam->getId()
-                ]),
-            ],
-            'videoCodes' => array_map(function (VideoCode $videoCode) {
-                return [
-                    'id' => $videoCode->getId(),
-                    'name' => $videoCode->getName(),
-                    'description' => $videoCode->getDescription(),
-                    'color' => $videoCode->getColor(),
-                ];
-            }, $exercisePhase->getVideoCodes()->toArray()),
-            'material' => array_map(function (Material $entry) {
-                return [
-                    'id' => $entry->getId(),
-                    'name' => $entry->getName(),
-                    'type' => $entry->getMimeType(),
-                    'url' => $this->generateUrl('app_material-download', ['id' => $entry->getId()])
-                ];
-            }, $exercisePhase->getMaterial()->toArray()),
-            'videos' => array_map(function (Video $video) {
-                $videoUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
-                return [
-                    'id' => $video->getId(),
-                    'name' => $video->getTitle(),
-                    'description' => $video->getDescription(),
-                    'url' => $videoUrl . '/hls.m3u8'
-                ];
-            }, $exercisePhase->getVideos()->toArray())
+        $config = $this->getConfig($exercisePhase, $showSolution);
+        $config['apiEndpoints'] = [
+            'updateSolution' => $this->router->generate('app_exercise-phase-team-update-solution', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
+            'updateCurrentEditor' => $this->router->generate('app_exercise-phase-team-update-current-editor', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
         ];
 
         $response = new Response();
-        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($this->getUser()));
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user));
 
         $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
 
@@ -145,7 +111,69 @@ class ExercisePhaseController extends AbstractController
         ], $response);
     }
 
+    private function getConfig($exercisePhase, $readOnly = false)
+    {
+        /* @var User $user */
+        $user = $this->getUser();
 
+        return [
+            'title' => $exercisePhase->getName(),
+            'description' => $exercisePhase->getTask(),
+            'type' => $exercisePhase->getType(),
+            'components' => $exercisePhase->getComponents(),
+            'userId' => $user->getId(),
+            'isGroupPhase' => $exercisePhase->isGroupPhase(),
+            'readOnly' => $readOnly,
+            'videoCodes' => array_map(function (VideoCode $videoCode) {
+                return [
+                    'id' => $videoCode->getId(),
+                    'name' => $videoCode->getName(),
+                    'description' => $videoCode->getDescription(),
+                    'color' => $videoCode->getColor(),
+                ];
+            }, $exercisePhase->getVideoCodes()->toArray()),
+            'material' => array_map(function (Material $entry) {
+                return [
+                    'id' => $entry->getId(),
+                    'name' => $entry->getName(),
+                    'type' => $entry->getMimeType(),
+                    'url' => $this->generateUrl('app_material-download', ['id' => $entry->getId()])
+                ];
+            }, $exercisePhase->getMaterial()->toArray()),
+            'videos' => array_map(function (Video $video) {
+                $videoUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
+                return [
+                    'id' => $video->getId(),
+                    'name' => $video->getTitle(),
+                    'description' => $video->getDescription(),
+                    'url' => $videoUrl . '/hls.m3u8'
+                ];
+            }, $exercisePhase->getVideos()->toArray())
+        ];
+    }
+
+    /**
+     * @IsGranted("showSolutions", subject="exercisePhase")
+     * @Route("/exercise-phase/show-solutions/{id}", name="app_exercise-phase-show-solutions")
+     */
+    public function showSolutions(Request $request, ExercisePhase $exercisePhase): Response
+    {
+        $solutions = array_map(function (ExercisePhaseTeam $team) {
+            return [
+                'teamCreator' => $team->getCreator()->getUsername(),
+                'teamMembers' => array_map(function (User $member) {
+                    return $member->getUsername();
+                }, $team->getMembers()->toArray()),
+                'solution' => $team->getSolution()->getSolution(),
+            ];
+        }, $exercisePhase->getTeams()->toArray());
+
+        return $this->render('ExercisePhase/ShowSolutions.html.twig', [
+            'config' => $this->getConfig($exercisePhase, true),
+            'solutions' => $solutions,
+            'exercisePhase' => $exercisePhase,
+        ]);
+    }
 
     /**
      * @IsGranted("view", subject="exercise")
