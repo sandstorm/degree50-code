@@ -2,7 +2,7 @@ $modalHeaderHeight: 50px;
 
 .modal {
   position: fixed;
-  display: none;
+  display: flex;
   width: 100vw;
   height: 100vh;
   justify-content: center;
@@ -11,10 +11,6 @@ $modalHeaderHeight: 50px;
   background-color: transparentize($theme__color__black, 0.5);
 
   z-index: 9999;
-
-  &--is-visible {
-    display: flex;
-  }
 }
 
 .modal__inner {
