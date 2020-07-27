@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import Main from './Main'
-import Footer from './Footer'
-import Sub from '../subtitle/sub'
+import MediaLane from './MediaLane'
+import MediaItem from '../subtitle/MediatItem'
 import clamp from 'lodash/clamp'
 import { secondToTime, notify, timeToSecond } from '../utils'
 import { vttToUrlUseWorker } from '../subtitle'
@@ -12,7 +12,7 @@ import { t, setLocale } from 'react-i18nify'
 import { Player } from './types'
 import { Subtitle } from '../../SubtitleEditor'
 
-const history: Array<Sub[]> = []
+const history: Array<MediaItem[]> = []
 const storage = new Storage()
 const worker = new Worker(vttToUrlUseWorker())
 
@@ -48,15 +48,15 @@ const App = (props: Props) => {
     const [activeTab, setActiveTab] = useState(Tabs.ANNOTATIONS)
 
     // All subtitles
-    let subtitles: Sub[] = []
+    let mediaItems: MediaItem[] = []
 
     if (activeTab === Tabs.ANNOTATIONS) {
-        subtitles = props.subtitles.map((item) => new Sub(item.start, item.end, item.text))
-        if (subtitles.length === 0) {
-            subtitles = [new Sub('00:00:00.000', '00:00:01.000', t('Kommentar'))]
+        mediaItems = props.subtitles.map((item) => new MediaItem(item.start, item.end, item.text))
+        if (mediaItems.length === 0) {
+            mediaItems = [new MediaItem('00:00:00.000', '00:00:01.000', t('Kommentar'))]
         }
     } else if (activeTab === Tabs.VIDEO_CODES) {
-        subtitles = props.videoCodes.map((item) => new Sub(item.start, item.end, item.text, item.color))
+        mediaItems = props.videoCodes.map((item) => new MediaItem(item.start, item.end, item.text, item.color))
     }
 
     // All options
@@ -91,8 +91,8 @@ const App = (props: Props) => {
 
     // Only way to update all subtitles
 
-    const updateSubtitles = (subs: Sub[], saveToHistory = true) => {
-        if (subs.length && !isEqual(subs, subtitles)) {
+    const updateSubtitles = (subs: MediaItem[], saveToHistory = true) => {
+        if (subs.length && !isEqual(subs, mediaItems)) {
             if (activeTab === Tabs.ANNOTATIONS) {
                 props.updateSubtitles(subs)
                 // Convert subtitles to vtt url
@@ -116,55 +116,41 @@ const App = (props: Props) => {
         }
     }
 
-    // Initialize subtitles from url or storage
-    // const initSubtitles = useCallback(async () => {
-    //     const stateSubs = props.subtitles;
-    //     const storageSubs = storage.get('subtitles');
-    //     if (stateSubs) {
-    //         updateSubtitles(stateSubs.map(item => new Sub(item.start, item.end, item.text)));
-    //     } else if (storageSubs && storageSubs.length) {
-    //         updateSubtitles(storageSubs.map(item => new Sub(item.start, item.end, item.text)));
-    //     } else {
-    //         const subs = await getSubFromVttUrl(options.subtitleUrl);
-    //         updateSubtitles(subs);
-    //     }
-    // }, [options.subtitleUrl, updateSubtitles]);
-
     // Run only once
     useEffect(() => {
         updateLang(language)
-        setCurrentIndex(subtitles.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime))
+        setCurrentIndex(mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime))
         if (player && !worker.onmessage) {
             worker.onmessage = (event) => {
                 player.subtitle.switch(event.data)
             }
         }
-        worker.postMessage(props.subtitles.map((item) => new Sub(item.start, item.end, item.text)))
+        worker.postMessage(props.subtitles.map((item) => new MediaItem(item.start, item.end, item.text)))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [player])
 
     // Update current index from current time
     useMemo(() => {
-        setCurrentIndex(subtitles.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime))
+        setCurrentIndex(mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime))
     }, [currentTime, setCurrentIndex])
 
     // Detect if the subtitle exists
-    const hasSubtitle = useCallback((sub) => subtitles.indexOf(sub), [subtitles])
+    const hasSubtitle = useCallback((sub) => mediaItems.indexOf(sub), [mediaItems])
 
     // Copy all subtitles
-    const copySubtitles = useCallback(() => subtitles.map((sub) => sub.clone), [subtitles])
+    const copySubtitles = useCallback(() => mediaItems.map((sub) => sub.clone), [mediaItems])
 
     // Check if subtitle is legal
     const checkSubtitle = useCallback(
-        (sub: Sub): boolean => {
+        (sub: MediaItem): boolean => {
             const index = hasSubtitle(sub)
 
             if (index < 0) return false
 
-            const previous = subtitles[index - 1]
+            const previous = mediaItems[index - 1]
             return (previous && sub.startTime < previous.endTime) || !sub.check
         },
-        [hasSubtitle, subtitles]
+        [hasSubtitle, mediaItems]
     )
 
     // Update a single subtitle
@@ -214,7 +200,7 @@ const App = (props: Props) => {
                 const previous = subs[index - 1]
                 const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
                 const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-                const sub = new Sub(start, end, t('subtitle-text'))
+                const sub = new MediaItem(start, end, t('subtitle-text'))
                 //setCurrentTime(timeToSecond(start));
                 subs.splice(index, 0, sub)
             }
@@ -229,7 +215,7 @@ const App = (props: Props) => {
             const previous = subs[index - 1]
             const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
             const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-            const sub = new Sub(start, end, videoCode.name, videoCode.color)
+            const sub = new MediaItem(start, end, videoCode.name, videoCode.color)
 
             if (player) {
                 player.seek = timeToSecond(start)
@@ -249,7 +235,7 @@ const App = (props: Props) => {
             const subs = copySubtitles()
             const next = subs[index + 1]
             if (!hasSubtitle(next)) return
-            const merge = new Sub(sub.start, next.end, sub.text + '\n' + next.text)
+            const merge = new MediaItem(sub.start, next.end, sub.text + '\n' + next.text)
             subs[index] = merge
             subs.splice(index + 1, 1)
             updateSubtitles(subs)
@@ -259,7 +245,7 @@ const App = (props: Props) => {
 
     // Remove all subtitles
     const removeSubtitles = useCallback(() => {
-        updateSubtitles([new Sub('00:00:00.000', '00:00:01.000', t('subtitle-text'))])
+        updateSubtitles([new MediaItem('00:00:00.000', '00:00:01.000', t('subtitle-text'))])
     }, [updateSubtitles])
 
     // Undo subtitles
@@ -315,7 +301,7 @@ const App = (props: Props) => {
         player,
         options,
         language,
-        subtitles,
+        subtitles: mediaItems, // we have to keep this until the rest of the player has been refactored
         currentTime,
         currentIndex,
         activeTab,
@@ -340,12 +326,14 @@ const App = (props: Props) => {
         timeOffsetSubtitles,
         updateActiveTab,
         addVideoCode,
+        mediaItems,
+        updateMediaItem: updateSubtitle, // FIXME
     }
 
     return (
         <React.Fragment>
             <Main {...propsForEditor} />
-            <Footer {...propsForEditor} />
+            {player && <MediaLane {...propsForEditor} player={player} />}
             <ToastContainer />
         </React.Fragment>
     )

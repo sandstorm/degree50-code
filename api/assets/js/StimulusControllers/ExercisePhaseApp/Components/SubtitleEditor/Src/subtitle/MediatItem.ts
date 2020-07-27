@@ -1,7 +1,7 @@
 import clamp from 'lodash/clamp'
 import { timeToSecond, secondToTime } from '../utils'
 
-export default class Sub {
+export default class MediaItem {
     start: string
     end: string
     text: string
@@ -18,8 +18,8 @@ export default class Sub {
         return this.startTime >= 0 && this.endTime >= 0 && this.startTime < this.endTime
     }
 
-    get clone(): Sub {
-        return new Sub(this.start, this.end, this.text, this.color)
+    get clone(): MediaItem {
+        return new MediaItem(this.start, this.end, this.text, this.color)
     }
 
     get startTime(): number {

@@ -41,7 +41,7 @@ const en = {
     'file-size': 'File Size:',
     'decoding-progress': 'Decoding Progress:',
     'render-channel': 'Render Channel:',
-    'unit-duration': 'Unit Duration:',
+    zoom: 'Zoom',
     'height-zoom': 'Height Zoom:',
     'space-metronome': 'Space Metronome:',
     'export-image': 'Export Image',
