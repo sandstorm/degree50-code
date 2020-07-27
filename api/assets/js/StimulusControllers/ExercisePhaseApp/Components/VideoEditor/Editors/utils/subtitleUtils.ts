@@ -1,0 +1,68 @@
+import { getExt, secondToTime } from '.'
+import { MediaItem } from '../components/types'
+
+export function checkIsFile(source: unknown): boolean {
+    return source instanceof File
+}
+
+export function getType(source: File | string) {
+    return checkIsFile(source) ? getExt((source as File).name) : getExt(source as string)
+}
+
+export function vttToUrl(vtt: BlobPart) {
+    return URL.createObjectURL(
+        new Blob([vtt], {
+            type: 'text/vtt',
+        })
+    )
+}
+
+export function vttToUrlUseWorker() {
+    return URL.createObjectURL(
+        new Blob([
+            `onmessage = event => {
+                postMessage(URL.createObjectURL(
+                    new Blob([
+                        \`WEBVTT
+
+                        \${event.data.map((item, index) => \`
+                        \${index + 1}
+                        \${item.start} --> \${item.end}
+                        \${item.text}\`).join('\\n\\n')}
+                        \`
+                    ], {
+                        type: 'text/vtt',
+                    }),
+                ))
+            }`,
+        ])
+    )
+}
+
+export async function getSubFromVttUrl(url: string) {
+    return new Promise((resolve) => {
+        const $video = document.createElement('video')
+        const $track = document.createElement('track')
+        $track.default = true
+        $track.kind = 'metadata'
+        $video.appendChild($track)
+
+        $track.onload = () => {
+            resolve(
+                // FIXME
+                // @ts-ignore disable-line
+                Array.from($track.track.cues).map((item) => {
+                    const start = secondToTime(item.startTime)
+                    const end = secondToTime(item.endTime)
+
+                    // FIXME
+                    // @ts-ignore disable-line
+                    const text = item.text
+                    return new MediaItem(start, end, text)
+                })
+            )
+        }
+
+        $track.src = url
+    })
+}

@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../Store/Store'
-import { Subtitle } from '../SubtitleEditor/SubtitleEditor'
+import { MediaItem } from '../VideoEditor/Editors/components/types'
 
 export type Solution = {
-    annotations: Array<Subtitle>
-    videoCodes: Array<Subtitle>
+    annotations: Array<MediaItem>
+    videoCodes: Array<MediaItem>
 }
 
 const initialState: Solution = {
@@ -16,10 +16,10 @@ export const solutionSlice = createSlice({
     name: 'solution',
     initialState,
     reducers: {
-        setAnnotations: (state, action: PayloadAction<Array<Subtitle>>) => {
+        setAnnotations: (state, action: PayloadAction<Array<MediaItem>>) => {
             state.annotations = action.payload
         },
-        setVideoCodes: (state, action: PayloadAction<Array<Subtitle>>) => {
+        setVideoCodes: (state, action: PayloadAction<Array<MediaItem>>) => {
             state.videoCodes = action.payload
         },
         setSolution: (state, action: PayloadAction<Solution>) => {

@@ -1,7 +1,7 @@
 import clamp from 'lodash/clamp'
 import { timeToSecond, secondToTime } from '../utils'
 
-export default class MediaItem {
+export class MediaItem {
     start: string
     end: string
     text: string
@@ -41,4 +41,13 @@ export default class MediaItem {
     get duration(): string {
         return (this.endTime - this.startTime).toFixed(3)
     }
+}
+
+export type Player = {
+    pause: boolean
+    duration: number
+    seek: number
+    playing: boolean
+    currentTime: number
+    subtitle: { switch: Function } // FIXME
 }

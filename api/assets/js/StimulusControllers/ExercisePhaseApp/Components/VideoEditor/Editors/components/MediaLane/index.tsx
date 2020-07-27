@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef, useLayoutEffect, useEffect } from 'react'
 import MediaItems from './MediaItems'
-import MediaItem from '../../subtitle/MediatItem'
-import { Player } from '../types'
+import { Player, MediaItem } from '../types'
 import MediaTrack, { MediaTrackConfig } from './MediaTrack'
 import { RenderConfig } from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
@@ -11,14 +10,8 @@ import Toolbar from './Toolbar'
 type Props = {
     currentTime: number
     mediaItems: MediaItem[]
-    addSubtitle: (index: number, sub?: MediaItem) => void
     player: Player
-    checkSubtitle: (sub: MediaItem) => boolean
-    removeSubtitle: (sub?: MediaItem) => void
     updateMediaItem: (item: MediaItem | undefined, key: string | Object, value?: string) => void // FIXME refine key
-    hasSubtitle: (sub?: MediaItem) => number
-    mergeSubtitle: (sub?: MediaItem) => void
-    activeTab: string
     mediaTrackConfig?: MediaTrackConfig
 }
 
