@@ -4,6 +4,7 @@ import Toolbar from './Components/Toolbar/Toolbar'
 import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { ExercisePhaseTypesEnum } from './Store/ExercisePhaseTypesEnum'
 import Overlay from './Components/Overlay/Overlay'
+import { OverlayProvider } from '@react-aria/overlays'
 
 type ExercisePhaseProps = {
     type: ExercisePhaseTypesEnum
@@ -21,12 +22,14 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
     const toolbar = readOnly ? null : <Toolbar />
     return (
         <div className={'exercise-phase__inner'}>
-            <div className={'exercise-phase__content'} aria-hidden="false">
-                {exercisePhase}
-                <Overlay />
-                {toolbar}
-            </div>
-            <Modal />
+            <OverlayProvider>
+                <div className={'exercise-phase__content'}>
+                    {exercisePhase}
+                    <Overlay />
+                    {toolbar}
+                </div>
+                <Modal />
+            </OverlayProvider>
         </div>
     )
 }

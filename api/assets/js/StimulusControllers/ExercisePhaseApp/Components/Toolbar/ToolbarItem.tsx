@@ -1,5 +1,6 @@
 import React from 'react'
 import { Component } from './Toolbar'
+import Button from '../Button/Button'
 
 type ToolbarItemProps = {
     component: Component
@@ -8,13 +9,12 @@ type ToolbarItemProps = {
 
 export function ToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
     return (
-        <button
-            className={'toolbar-item btn btn-primary'}
-            title={component.label}
+        <Button
+            onPress={() => toggleComponent(component)}
             aria-label={component.label}
-            onClick={() => toggleComponent(component)}
+            className={'toolbar-item btn btn-primary'}
         >
             <i className={component.icon} />
-        </button>
+        </Button>
     )
 }
