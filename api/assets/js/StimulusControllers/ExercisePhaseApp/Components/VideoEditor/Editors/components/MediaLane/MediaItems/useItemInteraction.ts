@@ -133,16 +133,16 @@ export const useItemInteraction = (
             }
 
             lastTargetNode.style.transform = `translate(0)`
-
-            setLastClickedItemSide('center')
-            setLastPageX(0)
-            setLastDiffX(0)
-            setIsDraging(false)
-            setLastClickedItem(undefined)
-            setLastClickedItemIndex(0)
-            setLastTargetNode(undefined)
-            setLastTargetNodeWidth(0)
         }
+
+        setLastClickedItemSide('center')
+        setLastPageX(0)
+        setLastDiffX(0)
+        setIsDraging(false)
+        setLastClickedItem(undefined)
+        setLastClickedItemIndex(0)
+        setLastTargetNode(undefined)
+        setLastTargetNodeWidth(0)
     }, [
         gridGap,
         isDraging,
@@ -163,10 +163,6 @@ export const useItemInteraction = (
         setLastTargetNodeWidth,
     ])
 
-    // TODO
-    // maybe we can do better here. I tried to attach the listeners to a containerRef
-    // and to use synthetic events here, however I couldn't get it to work properly.
-    // Therefore the DOM event listeners...
     useEffect(() => {
         document.addEventListener('mousemove', onMouseMove)
         document.addEventListener('mouseup', onMouseUp)
