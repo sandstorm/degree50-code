@@ -1,5 +1,5 @@
 import VideoPlayer from '../StimulusControllers/ExercisePhaseApp/Components/VideoPlayer/VideoPlayer'
-import SubtitleEditor from '../StimulusControllers/ExercisePhaseApp/Components/SubtitleEditor/SubtitleEditor'
+import SubtitleEditor from '../StimulusControllers/ExercisePhaseApp/Components/VideoEditor/VideoEditor'
 
 export default {
     VideoPlayer: VideoPlayer,

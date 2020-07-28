@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import MediaItemType from '../../../subtitle/MediatItem'
+import { MediaItem as MediaItemType } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 
 type Props = {

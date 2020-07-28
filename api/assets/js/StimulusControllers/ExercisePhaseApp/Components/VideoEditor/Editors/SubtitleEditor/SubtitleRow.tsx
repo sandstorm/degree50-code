@@ -1,9 +1,10 @@
 import React from 'react'
 import unescape from 'lodash/unescape'
-import MediaItem from '../subtitle/MediatItem'
+import { MediaItem } from '../components/types'
 
 type Props = {
     key: string
+    id: string
     index: number
     style: Object
     currentIndex: number
@@ -23,7 +24,7 @@ type Props = {
 }
 
 const SubtitleRow = ({
-    key,
+    id,
     index,
     style,
     currentIndex,
@@ -39,7 +40,7 @@ const SubtitleRow = ({
 }: Props) => {
     return (
         <div
-            key={key}
+            key={id}
             className={[
                 'subtitles__row',
                 index % 2 ? 'subtitles__row--odd' : '',

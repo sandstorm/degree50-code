@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import ArtplayerComponent from 'artplayer-react'
 import Hls from 'hls.js'
-import isEqual from 'lodash/isEqual'
-import { Player } from './types'
+import { Player as PlayerType } from './types'
 
 export type PlayerOptions = {
     videoUrl: string
@@ -10,13 +9,22 @@ export type PlayerOptions = {
 }
 
 type Props = {
-    height: number
-    setPlayer: (player: Player) => void
+    setPlayer: (player: PlayerType) => void
     setCurrentTime: (time: number) => void
     options: PlayerOptions
 }
 
-const Player = ({ options, setPlayer, setCurrentTime, height }: Props) => {
+const Player = ({ options, setPlayer, setCurrentTime }: Props) => {
+    const [height, setHeight] = useState(200)
+
+    // Get initial height
+    useEffect(() => {
+        // FIXME use ref instead of direct DOM access
+        const container = document.getElementsByClassName('subtitle-editor__main')[0]
+        const clientHeight = container.clientHeight
+        setHeight(clientHeight)
+    }, [])
+
     return (
         <div className="subtitle-editor-player">
             <ArtplayerComponent
@@ -51,7 +59,7 @@ const Player = ({ options, setPlayer, setCurrentTime, height }: Props) => {
                         preload: 'auto',
                     },
                 }}
-                getInstance={(art: Player) => {
+                getInstance={(art: PlayerType) => {
                     setPlayer(art)
                     ;(function loop() {
                         window.requestAnimationFrame(() => {
@@ -73,6 +81,4 @@ const Player = ({ options, setPlayer, setCurrentTime, height }: Props) => {
     )
 }
 
-export default React.memo(Player, (prevProps, nextProps) => {
-    return isEqual(prevProps.height, nextProps.height)
-})
+export default React.memo(Player)

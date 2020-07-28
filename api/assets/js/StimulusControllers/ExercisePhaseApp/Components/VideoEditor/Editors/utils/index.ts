@@ -1,5 +1,5 @@
 import DT from 'duration-time-conversion'
-import { toast, TypeOptions, ToastOptions, ToastContent } from 'react-toastify'
+import { toast, TypeOptions } from 'react-toastify'
 
 export function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { d2t } from 'duration-time-conversion'
-import MediaItem from '../../../subtitle/MediatItem'
+import { MediaItem } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 
 const getVisibleItems = (items: MediaItem[], timelineStartTime: number, duration: number): MediaItem[] => {

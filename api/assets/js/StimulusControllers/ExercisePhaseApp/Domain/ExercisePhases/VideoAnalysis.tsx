@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import SubtitleEditor from '../../Components/SubtitleEditor/SubtitleEditor'
+import VideoEditor from '../../Components/VideoEditor/VideoEditor'
 import { selectConfig } from '../../Components/Config/ConfigSlice'
 import { selectSolution } from '../../Components/Solution/SolutionSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState) => {
 type VideoAnalysisProps = ReturnType<typeof mapStateToProps>
 
 const VideoAnalysis: React.FC<VideoAnalysisProps> = (props) => {
-    return <SubtitleEditor videos={props.videos} subtitles={props.annotations} videoCodes={props.videoCodes} />
+    return <VideoEditor videos={props.videos} />
 }
 
 export default connect(mapStateToProps)(VideoAnalysis)

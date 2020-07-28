@@ -3,9 +3,8 @@ import { Table } from 'react-virtualized'
 import debounce from 'lodash/debounce'
 import clamp from 'lodash/clamp'
 import { timeToSecond, secondToTime } from '../utils'
-import MediaItem from '../subtitle/MediatItem'
 import SubtitleRow from './SubtitleRow'
-import { Player } from './types'
+import { Player, MediaItem } from '../components/types'
 
 export type Props = {
     player?: Player
@@ -17,7 +16,7 @@ export type Props = {
     checkSubtitle: (sub: MediaItem) => boolean
 }
 
-const Subtitle = ({
+const Subtitles = ({
     player,
     subtitles,
     addSubtitle,
@@ -96,6 +95,7 @@ const Subtitle = ({
                 rowRenderer={(props) => (
                     <SubtitleRow
                         key={props.key}
+                        id={props.key}
                         rowData={props.rowData}
                         style={props.style}
                         index={props.index}
@@ -115,4 +115,4 @@ const Subtitle = ({
     )
 }
 
-export default Subtitle
+export default Subtitles

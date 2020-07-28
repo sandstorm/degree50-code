@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import MediaItem from './MediaItem'
-import MediaItemType from '../../../subtitle/MediatItem'
+import { MediaItem as MediaItemType } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { useItemInteraction } from './useItemInteraction'
 
