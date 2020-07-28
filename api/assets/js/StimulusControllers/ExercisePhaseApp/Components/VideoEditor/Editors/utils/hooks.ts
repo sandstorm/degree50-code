@@ -23,9 +23,9 @@ export const useMediaItemHandling = ({
     readOnly: boolean
     setMediaItems: (mediaItems: MediaItem[]) => unknown
     updateCallback: Function
-    worker: Worker
+    worker?: Worker
     storage: Storage
-    history: Array<MediaItem[]>
+    history?: Array<MediaItem[]>
 }) => {
     const defaultLang = storage.get('language') || navigator.language.toLowerCase() || 'en'
     const [language, setLanguage] = useState(defaultLang)
@@ -59,10 +59,12 @@ export const useMediaItemHandling = ({
             setMediaItems(JSON.parse(JSON.stringify(items)))
             updateCallback()
 
-            worker.postMessage(items)
+            if (worker) {
+                worker.postMessage(items)
+            }
 
             // Save 100 mediaItems to history
-            if (saveToHistory) {
+            if (history && saveToHistory) {
                 if (history.length >= 100) {
                     history.shift()
                 }
@@ -76,15 +78,17 @@ export const useMediaItemHandling = ({
         updateLang(language)
         setCurrentIndex(mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime))
 
-        if (player && !worker.onmessage) {
+        if (player && worker && !worker.onmessage) {
             worker.onmessage = (event) => {
                 player.subtitle.switch(event.data)
             }
         }
 
-        // Takes care of the mediaItems which overlay the video
-        worker.postMessage(mediaItems.map((item) => new MediaItem(item.start, item.end, item.text)))
-    }, [player])
+        if (worker) {
+            // Takes care of the mediaItems which overlay the video
+            worker.postMessage(mediaItems.map((item) => new MediaItem(item.start, item.end, item.text)))
+        }
+    }, [player, worker])
 
     // Update current index from current time
     useMemo(() => {
