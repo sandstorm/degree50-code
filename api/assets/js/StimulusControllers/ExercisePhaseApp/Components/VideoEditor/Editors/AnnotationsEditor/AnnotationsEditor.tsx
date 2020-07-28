@@ -13,14 +13,11 @@ import MediaLane from '../components/MediaLane'
 import PlayerComponent from '../components/Player'
 import Annotations from './Annotations'
 import { MediaItem } from '../components/types'
-import { vttToUrlUseWorker } from '../utils/subtitleUtils'
 import Storage from '../utils/storage'
 
 import { useMediaItemHandling } from '../utils/hooks'
 
-const history: Array<MediaItem[]> = []
 const storage = new Storage()
-const worker = new Worker(vttToUrlUseWorker())
 
 type OwnProps = {
     height: number
@@ -51,7 +48,9 @@ const AnnotationsEditor = (props: Props) => {
     const itemsFromAnnotations = props.annotations.map((sub) => new MediaItem(sub.start, sub.end, sub.text))
 
     const mediaItems: MediaItem[] =
-        itemsFromAnnotations.length >= 0 ? itemsFromAnnotations : [new MediaItem('00:00:00.000', '00:00:01.000', t('Kommentar'))]
+        itemsFromAnnotations.length >= 0
+            ? itemsFromAnnotations
+            : [new MediaItem('00:00:00.000', '00:00:01.000', t('Kommentar'))]
 
     // All options
     const firstVideoUrl = props.videos[0] ? props.videos[0].url : ''
@@ -80,9 +79,7 @@ const AnnotationsEditor = (props: Props) => {
         readOnly: props.readOnly,
         setMediaItems: props.setAnnotations,
         updateCallback: props.syncSolutionAction,
-        history,
         storage,
-        worker,
     })
 
     return (

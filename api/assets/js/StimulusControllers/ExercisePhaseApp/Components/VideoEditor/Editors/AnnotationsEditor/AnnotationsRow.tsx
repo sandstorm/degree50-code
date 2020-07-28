@@ -61,7 +61,11 @@ const AnnotationsRow = ({
             }}
         >
             <div className="subtitles__column subtitles__column--operation" style={{ width: 30 }}>
-                <i className="icon-trash-empty" onClick={() => removeAnnotation(rowData)} style={{ marginBottom: 5 }}></i>
+                <i
+                    className="icon-trash-empty"
+                    onClick={() => removeAnnotation(rowData)}
+                    style={{ marginBottom: 5 }}
+                ></i>
                 <i className="icon-plus" onClick={() => addAnnotation(index + 1)}></i>
             </div>
             <div className="subtitles__column subtitles__column--time" style={{ width: 150 }} onMouseUp={onMouseUp}>
