@@ -5,7 +5,7 @@ import { Player as PlayerType } from './types'
 
 export type PlayerOptions = {
     videoUrl: string
-    subtitleUrl: string
+    subtitleUrl?: string
 }
 
 type Props = {
@@ -51,9 +51,7 @@ const Player = ({ options, setPlayer, setCurrentTime }: Props) => {
                     fullscreen: true,
                     fullscreenWeb: true,
                     miniProgressBar: true,
-                    subtitle: {
-                        url: options.subtitleUrl,
-                    },
+                    ...(options.subtitleUrl ? { url: options.subtitleUrl } : {}),
                     moreVideoAttr: {
                         crossOrigin: 'anonymous',
                         preload: 'auto',

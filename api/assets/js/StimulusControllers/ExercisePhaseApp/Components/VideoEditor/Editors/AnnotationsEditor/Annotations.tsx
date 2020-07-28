@@ -3,27 +3,27 @@ import { Table } from 'react-virtualized'
 import debounce from 'lodash/debounce'
 import clamp from 'lodash/clamp'
 import { timeToSecond, secondToTime } from '../utils'
-import SubtitleRow from './SubtitleRow'
+import AnnotationsRow from './AnnotationsRow'
 import { Player, MediaItem } from '../components/types'
 
 export type Props = {
     player?: Player
-    subtitles: MediaItem[]
-    addSubtitle: (index: number, sub?: MediaItem) => void
+    annotations: MediaItem[]
+    addAnnotation: (index: number, sub?: MediaItem) => void
     currentIndex: number
-    updateSubtitle: (sub: MediaItem | null, key: string, lastValue: string) => void
-    removeSubtitle: (sub: MediaItem) => void
-    checkSubtitle: (sub: MediaItem) => boolean
+    updateAnnotation: (sub: MediaItem | null, key: string, lastValue: string) => void
+    removeAnnotation: (sub: MediaItem) => void
+    checkAnnotation: (sub: MediaItem) => boolean
 }
 
-const Subtitles = ({
+const Annotations = ({
     player,
-    subtitles,
-    addSubtitle,
+    annotations,
+    addAnnotation,
     currentIndex,
-    updateSubtitle,
-    removeSubtitle,
-    checkSubtitle,
+    updateAnnotation,
+    removeAnnotation,
+    checkAnnotation,
 }: Props) => {
     let isDroging = false
     let lastPageX = 0
@@ -51,7 +51,7 @@ const Subtitles = ({
     function onMouseUp() {
         if (isDroging) {
             if (lastSub && lastKey && lastValue) {
-                updateSubtitle(lastSub, lastKey, lastValue)
+                updateAnnotation(lastSub, lastKey, lastValue)
             }
             isDroging = false
             lastPageX = 0
@@ -89,21 +89,21 @@ const Subtitles = ({
                 height={height}
                 rowHeight={80}
                 scrollToIndex={currentIndex}
-                rowCount={subtitles.length}
-                rowGetter={({ index }) => subtitles[index]}
+                rowCount={annotations.length}
+                rowGetter={({ index }) => annotations[index]}
                 headerRowRenderer={() => null}
                 rowRenderer={(props) => (
-                    <SubtitleRow
+                    <AnnotationsRow
                         key={props.key}
                         id={props.key}
                         rowData={props.rowData}
                         style={props.style}
                         index={props.index}
                         player={player}
-                        checkSubtitle={checkSubtitle}
-                        removeSubtitle={removeSubtitle}
-                        addSubtitle={addSubtitle}
-                        updateSubtitle={updateSubtitle}
+                        checkAnnotation={checkAnnotation}
+                        removeAnnotation={removeAnnotation}
+                        addAnnotation={addAnnotation}
+                        updateAnnotation={updateAnnotation}
                         onMouseDown={onMouseDown}
                         onMouseMove={onMouseMove}
                         onMouseUp={onMouseUp}
@@ -115,4 +115,4 @@ const Subtitles = ({
     )
 }
 
-export default Subtitles
+export default Annotations

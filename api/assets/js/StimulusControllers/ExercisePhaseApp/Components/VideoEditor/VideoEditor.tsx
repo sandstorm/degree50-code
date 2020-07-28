@@ -14,7 +14,7 @@ import './Editors/fontello/css/fontello.css'
 import { TabTypes } from '../../../types'
 import { tabs } from './Tabs'
 import EditorTabs from './EditorTabs'
-import SubtitleEditor from './Editors/SubtitleEditor/SubtitleEditor'
+import AnnotationsEditor from './Editors/AnnotationsEditor/AnnotationsEditor'
 import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 
 setTranslations(i18n)
@@ -37,7 +37,7 @@ const VideoEditor: React.FC<Props> = (props) => {
     switch (activeTabId) {
         case TabTypes.ANNOTATIONS: {
             return (
-                <SubtitleEditor
+                <AnnotationsEditor
                     height={height}
                     videos={props.videos}
                     headerContent={<EditorTabs tabs={tabs} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />}

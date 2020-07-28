@@ -8,32 +8,32 @@ type Props = {
     index: number
     style: Object
     currentIndex: number
-    checkSubtitle: (sub: MediaItem) => boolean
+    checkAnnotation: (sub: MediaItem) => boolean
     rowData: MediaItem
     player?: {
         pause: boolean
         duration: number
         seek: number
     }
-    removeSubtitle: (sub: MediaItem) => void
-    addSubtitle: (index: number, sub?: MediaItem) => void
-    updateSubtitle: (sub: MediaItem, key: string, value: string) => void
+    removeAnnotation: (sub: MediaItem) => void
+    addAnnotation: (index: number, sub?: MediaItem) => void
+    updateAnnotation: (sub: MediaItem, key: string, value: string) => void
     onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: MediaItem | null, key: string) => void
     onMouseMove: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, sub: MediaItem | null, key: string) => void
     onMouseUp: () => void
 }
 
-const SubtitleRow = ({
+const AnnotationsRow = ({
     id,
     index,
     style,
     currentIndex,
-    checkSubtitle,
+    checkAnnotation,
     rowData,
     player,
-    removeSubtitle,
-    addSubtitle,
-    updateSubtitle,
+    removeAnnotation,
+    addAnnotation,
+    updateAnnotation,
     onMouseDown,
     onMouseMove,
     onMouseUp,
@@ -45,7 +45,7 @@ const SubtitleRow = ({
                 'subtitles__row',
                 index % 2 ? 'subtitles__row--odd' : '',
                 currentIndex === index ? 'subtitles__row--highlight' : '',
-                checkSubtitle(rowData) ? 'subtitles__row--illegal' : '',
+                checkAnnotation(rowData) ? 'subtitles__row--illegal' : '',
             ]
                 .join(' ')
                 .trim()}
@@ -61,8 +61,12 @@ const SubtitleRow = ({
             }}
         >
             <div className="subtitles__column subtitles__column--operation" style={{ width: 30 }}>
-                <i className="icon-trash-empty" onClick={() => removeSubtitle(rowData)} style={{ marginBottom: 5 }}></i>
-                <i className="icon-plus" onClick={() => addSubtitle(index + 1)}></i>
+                <i
+                    className="icon-trash-empty"
+                    onClick={() => removeAnnotation(rowData)}
+                    style={{ marginBottom: 5 }}
+                ></i>
+                <i className="icon-plus" onClick={() => addAnnotation(index + 1)}></i>
             </div>
             <div className="subtitles__column subtitles__column--time" style={{ width: 150 }} onMouseUp={onMouseUp}>
                 <div
@@ -90,11 +94,11 @@ const SubtitleRow = ({
                     spellCheck={false}
                     className="textarea"
                     value={unescape(rowData.text)}
-                    onChange={(event) => updateSubtitle(rowData, 'text', event.target.value)}
+                    onChange={(event) => updateAnnotation(rowData, 'text', event.target.value)}
                 />
             </div>
         </div>
     )
 }
 
-export default React.memo(SubtitleRow)
+export default React.memo(AnnotationsRow)

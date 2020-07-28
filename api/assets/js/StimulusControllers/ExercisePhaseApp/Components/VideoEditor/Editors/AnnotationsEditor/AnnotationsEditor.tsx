@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { t } from 'react-i18nify'
@@ -11,16 +11,13 @@ import { selectCurrentEditorId } from '../../../Presence/CurrentEditorSlice'
 
 import MediaLane from '../components/MediaLane'
 import PlayerComponent from '../components/Player'
-import Subtitles from './Subtitles'
+import Annotations from './Annotations'
 import { MediaItem } from '../components/types'
-import { vttToUrlUseWorker } from '../utils/subtitleUtils'
 import Storage from '../utils/storage'
 
 import { useMediaItemHandling } from '../utils/hooks'
 
-const history: Array<MediaItem[]> = []
 const storage = new Storage()
-const worker = new Worker(vttToUrlUseWorker())
 
 type OwnProps = {
     height: number
@@ -33,7 +30,7 @@ const mapStateToProps = (state: AppState) => {
         userId: selectUserId(state),
         readOnly: selectReadOnly(state),
         currentEditorId: selectCurrentEditorId(state),
-        subtitles: selectSolution(state).annotations,
+        annotations: selectSolution(state).annotations,
     }
 }
 
@@ -44,23 +41,25 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const SubtitleEditor = (props: Props) => {
+const AnnotationsEditor = (props: Props) => {
     const height = props.height
 
-    // All subtitles
-    const itemsFromSubs = props.subtitles.map((sub) => new MediaItem(sub.start, sub.end, sub.text))
+    // All annotations
+    const itemsFromAnnotations = props.annotations.map((sub) => new MediaItem(sub.start, sub.end, sub.text))
 
     const mediaItems: MediaItem[] =
-        itemsFromSubs.length >= 0 ? itemsFromSubs : [new MediaItem('00:00:00.000', '00:00:01.000', t('Kommentar'))]
+        itemsFromAnnotations.length >= 0
+            ? itemsFromAnnotations
+            : [new MediaItem('00:00:00.000', '00:00:01.000', t('Kommentar'))]
 
     // All options
     const firstVideoUrl = props.videos[0] ? props.videos[0].url : ''
-    const [options, setOptions] = useState({
+
+    const artPlayerOptions = {
         videoUrl: firstVideoUrl,
-        subtitleUrl: '/sample.vtt',
         uploadDialog: false,
         translationLanguage: 'en',
-    })
+    }
 
     const {
         currentIndex,
@@ -80,28 +79,26 @@ const SubtitleEditor = (props: Props) => {
         readOnly: props.readOnly,
         setMediaItems: props.setAnnotations,
         updateCallback: props.syncSolutionAction,
-        history,
         storage,
-        worker,
     })
 
     return (
         <React.Fragment>
             <div className="subtitle-editor__main" style={{ height: height - 200 }}>
                 <div className="subtitle-editor__section subtitle-editor__left">
-                    <PlayerComponent options={options} setPlayer={setPlayer} setCurrentTime={setCurrentTime} />
+                    <PlayerComponent options={artPlayerOptions} setPlayer={setPlayer} setCurrentTime={setCurrentTime} />
                 </div>
                 <div className="subtitle-editor__section subtitle-editor__right">
                     <header className="subtitle-editor__section-header">{props.headerContent}</header>
 
                     <div className="subtitle-editor__section-content">
-                        <Subtitles
-                            subtitles={mediaItems}
-                            addSubtitle={addMediaItem}
+                        <Annotations
+                            annotations={mediaItems}
+                            addAnnotation={addMediaItem}
                             currentIndex={currentIndex}
-                            updateSubtitle={updateMediaItem}
-                            removeSubtitle={removeMediaItem}
-                            checkSubtitle={checkMediaItem}
+                            updateAnnotation={updateMediaItem}
+                            removeAnnotation={removeMediaItem}
+                            checkAnnotation={checkMediaItem}
                         />
                     </div>
                 </div>
@@ -120,4 +117,4 @@ const SubtitleEditor = (props: Props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubtitleEditor)
+export default connect(mapStateToProps, mapDispatchToProps)(AnnotationsEditor)

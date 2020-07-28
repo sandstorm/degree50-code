@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
@@ -14,12 +14,9 @@ import VideoCodes from './VideoCodes'
 import { MediaItem } from '../components/types'
 import { secondToTime, timeToSecond } from '../utils'
 import { useMediaItemHandling } from '../utils/hooks'
-import { vttToUrlUseWorker } from '../utils/subtitleUtils'
 import Storage from '../utils/storage'
 
-const history: Array<MediaItem[]> = []
 const storage = new Storage()
-const worker = new Worker(vttToUrlUseWorker())
 
 type OwnProps = {
     height: number
@@ -53,12 +50,12 @@ const VideoCodeEditor = (props: Props) => {
 
     // All options
     const firstVideoUrl = props.videos[0] ? props.videos[0].url : ''
-    const [options, setOptions] = useState({
+
+    const artPlayerOptions = {
         videoUrl: firstVideoUrl,
-        subtitleUrl: '/sample.vtt', // called subtitle URL because
         uploadDialog: false,
         translationLanguage: 'en',
-    })
+    }
 
     const {
         currentTime,
@@ -76,9 +73,7 @@ const VideoCodeEditor = (props: Props) => {
         readOnly: props.readOnly,
         setMediaItems: props.setVideoCodes,
         updateCallback: props.syncSolutionAction,
-        history,
         storage,
-        worker,
     })
 
     const addVideoCode = useCallback(
@@ -103,7 +98,7 @@ const VideoCodeEditor = (props: Props) => {
         <React.Fragment>
             <div className="subtitle-editor__main" style={{ height: height - 200 }}>
                 <div className="subtitle-editor__section subtitle-editor__left">
-                    <PlayerComponent options={options} setPlayer={setPlayer} setCurrentTime={setCurrentTime} />
+                    <PlayerComponent options={artPlayerOptions} setPlayer={setPlayer} setCurrentTime={setCurrentTime} />
                 </div>
                 <div className="subtitle-editor__section subtitle-editor__right">
                     <header className="subtitle-editor__section-header">{props.headerContent}</header>
