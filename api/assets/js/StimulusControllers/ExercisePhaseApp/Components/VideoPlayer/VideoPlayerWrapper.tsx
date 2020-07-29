@@ -16,12 +16,17 @@ const mapStateToProps = (state: AppState) => ({
     videos: selectConfig(state).videos,
 })
 
-type VideoPlayerProps = ReturnType<typeof mapStateToProps>
+type AdditionalProps = {
+    updateCurrentTime: (time: number) => void
+    videoNodeRef: React.RefObject<HTMLVideoElement>
+}
 
-const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({ videos }) => {
+type VideoPlayerWrapperProps = AdditionalProps & ReturnType<typeof mapStateToProps>
+
+const VideoPlayerWrapper: React.FC<VideoPlayerWrapperProps> = (props) => {
     const [activeVideoIndex, setActiveVideoIndex] = useState(0)
 
-    const activeVideo = videos[activeVideoIndex]
+    const activeVideo = props.videos[activeVideoIndex]
 
     // recalculates when and only when the activeVideo changes
     const videoPlayerOptions: VideoJsPlayerOptions = useMemo(
@@ -38,7 +43,7 @@ const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({ videos }) => {
     )
 
     const actions = useMemo(() => {
-        const hasNextVideo = activeVideoIndex < videos.length - 1
+        const hasNextVideo = activeVideoIndex < props.videos.length - 1
         const handleNext = () => {
             if (hasNextVideo) {
                 setActiveVideoIndex(activeVideoIndex + 1)
@@ -51,7 +56,7 @@ const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({ videos }) => {
                 setActiveVideoIndex(activeVideoIndex - 1)
             }
         }
-        if (videos.length === 1) {
+        if (props.videos.length === 1) {
             return null
         }
         return (
@@ -64,7 +69,7 @@ const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({ videos }) => {
                 </button>
             </div>
         )
-    }, [videos, activeVideoIndex])
+    }, [props.videos, activeVideoIndex])
 
     return (
         <div className="video-player-wrapper" aria-label={''}>
@@ -73,7 +78,11 @@ const VideoPlayerWrapper: React.FC<VideoPlayerProps> = ({ videos }) => {
                     <header>
                         <h4>{activeVideo.name}</h4>
                     </header>
-                    <VideoPlayer {...videoPlayerOptions} />
+                    <VideoPlayer
+                        videoJsOptions={videoPlayerOptions}
+                        updateCurrentTime={props.updateCurrentTime}
+                        videoNodeRef={props.videoNodeRef}
+                    />
                     {activeVideo.description}
                 </div>
             </div>

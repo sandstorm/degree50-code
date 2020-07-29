@@ -63,7 +63,7 @@ const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosi
                     url: options.videoUrl,
                     customType: {
                         m3u8: function (video: HTMLMediaElement, url: string) {
-                            var hls = new Hls()
+                            const hls = new Hls()
                             hls.loadSource(url)
                             hls.attachMedia(video)
                             if (!video.src) {
