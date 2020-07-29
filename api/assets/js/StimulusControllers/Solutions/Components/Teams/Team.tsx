@@ -1,17 +1,18 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
 import { MediaItem } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/types'
-import ReadOnlyMediaLane from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 import { TabTypes } from '../../../types'
+import ReadOnlyMediaLane from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 
 type TeamProps = {
     solution: SolutionByTeam
     activeTab: string
     currentTime: number
+    currentZoom: number
     updateCurrentTime: (time: number) => void
 }
 
-export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, updateCurrentTime }) => {
+export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime }) => {
     const itemsFromAnnotations = solution.solution.annotations.map(
         (annotation) => new MediaItem(annotation.start, annotation.end, annotation.text)
     )
@@ -34,6 +35,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, up
             <div className={'team__solution'}>
                 <ReadOnlyMediaLane
                     currentTime={currentTime}
+                    currentZoom={currentZoom}
                     updateCurrentTime={updateCurrentTime}
                     mediaItems={mediaItems}
                 />

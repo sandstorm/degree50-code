@@ -21,13 +21,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
         }
     }, [props.videoNodeRef.current, props.videoJsOptions, player?.dispose])
 
-    // useEffect(() => {
-    //     const video = videojs(document.getElementById('video-js'))
-    //     if (video.paused()) {
-    //         video.currentTime(props.currentTime)
-    //     }
-    // }, [props.currentTime])
-
     const updateTime = (event: React.SyntheticEvent<HTMLVideoElement, Event>) => {
         props.updateCurrentTime(event.currentTarget.currentTime)
     }

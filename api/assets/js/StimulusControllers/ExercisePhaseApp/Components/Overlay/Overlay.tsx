@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import { selectComponent, selectIsVisible, selectSize, setOverlayVisibility } from './OverlaySlice'
 import FileUpload from '../FileUpload/FileUpload'
@@ -32,6 +32,10 @@ type OverlayProps = AdditionalProps & ReturnType<typeof mapStateToProps> & Retur
 
 const Overlay: React.FC<OverlayProps> = (props) => {
     let componentToRender = null
+    const videoNodeRef: React.RefObject<HTMLVideoElement> = useRef(null)
+    const updateCurrentTime = (time: number) => {
+        // nothing
+    }
     switch (props.component) {
         case ComponentTypesEnum.DOCUMENT_UPLOAD:
             componentToRender = <FileUpload />
@@ -40,7 +44,7 @@ const Overlay: React.FC<OverlayProps> = (props) => {
             componentToRender = <MaterialViewer />
             break
         case ComponentTypesEnum.VIDEO_PLAYER:
-            componentToRender = <VideoPlayerWrapper />
+            componentToRender = <VideoPlayerWrapper updateCurrentTime={updateCurrentTime} videoNodeRef={videoNodeRef} />
             break
         case ComponentTypesEnum.PRESENCE:
             componentToRender = <Presence />
