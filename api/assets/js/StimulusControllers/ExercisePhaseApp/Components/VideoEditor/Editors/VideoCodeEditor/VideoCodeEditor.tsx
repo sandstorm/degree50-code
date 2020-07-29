@@ -9,12 +9,13 @@ import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { selectCurrentEditorId } from '../../../Presence/CurrentEditorSlice'
 
 import MediaLane from '../components/MediaLane'
-import PlayerComponent from '../components/Player'
+import PlayerComponent from '../components/ArtPlayer'
 import VideoCodes from './VideoCodes'
 import { MediaItem } from '../components/types'
 import { secondToTime, timeToSecond } from '../utils'
-import { useMediaItemHandling } from '../utils/hooks'
+import { useMediaItemHandling, useMutablePlayer } from '../utils/hooks'
 import Storage from '../utils/storage'
+import { selectors, actions } from '../../PlayerSlice'
 
 const storage = new Storage()
 
@@ -30,12 +31,14 @@ const mapStateToProps = (state: AppState) => {
         readOnly: selectReadOnly(state),
         currentEditorId: selectCurrentEditorId(state),
         videoCodes: selectSolution(state).videoCodes,
+        playerSyncPlayPosition: selectors.selectSyncPlayPosition(state),
     }
 }
 
 const mapDispatchToProps = {
     setVideoCodes,
     syncSolutionAction,
+    setPlayPosition: actions.setPlayPosition,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
@@ -57,16 +60,7 @@ const VideoCodeEditor = (props: Props) => {
         translationLanguage: 'en',
     }
 
-    const {
-        currentTime,
-        player,
-
-        setPlayer,
-        setCurrentTime,
-        updateMediaItems,
-        updateMediaItem,
-        copyMediaItems,
-    } = useMediaItemHandling({
+    const { setCurrentTimeForMediaItems, updateMediaItems, updateMediaItem, copyMediaItems } = useMediaItemHandling({
         userId: props.userId,
         currentEditorId: props.currentEditorId,
         mediaItems,
@@ -84,9 +78,7 @@ const VideoCodeEditor = (props: Props) => {
             const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
             const code = new MediaItem(start, end, videoCode.name, videoCode.color)
 
-            if (player) {
-                player.seek = timeToSecond(start)
-            }
+            props.setPlayPosition(timeToSecond(start))
 
             videoCodes.splice(index, 0, code)
             updateMediaItems(videoCodes)
@@ -98,7 +90,7 @@ const VideoCodeEditor = (props: Props) => {
         <React.Fragment>
             <div className="video-editor__main" style={{ height: height - 200 }}>
                 <div className="video-editor__section video-editor__left">
-                    <PlayerComponent options={artPlayerOptions} setPlayer={setPlayer} setCurrentTime={setCurrentTime} />
+                    <PlayerComponent options={artPlayerOptions} currentTimeCallback={setCurrentTimeForMediaItems} />
                 </div>
                 <div className="video-editor__section video-editor__right">
                     <header className="video-editor__section-header">{props.headerContent}</header>
@@ -109,14 +101,12 @@ const VideoCodeEditor = (props: Props) => {
                 </div>
             </div>
 
-            {player && (
-                <MediaLane
-                    player={player}
-                    currentTime={currentTime}
-                    mediaItems={mediaItems}
-                    updateMediaItem={updateMediaItem}
-                />
-            )}
+            <MediaLane
+                currentTime={props.playerSyncPlayPosition}
+                mediaItems={mediaItems}
+                updateMediaItem={updateMediaItem}
+                setPlayPosition={props.setPlayPosition}
+            />
             <ToastContainer />
         </React.Fragment>
     )

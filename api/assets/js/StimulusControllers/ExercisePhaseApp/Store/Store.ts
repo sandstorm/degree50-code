@@ -14,12 +14,14 @@ import { all, spawn, call } from 'redux-saga/effects'
 import presenceSaga from '../Components/Presence/PresenceSaga'
 import solutionSaga from '../Components/Solution/SolutionSaga'
 import currentEditorReducer from '../Components/Presence/CurrentEditorSlice'
+import playerReducer from '../Components/VideoEditor/PlayerSlice'
 
 const sagaMiddleWare = createSagaMiddleware()
 
 export const store = configureStore({
     reducer: {
         toolbar: toolbarReducer,
+        player: playerReducer,
         modal: modalReducer,
         config: configReducer,
         liveSyncConfig: liveSyncConfigReducer,

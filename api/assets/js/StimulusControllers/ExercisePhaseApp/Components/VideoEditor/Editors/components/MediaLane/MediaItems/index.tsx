@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import { connect } from 'react-redux'
 import MediaItem from './MediaItem'
 import { MediaItem as MediaItemType } from '../../types'
 import { RenderConfig } from '../MediaTrack'
@@ -8,6 +9,7 @@ const renderItems = (
     mediaItems: MediaItemType[],
     renderConfig: RenderConfig,
     gridGap: number,
+    activeItemIndex: number,
     handlers: {
         onItemMouseDown: (
             event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -18,7 +20,15 @@ const renderItems = (
 ) =>
     mediaItems.map((item, index) => {
         return (
-            <MediaItem key={index} id={index} item={item} renderConfig={renderConfig} gridGap={gridGap} {...handlers} />
+            <MediaItem
+                key={index}
+                id={index}
+                item={item}
+                renderConfig={renderConfig}
+                gridGap={gridGap}
+                isPlayedBack={activeItemIndex === index}
+                {...handlers}
+            />
         )
     })
 
@@ -26,6 +36,7 @@ type Props = {
     mediaItems: MediaItemType[]
     renderConfig: RenderConfig
     gridGap: number
+    currentTime: number
     updateMediaItem: (
         item: MediaItemType,
         updatedValues: { start?: string; end?: string },
@@ -33,14 +44,15 @@ type Props = {
     ) => void
 }
 
-const MediaItems = ({ mediaItems, renderConfig, gridGap, updateMediaItem }: Props) => {
+const MediaItems = ({ mediaItems, renderConfig, gridGap, updateMediaItem, currentTime }: Props) => {
     const $mediaItemsRef: React.RefObject<HTMLDivElement> = useRef(null)
     const { onItemMouseDown } = useItemInteraction(mediaItems, renderConfig, gridGap, $mediaItemsRef, updateMediaItem)
+    const activeItemIndex = mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime)
 
     return (
         <div className="video-editor__media-items">
             <div ref={$mediaItemsRef}>
-                {renderItems(mediaItems, renderConfig, gridGap, {
+                {renderItems(mediaItems, renderConfig, gridGap, activeItemIndex, {
                     onItemMouseDown,
                 })}
             </div>
