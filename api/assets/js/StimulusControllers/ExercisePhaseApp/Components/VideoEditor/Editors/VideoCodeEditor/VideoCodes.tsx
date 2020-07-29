@@ -44,7 +44,7 @@ const VideoCode = ({ videoCodes, addVideoCode }: Props) => {
 
     if (hasNoVideoCodes) {
         return (
-            <div className="subtitle-editor__video-codes">
+            <div className="video-editor__video-codes">
                 <div className={'video-code'} style={{ backgroundColor: '#ccc' }}>
                     <span>Es stehen keine Video-Codes zur Auswahl für diese Aufgabe</span>
                 </div>
@@ -52,7 +52,7 @@ const VideoCode = ({ videoCodes, addVideoCode }: Props) => {
         )
     }
 
-    return <div className="subtitle-editor__video-codes">{renderVideoCodes(config.videoCodes, handleAdd)}</div>
+    return <div className="video-editor__video-codes">{renderVideoCodes(config.videoCodes, handleAdd)}</div>
 }
 
 export default VideoCode

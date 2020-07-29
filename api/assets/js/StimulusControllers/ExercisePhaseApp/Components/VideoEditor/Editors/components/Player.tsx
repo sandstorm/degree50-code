@@ -20,13 +20,13 @@ const Player = ({ options, setPlayer, setCurrentTime }: Props) => {
     // Get initial height
     useEffect(() => {
         // FIXME use ref instead of direct DOM access
-        const container = document.getElementsByClassName('subtitle-editor__main')[0]
+        const container = document.getElementsByClassName('video-editor__main')[0]
         const clientHeight = container.clientHeight
         setHeight(clientHeight)
     }, [])
 
     return (
-        <div className="subtitle-editor-player">
+        <div className="video-editor-player">
             <ArtplayerComponent
                 style={{
                     width: '100%',

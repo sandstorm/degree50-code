@@ -19,7 +19,7 @@ type Props = {
 
 const EditorTabs = ({ tabs, activeTabId, setActiveTabId }: Props) => {
     return (
-        <ul className="subtitle-editor__tabs" role="tablist">
+        <ul className="video-editor__tabs" role="tablist">
             {renderTabs(tabs, activeTabId, setActiveTabId)}
         </ul>
     )

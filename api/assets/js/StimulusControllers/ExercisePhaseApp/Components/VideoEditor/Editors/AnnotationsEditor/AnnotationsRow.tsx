@@ -42,10 +42,10 @@ const AnnotationsRow = ({
         <div
             key={id}
             className={[
-                'subtitles__row',
-                index % 2 ? 'subtitles__row--odd' : '',
-                currentIndex === index ? 'subtitles__row--highlight' : '',
-                checkAnnotation(rowData) ? 'subtitles__row--illegal' : '',
+                'video-editor__media-item-list__row',
+                index % 2 ? 'video-editor__media-item-list__row--odd' : '',
+                currentIndex === index ? 'video-editor__media-item-list__row--highlight' : '',
+                checkAnnotation(rowData) ? 'video-editor__media-item-list__row--illegal' : '',
             ]
                 .join(' ')
                 .trim()}
@@ -60,7 +60,10 @@ const AnnotationsRow = ({
                 }
             }}
         >
-            <div className="subtitles__column subtitles__column--operation" style={{ width: 30 }}>
+            <div
+                className="video-editor__media-item-list__column video-editor__media-item-list__column--operation"
+                style={{ width: 30 }}
+            >
                 <i
                     className="icon-trash-empty"
                     onClick={() => removeAnnotation(rowData)}
@@ -68,7 +71,11 @@ const AnnotationsRow = ({
                 ></i>
                 <i className="icon-plus" onClick={() => addAnnotation(index + 1)}></i>
             </div>
-            <div className="subtitles__column subtitles__column--time" style={{ width: 150 }} onMouseUp={onMouseUp}>
+            <div
+                className="video-editor__media-item-list__column video-editor__media-item-list__column--time"
+                style={{ width: 150 }}
+                onMouseUp={onMouseUp}
+            >
                 <div
                     className="input"
                     onMouseDown={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
@@ -87,8 +94,10 @@ const AnnotationsRow = ({
                     {rowData.end}
                 </div>
             </div>
-            <div className="subtitles__column subtitles__column--duration">{rowData.duration}</div>
-            <div className="subtitles__column subtitles__column--text">
+            <div className="video-editor__media-item-list__column video-editor__media-item-list__column--duration">
+                {rowData.duration}
+            </div>
+            <div className="video-editor__media-item-list__column video-editor__media-item-list__column--text">
                 <textarea
                     maxLength={200}
                     spellCheck={false}

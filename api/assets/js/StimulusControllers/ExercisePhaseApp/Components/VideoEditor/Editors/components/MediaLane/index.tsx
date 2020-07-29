@@ -112,10 +112,10 @@ const MediaLane = ({ currentTime, player, mediaTrackConfig = {}, updateMediaItem
     const gridGap = containerWidth / renderConfig.gridNum
 
     return (
-        <div className="subtitle-editor-timeline">
+        <div className="video-editor-timeline">
             <Toolbar zoomHandler={handleZoom} />
 
-            <div className="subtitle-editor-timeline__body">
+            <div className="video-editor-timeline__body">
                 <div ref={$container} className="media-track">
                     <MediaTrack
                         config={mediaTrackConfig} /* empty object = use default values */

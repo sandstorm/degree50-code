@@ -7,8 +7,8 @@ type Props = {
 
 const Toolbar = ({ zoomHandler }: Props) => {
     return (
-        <div className="subtitle-editor-timeline__header">
-            <div className="subtitle-editor-timeline__header-left">
+        <div className="video-editor-timeline__header">
+            <div className="video-editor-timeline__header-left">
                 <div className="item">
                     <div className="name">
                         <Translate value="zoom" />
