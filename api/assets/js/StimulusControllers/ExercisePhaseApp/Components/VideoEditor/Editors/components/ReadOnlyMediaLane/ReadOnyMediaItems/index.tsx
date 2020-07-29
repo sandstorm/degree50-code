@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import ReadOnlyMediaItem from './ReadOnlyMediaItem'
 import { MediaItem as MediaItemType } from '../../types'
-import { RenderConfig } from '../ReadOnlyMediaTrack'
+import { RenderConfig } from '../../MediaLane/MediaTrack'
 
 const renderItems = (mediaItems: MediaItemType[], renderConfig: RenderConfig, gridGap: number) =>
     mediaItems.map((item, index) => {

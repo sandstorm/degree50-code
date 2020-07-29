@@ -9,3 +9,17 @@
     margin: 0;
   }
 }
+
+.solutions__form {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  border: 1px solid $theme__color__grey--darker;
+
+  .form-group {
+    width: 48%;
+  }
+}

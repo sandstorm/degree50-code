@@ -8,6 +8,7 @@ import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
 
 type Props = {
     currentTime: number
+    currentZoom: number
     updateCurrentTime: (time: number) => void
     mediaItems: MediaItem[]
 }
@@ -20,11 +21,10 @@ const initialRender: RenderConfig = {
     timelineStartTime: 0,
 }
 
-const ReadOnlyMediaLane = ({ currentTime, updateCurrentTime, mediaItems }: Props) => {
+const ReadOnlyMediaLane = ({ currentTime, currentZoom, updateCurrentTime, mediaItems }: Props) => {
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
-    const player = null // TODO
     const mediaTrackConfig = {} // TODO
     const windowSize = useWindowSize()
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
@@ -59,6 +59,17 @@ const ReadOnlyMediaLane = ({ currentTime, updateCurrentTime, mediaItems }: Props
         })
     }, [currentTime])
 
+    useEffect(() => {
+        const newDuration = currentZoom
+        const newGridNum = newDuration * 10 + renderConfig.padding * 2
+
+        setRender({
+            ...renderConfig,
+            duration: newDuration,
+            gridNum: newGridNum,
+        })
+    }, [currentZoom])
+
     const handleLaneClick = useCallback(
         (clickTime) => {
             const newCurrentTime = clickTime >= 0 ? clickTime : 0
@@ -70,8 +81,8 @@ const ReadOnlyMediaLane = ({ currentTime, updateCurrentTime, mediaItems }: Props
     const gridGap = containerWidth / renderConfig.gridNum
 
     return (
-        <div className="subtitle-editor-timeline">
-            <div className="subtitle-editor-timeline__body">
+        <div className="video-editor-timeline">
+            <div className="video-editor-timeline__body">
                 <div ref={$container} className="media-track">
                     <ReadOnlyMediaTrack
                         config={mediaTrackConfig} /* empty object = use default values */

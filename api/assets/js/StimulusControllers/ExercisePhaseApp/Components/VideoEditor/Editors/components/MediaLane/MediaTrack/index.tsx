@@ -29,20 +29,20 @@ type Props = {
 
 const MediaTrack = ({
     config: {
-        backgroundColor = '#80CED7',
+        backgroundColor = '#393939',
         paddingColor = '#263D42',
-        gridColor = '#318774',
+        gridColor = '#636363',
         rulerColor = '#fff',
         cursorColor = '#ff0000',
-        fontSize = 11,
+        fontSize = 13,
         fontHeight = 15,
-        fontTop = 30,
+        fontTop = 40,
     },
     containerHeight,
     containerWidth,
     renderConfig,
 }: Props) => {
-    const pixelRatio = window.devicePixelRatio
+    const pixelRatio = 1
 
     const $canvas: React.RefObject<HTMLCanvasElement> = useRef(null)
 
