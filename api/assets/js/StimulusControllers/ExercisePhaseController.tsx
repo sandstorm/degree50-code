@@ -24,9 +24,9 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(setSolution(solution))
+        store.dispatch(setCurrentEditorId(currentEditor))
 
         if (config.isGroupPhase && !config.readOnly) {
-            store.dispatch(setCurrentEditorId(currentEditor))
             store.dispatch(initSolutionSyncAction())
             store.dispatch(
                 presenceActions.setTeamMembers(
