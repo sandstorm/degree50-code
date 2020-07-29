@@ -30,7 +30,7 @@ export type Props = {
 }
 
 // Renders a list of configured video codes.
-// These are not yet part of the MediaTrack.
+// These are not yet part of the ReadOnlyMediaTrack.
 // Be pressing the add button on these codes, students can add them
 // to the media track, to arrange them.
 const VideoCode = ({ videoCodes, addVideoCode }: Props) => {
