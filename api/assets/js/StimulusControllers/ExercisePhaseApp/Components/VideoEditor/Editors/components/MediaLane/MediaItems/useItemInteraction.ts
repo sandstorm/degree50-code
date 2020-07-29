@@ -92,43 +92,36 @@ export const useItemInteraction = (
             const newStartTime = (lastClickedItem.startTime || 0) + timeDiff
             const newEndTime = (lastClickedItem.endTime || 0) + timeDiff
 
-            if (
-                (previousItem && newEndTime < previousItem.startTime) ||
-                (nextItem && newStartTime > nextItem.endTime)
-            ) {
-                // overlap = error
-            } else {
-                if (lastClickedItemSide === 'left') {
-                    if (newStartTime >= 0 && newStartTime < (lastClickedItem.endTime || 0)) {
-                        const start = d2t(newStartTime.toFixed(3))
+            if (lastClickedItemSide === 'left') {
+                if (newStartTime >= 0 && newStartTime < (lastClickedItem.endTime || 0)) {
+                    const start = d2t(newStartTime.toFixed(3))
 
-                        updateMediaItem(lastClickedItem, { start }, newStartTime)
-                    } else {
-                        lastTargetNode.style.width = `${lastTargetNodeWidth}px`
-                    }
-                } else if (lastClickedItemSide === 'right') {
-                    if (newEndTime >= 0 && newEndTime > (lastClickedItem?.startTime || 0)) {
-                        const end = d2t(newEndTime.toFixed(3))
-                        updateMediaItem(lastClickedItem, { end }, newStartTime)
-                    } else {
-                        lastTargetNode.style.width = `${lastTargetNodeWidth}px`
-                    }
+                    updateMediaItem(lastClickedItem, { start }, newStartTime)
                 } else {
-                    if (newStartTime > 0 && newEndTime > 0 && newEndTime > newStartTime) {
-                        const start = d2t(newStartTime.toFixed(3))
-                        const end = d2t(newEndTime.toFixed(3))
+                    lastTargetNode.style.width = `${lastTargetNodeWidth}px`
+                }
+            } else if (lastClickedItemSide === 'right') {
+                if (newEndTime >= 0 && newEndTime > (lastClickedItem?.startTime || 0)) {
+                    const end = d2t(newEndTime.toFixed(3))
+                    updateMediaItem(lastClickedItem, { end }, newStartTime)
+                } else {
+                    lastTargetNode.style.width = `${lastTargetNodeWidth}px`
+                }
+            } else {
+                if (newStartTime > 0 && newEndTime > 0 && newEndTime > newStartTime) {
+                    const start = d2t(newStartTime.toFixed(3))
+                    const end = d2t(newEndTime.toFixed(3))
 
-                        updateMediaItem(
-                            lastClickedItem,
-                            {
-                                start,
-                                end,
-                            },
-                            newStartTime
-                        )
-                    } else {
-                        lastTargetNode.style.width = `${lastTargetNodeWidth}px`
-                    }
+                    updateMediaItem(
+                        lastClickedItem,
+                        {
+                            start,
+                            end,
+                        },
+                        newStartTime
+                    )
+                } else {
+                    lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             }
 
