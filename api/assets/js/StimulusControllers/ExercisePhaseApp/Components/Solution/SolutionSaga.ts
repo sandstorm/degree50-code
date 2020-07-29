@@ -79,6 +79,7 @@ function* handleMessages(channel: EventChannel<unknown>) {
  */
 function* syncSolution() {
     const config = selectConfig(yield select())
+
     if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
         const solution = selectSolution(yield select())
         const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution

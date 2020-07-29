@@ -81,19 +81,17 @@ class ExercisePhaseController extends AbstractController
 
         $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
 
-        if ($exercisePhase->isGroupPhase()) {
-            // Current editor is the persisted one or current user - if there is no persisted current editor then the user is the first one to start the team phase
-            $currentEditor = null;
-            if ($exercisePhaseTeam->getCurrentEditor()) {
-                $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
-            } else {
-                $currentEditor = $user->getId();
-                $exercisePhaseTeam->setCurrentEditor($user);
-                $entityManager = $this->getDoctrine()->getManager();
-                $this->eventStore->disableEventPublishingForNextFlush();
-                $entityManager->persist($exercisePhaseTeam);
-                $entityManager->flush();
-            }
+        $currentEditor = null;
+
+        if ($exercisePhaseTeam->getCurrentEditor()) {
+            $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
+        } else {
+            $currentEditor = $user->getId();
+            $exercisePhaseTeam->setCurrentEditor($user);
+            $entityManager = $this->getDoctrine()->getManager();
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $entityManager->persist($exercisePhaseTeam);
+            $entityManager->flush();
         }
 
         $template = 'ExercisePhase/Show.html.twig';
@@ -107,7 +105,7 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'solution' => $solution,
-            'currentEditor' => $exercisePhase->isGroupPhase() ? $currentEditor : null,
+            'currentEditor' => $currentEditor,
         ], $response);
     }
 
