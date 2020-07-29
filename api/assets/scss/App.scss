@@ -48,13 +48,11 @@
 @import "Composites/Teams/Teams";
 @import "Composites/Teams/Team";
 
-@import "Composites/SubtitleEditor/SubtitleEditor";
-@import "Composites/SubtitleEditor/Subtitles";
-@import "Composites/SubtitleEditor/SubtitleEditorHeader";
-@import "Composites/SubtitleEditor/SubtitleEditorFooter";
-@import "Composites/SubtitleEditor/SubtitleEditorUpload";
-@import "Composites/SubtitleEditor/SubtitleEditorTool";
-@import "Composites/SubtitleEditor/SubtitleEditorPlayer";
-@import "Composites/SubtitleEditor/SubTitleEditorTabs";
-@import "Composites/SubtitleEditor/VideoEditorInteractionArea";
-@import "Composites/SubtitleEditor/VideoEditorMediaItems";
+@import "Composites/VideoEditor/VideoEditor";
+@import "Composites/VideoEditor/MediaLane";
+@import "Composites/VideoEditor/SubtitleEditorUpload";
+@import "Composites/VideoEditor/Player";
+@import "Composites/VideoEditor/MediaItemList";
+@import "Composites/VideoEditor/Tabs";
+@import "Composites/VideoEditor/InteractionArea";
+@import "Composites/VideoEditor/MediaItems";

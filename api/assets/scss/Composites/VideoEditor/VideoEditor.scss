@@ -1,4 +1,4 @@
-.subtitle-editor {
+.video-editor {
   display: flex;
   flex-direction: column;
 
@@ -20,7 +20,7 @@
   background-color: #ccc;
 }
 
-.subtitle-editor__main {
+.video-editor__main {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -29,12 +29,12 @@
   background-color: $theme__color__black;
 }
 
-.subtitle-editor__section {
+.video-editor__section {
   height: 100%;
   position: relative;
 }
 
-.subtitle-editor__left {
+.video-editor__left {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,18 +43,18 @@
   height: 100%;
 }
 
-.subtitle-editor__right {
+.video-editor__right {
   flex: 1;
 
   background-color: $theme__color__blue--dark;
 
-  .subtitle-editor__section-header {
+  .video-editor__section-header {
     position: relative;
 
     z-index: 10;
   }
 
-  .subtitle-editor__section-content {
+  .video-editor__section-content {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -66,6 +66,6 @@
   }
 }
 
-.subtitle-editor__section-content {
+.video-editor__section-content {
   height: 100%;
 }

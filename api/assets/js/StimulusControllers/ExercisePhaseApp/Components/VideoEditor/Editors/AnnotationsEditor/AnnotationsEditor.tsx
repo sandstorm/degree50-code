@@ -84,14 +84,14 @@ const AnnotationsEditor = (props: Props) => {
 
     return (
         <React.Fragment>
-            <div className="subtitle-editor__main" style={{ height: height - 200 }}>
-                <div className="subtitle-editor__section subtitle-editor__left">
+            <div className="video-editor__main" style={{ height: height - 200 }}>
+                <div className="video-editor__section video-editor__left">
                     <PlayerComponent options={artPlayerOptions} setPlayer={setPlayer} setCurrentTime={setCurrentTime} />
                 </div>
-                <div className="subtitle-editor__section subtitle-editor__right">
-                    <header className="subtitle-editor__section-header">{props.headerContent}</header>
+                <div className="video-editor__section video-editor__right">
+                    <header className="video-editor__section-header">{props.headerContent}</header>
 
-                    <div className="subtitle-editor__section-content">
+                    <div className="video-editor__section-content">
                         <Annotations
                             annotations={mediaItems}
                             addAnnotation={addMediaItem}

@@ -1,4 +1,4 @@
-.subtitles {
+.video-editor__media-item-list {
   background-color: $theme__color__blue--dark;
 
   .ReactVirtualized__Table__Grid {
@@ -6,7 +6,7 @@
   }
 }
 
-.subtitles__table {
+.video-editor__media-item-list__table {
   font-size: $base__fontSize--tiny;
 
   > div {
@@ -14,7 +14,7 @@
   }
 }
 
-.subtitles__row {
+.video-editor__media-item-list__row {
   width: 100% !important;
   display: flex;
   flex-direction: row;
@@ -35,7 +35,7 @@
   }
 }
 
-.subtitles__column {
+.video-editor__media-item-list__column {
   display: flex;
   align-items: center;
   justify-content: center;

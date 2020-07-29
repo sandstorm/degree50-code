@@ -1,10 +1,10 @@
-.subtitle-editor-timeline {
+.video-editor-timeline {
   display: flex;
   flex-direction: column;
   height: 200px;
 }
 
-.subtitle-editor-timeline__header {
+.video-editor-timeline__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,7 +17,7 @@
   background-color: transparentize($theme__color__black, 0.3);
 }
 
-.subtitle-editor-timeline__header-left {
+.video-editor-timeline__header-left {
   display: flex;
   align-items: center;
   height: 100%;
@@ -59,7 +59,7 @@
   }
 }
 
-.subtitle-editor-timeline__body {
+.video-editor-timeline__body {
   position: relative;
   flex: 1;
 

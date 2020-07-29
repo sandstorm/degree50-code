@@ -81,9 +81,9 @@ const Annotations = ({
     }, [resize, resizeInitialized])
 
     return (
-        <div className="subtitles">
+        <div className="video-editor__media-item-list">
             <Table
-                className="subtitles__table"
+                className="video-editor__media-item-list__table"
                 headerHeight={40}
                 width={width}
                 height={height}
