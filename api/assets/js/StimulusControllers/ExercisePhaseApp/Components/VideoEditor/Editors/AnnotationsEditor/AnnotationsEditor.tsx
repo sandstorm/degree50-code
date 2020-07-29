@@ -10,12 +10,13 @@ import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { selectCurrentEditorId } from '../../../Presence/CurrentEditorSlice'
 
 import MediaLane from '../components/MediaLane'
-import PlayerComponent from '../components/Player'
+import ArtPlayer from '../components/ArtPlayer'
 import Annotations from './Annotations'
 import { MediaItem } from '../components/types'
 import Storage from '../utils/storage'
 
-import { useMediaItemHandling } from '../utils/hooks'
+import { useMediaItemHandling, useMutablePlayer } from '../utils/hooks'
+import { selectors, actions } from '../../PlayerSlice'
 
 const storage = new Storage()
 
@@ -31,12 +32,14 @@ const mapStateToProps = (state: AppState) => {
         readOnly: selectReadOnly(state),
         currentEditorId: selectCurrentEditorId(state),
         annotations: selectSolution(state).annotations,
+        playerSyncPlayPosition: selectors.selectSyncPlayPosition(state),
     }
 }
 
 const mapDispatchToProps = {
     setAnnotations,
     syncSolutionAction,
+    setPlayPosition: actions.setPlayPosition,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
@@ -63,11 +66,8 @@ const AnnotationsEditor = (props: Props) => {
 
     const {
         currentIndex,
-        currentTime,
-        player,
 
-        setPlayer,
-        setCurrentTime,
+        setCurrentTimeForMediaItems,
         addMediaItem,
         removeMediaItem,
         updateMediaItem,
@@ -86,7 +86,7 @@ const AnnotationsEditor = (props: Props) => {
         <React.Fragment>
             <div className="video-editor__main" style={{ height: height - 200 }}>
                 <div className="video-editor__section video-editor__left">
-                    <PlayerComponent options={artPlayerOptions} setPlayer={setPlayer} setCurrentTime={setCurrentTime} />
+                    <ArtPlayer options={artPlayerOptions} currentTimeCallback={setCurrentTimeForMediaItems} />
                 </div>
                 <div className="video-editor__section video-editor__right">
                     <header className="video-editor__section-header">{props.headerContent}</header>
@@ -104,14 +104,12 @@ const AnnotationsEditor = (props: Props) => {
                 </div>
             </div>
 
-            {player && (
-                <MediaLane
-                    player={player}
-                    currentTime={currentTime}
-                    mediaItems={mediaItems}
-                    updateMediaItem={updateMediaItem}
-                />
-            )}
+            <MediaLane
+                currentTime={props.playerSyncPlayPosition}
+                mediaItems={mediaItems}
+                updateMediaItem={updateMediaItem}
+                setPlayPosition={props.setPlayPosition}
+            />
             <ToastContainer />
         </React.Fragment>
     )

@@ -1,18 +1,19 @@
 import React, { useState, useCallback, useRef, useLayoutEffect, useEffect } from 'react'
 import MediaItems from './MediaItems'
-import { Player, MediaItem } from '../types'
+import { MediaItem } from '../types'
 import MediaTrack, { MediaTrackConfig } from './MediaTrack'
 import { RenderConfig } from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
 import { useWindowSize } from './MediaTrack/hooks'
 import Toolbar from './Toolbar'
+import { actions } from '../../../PlayerSlice'
 
 type Props = {
     currentTime: number
     mediaItems: MediaItem[]
-    player: Player
     updateMediaItem: (item: MediaItem | undefined, key: string | Object, value?: string) => void // FIXME refine key
     mediaTrackConfig?: MediaTrackConfig
+    setPlayPosition: typeof actions.setPlayPosition
 }
 
 const initialRender: RenderConfig = {
@@ -23,7 +24,7 @@ const initialRender: RenderConfig = {
     timelineStartTime: 0,
 }
 
-const MediaLane = ({ currentTime, player, mediaTrackConfig = {}, updateMediaItem, mediaItems }: Props) => {
+const MediaLane = ({ currentTime, mediaTrackConfig = {}, updateMediaItem, mediaItems, setPlayPosition }: Props) => {
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
@@ -60,15 +61,12 @@ const MediaLane = ({ currentTime, player, mediaTrackConfig = {}, updateMediaItem
         })
     }, [currentTime])
 
-    // TODO this will later probably be some form of redux action creator instead
+    // TODO refactor
     const handleLaneClick = useCallback(
         (clickTime) => {
             const newCurrentTime = clickTime >= 0 ? clickTime : 0
 
-            // FIXME !!MUTATION!!
-            // as soon as we move this into redux each player used, should handle its currentTime itself,
-            // so that mutation does only happen inside the player component and does not leak through other editor components
-            player.seek = newCurrentTime
+            setPlayPosition(newCurrentTime)
 
             const newTimelineStartTime = Math.floor(newCurrentTime / renderConfig.duration) * renderConfig.duration
 
@@ -78,21 +76,16 @@ const MediaLane = ({ currentTime, player, mediaTrackConfig = {}, updateMediaItem
                 timelineStartTime: newTimelineStartTime,
             })
         },
-        [player, renderConfig]
+        [renderConfig]
     )
 
     const handleMediaItemUpdate = useCallback(
         (item: MediaItem, updatedValues: { start?: string; end?: string }, newStartTime: number) => {
             updateMediaItem(item, updatedValues)
 
-            // FIXME !!MUTATION!!
-            // as soon as we move this into redux each player used, should handle its currentTime itself,
-            // so that mutation does only happen inside the player component and does not leak through other editor components
-            if (player) {
-                player.seek = newStartTime
-            }
+            setPlayPosition(newStartTime)
         },
-        [player, updateMediaItem]
+        [updateMediaItem]
     )
 
     const handleZoom = useCallback(
@@ -132,6 +125,7 @@ const MediaLane = ({ currentTime, player, mediaTrackConfig = {}, updateMediaItem
                 />
 
                 <MediaItems
+                    currentTime={currentTime}
                     renderConfig={renderConfig}
                     mediaItems={mediaItems}
                     gridGap={gridGap}

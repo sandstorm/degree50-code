@@ -1,25 +1,52 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import ArtplayerComponent from 'artplayer-react'
 import Hls from 'hls.js'
 import { Player as PlayerType } from './types'
+
+import { actions, selectors } from '../../PlayerSlice'
+import { useMutablePlayer } from '../utils/hooks'
+import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 
 export type PlayerOptions = {
     videoUrl: string
     subtitleUrl?: string
 }
 
-type Props = {
-    setPlayer: (player: PlayerType) => void
-    setCurrentTime: (time: number) => void
+type OwnProps = {
+    currentTimeCallback: (time: number) => void
     options: PlayerOptions
 }
 
-const Player = ({ options, setPlayer, setCurrentTime }: Props) => {
+const mapStateToProps = (state: AppState) => {
+    return {
+        playPosition: selectors.selectPlayPosition(state),
+        isPaused: selectors.selectIsPaused(state),
+    }
+}
+
+const mapDispatchToProps = {
+    setSyncPlayPosition: actions.setSyncPlayPosition,
+    setPaused: actions.setPause,
+}
+
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+
+// TODO handle pause from outside
+const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosition, isPaused, setPaused }: Props) => {
     const [height, setHeight] = useState(200)
+
+    const { player, setPlayer } = useMutablePlayer()
+
+    // Set player position from the outside.
+    useEffect(() => {
+        if (player) {
+            player.seek = playPosition
+        }
+    }, [player, playPosition])
 
     // Get initial height
     useEffect(() => {
-        // FIXME use ref instead of direct DOM access
         const container = document.getElementsByClassName('video-editor__main')[0]
         const clientHeight = container.clientHeight
         setHeight(clientHeight)
@@ -62,7 +89,8 @@ const Player = ({ options, setPlayer, setCurrentTime }: Props) => {
                     ;(function loop() {
                         window.requestAnimationFrame(() => {
                             if (art.playing) {
-                                setCurrentTime(art.currentTime)
+                                currentTimeCallback(art.currentTime)
+                                setSyncPlayPosition(art.currentTime)
                             }
                             loop()
                         })
@@ -71,7 +99,8 @@ const Player = ({ options, setPlayer, setCurrentTime }: Props) => {
                     // FIXME
                     // @ts-ignore disable-line
                     art.on('seek', () => {
-                        setCurrentTime(art.currentTime)
+                        setSyncPlayPosition(art.currentTime)
+                        currentTimeCallback(art.currentTime)
                     })
                 }}
             />
@@ -79,4 +108,4 @@ const Player = ({ options, setPlayer, setCurrentTime }: Props) => {
     )
 }
 
-export default React.memo(Player)
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ArtPlayer))

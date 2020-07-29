@@ -6,6 +6,7 @@ type Props = {
     item: MediaItemType
     id: number
     renderConfig: RenderConfig
+    isPlayedBack?: boolean
     gridGap: number
     onItemMouseDown: (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -14,7 +15,7 @@ type Props = {
     ) => void
 }
 
-const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown }: Props) => {
+const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown, isPlayedBack }: Props) => {
     const handleLeftHandleMouseDown = useCallback(
         (event) => {
             onItemMouseDown(event, item, 'left')
@@ -38,7 +39,12 @@ const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown }: Props) 
 
     return (
         <div
-            className={['video-editor__media-items__item'].join(' ').trim()}
+            className={[
+                'video-editor__media-items__item',
+                isPlayedBack ? 'video-editor__media-items__item--highlight' : '',
+            ]
+                .join(' ')
+                .trim()}
             key={id}
             style={{
                 backgroundColor: item.color ? item.color : '',

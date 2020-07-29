@@ -6,6 +6,25 @@ import { secondToTime, notify } from '../utils'
 import { Player, MediaItem } from '../components/types'
 import Storage from '../utils/storage'
 
+export const useMutablePlayer = (worker?: Worker) => {
+    // Player instance
+    const [player, setPlayer] = useState<Player | undefined>(undefined)
+
+    // Run only once
+    useEffect(() => {
+        if (player && worker && !worker.onmessage) {
+            worker.onmessage = (event) => {
+                player.subtitle.switch(event.data)
+            }
+        }
+    }, [player, worker])
+
+    return {
+        player,
+        setPlayer,
+    }
+}
+
 export const useMediaItemHandling = ({
     userId,
     currentEditorId,
@@ -30,14 +49,11 @@ export const useMediaItemHandling = ({
     const defaultLang = storage.get('language') || navigator.language.toLowerCase() || 'en'
     const [language, setLanguage] = useState(defaultLang)
 
-    // Player instance
-    const [player, setPlayer] = useState<Player | undefined>(undefined)
-
     // MediaItem currently playing index
     const [currentIndex, setCurrentIndex] = useState(-1)
 
     // MediaItem currently playing time
-    const [currentTime, setCurrentTime] = useState(0)
+    const [currentTimeForMediaItems, setCurrentTimeForMediaItems] = useState(0)
 
     // Update language
     const updateLang = useCallback(
@@ -76,24 +92,26 @@ export const useMediaItemHandling = ({
     // Run only once
     useEffect(() => {
         updateLang(language)
-        setCurrentIndex(mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime))
-
-        if (player && worker && !worker.onmessage) {
-            worker.onmessage = (event) => {
-                player.subtitle.switch(event.data)
-            }
-        }
+        setCurrentIndex(
+            mediaItems.findIndex(
+                (item) => item.startTime <= currentTimeForMediaItems && item.endTime > currentTimeForMediaItems
+            )
+        )
 
         if (worker) {
             // Takes care of the mediaItems which overlay the video
             worker.postMessage(mediaItems.map((item) => new MediaItem(item.start, item.end, item.text)))
         }
-    }, [player, worker])
+    }, [worker])
 
     // Update current index from current time
     useMemo(() => {
-        setCurrentIndex(mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime))
-    }, [currentTime, setCurrentIndex])
+        setCurrentIndex(
+            mediaItems.findIndex(
+                (item) => item.startTime <= currentTimeForMediaItems && item.endTime > currentTimeForMediaItems
+            )
+        )
+    }, [currentTimeForMediaItems, setCurrentIndex])
 
     // Detect if the mediaItem exists
     const hasMediaItem = useCallback((item) => mediaItems.indexOf(item), [mediaItems])
@@ -181,12 +199,9 @@ export const useMediaItemHandling = ({
 
     return {
         currentIndex,
-        currentTime,
-        player,
-
-        setPlayer,
+        currentTimeForMediaItems,
         setCurrentIndex,
-        setCurrentTime,
+        setCurrentTimeForMediaItems,
         addMediaItem,
         removeMediaItem,
         updateMediaItem,
