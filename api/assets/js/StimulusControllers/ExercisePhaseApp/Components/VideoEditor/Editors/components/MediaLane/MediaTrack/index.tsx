@@ -11,7 +11,6 @@ export type RenderConfig = {
 
 export type MediaTrackConfig = {
     backgroundColor?: string
-    paddingColor?: string
     gridColor?: string
     rulerColor?: string
     cursorColor?: string
@@ -30,7 +29,6 @@ type Props = {
 const MediaTrack = ({
     config: {
         backgroundColor = '#393939',
-        paddingColor = '#263D42',
         gridColor = '#636363',
         rulerColor = '#fff',
         cursorColor = '#ff0000',
@@ -48,7 +46,6 @@ const MediaTrack = ({
 
     const config = {
         backgroundColor,
-        paddingColor,
         gridColor,
         pixelRatio,
         rulerColor,
