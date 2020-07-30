@@ -10320,7 +10320,7 @@ regenerate@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.0.tgz#4a856ec4b56e4077c557589cae85e7a4c8869a11"
 
-regenerator-runtime@^0.11.0:
+regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
 
@@ -12052,6 +12052,13 @@ verror@1.10.0:
     safe-json-parse "4.0.0"
     videojs-font "3.2.0"
     videojs-vtt.js "^0.15.2"
+
+videocontext@^0.54.0:
+  version "0.54.0"
+  resolved "https://registry.yarnpkg.com/videocontext/-/videocontext-0.54.0.tgz#15b0dcf6506832f21587726436628f1885ee50bf"
+  integrity sha512-DVZfW9o0X2gN9MZAthRN9rEdamtll0vNvC3hoSEaHqutXJtHxGIJEbqre5GAlBqeoSEjgmJCG+rSXbLIEhAzuA==
+  dependencies:
+    regenerator-runtime "^0.11.1"
 
 videojs-font@3.2.0:
   version "3.2.0"

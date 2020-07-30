@@ -11,6 +11,6 @@ export const tabs = {
     },
     [TabTypes.VIDEO_CUTS]: {
         id: TabTypes.VIDEO_CUTS,
-        label: 'Video Cuts'
-    }
+        label: 'Video Cuts',
+    },
 }

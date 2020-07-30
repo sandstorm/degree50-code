@@ -6,12 +6,26 @@ export class MediaItem {
     end: string
     text: string
     color: null | string
+    originalData: Object
 
-    constructor(start: string, end: string, text: string, color: string | null = null) {
+    constructor({
+        start,
+        end,
+        text,
+        color = null,
+        originalData,
+    }: {
+        start: string
+        end: string
+        text: string
+        color?: string | null
+        originalData: Object
+    }) {
         this.start = start
         this.end = end
         this.text = text
         this.color = color
+        this.originalData = originalData
     }
 
     get check(): boolean {
@@ -19,7 +33,13 @@ export class MediaItem {
     }
 
     get clone(): MediaItem {
-        return new MediaItem(this.start, this.end, this.text, this.color)
+        return new MediaItem({
+            start: this.start,
+            end: this.end,
+            text: this.text,
+            color: this.color,
+            originalData: this.originalData,
+        })
     }
 
     get startTime(): number {

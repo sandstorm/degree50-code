@@ -1,25 +1,25 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Table } from 'react-virtualized'
 import debounce from 'lodash/debounce'
-import AnnotationsRow from './AnnotationsRow/AnnotationsRow'
-import { Player, MediaItem } from '../components/types'
+import Row from './Row/Row'
+import { MediaItem } from '../types'
 
 export type Props = {
-    annotations: MediaItem[]
-    addAnnotation: (index: number, sub?: MediaItem) => void
+    mediaItems: MediaItem[]
+    addMediaItem: (index: number, sub?: MediaItem) => void
     currentIndex: number
-    updateAnnotation: (sub: MediaItem | null, key: string, lastValue: string) => void
-    removeAnnotation: (sub: MediaItem) => void
-    checkAnnotation: (sub: MediaItem) => boolean
+    updateMediaItem: (item: MediaItem, updatedValues: Object) => void // FIXME refine updatedValues
+    removeMediaItem: (item: MediaItem) => void
+    checkMediaItem: (item: MediaItem) => boolean
 }
 
-const Annotations = ({
-    annotations,
-    addAnnotation,
+const MediaItemList = ({
+    mediaItems,
+    addMediaItem,
     currentIndex,
-    updateAnnotation,
-    removeAnnotation,
-    checkAnnotation,
+    updateMediaItem,
+    removeMediaItem,
+    checkMediaItem,
 }: Props) => {
     const [width, setWidth] = useState(100)
     const [height, setHeight] = useState(100)
@@ -49,20 +49,20 @@ const Annotations = ({
                 height={height}
                 rowHeight={80}
                 scrollToIndex={currentIndex}
-                rowCount={annotations.length}
-                rowGetter={({ index }) => annotations[index]}
+                rowCount={mediaItems.length}
+                rowGetter={({ index }) => mediaItems[index]}
                 headerRowRenderer={() => null}
                 rowRenderer={(props) => (
-                    <AnnotationsRow
+                    <Row
                         key={props.key}
                         id={props.key}
                         rowData={props.rowData}
                         style={props.style}
                         index={props.index}
-                        checkAnnotation={checkAnnotation}
-                        removeAnnotation={removeAnnotation}
-                        addAnnotation={addAnnotation}
-                        updateAnnotation={updateAnnotation}
+                        checkMediaItem={checkMediaItem}
+                        removeMediaItem={removeMediaItem}
+                        addMediaItem={addMediaItem}
+                        updateMediaItem={updateMediaItem}
                         currentIndex={currentIndex}
                     />
                 )}
@@ -71,4 +71,4 @@ const Annotations = ({
     )
 }
 
-export default Annotations
+export default MediaItemList
