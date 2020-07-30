@@ -3,7 +3,6 @@ import { RenderConfig } from '.'
 
 export type MediaTrackConfig = {
     backgroundColor: string
-    paddingColor: string
     gridColor: string
     pixelRatio: number
     rulerColor: string
@@ -19,7 +18,6 @@ export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig
 
     drawBackground(canvas, {
         backgroundColor: config.backgroundColor,
-        paddingColor: config.paddingColor,
         padding: config.render.padding,
         gridGap,
     })
@@ -53,12 +51,10 @@ const drawBackground = (
     canvas: HTMLCanvasElement,
     {
         backgroundColor,
-        paddingColor,
         padding,
         gridGap,
     }: {
         backgroundColor: string
-        paddingColor: string
         padding: number
         gridGap: number
     }
@@ -71,7 +67,6 @@ const drawBackground = (
     ctx.clearRect(0, 0, width, height)
     ctx.fillStyle = backgroundColor
     ctx.fillRect(0, 0, width, height)
-    ctx.fillStyle = paddingColor
     ctx.fillRect(0, 0, padding * gridGap, height)
     ctx.fillRect(width - padding * gridGap, 0, padding * gridGap, height)
 }
@@ -161,7 +156,7 @@ const drawCursor = (
         padding,
         gridNum,
         pixelRatio,
-        timelineStartTime: timelineStartTime,
+        timelineStartTime,
     }: {
         currentTime: number
         cursorColor: string

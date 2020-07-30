@@ -9,18 +9,55 @@
 
   user-select: none;
   z-index: 8;
+}
 
-  .template {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    height: 100%;
+.video-editor__interaction-area-left,
+.video-editor__interaction-area-right {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    background-color: transparentize($theme__color__green, 0.5);
-    border-left: 1px solid transparentize($theme__color__green, 0.8);
-    border-right: 1px solid transparentize($theme__color__green, 0.8);
+  background-color: transparentize($theme__color__green, 0.5);
 
-    user-select: none;
-    pointer-events: none;
+  cursor: pointer;
+  z-index: 20;
+
+  &:hover {
+    background-color: transparentize($theme__color__green--light, 0.5);;
+  }
+
+  i {
+    color: $theme__color__white;
+  }
+}
+
+.video-editor__interaction-area-left {
+  left: 0;
+
+  &--is-disabled {
+    background-color: transparentize($theme__color__green, 0.8);
+
+    cursor: default;
+
+    &:hover {
+      background-color: transparentize($theme__color__green, 0.8);
+    }
+  }
+}
+
+.video-editor__interaction-area-right {
+  right: 0;
+
+  &--is-disabled {
+    background-color: transparentize($theme__color__green, 0.8);
+
+    cursor: default;
+
+    &:hover {
+      background-color: transparentize($theme__color__green, 0.8);
+    }
   }
 }
