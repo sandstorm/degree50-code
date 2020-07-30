@@ -1,9 +1,9 @@
 import React, { useRef } from 'react'
-import { connect } from 'react-redux'
 import MediaItem from './MediaItem'
 import { MediaItem as MediaItemType } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { useItemInteraction } from './useItemInteraction'
+import { itemIsVisible } from './helpers'
 
 const renderItems = (
     mediaItems: MediaItemType[],
@@ -19,6 +19,10 @@ const renderItems = (
     }
 ) =>
     mediaItems.map((item, index) => {
+        if (!itemIsVisible(item, renderConfig.timelineStartTime, renderConfig.duration)) {
+            return null
+        }
+
         return (
             <MediaItem
                 key={index}

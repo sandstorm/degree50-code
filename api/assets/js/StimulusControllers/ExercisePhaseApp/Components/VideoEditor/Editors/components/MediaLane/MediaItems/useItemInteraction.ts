@@ -2,14 +2,10 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { d2t } from 'duration-time-conversion'
 import { MediaItem } from '../../types'
 import { RenderConfig } from '../MediaTrack'
+import { itemIsVisible } from './helpers'
 
 const getVisibleItems = (items: MediaItem[], timelineStartTime: number, duration: number): MediaItem[] => {
-    return items.filter((item) => {
-        return (
-            (item.startTime >= timelineStartTime && item.startTime <= timelineStartTime + duration) ||
-            (item.endTime >= timelineStartTime && item.endTime <= timelineStartTime + duration)
-        )
-    })
+    return items.filter((item) => itemIsVisible(item, timelineStartTime, duration))
 }
 
 export const useItemInteraction = (
@@ -40,7 +36,9 @@ export const useItemInteraction = (
                 renderConfig.timelineStartTime,
                 renderConfig.duration
             )
+
             const itemIndex = currentlyVisibleItems.indexOf(item)
+
             setLastClickedItemIndex(itemIndex)
 
             const $mediaItemsWrapper = $mediaItemsRef.current
