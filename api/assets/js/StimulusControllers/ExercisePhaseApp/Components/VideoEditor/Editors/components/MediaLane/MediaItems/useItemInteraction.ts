@@ -58,6 +58,7 @@ export const useItemInteraction = (
             setLastPageX,
             setLastTargetNode,
             setLastTargetNodeWidth,
+            renderConfig,
             mediaItems,
             $mediaItemsRef,
         ]
