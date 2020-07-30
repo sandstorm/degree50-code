@@ -15,6 +15,7 @@ class VideoAnalysis extends ExercisePhase
 {
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
+        ExercisePhase::VIDEO_CUTTING,
         ExercisePhase::DOCUMENT_UPLOAD,
     ];
 
