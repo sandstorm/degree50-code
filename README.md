@@ -6,7 +6,7 @@
 
 - docker & docker-compose
 - Make
-- yarn (cp api && nvm use && npm install yarn -g)
+- yarn (cd api && nvm use && npm install yarn -g)
 
 **Get Started with Development**
 
@@ -15,9 +15,9 @@
 - check installation with `docker-compose logs -f api`
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
-    - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
     - Run the assets build (locally) using `cd api && nvm use && yarn`
     - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
+    - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
     - The API types can be regenerated using `make build-types`
     - The Symfony Console can be executed via `./symfony-console`
 
