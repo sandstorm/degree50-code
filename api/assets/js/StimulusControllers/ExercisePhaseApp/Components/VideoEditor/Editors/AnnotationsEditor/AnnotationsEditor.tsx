@@ -51,7 +51,7 @@ const AnnotationsEditor = (props: Props) => {
     const itemsFromAnnotations = props.annotations.map((sub) => new MediaItem(sub.start, sub.end, sub.text))
 
     const mediaItems: MediaItem[] =
-        itemsFromAnnotations.length >= 0
+        itemsFromAnnotations.length > 0
             ? itemsFromAnnotations
             : [new MediaItem('00:00:00.000', '00:00:01.000', t('Kommentar'))]
 
