@@ -15,7 +15,7 @@ import Annotations from './Annotations'
 import { MediaItem } from '../components/types'
 import Storage from '../utils/storage'
 
-import { useMediaItemHandling, useMutablePlayer } from '../utils/hooks'
+import { useMediaItemHandling } from '../utils/hooks'
 import { selectors, actions } from '../../PlayerSlice'
 
 const storage = new Storage()
