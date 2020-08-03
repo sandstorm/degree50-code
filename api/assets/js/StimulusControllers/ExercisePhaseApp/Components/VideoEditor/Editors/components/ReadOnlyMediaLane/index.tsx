@@ -5,12 +5,13 @@ import ReadOnlyMediaTrack from '../MediaLane/MediaTrack/index'
 import { RenderConfig } from '../MediaLane/MediaTrack'
 import { useWindowSize } from '../MediaLane/MediaTrack/hooks'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
+import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
 
 type Props = {
     currentTime: number
     currentZoom: number
     updateCurrentTime: (time: number) => void
-    mediaItems: MediaItem[]
+    mediaItems: MediaItem<MediaItemType>[]
 }
 
 const initialRender: RenderConfig = {

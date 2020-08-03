@@ -1,9 +1,10 @@
 import React from 'react'
-import { MediaItem as MediaItemType } from '../../types'
+import { MediaItem } from '../../types'
 import { RenderConfig } from '../../MediaLane/MediaTrack'
+import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
 
 type Props = {
-    item: MediaItemType
+    item: MediaItem<MediaItemType>
     id: number
     renderConfig: RenderConfig
     gridGap: number

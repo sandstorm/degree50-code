@@ -10,12 +10,13 @@ import { actions } from '../../../PlayerSlice'
 
 type Props = {
     currentTime: number
-    mediaItems: MediaItem[]
-    updateMediaItem: (item: MediaItem, updatedValues: Object) => void // FIXME refine key
+    mediaItems: MediaItem<any>[]
+    updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine key
     mediaTrackConfig?: MediaTrackConfig
     setPlayPosition: typeof actions.setPlayPosition
-    checkMediaItem: (sub: MediaItem) => boolean
+    checkMediaItem: (item: MediaItem<any>) => boolean
     amountOfLanes?: number
+    ToolbarActions?: React.ReactNode
 }
 
 const initialRender: RenderConfig = {
@@ -34,6 +35,7 @@ const MediaLane = ({
     setPlayPosition,
     checkMediaItem,
     amountOfLanes,
+    ToolbarActions,
 }: Props) => {
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
@@ -62,7 +64,8 @@ const MediaLane = ({
 
     // Update when the player plays (and therefore currentTime changes)
     useEffect(() => {
-        const newTimelineStartTime = Math.floor(currentTime / renderConfig.duration) * renderConfig.duration
+        const newTimelineStartTime =
+            currentTime > 0 ? Math.floor(currentTime / renderConfig.duration) * renderConfig.duration : 0
 
         setRender({
             ...renderConfig,
@@ -90,7 +93,7 @@ const MediaLane = ({
     )
 
     const handleMediaItemUpdate = useCallback(
-        (item: MediaItem, updatedValues: { start?: string; end?: string }, newStartTime: number) => {
+        (item: MediaItem<any>, updatedValues: { start?: string; end?: string }, newStartTime: number) => {
             updateMediaItem(item, updatedValues)
             setPlayPosition(newStartTime)
         },
@@ -115,7 +118,7 @@ const MediaLane = ({
 
     return (
         <div className="video-editor-timeline">
-            <Toolbar zoomHandler={handleZoom} />
+            <Toolbar zoomHandler={handleZoom}>{ToolbarActions}</Toolbar>
 
             <div className="video-editor-timeline__body">
                 <div ref={$container} className="media-track">

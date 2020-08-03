@@ -38,13 +38,13 @@ export const useMediaItemHandling = <T>({
 }: {
     userId: string
     currentEditorId: string | undefined
-    mediaItems: Array<MediaItem>
+    mediaItems: Array<MediaItem<T>>
     readOnly: boolean
     setMediaItems: (mediaItems: Array<T>) => void
     updateCallback: Function
     worker?: Worker
     storage: Storage
-    history?: Array<MediaItem[]>
+    history?: Array<MediaItem<T>[]>
 }) => {
     const defaultLang = storage.get('language') || navigator.language.toLowerCase() || 'en'
     const [language, setLanguage] = useState(defaultLang)
@@ -66,7 +66,7 @@ export const useMediaItemHandling = <T>({
     )
 
     // Only way to update all mediaItems
-    const updateMediaItems = (items: Array<MediaItem>, saveToHistory = true) => {
+    const updateMediaItems = (items: Array<MediaItem<T>>, saveToHistory = true) => {
         const userIsCurrentEditor = userId === currentEditorId
         const hasItems = items.length
         const notEqualToPreviousItems = !isEqual(items, mediaItems)
@@ -76,10 +76,14 @@ export const useMediaItemHandling = <T>({
 
             // This makes sure that all properties from the original item will be written back to the store
             // E.g. the 'url' property of a cut
-            const convertedToOriginalStructure = updatedItems.map((item: MediaItem) => ({
-                ...item.originalData,
-                ...item,
-            }))
+            const convertedToOriginalStructure = updatedItems.map((item: MediaItem<T>) => {
+                const { originalData, ...rest } = item
+
+                return {
+                    ...originalData,
+                    ...rest,
+                }
+            })
 
             setMediaItems(convertedToOriginalStructure)
             updateCallback()
@@ -131,7 +135,7 @@ export const useMediaItemHandling = <T>({
     // Check if mediaItem is legal
     // true == illegal, false == legal
     const checkMediaItem = useCallback(
-        (item: MediaItem): boolean => {
+        (item: MediaItem<T>): boolean => {
             const index = hasMediaItem(item)
             if (index < 0) return false
             return checkConflict(item, index)
@@ -139,23 +143,23 @@ export const useMediaItemHandling = <T>({
         [hasMediaItem, mediaItems]
     )
 
-    const checkConflict = (item: MediaItem, index: number) => {
+    const checkConflict = (item: MediaItem<any>, index: number) => {
         return checkConflictWithPrevItem(item, index) || checkConflictWithNextItem(item, index)
     }
 
-    const checkConflictWithPrevItem = (item: MediaItem, index: number) => {
+    const checkConflictWithPrevItem = (item: MediaItem<any>, index: number) => {
         const previous = mediaItems[index - 1]
         return (previous && item.startTime < previous.endTime) || !item.check
     }
 
-    const checkConflictWithNextItem = (item: MediaItem, index: number) => {
+    const checkConflictWithNextItem = (item: MediaItem<any>, index: number) => {
         const next = mediaItems[index + 1]
         return (next && item.endTime > next.startTime) || !item.check
     }
 
     // Update a single mediaItem
     const updateMediaItem = useCallback(
-        (item: MediaItem, updatedValues: Object) => {
+        (item: MediaItem<T>, updatedValues: Object) => {
             const index = hasMediaItem(item)
 
             if (index < 0) return
@@ -196,20 +200,17 @@ export const useMediaItemHandling = <T>({
 
     // Add a mediaItem
     const addMediaItem = useCallback(
-        (index, mediaItem) => {
-            const subs = copyMediaItems()
+        (index) => {
+            const copiedItems = copyMediaItems()
 
-            if (mediaItem) {
-                subs.splice(index, 0, mediaItem)
-            } else {
-                const previous = subs[index - 1]
-                const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
-                const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-                const sub = new MediaItem({ start, end, text: t('subtitle-text'), originalData: {}, lane: 0 })
+            const previous = copiedItems[index]
+            const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
+            const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
+            const newItem = new MediaItem({ start, end, text: t('subtitle-text'), originalData: {} as T, lane: 0 })
 
-                subs.splice(index, 0, sub)
-            }
-            updateMediaItems(subs)
+            copiedItems.splice(index + 1, 0, newItem)
+
+            updateMediaItems(copiedItems)
         },
         [copyMediaItems, updateMediaItems]
     )
@@ -222,6 +223,7 @@ export const useMediaItemHandling = <T>({
         addMediaItem,
         removeMediaItem,
         updateMediaItem,
+        hasMediaItem,
         updateMediaItems,
         checkMediaItem,
         copyMediaItems,

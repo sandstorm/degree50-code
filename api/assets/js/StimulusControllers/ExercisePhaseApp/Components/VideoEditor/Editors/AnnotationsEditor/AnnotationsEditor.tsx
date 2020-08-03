@@ -52,7 +52,7 @@ const AnnotationsEditor = (props: Props) => {
         (sub) => new MediaItem({ start: sub.start, end: sub.end, text: sub.text, originalData: sub, lane: 0 })
     )
 
-    const mediaItems: MediaItem[] =
+    const mediaItems: MediaItem<Annotation>[] =
         itemsFromAnnotations.length > 0
             ? itemsFromAnnotations
             : [
@@ -60,8 +60,8 @@ const AnnotationsEditor = (props: Props) => {
                       start: '00:00:00.000',
                       end: '00:00:01.000',
                       text: t('Kommentar'),
-                      originalData: {},
                       lane: 0,
+                      originalData: {} as Annotation,
                   }),
               ]
 

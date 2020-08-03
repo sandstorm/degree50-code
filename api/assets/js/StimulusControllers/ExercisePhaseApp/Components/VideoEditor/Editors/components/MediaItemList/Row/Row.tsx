@@ -9,6 +9,7 @@ import Actions from './Actions'
 
 import { actions } from '../../../../PlayerSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
+import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
 
 type OwnProps = {
     key: string
@@ -16,11 +17,11 @@ type OwnProps = {
     index: number
     style: Object
     currentIndex: number
-    checkMediaItem: (item: MediaItem) => boolean
-    rowData: MediaItem
-    removeMediaItem: (item: MediaItem) => void
-    addMediaItem: (index: number, item?: MediaItem) => void
-    updateMediaItem: (item: MediaItem, updatedValues: Object) => void
+    checkMediaItem: (item: MediaItem<MediaItemType>) => boolean
+    rowData: MediaItem<MediaItemType>
+    removeMediaItem: (item: MediaItem<MediaItemType>) => void
+    addMediaItem: (index: number, item?: MediaItem<MediaItemType>) => void
+    updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Object) => void
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -64,7 +65,7 @@ const Row = ({
                 setPlayPosition(rowData.startTime + 0.001)
             }}
         >
-            <Actions removeMediaItem={() => removeMediaItem(rowData)} addMediaItem={() => addMediaItem(index + 1)} />
+            <Actions removeMediaItem={() => removeMediaItem(rowData)} addMediaItem={() => addMediaItem(index)} />
             <div
                 className="video-editor__media-item-list__column video-editor__media-item-list__column--time"
                 style={{ width: 150 }}

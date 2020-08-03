@@ -42,6 +42,7 @@ const en = {
     'decoding-progress': 'Decoding Progress:',
     'render-channel': 'Render Channel:',
     zoom: 'Zoom',
+    volume: 'Lautstärke',
     'height-zoom': 'Height Zoom:',
     'space-metronome': 'Space Metronome:',
     'export-image': 'Export Image',

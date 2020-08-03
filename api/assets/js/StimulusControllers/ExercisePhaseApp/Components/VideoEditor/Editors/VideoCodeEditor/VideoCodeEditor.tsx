@@ -43,12 +43,12 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const solveConflicts = (mediaItems: MediaItem[]) => {
-    const hasConflictWithItem = (currentItem: MediaItem, itemToCheckAgainst: MediaItem) => {
+const solveConflicts = (mediaItems: MediaItem<VideoCode>[]) => {
+    const hasConflictWithItem = (currentItem: MediaItem<VideoCode>, itemToCheckAgainst: MediaItem<VideoCode>) => {
         return currentItem.startTime < itemToCheckAgainst.endTime
     }
 
-    const getLane = (item: MediaItem, index: number) => {
+    const getLane = (_: MediaItem<VideoCode>, index: number) => {
         let lane = 0
         if (index > 0) {
             lane = 0
@@ -72,7 +72,7 @@ const solveConflicts = (mediaItems: MediaItem[]) => {
     }
 
     return [...mediaItems]
-        .sort((a: MediaItem, b: MediaItem) => {
+        .sort((a: MediaItem<VideoCode>, b: MediaItem<VideoCode>) => {
             if (a.startTime < b.startTime) {
                 return -1
             } else if (a.startTime > b.startTime) {
@@ -80,7 +80,7 @@ const solveConflicts = (mediaItems: MediaItem[]) => {
             }
             return 0
         })
-        .map((item: MediaItem, index: number) => {
+        .map((item: MediaItem<VideoCode>, index: number) => {
             item.lane = getLane(item, index)
             return item
         })
@@ -106,7 +106,7 @@ const VideoCodeEditor = (props: Props) => {
 
     const amountOfLanes = Math.max.apply(
         Math,
-        mediaItems.map((item: MediaItem) => {
+        mediaItems.map((item: MediaItem<VideoCode>) => {
             return item.lane
         })
     )

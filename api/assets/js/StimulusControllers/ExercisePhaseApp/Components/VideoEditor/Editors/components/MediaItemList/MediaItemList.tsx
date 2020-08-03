@@ -5,12 +5,12 @@ import Row from './Row/Row'
 import { MediaItem } from '../types'
 
 export type Props = {
-    mediaItems: MediaItem[]
-    addMediaItem: (index: number, sub?: MediaItem) => void
+    mediaItems: MediaItem<any>[]
+    addMediaItem: (index: number, sub?: MediaItem<any>) => void
     currentIndex: number
-    updateMediaItem: (item: MediaItem, updatedValues: Object) => void // FIXME refine updatedValues
-    removeMediaItem: (item: MediaItem) => void
-    checkMediaItem: (item: MediaItem) => boolean
+    updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine updatedValues
+    removeMediaItem: (item: MediaItem<any>) => void
+    checkMediaItem: (item: MediaItem<any>) => boolean
 }
 
 const MediaItemList = ({

@@ -1,9 +1,10 @@
 import React from 'react'
 import { useAppSelector } from '../../../../Store/Store'
-import { selectConfig, VideoCode } from '../../../Config/ConfigSlice'
+import { selectConfig, VideoCode as ConfigVideoCode } from '../../../Config/ConfigSlice'
 import { MediaItem } from '../components/types'
+import { MediaItemType, VideoCode } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
 
-const renderVideoCodes = (videoCodes: VideoCode[], addVideoCode: (videoCode: VideoCode) => void) =>
+const renderVideoCodes = (videoCodes: ConfigVideoCode[], addVideoCode: (videoCode: ConfigVideoCode) => void) =>
     videoCodes.map((videoCode) => (
         <div
             className={'video-code'}
@@ -25,8 +26,8 @@ const renderVideoCodes = (videoCodes: VideoCode[], addVideoCode: (videoCode: Vid
     ))
 
 export type Props = {
-    addVideoCode: (index: number, videoCode: VideoCode) => void
-    videoCodes: MediaItem[]
+    addVideoCode: (index: number, videoCode: ConfigVideoCode) => void
+    videoCodes: MediaItem<VideoCode>[]
 }
 
 // Renders a list of configured video codes.
@@ -36,7 +37,7 @@ export type Props = {
 const VideoCode = ({ videoCodes, addVideoCode }: Props) => {
     const config = useAppSelector(selectConfig)
 
-    const handleAdd = (videoCode: VideoCode) => {
+    const handleAdd = (videoCode: ConfigVideoCode) => {
         addVideoCode(videoCodes.length, videoCode)
     }
 

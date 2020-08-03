@@ -4,19 +4,19 @@ import { MediaItem } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { itemIsVisible } from './helpers'
 
-const getVisibleItems = (items: MediaItem[], timelineStartTime: number, duration: number): MediaItem[] => {
+const getVisibleItems = <T>(items: MediaItem<T>[], timelineStartTime: number, duration: number): MediaItem<T>[] => {
     return items.filter((item) => itemIsVisible(item, timelineStartTime, duration))
 }
 
-export const useItemInteraction = (
-    mediaItems: MediaItem[],
+export const useItemInteraction = <T>(
+    mediaItems: MediaItem<T>[],
     renderConfig: RenderConfig,
     gridGap: number,
     $mediaItemsRef: React.RefObject<HTMLDivElement>,
-    updateMediaItem: (item: MediaItem, updatedValues: { start?: string; end?: string }, newStartTime: number) => void
+    updateMediaItem: (item: MediaItem<T>, updatedValues: { start?: string; end?: string }, newStartTime: number) => void
 ) => {
     const [isDraging, setIsDraging] = useState(false)
-    const [lastClickedItem, setLastClickedItem] = useState<MediaItem | undefined>(undefined)
+    const [lastClickedItem, setLastClickedItem] = useState<MediaItem<T> | undefined>(undefined)
     const [lastClickedItemIndex, setLastClickedItemIndex] = useState<number>(0)
     const [lastClickedItemSide, setLastClickedItemSide] = useState('center')
     const [lastTargetNode, setLastTargetNode] = useState<HTMLElement | undefined>(undefined)
@@ -25,7 +25,11 @@ export const useItemInteraction = (
     const [lastDiffX, setLastDiffX] = useState<number>(0)
 
     const onItemMouseDown = useCallback(
-        (event: React.MouseEvent<HTMLDivElement, MouseEvent>, item: MediaItem, side: 'left' | 'center' | 'right') => {
+        (
+            event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+            item: MediaItem<T>,
+            side: 'left' | 'center' | 'right'
+        ) => {
             setIsDraging(true)
             setLastClickedItem(item)
             setLastClickedItemSide(side)
@@ -86,12 +90,11 @@ export const useItemInteraction = (
     const onMouseUp = useCallback(() => {
         if (isDraging && lastTargetNode && lastDiffX && lastClickedItem) {
             const timeDiff = lastDiffX / gridGap / 10
-            const previousItem = mediaItems[lastClickedItemIndex - 1]
-            const nextItem = mediaItems[lastClickedItemIndex + 1]
             const newStartTime = (lastClickedItem.startTime || 0) + timeDiff
             const newEndTime = (lastClickedItem.endTime || 0) + timeDiff
 
             if (lastClickedItemSide === 'left') {
+                // drag left handle
                 if (newStartTime >= 0 && newStartTime < (lastClickedItem.endTime || 0)) {
                     const start = d2t(newStartTime.toFixed(3))
 
@@ -100,13 +103,16 @@ export const useItemInteraction = (
                     lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             } else if (lastClickedItemSide === 'right') {
+                // drag right handle
                 if (newEndTime >= 0 && newEndTime > (lastClickedItem?.startTime || 0)) {
                     const end = d2t(newEndTime.toFixed(3))
-                    updateMediaItem(lastClickedItem, { end }, newStartTime)
+
+                    updateMediaItem(lastClickedItem, { end }, lastClickedItem.startTime) // start time should not've changed here
                 } else {
                     lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             } else {
+                // drag item itself
                 if (newStartTime > 0 && newEndTime > 0 && newEndTime > newStartTime) {
                     const start = d2t(newStartTime.toFixed(3))
                     const end = d2t(newEndTime.toFixed(3))

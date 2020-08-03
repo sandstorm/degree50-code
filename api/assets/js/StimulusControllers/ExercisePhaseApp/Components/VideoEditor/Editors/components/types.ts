@@ -1,13 +1,13 @@
 import clamp from 'lodash/clamp'
 import { timeToSecond, secondToTime } from '../utils'
 
-export class MediaItem {
+export class MediaItem<T> {
     start: string
     end: string
     text: string
     color: null | string
-    originalData: Object
     lane: number
+    originalData: T
 
     constructor({
         start,
@@ -21,8 +21,8 @@ export class MediaItem {
         end: string
         text: string
         color?: string | null
-        originalData: Object
         lane: number
+        originalData: T
     }) {
         this.start = start
         this.end = end
@@ -36,7 +36,7 @@ export class MediaItem {
         return this.startTime >= 0 && this.endTime >= 0 && this.startTime < this.endTime
     }
 
-    get clone(): MediaItem {
+    get clone(): MediaItem<T> {
         return new MediaItem({
             start: this.start,
             end: this.end,

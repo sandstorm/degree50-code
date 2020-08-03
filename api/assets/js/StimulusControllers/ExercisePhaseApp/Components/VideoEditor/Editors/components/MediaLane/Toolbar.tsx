@@ -3,9 +3,10 @@ import { Translate } from 'react-i18nify'
 
 type Props = {
     zoomHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
+    children?: React.ReactNode
 }
 
-const Toolbar = ({ zoomHandler }: Props) => {
+const Toolbar = ({ zoomHandler, children }: Props) => {
     return (
         <div className="video-editor-timeline__header">
             <div className="video-editor-timeline__header-left">
@@ -17,6 +18,7 @@ const Toolbar = ({ zoomHandler }: Props) => {
                         <input defaultValue="10" type="range" min="5" max="20" step="1" onChange={zoomHandler} />
                     </div>
                 </div>
+                {children}
             </div>
         </div>
     )
