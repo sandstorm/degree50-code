@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
-import { setVideoCodes, selectSolution } from '../../../Solution/SolutionSlice'
+import { setVideoCodes, selectSolution, VideoCode } from '../../../Solution/SolutionSlice'
 import { syncSolutionAction } from '../../../Solution/SolutionSaga'
 import { selectReadOnly, selectUserId } from '../../../Config/ConfigSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
@@ -13,7 +13,7 @@ import PlayerComponent from '../components/ArtPlayer'
 import VideoCodes from './VideoCodes'
 import { MediaItem } from '../components/types'
 import { secondToTime, timeToSecond } from '../utils'
-import { useMediaItemHandling, useMutablePlayer } from '../utils/hooks'
+import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
 import { selectors, actions } from '../../PlayerSlice'
 
@@ -48,7 +48,14 @@ const VideoCodeEditor = (props: Props) => {
 
     // All videoCodes
     const mediaItems = props.videoCodes.map(
-        (videoCode) => new MediaItem(videoCode.start, videoCode.end, videoCode.text, videoCode.color)
+        (videoCode) =>
+            new MediaItem({
+                start: videoCode.start,
+                end: videoCode.end,
+                text: videoCode.text,
+                color: videoCode.color,
+                originalData: videoCode,
+            })
     )
 
     // All options
@@ -60,7 +67,9 @@ const VideoCodeEditor = (props: Props) => {
         translationLanguage: 'en',
     }
 
-    const { setCurrentTimeForMediaItems, updateMediaItems, updateMediaItem, copyMediaItems } = useMediaItemHandling({
+    const { setCurrentTimeForMediaItems, updateMediaItems, updateMediaItem, copyMediaItems } = useMediaItemHandling<
+        VideoCode
+    >({
         userId: props.userId,
         currentEditorId: props.currentEditorId,
         mediaItems,
@@ -76,7 +85,13 @@ const VideoCodeEditor = (props: Props) => {
             const previous = videoCodes[index - 1]
             const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
             const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-            const code = new MediaItem(start, end, videoCode.name, videoCode.color)
+            const code = new MediaItem({
+                start,
+                end,
+                text: videoCode.name,
+                color: videoCode.color,
+                originalData: videoCode,
+            })
 
             props.setPlayPosition(timeToSecond(start))
 

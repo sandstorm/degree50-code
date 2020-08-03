@@ -9,4 +9,8 @@ export const tabs = {
         id: TabTypes.VIDEO_CODES,
         label: 'Video Codes',
     },
+    [TabTypes.VIDEO_CUTS]: {
+        id: TabTypes.VIDEO_CUTS,
+        label: 'Video Cuts',
+    },
 }

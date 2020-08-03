@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { t } from 'react-i18nify'
 
-import { setAnnotations, selectSolution } from '../../../Solution/SolutionSlice'
+import { setAnnotations, selectSolution, Annotation } from '../../../Solution/SolutionSlice'
 import { syncSolutionAction } from '../../../Solution/SolutionSaga'
 import { selectReadOnly, selectUserId } from '../../../Config/ConfigSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
@@ -11,12 +11,12 @@ import { selectCurrentEditorId } from '../../../Presence/CurrentEditorSlice'
 
 import MediaLane from '../components/MediaLane'
 import ArtPlayer from '../components/ArtPlayer'
-import Annotations from './Annotations'
-import { MediaItem } from '../components/types'
+import MediaItemList from '../components/MediaItemList/MediaItemList'
 import Storage from '../utils/storage'
 
 import { useMediaItemHandling } from '../utils/hooks'
 import { selectors, actions } from '../../PlayerSlice'
+import { MediaItem } from '../components/types'
 
 const storage = new Storage()
 
@@ -48,12 +48,14 @@ const AnnotationsEditor = (props: Props) => {
     const height = props.height
 
     // All annotations
-    const itemsFromAnnotations = props.annotations.map((sub) => new MediaItem(sub.start, sub.end, sub.text))
+    const itemsFromAnnotations = props.annotations.map(
+        (sub) => new MediaItem({ start: sub.start, end: sub.end, text: sub.text, originalData: sub })
+    )
 
     const mediaItems: MediaItem[] =
         itemsFromAnnotations.length > 0
             ? itemsFromAnnotations
-            : [new MediaItem('00:00:00.000', '00:00:01.000', t('Kommentar'))]
+            : [new MediaItem({ start: '00:00:00.000', end: '00:00:01.000', text: t('Kommentar'), originalData: {} })]
 
     // All options
     const firstVideoUrl = props.videos[0] ? props.videos[0].url : ''
@@ -72,7 +74,7 @@ const AnnotationsEditor = (props: Props) => {
         removeMediaItem,
         updateMediaItem,
         checkMediaItem,
-    } = useMediaItemHandling({
+    } = useMediaItemHandling<Annotation>({
         userId: props.userId,
         currentEditorId: props.currentEditorId,
         mediaItems,
@@ -92,13 +94,13 @@ const AnnotationsEditor = (props: Props) => {
                     <header className="video-editor__section-header">{props.headerContent}</header>
 
                     <div className="video-editor__section-content">
-                        <Annotations
-                            annotations={mediaItems}
-                            addAnnotation={addMediaItem}
+                        <MediaItemList
+                            mediaItems={mediaItems}
+                            addMediaItem={addMediaItem}
                             currentIndex={currentIndex}
-                            updateAnnotation={updateMediaItem}
-                            removeAnnotation={removeMediaItem}
-                            checkAnnotation={checkMediaItem}
+                            updateMediaItem={updateMediaItem}
+                            removeMediaItem={removeMediaItem}
+                            checkMediaItem={checkMediaItem}
                         />
                     </div>
                 </div>

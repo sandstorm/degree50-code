@@ -46,6 +46,8 @@ exercisePhase:
   components:
     videoPlayer:
       label: 'Videoplayer'
+    videoCutting:
+      label: 'Videoschnitt'
     chat:
       label: 'Chat'
     documentUpload:

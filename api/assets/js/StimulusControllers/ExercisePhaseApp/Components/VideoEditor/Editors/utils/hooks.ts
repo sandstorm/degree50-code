@@ -25,7 +25,7 @@ export const useMutablePlayer = (worker?: Worker) => {
     }
 }
 
-export const useMediaItemHandling = ({
+export const useMediaItemHandling = <T>({
     userId,
     currentEditorId,
     mediaItems,
@@ -38,9 +38,9 @@ export const useMediaItemHandling = ({
 }: {
     userId: string
     currentEditorId: string | undefined
-    mediaItems: MediaItem[]
+    mediaItems: Array<MediaItem>
     readOnly: boolean
-    setMediaItems: (mediaItems: MediaItem[]) => unknown
+    setMediaItems: (mediaItems: Array<T>) => void
     updateCallback: Function
     worker?: Worker
     storage: Storage
@@ -66,13 +66,22 @@ export const useMediaItemHandling = ({
     )
 
     // Only way to update all mediaItems
-    const updateMediaItems = (items: MediaItem[], saveToHistory = true) => {
+    const updateMediaItems = (items: Array<MediaItem>, saveToHistory = true) => {
         const userIsCurrentEditor = userId === currentEditorId
         const hasItems = items.length
         const notEqualToPreviousItems = !isEqual(items, mediaItems)
 
         if ((userIsCurrentEditor || !readOnly) && hasItems && notEqualToPreviousItems) {
-            setMediaItems(JSON.parse(JSON.stringify(items)))
+            const updatedItems = JSON.parse(JSON.stringify(items))
+
+            // This makes sure that all properties from the original item will be written back to the store
+            // E.g. the 'url' property of a cut
+            const convertedToOriginalStructure = updatedItems.map((item: MediaItem) => ({
+                ...item.originalData,
+                ...item,
+            }))
+
+            setMediaItems(convertedToOriginalStructure)
             updateCallback()
 
             if (worker) {
@@ -100,7 +109,7 @@ export const useMediaItemHandling = ({
 
         if (worker) {
             // Takes care of the mediaItems which overlay the video
-            worker.postMessage(mediaItems.map((item) => new MediaItem(item.start, item.end, item.text)))
+            worker.postMessage(mediaItems)
         }
     }, [worker])
 
@@ -127,6 +136,7 @@ export const useMediaItemHandling = ({
             if (index < 0) return false
 
             const previous = mediaItems[index - 1]
+
             return (previous && item.startTime < previous.endTime) || !item.check
         },
         [hasMediaItem, mediaItems]
@@ -134,23 +144,19 @@ export const useMediaItemHandling = ({
 
     // Update a single mediaItem
     const updateMediaItem = useCallback(
-        (item, key, value) => {
+        (item: MediaItem, updatedValues: Object) => {
             const index = hasMediaItem(item)
 
             if (index < 0) return
 
-            const subs = copyMediaItems()
+            const copiedItems = copyMediaItems()
             const { clone } = item
 
-            if (typeof key === 'object') {
-                Object.assign(clone, key)
-            } else {
-                clone[key] = value
-            }
+            Object.assign(clone, updatedValues)
 
             if (clone.check) {
-                subs[index] = clone
-                updateMediaItems(subs)
+                copiedItems[index] = clone
+                updateMediaItems(copiedItems)
             } else {
                 notify(t('parameter-error'), 'error')
             }
@@ -188,7 +194,7 @@ export const useMediaItemHandling = ({
                 const previous = subs[index - 1]
                 const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
                 const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-                const sub = new MediaItem(start, end, t('subtitle-text'))
+                const sub = new MediaItem({ start, end, text: t('subtitle-text'), originalData: {} })
 
                 subs.splice(index, 0, sub)
             }

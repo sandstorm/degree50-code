@@ -1,13 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { MediaItem } from '../../components/types'
+import { MediaItem } from '../../types'
 import TextField from './TextField'
 import Duration from './Duration'
 import Start from './Start'
 import End from './End'
 import Actions from './Actions'
 
-import { actions } from '../../../PlayerSlice'
+import { actions } from '../../../../PlayerSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 
 type OwnProps = {
@@ -16,11 +16,11 @@ type OwnProps = {
     index: number
     style: Object
     currentIndex: number
-    checkAnnotation: (sub: MediaItem) => boolean
+    checkMediaItem: (item: MediaItem) => boolean
     rowData: MediaItem
-    removeAnnotation: (sub: MediaItem) => void
-    addAnnotation: (index: number, sub?: MediaItem) => void
-    updateAnnotation: (sub: MediaItem, key: string, value: string) => void
+    removeMediaItem: (item: MediaItem) => void
+    addMediaItem: (index: number, item?: MediaItem) => void
+    updateMediaItem: (item: MediaItem, updatedValues: Object) => void
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -34,16 +34,16 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const AnnotationsRow = ({
+const Row = ({
     id,
     index,
     style,
     currentIndex,
-    checkAnnotation,
+    checkMediaItem,
     rowData,
-    removeAnnotation,
-    addAnnotation,
-    updateAnnotation,
+    removeMediaItem,
+    addMediaItem,
+    updateMediaItem,
     setPause,
     setPlayPosition,
 }: Props) => {
@@ -54,7 +54,7 @@ const AnnotationsRow = ({
                 'video-editor__media-item-list__row',
                 index % 2 ? 'video-editor__media-item-list__row--odd' : '',
                 currentIndex === index ? 'video-editor__media-item-list__row--highlight' : '',
-                checkAnnotation(rowData) ? 'video-editor__media-item-list__row--illegal' : '',
+                checkMediaItem(rowData) ? 'video-editor__media-item-list__row--illegal' : '',
             ]
                 .join(' ')
                 .trim()}
@@ -64,10 +64,7 @@ const AnnotationsRow = ({
                 setPlayPosition(rowData.startTime + 0.001)
             }}
         >
-            <Actions
-                removeAnnotation={() => removeAnnotation(rowData)}
-                addAnnotation={() => addAnnotation(index + 1)}
-            />
+            <Actions removeMediaItem={() => removeMediaItem(rowData)} addMediaItem={() => addMediaItem(index + 1)} />
             <div
                 className="video-editor__media-item-list__column video-editor__media-item-list__column--time"
                 style={{ width: 150 }}
@@ -78,10 +75,10 @@ const AnnotationsRow = ({
             <Duration duration={rowData.duration} />
             <TextField
                 text={rowData.text}
-                updateText={(event) => updateAnnotation(rowData, 'text', event.target.value)}
+                updateText={(event) => updateMediaItem(rowData, { text: event.target.value })}
             />
         </div>
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(AnnotationsRow))
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Row))

@@ -14,10 +14,23 @@ type TeamProps = {
 
 export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime }) => {
     const itemsFromAnnotations = solution.solution.annotations.map(
-        (annotation) => new MediaItem(annotation.start, annotation.end, annotation.text)
+        (annotation) =>
+            new MediaItem({
+                start: annotation.start,
+                end: annotation.end,
+                text: annotation.text,
+                originalData: annotation,
+            })
     )
     const itemsFromVideoCodes = solution.solution.videoCodes.map(
-        (videoCode) => new MediaItem(videoCode.start, videoCode.end, videoCode.text, videoCode.color)
+        (videoCode) =>
+            new MediaItem({
+                start: videoCode.start,
+                end: videoCode.end,
+                text: videoCode.text,
+                color: videoCode.color,
+                originalData: videoCode,
+            })
     )
 
     let mediaItems = null

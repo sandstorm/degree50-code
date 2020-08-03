@@ -65,6 +65,4 @@ export const cutlistSlice =  createSlice({
         return updateStartingTime([ ...state.slice(0, index), ...state.slice(index + 1)])
       }
     },
-    // An additional object of "case reducers", where the keys should be other
-    // action types, or a "builder callback" function used to add more reducers
 })

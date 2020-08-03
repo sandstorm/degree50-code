@@ -16,6 +16,7 @@ import { tabs } from './Tabs'
 import EditorTabs from './EditorTabs'
 import AnnotationsEditor from './Editors/AnnotationsEditor/AnnotationsEditor'
 import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
+import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
@@ -29,8 +30,6 @@ const VideoEditor: React.FC<Props> = (props) => {
     const [activeTabId, setActiveTabId] = useState<TabTypes>(TabTypes.ANNOTATIONS)
 
     useEffect(() => {
-        // FIXME
-        // we should use a ref here
         setHeight(document.getElementsByClassName('exercise-phase__inner')[0].clientHeight)
     })
 
@@ -48,6 +47,16 @@ const VideoEditor: React.FC<Props> = (props) => {
         case TabTypes.VIDEO_CODES: {
             return (
                 <CodeEditor
+                    height={height}
+                    videos={props.videos}
+                    headerContent={<EditorTabs tabs={tabs} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />}
+                />
+            )
+        }
+
+        case TabTypes.VIDEO_CUTS: {
+            return (
+                <CuttingEditor
                     height={height}
                     videos={props.videos}
                     headerContent={<EditorTabs tabs={tabs} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />}

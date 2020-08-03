@@ -11,7 +11,7 @@ import { actions } from '../../../PlayerSlice'
 type Props = {
     currentTime: number
     mediaItems: MediaItem[]
-    updateMediaItem: (item: MediaItem | undefined, key: string | Object, value?: string) => void // FIXME refine key
+    updateMediaItem: (item: MediaItem, updatedValues: Object) => void // FIXME refine key
     mediaTrackConfig?: MediaTrackConfig
     setPlayPosition: typeof actions.setPlayPosition
 }
