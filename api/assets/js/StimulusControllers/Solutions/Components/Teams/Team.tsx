@@ -20,6 +20,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
                 end: annotation.end,
                 text: annotation.text,
                 originalData: annotation,
+                lane: 0,
             })
     )
     const itemsFromVideoCodes = solution.solution.videoCodes.map(
@@ -30,6 +31,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
                 text: videoCode.text,
                 color: videoCode.color,
                 originalData: videoCode,
+                lane: 0,
             })
     )
 

@@ -63,7 +63,7 @@ class ExercisePhaseController extends AbstractController
         /* @var User $user */
         $user = $this->getUser();
 
-        $showSolution = $request->get('showSolution');
+        $showSolution = !!$request->get('showSolution');
 
         // config for the ui to render the react components
         $config = $this->getConfig($exercisePhase, $showSolution);
@@ -83,15 +83,17 @@ class ExercisePhaseController extends AbstractController
 
         $currentEditor = null;
 
-        if ($exercisePhaseTeam->getCurrentEditor()) {
-            $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
-        } else {
-            $currentEditor = $user->getId();
-            $exercisePhaseTeam->setCurrentEditor($user);
-            $entityManager = $this->getDoctrine()->getManager();
-            $this->eventStore->disableEventPublishingForNextFlush();
-            $entityManager->persist($exercisePhaseTeam);
-            $entityManager->flush();
+        if (!$showSolution) {
+            if ($exercisePhaseTeam->getCurrentEditor()) {
+                $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
+            } else {
+                $currentEditor = $user->getId();
+                $exercisePhaseTeam->setCurrentEditor($user);
+                $entityManager = $this->getDoctrine()->getManager();
+                $this->eventStore->disableEventPublishingForNextFlush();
+                $entityManager->persist($exercisePhaseTeam);
+                $entityManager->flush();
+            }
         }
 
         $template = 'ExercisePhase/Show.html.twig';

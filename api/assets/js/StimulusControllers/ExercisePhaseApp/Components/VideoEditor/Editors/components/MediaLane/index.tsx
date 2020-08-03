@@ -14,6 +14,8 @@ type Props = {
     updateMediaItem: (item: MediaItem, updatedValues: Object) => void // FIXME refine key
     mediaTrackConfig?: MediaTrackConfig
     setPlayPosition: typeof actions.setPlayPosition
+    checkMediaItem: (sub: MediaItem) => boolean
+    amountOfLanes?: number
 }
 
 const initialRender: RenderConfig = {
@@ -24,7 +26,15 @@ const initialRender: RenderConfig = {
     timelineStartTime: 0,
 }
 
-const MediaLane = ({ currentTime, mediaTrackConfig = {}, updateMediaItem, mediaItems, setPlayPosition }: Props) => {
+const MediaLane = ({
+    currentTime,
+    mediaTrackConfig = {},
+    updateMediaItem,
+    mediaItems,
+    setPlayPosition,
+    checkMediaItem,
+    amountOfLanes,
+}: Props) => {
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
@@ -82,7 +92,6 @@ const MediaLane = ({ currentTime, mediaTrackConfig = {}, updateMediaItem, mediaI
     const handleMediaItemUpdate = useCallback(
         (item: MediaItem, updatedValues: { start?: string; end?: string }, newStartTime: number) => {
             updateMediaItem(item, updatedValues)
-
             setPlayPosition(newStartTime)
         },
         [updateMediaItem]
@@ -130,6 +139,8 @@ const MediaLane = ({ currentTime, mediaTrackConfig = {}, updateMediaItem, mediaI
                     mediaItems={mediaItems}
                     gridGap={gridGap}
                     updateMediaItem={handleMediaItemUpdate}
+                    checkMediaItem={checkMediaItem}
+                    amountOfLanes={amountOfLanes}
                 />
             </div>
         </div>

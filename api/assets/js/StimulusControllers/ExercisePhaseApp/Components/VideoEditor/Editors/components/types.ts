@@ -7,6 +7,7 @@ export class MediaItem {
     text: string
     color: null | string
     originalData: Object
+    lane: number
 
     constructor({
         start,
@@ -14,18 +15,21 @@ export class MediaItem {
         text,
         color = null,
         originalData,
+        lane = 0,
     }: {
         start: string
         end: string
         text: string
         color?: string | null
         originalData: Object
+        lane: number
     }) {
         this.start = start
         this.end = end
         this.text = text
         this.color = color
         this.originalData = originalData
+        this.lane = lane
     }
 
     get check(): boolean {
@@ -39,6 +43,7 @@ export class MediaItem {
             text: this.text,
             color: this.color,
             originalData: this.originalData,
+            lane: this.lane,
         })
     }
 

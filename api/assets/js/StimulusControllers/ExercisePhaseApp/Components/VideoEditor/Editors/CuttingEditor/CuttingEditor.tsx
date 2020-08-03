@@ -68,6 +68,7 @@ const CuttingEditor = ({
                           end: cut.end,
                           text: typeof cut.text === 'string' ? cut.text : cut.url,
                           originalData: cut,
+                          lane: 0,
                       })
               )
             : [
@@ -80,6 +81,7 @@ const CuttingEditor = ({
                           offset: 0,
                           playbackRate: 1,
                       },
+                      lane: 0,
                   }),
               ]
 
@@ -126,6 +128,7 @@ const CuttingEditor = ({
                 mediaItems={mediaItems}
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={setPlayPosition}
+                checkMediaItem={checkMediaItem}
             />
             <ToastContainer />
         </React.Fragment>

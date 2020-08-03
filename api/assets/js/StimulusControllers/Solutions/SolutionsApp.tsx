@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
 import VideoPlayerWrapper from '../ExercisePhaseApp/Components/VideoPlayer/VideoPlayerWrapper'
 import { Solution } from '../ExercisePhaseApp/Components/Solution/SolutionSlice'
 import { Teams } from './Components/Teams/Teams'
@@ -18,6 +18,7 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }
     const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.ANNOTATIONS)
     const [currentTime, setCurrentTime] = useState(0)
     const [currentZoom, setCurrentZoom] = useState(10)
+    const [player, setPlayer] = useState(null)
 
     const videoNodeRef: React.RefObject<HTMLVideoElement> = useRef(null)
 
@@ -27,6 +28,13 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }
         },
         [setActiveTab]
     )
+
+    useEffect(() => {
+        if (videoNodeRef.current) {
+            // TODO set player to get the current duration for better ux, like better zooming
+            //setPlayer(videoNodeRef.current)
+        }
+    }, [videoNodeRef.current?.duration])
 
     const updateCurrentTime = useCallback(
         (time: number) => {
@@ -39,7 +47,7 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }
 
     const updateCurrentZoom = useCallback(
         (event) => {
-            setCurrentZoom(event.target.value)
+            setCurrentZoom(parseInt(event.target.value))
         },
         [setCurrentZoom]
     )
