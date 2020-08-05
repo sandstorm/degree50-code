@@ -93,20 +93,9 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
         }
     }, [videoContext])
 
-    let timestamp = <div id="timestamp" />
-    if (videoContext) {
-        timestamp = (
-            <div id="timestamp" style={{ color: '#fff' }}>
-                <span id="current-time"> {videoContext.currentTime}</span> /
-                <span id="duration">{videoContext.duration}</span>
-            </div>
-        )
-    }
-
     return (
         <>
             <canvas ref={canvasRef} className={'video-context-player'} />
-            {timestamp}
             <div className="actions">
                 <button className="video-button" onClick={handlePlay}>
                     Play
