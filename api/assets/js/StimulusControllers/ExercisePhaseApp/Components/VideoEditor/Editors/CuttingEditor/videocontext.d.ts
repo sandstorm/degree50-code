@@ -1,1 +1,34 @@
-declare module 'videocontext'
+// TODO refine typings
+declare module 'videocontext' {
+    export default class VideoContext {
+        static DEFINITIONS: any
+        static EVENTS: {
+            UPDATE: 'update'
+            STALLED: 'stalled'
+            ENDED: 'ended'
+            CONTENT: 'content'
+            NOCONTENT: 'nocontent'
+        }
+        static STATE: {
+            PLAYING: 0
+            PAUSED: 1
+            STALLED: 2
+            ENDED: 3
+            BROKEN: 4
+        }
+
+        canvas: HTMLElement | null
+        compositor: Function
+        destination: Object
+        currentTime: number
+        registerCallback: Function
+        state: number
+        volume: number
+        duration: number
+        play: Function
+        pause: Function
+        video: Function
+
+        constructor(canvas: HTMLElement | null)
+    }
+}

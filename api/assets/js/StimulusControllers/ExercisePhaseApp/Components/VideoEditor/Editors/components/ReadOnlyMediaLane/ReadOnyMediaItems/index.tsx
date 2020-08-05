@@ -1,15 +1,16 @@
 import React, { useRef } from 'react'
 import ReadOnlyMediaItem from './ReadOnlyMediaItem'
-import { MediaItem as MediaItemType } from '../../types'
+import { MediaItem } from '../../types'
 import { RenderConfig } from '../../MediaLane/MediaTrack'
+import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
 
-const renderItems = (mediaItems: MediaItemType[], renderConfig: RenderConfig, gridGap: number) =>
+const renderItems = (mediaItems: MediaItem<MediaItemType>[], renderConfig: RenderConfig, gridGap: number) =>
     mediaItems.map((item, index) => {
         return <ReadOnlyMediaItem key={index} id={index} item={item} renderConfig={renderConfig} gridGap={gridGap} />
     })
 
 type Props = {
-    mediaItems: MediaItemType[]
+    mediaItems: MediaItem<MediaItemType>[]
     renderConfig: RenderConfig
     gridGap: number
 }

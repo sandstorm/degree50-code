@@ -1,20 +1,21 @@
 import React, { useRef } from 'react'
 import MediaItem from './MediaItem'
-import { MediaItem as MediaItemType } from '../../types'
+import { MediaItem as MediaItemClass } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { useItemInteraction } from './useItemInteraction'
 import { itemIsVisible } from './helpers'
+import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
 
 const renderItems = (
-    mediaItems: MediaItemType[],
+    mediaItems: MediaItemClass<MediaItemType>[],
     renderConfig: RenderConfig,
     gridGap: number,
     activeItemIndex: number,
-    checkMediaItem: (sub: MediaItemType) => boolean,
+    checkMediaItem: (item: MediaItemClass<any>) => boolean,
     handlers: {
         onItemMouseDown: (
             event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-            item: MediaItemType,
+            item: MediaItemClass<MediaItemType>,
             side: 'left' | 'right' | 'center'
         ) => void
     },
@@ -41,16 +42,16 @@ const renderItems = (
     })
 
 type Props = {
-    mediaItems: MediaItemType[]
+    mediaItems: MediaItemClass<MediaItemType>[]
     renderConfig: RenderConfig
     gridGap: number
     currentTime: number
     updateMediaItem: (
-        item: MediaItemType,
+        item: MediaItemClass<MediaItemType>,
         updatedValues: { start?: string; end?: string },
         newStartTime: number
     ) => void
-    checkMediaItem: (sub: MediaItemType) => boolean
+    checkMediaItem: (item: MediaItemClass<MediaItemType>) => boolean
     amountOfLanes?: number
 }
 

@@ -1,60 +1,112 @@
-import React, { useRef, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useRef, useEffect, useLayoutEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
+import VideoContext from 'videocontext'
 
 import { AppState } from '../../../../Store/Store'
+import { actions, selectors } from '../../PlayerSlice'
 import { initVideoContext, addCut } from './util'
 import { CutList } from './types'
 
 type OwnProps = {
     cutList: CutList
+    currentTimeCallback: (time: number) => void
+    volume: number
 }
 
-const mapStateToProps = (state: AppState) => ({})
+const mapStateToProps = (state: AppState) => ({
+    playPosition: selectors.selectPlayPosition(state),
+})
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+    setSyncPlayPosition: actions.setSyncPlayPosition,
+}
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const VideoContextPlayer = ({ cutList }: Props) => {
-    const [videoContext, setVideoContext] = useState(undefined)
+const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition, playPosition, volume }: Props) => {
+    const [videoContext, setVideoContext] = useState<VideoContext | undefined>(undefined)
     const [cEffect, setCEffect] = useState(undefined)
     const canvasRef = useRef(null)
 
-    useLayoutEffect(() => {
+    const resetVideoContext = () => {
         const { videoCtx, combineEffect } = initVideoContext(canvasRef)
         setVideoContext(videoCtx)
         setCEffect(combineEffect)
+
+        return { videoCtx, combineEffect }
+    }
+
+    // Initialize video context on first render (runs once)
+    useLayoutEffect(() => {
+        resetVideoContext()
     }, [])
 
+    // Update volume
     useEffect(() => {
-        if (videoContext && cutList.length > 0) {
-            console.log('adding nodes')
-            cutList.forEach((cut) => addCut(cut, videoContext, cEffect))
+        if (videoContext) {
+            videoContext.volume = volume
         }
-    }, [cutList, videoContext, cEffect])
+    }, [videoContext, volume])
 
-    const handlePlay = () => {
-        // @ts-ignore disable-line
+    // Update sync when player is running
+    useEffect(() => {
+        videoContext?.registerCallback(VideoContext.EVENTS.UPDATE, () => {
+            if (videoContext.state === VideoContext.STATE.PLAYING) {
+                const currentTime = videoContext.currentTime
+                setSyncPlayPosition(currentTime)
+                currentTimeCallback(currentTime)
+            }
+        })
+    }, [videoContext, setSyncPlayPosition, currentTimeCallback])
+
+    // Set player position from the outside.
+    useEffect(() => {
+        if (videoContext) {
+            videoContext.currentTime = playPosition
+            setSyncPlayPosition(playPosition)
+            currentTimeCallback(playPosition)
+        }
+    }, [videoContext, playPosition])
+
+    // Update video context with new nodes
+    useEffect(() => {
+        const { videoCtx, combineEffect } = resetVideoContext()
+
+        if (videoCtx && cutList.length > 0) {
+            cutList.forEach((cut) => addCut(cut, videoCtx, combineEffect))
+        }
+    }, [cutList])
+
+    const handlePlay = useCallback(() => {
+        if (!videoContext) return
+
         if (videoContext.currentTime >= videoContext.duration) {
-            // @ts-ignore disable-line
             videoContext.currentTime = 0
         }
 
-        // @ts-ignore disable-line
         videoContext.play()
-    }
+    }, [videoContext])
 
-    const handlePause = () => {
-        // @ts-ignore disable-line
-        videoContext.pause()
+    const handlePause = useCallback(() => {
+        if (videoContext) {
+            videoContext.pause()
+        }
+    }, [videoContext])
+
+    let timestamp = <div id="timestamp" />
+    if (videoContext) {
+        timestamp = (
+            <div id="timestamp" style={{ color: '#fff' }}>
+                <span id="current-time"> {videoContext.currentTime}</span> /
+                <span id="duration">{videoContext.duration}</span>
+            </div>
+        )
     }
 
     return (
         <>
-            <canvas ref={canvasRef} id="canvas" width="800" height="400" />
-            <div id="timestamp">
-                <span id="current-time" />/<span id="duration" />
-            </div>
+            <canvas ref={canvasRef} className={'video-context-player'} />
+            {timestamp}
             <div className="actions">
                 <button className="video-button" onClick={handlePlay}>
                     Play
