@@ -48,13 +48,13 @@ const solveConflicts = (mediaItems: MediaItem<VideoCode>[]) => {
         return currentItem.startTime < itemToCheckAgainst.endTime
     }
 
-    const getLane = (_: MediaItem<VideoCode>, index: number) => {
+    const getLane = (item: MediaItem<VideoCode>, index: number) => {
         let lane = 0
         if (index > 0) {
             lane = 0
             // reverse check of all previous media items for conflicts
             for (let i = index; i > 0; i--) {
-                const hasConflictWithPrevItem = hasConflictWithItem(mediaItems[index], mediaItems[i - 1])
+                const hasConflictWithPrevItem = hasConflictWithItem(item, mediaItems[i - 1])
                 // if item has a conflict with the prev. one we increase the lane
                 // and skip to the next iteration
                 if (hasConflictWithPrevItem) {
