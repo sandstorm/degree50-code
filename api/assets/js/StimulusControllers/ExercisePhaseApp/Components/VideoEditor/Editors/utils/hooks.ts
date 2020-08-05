@@ -129,18 +129,29 @@ export const useMediaItemHandling = <T>({
     const copyMediaItems = useCallback(() => mediaItems.map((item) => item.clone), [mediaItems])
 
     // Check if mediaItem is legal
+    // true == illegal, false == legal
     const checkMediaItem = useCallback(
         (item: MediaItem): boolean => {
             const index = hasMediaItem(item)
-
             if (index < 0) return false
-
-            const previous = mediaItems[index - 1]
-
-            return (previous && item.startTime < previous.endTime) || !item.check
+            return checkConflict(item, index)
         },
         [hasMediaItem, mediaItems]
     )
+
+    const checkConflict = (item: MediaItem, index: number) => {
+        return checkConflictWithPrevItem(item, index) || checkConflictWithNextItem(item, index)
+    }
+
+    const checkConflictWithPrevItem = (item: MediaItem, index: number) => {
+        const previous = mediaItems[index - 1]
+        return (previous && item.startTime < previous.endTime) || !item.check
+    }
+
+    const checkConflictWithNextItem = (item: MediaItem, index: number) => {
+        const next = mediaItems[index + 1]
+        return (next && item.endTime > next.startTime) || !item.check
+    }
 
     // Update a single mediaItem
     const updateMediaItem = useCallback(
@@ -194,7 +205,7 @@ export const useMediaItemHandling = <T>({
                 const previous = subs[index - 1]
                 const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
                 const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-                const sub = new MediaItem({ start, end, text: t('subtitle-text'), originalData: {} })
+                const sub = new MediaItem({ start, end, text: t('subtitle-text'), originalData: {}, lane: 0 })
 
                 subs.splice(index, 0, sub)
             }

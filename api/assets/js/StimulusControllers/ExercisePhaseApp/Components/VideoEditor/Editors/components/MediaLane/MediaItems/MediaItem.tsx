@@ -7,15 +7,26 @@ type Props = {
     id: number
     renderConfig: RenderConfig
     isPlayedBack?: boolean
+    checkMediaItem: (sub: MediaItemType) => boolean
     gridGap: number
     onItemMouseDown: (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         item: MediaItemType,
         side: 'left' | 'right' | 'center'
     ) => void
+    amountOfLanes?: number
 }
 
-const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown, isPlayedBack }: Props) => {
+const MediaItem = ({
+    item,
+    id,
+    renderConfig,
+    checkMediaItem,
+    gridGap,
+    onItemMouseDown,
+    isPlayedBack,
+    amountOfLanes = 0,
+}: Props) => {
     const handleLeftHandleMouseDown = useCallback(
         (event) => {
             onItemMouseDown(event, item, 'left')
@@ -37,11 +48,14 @@ const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown, isPlayedB
         [item, onItemMouseDown]
     )
 
+    const mediaItemHeight = 100 / (amountOfLanes + 1)
+
     return (
         <div
             className={[
                 'video-editor__media-items__item',
                 isPlayedBack ? 'video-editor__media-items__item--highlight' : '',
+                checkMediaItem(item) ? 'video-editor__media-items__item--illegal' : '',
             ]
                 .join(' ')
                 .trim()}
@@ -50,6 +64,8 @@ const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown, isPlayedB
                 backgroundColor: item.color ? item.color : '',
                 left: renderConfig.padding * gridGap + (item.startTime - renderConfig.timelineStartTime) * gridGap * 10,
                 width: (item.endTime - item.startTime) * gridGap * 10,
+                top: item.lane * mediaItemHeight + '%',
+                height: mediaItemHeight + '%',
             }}
             onClick={() => {
                 // TODO
@@ -65,7 +81,7 @@ const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown, isPlayedB
                     width: gridGap,
                 }}
                 onMouseDown={handleLeftHandleMouseDown}
-            ></div>
+            />
             <div className="video-editor__media-items__text" onMouseDown={handleItemCenterMouseDown}>
                 {item.text.split(/\r?\n/).map((line, index) => (
                     <p key={index}>{line}</p>
@@ -78,7 +94,7 @@ const MediaItem = ({ item, id, renderConfig, gridGap, onItemMouseDown, isPlayedB
                     width: gridGap,
                 }}
                 onMouseDown={handleRightHandleMouseDown}
-            ></div>
+            />
         </div>
     )
 }

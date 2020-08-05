@@ -43,20 +43,89 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
+const solveConflicts = (mediaItems: MediaItem[]) => {
+    const hasConflictWithItem = (currentItem: MediaItem, itemToCheckAgainst: MediaItem) => {
+        return currentItem.startTime < itemToCheckAgainst.endTime
+    }
+
+    const getLane = (item: MediaItem, index: number) => {
+        let lane = 0
+        if (index > 0) {
+            lane = 0
+            // reverse check of all previous media items for conflicts
+            for (let i = index; i > 0; i--) {
+                const hasConflictWithPrevItem = hasConflictWithItem(mediaItems[index], mediaItems[i - 1])
+                // if item has a conflict with the prev. one we increase the lane
+                // and skip to the next iteration
+                if (hasConflictWithPrevItem) {
+                    lane = mediaItems[i - 1].lane + 1
+                    continue
+                }
+                if (!hasConflictWithPrevItem && lane > 0 && mediaItems[index - 1].lane > 0) {
+                    lane = mediaItems[i - 1].lane
+                    break
+                }
+            }
+        }
+
+        return lane
+    }
+
+    return [...mediaItems]
+        .sort((a: MediaItem, b: MediaItem) => {
+            if (a.startTime < b.startTime) {
+                return -1
+            } else if (a.startTime > b.startTime) {
+                return 1
+            }
+            return 0
+        })
+        .map((item: MediaItem, index: number) => {
+            item.lane = getLane(item, index)
+            return item
+        })
+}
+
 const VideoCodeEditor = (props: Props) => {
     const height = props.height
 
     // All videoCodes
-    const mediaItems = props.videoCodes.map(
-        (videoCode) =>
-            new MediaItem({
-                start: videoCode.start,
-                end: videoCode.end,
-                text: videoCode.text,
-                color: videoCode.color,
-                originalData: videoCode,
-            })
+    const mediaItems = solveConflicts(
+        props.videoCodes.map(
+            (videoCode) =>
+                new MediaItem({
+                    start: videoCode.start,
+                    end: videoCode.end,
+                    text: videoCode.text,
+                    color: videoCode.color,
+                    originalData: videoCode,
+                    lane: 0,
+                })
+        )
     )
+
+    const amountOfLanes = Math.max.apply(
+        Math,
+        mediaItems.map((item: MediaItem) => {
+            return item.lane
+        })
+    )
+
+    const {
+        setCurrentTimeForMediaItems,
+        updateMediaItems,
+        updateMediaItem,
+        copyMediaItems,
+        checkMediaItem,
+    } = useMediaItemHandling<VideoCode>({
+        userId: props.userId,
+        currentEditorId: props.currentEditorId,
+        mediaItems,
+        readOnly: props.readOnly,
+        setMediaItems: props.setVideoCodes,
+        updateCallback: props.syncSolutionAction,
+        storage,
+    })
 
     // All options
     const firstVideoUrl = props.videos[0] ? props.videos[0].url : ''
@@ -66,18 +135,6 @@ const VideoCodeEditor = (props: Props) => {
         uploadDialog: false,
         translationLanguage: 'en',
     }
-
-    const { setCurrentTimeForMediaItems, updateMediaItems, updateMediaItem, copyMediaItems } = useMediaItemHandling<
-        VideoCode
-    >({
-        userId: props.userId,
-        currentEditorId: props.currentEditorId,
-        mediaItems,
-        readOnly: props.readOnly,
-        setMediaItems: props.setVideoCodes,
-        updateCallback: props.syncSolutionAction,
-        storage,
-    })
 
     const addVideoCode = useCallback(
         (index, videoCode) => {
@@ -91,6 +148,7 @@ const VideoCodeEditor = (props: Props) => {
                 text: videoCode.name,
                 color: videoCode.color,
                 originalData: videoCode,
+                lane: 0,
             })
 
             props.setPlayPosition(timeToSecond(start))
@@ -121,6 +179,8 @@ const VideoCodeEditor = (props: Props) => {
                 mediaItems={mediaItems}
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={props.setPlayPosition}
+                checkMediaItem={checkMediaItem}
+                amountOfLanes={amountOfLanes}
             />
             <ToastContainer />
         </React.Fragment>

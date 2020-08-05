@@ -49,13 +49,21 @@ const AnnotationsEditor = (props: Props) => {
 
     // All annotations
     const itemsFromAnnotations = props.annotations.map(
-        (sub) => new MediaItem({ start: sub.start, end: sub.end, text: sub.text, originalData: sub })
+        (sub) => new MediaItem({ start: sub.start, end: sub.end, text: sub.text, originalData: sub, lane: 0 })
     )
 
     const mediaItems: MediaItem[] =
         itemsFromAnnotations.length > 0
             ? itemsFromAnnotations
-            : [new MediaItem({ start: '00:00:00.000', end: '00:00:01.000', text: t('Kommentar'), originalData: {} })]
+            : [
+                  new MediaItem({
+                      start: '00:00:00.000',
+                      end: '00:00:01.000',
+                      text: t('Kommentar'),
+                      originalData: {},
+                      lane: 0,
+                  }),
+              ]
 
     // All options
     const firstVideoUrl = props.videos[0] ? props.videos[0].url : ''
@@ -111,6 +119,7 @@ const AnnotationsEditor = (props: Props) => {
                 mediaItems={mediaItems}
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={props.setPlayPosition}
+                checkMediaItem={checkMediaItem}
             />
             <ToastContainer />
         </React.Fragment>
