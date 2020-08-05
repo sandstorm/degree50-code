@@ -3,6 +3,7 @@ import { RenderConfig } from '.'
 
 export type MediaTrackConfig = {
     backgroundColor: string
+    rulerBackgroundColor: string
     gridColor: string
     pixelRatio: number
     rulerColor: string
@@ -18,8 +19,10 @@ export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig
 
     drawBackground(canvas, {
         backgroundColor: config.backgroundColor,
-        padding: config.render.padding,
-        gridGap,
+    })
+    drawRulerBackground(canvas, {
+        fontTop: config.fontTop,
+        rulerBackgroundColor: config.rulerBackgroundColor,
     })
     drawGrid(canvas, {
         gridNum: config.render.gridNum,
@@ -51,12 +54,8 @@ const drawBackground = (
     canvas: HTMLCanvasElement,
     {
         backgroundColor,
-        padding,
-        gridGap,
     }: {
         backgroundColor: string
-        padding: number
-        gridGap: number
     }
 ): void => {
     const ctx = canvas.getContext('2d')
@@ -66,9 +65,8 @@ const drawBackground = (
 
     ctx.clearRect(0, 0, width, height)
     ctx.fillStyle = backgroundColor
+
     ctx.fillRect(0, 0, width, height)
-    ctx.fillRect(0, 0, padding * gridGap, height)
-    ctx.fillRect(width - padding * gridGap, 0, padding * gridGap, height)
 }
 
 const drawGrid = (
@@ -89,17 +87,34 @@ const drawGrid = (
 
     if (!ctx) return
 
-    const { width, height } = canvas
+    const { height } = canvas
 
     ctx.fillStyle = gridColor
 
+    // Vertical grid lines
     for (let index = 0; index < gridNum; index += 1) {
         ctx.fillRect(gridGap * index, 0, pixelRatio, height)
     }
+}
 
-    for (let index = 0; index < height / gridGap; index += 1) {
-        ctx.fillRect(0, gridGap * index, width, pixelRatio)
+const drawRulerBackground = (
+    canvas: HTMLCanvasElement,
+    {
+        fontTop,
+        rulerBackgroundColor,
+    }: {
+        fontTop: number
+        rulerBackgroundColor: string
     }
+) => {
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const { width } = canvas
+
+    ctx.fillStyle = rulerBackgroundColor
+
+    ctx.fillRect(0, 0, width, fontTop + 11)
 }
 
 const drawRuler = (
@@ -141,7 +156,7 @@ const drawRuler = (
             ctx.fillRect(gridGap * index, 0, pixelRatio, fontHeight * pixelRatio)
 
             const displayTime = DT.d2t(timelineStartTime + second).split('.')[0]
-            ctx.fillText(displayTime, gridGap * index - fontSize * pixelRatio * 2 + pixelRatio, fontTop)
+            ctx.fillText(displayTime, gridGap * index - fontSize * pixelRatio * 2 + pixelRatio, fontTop + 3)
         } else if (index && (index - padding) % 5 === 0) {
             ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 2) * pixelRatio)
         }
