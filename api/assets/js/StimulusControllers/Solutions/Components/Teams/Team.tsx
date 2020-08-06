@@ -1,8 +1,8 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
 import { MediaItem } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/types'
-import { TabTypes } from '../../../types'
 import ReadOnlyMediaLane from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
+import { ComponentTypesEnum } from '../../../ExercisePhaseApp/Store/ComponentTypesEnum'
 
 type TeamProps = {
     solution: SolutionByTeam
@@ -36,7 +36,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
     )
 
     let mediaItems = null
-    if (activeTab === TabTypes.ANNOTATIONS) {
+    if (activeTab === ComponentTypesEnum.VIDEO_ANNOTATIONS) {
         mediaItems = itemsFromAnnotations
     } else {
         mediaItems = itemsFromVideoCodes

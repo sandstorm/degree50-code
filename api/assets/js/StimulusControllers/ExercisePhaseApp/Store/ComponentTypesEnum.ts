@@ -1,3 +1,9 @@
+export enum TabsTypesEnum {
+    VIDEO_CODES = 'videoCode',
+    VIDEO_CUTTING = 'videoCutting',
+    VIDEO_ANNOTATIONS = 'videoAnnotation',
+}
+
 export enum ComponentTypesEnum {
     PRESENCE = 'presence',
     TASK = 'task',

@@ -36,6 +36,7 @@ class ExercisePhase implements ExerciseInterface
     const DOCUMENT_UPLOAD = 'documentUpload';
     const VIDEO_CODE = 'videoCode';
     const VIDEO_CUTTING = 'videoCutting';
+    const VIDEO_ANNOTATION = 'videoAnnotation';
     const CHAT = 'chat';
     const SHARED_DOCUMENT = 'sharedDocument';
 

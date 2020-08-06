@@ -1,9 +1,9 @@
 import React from 'react'
-import { TabTypes } from 'StimulusControllers/types'
-import { tabs as Tabs } from './Tabs'
+import { Tab } from './Tabs'
+import { TabsTypesEnum } from '../../Store/ComponentTypesEnum'
 
-const renderTabs = (tabs: typeof Tabs, activeTabId: TabTypes, setActiveTabId: (tab: TabTypes) => void) =>
-    Object.values(tabs).map((tab) => (
+const renderTabs = (tabs: Array<Tab>, activeTabId: TabsTypesEnum, setActiveTabId: (tab: TabsTypesEnum) => void) =>
+    tabs.map((tab) => (
         <li role="presentation" key={tab.id}>
             <a className={tab.id === activeTabId ? 'active' : ''} role="tab" onClick={() => setActiveTabId(tab.id)}>
                 {tab.label}
@@ -12,9 +12,9 @@ const renderTabs = (tabs: typeof Tabs, activeTabId: TabTypes, setActiveTabId: (t
     ))
 
 type Props = {
-    activeTabId: TabTypes
-    setActiveTabId: (tab: TabTypes) => void
-    tabs: typeof Tabs
+    activeTabId: TabsTypesEnum
+    setActiveTabId: (tab: TabsTypesEnum) => void
+    tabs: Array<Tab>
 }
 
 const EditorTabs = ({ tabs, activeTabId, setActiveTabId }: Props) => {

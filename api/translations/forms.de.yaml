@@ -47,15 +47,17 @@ exercisePhase:
     videoPlayer:
       label: 'Videoplayer'
     videoCutting:
-      label: 'Videoschnitt'
+      label: 'Video-schnitt'
     chat:
       label: 'Chat'
     documentUpload:
       label: 'Dokumenten-Upload'
     videoCode:
-      label: 'Videokodierung'
+      label: 'Video-kodierung'
     sharedDocument:
       label: 'Geteiltes Dokument'
+    videoAnnotation:
+      label: 'Video Annotation'
   new:
     back: 'Zurück zur Aufgabe'
     title: 'Phase hinzufügen'
