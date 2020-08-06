@@ -1,9 +1,13 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
+import { connect } from 'react-redux'
 import { MediaItem as MediaItemClass } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
+import { actions } from '../../../../PlayerSlice'
+import { AppState } from '../../../../../../Store/Store'
+import MediaItemContextMenu from './MediaItemContextMenu'
 
-type Props = {
+type OwnProps = {
     item: MediaItemClass<MediaItemType>
     id: number
     renderConfig: RenderConfig
@@ -15,8 +19,20 @@ type Props = {
         item: MediaItemClass<MediaItemType>,
         side: 'left' | 'right' | 'center'
     ) => void
+    removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
     amountOfLanes?: number
 }
+
+const mapStateToProps = (state: AppState) => {
+    return {}
+}
+
+const mapDispatchToProps = {
+    setPause: actions.setPause,
+    setPlayPosition: actions.setPlayPosition,
+}
+
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const MediaItem = ({
     item,
@@ -26,7 +42,10 @@ const MediaItem = ({
     gridGap,
     onItemMouseDown,
     isPlayedBack,
+    removeMediaItem,
     amountOfLanes = 0,
+    setPause,
+    setPlayPosition,
 }: Props) => {
     const handleLeftHandleMouseDown = useCallback(
         (event) => {
@@ -51,6 +70,15 @@ const MediaItem = ({
 
     const mediaItemHeight = 100 / (amountOfLanes + 1)
 
+    const [contextMenuIsVisible, setContextMenuIsVisible] = useState(false)
+
+    const updateContextMenuIsVisible = useCallback(
+        (isVisible: boolean) => {
+            setContextMenuIsVisible(isVisible)
+        },
+        [setContextMenuIsVisible]
+    )
+
     return (
         <div
             className={[
@@ -69,10 +97,12 @@ const MediaItem = ({
                 height: mediaItemHeight + '%',
             }}
             onClick={() => {
-                // TODO
+                setPause(true)
+                setPlayPosition(item.startTime + 0.001)
             }}
-            onContextMenu={() => {
-                // TODO
+            onContextMenu={(event) => {
+                event.preventDefault()
+                updateContextMenuIsVisible(true)
             }}
         >
             <div
@@ -96,8 +126,17 @@ const MediaItem = ({
                 }}
                 onMouseDown={handleRightHandleMouseDown}
             />
+            <MediaItemContextMenu
+                removeMediaItem={() => {
+                    removeMediaItem(item)
+                }}
+                contextMenuIsVisible={contextMenuIsVisible}
+                handleClose={() => {
+                    updateContextMenuIsVisible(false)
+                }}
+            />
         </div>
     )
 }
 
-export default React.memo(MediaItem)
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(MediaItem))

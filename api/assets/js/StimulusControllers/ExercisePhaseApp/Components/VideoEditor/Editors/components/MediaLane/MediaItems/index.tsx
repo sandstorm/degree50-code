@@ -19,6 +19,7 @@ const renderItems = (
             side: 'left' | 'right' | 'center'
         ) => void
     },
+    removeMediaItem: (item: MediaItemClass<MediaItemType>) => void,
     amountOfLanes?: number
 ) =>
     mediaItems.map((item, index) => {
@@ -36,6 +37,7 @@ const renderItems = (
                 gridGap={gridGap}
                 isPlayedBack={activeItemIndex === index}
                 amountOfLanes={amountOfLanes}
+                removeMediaItem={removeMediaItem}
                 {...handlers}
             />
         )
@@ -51,6 +53,7 @@ type Props = {
         updatedValues: { start?: string; end?: string },
         newStartTime: number
     ) => void
+    removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
     checkMediaItem: (item: MediaItemClass<MediaItemType>) => boolean
     amountOfLanes?: number
 }
@@ -61,6 +64,7 @@ const MediaItems = ({
     gridGap,
     currentTime,
     updateMediaItem,
+    removeMediaItem,
     checkMediaItem,
     amountOfLanes,
 }: Props) => {
@@ -80,6 +84,7 @@ const MediaItems = ({
                     {
                         onItemMouseDown,
                     },
+                    removeMediaItem,
                     amountOfLanes
                 )}
             </div>

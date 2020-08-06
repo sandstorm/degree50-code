@@ -117,6 +117,7 @@ const VideoCodeEditor = (props: Props) => {
         updateMediaItem,
         copyMediaItems,
         checkMediaItem,
+        removeMediaItem,
     } = useMediaItemHandling<VideoCode>({
         userId: props.userId,
         currentEditorId: props.currentEditorId,
@@ -178,6 +179,7 @@ const VideoCodeEditor = (props: Props) => {
                 currentTime={props.playerSyncPlayPosition}
                 mediaItems={mediaItems}
                 updateMediaItem={updateMediaItem}
+                removeMediaItem={removeMediaItem}
                 setPlayPosition={props.setPlayPosition}
                 checkMediaItem={checkMediaItem}
                 amountOfLanes={amountOfLanes}

@@ -14,6 +14,7 @@
   position: absolute;
   left: 0;
   top: 0;
+  width: 100%;
 
   z-index: 4;
   pointer-events: all;
@@ -22,6 +23,7 @@
 .video-editor__media-items__contextmenu-item {
   height: 30px;
   padding: 0 10px;
+  width: 100%;
 
   line-height: 30px;
   font-size: 12px;
