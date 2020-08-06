@@ -235,11 +235,11 @@ export const addCut = (cut: Cut, videoCtx: VideoContext) => {
     // the aspect ratio of the first video node to determine the dimensons of
     // the canvas it is rendered to.
     const newVideoElement = document.createElement('video')
-    newVideoElement.setAttribute("src", cut.url);
-    newVideoElement.setAttribute("crossorigin", "anonymous");
-    newVideoElement.setAttribute("webkit-playsinline", "");
-    newVideoElement.setAttribute("playsinline", "");
-    newVideoElement.setAttribute('data-video', "")
+    newVideoElement.setAttribute('src', cut.url)
+    newVideoElement.setAttribute('crossorigin', 'anonymous')
+    newVideoElement.setAttribute('webkit-playsinline', '')
+    newVideoElement.setAttribute('playsinline', '')
+    newVideoElement.setAttribute('data-video', '')
 
     const videoNode = videoCtx.video(newVideoElement, cut.offset, 4, {
         volume: 0.6,

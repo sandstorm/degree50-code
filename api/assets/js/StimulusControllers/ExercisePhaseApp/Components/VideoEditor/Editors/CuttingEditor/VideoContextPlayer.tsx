@@ -6,7 +6,7 @@ import { AppState } from '../../../../Store/Store'
 import { actions, selectors } from '../../PlayerSlice'
 import { initVideoContext, addCut } from './util'
 import { CutList } from './types'
-import {useWindowSize} from '../components/MediaLane/MediaTrack/hooks'
+import { useWindowSize } from '../components/MediaLane/MediaTrack/hooks'
 
 type OwnProps = {
     cutList: CutList
@@ -30,7 +30,10 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const [canvasWidth, setCanvasWidth] = useState(0)
     const [canvasHeight, setCanvasHeight] = useState(0)
-    const [videoSrcAttributes, setVideoSourceAttributes] = useState<{ videoHeight: number, videoWidth: number }>({ videoHeight: 0, videoWidth: 0 })
+    const [videoSrcAttributes, setVideoSourceAttributes] = useState<{ videoHeight: number; videoWidth: number }>({
+        videoHeight: 0,
+        videoWidth: 0,
+    })
 
     // Determine canvas dimensions (important to also preserve a certain resolution)
     useEffect(() => {
@@ -52,7 +55,7 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
         const { videoCtx } = initVideoContext(canvasRef)
         setVideoContext(videoCtx)
 
-        return { videoCtx, }
+        return { videoCtx }
     }
 
     // Initialize video context on first render (runs once)
@@ -70,7 +73,6 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
     // Update sync when player is running
     useEffect(() => {
         videoContext?.registerCallback(VideoContext.EVENTS.UPDATE, () => {
-
             if (videoContext.state === VideoContext.STATE.PLAYING) {
                 const currentTime = videoContext.currentTime
                 setSyncPlayPosition(currentTime)
@@ -90,7 +92,7 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
 
     // Update video context with new nodes
     useEffect(() => {
-        const { videoCtx, } = resetVideoContext()
+        const { videoCtx } = resetVideoContext()
 
         if (videoCtx && cutList.length > 0) {
             const nodesAndElements = cutList.map((cut) => addCut(cut, videoCtx))
@@ -99,11 +101,10 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
             // Determine aspect ratio by the first videoElement we encounter - we do not directly set an aspect ration, but get the videos height/width instead
             // NOTE: If we have more than one video source at some point, we might need to
             // change this to accomodate for different aspect ratios
-            firstVideoElement.addEventListener( "loadedmetadata", () => {
-                const newAspectRation = firstVideoElement.videoWidth / firstVideoElement.videoHeight
+            firstVideoElement.addEventListener('loadedmetadata', () => {
                 setVideoSourceAttributes({
                     videoWidth: firstVideoElement.videoWidth,
-                    videoHeight: firstVideoElement.videoHeight
+                    videoHeight: firstVideoElement.videoHeight,
                 })
             })
         }
