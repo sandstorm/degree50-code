@@ -2,7 +2,7 @@ import React, { useRef, useState, useCallback, useEffect } from 'react'
 import VideoPlayerWrapper from '../ExercisePhaseApp/Components/VideoPlayer/VideoPlayerWrapper'
 import { Solution } from '../ExercisePhaseApp/Components/Solution/SolutionSlice'
 import { Teams } from './Components/Teams/Teams'
-import { TabTypes } from '../types'
+import { TabsTypesEnum } from '../ExercisePhaseApp/Store/ComponentTypesEnum'
 
 export type SolutionByTeam = {
     teamCreator: string
@@ -15,7 +15,7 @@ type ReadOnlyExercisePhaseProps = {
 }
 
 export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }) => {
-    const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.ANNOTATIONS)
+    const [activeTab, setActiveTab] = useState<TabsTypesEnum>(TabsTypesEnum.VIDEO_ANNOTATIONS)
     const [currentTime, setCurrentTime] = useState(0)
     const [currentZoom, setCurrentZoom] = useState(10)
     const [player, setPlayer] = useState(null)
@@ -66,8 +66,8 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }
                                 onChange={updateActiveTab}
                                 value={activeTab}
                             >
-                                <option value={TabTypes.ANNOTATIONS}>Annotations</option>
-                                <option value={TabTypes.VIDEO_CODES}>Video-Codes</option>
+                                <option value={TabsTypesEnum.VIDEO_ANNOTATIONS}>Annotations</option>
+                                <option value={TabsTypesEnum.VIDEO_CODES}>Video-Codes</option>
                             </select>
                         </div>
                         <div className={'form-group'}>

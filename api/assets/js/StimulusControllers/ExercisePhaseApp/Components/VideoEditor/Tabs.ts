@@ -1,16 +1,25 @@
-import { TabTypes } from '../../../types'
+import { TabsTypesEnum } from '../../Store/ComponentTypesEnum'
 
-export const tabs = {
-    [TabTypes.ANNOTATIONS]: {
-        id: TabTypes.ANNOTATIONS,
+export type Tab = {
+    id: TabsTypesEnum
+    label: string
+}
+
+export type Tabs = {
+    [key in TabsTypesEnum]: Tab
+}
+
+export const tabs: Tabs = {
+    [TabsTypesEnum.VIDEO_ANNOTATIONS]: {
+        id: TabsTypesEnum.VIDEO_ANNOTATIONS,
         label: 'Annotations',
     },
-    [TabTypes.VIDEO_CODES]: {
-        id: TabTypes.VIDEO_CODES,
+    [TabsTypesEnum.VIDEO_CODES]: {
+        id: TabsTypesEnum.VIDEO_CODES,
         label: 'Video Codes',
     },
-    [TabTypes.VIDEO_CUTS]: {
-        id: TabTypes.VIDEO_CUTS,
+    [TabsTypesEnum.VIDEO_CUTTING]: {
+        id: TabsTypesEnum.VIDEO_CUTTING,
         label: 'Video Cuts',
     },
 }
