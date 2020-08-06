@@ -230,8 +230,18 @@ export const initVideoContext = (canvasRef: RefObject<HTMLCanvasElement>) => {
 /**
  * Given a VideoContext and a Cut this directly adds a new videoNode to the context
  */
-export const addCut = (cut: Cut, videoCtx: VideoContext, combineEffect: any) => {
-    const videoNode = videoCtx.video(cut.url, cut.offset, 4, {
+export const addCut = (cut: Cut, videoCtx: VideoContext) => {
+    // We create the video node ourselfs, because we need it asap, to retrieve
+    // the aspect ratio of the first video node to determine the dimensons of
+    // the canvas it is rendered to.
+    const newVideoElement = document.createElement('video')
+    newVideoElement.setAttribute('src', cut.url)
+    newVideoElement.setAttribute('crossorigin', 'anonymous')
+    newVideoElement.setAttribute('webkit-playsinline', '')
+    newVideoElement.setAttribute('playsinline', '')
+    newVideoElement.setAttribute('data-video', '')
+
+    const videoNode = videoCtx.video(newVideoElement, cut.offset, 4, {
         volume: 0.6,
         loop: false,
     })
@@ -243,7 +253,7 @@ export const addCut = (cut: Cut, videoCtx: VideoContext, combineEffect: any) => 
     videoNode.start(start)
     videoNode.stop(start + duration)
 
-    videoNode.connect(combineEffect)
+    videoNode.connect(videoCtx.destination)
 
-    return videoNode
+    return { videoNode, videoElement: newVideoElement }
 }

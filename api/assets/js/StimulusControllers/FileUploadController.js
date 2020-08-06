@@ -17,6 +17,7 @@ export default class extends Controller {
             chunkSize: 10000000, // 10 MB
             dictDefaultMessage: 'Hier klicken um Video hochzuladen',
             maxFiles: 1,
+            maxFilesize: 10000, // 10 GB
             acceptedFiles: 'video/*',
             params: function params(files, xhr, chunk) {
                 if (chunk) {
