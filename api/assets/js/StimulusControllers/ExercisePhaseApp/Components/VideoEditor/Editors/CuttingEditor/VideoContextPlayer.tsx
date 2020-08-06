@@ -6,6 +6,7 @@ import { AppState } from '../../../../Store/Store'
 import { actions, selectors } from '../../PlayerSlice'
 import { initVideoContext, addCut } from './util'
 import { CutList } from './types'
+import {useWindowSize} from '../components/MediaLane/MediaTrack/hooks'
 
 type OwnProps = {
     cutList: CutList
@@ -24,16 +25,34 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition, playPosition, volume }: Props) => {
+    const windowSize = useWindowSize()
     const [videoContext, setVideoContext] = useState<VideoContext | undefined>(undefined)
-    const [cEffect, setCEffect] = useState(undefined)
-    const canvasRef = useRef(null)
+    const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const [canvasWidth, setCanvasWidth] = useState(0)
+    const [canvasHeight, setCanvasHeight] = useState(0)
+    const [videoSrcAttributes, setVideoSourceAttributes] = useState<{ videoHeight: number, videoWidth: number }>({ videoHeight: 0, videoWidth: 0 })
+
+    // Determine canvas dimensions (important to also preserve a certain resolution)
+    useEffect(() => {
+        const canvas = canvasRef.current
+
+        if (canvas && canvas.parentElement) {
+            const parentElement = canvas.parentElement
+            const parentHeight = parentElement.clientHeight
+            const parentWidth = parentElement.clientWidth
+            const { videoWidth, videoHeight } = videoSrcAttributes
+            const aspectRatio = Math.min(parentWidth / videoWidth, parentHeight / videoHeight)
+
+            setCanvasWidth(videoWidth * aspectRatio)
+            setCanvasHeight(videoHeight * aspectRatio)
+        }
+    }, [canvasRef.current, videoSrcAttributes, windowSize])
 
     const resetVideoContext = () => {
-        const { videoCtx, combineEffect } = initVideoContext(canvasRef)
+        const { videoCtx } = initVideoContext(canvasRef)
         setVideoContext(videoCtx)
-        setCEffect(combineEffect)
 
-        return { videoCtx, combineEffect }
+        return { videoCtx, }
     }
 
     // Initialize video context on first render (runs once)
@@ -51,6 +70,7 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
     // Update sync when player is running
     useEffect(() => {
         videoContext?.registerCallback(VideoContext.EVENTS.UPDATE, () => {
+
             if (videoContext.state === VideoContext.STATE.PLAYING) {
                 const currentTime = videoContext.currentTime
                 setSyncPlayPosition(currentTime)
@@ -70,10 +90,22 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
 
     // Update video context with new nodes
     useEffect(() => {
-        const { videoCtx, combineEffect } = resetVideoContext()
+        const { videoCtx, } = resetVideoContext()
 
         if (videoCtx && cutList.length > 0) {
-            cutList.forEach((cut) => addCut(cut, videoCtx, combineEffect))
+            const nodesAndElements = cutList.map((cut) => addCut(cut, videoCtx))
+            const firstVideoElement = nodesAndElements[0].videoElement
+
+            // Determine aspect ratio by the first videoElement we encounter - we do not directly set an aspect ration, but get the videos height/width instead
+            // NOTE: If we have more than one video source at some point, we might need to
+            // change this to accomodate for different aspect ratios
+            firstVideoElement.addEventListener( "loadedmetadata", () => {
+                const newAspectRation = firstVideoElement.videoWidth / firstVideoElement.videoHeight
+                setVideoSourceAttributes({
+                    videoWidth: firstVideoElement.videoWidth,
+                    videoHeight: firstVideoElement.videoHeight
+                })
+            })
         }
     }, [cutList])
 
@@ -95,7 +127,7 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
 
     return (
         <>
-            <canvas ref={canvasRef} className={'video-context-player'} />
+            <canvas ref={canvasRef} className={'video-context-player'} width={canvasWidth} height={canvasHeight} />
             <div className="actions">
                 <button className="video-button" onClick={handlePlay}>
                     Play
