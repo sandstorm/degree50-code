@@ -17,13 +17,14 @@ import AnnotationsEditor from './Editors/AnnotationsEditor/AnnotationsEditor'
 import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
 import { TabsTypesEnum } from '../../Store/ComponentTypesEnum'
+import { ComponentId } from '../Config/ConfigSlice'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
 
 type Props = {
     videos: Array<Video>
-    components: Array<TabsTypesEnum>
+    components: Array<ComponentId>
 }
 
 const VideoEditor: React.FC<Props> = (props) => {

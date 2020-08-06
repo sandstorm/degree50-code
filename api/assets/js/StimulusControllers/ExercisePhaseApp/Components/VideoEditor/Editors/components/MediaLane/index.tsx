@@ -12,6 +12,7 @@ type Props = {
     currentTime: number
     mediaItems: MediaItem<any>[]
     updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine key
+    removeMediaItem: (item: MediaItem<any>) => void
     mediaTrackConfig?: MediaTrackConfig
     setPlayPosition: typeof actions.setPlayPosition
     checkMediaItem: (item: MediaItem<any>) => boolean
@@ -31,6 +32,7 @@ const MediaLane = ({
     currentTime,
     mediaTrackConfig = {},
     updateMediaItem,
+    removeMediaItem,
     mediaItems,
     setPlayPosition,
     checkMediaItem,
@@ -142,6 +144,7 @@ const MediaLane = ({
                     mediaItems={mediaItems}
                     gridGap={gridGap}
                     updateMediaItem={handleMediaItemUpdate}
+                    removeMediaItem={removeMediaItem}
                     checkMediaItem={checkMediaItem}
                     amountOfLanes={amountOfLanes}
                 />

@@ -141,6 +141,7 @@ const CuttingEditor = ({
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={setPlayPosition}
                 checkMediaItem={checkMediaItem}
+                removeMediaItem={removeMediaItem}
                 ToolbarActions={
                     <>
                         <button onClick={handleSplitAtCursor}>Split at cursor</button>

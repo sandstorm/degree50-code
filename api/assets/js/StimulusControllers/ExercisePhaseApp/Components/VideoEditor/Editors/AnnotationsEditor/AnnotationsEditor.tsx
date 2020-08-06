@@ -120,6 +120,7 @@ const AnnotationsEditor = (props: Props) => {
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={props.setPlayPosition}
                 checkMediaItem={checkMediaItem}
+                removeMediaItem={removeMediaItem}
             />
             <ToastContainer />
         </React.Fragment>

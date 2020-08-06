@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../Store/Store'
 import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
-import { ComponentTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
+import { ComponentTypesEnum, TabsTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
 import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
 
-export type ComponentId = ComponentTypesEnum
+export type ComponentId = ComponentTypesEnum | TabsTypesEnum
 
 export type ApiEndpoints = {
     updateSolution: string
