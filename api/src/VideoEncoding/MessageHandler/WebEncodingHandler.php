@@ -32,53 +32,62 @@ class WebEncodingHandler implements MessageHandlerInterface
 
     public function __invoke(WebEncodingTask $encodingTask)
     {
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
-        $video = $this->videoRepository->find($encodingTask->getVideoId());
-        if ($video === null) {
-            $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
-            return;
+        try {
+            $this->entityManager->getFilters()->disable('video_doctrine_filter');
+            $video = $this->videoRepository->find($encodingTask->getVideoId());
+            if ($video === null) {
+                $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
+                return;
+            }
+
+            $inputVideoFilename = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
+
+            $config = [
+                'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
+                'ffprobe.binaries' => '/usr/bin/ffprobe',
+                'timeout'          => 3600, // The timeout for the underlying process
+                'ffmpeg.threads'   => 12,   // The number of threads that FFmpeg should use
+            ];
+
+            $outputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
+            $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
+
+            $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
+
+            $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
+
+            $ffmpegVideo->hls()
+                ->fragmentedMP4()
+                ->x264()
+                ->autoGenerateRepresentations([720, 360]) // You can limit the number of representatons
+                ->save($localOutputDirectory . '/hls.m3u8');
+
+
+            $this->fileSystemService->moveDirectory($outputDirectory, $encodingTask->getDesiredOutputDirectory());
+
+            $video->setEncodedVideoDirectory($encodingTask->getDesiredOutputDirectory());
+            $video->setEncodingFinished(true);
+
+            $this->eventStore->addEvent('VideoEncodedCompletely', [
+                'videoId' => $video->getId(),
+                'encodedVideoDirectory' => $encodingTask->getDesiredOutputDirectory()->getVirtualPathAndFilename(),
+            ]);
+
+            // WHY: The encoding process might take quite long and the db connection might have been
+            // lost/closed in the meantime. Therefore we check if we still have a connection and
+            // otherwise reconnect.
+            if ($this->entityManager->getConnection()->ping() === false) {
+                $this->entityManager->getConnection()->close();
+                $this->entityManager->getConnection()->connect();
+            }
+
+
+            $this->entityManager->persist($video);
+            $this->entityManager->flush();
+        } finally {
+            // Disabling the filter habens globally and not on a per request basis.
+            // Therefore we have to re-enable the filter after we are done encoding.
+            $this->entityManager->getFilters()->enable('video_doctrine_filter');
         }
-
-        $inputVideoFilename = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
-
-        $config = [
-            'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
-            'ffprobe.binaries' => '/usr/bin/ffprobe',
-            'timeout'          => 3600, // The timeout for the underlying process
-            'ffmpeg.threads'   => 12,   // The number of threads that FFmpeg should use
-        ];
-
-        $outputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
-        $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
-
-        $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
-
-        $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
-
-        /*$ffmpegVideo->dash()
-            ->x264() // Format of the video. Alternatives: hevc() and vp9()
-            ->autoGenerateRepresentations() // Auto generate representations
-            ->save($localOutputDirectory . '/dash.mpd'); // It can be passed a path to the method or it can be null
-        */
-
-        $ffmpegVideo->hls()
-            ->fragmentedMP4()
-            ->x264()
-            ->autoGenerateRepresentations([720, 360]) // You can limit the number of representatons
-            ->save($localOutputDirectory . '/hls.m3u8');
-
-
-        $this->fileSystemService->moveDirectory($outputDirectory, $encodingTask->getDesiredOutputDirectory());
-
-        $video->setEncodedVideoDirectory($encodingTask->getDesiredOutputDirectory());
-        $video->setEncodingFinished(true);
-
-        $this->eventStore->addEvent('VideoEncodedCompletely', [
-            'videoId' => $video->getId(),
-            'encodedVideoDirectory' => $encodingTask->getDesiredOutputDirectory()->getVirtualPathAndFilename(),
-        ]);
-
-        $this->entityManager->persist($video);
-        $this->entityManager->flush();
     }
 }
