@@ -2,9 +2,9 @@ import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
-import { setVideoCodes, selectSolution, VideoCode } from '../../../Solution/SolutionSlice'
+import { setVideoCodes, setCustomVideoCodesPool, selectSolution, VideoCode } from '../../../Solution/SolutionSlice'
 import { syncSolutionAction } from '../../../Solution/SolutionSaga'
-import { selectReadOnly, selectUserId } from '../../../Config/ConfigSlice'
+import { selectConfig, selectReadOnly, selectUserId, VideoCodePrototype } from '../../../Config/ConfigSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { selectCurrentEditorId } from '../../../Presence/CurrentEditorSlice'
 
@@ -31,12 +31,15 @@ const mapStateToProps = (state: AppState) => {
         readOnly: selectReadOnly(state),
         currentEditorId: selectCurrentEditorId(state),
         videoCodes: selectSolution(state).videoCodes,
+        videoCodesPool: selectConfig(state).videoCodesPool,
+        customVideoCodesPool: selectSolution(state).customVideoCodesPool,
         playerSyncPlayPosition: selectors.selectSyncPlayPosition(state),
     }
 }
 
 const mapDispatchToProps = {
     setVideoCodes,
+    setCustomVideoCodesPool,
     syncSolutionAction,
     setPlayPosition: actions.setPlayPosition,
 }
@@ -55,9 +58,7 @@ const solveConflicts = (mediaItems: MediaItem<VideoCode>[]) => {
             // reverse check of all previous media items for conflicts
             for (let i = index; i > 0; i--) {
                 const hasConflictWithPrevItem = hasConflictWithItem(item, mediaItems[i - 1])
-                // if item has a conflict with the prev. one we increase the lane
-                // and skip to the next iteration
-                if (hasConflictWithPrevItem) {
+                if (hasConflictWithPrevItem && lane === 0) {
                     lane = mediaItems[i - 1].lane + 1
                     continue
                 }
@@ -104,6 +105,8 @@ const VideoCodeEditor = (props: Props) => {
         )
     )
 
+    const videoCodesPool = props.customVideoCodesPool.length > 0 ? props.customVideoCodesPool : props.videoCodesPool
+
     const amountOfLanes = Math.max.apply(
         Math,
         mediaItems.map((item: MediaItem<VideoCode>) => {
@@ -138,7 +141,8 @@ const VideoCodeEditor = (props: Props) => {
     }
 
     const addVideoCode = useCallback(
-        (index, videoCode) => {
+        (videoCode) => {
+            const index = mediaItems.length
             const videoCodes = copyMediaItems()
             const previous = videoCodes[index - 1]
             const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
@@ -160,6 +164,20 @@ const VideoCodeEditor = (props: Props) => {
         [copyMediaItems, updateMediaItems]
     )
 
+    const createVideoCode = (videoCode: VideoCodePrototype) => {
+        props.setCustomVideoCodesPool([...videoCodesPool, videoCode])
+        props.syncSolutionAction()
+    }
+
+    const removeVideoCode = (videoCodeToDelete: VideoCodePrototype) => {
+        const newVideoCodes = videoCodesPool.filter((videoCode: VideoCodePrototype) => {
+            return videoCode.id !== videoCodeToDelete.id
+        })
+
+        props.setCustomVideoCodesPool(newVideoCodes)
+        props.syncSolutionAction()
+    }
+
     return (
         <React.Fragment>
             <div className="video-editor__main" style={{ height: height - 200 }}>
@@ -168,9 +186,13 @@ const VideoCodeEditor = (props: Props) => {
                 </div>
                 <div className="video-editor__section video-editor__right">
                     <header className="video-editor__section-header">{props.headerContent}</header>
-
                     <div className="video-editor__section-content">
-                        <VideoCodes addVideoCode={addVideoCode} videoCodes={mediaItems} />
+                        <VideoCodes
+                            addVideoCode={addVideoCode}
+                            createVideoCode={createVideoCode}
+                            removeVideoCode={removeVideoCode}
+                            videoCodesPool={videoCodesPool}
+                        />
                     </div>
                 </div>
             </div>

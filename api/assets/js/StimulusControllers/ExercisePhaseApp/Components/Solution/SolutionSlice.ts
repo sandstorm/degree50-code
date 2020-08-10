@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../Store/Store'
 import { CutList } from '../VideoEditor/Editors/CuttingEditor/types'
+import { VideoCodePrototype } from '../Config/ConfigSlice'
 
 // Media item type without methods, so that it is serializable
 export type MediaItemType = {
@@ -16,12 +17,14 @@ export type VideoCode = MediaItemType
 export type Solution = {
     annotations: Array<Annotation>
     videoCodes: Array<VideoCode>
+    customVideoCodesPool: Array<VideoCodePrototype>
     cutlist: CutList
 }
 
 const initialState: Solution = {
     annotations: [],
     videoCodes: [],
+    customVideoCodesPool: [],
     cutlist: [],
 }
 
@@ -38,18 +41,22 @@ export const solutionSlice = createSlice({
         setCutList: (state, action: PayloadAction<CutList>) => {
             state.cutlist = action.payload
         },
+        setCustomVideoCodesPool: (state, action: PayloadAction<Array<VideoCodePrototype>>) => {
+            state.customVideoCodesPool = action.payload
+        },
         setSolution: (state, action: PayloadAction<Solution>) => {
-            state.annotations = action.payload.annotations
-            state.videoCodes = action.payload.videoCodes
+            state.annotations = action.payload?.annotations || []
+            state.videoCodes = action.payload?.videoCodes || []
+            state.customVideoCodesPool = action.payload?.customVideoCodesPool || []
 
             // FIXME
             // this is just a placeholder until we have the server side in place
-            state.cutlist = action.payload.cutlist || []
+            state.cutlist = action.payload?.cutlist || []
         },
     },
 })
 
-export const { setAnnotations, setVideoCodes, setSolution, setCutList } = solutionSlice.actions
+export const { setAnnotations, setVideoCodes, setSolution, setCutList, setCustomVideoCodesPool } = solutionSlice.actions
 
 export const selectSolution = (state: AppState) => state.solution
 

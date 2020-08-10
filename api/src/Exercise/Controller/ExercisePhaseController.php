@@ -124,12 +124,13 @@ class ExercisePhaseController extends AbstractController
             'userId' => $user->getId(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'readOnly' => $readOnly,
-            'videoCodes' => array_map(function (VideoCode $videoCode) {
+            'videoCodesPool' => array_map(function (VideoCode $videoCode) {
                 return [
                     'id' => $videoCode->getId(),
                     'name' => $videoCode->getName(),
                     'description' => $videoCode->getDescription(),
                     'color' => $videoCode->getColor(),
+                    'userCreated' => false
                 ];
             }, $exercisePhase->getVideoCodes()->toArray()),
             'material' => array_map(function (Material $entry) {
