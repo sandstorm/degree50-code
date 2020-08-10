@@ -9,7 +9,7 @@ export type Video = {
     id: string
     name: string
     description: string
-    url: string
+    url: { hls: string; mp4: string }
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -35,7 +35,7 @@ const VideoPlayerWrapper: React.FC<VideoPlayerWrapperProps> = (props) => {
             controls: true,
             sources: [
                 {
-                    src: activeVideo.url,
+                    src: activeVideo.url.hls,
                 },
             ],
         }),

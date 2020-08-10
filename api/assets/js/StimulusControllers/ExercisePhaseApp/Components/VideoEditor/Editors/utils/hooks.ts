@@ -66,12 +66,12 @@ export const useMediaItemHandling = <T>({
     )
 
     // Only way to update all mediaItems
-    const updateMediaItems = (items: Array<MediaItem<T>>, saveToHistory = true) => {
+    const updateMediaItems = (items: Array<MediaItem<T>>, saveToHistory = true, force = false) => {
         const userIsCurrentEditor = userId === currentEditorId
         const hasItems = items.length
         const notEqualToPreviousItems = !isEqual(items, mediaItems)
 
-        if ((userIsCurrentEditor || !readOnly) && hasItems && notEqualToPreviousItems) {
+        if ((force && !readOnly) || ((userIsCurrentEditor || !readOnly) && hasItems && notEqualToPreviousItems)) {
             const updatedItems = JSON.parse(JSON.stringify(items))
 
             // This makes sure that all properties from the original item will be written back to the store
