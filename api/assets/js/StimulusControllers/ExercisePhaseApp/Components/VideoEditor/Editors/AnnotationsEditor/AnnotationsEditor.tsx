@@ -23,7 +23,7 @@ const storage = new Storage()
 type OwnProps = {
     height: number
     headerContent: React.ReactNode
-    videos: Array<{ url: string }>
+    videos: Array<{ url: { hls: string; mp4: string } }>
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -66,7 +66,7 @@ const AnnotationsEditor = (props: Props) => {
               ]
 
     // All options
-    const firstVideoUrl = props.videos[0] ? props.videos[0].url : ''
+    const firstVideoUrl = props.videos[0] ? props.videos[0].url.hls : ''
 
     const artPlayerOptions = {
         videoUrl: firstVideoUrl,

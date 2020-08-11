@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { Translate } from 'react-i18nify'
@@ -23,7 +23,7 @@ const storage = new Storage()
 type OwnProps = {
     height: number
     headerContent: React.ReactNode
-    videos: Array<{ url: string }>
+    videos: Array<{ url: { hls: string; mp4: string }; name: string }>
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -57,11 +57,8 @@ const CuttingEditor = ({
 }: Props) => {
     const { volume, handleVolumeChange } = useVolume()
 
-    // TODO actually use this
-    const firstVideoUrl = videos[0] ? videos[0].url : ''
+    const firstVideoUrl = videos[0] ? videos[0].url.mp4 : ''
 
-    // TODO
-    // change hard codings as soon as backend is in place
     const mediaItems: MediaItem<Cut>[] =
         cutList.length > 0
             ? cutList.map(
@@ -78,9 +75,9 @@ const CuttingEditor = ({
                   new MediaItem({
                       start: '00:00:00.000',
                       end: '00:00:05.000',
-                      text: 'sample.mp4',
+                      text: videos[0]?.name || '',
                       originalData: {
-                          url: '/sample.mp4',
+                          url: firstVideoUrl,
                           offset: 0,
                           playbackRate: 1,
                       } as Cut,
@@ -95,6 +92,7 @@ const CuttingEditor = ({
         removeMediaItem,
         checkMediaItem,
         updateMediaItem,
+        updateMediaItems,
         duplicateCut,
         handleSplitAtCursor,
     } = useCuttingMediaItemHandling({
@@ -108,6 +106,19 @@ const CuttingEditor = ({
         playerSyncPlayPosition,
         setPlayPosition,
     })
+
+    useEffect(() => {
+        if (cutList.length < 1) {
+            // WHY: Force update to create initial cut list (otherwise we would need to interact
+            // with a media item to write it to the store).
+            // This is a bit hacky. Perhaps we should find a better way than to force this.
+            // The issue currently is, that 'updateMediaItems' does make an equality check comparing
+            // its inital items with the new media items.
+            // Initially, when a video is opened the very first time
+            // inside the cutting editor, both lists will be identical and the cutlist wont be written to the store.
+            updateMediaItems(mediaItems, true, true)
+        }
+    }, [cutList, mediaItems])
 
     return (
         <React.Fragment>

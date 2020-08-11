@@ -22,6 +22,7 @@
         "oneup/flysystem-bundle": "^3.4",
         "oneup/uploader-bundle": "^3.0",
         "opis/json-schema": "^1.0",
+        "php-ffmpeg/php-ffmpeg": "^0.16.0",
         "ramsey/uuid": "^4.0",
         "rokka/imagine-vips": "^0.11.0",
         "sensio/framework-extra-bundle": "^5.5",
