@@ -146,6 +146,7 @@ class ExercisePhaseController extends AbstractController
                     'id' => $video->getId(),
                     'name' => $video->getTitle(),
                     'description' => $video->getDescription(),
+                    'duration' => $video->getVideoDuration(),
                     'url' => [
                         'hls' => $videoUrl . '/hls.m3u8',
                         'mp4' => $videoUrl . '/x264.mp4',

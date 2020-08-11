@@ -76,6 +76,11 @@ class Video
     private $encodingFinished;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $videoDuration;
+
+    /**
      * Video constructor.
      * @param string $id
      */
@@ -255,5 +260,25 @@ class Video
     public function setEncodingFinished(bool $encodingFinished): void
     {
         $this->encodingFinished = $encodingFinished;
+    }
+
+    /**
+     * Get videoDuration.
+     *
+     * @return videoDuration.
+     */
+    public function getVideoDuration()
+    {
+        return $this->videoDuration;
+    }
+
+    /**
+     * Set videoDuration.
+     *
+     * @param videoDuration the value to set.
+     */
+    public function setVideoDuration($videoDuration)
+    {
+        $this->videoDuration = $videoDuration;
     }
 }

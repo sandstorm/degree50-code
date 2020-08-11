@@ -17,13 +17,14 @@ import MediaItemList from '../components/MediaItemList/MediaItemList'
 import { MediaItem } from '../components/types'
 import { Cut } from './types'
 import { useVolume, useCuttingMediaItemHandling } from './util'
+import {d2t} from 'duration-time-conversion'
 
 const storage = new Storage()
 
 type OwnProps = {
     height: number
     headerContent: React.ReactNode
-    videos: Array<{ url: { hls: string; mp4: string }; name: string }>
+    videos: Array<{ url: { hls: string; mp4: string, }, name: string, duration: string }>
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -57,7 +58,13 @@ const CuttingEditor = ({
 }: Props) => {
     const { volume, handleVolumeChange } = useVolume()
 
-    const firstVideoUrl = videos[0] ? videos[0].url.mp4 : ''
+    const firstVideo = videos[0]
+    const firstVideoUrl = firstVideo ? firstVideo.url.mp4 : ''
+
+    // WHY: we need  the full duration of the video to create a cut media item
+    // of the same length on the media track.
+    // If we somehow do not have a duration, we default to 5 seconds.
+    const firstVideoDuration = firstVideo ? firstVideo.duration : '5' // duration in seconds
 
     const mediaItems: MediaItem<Cut>[] =
         cutList.length > 0
@@ -74,7 +81,7 @@ const CuttingEditor = ({
             : [
                   new MediaItem({
                       start: '00:00:00.000',
-                      end: '00:00:05.000',
+                      end: d2t(parseFloat(firstVideoDuration).toFixed(3)),
                       text: videos[0]?.name || '',
                       originalData: {
                           url: firstVideoUrl,

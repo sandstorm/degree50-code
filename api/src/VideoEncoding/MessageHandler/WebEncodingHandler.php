@@ -10,6 +10,7 @@ use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use FFMpeg\FFMpeg;
+use FFMpeg\FFProbe;
 use FFMpeg\Format\Video\X264;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -61,6 +62,7 @@ class WebEncodingHandler implements MessageHandlerInterface
             $mp4Url = $localOutputDirectory . '/x264.mp4';
             $this->encodeHLS($config, $mp4Url, $localOutputDirectory);
 
+            $video->setVideoDuration($this->probeForVideoDuration($mp4Url));
             $video->setEncodingFinished(true);
 
             $this->eventStore->addEvent('VideoEncodedCompletely', [
@@ -83,12 +85,22 @@ class WebEncodingHandler implements MessageHandlerInterface
         }
     }
 
+    private function probeForVideoDuration(string $filePath) {
+        $ffprobe = FFProbe::create();
+        $duration = $ffprobe
+            ->format($filePath) // extracts file informations
+            ->get('duration');
+
+        return $duration;
+    }
+
     private function encodeMP4(Array $config, string $inputVideoFilename, string $localOutputDirectory) {
         $this->logger->info('Start encoding MP4 of file <' . $inputVideoFilename . '>',);
 
         $ffmpeg = FFMpeg::create($config, $this->logger);
         $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
         $ffmpegVideo->save(new X264('libmp3lame'), $localOutputDirectory . '/x264.mp4');
+        $ffmpegVideo->getFormat();
 
         $this->logger->info('Finish encoding MP4 of file <' . $inputVideoFilename . '>',);
     }
