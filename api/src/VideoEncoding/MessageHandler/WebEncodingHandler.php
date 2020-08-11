@@ -55,7 +55,11 @@ class WebEncodingHandler implements MessageHandlerInterface
             $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
 
             $this->encodeMP4($config, $inputVideoFilename, $localOutputDirectory);
-            $this->encodeHLS($config, $inputVideoFilename, $localOutputDirectory);
+
+            // We use our encoded mp4 file as baseline for further encoding to HLS
+            // That way we can guarantee that the resulting HLS will be playable.
+            $mp4Url = $localOutputDirectory . '/x264.mp4';
+            $this->encodeHLS($config, $mp4Url, $localOutputDirectory);
 
             $video->setEncodingFinished(true);
 
