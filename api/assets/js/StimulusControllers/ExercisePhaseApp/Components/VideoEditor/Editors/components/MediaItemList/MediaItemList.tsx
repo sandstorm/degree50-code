@@ -71,4 +71,4 @@ const MediaItemList = ({
     )
 }
 
-export default MediaItemList
+export default React.memo(MediaItemList)
