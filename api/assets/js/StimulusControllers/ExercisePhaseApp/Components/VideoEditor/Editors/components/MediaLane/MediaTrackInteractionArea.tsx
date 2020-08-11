@@ -18,8 +18,8 @@ const InteractionArea = ({ renderConfig, clickCallback, gridGap }: Props) => {
     const onMouseDown = useCallback(
         (event) => {
             if (
-                event.target.className === 'video-editor__interaction-area-left' ||
-                event.target.className === 'video-editor__interaction-area-right'
+                event.target.className.contains('video-editor__interaction-area-left') ||
+                event.target.className.contains('video-editor__interaction-area-right')
             ) {
                 return
             }
@@ -39,8 +39,6 @@ const InteractionArea = ({ renderConfig, clickCallback, gridGap }: Props) => {
 
     const leftInteractionAreaIsDisabledCssClass =
         renderConfig.timelineStartTime === 0 ? 'video-editor__interaction-area-left--is-disabled' : ''
-
-    // TODO get duration of current video
 
     return (
         <div className="video-editor__interaction-area" onMouseDown={onMouseDown}>

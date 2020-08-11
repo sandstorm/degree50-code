@@ -17,14 +17,14 @@ import MediaItemList from '../components/MediaItemList/MediaItemList'
 import { MediaItem } from '../components/types'
 import { Cut } from './types'
 import { useVolume, useCuttingMediaItemHandling } from './util'
-import {d2t} from 'duration-time-conversion'
+import { d2t } from 'duration-time-conversion'
 
 const storage = new Storage()
 
 type OwnProps = {
     height: number
     headerContent: React.ReactNode
-    videos: Array<{ url: { hls: string; mp4: string, }, name: string, duration: string }>
+    videos: Array<{ url: { hls: string; mp4: string }; name: string; duration: string }>
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -155,7 +155,6 @@ const CuttingEditor = ({
 
             <MediaLane
                 currentTime={playerSyncPlayPosition}
-
                 mediaItems={mediaItems}
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={setPlayPosition}

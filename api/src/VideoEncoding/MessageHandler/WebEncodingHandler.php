@@ -100,7 +100,6 @@ class WebEncodingHandler implements MessageHandlerInterface
         $ffmpeg = FFMpeg::create($config, $this->logger);
         $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
         $ffmpegVideo->save(new X264('libmp3lame'), $localOutputDirectory . '/x264.mp4');
-        $ffmpegVideo->getFormat();
 
         $this->logger->info('Finish encoding MP4 of file <' . $inputVideoFilename . '>',);
     }

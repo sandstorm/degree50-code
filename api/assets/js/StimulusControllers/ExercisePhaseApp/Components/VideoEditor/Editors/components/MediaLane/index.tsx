@@ -8,7 +8,6 @@ import { useWindowSize } from './MediaTrack/hooks'
 import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
 
-
 const initialRender: RenderConfig = {
     padding: 5,
     duration: 10,
@@ -77,7 +76,6 @@ const MediaLane = ({
         })
     }, [currentTime])
 
-    // TODO refactor
     const handleLaneClick = useCallback(
         (clickTime) => {
             const newCurrentTime = clickTime >= 0 ? clickTime : 0
