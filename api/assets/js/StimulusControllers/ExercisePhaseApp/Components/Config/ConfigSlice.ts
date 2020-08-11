@@ -12,11 +12,12 @@ export type ApiEndpoints = {
     updateCurrentEditor: string
 }
 
-export type VideoCode = {
+export type VideoCodePrototype = {
     id: string
     name: string
     description: string
     color: string
+    userCreated: boolean
 }
 
 export type Config = {
@@ -29,7 +30,7 @@ export type Config = {
     components: Array<ComponentId>
     material: Array<Material>
     videos: Array<Video>
-    videoCodes: Array<VideoCode>
+    videoCodesPool: Array<VideoCodePrototype>
     apiEndpoints: ApiEndpoints
 }
 
@@ -43,7 +44,7 @@ const initialState: Config = {
     components: [],
     material: [],
     videos: [],
-    videoCodes: [],
+    videoCodesPool: [],
     apiEndpoints: {
         updateSolution: '',
         updateCurrentEditor: '',

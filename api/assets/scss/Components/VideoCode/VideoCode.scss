@@ -2,14 +2,63 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
 
-  text-align: center;
+  background-color: $theme__color__grey--dark;
+
+  color: $theme__color__white;
 
   span {
     display: inline-block;
-    padding: 5px;
+    margin-right: auto;
+    width: 85%;
 
-    background-color: transparentize($theme__color__white, 0.7);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  button {
+    margin-left: 5px;
+  }
+}
+
+.video-code__locked {
+  padding: 5px;
+
+  color: $theme__color__green;
+}
+
+.video-code__color {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.new-video-code {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+
+  background-color: $theme__color__grey--dark;
+
+  input[type=color] {
+    width: 40px;
+    padding: 0;
+  }
+
+  input {
+    margin-left: 5px;
+    margin-right: 5px;
+
+    background-color: transparent;
+  }
+
+  button {
+    margin-left: 5px;
+    margin-right: 5px;
   }
 }
