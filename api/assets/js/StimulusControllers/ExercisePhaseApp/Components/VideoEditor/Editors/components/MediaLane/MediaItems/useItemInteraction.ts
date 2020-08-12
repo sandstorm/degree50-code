@@ -5,7 +5,7 @@ import { RenderConfig } from '../MediaTrack'
 import { itemIsVisible } from './helpers'
 
 const getVisibleItems = <T>(items: MediaItem<T>[], timelineStartTime: number, duration: number): MediaItem<T>[] => {
-    return items.filter((item) => itemIsVisible(item, timelineStartTime, duration))
+    return items.filter((item) => itemIsVisible(item, timelineStartTime))
 }
 
 export const useItemInteraction = <T>(

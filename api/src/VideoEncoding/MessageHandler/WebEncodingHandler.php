@@ -10,6 +10,7 @@ use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use FFMpeg\FFMpeg;
+use FFMpeg\FFProbe;
 use FFMpeg\Format\Video\X264;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -61,6 +62,7 @@ class WebEncodingHandler implements MessageHandlerInterface
             $mp4Url = $localOutputDirectory . '/x264.mp4';
             $this->encodeHLS($config, $mp4Url, $localOutputDirectory);
 
+            $video->setVideoDuration($this->probeForVideoDuration($mp4Url));
             $video->setEncodingFinished(true);
 
             $this->eventStore->addEvent('VideoEncodedCompletely', [
@@ -81,6 +83,15 @@ class WebEncodingHandler implements MessageHandlerInterface
             // Therefore we have to re-enable the filter after we are done encoding.
             $this->entityManager->getFilters()->enable('video_doctrine_filter');
         }
+    }
+
+    private function probeForVideoDuration(string $filePath) {
+        $ffprobe = FFProbe::create();
+        $duration = $ffprobe
+            ->format($filePath) // extracts file informations
+            ->get('duration');
+
+        return $duration;
     }
 
     private function encodeMP4(Array $config, string $inputVideoFilename, string $localOutputDirectory) {

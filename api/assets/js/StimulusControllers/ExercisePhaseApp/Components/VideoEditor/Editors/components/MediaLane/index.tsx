@@ -8,6 +8,14 @@ import { useWindowSize } from './MediaTrack/hooks'
 import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
 
+const initialRender: RenderConfig = {
+    padding: 5,
+    duration: 10,
+    gridNum: 110,
+    currentTime: 0,
+    timelineStartTime: 0,
+}
+
 type Props = {
     currentTime: number
     mediaItems: MediaItem<any>[]
@@ -18,14 +26,6 @@ type Props = {
     checkMediaItem: (item: MediaItem<any>) => boolean
     amountOfLanes?: number
     ToolbarActions?: React.ReactNode
-}
-
-const initialRender: RenderConfig = {
-    padding: 5,
-    duration: 10,
-    gridNum: 110,
-    currentTime: 0,
-    timelineStartTime: 0,
 }
 
 const MediaLane = ({
@@ -76,7 +76,6 @@ const MediaLane = ({
         })
     }, [currentTime])
 
-    // TODO refactor
     const handleLaneClick = useCallback(
         (clickTime) => {
             const newCurrentTime = clickTime >= 0 ? clickTime : 0
@@ -153,4 +152,4 @@ const MediaLane = ({
     )
 }
 
-export default MediaLane
+export default React.memo(MediaLane)

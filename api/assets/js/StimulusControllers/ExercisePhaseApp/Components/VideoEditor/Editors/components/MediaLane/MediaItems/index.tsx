@@ -23,7 +23,7 @@ const renderItems = (
     amountOfLanes?: number
 ) =>
     mediaItems.map((item, index) => {
-        if (!itemIsVisible(item, renderConfig.timelineStartTime, renderConfig.duration)) {
+        if (!itemIsVisible(item, renderConfig.timelineStartTime)) {
             return null
         }
 
