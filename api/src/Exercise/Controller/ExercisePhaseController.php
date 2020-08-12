@@ -130,7 +130,8 @@ class ExercisePhaseController extends AbstractController
                     'name' => $videoCode->getName(),
                     'description' => $videoCode->getDescription(),
                     'color' => $videoCode->getColor(),
-                    'userCreated' => false
+                    'userCreated' => false,
+                    'videoCodes' => []
                 ];
             }, $exercisePhase->getVideoCodes()->toArray()),
             'material' => array_map(function (Material $entry) {

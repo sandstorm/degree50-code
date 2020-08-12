@@ -48,7 +48,9 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & Ow
 
 const solveConflicts = (mediaItems: MediaItem<VideoCode>[]) => {
     const hasConflictWithItem = (currentItem: MediaItem<VideoCode>, itemToCheckAgainst: MediaItem<VideoCode>) => {
-        return currentItem.startTime < itemToCheckAgainst.endTime
+        return (
+            currentItem.startTime <= itemToCheckAgainst.endTime && currentItem.endTime >= itemToCheckAgainst.startTime
+        )
     }
 
     const getLane = (item: MediaItem<VideoCode>, index: number) => {
@@ -90,7 +92,7 @@ const solveConflicts = (mediaItems: MediaItem<VideoCode>[]) => {
 const VideoCodeEditor = (props: Props) => {
     const height = props.height
 
-    // All videoCodes
+    // All videoCodes sorted by start-time and with solved conflicts
     const mediaItems = solveConflicts(
         props.videoCodes.map(
             (videoCode) =>
@@ -105,6 +107,7 @@ const VideoCodeEditor = (props: Props) => {
         )
     )
 
+    // pool of available video-codes
     const videoCodesPool = props.customVideoCodesPool.length > 0 ? props.customVideoCodesPool : props.videoCodesPool
 
     const amountOfLanes = Math.max.apply(
@@ -164,15 +167,39 @@ const VideoCodeEditor = (props: Props) => {
         [copyMediaItems, updateMediaItems]
     )
 
-    const createVideoCode = (videoCode: VideoCodePrototype) => {
-        props.setCustomVideoCodesPool([...videoCodesPool, videoCode])
+    const createVideoCode = (newVideoCode: VideoCodePrototype, parentVideoCode?: VideoCodePrototype) => {
+        let currentVideoCodes = [...videoCodesPool]
+        if (parentVideoCode) {
+            currentVideoCodes = currentVideoCodes.map((item: VideoCodePrototype) => {
+                if (item.id === parentVideoCode.id) {
+                    return {
+                        ...item,
+                        videoCodes: [...item.videoCodes, newVideoCode],
+                    }
+                } else {
+                    return item
+                }
+            })
+        } else {
+            currentVideoCodes.push(newVideoCode)
+        }
+        props.setCustomVideoCodesPool(currentVideoCodes)
         props.syncSolutionAction()
     }
 
     const removeVideoCode = (videoCodeToDelete: VideoCodePrototype) => {
-        const newVideoCodes = videoCodesPool.filter((videoCode: VideoCodePrototype) => {
-            return videoCode.id !== videoCodeToDelete.id
-        })
+        const newVideoCodes = videoCodesPool
+            .map((videoCode: VideoCodePrototype) => {
+                return {
+                    ...videoCode,
+                    videoCodes: videoCode.videoCodes.filter((childVideoCode: VideoCodePrototype) => {
+                        return childVideoCode.id !== videoCodeToDelete.id
+                    }),
+                }
+            })
+            .filter((videoCode: VideoCodePrototype) => {
+                return videoCode.id !== videoCodeToDelete.id
+            })
 
         props.setCustomVideoCodesPool(newVideoCodes)
         props.syncSolutionAction()
