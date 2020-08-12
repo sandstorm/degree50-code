@@ -18,8 +18,9 @@ const InteractionArea = ({ renderConfig, clickCallback, gridGap }: Props) => {
     const onMouseDown = useCallback(
         (event) => {
             if (
-                event.target.className.contains('video-editor__interaction-area-left') ||
-                event.target.className.contains('video-editor__interaction-area-right')
+                event.target?.className &&
+                (event.target.className.contains('video-editor__interaction-area-left') ||
+                    event.target.className.contains('video-editor__interaction-area-right'))
             ) {
                 return
             }
