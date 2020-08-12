@@ -10,6 +10,7 @@ export type Video = {
     name: string
     description: string
     url: { hls: string; mp4: string }
+    duration: string
 }
 
 const mapStateToProps = (state: AppState) => ({
