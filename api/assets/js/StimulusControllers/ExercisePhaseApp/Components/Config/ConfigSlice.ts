@@ -18,6 +18,7 @@ export type VideoCodePrototype = {
     description: string
     color: string
     userCreated: boolean
+    videoCodes: Array<VideoCodePrototype>
 }
 
 export type Config = {
