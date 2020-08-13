@@ -12,9 +12,8 @@
 
 .video-editor__media-items__contextmenu {
   position: absolute;
-  left: 0;
   top: 0;
-  width: 100%;
+  width: auto;
 
   z-index: 4;
   pointer-events: all;
@@ -25,11 +24,12 @@
   padding: 0 10px;
   width: 100%;
 
+  background-color: transparentize($theme__color__black, 0.5);
+
   line-height: 30px;
   font-size: 12px;
   color: $theme__color__grey;
-
-  background-color: transparentize($theme__color__black, 0.75);
+  white-space: nowrap;
 
   cursor: pointer;
   user-select: none;
