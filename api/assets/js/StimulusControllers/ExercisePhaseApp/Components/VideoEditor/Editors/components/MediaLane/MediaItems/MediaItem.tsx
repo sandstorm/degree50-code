@@ -71,6 +71,8 @@ const MediaItem = ({
     const mediaItemHeight = 100 / (amountOfLanes + 1)
 
     const [contextMenuIsVisible, setContextMenuIsVisible] = useState(false)
+    const [contextMenuPosX, setContextMenuPosX] = useState(0)
+    const [contextMenuPosY, setContextMenuPosY] = useState(0)
 
     const updateContextMenuIsVisible = useCallback(
         (isVisible: boolean) => {
@@ -78,6 +80,9 @@ const MediaItem = ({
         },
         [setContextMenuIsVisible]
     )
+
+    const positionLeft =
+        renderConfig.padding * gridGap + (item.startTime - renderConfig.timelineStartTime) * gridGap * 10
 
     return (
         <div
@@ -91,7 +96,7 @@ const MediaItem = ({
             key={id}
             style={{
                 backgroundColor: item.color ? item.color : '',
-                left: renderConfig.padding * gridGap + (item.startTime - renderConfig.timelineStartTime) * gridGap * 10,
+                left: positionLeft,
                 width: (item.endTime - item.startTime) * gridGap * 10,
                 top: item.lane * mediaItemHeight + '%',
                 height: mediaItemHeight + '%',
@@ -103,6 +108,9 @@ const MediaItem = ({
             onContextMenu={(event) => {
                 event.preventDefault()
                 updateContextMenuIsVisible(true)
+                setContextMenuPosX(event.pageX - positionLeft)
+                const mediaItemsHeight = document.getElementsByClassName('video-editor__media-items')[0].clientHeight
+                setContextMenuPosY(mediaItemsHeight - (document.body.clientHeight - event.pageY))
             }}
         >
             <div
@@ -131,6 +139,8 @@ const MediaItem = ({
                     removeMediaItem(item)
                 }}
                 contextMenuIsVisible={contextMenuIsVisible}
+                posX={contextMenuPosX}
+                posY={contextMenuPosY}
                 handleClose={() => {
                     updateContextMenuIsVisible(false)
                 }}
