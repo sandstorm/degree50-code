@@ -94,7 +94,11 @@ const MediaLane = ({
     )
 
     const handleMediaItemUpdate = useCallback(
-        (item: MediaItem<any>, updatedValues: { start?: string; end?: string }, newStartTime: number) => {
+        (
+            item: MediaItem<any>,
+            updatedValues: { start?: string; end?: string; memo?: string },
+            newStartTime: number
+        ) => {
             updateMediaItem(item, updatedValues)
             setPlayPosition(newStartTime)
         },

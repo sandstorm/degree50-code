@@ -206,7 +206,14 @@ export const useMediaItemHandling = <T>({
             const previous = copiedItems[index]
             const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
             const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-            const newItem = new MediaItem({ start, end, text: t('subtitle-text'), originalData: {} as T, lane: 0 })
+            const newItem = new MediaItem({
+                start,
+                end,
+                text: t('subtitle-text'),
+                memo: '',
+                originalData: {} as T,
+                lane: 0,
+            })
 
             copiedItems.splice(index + 1, 0, newItem)
 

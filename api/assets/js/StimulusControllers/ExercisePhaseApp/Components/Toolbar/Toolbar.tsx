@@ -2,7 +2,6 @@ import React from 'react'
 import { ToolbarItem } from './ToolbarItem'
 import { connect } from 'react-redux'
 import { selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible } from './ToolbarSlice'
-import { setTitle, setComponent, toggleModalVisibility } from '../Modal/ModalSlice'
 import { setOverlayVisibility, setOverlayComponent, setOverlaySize } from '../Overlay/OverlaySlice'
 import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
 import { ComponentTypesEnum } from '../../Store/ComponentTypesEnum'
@@ -68,9 +67,9 @@ const possibleComponentsForToolbar: Array<Component> = [
             return true
         },
         onClick: (dispatch, component, config, closeComponent) => {
-            dispatch(toggleModalVisibility())
-            dispatch(setTitle(config.title))
-            dispatch(setComponent(ComponentTypesEnum.EXERCISE_DESCRIPTION))
+            toggleOverlayVisibility(dispatch, closeComponent)
+            dispatch(setOverlayComponent(component.id))
+            dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
         },
     },
     {
@@ -148,7 +147,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
                 className={'toolbar__toggle'}
                 onClick={props.toggleToolbarVisibility}
             >
-                <i className={props.isVisible === true ? 'fas fa-chevron-right' : 'fas fa-chevron-left'}></i>
+                <i className={props.isVisible === true ? 'fas fa-chevron-right' : 'fas fa-chevron-left'} />
             </button>
             {toolbarItemsToRender}
         </div>

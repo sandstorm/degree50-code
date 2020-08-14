@@ -8,6 +8,7 @@ export type MediaItemType = {
     start: string
     end: string
     text: string
+    memo: string
     color: null | string
 }
 

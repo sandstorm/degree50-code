@@ -1,6 +1,5 @@
 import { configureStore, ThunkAction, Action, getDefaultMiddleware } from '@reduxjs/toolkit'
 import toolbarReducer from '../Components/Toolbar/ToolbarSlice'
-import modalReducer from '../Components/Modal/ModalSlice'
 import configReducer from '../Components/Config/ConfigSlice'
 import liveSyncConfigReducer from '../Components/LiveSyncConfig/LiveSyncConfigSlice'
 import solutionReducer from '../Components/Solution/SolutionSlice'
@@ -22,7 +21,6 @@ export const store = configureStore({
     reducer: {
         toolbar: toolbarReducer,
         player: playerReducer,
-        modal: modalReducer,
         config: configReducer,
         liveSyncConfig: liveSyncConfigReducer,
         solution: solutionReducer,

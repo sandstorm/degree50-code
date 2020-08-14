@@ -15,7 +15,7 @@
   top: 0;
   width: auto;
 
-  z-index: 4;
+  z-index: 15;
   pointer-events: all;
 }
 
@@ -99,7 +99,7 @@
   }
 }
 
-.video-editor__media-items__handle {
+.video-editor__media-item__handle {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -113,8 +113,7 @@
   }
 }
 
-
-.video-editor__media-items__template {
+.video-editor__media-item__template {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -126,4 +125,26 @@
 
   user-select: none;
   pointer-events: none;
+}
+
+.video-editor__media-items__memo-toggle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: -10px;
+  top: -10px;
+  width: 25px;
+  height: 25px;
+
+  background-color: $theme__color__blue;
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  z-index: 10;
+
+  i {
+    color: $theme__color__white;
+  }
 }

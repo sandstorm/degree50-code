@@ -61,7 +61,7 @@ const InteractionArea = ({ renderConfig, clickCallback, gridGap }: Props) => {
             >
                 <i className={'fas fa-chevron-right'} />
             </div>
-            <div className="video-editor__media-items__template" />
+            <div className="video-editor__media-item__template" />
         </div>
     )
 }

@@ -19,6 +19,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
                 start: annotation.start,
                 end: annotation.end,
                 text: annotation.text,
+                memo: annotation.memo,
                 originalData: annotation,
                 lane: 0,
             })
@@ -29,6 +30,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
                 start: videoCode.start,
                 end: videoCode.end,
                 text: videoCode.text,
+                memo: videoCode.memo,
                 color: videoCode.color,
                 originalData: videoCode,
                 lane: 0,

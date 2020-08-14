@@ -7,6 +7,7 @@ import MaterialViewer from '../MaterialViewer/MaterialViewer'
 import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import VideoPlayerWrapper from '../VideoPlayer/VideoPlayerWrapper'
 import Presence from '../Presence/Presence'
+import ExerciseDescription from '../ExerciseDescription/ExerciseDescription'
 
 const mapStateToProps = (state: AppState) => ({
     isVisible: selectIsVisible(state),
@@ -37,6 +38,9 @@ const Overlay: React.FC<OverlayProps> = (props) => {
         // nothing
     }
     switch (props.component) {
+        case ComponentTypesEnum.TASK:
+            componentToRender = <ExerciseDescription />
+            break
         case ComponentTypesEnum.DOCUMENT_UPLOAD:
             componentToRender = <FileUpload />
             break
@@ -61,7 +65,7 @@ const Overlay: React.FC<OverlayProps> = (props) => {
     return (
         <div className={className + ' ' + sizeClass}>
             <button className={'overlay__close btn'} type="button" onClick={handleVisibilityToggle}>
-                <i className={'fas fa-times'}></i>
+                <i className={'fas fa-times'} />
             </button>
             <div className={'overlay__content'}>{componentToRender}</div>
         </div>
