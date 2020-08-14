@@ -5,6 +5,7 @@ namespace App\VideoEncoding\MessageHandler;
 
 
 use App\Core\FileSystemService;
+use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
@@ -35,13 +36,18 @@ class WebEncodingHandler implements MessageHandlerInterface
 
     public function __invoke(WebEncodingTask $encodingTask)
     {
+        $this->entityManager->getFilters()->disable('video_doctrine_filter');
+        $video = $this->videoRepository->find($encodingTask->getVideoId());
+        if ($video === null) {
+            $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
+            return;
+        }
+
         try {
-            $this->entityManager->getFilters()->disable('video_doctrine_filter');
-            $video = $this->videoRepository->find($encodingTask->getVideoId());
-            if ($video === null) {
-                $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
-                return;
-            }
+            $video->setEncodingStatus(Video::ENCODING_STARTED);
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $this->entityManager->persist($video);
+            $this->entityManager->flush();
 
             $inputVideoFilename = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
 
@@ -63,7 +69,7 @@ class WebEncodingHandler implements MessageHandlerInterface
             $this->encodeHLS($config, $mp4Url, $localOutputDirectory);
 
             $video->setVideoDuration($this->probeForVideoDuration($mp4Url));
-            $video->setEncodingFinished(true);
+            $video->setEncodingStatus(Video::ENCODING_FINISHED);
 
             $this->eventStore->addEvent('VideoEncodedCompletely', [
                 'videoId' => $video->getId(),
@@ -76,6 +82,11 @@ class WebEncodingHandler implements MessageHandlerInterface
 
             $this->pingAndReconnectDB();
 
+            $this->entityManager->persist($video);
+            $this->entityManager->flush();
+        } catch(\Exception $exception) {
+            $video->setEncodingStatus(Video::ENCODING_ERROR);
+            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->persist($video);
             $this->entityManager->flush();
         } finally {

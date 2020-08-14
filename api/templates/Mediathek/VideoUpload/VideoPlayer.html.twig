@@ -7,12 +7,16 @@
     <p>
         Beschreibung: {{ video.description }}
     </p>
-    {% if video.encodingFinished %}
+    {% if video.encodingStatus == 1 %}
         <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] }} | json_encode|e('html_attr')}}"></div>
         <hr />
         <a class="btn btn-primary" href="{{ video.encodedVideoDirectory | virtualized_file_url }}/x264.mp4" target="_blank">Download als .mp4</a>
-    {% else %}
+    {% elseif video.encodingStatus == 3 %}
         <div class="alert alert-danger">
+            Video-Encoding fehlgeschlagen...
+        </div>
+    {% else %}
+        <div class="alert alert-info">
             Video-Encoding läuft noch...
         </div>
     {% endif %}
