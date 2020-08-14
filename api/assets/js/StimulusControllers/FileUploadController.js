@@ -44,9 +44,11 @@ export default class extends Controller {
                     done("Naha, you don't.");
                 }
                 else {
-                    formSubmitButton.removeAttribute('disabled')
                     done();
                 }
+            },
+            success: function() {
+                formSubmitButton.removeAttribute('disabled')
             }
         });
     }

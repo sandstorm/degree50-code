@@ -5,15 +5,18 @@ namespace App\Mediathek\Controller;
 
 
 use App\Entity\Video\Video;
+use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Form\VideoType;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
+use App\VideoEncoding\Message\WebEncodingTask;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -22,13 +25,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class VideoUploadController extends AbstractController
 {
+    private MessageBusInterface $messageBus;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
+        $this->messageBus = $messageBus;
     }
 
     /**
@@ -63,6 +68,10 @@ class VideoUploadController extends AbstractController
                 'description' => $video->getDescription() ? $video->getDescription() : '',
             ]);
 
+            // dispatch event to start encoding when form is submitted
+            $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
+            $this->messageBus->dispatch(new WebEncodingTask($video->getId(), $outputDirectory));
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($video);
             $entityManager->flush();
@@ -71,6 +80,8 @@ class VideoUploadController extends AbstractController
                 'success',
                 $this->translator->trans('video.upload.messages.success', [], 'forms')
             );
+
+
 
             return $this->redirectToRoute('app_videoplayer', ['id' => $video->getId()]);
         }
