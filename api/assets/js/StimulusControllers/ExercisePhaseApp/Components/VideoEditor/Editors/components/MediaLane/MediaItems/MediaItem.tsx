@@ -101,6 +101,8 @@ const MediaItem = ({
     const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModal()
     const { showModal: showMemoEditModal, hideModal: closeMemoEditModal, RenderModal: RenderMemoEditModal } = useModal()
 
+    const contentMenuItemHeight = 30
+
     return (
         <div
             className={[
@@ -124,10 +126,18 @@ const MediaItem = ({
             }}
             onContextMenu={(event) => {
                 event.preventDefault()
+                setPause(true)
+                setPlayPosition(item.startTime + 0.001)
+
                 updateContextMenuIsVisible(true)
                 setContextMenuPosX(event.pageX - positionLeft)
                 const mediaItemsHeight = document.getElementsByClassName('video-editor__media-items')[0].clientHeight
-                setContextMenuPosY(mediaItemsHeight - (document.body.clientHeight - event.pageY))
+                const phaseHeight = document.getElementsByClassName('exercise-phase__inner')[0].clientHeight
+                let posY = mediaItemsHeight - (phaseHeight - event.pageY)
+                if (posY >= mediaItemsHeight / 2) {
+                    posY = posY - 3 * contentMenuItemHeight
+                }
+                setContextMenuPosY(posY)
             }}
         >
             {item.memo ? (

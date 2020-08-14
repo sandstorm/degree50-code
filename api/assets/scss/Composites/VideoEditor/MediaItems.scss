@@ -72,6 +72,8 @@
     background-color: transparentize($theme__color__blue, 0.5);
     border-left: 1px solid transparentize($theme__color__blue, 0.5);
     border-right: 1px solid transparentize($theme__color__blue, 0.5);
+
+    z-index: 100;
   }
 
   &--illegal {

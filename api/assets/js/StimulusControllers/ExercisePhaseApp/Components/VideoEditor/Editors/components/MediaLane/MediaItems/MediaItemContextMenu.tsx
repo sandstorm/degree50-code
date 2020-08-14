@@ -18,6 +18,20 @@ const MediaItemContextMenu = ({
     addMemoToMediaItem,
     handleClose,
 }: Props) => {
+    let timer: any
+
+    const handleOnMouseOut = () => {
+        timer = setTimeout(() => {
+            handleClose()
+        }, 250)
+    }
+
+    const handleOnMouseOver = () => {
+        if (timer) {
+            clearTimeout(timer)
+        }
+    }
+
     return (
         <div
             className="video-editor__media-items__contextmenu"
@@ -26,6 +40,8 @@ const MediaItemContextMenu = ({
                 left: posX,
                 top: posY,
             }}
+            onMouseOut={handleOnMouseOut}
+            onMouseOver={handleOnMouseOver}
         >
             <div
                 className="video-editor__media-items__contextmenu-item"
