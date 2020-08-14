@@ -6,10 +6,18 @@ type Props = {
     posX: number
     posY: number
     removeMediaItem: () => void
+    addMemoToMediaItem: () => void
     handleClose: () => void
 }
 
-const MediaItemContextMenu = ({ contextMenuIsVisible, posX, posY, removeMediaItem, handleClose }: Props) => {
+const MediaItemContextMenu = ({
+    contextMenuIsVisible,
+    posX,
+    posY,
+    removeMediaItem,
+    addMemoToMediaItem,
+    handleClose,
+}: Props) => {
     return (
         <div
             className="video-editor__media-items__contextmenu"
@@ -19,6 +27,15 @@ const MediaItemContextMenu = ({ contextMenuIsVisible, posX, posY, removeMediaIte
                 top: posY,
             }}
         >
+            <div
+                className="video-editor__media-items__contextmenu-item"
+                onClick={() => {
+                    addMemoToMediaItem()
+                    handleClose()
+                }}
+            >
+                <i className={'far fa-file-alt'} /> Edit Memo
+            </div>
             <div
                 className="video-editor__media-items__contextmenu-item"
                 onClick={() => {

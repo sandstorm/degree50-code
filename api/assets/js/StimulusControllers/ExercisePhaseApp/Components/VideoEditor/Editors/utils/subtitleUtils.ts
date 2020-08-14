@@ -58,7 +58,7 @@ export async function getSubFromVttUrl(url: string) {
                     // FIXME
                     // @ts-ignore disable-line
                     const text = item.text
-                    return new MediaItem({ start, end, text, originalData: item, lane: 0 })
+                    return new MediaItem({ start, end, text, memo: '', originalData: item, lane: 0 })
                 })
             )
         }

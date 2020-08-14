@@ -6,6 +6,9 @@ import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/S
 import { actions } from '../../../../PlayerSlice'
 import { AppState } from '../../../../../../Store/Store'
 import MediaItemContextMenu from './MediaItemContextMenu'
+import { useModal } from '../../../../../Modal/useModal'
+import Button from '../../../../../Button/Button'
+import MediaItemMemoForm from './MediaItemMemoForm'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>
@@ -20,6 +23,11 @@ type OwnProps = {
         side: 'left' | 'right' | 'center'
     ) => void
     removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
+    updateMediaItem: (
+        item: MediaItemClass<MediaItemType>,
+        updatedValues: { start?: string; end?: string; memo?: string },
+        newStartTime: number
+    ) => void
     amountOfLanes?: number
 }
 
@@ -43,6 +51,7 @@ const MediaItem = ({
     onItemMouseDown,
     isPlayedBack,
     removeMediaItem,
+    updateMediaItem,
     amountOfLanes = 0,
     setPause,
     setPlayPosition,
@@ -74,6 +83,11 @@ const MediaItem = ({
     const [contextMenuPosX, setContextMenuPosX] = useState(0)
     const [contextMenuPosY, setContextMenuPosY] = useState(0)
 
+    const submitMemo = (memo: string) => {
+        updateMediaItem(item, { memo: memo }, item.startTime)
+        closeMemoEditModal()
+    }
+
     const updateContextMenuIsVisible = useCallback(
         (isVisible: boolean) => {
             setContextMenuIsVisible(isVisible)
@@ -83,6 +97,9 @@ const MediaItem = ({
 
     const positionLeft =
         renderConfig.padding * gridGap + (item.startTime - renderConfig.timelineStartTime) * gridGap * 10
+
+    const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModal()
+    const { showModal: showMemoEditModal, hideModal: closeMemoEditModal, RenderModal: RenderMemoEditModal } = useModal()
 
     return (
         <div
@@ -113,8 +130,13 @@ const MediaItem = ({
                 setContextMenuPosY(mediaItemsHeight - (document.body.clientHeight - event.pageY))
             }}
         >
+            {item.memo ? (
+                <Button onPress={showMemoModal} className={'video-editor__media-items__memo-toggle'}>
+                    <i className={'fas fa-info'} />
+                </Button>
+            ) : null}
             <div
-                className="video-editor__media-items__handle"
+                className="video-editor__media-item__handle"
                 style={{
                     left: 0,
                     width: gridGap,
@@ -127,7 +149,7 @@ const MediaItem = ({
                 ))}
             </div>
             <div
-                className="video-editor__media-items__handle"
+                className="video-editor__media-item__handle"
                 style={{
                     right: 0,
                     width: gridGap,
@@ -138,6 +160,9 @@ const MediaItem = ({
                 removeMediaItem={() => {
                     removeMediaItem(item)
                 }}
+                addMemoToMediaItem={() => {
+                    showMemoEditModal()
+                }}
                 contextMenuIsVisible={contextMenuIsVisible}
                 posX={contextMenuPosX}
                 posY={contextMenuPosY}
@@ -145,6 +170,10 @@ const MediaItem = ({
                     updateContextMenuIsVisible(false)
                 }}
             />
+            <RenderMemoModal title={'Memo'}>{item.memo}</RenderMemoModal>
+            <RenderMemoEditModal title={'Memo bearbeiten'}>
+                <MediaItemMemoForm currentMemo={item.memo} submitMemo={submitMemo} />
+            </RenderMemoEditModal>
         </div>
     )
 }

@@ -1,5 +1,4 @@
 import React from 'react'
-import Modal from './Components/Modal/Modal'
 import Toolbar from './Components/Toolbar/Toolbar'
 import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { ExercisePhaseTypesEnum } from './Store/ExercisePhaseTypesEnum'
@@ -19,6 +18,7 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
             break
         default:
     }
+
     const toolbar = readOnly ? null : <Toolbar />
     return (
         <div className={'exercise-phase__inner'}>
@@ -28,7 +28,7 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
                     <Overlay />
                     {toolbar}
                 </div>
-                <Modal />
+                <div id="modal-root" />
             </OverlayProvider>
         </div>
     )

@@ -150,6 +150,7 @@ export const useCuttingMediaItemHandling = ({
                 end: d2t(endTime),
                 text: cutToCopy.text,
                 color: cutToCopy.color,
+                memo: cutToCopy.memo,
                 originalData: cutToCopy.originalData,
                 lane: 0,
             })

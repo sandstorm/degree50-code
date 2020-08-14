@@ -5,6 +5,7 @@ export class MediaItem<T> {
     start: string
     end: string
     text: string
+    memo: string
     color: null | string
     lane: number
     originalData: T
@@ -13,6 +14,7 @@ export class MediaItem<T> {
         start,
         end,
         text,
+        memo,
         color = null,
         originalData,
         lane = 0,
@@ -20,6 +22,7 @@ export class MediaItem<T> {
         start: string
         end: string
         text: string
+        memo: string
         color?: string | null
         lane: number
         originalData: T
@@ -27,6 +30,7 @@ export class MediaItem<T> {
         this.start = start
         this.end = end
         this.text = text
+        this.memo = memo
         this.color = color
         this.originalData = originalData
         this.lane = lane
@@ -41,6 +45,7 @@ export class MediaItem<T> {
             start: this.start,
             end: this.end,
             text: this.text,
+            memo: this.memo,
             color: this.color,
             originalData: this.originalData,
             lane: this.lane,

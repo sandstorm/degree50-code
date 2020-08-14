@@ -20,6 +20,11 @@ const renderItems = (
         ) => void
     },
     removeMediaItem: (item: MediaItemClass<MediaItemType>) => void,
+    updateMediaItem: (
+        item: MediaItemClass<MediaItemType>,
+        updatedValues: { start?: string; end?: string; memo?: string },
+        newStartTime: number
+    ) => void,
     amountOfLanes?: number
 ) =>
     mediaItems.map((item, index) => {
@@ -38,6 +43,7 @@ const renderItems = (
                 isPlayedBack={activeItemIndex === index}
                 amountOfLanes={amountOfLanes}
                 removeMediaItem={removeMediaItem}
+                updateMediaItem={updateMediaItem}
                 {...handlers}
             />
         )
@@ -50,7 +56,7 @@ type Props = {
     currentTime: number
     updateMediaItem: (
         item: MediaItemClass<MediaItemType>,
-        updatedValues: { start?: string; end?: string },
+        updatedValues: { start?: string; end?: string; memo?: string },
         newStartTime: number
     ) => void
     removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
@@ -85,6 +91,7 @@ const MediaItems = ({
                         onItemMouseDown,
                     },
                     removeMediaItem,
+                    updateMediaItem,
                     amountOfLanes
                 )}
             </div>

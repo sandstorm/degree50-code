@@ -74,6 +74,7 @@ const CuttingEditor = ({
                           start: cut.start,
                           end: cut.end,
                           text: typeof cut.text === 'string' ? cut.text : cut.url,
+                          memo: '',
                           originalData: cut,
                           lane: 0,
                       })
@@ -83,6 +84,7 @@ const CuttingEditor = ({
                       start: '00:00:00.000',
                       end: d2t(firstVideoDuration.toFixed(3)),
                       text: videos[0]?.name || '',
+                      memo: '',
                       originalData: {
                           url: firstVideoUrl,
                           offset: 0,
