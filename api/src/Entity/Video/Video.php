@@ -21,6 +21,11 @@ class Video
 {
     use IdentityTrait;
 
+    const ENCODING_NOT_STARTED = 0;
+    const ENCODING_STARTED = 2;
+    const ENCODING_ERROR = 3;
+    const ENCODING_FINISHED = 1;
+
     /**
      * @ORM\Column(type="text")
      * @ApiFilter(SearchFilter::class, strategy="ipartial")
@@ -71,9 +76,13 @@ class Video
     private $dataPrivacyAccepted;
 
     /**
-     * @ORM\Column(type="boolean")
+     * 0 = not started
+     * 1 = finished
+     * 2 = started
+     * 3 = error
+     * @ORM\Column(type="integer")
      */
-    private $encodingFinished;
+    private $encodingStatus;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -89,7 +98,7 @@ class Video
         $this->generateOrSetId($id);
         $this->videoAnalysisTypes = new ArrayCollection();
         $this->courses = new ArrayCollection();
-        $this->encodingFinished = false;
+        $this->encodingStatus = self::ENCODING_NOT_STARTED;
     }
 
     /**
@@ -247,22 +256,6 @@ class Video
     }
 
     /**
-     * @return bool
-     */
-    public function isEncodingFinished(): bool
-    {
-        return $this->encodingFinished;
-    }
-
-    /**
-     * @param bool $encodingFinished
-     */
-    public function setEncodingFinished(bool $encodingFinished): void
-    {
-        $this->encodingFinished = $encodingFinished;
-    }
-
-    /**
      * Get videoDuration.
      *
      * @return videoDuration.
@@ -280,5 +273,21 @@ class Video
     public function setVideoDuration($videoDuration)
     {
         $this->videoDuration = $videoDuration;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEncodingStatus(): int
+    {
+        return $this->encodingStatus;
+    }
+
+    /**
+     * @param int $encodingStatus
+     */
+    public function setEncodingStatus(int $encodingStatus): void
+    {
+        $this->encodingStatus = $encodingStatus;
     }
 }

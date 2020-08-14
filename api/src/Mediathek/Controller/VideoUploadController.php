@@ -81,8 +81,6 @@ class VideoUploadController extends AbstractController
                 $this->translator->trans('video.upload.messages.success', [], 'forms')
             );
 
-
-
             return $this->redirectToRoute('app_videoplayer', ['id' => $video->getId()]);
         }
 
