@@ -16,6 +16,7 @@ import { secondToTime, timeToSecond } from '../utils'
 import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
 import { selectors, actions } from '../../PlayerSlice'
+import { solveConflicts } from './helpers'
 
 const storage = new Storage()
 
@@ -46,53 +47,10 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const solveConflicts = (mediaItems: MediaItem<VideoCode>[]) => {
-    const hasConflictWithItem = (currentItem: MediaItem<VideoCode>, itemToCheckAgainst: MediaItem<VideoCode>) => {
-        return (
-            currentItem.startTime <= itemToCheckAgainst.endTime && currentItem.endTime >= itemToCheckAgainst.startTime
-        )
-    }
-
-    const getLane = (item: MediaItem<VideoCode>, index: number) => {
-        let lane = 0
-        if (index > 0) {
-            lane = 0
-            // reverse check of all previous media items for conflicts
-            for (let i = index; i > 0; i--) {
-                const hasConflictWithPrevItem = hasConflictWithItem(item, mediaItems[i - 1])
-                if (hasConflictWithPrevItem && lane === 0) {
-                    lane = mediaItems[i - 1].lane + 1
-                    continue
-                }
-                if (!hasConflictWithPrevItem && lane > 0 && mediaItems[index - 1].lane > 0) {
-                    lane = mediaItems[i - 1].lane
-                    break
-                }
-            }
-        }
-
-        return lane
-    }
-
-    return [...mediaItems]
-        .sort((a: MediaItem<VideoCode>, b: MediaItem<VideoCode>) => {
-            if (a.startTime < b.startTime) {
-                return -1
-            } else if (a.startTime > b.startTime) {
-                return 1
-            }
-            return 0
-        })
-        .map((item: MediaItem<VideoCode>, index: number) => {
-            item.lane = getLane(item, index)
-            return item
-        })
-}
-
 const VideoCodeEditor = (props: Props) => {
     const height = props.height
 
-    // All videoCodes sorted by start-time and with solved conflicts
+    // All videoCodes
     const mediaItems = solveConflicts(
         props.videoCodes.map(
             (videoCode) =>
