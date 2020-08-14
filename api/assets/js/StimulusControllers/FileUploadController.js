@@ -6,6 +6,8 @@ Dropzone.autoDiscover = false;
 
 export default class extends Controller {
     connect() {
+        const formSubmitButton = document.getElementById('video_save')
+        formSubmitButton.setAttribute('disabled', 'disabled')
         const endpoint = this.data.get('endpoint');
         const id = this.data.get('id');
 
@@ -36,13 +38,15 @@ export default class extends Controller {
                 return {
                     id: id
                 };
-
             },
             accept: function (file, done) {
                 if (file.name == "justinbieber.jpg") {
                     done("Naha, you don't.");
                 }
-                else {done();}
+                else {
+                    formSubmitButton.removeAttribute('disabled')
+                    done();
+                }
             }
         });
     }
