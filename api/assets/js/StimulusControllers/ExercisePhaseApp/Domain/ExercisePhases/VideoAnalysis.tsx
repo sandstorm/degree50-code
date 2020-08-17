@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import VideoEditor from '../../Components/VideoEditor/VideoEditor'
 import { selectConfig } from '../../Components/Config/ConfigSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
+import { TabsTypesEnum } from '../../Store/ComponentTypesEnum'
 
 const mapStateToProps = (state: AppState) => {
     return {
@@ -14,7 +15,9 @@ const mapStateToProps = (state: AppState) => {
 type VideoAnalysisProps = ReturnType<typeof mapStateToProps>
 
 const VideoAnalysis: React.FC<VideoAnalysisProps> = (props) => {
-    return <VideoEditor videos={props.videos} components={props.components} />
+    const videoComponents = Object.values(TabsTypesEnum).filter((tabType) => props.components.includes(tabType))
+
+    return <VideoEditor videos={props.videos} components={videoComponents} />
 }
 
 export default connect(mapStateToProps)(VideoAnalysis)

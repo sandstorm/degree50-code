@@ -24,12 +24,14 @@ NProgress.configure({ minimum: 0, showSpinner: false })
 
 type Props = {
     videos: Array<Video>
-    components: Array<ComponentId>
+    components: Array<TabsTypesEnum>
 }
 
 const VideoEditor: React.FC<Props> = (props) => {
     const [height, setHeight] = useState(0)
-    const [activeTabId, setActiveTabId] = useState<ComponentId>(props.components[0] || TabsTypesEnum.VIDEO_ANNOTATIONS)
+    const [activeTabId, setActiveTabId] = useState<TabsTypesEnum>(
+        props.components[0] || TabsTypesEnum.VIDEO_ANNOTATIONS
+    )
 
     const availableTabs = Object.values(tabs).filter((tab) => {
         return props.components.includes(tab.id)
