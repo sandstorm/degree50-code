@@ -38,7 +38,8 @@ class Solution
     {
         $solutionPrototype = [
             'annotations' => [],
-            'videoCodes' => []
+            'videoCodes' => [],
+            'cutlist' => [],
         ];
         $this->solution = $solutionPrototype;
         $this->generateOrSetId($id);

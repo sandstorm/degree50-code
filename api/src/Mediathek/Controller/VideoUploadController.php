@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -28,12 +29,14 @@ class VideoUploadController extends AbstractController
     private MessageBusInterface $messageBus;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
+    private Security $security;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->messageBus = $messageBus;
+        $this->security = $security;
     }
 
     /**
@@ -52,6 +55,7 @@ class VideoUploadController extends AbstractController
         if (!$video) {
             $video = new Video($videoUuid);
         }
+        $video->setCreator($this->security->getUser());
 
         $form = $this->createForm(VideoType::class, $video, [
             'action' => $this->generateUrl('app_videoupload', ['videoUuid' => $videoUuid])

@@ -6,17 +6,23 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Exercise\Solution;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
+use App\VideoEncoding\Message\CutlistEncodingTask;
+use App\Entity\Video\Video;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -27,6 +33,7 @@ class ExercisePhaseTeamController extends AbstractController
     private DoctrineIntegratedEventStore $eventStore;
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private LiveSyncService $liveSyncService;
+    private MessageBusInterface $messageBus;
 
     /**
      * ExercisePhaseTeamController constructor.
@@ -35,12 +42,13 @@ class ExercisePhaseTeamController extends AbstractController
      * @param AutosavedSolutionRepository $autosavedSolutionRepository
      * @param LiveSyncService $liveSyncService
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService, MessageBusInterface $messageBus)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->liveSyncService = $liveSyncService;
+        $this->messageBus = $messageBus;
     }
 
     /**
@@ -193,8 +201,43 @@ class ExercisePhaseTeamController extends AbstractController
         $entityManager->persist($solution);
         $entityManager->flush();
 
+        $this->dispatchCutlistEncodingTask($exercisePhaseTeam, $entityManager);
+
         return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
     }
+
+    private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam, EntityManagerInterface $entityManager) {
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+
+        if (!$exercisePhase instanceof VideoAnalysis) {
+            return;
+        }
+
+        $solution = $exercisePhaseTeam->getSolution()->getSolution();
+        $cutlist= $solution['cutlist'];
+
+        if (empty($cutlist)) {
+            return;
+        }
+
+        $cutlistVideo = $this->createVideo($entityManager, $exercisePhaseTeam->getCreator());
+        $this->messageBus->dispatch(new CutlistEncodingTask($exercisePhaseTeam, $cutlistVideo->getId()));
+    }
+
+    private function createVideo(EntityManagerInterface $entityManager, User $creator): ?Video {
+        $videoUuid = Uuid::uuid4()->toString();
+        $video = new Video($videoUuid);
+        $video->setCreator($creator);
+
+        $video->setTitle('Video to be cut <' . $videoUuid . '>');
+        $video->setDataPrivacyAccepted(true);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $entityManager->persist($video);
+        $entityManager->flush();
+
+        return $video;
+    }
+
 
     /**
      * Try to create a new AutosaveSolution and then publish the most recent version of the solution.

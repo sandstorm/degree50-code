@@ -8,17 +8,20 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
 use Ramsey\Uuid\Uuid;
+use Psr\Log\LoggerInterface;
 
 class FileSystemService
 {
+    private LoggerInterface $logger;
     private array $mountPrefixesAndFilesystems;
     private MountManager $mountManager;
 
     // name of file system mount which is guaranteed to be locally available
     const LOCAL_TMP_FILESYSTEM_MOUNT = 'local_tmp';
 
-    public function __construct(MountManager $mountManager)
+    public function __construct(LoggerInterface $logger, MountManager $mountManager)
     {
+        $this->logger = $logger;
         $this->mountPrefixesAndFilesystems = [];
         $this->mountManager = $mountManager;
     }
