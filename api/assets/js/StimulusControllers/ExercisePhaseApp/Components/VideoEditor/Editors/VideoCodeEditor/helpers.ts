@@ -63,7 +63,16 @@ export const findNonOverlappingItemsRecursively = trampoline(
  * NOTE: This still does not work perfectly, as the way items are placed is not transparent to the user and feels random (bad UX)
  */
 export const solveConflicts = (mediaItems: MediaItem<MediaItemType>[]): MediaItem<MediaItemType>[] => {
-    const itemsWithTemporaryIds = mediaItems.map((item, index) => ({ id: index, item }))
+    const sortedMediaItems = [...mediaItems].sort((a: MediaItem<MediaItemType>, b: MediaItem<MediaItemType>) => {
+        if (a.startTime < b.startTime) {
+            return -1
+        } else if (a.startTime > b.startTime) {
+            return 1
+        }
+        return 0
+    })
+
+    const itemsWithTemporaryIds = sortedMediaItems.map((item, index) => ({ id: index, item }))
 
     const assignmentResult = itemsWithTemporaryIds.reduce(
         (acc, _, index) => {

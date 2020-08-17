@@ -130,7 +130,7 @@ const MediaItem = ({
                 setPlayPosition(item.startTime + 0.001)
 
                 updateContextMenuIsVisible(true)
-                setContextMenuPosX(event.pageX - positionLeft)
+                setContextMenuPosX(event.pageX)
                 const mediaItemsHeight = document.getElementsByClassName('video-editor__media-items')[0].clientHeight
                 const phaseHeight = document.getElementsByClassName('exercise-phase__inner')[0].clientHeight
                 let posY = mediaItemsHeight - (phaseHeight - event.pageY)

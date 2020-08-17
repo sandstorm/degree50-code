@@ -734,7 +734,7 @@ describe('solveConflicts()', () => {
         // overlaps with B
         // no overlap with D
         // => 0
-        expect(resultForReversed[1].lane).toBe(1)
+        expect(resultForReversed[1].lane).toBe(0)
 
         // Item B
         // overlaps with A
@@ -748,6 +748,6 @@ describe('solveConflicts()', () => {
         // overlaps with D
         // no overlap with C
         // => 2
-        expect(resultForReversed[3].lane).toBe(2)
+        expect(resultForReversed[3].lane).toBe(1)
     })
 })

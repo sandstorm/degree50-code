@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { Translate } from 'react-i18nify'
 
 type Props = {
@@ -18,6 +19,9 @@ const MediaItemContextMenu = ({
     addMemoToMediaItem,
     handleClose,
 }: Props) => {
+    const domEl = document.getElementById('media-item-context-menu')
+    if (!domEl) return null
+
     let timer: any
 
     const handleOnMouseOut = () => {
@@ -32,7 +36,7 @@ const MediaItemContextMenu = ({
         }
     }
 
-    return (
+    return ReactDOM.createPortal(
         <div
             className="video-editor__media-items__contextmenu"
             style={{
@@ -69,7 +73,8 @@ const MediaItemContextMenu = ({
             >
                 <Translate value="close" />
             </div>
-        </div>
+        </div>,
+        domEl
     )
 }
 
