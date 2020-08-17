@@ -12,6 +12,7 @@ type Props = {
     currentZoom: number
     updateCurrentTime: (time: number) => void
     mediaItems: MediaItem<MediaItemType>[]
+    amountOfLanes: number
 }
 
 const initialRender: RenderConfig = {
@@ -22,7 +23,7 @@ const initialRender: RenderConfig = {
     timelineStartTime: 0,
 }
 
-const ReadOnlyMediaLane = ({ currentTime, currentZoom, updateCurrentTime, mediaItems }: Props) => {
+const ReadOnlyMediaLane = ({ currentTime, currentZoom, updateCurrentTime, mediaItems, amountOfLanes }: Props) => {
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
@@ -99,7 +100,12 @@ const ReadOnlyMediaLane = ({ currentTime, currentZoom, updateCurrentTime, mediaI
                     gridGap={gridGap}
                 />
 
-                <ReadOnlyMediaItems renderConfig={renderConfig} mediaItems={mediaItems} gridGap={gridGap} />
+                <ReadOnlyMediaItems
+                    renderConfig={renderConfig}
+                    mediaItems={mediaItems}
+                    gridGap={gridGap}
+                    amountOfLanes={amountOfLanes}
+                />
             </div>
         </div>
     )

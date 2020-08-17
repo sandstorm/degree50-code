@@ -95,6 +95,7 @@ const MediaItems = ({
                     amountOfLanes
                 )}
             </div>
+            <div id={'media-item-context-menu'} />
         </div>
     )
 }

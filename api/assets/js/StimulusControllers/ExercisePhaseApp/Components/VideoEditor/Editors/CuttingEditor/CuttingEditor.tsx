@@ -164,7 +164,9 @@ const CuttingEditor = ({
                 removeMediaItem={removeMediaItem}
                 ToolbarActions={
                     <>
-                        <button onClick={handleSplitAtCursor}>Split at cursor</button>
+                        <button className={'btn btn-outline-primary btn-sm'} onClick={handleSplitAtCursor}>
+                            Split at cursor
+                        </button>
                         <div className="item">
                             <div className="name">
                                 <Translate value="volume" />

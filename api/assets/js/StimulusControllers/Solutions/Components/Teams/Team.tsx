@@ -3,6 +3,8 @@ import { SolutionByTeam } from '../../SolutionsApp'
 import { MediaItem } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/types'
 import ReadOnlyMediaLane from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 import { TabsTypesEnum } from '../../../ExercisePhaseApp/Store/ComponentTypesEnum'
+import { solveConflicts } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/VideoCodeEditor/helpers'
+import { VideoCode } from '../../../ExercisePhaseApp/Components/Solution/SolutionSlice'
 
 type TeamProps = {
     solution: SolutionByTeam
@@ -24,17 +26,20 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
                 lane: 0,
             })
     )
-    const itemsFromVideoCodes = solution.solution.videoCodes.map(
-        (videoCode) =>
-            new MediaItem({
-                start: videoCode.start,
-                end: videoCode.end,
-                text: videoCode.text,
-                memo: videoCode.memo,
-                color: videoCode.color,
-                originalData: videoCode,
-                lane: 0,
-            })
+
+    const itemsFromVideoCodes = solveConflicts(
+        solution.solution.videoCodes.map(
+            (videoCode) =>
+                new MediaItem({
+                    start: videoCode.start,
+                    end: videoCode.end,
+                    text: videoCode.text,
+                    memo: videoCode.memo,
+                    color: videoCode.color,
+                    originalData: videoCode,
+                    lane: 0,
+                })
+        )
     )
 
     let mediaItems = null
@@ -43,6 +48,13 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
     } else {
         mediaItems = itemsFromVideoCodes
     }
+
+    const amountOfLanes = Math.max.apply(
+        Math,
+        mediaItems.map((item: MediaItem<VideoCode>) => {
+            return item.lane
+        })
+    )
 
     return (
         <div className={'team'}>
@@ -55,6 +67,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
                     currentZoom={currentZoom}
                     updateCurrentTime={updateCurrentTime}
                     mediaItems={mediaItems}
+                    amountOfLanes={amountOfLanes}
                 />
             </div>
         </div>

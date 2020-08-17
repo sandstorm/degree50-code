@@ -130,10 +130,10 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
         <>
             <canvas ref={canvasRef} className={'video-context-player'} width={canvasWidth} height={canvasHeight} />
             <div className="actions">
-                <button className="video-button" onClick={handlePlay}>
+                <button className="video-button btn btn-outline-primary btn-sm" onClick={handlePlay}>
                     Play
                 </button>
-                <button className="video-button" onClick={handlePause}>
+                <button className="video-button btn btn-outline-primary btn-sm" onClick={handlePause}>
                     Pause
                 </button>
             </div>
