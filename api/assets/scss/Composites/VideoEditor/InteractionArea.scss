@@ -24,9 +24,20 @@
 
   cursor: pointer;
   z-index: 20;
+  pointer-events: all;
 
   &:hover {
     background-color: transparentize($theme__color__green--light, 0.5);;
+  }
+
+  &--is-disabled {
+    background-color: transparentize($theme__color__green, 0.8);
+
+    cursor: default;
+
+    &:hover {
+      background-color: transparentize($theme__color__green, 0.8);
+    }
   }
 
   i {
@@ -36,28 +47,8 @@
 
 .video-editor__interaction-area-left {
   left: 0;
-
-  &--is-disabled {
-    background-color: transparentize($theme__color__green, 0.8);
-
-    cursor: default;
-
-    &:hover {
-      background-color: transparentize($theme__color__green, 0.8);
-    }
-  }
 }
 
 .video-editor__interaction-area-right {
   right: 0;
-
-  &--is-disabled {
-    background-color: transparentize($theme__color__green, 0.8);
-
-    cursor: default;
-
-    &:hover {
-      background-color: transparentize($theme__color__green, 0.8);
-    }
-  }
 }

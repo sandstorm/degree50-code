@@ -162,6 +162,7 @@ const CuttingEditor = ({
                 setPlayPosition={setPlayPosition}
                 checkMediaItem={checkMediaItem}
                 removeMediaItem={removeMediaItem}
+                videoDuration={firstVideoDuration}
                 ToolbarActions={
                     <>
                         <button className={'btn btn-outline-primary btn-sm'} onClick={handleSplitAtCursor}>

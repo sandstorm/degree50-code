@@ -12,9 +12,17 @@ type TeamProps = {
     currentTime: number
     currentZoom: number
     updateCurrentTime: (time: number) => void
+    videoDuration: number
 }
 
-export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime }) => {
+export const Team: React.FC<TeamProps> = ({
+    solution,
+    activeTab,
+    currentTime,
+    currentZoom,
+    updateCurrentTime,
+    videoDuration,
+}) => {
     const itemsFromAnnotations = solution.solution.annotations.map(
         (annotation) =>
             new MediaItem({
@@ -68,6 +76,7 @@ export const Team: React.FC<TeamProps> = ({ solution, activeTab, currentTime, cu
                     updateCurrentTime={updateCurrentTime}
                     mediaItems={mediaItems}
                     amountOfLanes={amountOfLanes}
+                    videoDuration={videoDuration}
                 />
             </div>
         </div>

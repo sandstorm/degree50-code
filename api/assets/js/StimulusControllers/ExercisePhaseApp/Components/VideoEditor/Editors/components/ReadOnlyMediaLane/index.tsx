@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import ReadOnlyMediaItems from './ReadOnyMediaItems'
 import { MediaItem } from '../types'
 import ReadOnlyMediaTrack from '../MediaLane/MediaTrack/index'
 import { RenderConfig } from '../MediaLane/MediaTrack'
-import { useWindowSize } from '../MediaLane/MediaTrack/hooks'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
 import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
+import { useDimensions } from '../MediaLane/utils'
 
 type Props = {
     currentTime: number
@@ -13,62 +13,56 @@ type Props = {
     updateCurrentTime: (time: number) => void
     mediaItems: MediaItem<MediaItemType>[]
     amountOfLanes: number
+    videoDuration: number
 }
 
 const initialRender: RenderConfig = {
     padding: 5,
     duration: 10,
     gridNum: 110,
+    gridGap: 10,
     currentTime: 0,
     timelineStartTime: 0,
 }
 
-const ReadOnlyMediaLane = ({ currentTime, currentZoom, updateCurrentTime, mediaItems, amountOfLanes }: Props) => {
+const ReadOnlyMediaLane = ({
+    currentTime,
+    currentZoom,
+    updateCurrentTime,
+    mediaItems,
+    amountOfLanes,
+    videoDuration,
+}: Props) => {
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
-
     const mediaTrackConfig = {} // TODO
-    const windowSize = useWindowSize()
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
-    const [containerWidth, setContainerWidth] = useState(0)
-    const [containerHeight, setContainerHeight] = useState(0)
 
-    const updateContainerDimensions = () => {
-        if ($container.current) {
-            setContainerWidth($container.current.clientWidth)
-            setContainerHeight($container.current.clientHeight)
-        }
+    const { containerWidth, containerHeight } = useDimensions({
+        setRender,
+        $container,
+        renderConfig,
+        currentTime,
+    })
+
+    const getDurationForRenderConfig = (durationInPercentage: number) => {
+        return Math.round((videoDuration / 100) * durationInPercentage)
     }
 
-    // Update after initial rendering
-    useLayoutEffect(() => {
-        updateContainerDimensions()
-    }, [])
-
-    // Update after window resize
-    useLayoutEffect(() => {
-        updateContainerDimensions()
-    }, [windowSize])
-
-    // Update when the player plays (and therefore currentTime changes)
-    useEffect(() => {
-        const newTimelineStartTime = Math.floor(currentTime / renderConfig.duration) * renderConfig.duration
-
-        setRender({
-            ...renderConfig,
-            currentTime: currentTime,
-            timelineStartTime: newTimelineStartTime,
-        })
-    }, [currentTime])
+    initialRender.duration = getDurationForRenderConfig(currentZoom)
+    initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
+    initialRender.gridGap = containerWidth / initialRender.gridNum
 
     useEffect(() => {
-        const newDuration = currentZoom
+        const newDuration = getDurationForRenderConfig(currentZoom)
         const newGridNum = newDuration * 10 + renderConfig.padding * 2
+        const newGridGap = containerWidth / newGridNum
 
         setRender({
             ...renderConfig,
             duration: newDuration,
             gridNum: newGridNum,
+            gridGap: newGridGap,
         })
     }, [currentZoom])
 
@@ -79,8 +73,6 @@ const ReadOnlyMediaLane = ({ currentTime, currentZoom, updateCurrentTime, mediaI
         },
         [updateCurrentTime]
     )
-
-    const gridGap = containerWidth / renderConfig.gridNum
 
     return (
         <div className="video-editor-timeline">
@@ -97,15 +89,10 @@ const ReadOnlyMediaLane = ({ currentTime, currentZoom, updateCurrentTime, mediaI
                 <MediaTrackInteractionArea
                     renderConfig={renderConfig}
                     clickCallback={handleLaneClick}
-                    gridGap={gridGap}
+                    videoDuration={videoDuration}
                 />
 
-                <ReadOnlyMediaItems
-                    renderConfig={renderConfig}
-                    mediaItems={mediaItems}
-                    gridGap={gridGap}
-                    amountOfLanes={amountOfLanes}
-                />
+                <ReadOnlyMediaItems renderConfig={renderConfig} mediaItems={mediaItems} amountOfLanes={amountOfLanes} />
             </div>
         </div>
     )
