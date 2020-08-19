@@ -100,6 +100,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
             $this->logger->info('Done combining clips into video <' . $mp4Url . '>');
 
+            $video->setTitle('Cut_video, ' . $video->getCreator()->getUsername() . ', ' . $exercisePhaseTeam->getExercisePhase()->getName());
+
             $this->pingAndReconnectDB();
 
             $this->entityManager->persist($video);
@@ -149,15 +151,22 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         $firstClipPath = $clipPaths[0];
         $remaingingClipPaths = array_slice($clipPaths, 1);
 
-        $firstClip = $ffmpeg->open($firstClipPath);
-        $ffmpegVideo = $firstClip->concat($remaingingClipPaths);
-
         $mp4Url = $localOutputDirectory . '/x264.mp4';
+
+        $firstClip = $ffmpeg->open($firstClipPath);
+
         if (!file_exists($localOutputDirectory)) {
             mkdir($localOutputDirectory, 0777, true);
         }
 
-        $ffmpegVideo->saveFromSameCodecs($mp4Url);
+        if (empty($remaingingClipPaths)) {
+            // TODO we could probably simply copy the temporary
+            // clip instead of encoding it twice...
+            $firstClip->save(new X264('libmp3lame'), $mp4Url);
+        } else {
+            $ffmpegVideo = $firstClip->concat($remaingingClipPaths);
+            $ffmpegVideo->saveFromSameCodecs($mp4Url);
+        }
 
         return $mp4Url;
     }
@@ -171,6 +180,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         $rootDir = $this->parameterBag->get('kernel.project_dir');
 
         $clipPaths = array_map(function($cut) use($ffmpeg, $clipOutputDirectory, $rootDir) {
+            $this->logger->info('Creating new intermediate clip...');
+
             $inputVideoFilename = $rootDir . '/public' . $cut['url'];
             $localOutputDirectory = $this->fileSystemService->localPath($clipOutputDirectory);
             $clipUuid = Uuid::uuid4()->toString();
@@ -194,6 +205,11 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
                 $duration = $videoDurationInSeconds > 0 ? $videoDurationInSeconds : 1;
                 $videoDurationTimeCode = TimeCode::fromSeconds($duration);
+
+                $this->logger->info('url: ' . $inputVideoFilename);
+                $this->logger->info('offset: ' . $videoStartOffset);
+                $this->logger->info('duration: ' . $videoDurationTimeCode);
+                $this->logger->info('outputPath: ' . $outputPath);
 
                 // NOTE:
                 // The clips offset and duration might slightly deviate from the actual

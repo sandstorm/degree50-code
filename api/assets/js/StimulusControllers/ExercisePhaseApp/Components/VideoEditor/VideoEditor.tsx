@@ -17,7 +17,6 @@ import AnnotationsEditor from './Editors/AnnotationsEditor/AnnotationsEditor'
 import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
 import { TabsTypesEnum } from '../../Store/ComponentTypesEnum'
-import { ComponentId } from '../Config/ConfigSlice'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })
@@ -29,13 +28,14 @@ type Props = {
 
 const VideoEditor: React.FC<Props> = (props) => {
     const [height, setHeight] = useState(0)
-    const [activeTabId, setActiveTabId] = useState<TabsTypesEnum>(
-        props.components[0] || TabsTypesEnum.VIDEO_ANNOTATIONS
-    )
 
     const availableTabs = Object.values(tabs).filter((tab) => {
         return props.components.includes(tab.id)
     })
+
+    const [activeTabId, setActiveTabId] = useState<TabsTypesEnum>(
+        availableTabs[0].id || TabsTypesEnum.VIDEO_ANNOTATIONS
+    )
 
     useEffect(() => {
         setHeight(document.getElementsByClassName('exercise-phase__inner')[0].clientHeight)

@@ -36,6 +36,10 @@ export class MediaItem<T> {
         this.lane = lane
     }
 
+    public startsBefore(item: MediaItem<any>): boolean {
+        return this.startTime > item.startTime
+    }
+
     get check(): boolean {
         return this.startTime >= 0 && this.endTime >= 0 && this.startTime < this.endTime
     }

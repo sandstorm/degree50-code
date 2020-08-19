@@ -46,8 +46,10 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
             const { videoWidth, videoHeight } = videoSrcAttributes
             const aspectRatio = Math.min(parentWidth / videoWidth, parentHeight / videoHeight)
 
-            setCanvasWidth(videoWidth * aspectRatio)
-            setCanvasHeight(videoHeight * aspectRatio)
+            if (aspectRatio !== Infinity) {
+                setCanvasWidth(videoWidth * aspectRatio)
+                setCanvasHeight(videoHeight * aspectRatio)
+            }
         }
     }, [canvasRef.current, videoSrcAttributes, windowSize])
 
