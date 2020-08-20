@@ -4,15 +4,18 @@ import { RenderConfig } from './MediaTrack'
 type Props = {
     renderConfig: RenderConfig
     clickCallback: (clickTime: number) => void
-    gridGap: number
+    videoDuration: number
 }
 
-const InteractionArea = ({ renderConfig, clickCallback, gridGap }: Props) => {
+const InteractionArea = ({ renderConfig, clickCallback, videoDuration }: Props) => {
     const getEventTime = useCallback(
         (event) => {
-            return (event.pageX - renderConfig.padding * gridGap) / gridGap / 10 + renderConfig.timelineStartTime
+            return (
+                (event.pageX - renderConfig.padding * renderConfig.gridGap) / renderConfig.gridGap / 10 +
+                renderConfig.timelineStartTime
+            )
         },
-        [gridGap, renderConfig]
+        [renderConfig]
     )
 
     const onMouseDown = useCallback(
@@ -38,25 +41,40 @@ const InteractionArea = ({ renderConfig, clickCallback, gridGap }: Props) => {
         }
     }
 
-    const leftInteractionAreaIsDisabledCssClass =
-        renderConfig.timelineStartTime === 0 ? 'video-editor__interaction-area-left--is-disabled' : ''
+    const leftInteractionAreaIsDisabled = renderConfig.timelineStartTime === 0
+    const leftInteractionAreaIsDisabledCssClass = leftInteractionAreaIsDisabled
+        ? 'video-editor__interaction-area-left--is-disabled'
+        : ''
+
+    const rightInteractionAreaIsDisabled = renderConfig.timelineStartTime + renderConfig.duration >= videoDuration
+    const rightInteractionAreaIsDisabledCssClass = rightInteractionAreaIsDisabled
+        ? 'video-editor__interaction-area-right--is-disabled'
+        : ''
 
     return (
         <div className="video-editor__interaction-area" onMouseDown={onMouseDown}>
             <div
+                tabIndex={1}
+                role={'button'}
                 className={'video-editor__interaction-area-left ' + leftInteractionAreaIsDisabledCssClass}
-                style={{ width: gridGap * renderConfig.padding }}
+                style={{ width: renderConfig.gridGap * renderConfig.padding }}
                 onClick={() => {
-                    onClick('left')
+                    if (!leftInteractionAreaIsDisabled) {
+                        onClick('left')
+                    }
                 }}
             >
                 <i className={'fas fa-chevron-left'} />
             </div>
             <div
-                className={'video-editor__interaction-area-right'}
-                style={{ width: gridGap * renderConfig.padding }}
+                tabIndex={1}
+                role={'button'}
+                className={'video-editor__interaction-area-right ' + rightInteractionAreaIsDisabledCssClass}
+                style={{ width: renderConfig.gridGap * renderConfig.padding }}
                 onClick={() => {
-                    onClick('right')
+                    if (!rightInteractionAreaIsDisabled) {
+                        onClick('right')
+                    }
                 }}
             >
                 <i className={'fas fa-chevron-right'} />

@@ -15,7 +15,7 @@ const Toolbar = ({ zoomHandler, children }: Props) => {
                         <Translate value="zoom" />
                     </div>
                     <div className="value">
-                        <input defaultValue="10" type="range" min="5" max="20" step="1" onChange={zoomHandler} />
+                        <input defaultValue="25" type="range" min="1" max="100" step="1" onChange={zoomHandler} />
                     </div>
                 </div>
                 {children}

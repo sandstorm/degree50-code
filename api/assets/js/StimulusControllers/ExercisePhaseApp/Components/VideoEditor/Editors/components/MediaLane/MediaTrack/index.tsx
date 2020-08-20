@@ -5,6 +5,7 @@ export type RenderConfig = {
     padding: number
     duration: number
     gridNum: number
+    gridGap: number
     timelineStartTime: number
     currentTime: number
 }

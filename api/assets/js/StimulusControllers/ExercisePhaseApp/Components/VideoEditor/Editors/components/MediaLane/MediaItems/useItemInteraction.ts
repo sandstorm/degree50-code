@@ -11,7 +11,6 @@ const getVisibleItems = <T>(items: MediaItem<T>[], timelineStartTime: number, du
 export const useItemInteraction = <T>(
     mediaItems: MediaItem<T>[],
     renderConfig: RenderConfig,
-    gridGap: number,
     $mediaItemsRef: React.RefObject<HTMLDivElement>,
     updateMediaItem: (item: MediaItem<T>, updatedValues: { start?: string; end?: string }, newStartTime: number) => void
 ) => {
@@ -89,7 +88,7 @@ export const useItemInteraction = <T>(
 
     const onMouseUp = useCallback(() => {
         if (isDraging && lastTargetNode && lastDiffX && lastClickedItem) {
-            const timeDiff = lastDiffX / gridGap / 10
+            const timeDiff = lastDiffX / renderConfig.gridGap / 10
             const newStartTime = (lastClickedItem.startTime || 0) + timeDiff
             const newEndTime = (lastClickedItem.endTime || 0) + timeDiff
 
@@ -142,7 +141,6 @@ export const useItemInteraction = <T>(
         setLastTargetNode(undefined)
         setLastTargetNodeWidth(0)
     }, [
-        gridGap,
         isDraging,
         mediaItems,
         updateMediaItem,

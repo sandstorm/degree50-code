@@ -23,7 +23,7 @@ const storage = new Storage()
 type OwnProps = {
     height: number
     headerContent: React.ReactNode
-    videos: Array<{ url: { hls: string; mp4: string } }>
+    videos: Array<{ url: { hls: string; mp4: string }; name: string; duration: string }>
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -94,7 +94,9 @@ const VideoCodeEditor = (props: Props) => {
     })
 
     // All options
-    const firstVideoUrl = props.videos[0] ? props.videos[0].url.hls : ''
+    const firstVideo = props.videos[0]
+    const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
+    const firstVideoUrl = firstVideo ? firstVideo.url.hls : ''
 
     const artPlayerOptions = {
         videoUrl: firstVideoUrl,
@@ -192,6 +194,8 @@ const VideoCodeEditor = (props: Props) => {
                 setPlayPosition={props.setPlayPosition}
                 checkMediaItem={checkMediaItem}
                 amountOfLanes={amountOfLanes}
+                videoDuration={firstVideoDuration}
+                showTextInMediaItems={false}
             />
             <ToastContainer />
         </React.Fragment>

@@ -12,12 +12,13 @@ export type SolutionByTeam = {
 
 type ReadOnlyExercisePhaseProps = {
     solutions: Array<SolutionByTeam>
+    videos: Array<{ url: { hls: string; mp4: string }; name: string; duration: string }>
 }
 
-export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }) => {
+export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions, videos }) => {
     const [activeTab, setActiveTab] = useState<TabsTypesEnum>(TabsTypesEnum.VIDEO_ANNOTATIONS)
     const [currentTime, setCurrentTime] = useState(0)
-    const [currentZoom, setCurrentZoom] = useState(10)
+    const [currentZoom, setCurrentZoom] = useState(25)
     const [player, setPlayer] = useState(null)
 
     const videoNodeRef: React.RefObject<HTMLVideoElement> = useRef(null)
@@ -52,6 +53,9 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }
         [setCurrentZoom]
     )
 
+    const firstVideo = videos[0]
+    const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
+
     return (
         <div className={'exercise-phase__inner'}>
             <div className={'exercise-phase__content'}>
@@ -74,8 +78,8 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }
                             <label htmlFor={'zoom'}>Zoom</label>
                             <input
                                 type="range"
-                                min="5"
-                                max="20"
+                                min="1"
+                                max="100"
                                 step="1"
                                 className="form-control-range"
                                 id="zoom"
@@ -91,6 +95,7 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions }
                         currentTime={currentTime}
                         currentZoom={currentZoom}
                         updateCurrentTime={updateCurrentTime}
+                        videoDuration={firstVideoDuration}
                     />
                 </div>
             </div>

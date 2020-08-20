@@ -16,7 +16,6 @@ type OwnProps = {
     renderConfig: RenderConfig
     isPlayedBack?: boolean
     checkMediaItem: (item: MediaItemClass<any>) => boolean
-    gridGap: number
     onItemMouseDown: (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         item: MediaItemClass<MediaItemType>,
@@ -29,6 +28,7 @@ type OwnProps = {
         newStartTime: number
     ) => void
     amountOfLanes?: number
+    showTextInMediaItems: boolean
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -47,12 +47,12 @@ const MediaItem = ({
     id,
     renderConfig,
     checkMediaItem,
-    gridGap,
     onItemMouseDown,
     isPlayedBack,
     removeMediaItem,
     updateMediaItem,
     amountOfLanes = 0,
+    showTextInMediaItems = true,
     setPause,
     setPlayPosition,
 }: Props) => {
@@ -96,7 +96,8 @@ const MediaItem = ({
     )
 
     const positionLeft =
-        renderConfig.padding * gridGap + (item.startTime - renderConfig.timelineStartTime) * gridGap * 10
+        renderConfig.padding * renderConfig.gridGap +
+        (item.startTime - renderConfig.timelineStartTime) * renderConfig.gridGap * 10
 
     const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModal()
     const { showModal: showMemoEditModal, hideModal: closeMemoEditModal, RenderModal: RenderMemoEditModal } = useModal()
@@ -116,7 +117,7 @@ const MediaItem = ({
             style={{
                 backgroundColor: item.color ? item.color : '',
                 left: positionLeft,
-                width: (item.endTime - item.startTime) * gridGap * 10,
+                width: (item.endTime - item.startTime) * renderConfig.gridGap * 10,
                 top: item.lane * mediaItemHeight + '%',
                 height: mediaItemHeight + '%',
             }}
@@ -149,20 +150,22 @@ const MediaItem = ({
                 className="video-editor__media-item__handle"
                 style={{
                     left: 0,
-                    width: gridGap,
+                    width: renderConfig.gridGap,
                 }}
                 onMouseDown={handleLeftHandleMouseDown}
             />
+
             <div className="video-editor__media-items__text" onMouseDown={handleItemCenterMouseDown}>
-                {item.text.split(/\r?\n/).map((line: any, index: any /* FIXME any */) => (
-                    <p key={index}>{line}</p>
-                ))}
+                {showTextInMediaItems
+                    ? item.text.split(/\r?\n/).map((line: any, index: any /* FIXME any */) => <p key={index}>{line}</p>)
+                    : null}
             </div>
+
             <div
                 className="video-editor__media-item__handle"
                 style={{
                     right: 0,
-                    width: gridGap,
+                    width: renderConfig.gridGap,
                 }}
                 onMouseDown={handleRightHandleMouseDown}
             />

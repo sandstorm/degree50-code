@@ -15,8 +15,6 @@ export type MediaTrackConfig = {
 }
 
 export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig) => {
-    const gridGap = canvas.width / config.render.gridNum
-
     drawBackground(canvas, {
         backgroundColor: config.backgroundColor,
     })
@@ -26,7 +24,7 @@ export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig
     })
     drawGrid(canvas, {
         gridNum: config.render.gridNum,
-        gridGap,
+        gridGap: config.render.gridGap,
         gridColor: config.gridColor,
         pixelRatio: config.pixelRatio,
     })
@@ -39,14 +37,15 @@ export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig
         fontTop: config.fontTop,
         timelineStartTime: config.render.timelineStartTime,
         gridNum: config.render.gridNum,
+        gridGap: config.render.gridGap,
     })
     drawCursor(canvas, {
         currentTime: config.render.currentTime,
         cursorColor: config.cursorColor,
         padding: config.render.padding,
-        gridNum: config.render.gridNum,
         pixelRatio: config.pixelRatio,
         timelineStartTime: config.render.timelineStartTime,
+        gridGap: config.render.gridGap,
     })
 }
 
@@ -91,8 +90,9 @@ const drawGrid = (
 
     ctx.fillStyle = gridColor
 
+    const adjustmentFactor = getAdjustmentFactorForGrid(gridGap, gridNum, canvas.width)
     // Vertical grid lines
-    for (let index = 0; index < gridNum; index += 1) {
+    for (let index = 0; index < gridNum; index += adjustmentFactor) {
         ctx.fillRect(gridGap * index, 0, pixelRatio, height)
     }
 }
@@ -128,6 +128,7 @@ const drawRuler = (
         fontTop,
         timelineStartTime,
         gridNum,
+        gridGap,
     }: {
         rulerColor: string
         pixelRatio: number
@@ -137,6 +138,7 @@ const drawRuler = (
         fontTop: number
         timelineStartTime: number
         gridNum: number
+        gridGap: number
     }
 ) => {
     const ctx = canvas.getContext('2d')
@@ -146,18 +148,22 @@ const drawRuler = (
     ctx.font = `${fontSize * pixelRatio}px Arial`
     ctx.fillStyle = rulerColor
 
-    const gridGap = canvas.width / gridNum
+    const adjustmentFactor = getAdjustmentFactorForGrid(gridGap, gridNum, canvas.width)
 
-    let second = -1
-
+    let second = -1 * adjustmentFactor
     for (let index = 0; index < gridNum; index += 1) {
-        if (index && index >= padding && index <= gridNum - padding && (index - padding) % 10 === 0) {
-            second += 1
+        if (
+            index &&
+            index >= padding &&
+            index <= gridNum - padding &&
+            (index - padding) % (10 * adjustmentFactor) === 0
+        ) {
+            second += adjustmentFactor
             ctx.fillRect(gridGap * index, 0, pixelRatio, fontHeight * pixelRatio)
 
             const displayTime = DT.d2t(timelineStartTime + second).split('.')[0]
             ctx.fillText(displayTime, gridGap * index - fontSize * pixelRatio * 2 + pixelRatio, fontTop + 3)
-        } else if (index && (index - padding) % 5 === 0) {
+        } else if (index && (index - padding) % (5 * adjustmentFactor) === 0) {
             ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 2) * pixelRatio)
         }
     }
@@ -169,25 +175,39 @@ const drawCursor = (
         currentTime,
         cursorColor,
         padding,
-        gridNum,
         pixelRatio,
         timelineStartTime,
+        gridGap,
     }: {
         currentTime: number
         cursorColor: string
         padding: number
-        gridNum: number
         pixelRatio: number
         timelineStartTime: number
+        gridGap: number
     }
 ) => {
     const ctx = canvas.getContext('2d')
 
     if (!ctx) return
 
-    const { height, width } = canvas
-    const gridGap = width / gridNum
+    const { height } = canvas
 
     ctx.fillStyle = cursorColor
     ctx.fillRect(padding * gridGap + (currentTime - timelineStartTime) * gridGap * 10, 0, pixelRatio, height)
+}
+
+const getAdjustmentFactorForGrid = (gridGap: number, gridNum: number, canvasWidth: number) => {
+    let adjustmentFactor = 1
+
+    if (gridGap <= 10 && canvasWidth > 0) {
+        const targetGridGap = canvasWidth / 10
+        adjustmentFactor = Math.round((gridNum / targetGridGap + Number.EPSILON) * 1) / 1
+    }
+
+    if (adjustmentFactor < 1) {
+        adjustmentFactor = 1
+    }
+
+    return adjustmentFactor
 }

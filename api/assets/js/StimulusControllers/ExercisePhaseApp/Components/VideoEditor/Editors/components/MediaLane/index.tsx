@@ -1,17 +1,18 @@
-import React, { useState, useCallback, useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import MediaItems from './MediaItems'
 import { MediaItem } from '../types'
 import MediaTrack, { MediaTrackConfig } from './MediaTrack'
 import { RenderConfig } from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
-import { useWindowSize } from './MediaTrack/hooks'
 import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
+import { useDimensions } from './utils'
 
 const initialRender: RenderConfig = {
     padding: 5,
     duration: 10,
     gridNum: 110,
+    gridGap: 10,
     currentTime: 0,
     timelineStartTime: 0,
 }
@@ -24,6 +25,8 @@ type Props = {
     mediaTrackConfig?: MediaTrackConfig
     setPlayPosition: typeof actions.setPlayPosition
     checkMediaItem: (item: MediaItem<any>) => boolean
+    videoDuration: number
+    showTextInMediaItems?: boolean
     amountOfLanes?: number
     ToolbarActions?: React.ReactNode
 }
@@ -36,45 +39,29 @@ const MediaLane = ({
     mediaItems,
     setPlayPosition,
     checkMediaItem,
+    videoDuration,
+    showTextInMediaItems = true,
     amountOfLanes,
     ToolbarActions,
 }: Props) => {
+    const getDurationForRenderConfig = (durationInPercentage: number) => {
+        return Math.round((videoDuration / 100) * durationInPercentage)
+    }
+
+    const $container: React.RefObject<HTMLDivElement> = useRef(null)
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
-    const windowSize = useWindowSize()
-    const $container: React.RefObject<HTMLDivElement> = useRef(null)
-    const [containerWidth, setContainerWidth] = useState(0)
-    const [containerHeight, setContainerHeight] = useState(0)
+    const { containerWidth, containerHeight } = useDimensions({
+        setRender,
+        $container,
+        renderConfig,
+        currentTime,
+    })
 
-    const updateContainerDimensions = () => {
-        if ($container.current) {
-            setContainerWidth($container.current.clientWidth)
-            setContainerHeight($container.current.clientHeight)
-        }
-    }
-
-    // Update after initial rendering
-    useLayoutEffect(() => {
-        updateContainerDimensions()
-    }, [])
-
-    // Update after window resize
-    useLayoutEffect(() => {
-        updateContainerDimensions()
-    }, [windowSize])
-
-    // Update when the player plays (and therefore currentTime changes)
-    useEffect(() => {
-        const newTimelineStartTime =
-            currentTime > 0 ? Math.floor(currentTime / renderConfig.duration) * renderConfig.duration : 0
-
-        setRender({
-            ...renderConfig,
-            currentTime: currentTime,
-            timelineStartTime: newTimelineStartTime,
-        })
-    }, [currentTime])
+    initialRender.duration = getDurationForRenderConfig(25)
+    initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
+    initialRender.gridGap = containerWidth / initialRender.gridNum
 
     const handleLaneClick = useCallback(
         (clickTime) => {
@@ -107,19 +94,19 @@ const MediaLane = ({
 
     const handleZoom = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
-            const newDuration = parseInt(event.currentTarget.value) || 10
+            const newDuration = getDurationForRenderConfig(parseInt(event.currentTarget.value))
             const newGridNum = newDuration * 10 + renderConfig.padding * 2
+            const newGridGap = containerWidth / newGridNum
 
             setRender({
                 ...renderConfig,
                 duration: newDuration,
                 gridNum: newGridNum,
+                gridGap: newGridGap,
             })
         },
         [renderConfig]
     )
-
-    const gridGap = containerWidth / renderConfig.gridNum
 
     return (
         <div className="video-editor-timeline">
@@ -138,18 +125,18 @@ const MediaLane = ({
                 <MediaTrackInteractionArea
                     renderConfig={renderConfig}
                     clickCallback={handleLaneClick}
-                    gridGap={gridGap}
+                    videoDuration={videoDuration}
                 />
 
                 <MediaItems
                     currentTime={currentTime}
                     renderConfig={renderConfig}
                     mediaItems={mediaItems}
-                    gridGap={gridGap}
                     updateMediaItem={handleMediaItemUpdate}
                     removeMediaItem={removeMediaItem}
                     checkMediaItem={checkMediaItem}
                     amountOfLanes={amountOfLanes}
+                    showTextInMediaItems={showTextInMediaItems}
                 />
             </div>
         </div>

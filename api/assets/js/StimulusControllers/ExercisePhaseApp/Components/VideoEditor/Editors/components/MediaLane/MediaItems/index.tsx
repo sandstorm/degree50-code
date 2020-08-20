@@ -9,7 +9,6 @@ import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/S
 const renderItems = (
     mediaItems: MediaItemClass<MediaItemType>[],
     renderConfig: RenderConfig,
-    gridGap: number,
     activeItemIndex: number,
     checkMediaItem: (item: MediaItemClass<any>) => boolean,
     handlers: {
@@ -25,6 +24,7 @@ const renderItems = (
         updatedValues: { start?: string; end?: string; memo?: string },
         newStartTime: number
     ) => void,
+    showTextInMediaItems: boolean,
     amountOfLanes?: number
 ) =>
     mediaItems.map((item, index) => {
@@ -39,11 +39,11 @@ const renderItems = (
                 item={item}
                 renderConfig={renderConfig}
                 checkMediaItem={checkMediaItem}
-                gridGap={gridGap}
                 isPlayedBack={activeItemIndex === index}
                 amountOfLanes={amountOfLanes}
                 removeMediaItem={removeMediaItem}
                 updateMediaItem={updateMediaItem}
+                showTextInMediaItems={showTextInMediaItems}
                 {...handlers}
             />
         )
@@ -52,7 +52,6 @@ const renderItems = (
 type Props = {
     mediaItems: MediaItemClass<MediaItemType>[]
     renderConfig: RenderConfig
-    gridGap: number
     currentTime: number
     updateMediaItem: (
         item: MediaItemClass<MediaItemType>,
@@ -61,21 +60,22 @@ type Props = {
     ) => void
     removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
     checkMediaItem: (item: MediaItemClass<MediaItemType>) => boolean
+    showTextInMediaItems: boolean
     amountOfLanes?: number
 }
 
 const MediaItems = ({
     mediaItems,
     renderConfig,
-    gridGap,
     currentTime,
     updateMediaItem,
     removeMediaItem,
     checkMediaItem,
+    showTextInMediaItems,
     amountOfLanes,
 }: Props) => {
     const $mediaItemsRef: React.RefObject<HTMLDivElement> = useRef(null)
-    const { onItemMouseDown } = useItemInteraction(mediaItems, renderConfig, gridGap, $mediaItemsRef, updateMediaItem)
+    const { onItemMouseDown } = useItemInteraction(mediaItems, renderConfig, $mediaItemsRef, updateMediaItem)
     const activeItemIndex = mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime)
 
     return (
@@ -84,7 +84,6 @@ const MediaItems = ({
                 {renderItems(
                     mediaItems,
                     renderConfig,
-                    gridGap,
                     activeItemIndex,
                     checkMediaItem,
                     {
@@ -92,6 +91,7 @@ const MediaItems = ({
                     },
                     removeMediaItem,
                     updateMediaItem,
+                    showTextInMediaItems,
                     amountOfLanes
                 )}
             </div>

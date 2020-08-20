@@ -8,6 +8,7 @@ type TeamMembersListProps = {
     currentTime: number
     currentZoom: number
     updateCurrentTime: (time: number) => void
+    videoDuration: number
 }
 
 export const Teams: React.FC<TeamMembersListProps> = ({
@@ -16,6 +17,7 @@ export const Teams: React.FC<TeamMembersListProps> = ({
     currentTime,
     currentZoom,
     updateCurrentTime,
+    videoDuration,
 }) => {
     return (
         <div className={'teams'}>
@@ -27,6 +29,7 @@ export const Teams: React.FC<TeamMembersListProps> = ({
                     currentTime={currentTime}
                     currentZoom={currentZoom}
                     updateCurrentTime={updateCurrentTime}
+                    videoDuration={videoDuration}
                 />
             ))}
         </div>
