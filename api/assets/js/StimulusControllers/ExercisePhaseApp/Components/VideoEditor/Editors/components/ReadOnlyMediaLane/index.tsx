@@ -86,11 +86,7 @@ const ReadOnlyMediaLane = ({
                     />
                 </div>
 
-                <MediaTrackInteractionArea
-                    renderConfig={renderConfig}
-                    clickCallback={handleLaneClick}
-                    videoDuration={videoDuration}
-                />
+                <MediaTrackInteractionArea renderConfig={renderConfig} clickCallback={handleLaneClick} />
 
                 <ReadOnlyMediaItems renderConfig={renderConfig} mediaItems={mediaItems} amountOfLanes={amountOfLanes} />
             </div>

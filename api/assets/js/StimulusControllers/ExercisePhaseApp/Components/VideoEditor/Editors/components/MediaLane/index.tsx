@@ -9,7 +9,7 @@ import { actions } from '../../../PlayerSlice'
 import { useDimensions } from './utils'
 
 const initialRender: RenderConfig = {
-    padding: 5,
+    padding: 0,
     duration: 10,
     gridNum: 110,
     gridGap: 10,
@@ -110,7 +110,14 @@ const MediaLane = ({
 
     return (
         <div className="video-editor-timeline">
-            <Toolbar zoomHandler={handleZoom}>{ToolbarActions}</Toolbar>
+            <Toolbar
+                zoomHandler={handleZoom}
+                videoDuration={videoDuration}
+                renderConfig={renderConfig}
+                handleTimeLineAction={handleLaneClick}
+            >
+                {ToolbarActions}
+            </Toolbar>
 
             <div className="video-editor-timeline__body">
                 <div ref={$container} className="media-track">
@@ -122,11 +129,7 @@ const MediaLane = ({
                     />
                 </div>
 
-                <MediaTrackInteractionArea
-                    renderConfig={renderConfig}
-                    clickCallback={handleLaneClick}
-                    videoDuration={videoDuration}
-                />
+                <MediaTrackInteractionArea renderConfig={renderConfig} clickCallback={handleLaneClick} />
 
                 <MediaItems
                     currentTime={currentTime}
