@@ -13,10 +13,13 @@
 .video-editor-toolbar__item-group {
   display: flex;
   align-items: center;
-  padding-left: 10px;
   height: 100%;
 
   border-right: 1px solid $theme__color__black;
+}
+
+.video-editor-toolbar__item-group-label {
+  margin-left: 10px;
 }
 
 .video-editor-toolbar__item {
@@ -25,7 +28,7 @@
   padding: 0 10px;
   height: 100%;
 
-  span, label {
+  > span, > label {
     margin-right: 10px;
   }
 

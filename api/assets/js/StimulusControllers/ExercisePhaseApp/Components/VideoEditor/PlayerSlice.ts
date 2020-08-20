@@ -10,15 +10,13 @@ interface PlayerState {
     // The actual play position of the player.
     // When this is set the player changes its position.
     playPosition: number
-    isPlaying: boolean
     isPaused: boolean
 }
 
 const initialState: PlayerState = {
     syncPlayPosition: 0,
     playPosition: 0,
-    isPlaying: false,
-    isPaused: false,
+    isPaused: true,
 }
 
 export const playerSlice = createSlice({
@@ -32,7 +30,7 @@ export const playerSlice = createSlice({
             state.playPosition = action.payload
         },
         togglePlay: (state) => {
-            state.isPlaying = !state.isPlaying
+            state.isPaused = !state.isPaused
         },
         setPause: (state, action: PayloadAction<boolean>) => {
             state.isPaused = action.payload
@@ -46,13 +44,11 @@ export const { actions } = playerSlice
 
 const selectPlayPosition = (state: AppState) => state.player.playPosition
 const selectSyncPlayPosition = (state: AppState) => state.player.syncPlayPosition
-const selectIsPlaying = (state: AppState) => state.player.isPlaying
 const selectIsPaused = (state: AppState) => state.player.isPaused
 
 export const selectors = {
     selectSyncPlayPosition,
     selectIsPaused,
-    selectIsPlaying,
     selectPlayPosition,
 }
 
