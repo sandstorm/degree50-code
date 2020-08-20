@@ -150,20 +150,15 @@ const drawRuler = (
 
     const adjustmentFactor = getAdjustmentFactorForGrid(gridGap, gridNum, canvas.width)
 
-    let second = -1 * adjustmentFactor
+    let second = 0
     for (let index = 0; index < gridNum; index += 1) {
-        if (
-            index &&
-            index >= padding &&
-            index <= gridNum - padding &&
-            (index - padding) % (10 * adjustmentFactor) === 0
-        ) {
+        if (index && index >= padding && index <= gridNum - padding && index % (10 * adjustmentFactor) === 0) {
             second += adjustmentFactor
             ctx.fillRect(gridGap * index, 0, pixelRatio, fontHeight * pixelRatio)
 
             const displayTime = DT.d2t(timelineStartTime + second).split('.')[0]
             ctx.fillText(displayTime, gridGap * index - fontSize * pixelRatio * 2 + pixelRatio, fontTop + 3)
-        } else if (index && (index - padding) % (5 * adjustmentFactor) === 0) {
+        } else if (index && index % (5 * adjustmentFactor) === 0) {
             ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 2) * pixelRatio)
         }
     }

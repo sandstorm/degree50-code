@@ -40,3 +40,7 @@ select[multiple] {
   border: 1px solid $theme__color__grey--darker;
   border-radius: 4px;
 }
+
+label {
+  margin: 0;
+}

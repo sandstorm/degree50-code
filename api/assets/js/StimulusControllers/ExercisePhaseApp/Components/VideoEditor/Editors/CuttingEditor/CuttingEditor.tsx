@@ -164,26 +164,29 @@ const CuttingEditor = ({
                 removeMediaItem={removeMediaItem}
                 videoDuration={firstVideoDuration}
                 ToolbarActions={
-                    <>
-                        <button className={'btn btn-outline-primary btn-sm'} onClick={handleSplitAtCursor}>
-                            Split at cursor
-                        </button>
-                        <div className="item">
-                            <div className="name">
-                                <Translate value="volume" />
-                            </div>
-                            <div className="value">
-                                <input
-                                    defaultValue={volume}
-                                    type="range"
-                                    min="0"
-                                    max="10"
-                                    step="1"
-                                    onChange={handleVolumeChange}
-                                />
-                            </div>
+                    <div className="video-editor-toolbar__item-group">
+                        <label>Cutting: </label>
+                        <div className={'video-editor-toolbar__item'}>
+                            <button className={'btn btn-outline-primary btn-sm'} onClick={handleSplitAtCursor}>
+                                Split at cursor
+                            </button>
                         </div>
-                    </>
+                        <div className="video-editor-toolbar__item">
+                            <label htmlFor={'timeline-volume-handler'}>
+                                <Translate value="volume" />
+                            </label>
+                            <input
+                                name={'timeline-volume-handler'}
+                                id={'timeline-volume-handler'}
+                                defaultValue={volume}
+                                type="range"
+                                min="0"
+                                max="10"
+                                step="1"
+                                onChange={handleVolumeChange}
+                            />
+                        </div>
+                    </div>
                 }
             />
             <ToastContainer />
