@@ -84,9 +84,37 @@ export const useCuttingMediaItemHandling = ({
             const copiedItems = copyMediaItems()
             const { clone } = item
 
+            const { start: updatedStart, end: updatedEnd } = updatedValues
+            const newStart = updatedStart || item.start
+            const newEnd = updatedEnd || item.end
+
+            const duration = t2d(newEnd) - t2d(newStart)
+
+            // Make sure that the clip will
+            // a) always be at least on second long
+            // b) always have an exact second count (e.g. not 1 second + 20 frames)
+            //
+            // WHY: The serverside rendering of the cutlist will always be full seconds
+            // and its result might otherwise deviate from the representation inside the frontend.
+            const adjustedDuration = Math.round(duration) < 1 ? 1 : Math.round(duration)
+            const adjustedEnd = d2t((t2d(newStart) + adjustedDuration).toFixed(3))
+
             const newValues = {
                 ...updatedValues,
-                ...(updatedValues.start ? { offset: updateOffset(item, updatedValues.start, updatedValues?.end) } : {}),
+                // NOTE: It's important that we DO NOT use the adjustedEnd value here, to correctly determine
+                // what item handle was used to change the item.
+                ...(updatedValues.start ? { offset: updateOffset(item, newStart, updatedValues?.end) } : {}),
+                start: newStart,
+                // Add a frame to our adjustedEnd if it does not differ from our input
+                //
+                // WHY:
+                // This is a hack to ensure that the item changes at least a bit after rounding.
+                // That way we can rely on components which receive these items as props to re-render.
+                // This is necessary, because some of our components have some form of inner mutation/DOM manipulation. E.g. our useItemInteraction() hook directly interacts with the DOM.
+                // When an item is changed the change is reflected immediately in the DOM (e.g. when the width of a node is written), but might actually get nullified by our rounding in here.
+                // Because of the rounding our input item might then be exactly the same as before, which would lead to no update in our store and therefore no re-render of the components. (so we would have a state mismatch between our actual list of items and the rendered items)
+                // It would probably be better to find a way to make item interaction etc. to be controlled components instead or work with some form of intermediate data structure which can be reset.
+                end: adjustedEnd === item.end ? d2t((t2d(adjustedEnd) + 0.01).toFixed(3)) : adjustedEnd,
             }
 
             Object.assign(clone, newValues)
