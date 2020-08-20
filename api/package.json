@@ -36,6 +36,7 @@
         "build-types": "npm run build-types:ExercisePhaseConfigSchema",
         "build-types:ExercisePhaseConfigSchema": "json2ts -i assets/api-definitions/ExercisePhaseConfigSchema.json -o assets/api-definitions/generated/ExercisePhaseConfigSchema.ts",
         "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
+        "test:ci": "jest --runInBand",
         "lint": "eslint ./assets/js/**/*.ts* && ./node_modules/.bin/prettier --check \"assets/js/**/*.{tsx,ts}\"",
         "lint:fix": "eslint ./assets/js/**/*.ts* --fix && ./node_modules/.bin/prettier --write \"assets/js/**/*.{tsx,ts}\""
     },

@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -38,6 +39,7 @@ final class DemoContext implements Context
     protected EntityManagerInterface $entityManager;
     protected KernelInterface $kernel;
     private DoctrineIntegratedEventStore $eventStore;
+    private Security $security;
 
     /**
      * DemoContext constructor.
@@ -46,13 +48,14 @@ final class DemoContext implements Context
      * @param EntityManagerInterface $entityManager
      * @param KernelInterface $kernel
      */
-    public function __construct(Session $minkSession, RouterInterface $router, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, KernelInterface $kernel)
+    public function __construct(Session $minkSession, RouterInterface $router, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, KernelInterface $kernel, Security $security)
     {
         $this->minkSession = $minkSession;
         $this->router = $router;
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->kernel = $kernel;
+        $this->security = $security;
     }
 
 
@@ -147,6 +150,7 @@ final class DemoContext implements Context
         $video = new Video($videoId);
         $video->addCourse($course);
         $video->setDataPrivacyAccepted(true);
+        $video->setCreator($this->security->getUser());
 
         $this->entityManager->persist($video);
         $this->eventStore->disableEventPublishingForNextFlush();

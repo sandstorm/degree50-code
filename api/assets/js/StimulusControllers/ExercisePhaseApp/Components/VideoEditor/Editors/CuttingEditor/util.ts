@@ -231,7 +231,7 @@ export const useCuttingMediaItemHandling = ({
  *           [--- ItemB ---]
  *  ===> results in: [--- ItemA ---][--- ItemB ---]
  *
- * This function assumes that their will always be one overlap at max (because the user can't do more than one change
+ * This function assumes that there will always be one overlap at max (because the user can't do more than one change
  * at a time) and therefore snaps all items, which come after the resolved overlap to their predecessors endTime.
  */
 export const resolveOverlapAndSnapItems = (items: MediaItem<Cut>[]): MediaItem<Cut>[] => {
