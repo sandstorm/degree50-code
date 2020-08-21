@@ -1,5 +1,5 @@
 import { solveConflicts, findNonOverlappingItemsRecursively } from '../helpers'
-import { MediaItem } from '../../components/types'
+import { MediaItem } from '../components/types'
 import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
 
 describe('findNonOverlappingItems()', () => {

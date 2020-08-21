@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { t } from 'react-i18nify'
@@ -17,6 +17,7 @@ import Storage from '../utils/storage'
 import { useMediaItemHandling } from '../utils/hooks'
 import { selectors, actions } from '../../PlayerSlice'
 import { MediaItem } from '../components/types'
+import { solveConflicts } from '../helpers'
 
 const storage = new Storage()
 
@@ -60,7 +61,7 @@ const AnnotationsEditor = (props: Props) => {
             })
     )
 
-    const mediaItems: MediaItem<Annotation>[] =
+    const mediaItems: MediaItem<Annotation>[] = solveConflicts(
         itemsFromAnnotations.length > 0
             ? itemsFromAnnotations
             : [
@@ -73,6 +74,7 @@ const AnnotationsEditor = (props: Props) => {
                       originalData: {} as Annotation,
                   }),
               ]
+    )
 
     // All options
     const firstVideo = props.videos[0]
@@ -92,7 +94,6 @@ const AnnotationsEditor = (props: Props) => {
         addMediaItem,
         removeMediaItem,
         updateMediaItem,
-        checkMediaItem,
     } = useMediaItemHandling<Annotation>({
         userId: props.userId,
         currentEditorId: props.currentEditorId,
@@ -102,6 +103,25 @@ const AnnotationsEditor = (props: Props) => {
         updateCallback: props.syncSolutionAction,
         storage,
     })
+
+    const checkMediaItem = useCallback(() => {
+        // false means no conflict => item is legal
+        // true means conflict => item is illegal
+        //
+        // WHY: this hard coded check?
+        // We currently do not yet have defined conditions under which annotations
+        // are considered to be illegal.
+        // Because they may also overlap etc., we do not use the checkMediaItem() function
+        // provided by useMediaItemHandling().
+        return false
+    }, [])
+
+    const amountOfLanes = Math.max.apply(
+        Math,
+        mediaItems.map((item: MediaItem<any>) => {
+            return item.lane
+        })
+    )
 
     return (
         <React.Fragment>
@@ -130,6 +150,7 @@ const AnnotationsEditor = (props: Props) => {
                 mediaItems={mediaItems}
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={props.setPlayPosition}
+                amountOfLanes={amountOfLanes}
                 checkMediaItem={checkMediaItem}
                 removeMediaItem={removeMediaItem}
                 videoDuration={firstVideoDuration}

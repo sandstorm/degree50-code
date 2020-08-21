@@ -16,7 +16,7 @@ import { secondToTime, timeToSecond } from '../utils'
 import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
 import { selectors, actions } from '../../PlayerSlice'
-import { solveConflicts } from './helpers'
+import { solveConflicts } from '../helpers'
 
 const storage = new Storage()
 
