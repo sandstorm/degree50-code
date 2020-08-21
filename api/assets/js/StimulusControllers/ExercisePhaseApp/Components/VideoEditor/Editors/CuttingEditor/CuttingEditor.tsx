@@ -165,7 +165,7 @@ const CuttingEditor = ({
                 videoDuration={firstVideoDuration}
                 ToolbarActions={
                     <div className="video-editor-toolbar__item-group">
-                        <label>Cutting: </label>
+                        <label className={'video-editor-toolbar__item-group-label'}>Cutting: </label>
                         <div className={'video-editor-toolbar__item'}>
                             <button className={'btn btn-outline-primary btn-sm'} onClick={handleSplitAtCursor}>
                                 Split at cursor

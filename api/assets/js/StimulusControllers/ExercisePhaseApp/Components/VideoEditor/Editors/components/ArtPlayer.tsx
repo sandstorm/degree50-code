@@ -27,13 +27,13 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = {
     setSyncPlayPosition: actions.setSyncPlayPosition,
-    setPaused: actions.setPause,
+    setPause: actions.setPause,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 // TODO handle pause from outside
-const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosition, isPaused, setPaused }: Props) => {
+const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosition, isPaused, setPause }: Props) => {
     const [height, setHeight] = useState(200)
 
     const { player, setPlayer } = useMutablePlayer()
@@ -44,6 +44,13 @@ const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosi
             player.seek = playPosition
         }
     }, [player, playPosition])
+
+    useEffect(() => {
+        if (player) {
+            // @ts-ignore
+            player.play = !isPaused
+        }
+    }, [player, isPaused])
 
     // Get initial height
     useEffect(() => {
@@ -101,6 +108,16 @@ const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosi
                     art.on('seek', () => {
                         setSyncPlayPosition(art.currentTime)
                         currentTimeCallback(art.currentTime)
+                    })
+
+                    // @ts-ignore disable-line
+                    art.on('play', () => {
+                        setPause(false)
+                    })
+
+                    // @ts-ignore disable-line
+                    art.on('pause', () => {
+                        setPause(true)
                     })
                 }}
             />

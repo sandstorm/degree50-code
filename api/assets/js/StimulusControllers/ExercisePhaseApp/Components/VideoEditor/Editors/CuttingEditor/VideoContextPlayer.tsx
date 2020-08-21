@@ -16,15 +16,25 @@ type OwnProps = {
 
 const mapStateToProps = (state: AppState) => ({
     playPosition: selectors.selectPlayPosition(state),
+    isPaused: selectors.selectIsPaused(state),
 })
 
 const mapDispatchToProps = {
     setSyncPlayPosition: actions.setSyncPlayPosition,
+    setPause: actions.setPause,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition, playPosition, volume }: Props) => {
+const VideoContextPlayer = ({
+    cutList,
+    currentTimeCallback,
+    setSyncPlayPosition,
+    playPosition,
+    volume,
+    isPaused,
+    setPause,
+}: Props) => {
     const windowSize = useWindowSize()
     const [videoContext, setVideoContext] = useState<VideoContext | undefined>(undefined)
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -72,6 +82,16 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
         }
     }, [videoContext, volume])
 
+    useEffect(() => {
+        if (videoContext) {
+            if (isPaused) {
+                videoContext.pause()
+            } else {
+                videoContext.play()
+            }
+        }
+    }, [videoContext, isPaused])
+
     // Update sync when player is running
     useEffect(() => {
         videoContext?.registerCallback(VideoContext.EVENTS.UPDATE, () => {
@@ -112,33 +132,9 @@ const VideoContextPlayer = ({ cutList, currentTimeCallback, setSyncPlayPosition,
         }
     }, [cutList])
 
-    const handlePlay = useCallback(() => {
-        if (!videoContext) return
-
-        if (videoContext.currentTime >= videoContext.duration) {
-            videoContext.currentTime = 0
-        }
-
-        videoContext.play()
-    }, [videoContext])
-
-    const handlePause = useCallback(() => {
-        if (videoContext) {
-            videoContext.pause()
-        }
-    }, [videoContext])
-
     return (
         <>
             <canvas ref={canvasRef} className={'video-context-player'} width={canvasWidth} height={canvasHeight} />
-            <div className="actions">
-                <button className="video-button btn btn-outline-primary btn-sm" onClick={handlePlay}>
-                    Play
-                </button>
-                <button className="video-button btn btn-outline-primary btn-sm" onClick={handlePause}>
-                    Pause
-                </button>
-            </div>
         </>
     )
 }

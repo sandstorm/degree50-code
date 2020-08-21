@@ -1,6 +1,8 @@
 import React from 'react'
 import { Translate } from 'react-i18nify'
 import { RenderConfig } from './MediaTrack'
+import { useAppDispatch, useAppSelector } from '../../../../../Store/Store'
+import { actions, selectors } from '../../../PlayerSlice'
 
 type Props = {
     zoomHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -11,6 +13,8 @@ type Props = {
 }
 
 const Toolbar = ({ zoomHandler, videoDuration, renderConfig, handleTimeLineAction, children }: Props) => {
+    const dispatch = useAppDispatch()
+    const playerIsPaused = useAppSelector(selectors.selectIsPaused)
     const leftInteractionAreaIsDisabled = renderConfig.timelineStartTime === 0
     const rightInteractionAreaIsDisabled = renderConfig.timelineStartTime + renderConfig.duration >= videoDuration
 
@@ -22,10 +26,14 @@ const Toolbar = ({ zoomHandler, videoDuration, renderConfig, handleTimeLineActio
         }
     }
 
+    const onPlayPauseClick = () => {
+        dispatch(actions.togglePlay())
+    }
+
     return (
         <div className="video-editor-toolbar">
             <div className="video-editor-toolbar__item-group">
-                <label>Timeline: </label>
+                <label className={'video-editor-toolbar__item-group-label'}>Timeline: </label>
                 <div className="video-editor-toolbar__item">
                     <label htmlFor={'timeline-zoom-handler'}>
                         <Translate value="zoom" />
@@ -46,6 +54,7 @@ const Toolbar = ({ zoomHandler, videoDuration, renderConfig, handleTimeLineActio
                         tabIndex={1}
                         className={'btn btn-primary btn-sm'}
                         disabled={leftInteractionAreaIsDisabled}
+                        title={'Shift timeline left'}
                         onClick={() => {
                             if (!leftInteractionAreaIsDisabled) {
                                 onClick('left')
@@ -60,6 +69,7 @@ const Toolbar = ({ zoomHandler, videoDuration, renderConfig, handleTimeLineActio
                         tabIndex={1}
                         className={'btn btn-primary btn-sm'}
                         disabled={rightInteractionAreaIsDisabled}
+                        title={'Shift timeline right'}
                         onClick={() => {
                             if (!rightInteractionAreaIsDisabled) {
                                 onClick('right')
@@ -67,6 +77,22 @@ const Toolbar = ({ zoomHandler, videoDuration, renderConfig, handleTimeLineActio
                         }}
                     >
                         <i className={'fas fa-chevron-right'} />
+                    </button>
+                </div>
+            </div>
+            <div className="video-editor-toolbar__item-group">
+                <label className={'video-editor-toolbar__item-group-label'}>Playback: </label>
+                <div className="video-editor-toolbar__item">
+                    <button tabIndex={1} className={'btn btn-primary btn-sm'} onClick={onPlayPauseClick}>
+                        {playerIsPaused ? (
+                            <span>
+                                <i className="fas fa-play" /> Play
+                            </span>
+                        ) : (
+                            <span>
+                                <i className="fas fa-pause" /> Pause
+                            </span>
+                        )}
                     </button>
                 </div>
             </div>
