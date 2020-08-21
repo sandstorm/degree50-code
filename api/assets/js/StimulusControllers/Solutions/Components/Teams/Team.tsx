@@ -3,7 +3,7 @@ import { SolutionByTeam } from '../../SolutionsApp'
 import { MediaItem } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/types'
 import ReadOnlyMediaLane from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 import { TabsTypesEnum } from '../../../ExercisePhaseApp/Store/ComponentTypesEnum'
-import { solveConflicts } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/VideoCodeEditor/helpers'
+import { solveConflicts } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/helpers'
 import { VideoCode } from '../../../ExercisePhaseApp/Components/Solution/SolutionSlice'
 
 type TeamProps = {

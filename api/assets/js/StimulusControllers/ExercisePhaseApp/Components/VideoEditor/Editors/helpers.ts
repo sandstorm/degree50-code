@@ -1,6 +1,6 @@
-import { MediaItem } from '../components/types'
+import { MediaItem } from './components/types'
 import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
-import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
+import { hasConflictWithItem } from './components/MediaLane/MediaItems/helpers'
 
 type ItemWithId = {
     id: number
