@@ -12,3 +12,4 @@ framework:
         routing:
             # Route your messages to the transports
             'App\VideoEncoding\Message\WebEncodingTask': async
+            'App\VideoEncoding\Message\CutlistEncodingTask': async

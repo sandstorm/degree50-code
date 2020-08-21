@@ -16,11 +16,20 @@ build_js:
         expire_in: 1 week
         paths:
             - api/public/build
+            - api/node_modules
     cache:
         key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG-build-js"
         paths:
             - api/node_modules
             - .yarn
+
+test_frontend:
+    stage: test
+    image: node:12.18.0-stretch
+    script:
+        - yarn config set cache-folder .yarn
+        - cd api
+        - yarn test:ci
 
 test_app:
     stage: test

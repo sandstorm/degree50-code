@@ -1,5 +1,6 @@
 import { MediaItem } from '../components/types'
 import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
+import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
 
 type ItemWithId = {
     id: number
@@ -19,11 +20,6 @@ const trampoline = (f: Function) => {
         return result
     }
 }
-
-export const hasConflictWithItem = (
-    itemA: { startTime: number; endTime: number },
-    itemB: { startTime: number; endTime: number }
-): boolean => itemA.startTime <= itemB.endTime && itemA.endTime >= itemB.startTime
 
 /**
  * Finds all items in a list that do have no overlap any other item of the list or with an additional item which can optionally be given as another argument.
