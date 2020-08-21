@@ -5,7 +5,7 @@ import ReadOnlyMediaTrack from '../MediaLane/MediaTrack/index'
 import { RenderConfig } from '../MediaLane/MediaTrack'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
 import { MediaItemType } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSlice'
-import { useDimensions } from '../MediaLane/utils'
+import { useMediaLane } from '../MediaLane/utils'
 
 type Props = {
     currentTime: number
@@ -38,31 +38,24 @@ const ReadOnlyMediaLane = ({
     const mediaTrackConfig = {} // TODO
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
-    const { containerWidth, containerHeight } = useDimensions({
+    const { containerWidth, containerHeight, getDurationForRenderConfig, getRenderConfigForZoom } = useMediaLane({
         setRender,
         $container,
         renderConfig,
         currentTime,
+        videoDuration,
     })
-
-    const getDurationForRenderConfig = (durationInPercentage: number) => {
-        return Math.round((videoDuration / 100) * durationInPercentage)
-    }
 
     initialRender.duration = getDurationForRenderConfig(currentZoom)
     initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
     initialRender.gridGap = containerWidth / initialRender.gridNum
 
     useEffect(() => {
-        const newDuration = getDurationForRenderConfig(currentZoom)
-        const newGridNum = newDuration * 10 + renderConfig.padding * 2
-        const newGridGap = containerWidth / newGridNum
+        const newRenderConfig = getRenderConfigForZoom(currentZoom)
 
         setRender({
             ...renderConfig,
-            duration: newDuration,
-            gridNum: newGridNum,
-            gridGap: newGridGap,
+            ...newRenderConfig,
         })
     }, [currentZoom])
 
