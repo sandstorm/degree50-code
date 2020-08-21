@@ -104,6 +104,15 @@ const MediaItem = ({
 
     const contentMenuItemHeight = 30
 
+    // Used for video-codes
+    const getShortCodeForItemLabel = (title: string) => {
+        const splitStr = title.toLowerCase().split(' ')
+        for (let i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase()
+        }
+        return splitStr.join('')
+    }
+
     return (
         <div
             className={[
@@ -114,6 +123,7 @@ const MediaItem = ({
                 .join(' ')
                 .trim()}
             key={id}
+            title={item.text}
             style={{
                 backgroundColor: item.color ? item.color : '',
                 left: positionLeft,
@@ -158,7 +168,7 @@ const MediaItem = ({
             <div className="video-editor__media-items__text" onMouseDown={handleItemCenterMouseDown}>
                 {showTextInMediaItems
                     ? item.text.split(/\r?\n/).map((line: any, index: any /* FIXME any */) => <p key={index}>{line}</p>)
-                    : null}
+                    : getShortCodeForItemLabel(item.text)}
             </div>
 
             <div
