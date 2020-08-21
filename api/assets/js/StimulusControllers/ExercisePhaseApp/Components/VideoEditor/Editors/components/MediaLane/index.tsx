@@ -6,7 +6,7 @@ import { RenderConfig } from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
 import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
-import { useDimensions } from './utils'
+import { useMediaLane } from './utils'
 
 const initialRender: RenderConfig = {
     padding: 0,
@@ -44,19 +44,16 @@ const MediaLane = ({
     amountOfLanes,
     ToolbarActions,
 }: Props) => {
-    const getDurationForRenderConfig = (durationInPercentage: number) => {
-        return Math.round((videoDuration / 100) * durationInPercentage)
-    }
-
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
-    const { containerWidth, containerHeight } = useDimensions({
+    const { containerWidth, containerHeight, getDurationForRenderConfig, getRenderConfigForZoom } = useMediaLane({
         setRender,
         $container,
         renderConfig,
         currentTime,
+        videoDuration,
     })
 
     initialRender.duration = getDurationForRenderConfig(25)
@@ -94,15 +91,11 @@ const MediaLane = ({
 
     const handleZoom = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
-            const newDuration = getDurationForRenderConfig(parseInt(event.currentTarget.value))
-            const newGridNum = newDuration * 10 + renderConfig.padding * 2
-            const newGridGap = containerWidth / newGridNum
+            const newRenderConfig = getRenderConfigForZoom(parseInt(event.currentTarget.value))
 
             setRender({
                 ...renderConfig,
-                duration: newDuration,
-                gridNum: newGridNum,
-                gridGap: newGridGap,
+                ...newRenderConfig,
             })
         },
         [renderConfig]

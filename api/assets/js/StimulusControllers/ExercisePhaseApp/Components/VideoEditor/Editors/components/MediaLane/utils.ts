@@ -2,16 +2,18 @@ import { useState, useLayoutEffect, useEffect } from 'react'
 import { RenderConfig } from './MediaTrack'
 import { useWindowSize } from './MediaTrack/hooks'
 
-export const useDimensions = ({
+export const useMediaLane = ({
     setRender,
     $container,
     renderConfig,
     currentTime,
+    videoDuration,
 }: {
     setRender: React.Dispatch<React.SetStateAction<RenderConfig>>
     $container: React.RefObject<HTMLDivElement>
     renderConfig: RenderConfig
     currentTime: number
+    videoDuration: number
 }) => {
     const [containerWidth, setContainerWidth] = useState(0)
     const [containerHeight, setContainerHeight] = useState(0)
@@ -29,6 +31,37 @@ export const useDimensions = ({
 
             setContainerWidth(containerWidth)
             setContainerHeight($container.current.clientHeight)
+        }
+    }
+
+    const getDurationForRenderConfig = (durationInPercentage: number) => {
+        return Math.round((videoDuration / 100) * durationInPercentage)
+    }
+
+    const getRenderConfigForZoom = (zoomInPercent: number) => {
+        const newDuration = getDurationForRenderConfig(zoomInPercent)
+        const newGridNum = newDuration * 10 + renderConfig.padding * 2
+        const newGridGap = containerWidth / newGridNum
+
+        // we zoom around the current time
+        let newTimelineStartTime = Math.round(currentTime - newDuration / 2)
+
+        // in case the new start-time + the new duration is larger than the duration of video
+        if (newTimelineStartTime + newDuration >= videoDuration) {
+            newTimelineStartTime = Math.round(
+                newTimelineStartTime - (newTimelineStartTime + newDuration - videoDuration)
+            )
+        }
+
+        if (newTimelineStartTime < 0) {
+            newTimelineStartTime = 0
+        }
+
+        return {
+            duration: newDuration,
+            gridNum: newGridNum,
+            gridGap: newGridGap,
+            timelineStartTime: newTimelineStartTime,
         }
     }
 
@@ -54,5 +87,5 @@ export const useDimensions = ({
         })
     }, [currentTime])
 
-    return { containerWidth, containerHeight }
+    return { containerWidth, containerHeight, getDurationForRenderConfig, getRenderConfigForZoom }
 }
