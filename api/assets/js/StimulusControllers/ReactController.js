@@ -12,6 +12,7 @@ export default class extends Controller {
 
         const ReactWidget = widgets[widgetName];
         const props = propsAsString ? JSON.parse(propsAsString) : {};
+
         ReactDOM.render(
             <ApolloProvider client={client}>
                 <ReactWidget {...props} />

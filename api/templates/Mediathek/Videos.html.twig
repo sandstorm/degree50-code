@@ -14,7 +14,7 @@
                 <a href="{{ path('app_video-edit', {id: video.id}) }}">
                     <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
                 </a>
-                <a href="{{ path('app_subtitle-editor') }}">
+                <a href="{{ path('app_subtitle-editor', {id: video.id}) }}">
                     <i class="fas fa-pencil-alt"></i> {% trans %}video.subtitle.title{% endtrans %}
                 </a>
                 <a href="{{ path('app_video-delete', {id: video.id}) }}" class="color-alert">
