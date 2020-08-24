@@ -116,11 +116,24 @@ class ExercisePhaseController extends AbstractController
         /* @var User $user */
         $user = $this->getUser();
 
+        $components = $exercisePhase->getComponents();
+
+        /* @var $exercisePhase VideoAnalysis */
+        if ($exercisePhase->getVideoAnnotationsActive()) {
+            array_push($components, ExercisePhase::VIDEO_ANNOTATION);
+        }
+        if ($exercisePhase->getVideoCodesActive()) {
+            array_push($components, ExercisePhase::VIDEO_CODE);
+        }
+        if ($exercisePhase->getVideoCuttingActive()) {
+            array_push($components, ExercisePhase::VIDEO_CUTTING);
+        }
+
         return [
             'title' => $exercisePhase->getName(),
             'description' => $exercisePhase->getTask(),
             'type' => $exercisePhase->getType(),
-            'components' => $exercisePhase->getComponents(),
+            'components' => $components,
             'userId' => $user->getId(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'readOnly' => $readOnly,
@@ -257,7 +270,6 @@ class ExercisePhaseController extends AbstractController
             $exercisePhase = $form->getData();
 
             switch ($exercisePhase->getType()) {
-
                 case ExercisePhase::TYPE_VIDEO_ANALYSE :
                     /* @var $exercisePhase VideoAnalysis */
                     $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
@@ -297,6 +309,51 @@ class ExercisePhaseController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @IsGranted("edit", subject="exercise")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/toggle-component", name="app_exercise-phase-toggle-component")
+     * @Entity("exercisePhase", expr="repository.find(phase_id)")
+     */
+    public function toggleComponent(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
+    {
+        $component = $request->query->get('component', null);
+        /* @var $exercisePhase VideoAnalysis */
+        switch ($component) {
+            case ExercisePhase::VIDEO_ANNOTATION :
+                $exercisePhase->setVideoAnnotationsActive(!$exercisePhase->getVideoAnnotationsActive());
+                break;
+            case ExercisePhase::VIDEO_CODE :
+                $exercisePhase->setVideoCodesActive(!$exercisePhase->getVideoCodesActive());
+                break;
+            case ExercisePhase::VIDEO_CUTTING :
+                $exercisePhase->setVideoCuttingActive(!$exercisePhase->getVideoCuttingActive());
+                break;
+        }
+
+        if (!$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive() && !$exercisePhase->getVideoCuttingActive()) {
+            $this->addFlash(
+                'danger',
+                'Mindestens eine Komponente muss aktiv sein'
+            );
+
+            return $this->redirectToRoute('app_exercise-phase-edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+        }
+
+
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($exercisePhase);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Komponente erfolgreich aktiviert/deaktiviert'
+        );
+
+        return $this->redirectToRoute('app_exercise-phase-edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+    }
+
 
     /**
      * @IsGranted("delete", subject="exercisePhase")

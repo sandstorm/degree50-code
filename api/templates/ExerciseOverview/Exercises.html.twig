@@ -11,6 +11,9 @@
                 <a href="{{ path('app_exercise', {id: exercise.id, showSolution: true}) }}">
                     <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
                 </a>
+                <a href="{{ path('app_exercise', {id: exercise.id}) }}">
+                    <i class="fas fa-eye"></i> {% trans %}exercise.show.title{% endtrans %}
+                </a>
                 <a href="{{ path('app_exercise-edit', {id: exercise.id}) }}">
                     <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
                 </a>

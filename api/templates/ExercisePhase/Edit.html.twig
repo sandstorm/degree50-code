@@ -21,20 +21,38 @@
             {{ form_row(form.task) }}
         </div>
         <div class="exercise-form__right">
+            {% if exercisePhase.type == 'videoAnalysis' %}
+                <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
+                {{ _self.primary_component('videoAnnotation', exercisePhase.videoAnnotationsActive, exercise, exercisePhase) }}
+                {{ _self.primary_component('videoCode', exercisePhase.videoCodesActive, exercise, exercisePhase) }}
+                {{ _self.primary_component('videoCutting', exercisePhase.videoCuttingActive, exercise, exercisePhase) }}
+                <hr/>
+            {% endif %}
+
             <ul class="nav nav-tabs" role="tablist">
                 {% if exercisePhase.type == 'videoAnalysis' %}
                     <li role="presentation" class="nav-item">
-                        <a class="nav-link active" href="#videos" aria-controls="videos" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.videos{% endtrans %} ({{ exercisePhase.videos|length }})</a>
+                        <a class="nav-link active" href="#videos" aria-controls="videos" role="tab"
+                           data-toggle="tab">{% trans %}exercisePhase.labels.videos{% endtrans %}
+                            ({{ exercisePhase.videos|length }})</a>
                     </li>
-                    <li role="presentation" class="nav-item">
-                        <a class="nav-link" href="#videoCodes" aria-controls="videoCodes" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.videoCodes{% endtrans %} ({{ exercisePhase.videoCodes|length }})</a>
-                    </li>
+                    {% if exercisePhase.videoCodesActive %}
+                        <li role="presentation" class="nav-item">
+                            <a class="nav-link" href="#videoCodes" aria-controls="videoCodes" role="tab"
+                               data-toggle="tab">{% trans %}exercisePhase.labels.videoCodes{% endtrans %}
+                                ({{ exercisePhase.videoCodes|length }})</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
                 <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#material" aria-controls="material" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %} ({{ exercisePhase.material|length }})</a>
+                    <a class="nav-link" href="#material" aria-controls="material" role="tab"
+                       data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %}
+                        ({{ exercisePhase.material|length }})</a>
                 </li>
                 <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab" data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %} ({{ exercisePhase.components|length }})</a>
+                    <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab"
+                       data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %}
+                        ({{ exercisePhase.components|length }})</a>
                 </li>
             </ul>
 
@@ -44,11 +62,13 @@
                         <h4>{% trans %}exercisePhase.labels.videos{% endtrans %}</h4>
                         {{ form_row(form.videos) }}
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="videoCodes">
-                        <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
-                        <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
-                        {{ form_row(form.videoCodes) }}
-                    </div>
+                    {% if exercisePhase.videoCodesActive %}
+                        <div role="tabpanel" class="tab-pane" id="videoCodes">
+                            <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
+                            <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
+                            {{ form_row(form.videoCodes) }}
+                        </div>
+                    {% endif %}
                 {% endif %}
                 <div role="tabpanel" class="tab-pane" id="material">
                     <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
@@ -64,10 +84,28 @@
         </div>
 
         <footer class="footer">
-            <a class="btn btn-outline-primary" href="{{ path('app_exercise-edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+            <a class="btn btn-outline-primary"
+               href="{{ path('app_exercise-edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
             {{ form_row(form.save) }}
         </footer>
         {{ form_end(form) }}
     </div>
 
 {% endblock %}
+
+{% macro primary_component(component, isActive, exercise, exercisePhase) %}
+    {% set componentTransVar = 'exercisePhase.components.' ~ (component) ~ '.label' %}
+    {% if isActive %}
+        <a class="btn btn-outline-primary"
+           href="{{ path('app_exercise-phase-toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
+            <i class="fas fa-check"></i>
+            {{ componentTransVar | trans }}
+        </a>
+    {% else %}
+        <a class="btn btn-outline-danger"
+           href="{{ path('app_exercise-phase-toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
+            <i class="fas fa-times"></i>
+            {{ componentTransVar | trans }}
+        </a>
+    {% endif %}
+{% endmacro %}

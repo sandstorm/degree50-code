@@ -15,9 +15,9 @@ class VideoAnalysis extends ExercisePhase
 {
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
-        ExercisePhase::VIDEO_CUTTING,
-        ExercisePhase::VIDEO_CODE,
-        ExercisePhase::VIDEO_ANNOTATION,
+//        ExercisePhase::VIDEO_CUTTING,
+//        ExercisePhase::VIDEO_CODE,
+//        ExercisePhase::VIDEO_ANNOTATION,
         ExercisePhase::DOCUMENT_UPLOAD,
     ];
 
@@ -30,6 +30,21 @@ class VideoAnalysis extends ExercisePhase
      * @ORM\ManyToMany(targetEntity="App\Entity\Video\Video", inversedBy="videoAnalysisTypes")
      */
     private $videos;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $videoAnnotationsActive = true;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $videoCodesActive = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $videoCuttingActive = false;
 
     public function __construct(string $id = null)
     {
@@ -79,6 +94,42 @@ class VideoAnalysis extends ExercisePhase
         if ($this->videos->contains($video)) {
             $this->videos->removeElement($video);
         }
+
+        return $this;
+    }
+
+    public function getVideoAnnotationsActive(): ?bool
+    {
+        return $this->videoAnnotationsActive;
+    }
+
+    public function setVideoAnnotationsActive(bool $videoAnnotationsActive): self
+    {
+        $this->videoAnnotationsActive = $videoAnnotationsActive;
+
+        return $this;
+    }
+
+    public function getVideoCodesActive(): ?bool
+    {
+        return $this->videoCodesActive;
+    }
+
+    public function setVideoCodesActive(bool $videoCodesActive): self
+    {
+        $this->videoCodesActive = $videoCodesActive;
+
+        return $this;
+    }
+
+    public function getVideoCuttingActive(): ?bool
+    {
+        return $this->videoCuttingActive;
+    }
+
+    public function setVideoCuttingActive(bool $videoCuttingActive): self
+    {
+        $this->videoCuttingActive = $videoCuttingActive;
 
         return $this;
     }
