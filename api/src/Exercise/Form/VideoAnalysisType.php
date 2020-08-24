@@ -33,16 +33,22 @@ class VideoAnalysisType extends ExercisePhaseType
     {
         parent::buildForm($builder, $options);
 
-        /* @var VideoAnalysis $data */
-        $data = $options['data'];
-        $components = $data->getAllowedComponents();
+        /* @var ExercisePhase $exercisePhase */
+        $exercisePhase = $options['data'];
+
+        $videoCodesActive = false;
+        if ($exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE) {
+            /* @var VideoAnalysis $exercisePhase */
+            $videoCodesActive = $exercisePhase->getVideoCodesActive();
+        }
+
+        $components = $exercisePhase->getAllowedComponents();
         $componentChoices = [];
-        foreach($components as $component) {
+        foreach ($components as $component) {
             $componentChoices[$component] = $component;
         }
 
-        $videoChoices = $this->videoRepository->findByCourse($data->getBelongsToExcercise()->getCourse());
-        $videoCodeChoices = $this->videoCodeRepository->findAll();
+        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExcercise()->getCourse());
 
         $builder
             ->add('videos', EntityType::class, [
@@ -50,14 +56,6 @@ class VideoAnalysisType extends ExercisePhaseType
                 'choices' => $videoChoices,
                 'required' => true,
                 'choice_label' => 'title',
-                'multiple' => true,
-                'label' => false
-            ])
-            ->add('videoCodes', EntityType::class, [
-                'class' => VideoCode::class,
-                'choices' => $videoCodeChoices,
-                'required' => false,
-                'choice_label' => 'name',
                 'multiple' => true,
                 'label' => false
             ])
@@ -71,6 +69,20 @@ class VideoAnalysisType extends ExercisePhaseType
                 },
                 'choice_translation_domain' => 'forms'
             ]);
+
+        if ($videoCodesActive) {
+            $videoCodeChoices = $this->videoCodeRepository->findAll();
+            $builder
+                ->add('videoCodes', EntityType::class, [
+                    'class' => VideoCode::class,
+                    'choices' => $videoCodeChoices,
+                    'required' => false,
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                    'label' => false
+                ]);
+        }
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

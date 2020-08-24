@@ -34,11 +34,11 @@ class ExercisePhase implements ExerciseInterface
     // components for phases
     const VIDEO_PLAYER = 'videoPlayer';
     const DOCUMENT_UPLOAD = 'documentUpload';
+    const CHAT = 'chat';
+    const SHARED_DOCUMENT = 'sharedDocument';
     const VIDEO_CODE = 'videoCode';
     const VIDEO_CUTTING = 'videoCutting';
     const VIDEO_ANNOTATION = 'videoAnnotation';
-    const CHAT = 'chat';
-    const SHARED_DOCUMENT = 'sharedDocument';
 
     /**
      * @var bool
