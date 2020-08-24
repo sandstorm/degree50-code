@@ -25,6 +25,20 @@ export const useMutablePlayer = (worker?: Worker) => {
     }
 }
 
+const checkConflictWithPrevItem = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
+    const previous = mediaItems[index - 1]
+    return (previous && item.startTime < previous.endTime) || !item.check
+}
+
+const checkConflictWithNextItem = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
+    const next = mediaItems[index + 1]
+    return (next && item.endTime > next.startTime) || !item.check
+}
+
+const checkConflict = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
+    return checkConflictWithPrevItem(mediaItems, item, index) || checkConflictWithNextItem(mediaItems, item, index)
+}
+
 export const useMediaItemHandling = <T>({
     userId,
     currentEditorId,
@@ -43,10 +57,10 @@ export const useMediaItemHandling = <T>({
     setMediaItems: (mediaItems: Array<T>) => void
     updateCallback: Function
     worker?: Worker
-    storage: Storage
+    storage?: Storage
     history?: Array<MediaItem<T>[]>
 }) => {
-    const defaultLang = storage.get('language') || navigator.language.toLowerCase() || 'en'
+    const defaultLang = storage?.get('language') || navigator.language.toLowerCase() || 'en'
     const [language, setLanguage] = useState(defaultLang)
 
     // MediaItem currently playing index
@@ -60,7 +74,10 @@ export const useMediaItemHandling = <T>({
         (value) => {
             setLocale(value)
             setLanguage(value)
-            storage.set('language', value)
+
+            if (storage) {
+                storage.set('language', value)
+            }
         },
         [setLanguage]
     )
@@ -126,7 +143,7 @@ export const useMediaItemHandling = <T>({
         )
     }, [currentTimeForMediaItems, setCurrentIndex])
 
-    // Detect if the mediaItem exists
+    // Detect if the mediaItem exists (referential check)
     const hasMediaItem = useCallback((item) => mediaItems.indexOf(item), [mediaItems])
 
     // Copy all mediaItems
@@ -138,24 +155,10 @@ export const useMediaItemHandling = <T>({
         (item: MediaItem<T>): boolean => {
             const index = hasMediaItem(item)
             if (index < 0) return false
-            return checkConflict(item, index)
+            return checkConflict(mediaItems, item, index)
         },
         [hasMediaItem, mediaItems]
     )
-
-    const checkConflict = (item: MediaItem<any>, index: number) => {
-        return checkConflictWithPrevItem(item, index) || checkConflictWithNextItem(item, index)
-    }
-
-    const checkConflictWithPrevItem = (item: MediaItem<any>, index: number) => {
-        const previous = mediaItems[index - 1]
-        return (previous && item.startTime < previous.endTime) || !item.check
-    }
-
-    const checkConflictWithNextItem = (item: MediaItem<any>, index: number) => {
-        const next = mediaItems[index + 1]
-        return (next && item.endTime > next.startTime) || !item.check
-    }
 
     // Update a single mediaItem
     const updateMediaItem = useCallback(
@@ -186,14 +189,14 @@ export const useMediaItemHandling = <T>({
 
             if (index < 0) return
 
-            const subs = copyMediaItems()
+            const copiedItems = copyMediaItems()
 
-            if (subs.length === 1) {
+            if (copiedItems.length === 1) {
                 return notify(t('keep-one'), 'error')
             }
 
-            subs.splice(index, 1)
-            updateMediaItems(subs)
+            copiedItems.splice(index, 1)
+            updateMediaItems(copiedItems)
         },
         [hasMediaItem, copyMediaItems, updateMediaItems]
     )
@@ -223,6 +226,7 @@ export const useMediaItemHandling = <T>({
     )
 
     return {
+        language,
         currentIndex,
         currentTimeForMediaItems,
         setCurrentIndex,
@@ -234,5 +238,6 @@ export const useMediaItemHandling = <T>({
         updateMediaItems,
         checkMediaItem,
         copyMediaItems,
+        updateLang,
     }
 }

@@ -44,7 +44,7 @@ export const useCuttingMediaItemHandling = ({
     readOnly: boolean
     setCutList: (mediaItems: Array<Cut>) => void
     updateCallback: Function
-    storage: Storage
+    storage?: Storage
     playerSyncPlayPosition: ReturnType<typeof selectors.selectSyncPlayPosition>
     setPlayPosition: typeof actions.setPlayPosition
 }) => {
@@ -58,10 +58,10 @@ export const useCuttingMediaItemHandling = ({
         hasMediaItem,
         copyMediaItems,
     } = useMediaItemHandling<Cut>({
-        userId: userId,
-        currentEditorId: currentEditorId,
+        userId,
+        currentEditorId,
         mediaItems,
-        readOnly: readOnly,
+        readOnly,
         setMediaItems: setCutList,
         updateCallback,
         storage,
@@ -103,7 +103,12 @@ export const useCuttingMediaItemHandling = ({
                 ...updatedValues,
                 // NOTE: It's important that we DO NOT use the adjustedEnd value here, to correctly determine
                 // what item handle was used to change the item.
-                ...(updatedValues.start ? { offset: updateOffset(item, newStart, updatedValues?.end) } : {}),
+                originalData: updatedValues.start
+                    ? {
+                          ...item.originalData,
+                          offset: updateOffset(item, newStart, updatedValues?.end),
+                      }
+                    : item.originalData,
                 start: newStart,
                 // Add a frame to our adjustedEnd if it does not differ from our input
                 //
@@ -302,7 +307,7 @@ export const resolveOverlapAndSnapItems = (items: MediaItem<Cut>[]): MediaItem<C
  *
  * @returns list - snapped items
  */
-const snapItems = (items: MediaItem<any>[], firstItemStartTime?: string) =>
+export const snapItems = (items: MediaItem<any>[], firstItemStartTime?: string) =>
     items.reduce((acc, item, index) => {
         if (index === 0 && firstItemStartTime) {
             return adjustItemTimelinePositionInList(acc, item, index, firstItemStartTime)
@@ -323,7 +328,7 @@ const snapItems = (items: MediaItem<any>[], firstItemStartTime?: string) =>
  *
  * @return list of items with the adjusted item at the defined index
  */
-const adjustItemTimelinePositionInList = (
+export const adjustItemTimelinePositionInList = (
     items: MediaItem<any>[],
     item: MediaItem<any>,
     index: number,
@@ -388,7 +393,7 @@ export const initVideoContext = (canvasRef: RefObject<HTMLCanvasElement>) => {
     return { videoCtx, combineEffect }
 }
 
-const sortItemsByStartTime = (items: MediaItem<any>[]) => {
+export const sortItemsByStartTime = (items: MediaItem<any>[]) => {
     return [...items].sort((a, b) => {
         if (a.startsBefore(b)) {
             return 1

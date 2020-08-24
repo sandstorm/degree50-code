@@ -1,240 +1,154 @@
 /**
  * @jest-environment jsdom
  */
-import { resolveOverlapAndSnapItems } from '../util'
+
+import { sortItemsByStartTime, adjustItemTimelinePositionInList, snapItems } from '../util'
 import { MediaItem } from '../../components/types'
 
-describe('resolveOverlap()', () => {
-    const itemA = new MediaItem<any>({
-        start: '00:00:00.001',
-        end: '00:00:05.000',
-        text: '',
-        color: null,
-        lane: 0,
-        memo: '',
-        // we don't actually need this for our tests
-        // @ts-ignore disable-line
-        originalData: {},
-    })
-    const itemB = new MediaItem<any>({
-        start: '00:00:04.000',
-        end: '00:00:10.000',
-        text: '',
-        color: null,
-        lane: 0,
-        memo: '',
-        // we don't actually need this for our tests
-        // @ts-ignore disable-line
-        originalData: {},
-    })
-    const itemC = new MediaItem<any>({
-        start: '00:00:06.000',
-        end: '00:00:15.000',
-        text: '',
-        color: null,
-        lane: 0,
-        memo: '',
-        // we don't actually need this for our tests
-        // @ts-ignore disable-line
-        originalData: {},
-    })
-    const itemD = new MediaItem<any>({
-        start: '00:00:01.000',
-        end: '00:00:03.000',
-        text: '',
-        color: null,
-        lane: 0,
-        memo: '',
-        // we don't actually need this for our tests
-        // @ts-ignore disable-line
-        originalData: {},
-    })
+const itemA = new MediaItem({
+    start: '00:00:00.000',
+    end: '00:00:05.000',
+    text: 'Test',
+    memo: 'Some test memo...',
+    originalData: {},
+    lane: 0,
+})
 
+const itemB = new MediaItem({
+    start: '00:00:03.000',
+    end: '00:00:07.000',
+    text: 'Test',
+    memo: 'Some test memo...',
+    originalData: {},
+    lane: 0,
+})
+
+const itemC = new MediaItem({
+    start: '00:00:08.000',
+    end: '00:00:15.000',
+    text: 'Test',
+    memo: 'Some test memo...',
+    originalData: {},
+    lane: 0,
+})
+
+describe('sortItemsByStartTime()', () => {
     test.each([
         [
-            [itemA, itemC, itemD],
-            [
-                new MediaItem<any>({
-                    // former itemD
-                    start: itemA.start,
-                    end: '00:00:02.001',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
-                }),
-                new MediaItem<any>({
-                    // former itemA
-                    start: '00:00:02.011',
-                    end: '00:00:07.010',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
-                }),
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:07.020',
-                    end: '00:00:16.020',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
-                }),
-            ],
+            [itemA, itemB, itemC],
+            [itemA, itemB, itemC],
         ],
         [
-            [itemA, itemB],
+            [itemB, itemA, itemC],
+            [itemA, itemB, itemC],
+        ],
+        [
+            [itemC, itemA, itemB],
+            [itemA, itemB, itemC],
+        ],
+        [
+            [itemB, itemA, itemC],
+            [itemA, itemB, itemC],
+        ],
+        [
+            [itemB, itemC, itemA],
+            [itemA, itemB, itemC],
+        ],
+        [
+            [itemC, itemB, itemA],
+            [itemA, itemB, itemC],
+        ],
+    ])('sortItemsByStartTime(%p)', (items, expected) => {
+        expect(sortItemsByStartTime(items)).toEqual(expected)
+    })
+})
+
+describe('adjustItemTimelinePositionInList()', () => {
+    it('should correctly adjust startTime and endtime of item', () => {
+        const index = 1
+        const result = adjustItemTimelinePositionInList([itemA, itemB, itemC], itemB, index, '00:00:05.000')
+
+        expect(result).toEqual([itemA, expect.any(MediaItem), itemC])
+
+        expect(result[index].start).toBe('00:00:05.000')
+        expect(result[index].end).toBe('00:00:09.000')
+    })
+})
+
+describe('snapItems()', () => {
+    test.each([
+        [
+            [itemA, itemB, itemC],
+            '00:00:02.000',
             [
-                itemA,
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:05.010',
+                new MediaItem({
+                    start: '00:00:02.000',
+                    end: '00:00:07.000',
+                    text: 'Test',
+                    memo: 'Some test memo...',
+                    originalData: {},
+                    lane: 0,
+                }),
+                new MediaItem({
+                    start: '00:00:07.010',
                     end: '00:00:11.010',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
+                    text: 'Test',
+                    memo: 'Some test memo...',
                     originalData: {},
+                    lane: 0,
+                }),
+                new MediaItem({
+                    start: '00:00:11.020',
+                    end: '00:00:18.020',
+                    text: 'Test',
+                    memo: 'Some test memo...',
+                    originalData: {},
+                    lane: 0,
                 }),
             ],
         ],
         [
-            [itemA, itemC],
             [
                 itemA,
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:05.010',
-                    end: '00:00:14.010',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
+                itemB,
+                new MediaItem({
+                    start: '00:00:12.000',
+                    end: '00:00:20.000',
+                    text: 'Test',
+                    memo: 'Some test memo...',
                     originalData: {},
+                    lane: 0,
                 }),
             ],
-        ],
-        [
-            [itemA, itemB, itemC, itemD],
+            '00:00:02.000',
             [
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:00.001',
-                    end: '00:00:02.001',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
+                new MediaItem({
+                    start: '00:00:02.000',
+                    end: '00:00:07.000',
+                    text: 'Test',
+                    memo: 'Some test memo...',
                     originalData: {},
+                    lane: 0,
                 }),
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:02.011',
-                    end: '00:00:07.010',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
+                new MediaItem({
+                    start: '00:00:07.010',
+                    end: '00:00:11.010',
+                    text: 'Test',
+                    memo: 'Some test memo...',
                     originalData: {},
+                    lane: 0,
                 }),
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:07.020',
-                    end: '00:00:13.020',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
+                new MediaItem({
+                    start: '00:00:11.020',
+                    end: '00:00:19.020',
+                    text: 'Test',
+                    memo: 'Some test memo...',
                     originalData: {},
-                }),
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:13.030',
-                    end: '00:00:22.030',
-                    text: '',
-                    color: null,
                     lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
                 }),
             ],
         ],
-        [
-            [itemB, itemD, itemC, itemA],
-            [
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:00.001',
-                    end: '00:00:02.001',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
-                }),
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:02.011',
-                    end: '00:00:07.010',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
-                }),
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:07.020',
-                    end: '00:00:13.020',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
-                }),
-                new MediaItem<any>({
-                    // former itemC
-                    start: '00:00:13.030',
-                    end: '00:00:22.030',
-                    text: '',
-                    color: null,
-                    lane: 0,
-                    memo: '',
-                    // we don't actually need this for our tests
-                    // @ts-ignore disable-line
-                    originalData: {},
-                }),
-            ],
-        ],
-    ])('resolveOverlap(%p)', (items, expected) => {
-        expect(resolveOverlapAndSnapItems(items)).toEqual(expected)
+    ])('firstItemStartTime(%p, %s)', (items, firstItemStartTime, expected) => {
+        expect(snapItems(items, firstItemStartTime)).toEqual(expected)
     })
 })
