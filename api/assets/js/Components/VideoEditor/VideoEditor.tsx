@@ -15,6 +15,7 @@ import EditorTabs from './EditorTabs'
 import AnnotationsEditor from './Editors/AnnotationsEditor/AnnotationsEditor'
 import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
+import SubtitleEditor from './Editors/SubtitleEditor/SubtitleEditor'
 import { TabsTypesEnum } from 'types'
 import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
@@ -93,6 +94,10 @@ const VideoEditor: React.FC<Props> = ({
                     itemUpdateCondition={itemUpdateCondition}
                 />
             )
+        }
+
+        case TabsTypesEnum.VIDEO_SUBTITLES: {
+            return <SubtitleEditor />
         }
 
         default: {

@@ -22,4 +22,8 @@ export const tabs: Tabs = {
         id: TabsTypesEnum.VIDEO_CUTTING,
         label: 'Video Cuts',
     },
+    [TabsTypesEnum.VIDEO_SUBTITLES]: {
+        id: TabsTypesEnum.VIDEO_SUBTITLES,
+        label: 'Video Subtitles',
+    },
 }

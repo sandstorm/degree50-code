@@ -1,8 +1,7 @@
-import { configureStore, ThunkAction, Action, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, getDefaultMiddleware, combineReducers } from '@reduxjs/toolkit'
 import toolbarReducer from '../Components/Toolbar/ToolbarSlice'
 import configReducer from '../Components/Config/ConfigSlice'
 import liveSyncConfigReducer from '../Components/LiveSyncConfig/LiveSyncConfigSlice'
-import { videoEditorSlice } from '../../../Components/VideoEditor/VideoEditorSlice'
 import overlayReducer from '../Components/Overlay/OverlaySlice'
 import materialViewerReducer from '../Components/MaterialViewer/MaterialViewerSlice'
 import presenceReducer from '../Components/Presence/PresenceSlice'
@@ -13,22 +12,21 @@ import { all, spawn, call } from 'redux-saga/effects'
 import presenceSaga from '../Components/Presence/PresenceSaga'
 import solutionSaga from '../Components/Solution/SolutionSaga'
 import currentEditorReducer from '../Components/Presence/CurrentEditorSlice'
-import playerReducer from '../../../Components/VideoEditor/PlayerSlice'
+import VideoEditorSlice from 'Components/VideoEditor/VideoEditorSlice'
 
 const sagaMiddleWare = createSagaMiddleware()
 
 export const store = configureStore({
-    reducer: {
+    reducer: combineReducers({
         toolbar: toolbarReducer,
-        player: playerReducer,
+        videoEditor: VideoEditorSlice,
         config: configReducer,
         liveSyncConfig: liveSyncConfigReducer,
-        videoEditor: videoEditorSlice.reducer,
         overlay: overlayReducer,
         materialViewer: materialViewerReducer,
         presence: presenceReducer,
         currentEditor: currentEditorReducer,
-    },
+    }),
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
 })
 

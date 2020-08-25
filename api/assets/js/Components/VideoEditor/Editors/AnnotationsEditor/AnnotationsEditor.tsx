@@ -9,10 +9,10 @@ import MediaItemList from '../components/MediaItemList/MediaItemList'
 import Storage from '../utils/storage'
 
 import { useMediaItemHandling } from '../utils/hooks'
-import { selectors, actions, PlayerState } from '../../PlayerSlice'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
-import { selectVideoEditor, setAnnotations, Annotation, VideoEditorState } from '../../VideoEditorSlice'
+import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
 
 const storage = new Storage()
 
@@ -24,16 +24,16 @@ type OwnProps = {
     itemUpdateCondition: boolean
 }
 
-const mapStateToProps = (state: { videoEditor: VideoEditorState; player: PlayerState }) => {
+const mapStateToProps = (state: VideoEditorState) => {
     return {
-        annotations: selectVideoEditor(state).annotations,
-        playerSyncPlayPosition: selectors.selectSyncPlayPosition(state),
+        annotations: selectors.lists.selectVideoEditorLists(state).annotations,
+        playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
     }
 }
 
 const mapDispatchToProps = {
-    setAnnotations,
-    setPlayPosition: actions.setPlayPosition,
+    setAnnotations: actions.lists.setAnnotations,
+    setPlayPosition: actions.player.setPlayPosition,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps

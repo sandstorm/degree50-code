@@ -1,4 +1,4 @@
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
 export type Cut = MediaItemType & {
     url: string

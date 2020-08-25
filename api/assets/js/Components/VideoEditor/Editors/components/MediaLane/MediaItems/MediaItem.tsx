@@ -7,7 +7,7 @@ import MediaItemContextMenu from './MediaItemContextMenu'
 import MediaItemMemoForm from './MediaItemMemoForm'
 import { useModal } from 'Components/Modal/useModal'
 import Button from 'Components/Button/Button'
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>

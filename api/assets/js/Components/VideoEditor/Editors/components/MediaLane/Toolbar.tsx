@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-i18nify'
 import { RenderConfig } from './MediaTrack'
-import { actions, selectors, PlayerState } from '../../../PlayerSlice'
+import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 
 type OwnProps = {
     zoomHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -12,14 +12,14 @@ type OwnProps = {
     children?: React.ReactNode
 }
 
-const mapStateToProps = (state: { player: PlayerState }) => {
+const mapStateToProps = (state: VideoEditorState) => {
     return {
-        playerIsPaused: selectors.selectIsPaused(state),
+        playerIsPaused: selectors.player.selectIsPaused(state),
     }
 }
 
 const mapDispatchToProps = {
-    togglePlay: actions.togglePlay,
+    togglePlay: actions.player.togglePlay,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps

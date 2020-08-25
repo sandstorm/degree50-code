@@ -3,13 +3,13 @@ import VideoContext from 'videocontext'
 import { t } from 'react-i18nify'
 import { d2t, t2d } from 'duration-time-conversion'
 
-import { selectors, actions } from '../../PlayerSlice'
 import { Cut } from './types'
 import { MediaItem } from '../components/types'
 import { notify } from '../utils'
 import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
 import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
+import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 
 export const useVolume = () => {
     const [volume, setVolume] = useState<number>(0)
@@ -40,8 +40,8 @@ export const useCuttingMediaItemHandling = ({
     setCutList: (mediaItems: Array<Cut>) => void
     updateCallback: Function
     storage?: Storage
-    playerSyncPlayPosition: ReturnType<typeof selectors.selectSyncPlayPosition>
-    setPlayPosition: typeof actions.setPlayPosition
+    playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
+    setPlayPosition: typeof actions.player.setPlayPosition
     updateCondition: boolean
 }) => {
     const {

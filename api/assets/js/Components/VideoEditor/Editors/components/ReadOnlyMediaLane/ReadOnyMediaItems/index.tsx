@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import ReadOnlyMediaItem from './ReadOnlyMediaItem'
 import { MediaItem } from '../../types'
 import { RenderConfig } from '../../MediaLane/MediaTrack'
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
 const renderItems = (mediaItems: MediaItem<MediaItemType>[], renderConfig: RenderConfig, amountOfLanes: number) =>
     mediaItems.map((item, index) => {

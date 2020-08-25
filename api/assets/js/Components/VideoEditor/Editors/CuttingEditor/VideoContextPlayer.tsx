@@ -2,10 +2,11 @@ import React, { useRef, useEffect, useLayoutEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import VideoContext from 'videocontext'
 
-import { actions, selectors, PlayerState } from '../../PlayerSlice'
+import { actions, selectors } from '../../PlayerSlice'
 import { initVideoContext, addCut } from './util'
 import { CutList } from './types'
 import { useWindowSize } from '../components/MediaLane/MediaTrack/hooks'
+import { VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 
 type OwnProps = {
     cutList: CutList
@@ -13,7 +14,7 @@ type OwnProps = {
     volume: number
 }
 
-const mapStateToProps = (state: { player: PlayerState }) => ({
+const mapStateToProps = (state: VideoEditorState) => ({
     playPosition: selectors.selectPlayPosition(state),
     isPaused: selectors.selectIsPaused(state),
 })

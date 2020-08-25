@@ -1,6 +1,6 @@
 import { solveConflicts, findNonOverlappingItemsRecursively } from '../helpers'
 import { MediaItem } from '../components/types'
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
 describe('findNonOverlappingItems()', () => {
     it('should return all items, because non overlap', () => {

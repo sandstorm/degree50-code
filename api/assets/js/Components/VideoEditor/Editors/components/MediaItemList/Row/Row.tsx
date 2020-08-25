@@ -8,7 +8,7 @@ import End from './End'
 import Actions from './Actions'
 
 import { actions } from '../../../../PlayerSlice'
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
 type OwnProps = {
     key: string
