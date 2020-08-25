@@ -6,14 +6,13 @@ import { Translate } from 'react-i18nify'
 import VideoContextPlayer from './VideoContextPlayer'
 import MediaLane from '../components/MediaLane'
 
-import { selectors, actions, PlayerState } from '../../PlayerSlice'
 import Storage from '../utils/storage'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
 import { MediaItem } from '../components/types'
 import { Cut } from './types'
 import { useVolume, useCuttingMediaItemHandling } from './util'
 import { d2t } from 'duration-time-conversion'
-import { selectVideoEditor, setCutList, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 
 const storage = new Storage()
 
@@ -25,14 +24,14 @@ type OwnProps = {
     itemUpdateCondition: boolean
 }
 
-const mapStateToProps = (state: { videoEditor: VideoEditorState; player: PlayerState }) => ({
-    playerSyncPlayPosition: selectors.selectSyncPlayPosition(state),
-    cutList: selectVideoEditor(state).cutlist,
+const mapStateToProps = (state: VideoEditorState) => ({
+    playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
+    cutList: selectors.lists.selectVideoEditorLists(state).cutlist,
 })
 
 const mapDispatchToProps = {
-    setPlayPosition: actions.setPlayPosition,
-    setCutList,
+    setPlayPosition: actions.player.setPlayPosition,
+    setCutList: actions.lists.setCutList,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps

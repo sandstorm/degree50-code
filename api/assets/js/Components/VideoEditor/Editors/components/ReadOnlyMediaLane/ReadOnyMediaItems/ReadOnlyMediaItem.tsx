@@ -2,7 +2,7 @@ import React from 'react'
 import { MediaItem } from '../../types'
 import { RenderConfig } from '../../MediaLane/MediaTrack'
 import Button from 'Components/Button/Button'
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 import { useModal } from 'Components/Modal/useModal'
 
 type Props = {

@@ -1,13 +1,13 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react'
 import VideoPlayerWrapper, { Video } from '../../Components/VideoPlayer/VideoPlayerWrapper'
-import { VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
+import { VideoListsState } from '../../Components/VideoEditor/VideoListsSlice'
 import { Teams } from './Components/Teams/Teams'
 import { TabsTypesEnum } from '../../types'
 
 export type SolutionByTeam = {
     teamCreator: string
     teamMembers: Array<string>
-    solution: VideoEditorState
+    solution: VideoListsState
 }
 
 type ReadOnlyExercisePhaseProps = {

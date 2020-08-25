@@ -4,8 +4,8 @@ import ArtplayerComponent from 'artplayer-react'
 import Hls from 'hls.js'
 import { Player as PlayerType } from './types'
 
-import { actions, selectors, PlayerState } from '../../PlayerSlice'
 import { useMutablePlayer } from '../utils/hooks'
+import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 
 export type PlayerOptions = {
     videoUrl: string
@@ -17,16 +17,16 @@ type OwnProps = {
     options: PlayerOptions
 }
 
-const mapStateToProps = (state: { player: PlayerState }) => {
+const mapStateToProps = (state: VideoEditorState) => {
     return {
-        playPosition: selectors.selectPlayPosition(state),
-        isPaused: selectors.selectIsPaused(state),
+        playPosition: selectors.player.selectPlayPosition(state),
+        isPaused: selectors.player.selectIsPaused(state),
     }
 }
 
 const mapDispatchToProps = {
-    setSyncPlayPosition: actions.setSyncPlayPosition,
-    setPause: actions.setPause,
+    setSyncPlayPosition: actions.player.setSyncPlayPosition,
+    setPause: actions.player.setPause,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps

@@ -4,7 +4,7 @@ import { MediaItem as MediaItemClass } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { useItemInteraction } from './useItemInteraction'
 import { itemIsVisible } from './helpers'
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
 const renderItems = (
     mediaItems: MediaItemClass<MediaItemType>[],

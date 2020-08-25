@@ -5,7 +5,7 @@ import ReadOnlyMediaTrack from '../MediaLane/MediaTrack/index'
 import { RenderConfig } from '../MediaLane/MediaTrack'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
 import { useMediaLane } from '../MediaLane/utils'
-import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
 type Props = {
     currentTime: number

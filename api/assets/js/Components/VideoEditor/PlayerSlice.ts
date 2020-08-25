@@ -41,9 +41,10 @@ export const { actions } = playerSlice
 
 // Selectors
 
-const selectPlayPosition = (state: { player: PlayerState }) => state.player.playPosition
-const selectSyncPlayPosition = (state: { player: PlayerState }) => state.player.syncPlayPosition
-const selectIsPaused = (state: { player: PlayerState }) => state.player.isPaused
+const selectPlayPosition = (state: { videoEditor: { player: PlayerState } }) => state.videoEditor.player.playPosition
+const selectSyncPlayPosition = (state: { videoEditor: { player: PlayerState } }) =>
+    state.videoEditor.player.syncPlayPosition
+const selectIsPaused = (state: { videoEditor: { player: PlayerState } }) => state.videoEditor.player.isPaused
 
 export const selectors = {
     selectSyncPlayPosition,

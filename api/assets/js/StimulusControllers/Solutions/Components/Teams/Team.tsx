@@ -1,7 +1,7 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
 import { TabsTypesEnum } from '../../../../types'
-import { VideoCode } from '../../../../Components/VideoEditor/VideoEditorSlice'
+import { VideoCode } from '../../../../Components/VideoEditor/VideoListsSlice'
 import { MediaItem } from 'Components/VideoEditor/Editors/components/types'
 import ReadOnlyMediaLane from 'Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 import { solveConflicts } from 'Components/VideoEditor/Editors/helpers'

@@ -1,6 +1,6 @@
 import { MediaItem } from './components/types'
 import { hasConflictWithItem } from './components/MediaLane/MediaItems/helpers'
-import { MediaItemType } from '../VideoEditorSlice'
+import { MediaItemType } from '../VideoListsSlice'
 
 type ItemWithId = {
     id: number

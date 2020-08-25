@@ -3,14 +3,11 @@ import { eventChannel, EventChannel } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
-import {
-    VideoEditorState,
-    setVideoEditor,
-    selectVideoEditor,
-} from '../../../../Components/VideoEditor/VideoEditorSlice'
 import { selectConfig } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
+import { VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
+import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -67,8 +64,8 @@ function* handleMessages(channel: EventChannel<unknown>) {
             yield put(setCurrentEditorId(currentEditor))
 
             // set solution
-            const solution: VideoEditorState = eventData.solution
-            yield put(setVideoEditor(solution))
+            const solution: VideoListsState = eventData.solution
+            yield put(actions.lists.setVideoEditor(solution))
         }
     } finally {
         if (yield cancelled()) {
@@ -85,7 +82,7 @@ function* syncSolution() {
     const config = selectConfig(yield select())
 
     if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
-        const solution = selectVideoEditor(yield select())
+        const solution = selectors.lists.selectVideoEditorLists(yield select())
         const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution
 
         try {

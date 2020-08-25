@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { actions, selectors, PlayerState } from '../../PlayerSlice'
 import PlayerComponent from '../components/ArtPlayer'
 import MediaLane from '../components/MediaLane'
 import { MediaItem } from '../components/types'
@@ -10,14 +9,9 @@ import { secondToTime, timeToSecond } from '../utils'
 import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
 import VideoCodes from './VideoCodes'
-import {
-    setVideoCodes,
-    selectVideoEditor,
-    setCustomVideoCodesPool,
-    VideoCode,
-    VideoEditorState,
-} from 'Components/VideoEditor/VideoEditorSlice'
+import { VideoCode, VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
 import { VideoCodePrototype } from './types'
+import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 
 const storage = new Storage()
 
@@ -30,18 +24,18 @@ type OwnProps = {
     videoCodesPool: VideoCodePrototype[]
 }
 
-const mapStateToProps = (state: { videoEditor: VideoEditorState; player: PlayerState }) => {
+const mapStateToProps = (state: VideoEditorState) => {
     return {
-        videoCodes: selectVideoEditor(state).videoCodes,
-        customVideoCodesPool: selectVideoEditor(state).customVideoCodesPool,
-        playerSyncPlayPosition: selectors.selectSyncPlayPosition(state),
+        videoCodes: selectors.lists.selectVideoEditorLists(state).videoCodes,
+        customVideoCodesPool: selectors.lists.selectVideoEditorLists(state).customVideoCodesPool,
+        playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
     }
 }
 
 const mapDispatchToProps = {
-    setVideoCodes,
-    setCustomVideoCodesPool,
-    setPlayPosition: actions.setPlayPosition,
+    setVideoCodes: actions.lists.setVideoCodes,
+    setCustomVideoCodesPool: actions.lists.setCustomVideoCodesPool,
+    setPlayPosition: actions.player.setPlayPosition,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
