@@ -1,4 +1,5 @@
 var Encore = require('@symfony/webpack-encore');
+const path = require('path');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -74,4 +75,10 @@ Encore
     .enableReactPreset()
 ;
 
-module.exports = Encore.getWebpackConfig();
+const config = Encore.getWebpackConfig();
+config.resolve.alias = {
+    StimulusControllers: path.resolve(__dirname, './assets/js/StimulusControllers'),
+    Components: path.resolve(__dirname, './assets/js/Components')
+}
+
+module.exports = config;

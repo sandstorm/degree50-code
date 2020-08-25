@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { store } from './ExercisePhaseApp/Store/Store'
 import { ExercisePhaseApp } from './ExercisePhaseApp/ExercisePhaseApp'
 import { hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
-import { setSolution } from './ExercisePhaseApp/Components/Solution/SolutionSlice'
+import { setVideoEditor } from '../Components/VideoEditor/VideoEditorSlice'
 import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
 import { presenceActions, PresenceState, TeamMember } from './ExercisePhaseApp/Components/Presence/PresenceSlice'
 import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/SolutionSaga'
@@ -23,7 +23,7 @@ export default class extends Controller {
         // set initial Redux state
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
-        store.dispatch(setSolution(solution))
+        store.dispatch(setVideoEditor(solution))
         store.dispatch(setCurrentEditorId(currentEditor))
 
         if (config.isGroupPhase && !config.readOnly) {

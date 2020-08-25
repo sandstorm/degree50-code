@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Video\Video;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -15,10 +16,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubtitleEditorController extends AbstractController
 {
     /**
-     * @Route("/subtitle-editor", name="app_subtitle-editor")
+     * @Route("/subtitles/edit/{id}", name="app_subtitle-editor")
      */
-    public function subtitleEditor(): Response
+    public function subtitleEditor(Video $video): Response
     {
-        return $this->render('Mediathek/SubtitleEditor/SubtitleEditor.html.twig');
+        return $this->render('Mediathek/SubtitleEditor/SubtitleEditor.html.twig', [
+            'video' => $video
+        ]);
     }
 }

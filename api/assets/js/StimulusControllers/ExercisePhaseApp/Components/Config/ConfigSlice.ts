@@ -1,24 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppState } from '../../Store/Store'
 import { Video } from '../VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
 import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
+import { VideoCodePrototype } from 'Components/VideoEditor/Editors/VideoCodeEditor/types'
 
 export type ComponentId = ComponentTypesEnum | TabsTypesEnum
 
 export type ApiEndpoints = {
     updateSolution: string
     updateCurrentEditor: string
-}
-
-export type VideoCodePrototype = {
-    id: string
-    name: string
-    description: string
-    color: string
-    userCreated: boolean
-    videoCodes: Array<VideoCodePrototype>
 }
 
 export type Config = {
@@ -65,8 +56,8 @@ export const configSlice = createSlice({
 
 export const { hydrateConfig } = configSlice.actions
 
-export const selectConfig = (state: AppState) => state.config
-export const selectUserId = (state: AppState) => state.config.userId
-export const selectReadOnly = (state: AppState) => state.config.readOnly
+export const selectConfig = (state: { config: Config }) => state.config
+export const selectUserId = (state: { config: Config }) => state.config.userId
+export const selectReadOnly = (state: { config: Config }) => state.config.readOnly
 
 export default configSlice.reducer

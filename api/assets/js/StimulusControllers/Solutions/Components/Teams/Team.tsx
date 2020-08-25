@@ -1,10 +1,10 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
-import { MediaItem } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/types'
-import ReadOnlyMediaLane from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 import { TabsTypesEnum } from '../../../ExercisePhaseApp/Store/ComponentTypesEnum'
-import { solveConflicts } from '../../../ExercisePhaseApp/Components/VideoEditor/Editors/helpers'
-import { VideoCode } from '../../../ExercisePhaseApp/Components/Solution/SolutionSlice'
+import { VideoCode } from '../../../../Components/VideoEditor/VideoEditorSlice'
+import { MediaItem } from 'Components/VideoEditor/Editors/components/types'
+import ReadOnlyMediaLane from 'Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
+import { solveConflicts } from 'Components/VideoEditor/Editors/helpers'
 
 type TeamProps = {
     solution: SolutionByTeam
