@@ -1,8 +1,8 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react'
-import VideoPlayerWrapper from '../ExercisePhaseApp/Components/VideoPlayer/VideoPlayerWrapper'
+import VideoPlayerWrapper, { Video } from '../../Components/VideoPlayer/VideoPlayerWrapper'
 import { VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
 import { Teams } from './Components/Teams/Teams'
-import { TabsTypesEnum } from '../ExercisePhaseApp/Store/ComponentTypesEnum'
+import { TabsTypesEnum } from '../../types'
 
 export type SolutionByTeam = {
     teamCreator: string
@@ -12,7 +12,7 @@ export type SolutionByTeam = {
 
 type ReadOnlyExercisePhaseProps = {
     solutions: Array<SolutionByTeam>
-    videos: Array<{ url: { hls: string; mp4: string }; name: string; duration: string }>
+    videos: Array<Video>
 }
 
 export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions, videos }) => {
@@ -60,7 +60,11 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions, 
         <div className={'exercise-phase__inner'}>
             <div className={'exercise-phase__content'}>
                 <div className={'solutions'}>
-                    <VideoPlayerWrapper updateCurrentTime={setCurrentTime} videoNodeRef={videoNodeRef} />
+                    <VideoPlayerWrapper
+                        videos={videos}
+                        updateCurrentTime={setCurrentTime}
+                        videoNodeRef={videoNodeRef}
+                    />
                     <form className={'solutions__form'}>
                         <div className={'form-group'}>
                             <label htmlFor={'select-solution'}>Lösung auswählen</label>

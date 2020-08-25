@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tab } from './Tabs'
-import { TabsTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
+import { TabsTypesEnum } from 'types'
 
 const renderTabs = (tabs: Array<Tab>, activeTabId: TabsTypesEnum, setActiveTabId: (tab: TabsTypesEnum) => void) =>
     tabs.map((tab) => (

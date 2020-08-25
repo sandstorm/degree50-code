@@ -1,9 +1,9 @@
 import React from 'react'
 import { MediaItem } from '../../types'
 import { RenderConfig } from '../../MediaLane/MediaTrack'
-import { useModal } from 'StimulusControllers/ExercisePhaseApp/Components/Modal/useModal'
-import Button from 'StimulusControllers/ExercisePhaseApp/Components/Button/Button'
+import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
+import { useModal } from 'Components/Modal/useModal'
 
 type Props = {
     item: MediaItem<MediaItemType>

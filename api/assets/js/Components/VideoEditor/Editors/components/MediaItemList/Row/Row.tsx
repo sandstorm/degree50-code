@@ -8,7 +8,6 @@ import End from './End'
 import Actions from './Actions'
 
 import { actions } from '../../../../PlayerSlice'
-import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
 
 type OwnProps = {
@@ -24,7 +23,7 @@ type OwnProps = {
     updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Object) => void
 }
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: {}) => {
     return {}
 }
 

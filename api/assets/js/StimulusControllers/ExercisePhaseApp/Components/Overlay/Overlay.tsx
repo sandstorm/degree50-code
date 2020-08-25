@@ -2,17 +2,19 @@ import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import { selectComponent, selectIsVisible, selectSize, setOverlayVisibility } from './OverlaySlice'
 import FileUpload from '../FileUpload/FileUpload'
-import { ComponentTypesEnum } from '../../Store/ComponentTypesEnum'
+import { ComponentTypesEnum } from '../../../../types'
 import MaterialViewer from '../MaterialViewer/MaterialViewer'
 import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
-import VideoPlayerWrapper from '../VideoPlayer/VideoPlayerWrapper'
+import VideoPlayerWrapper from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import Presence from '../Presence/Presence'
 import ExerciseDescription from '../ExerciseDescription/ExerciseDescription'
+import { selectConfig } from '../Config/ConfigSlice'
 
 const mapStateToProps = (state: AppState) => ({
     isVisible: selectIsVisible(state),
     component: selectComponent(state),
     size: selectSize(state),
+    videos: selectConfig(state).videos,
 })
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
@@ -48,7 +50,13 @@ const Overlay: React.FC<OverlayProps> = (props) => {
             componentToRender = <MaterialViewer />
             break
         case ComponentTypesEnum.VIDEO_PLAYER:
-            componentToRender = <VideoPlayerWrapper updateCurrentTime={updateCurrentTime} videoNodeRef={videoNodeRef} />
+            componentToRender = (
+                <VideoPlayerWrapper
+                    videos={props.videos}
+                    updateCurrentTime={updateCurrentTime}
+                    videoNodeRef={videoNodeRef}
+                />
+            )
             break
         case ComponentTypesEnum.PRESENCE:
             componentToRender = <Presence />

@@ -1,6 +1,6 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
-import { TabsTypesEnum } from '../../../ExercisePhaseApp/Store/ComponentTypesEnum'
+import { TabsTypesEnum } from '../../../../types'
 import { VideoCode } from '../../../../Components/VideoEditor/VideoEditorSlice'
 import { MediaItem } from 'Components/VideoEditor/Editors/components/types'
 import ReadOnlyMediaLane from 'Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
