@@ -12,62 +12,83 @@
 
     <div class="exercise-form">
         {{ form_start(form) }}
-            <div class="exercise-form__left">
-                {{ form_errors(form) }}
+        <div class="exercise-form__left">
+            {{ form_errors(form) }}
 
-                {{ form_row(form.name) }}
-                {{ form_row(form.description) }}
-            </div>
-            <div class="exercise-form__right">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="nav-item">
-                        <a class="nav-link active" href="#phasen" aria-controls="phasen" role="tab" data-toggle="tab">Phasen ({{ exercise.phases|length }})</a>
-                    </li>
-                </ul>
+            {{ form_row(form.name) }}
+            {{ form_row(form.description) }}
+        </div>
+        <div class="exercise-form__right">
+            <h5>Phasen ({{ exercise.phases|length }})</h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans %}exercisePhase.labels.type{% endtrans %}</th>
+                    <th>{% trans %}exercisePhase.labels.name{% endtrans %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {% for exercisePhase in exercise.phases %}
+                    {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
+                    <tr>
+                        <td>
+                            {% if exercisePhase.isGroupPhase %}
+                                <i class="fas fa-users"
+                                   title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ phaseTypeTransVar | trans }}</td>
+                        <td>{{ exercisePhase.name }}</td>
+                        <td class="text-right">
+                            <a class="btn btn-outline-danger btn-sm"
+                               href="{{ path('app_exercise-phase-delete', {id: exercise.id, phase_id: exercisePhase.id}) }}">
+                                <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.title{% endtrans %}
+                            </a>
+                            <a class="btn btn-primary btn-sm"
+                               href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}">
+                                <i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}
+                            </a>
 
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="phasen">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{% trans %}exercisePhase.labels.type{% endtrans %}</th>
-                                    <th>{% trans %}exercisePhase.labels.name{% endtrans %}</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            {% for exercisePhase in exercise.phases %}
-                                {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
-                                <tr>
-                                    <td>
-                                        {% if exercisePhase.isGroupPhase %}
-                                            <i class="fas fa-users" title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
-                                        {% else %}
-                                            <i class="fas fa-user"></i>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ phaseTypeTransVar | trans }}</td>
-                                    <td>{{ exercisePhase.name }}</td>
-                                    <td class="text-right">
-                                        <a class="btn btn-outline-danger btn-sm" href="{{ path('app_exercise-phase-delete', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.title{% endtrans %}</a>
-                                        <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"><i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                        <ul class="list">
+                            <div class="btn-group" role="group" aria-label="Sortierung der Phase ändern">
+                                {% if loop.first %}
+                                    <button class="btn btn-outline-primary btn-sm" disabled="disabled"
+                                            aria-disabled="true" title="Phase nach oben sortieren">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                {% else %}
+                                    <a class="btn btn-outline-primary btn-sm" title="Phase nach oben sortieren"
+                                       href="{{ path('app_exercise-phase-change-sorting', {id: exercise.id, phase_id: exercisePhase.id, sortUp: true}) }}">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </a>
+                                {% endif %}
+                                {% if loop.last %}
+                                    <button class="btn btn-outline-primary btn-sm" disabled="disabled"
+                                            aria-disabled="true" title="Phase nach unten sortieren">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                {% else %}
+                                    <a class="btn btn-outline-primary btn-sm" title="Phase nach unten sortieren"
+                                       href="{{ path('app_exercise-phase-change-sorting', {id: exercise.id, phase_id: exercisePhase.id, sortUp: false}) }}">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-new', {id: exercise.id}) }}">
+                <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>
+        </div>
 
-                        </ul>
-
-                        <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-new', {id: exercise.id}) }}"><i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>
-                    </div>
-                </div>
-            </div>
-
-            <footer class="footer">
-                <a class="btn btn-outline-primary" href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
-                {{ form_row(form.save) }}
-            </footer>
+        <footer class="footer">
+            <a class="btn btn-outline-primary"
+               href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+            {{ form_row(form.save) }}
+        </footer>
         {{ form_end(form) }}
     </div>
 
