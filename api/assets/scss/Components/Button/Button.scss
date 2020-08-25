@@ -32,4 +32,10 @@
 
     color: $theme__color__white;
   }
+
+  &.disabled, &:disabled {
+    background-color: transparent;
+
+    color: $theme__color__green--light;
+  }
 }

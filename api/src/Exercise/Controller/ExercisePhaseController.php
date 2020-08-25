@@ -15,6 +15,7 @@ use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
+use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Video\VideoCodeRepository;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -38,11 +39,12 @@ class ExercisePhaseController extends AbstractController
     private RouterInterface $router;
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private VideoCodeRepository $videoCodeRepository;
+    private ExercisePhaseRepository $exercisePhaseRepository;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository, VideoCodeRepository $videoCodeRepository)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository, VideoCodeRepository $videoCodeRepository, ExercisePhaseRepository $exercisePhaseRepository)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -51,6 +53,7 @@ class ExercisePhaseController extends AbstractController
         $this->router = $router;
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->videoCodeRepository = $videoCodeRepository;
+        $this->exercisePhaseRepository = $exercisePhaseRepository;
     }
 
     /**
@@ -352,6 +355,31 @@ class ExercisePhaseController extends AbstractController
         );
 
         return $this->redirectToRoute('app_exercise-phase-edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+    }
+
+    /**
+     * @IsGranted("edit", subject="exercise")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/change-sorting", name="app_exercise-phase-change-sorting")
+     * @Entity("exercisePhase", expr="repository.find(phase_id)")
+     */
+    public function changeSorting(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
+    {
+        $sortUp = $request->query->get('sortUp', false);
+        $currentSortIndex = $exercisePhase->getSorting();
+        $newSortIndex = $sortUp ? $currentSortIndex - 1 : $currentSortIndex + 1;
+
+        $exercisePhaseAtNewSortIndex = $this->exercisePhaseRepository->findOneBy(['sorting' => $newSortIndex]);
+
+        $exercisePhase->setSorting($newSortIndex);
+        $exercisePhaseAtNewSortIndex->setSorting($currentSortIndex);
+
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($exercisePhase);
+        $entityManager->persist($exercisePhaseAtNewSortIndex);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
     }
 
 
