@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Video } from '../VideoPlayer/VideoPlayerWrapper'
+import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
-import { ComponentTypesEnum, TabsTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
+import { ComponentTypesEnum, TabsTypesEnum } from 'types'
 import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
 import { VideoCodePrototype } from 'Components/VideoEditor/Editors/VideoCodeEditor/types'
 

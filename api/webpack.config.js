@@ -78,7 +78,8 @@ Encore
 const config = Encore.getWebpackConfig();
 config.resolve.alias = {
     StimulusControllers: path.resolve(__dirname, './assets/js/StimulusControllers'),
-    Components: path.resolve(__dirname, './assets/js/Components')
+    Components: path.resolve(__dirname, './assets/js/Components'),
+    types: path.resolve(__dirname, './assets/js/types'),
 }
 
 module.exports = config;

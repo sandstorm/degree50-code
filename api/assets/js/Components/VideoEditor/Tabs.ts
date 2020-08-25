@@ -1,4 +1,4 @@
-import { TabsTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
+import { TabsTypesEnum } from 'types'
 
 export type Tab = {
     id: TabsTypesEnum

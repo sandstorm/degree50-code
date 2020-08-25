@@ -15,9 +15,9 @@ import EditorTabs from './EditorTabs'
 import AnnotationsEditor from './Editors/AnnotationsEditor/AnnotationsEditor'
 import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
-import { Video } from 'StimulusControllers/ExercisePhaseApp/Components/VideoPlayer/VideoPlayerWrapper'
-import { TabsTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
+import { TabsTypesEnum } from 'types'
 import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
+import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 
 setTranslations(i18n)
 NProgress.configure({ minimum: 0, showSpinner: false })

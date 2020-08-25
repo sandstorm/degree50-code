@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { useOverlay, usePreventScroll, useModal, OverlayContainer } from '@react-aria/overlays'
 import { FocusScope } from '@react-aria/focus'
-import Button from '../Button/Button'
+import Button from 'Components/Button/Button'
 
 type Props = {
     children: React.ReactChild

@@ -5,9 +5,8 @@ import { RenderConfig } from '../MediaTrack'
 import { actions } from '../../../../PlayerSlice'
 import MediaItemContextMenu from './MediaItemContextMenu'
 import MediaItemMemoForm from './MediaItemMemoForm'
-import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
-import { useModal } from 'StimulusControllers/ExercisePhaseApp/Components/Modal/useModal'
-import Button from 'StimulusControllers/ExercisePhaseApp/Components/Button/Button'
+import { useModal } from 'Components/Modal/useModal'
+import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoEditorSlice'
 
 type OwnProps = {
@@ -31,7 +30,7 @@ type OwnProps = {
     showTextInMediaItems: boolean
 }
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: {}) => {
     return {}
 }
 

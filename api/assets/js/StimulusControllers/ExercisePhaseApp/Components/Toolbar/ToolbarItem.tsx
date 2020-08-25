@@ -1,6 +1,6 @@
 import React from 'react'
 import { Component } from './Toolbar'
-import Button from '../Button/Button'
+import Button from 'Components/Button/Button'
 
 type ToolbarItemProps = {
     component: Component

@@ -1,8 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { connect } from 'react-redux'
-import { selectConfig } from '../Config/ConfigSlice'
 import VideoPlayer from './VideoPlayer'
-import { AppState } from '../../Store/Store'
 import { VideoJsPlayerOptions } from 'video.js'
 
 export type Video = {
@@ -13,18 +10,13 @@ export type Video = {
     duration: string
 }
 
-const mapStateToProps = (state: AppState) => ({
-    videos: selectConfig(state).videos,
-})
-
-type AdditionalProps = {
+type Props = {
     updateCurrentTime: (time: number) => void
     videoNodeRef: React.RefObject<HTMLVideoElement>
+    videos: Video[]
 }
 
-type VideoPlayerWrapperProps = AdditionalProps & ReturnType<typeof mapStateToProps>
-
-const VideoPlayerWrapper: React.FC<VideoPlayerWrapperProps> = (props) => {
+const VideoPlayerWrapper: React.FC<Props> = (props) => {
     const [activeVideoIndex, setActiveVideoIndex] = useState(0)
 
     const activeVideo = props.videos[activeVideoIndex]
@@ -92,4 +84,4 @@ const VideoPlayerWrapper: React.FC<VideoPlayerWrapperProps> = (props) => {
     )
 }
 
-export default connect(mapStateToProps)(VideoPlayerWrapper)
+export default React.memo(VideoPlayerWrapper)

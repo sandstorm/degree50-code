@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../Store/Store'
 import { overlaySizesEnum } from './Overlay'
-import { ComponentTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ComponentTypesEnum'
+import { ComponentTypesEnum } from 'types'
 
 interface OverlayState {
     isVisible: boolean
