@@ -2,7 +2,7 @@ import { configureStore, ThunkAction, Action, getDefaultMiddleware } from '@redu
 import toolbarReducer from '../Components/Toolbar/ToolbarSlice'
 import configReducer from '../Components/Config/ConfigSlice'
 import liveSyncConfigReducer from '../Components/LiveSyncConfig/LiveSyncConfigSlice'
-import solutionReducer from '../Components/Solution/SolutionSlice'
+import { videoEditorSlice } from '../../../Components/VideoEditor/VideoEditorSlice'
 import overlayReducer from '../Components/Overlay/OverlaySlice'
 import materialViewerReducer from '../Components/MaterialViewer/MaterialViewerSlice'
 import presenceReducer from '../Components/Presence/PresenceSlice'
@@ -13,7 +13,7 @@ import { all, spawn, call } from 'redux-saga/effects'
 import presenceSaga from '../Components/Presence/PresenceSaga'
 import solutionSaga from '../Components/Solution/SolutionSaga'
 import currentEditorReducer from '../Components/Presence/CurrentEditorSlice'
-import playerReducer from '../Components/VideoEditor/PlayerSlice'
+import playerReducer from '../../../Components/VideoEditor/PlayerSlice'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -23,7 +23,7 @@ export const store = configureStore({
         player: playerReducer,
         config: configReducer,
         liveSyncConfig: liveSyncConfigReducer,
-        solution: solutionReducer,
+        videoEditor: videoEditorSlice.reducer,
         overlay: overlayReducer,
         materialViewer: materialViewerReducer,
         presence: presenceReducer,
