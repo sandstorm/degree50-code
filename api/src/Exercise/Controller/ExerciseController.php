@@ -3,6 +3,7 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\ExercisePhase;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Account\CourseRepository;
@@ -127,7 +128,7 @@ class ExerciseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$exercise` variable has also been updated
-            /** @var Exercise $exercise */
+            /* @var Exercise $exercise */
             $exercise = $form->getData();
 
             $this->eventStore->addEvent('ExerciseNameOrDescriptionUpdated', [
@@ -148,8 +149,19 @@ class ExerciseController extends AbstractController
             return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
         }
 
+        $exerciseHasSolutions = false;
+        $phases = $exercise->getPhases();
+        /* @var ExercisePhase $phase */
+        foreach ($phases as $phase) {
+            if (count($phase->getTeams()) > 0) {
+                $exerciseHasSolutions = true;
+                break;
+            }
+        }
+
         return $this->render('Exercise/Edit.html.twig', [
             'exercise' => $exercise,
+            'exerciseHasSolutions' => $exerciseHasSolutions,
             'form' => $form->createView()
         ]);
     }
