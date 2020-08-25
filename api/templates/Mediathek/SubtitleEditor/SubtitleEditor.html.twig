@@ -5,10 +5,9 @@
 {% block body %}
     {% if video.encodingStatus == 1 %}
         <div
-            data-controller="react"
+            data-controller="subtitleEditor"
             class="subtitle-editor"
-            data-react-widget="SubtitleEditor"
-            data-react-props="{{ { 'videoJsOptions':{ 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] }} | json_encode|e('html_attr')}}"
+            data-subtitleEditor-props="{{ { video: videoMap, updateUrl: updateUrl } | json_encode|e('html_attr')}}"
         >
             <div class="loading-screen">
                 <i class="fas fa-spinner fa-spin"></i>
@@ -23,4 +22,7 @@
             Video-Encoding läuft noch...
         </div>
     {% endif %}
+    <footer class="footer">
+        <a class="btn btn-outline-primary" href="{{ path('mediathek--index') }}">Speichern</a>
+    </footer>
 {% endblock %}

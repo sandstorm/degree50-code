@@ -75,3 +75,9 @@
 
   }
 }
+
+// The videoEditor uses this to determine its height
+.js-video-editor-container {
+  height: 100%;
+  width: 100%;
+}
