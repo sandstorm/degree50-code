@@ -1,9 +1,9 @@
 {% trans_default_domain 'forms' %}
 {% for video in videos %}
-    <div tabindex="0" class="tile" title="{{ video.description }}">
+    <div tabindex="0" class="tile tile--video" title="{{ video.description }}">
         <input id="{{ video.id }}" type="checkbox" />
         <label for="{{ video.id }}" class="tile__content">
-            <i class="tile__icon fas fa-film"></i>
+            <div class="tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
             <span>{{ video.title }}</span>
         </label>
         <div class="tile__actions">

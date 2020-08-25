@@ -48,6 +48,14 @@ $tileHeight--small: 150px;
       width: $tileHeight--small;
     }
   }
+
+  &--video {
+    .tile__content {
+      width: $tileHeight;
+      height: $tileHeight;
+      padding: 0;
+    }
+  }
 }
 
 .tile__content {
@@ -61,12 +69,36 @@ $tileHeight--small: 150px;
 
   background-color: $theme__color__grey;
 
+  cursor: pointer;
+
   &:hover {
     background-color: $theme__color__green;
 
     text-decoration: none;
     color: $theme__color__white;
   }
+
+  span {
+    display: inline-block;
+    width: 100%;
+
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    overflow: hidden;
+  }
+}
+
+.tile__image {
+  height: $tileHeight * 0.7;;
+  width: 100%;
+  margin-bottom: 10px;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+
 }
 
 .tile__icon {
