@@ -1,5 +1,8 @@
 .content-header {
   margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   border-bottom: 1px solid $theme__color__grey--dark;
 

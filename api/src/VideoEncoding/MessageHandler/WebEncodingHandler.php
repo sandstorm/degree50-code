@@ -12,6 +12,7 @@ use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
+use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Format\Video\X264;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -52,10 +53,10 @@ class WebEncodingHandler implements MessageHandlerInterface
             $inputVideoFilename = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
 
             $config = [
-                'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
+                'ffmpeg.binaries' => '/usr/bin/ffmpeg',
                 'ffprobe.binaries' => '/usr/bin/ffprobe',
-                'timeout'          => 3600, // The timeout for the underlying process
-                'ffmpeg.threads'   => 12,   // The number of threads that FFmpeg should use
+                'timeout' => 3600, // The timeout for the underlying process
+                'ffmpeg.threads' => 12,   // The number of threads that FFmpeg should use
             ];
 
             $outputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
@@ -66,9 +67,12 @@ class WebEncodingHandler implements MessageHandlerInterface
             // We use our encoded mp4 file as baseline for further encoding to HLS
             // That way we can guarantee that the resulting HLS will be playable.
             $mp4Url = $localOutputDirectory . '/x264.mp4';
+            $videoDuration = $this->probeForVideoDuration($mp4Url);
             $this->encodeHLS($config, $mp4Url, $localOutputDirectory);
 
-            $video->setVideoDuration($this->probeForVideoDuration($mp4Url));
+            $this->createPreviewImage($config, $mp4Url, $localOutputDirectory, $videoDuration);
+
+            $video->setVideoDuration($videoDuration);
             $video->setEncodingStatus(Video::ENCODING_FINISHED);
 
             $this->eventStore->addEvent('VideoEncodedCompletely', [
@@ -84,7 +88,7 @@ class WebEncodingHandler implements MessageHandlerInterface
 
             $this->entityManager->persist($video);
             $this->entityManager->flush();
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $video->setEncodingStatus(Video::ENCODING_ERROR);
             $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->persist($video);
@@ -96,26 +100,29 @@ class WebEncodingHandler implements MessageHandlerInterface
         }
     }
 
-    private function probeForVideoDuration(string $filePath) {
+    private function probeForVideoDuration(string $filePath): float
+    {
         $ffprobe = FFProbe::create();
         $duration = $ffprobe
-            ->format($filePath) // extracts file informations
+            ->format($filePath) // extracts file information
             ->get('duration');
 
         return $duration;
     }
 
-    private function encodeMP4(Array $config, string $inputVideoFilename, string $localOutputDirectory) {
+    private function encodeMP4(array $config, string $inputVideoFilename, string $localOutputDirectory)
+    {
         $this->logger->info('Start encoding MP4 of file <' . $inputVideoFilename . '>',);
 
         $ffmpeg = FFMpeg::create($config, $this->logger);
         $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
         $ffmpegVideo->save(new X264('libmp3lame'), $localOutputDirectory . '/x264.mp4');
 
-        $this->logger->info('Finish encoding MP4 of file <' . $inputVideoFilename . '>',);
+        $this->logger->info('Finished encoding MP4 of file <' . $inputVideoFilename . '>',);
     }
 
-    private function encodeHLS(Array $config, string $inputVideoFilename, string $localOutputDirectory) {
+    private function encodeHLS(array $config, string $inputVideoFilename, string $localOutputDirectory)
+    {
         $this->logger->info('Start encoding HLS of file <' . $inputVideoFilename . '>',);
 
         $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
@@ -128,11 +135,24 @@ class WebEncodingHandler implements MessageHandlerInterface
             ->autoGenerateRepresentations([720, 360]) // You can limit the number of representatons
             ->save($localOutputDirectory . '/hls.m3u8');
 
-        $this->logger->info('Finish encoding HLS of file <' . $inputVideoFilename . '>',);
+        $this->logger->info('Finished encoding HLS of file <' . $inputVideoFilename . '>',);
 
     }
 
-    private function pingAndReconnectDB() {
+    private function createPreviewImage(array $config, string $inputVideoFilename, string $localOutputDirectory, float $videoDuration)
+    {
+        $this->logger->info('Create preview image for <' . $inputVideoFilename . '>',);
+
+        $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
+        $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
+        $frame = $ffmpegVideo->frame(TimeCode::fromSeconds($videoDuration * 0.25));
+        $frame->save($localOutputDirectory. '/thumbnail.jpg');
+
+        $this->logger->info('Finished creation of preview image for <' . $inputVideoFilename . '>',);
+    }
+
+    private function pingAndReconnectDB()
+    {
         // WHY: The encoding process might take quite long and the db connection might have been
         // lost/closed in the meantime. Therefore we check if we still have a connection and
         // otherwise reconnect.

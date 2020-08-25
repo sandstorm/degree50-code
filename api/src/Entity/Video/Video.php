@@ -85,7 +85,7 @@ class Video
     private $encodingStatus;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="float", nullable=true)
      */
     private $videoDuration;
 
@@ -258,9 +258,9 @@ class Video
     /**
      * Get videoDuration.
      *
-     * @return videoDuration.
+     * @return float.
      */
-    public function getVideoDuration()
+    public function getVideoDuration(): float
     {
         return $this->videoDuration;
     }
@@ -268,9 +268,9 @@ class Video
     /**
      * Set videoDuration.
      *
-     * @param videoDuration the value to set.
+     * @param float $videoDuration
      */
-    public function setVideoDuration($videoDuration)
+    public function setVideoDuration($videoDuration): void
     {
         $this->videoDuration = $videoDuration;
     }
