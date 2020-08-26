@@ -16,8 +16,8 @@
     </header>
 
     <div class="tiles">
-        {{ include('Mediathek/Videos.html.twig', {videos: videos}) }}
-
-
+        {% for video in videos %}
+            {{ include('Mediathek/Video.html.twig', {video: video}) }}
+        {% endfor %}
     </div>
 {% endblock %}
