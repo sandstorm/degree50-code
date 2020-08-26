@@ -7,6 +7,15 @@
     {{ parent() }}
 {% endblock %}
 
+{% block video_entity_widget %}
+    {%- set options = choices -%}
+    <div class="tiles">
+        {% for group_label, choice in options %}
+            {{- block('video_checkbox') -}}
+        {% endfor %}
+    </div>
+{% endblock %}
+
 {% block vich_file_widget %}
     <div class="vich-file">
         {{ form_widget(form.file) }}
@@ -15,7 +24,22 @@
         {% endif %}
 
         {% if download_uri %}
-            <a class="btn btn-outline-primary btn-sm" href="{{ download_uri }}">{{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}</a>
+            <a class="btn btn-outline-primary btn-sm"
+               href="{{ download_uri }}">{{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}</a>
         {% endif %}
+    </div>
+{% endblock %}
+
+{% block video_checkbox %}
+    <div tabindex="0" class="video-checkbox" title="{{ choice.data.description }}">
+        <input id="{{ choice.value }}" value="{{ choice.value }}"
+               name="{{ full_name }}[]"
+               {% if choice is selectedchoice(value) %} checked="checked"{% endif %}
+               type="checkbox"/>
+        <label for="{{ choice.value }}" class="video-checkbox__label">
+            <div class="video-checkbox__image" role="img"
+                 style="background-image: url({{ choice.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <span>{{ choice.data.title }}</span>
+        </label>
     </div>
 {% endblock %}

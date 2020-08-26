@@ -34,6 +34,7 @@ exercisePhase:
     name: 'Titel der Phase'
     task: 'Lernauftrag / Beschreibung'
     videos: 'Videos'
+    videosExtended: 'Video(s) für die Aufgabe auswählen'
     videoCodes: 'Video-Codes'
     components: 'Zusätzlich Komponenten'
     material: 'Material'

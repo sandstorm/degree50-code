@@ -57,7 +57,9 @@ class VideoAnalysisType extends ExercisePhaseType
                 'required' => true,
                 'choice_label' => 'title',
                 'multiple' => true,
-                'label' => false
+                'expanded' => true,
+                'label' => false,
+                'block_prefix' => 'video_entity'
             ])
             ->add('components', ChoiceType::class, [
                 'label' => false,
