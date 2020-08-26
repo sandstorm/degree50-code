@@ -11,10 +11,10 @@
         </div>
     </div>
     <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('app_exercise', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting}) }}">Zurück</a>
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercisePhase.belongsToExcercise.id, phase: exercisePhase.sorting}) }}">Zurück</a>
         <span>Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
         {% if is_granted('updateSolution', exercisePhaseTeam) %}
-            <a class="btn btn-primary" href="{{ path('app_exercise-phase-team-share-result', {id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
+            <a class="btn btn-primary" href="{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
         {% endif %}
     </footer>
 {% endblock %}

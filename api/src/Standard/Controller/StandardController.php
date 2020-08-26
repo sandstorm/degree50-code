@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class StandardController extends AbstractController
 {
     /**
-     * @Route("/impressum", name="app_imprint")
+     * @Route("/impressum", name="imprint")
      */
     public function imprint(): Response
     {
@@ -18,7 +18,7 @@ class StandardController extends AbstractController
     }
 
     /**
-     * @Route("/datenschutz", name="app_data-privacy")
+     * @Route("/datenschutz", name="data-privacy")
      */
     public function dataPrivacy(): Response
     {

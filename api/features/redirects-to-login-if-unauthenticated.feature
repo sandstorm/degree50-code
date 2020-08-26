@@ -11,7 +11,7 @@ Feature: Redirections to the login if unauthenticated
     Given I am not logged in
 
   Scenario: Simple login
-    When I visit route "app_exercise-new"
+    When I visit route "exercise-overview__exercise--new"
     Then I am redirected to the login page
     Then the response status code should be 200
 
@@ -21,23 +21,23 @@ Feature: Redirections to the login if unauthenticated
     Then the response status code should be 200
 
     Examples:
-      | route                             | params                            |
-      | app_mediathek-index               |                                   |
-      | app_subtitle-editor               | {"id": "foo"}                                  |
-      | app_videoplayer                   | {"id": "foo"}                     |
-      | app_videoupload                   |                                   |
-      | app_video-edit                    | {"id": "foo"}                     |
-      | app_video-delete                  | {"id": "foo"}                     |
-      | app_exercise                      | {"id": "ex"}                      |
-      | app_exercise-new                  |                                   |
-      | app_exercise-edit                 | {"id": "ex"}                      |
-      | app_exercise-overview             |                                   |
-      | app_exercise-overview-show-course | {"id": "c"}                       |
-      | app_exercise-phase-new            | {"id": "ex"}                      |
-      | app_exercise-phase-new-set-type   | {"id": "ex"}                      |
-      | app_exercise-phase-edit           | {"id": "ex", "phase_id": "ex-p1"} |
-      | app_exercise-phase-delete         | {"id": "ex", "phase_id": "ex-p1"} |
-      | app_material-download             | {"id": "m"}                       |
+      | route                                       | params                            |
+      | mediathek--index                            |                                   |
+      | mediathek__subtitle-editor                  | {"id": "foo"}                     |
+      | mediathek__video--player                    | {"id": "foo"}                     |
+      | mediathek__video--upload                    |                                   |
+      | mediathek__video--edit                      | {"id": "foo"}                     |
+      | mediathek__video--delete                    | {"id": "foo"}                     |
+      | exercise-overview__exercise--show           | {"id": "ex"}                      |
+      | exercise-overview__exercise--new            |                                   |
+      | exercise-overview__exercise--edit           | {"id": "ex"}                      |
+      | exercise-overview                           |                                   |
+      | exercise-overview--show-course              | {"id": "c"}                       |
+      | exercise-overview__exercise-phase--new      | {"id": "ex"}                      |
+      | exercise-overview__exercise-phase--set-type | {"id": "ex"}                      |
+      | exercise-overview__exercise-phase--edit     | {"id": "ex", "phase_id": "ex-p1"} |
+      | exercise-overview__exercise-phase--delete   | {"id": "ex", "phase_id": "ex-p1"} |
+      | exercise-overview__material--download       | {"id": "m"}                       |
 
 
 

@@ -40,7 +40,7 @@ class VideoUploadController extends AbstractController
     }
 
     /**
-     * @Route("/video/uploads/{videoUuid}", name="app_videoupload")
+     * @Route("/video/uploads/{videoUuid}", name="mediathek__video--upload")
      */
     public function videoUpload(VideoRepository $videoRepository, Request $request, string $videoUuid = null): Response
     {
@@ -58,7 +58,7 @@ class VideoUploadController extends AbstractController
         $video->setCreator($this->security->getUser());
 
         $form = $this->createForm(VideoType::class, $video, [
-            'action' => $this->generateUrl('app_videoupload', ['videoUuid' => $videoUuid])
+            'action' => $this->generateUrl('mediathek__video--upload', ['videoUuid' => $videoUuid])
         ]);
 
         $form->handleRequest($request);
@@ -85,7 +85,7 @@ class VideoUploadController extends AbstractController
                 $this->translator->trans('video.upload.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('app_videoplayer', ['id' => $video->getId()]);
+            return $this->redirectToRoute('mediathek__video--player', ['id' => $video->getId()]);
         }
 
         return $this->render('Mediathek/VideoUpload/VideoUpload.html.twig', [
@@ -98,7 +98,7 @@ class VideoUploadController extends AbstractController
 
     /**
      * @IsGranted("edit", subject="video")
-     * @Route("/video/edit/{id}", name="app_video-edit")
+     * @Route("/video/edit/{id}", name="mediathek__video--edit")
      */
     public function edit(Request $request, Video $video): Response
     {
@@ -124,7 +124,7 @@ class VideoUploadController extends AbstractController
                 $this->translator->trans('video.edit.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('app_mediathek-index');
+            return $this->redirectToRoute('mediathek--index');
         }
 
         return $this->render('Mediathek/VideoUpload/Edit.html.twig', [
@@ -135,7 +135,7 @@ class VideoUploadController extends AbstractController
 
     /**
      * @IsGranted("delete", subject="video")
-     * @Route("/video/delete/{id}", name="app_video-delete")
+     * @Route("/video/delete/{id}", name="mediathek__video--delete")
      */
     public function delete(AppRuntime $appRuntime, Video $video): Response
     {
@@ -158,6 +158,6 @@ class VideoUploadController extends AbstractController
             );
         }
 
-        return $this->redirectToRoute('app_mediathek-index');
+        return $this->redirectToRoute('mediathek--index');
     }
 }

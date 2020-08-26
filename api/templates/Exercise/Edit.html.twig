@@ -49,11 +49,11 @@
                         <td>{{ exercisePhase.name }}</td>
                         <td class="text-right">
                             <a class="btn btn-outline-danger btn-sm"
-                               href="{{ path('app_exercise-phase-delete', {id: exercise.id, phase_id: exercisePhase.id}) }}">
+                               href="{{ path('exercise-overview__exercise-phase--delete', {id: exercise.id, phase_id: exercisePhase.id}) }}">
                                 <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.title{% endtrans %}
                             </a>
                             <a class="btn btn-primary btn-sm"
-                               href="{{ path('app_exercise-phase-edit', {id: exercise.id, phase_id: exercisePhase.id}) }}">
+                               href="{{ path('exercise-overview__exercise-phase--edit', {id: exercise.id, phase_id: exercisePhase.id}) }}">
                                 <i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.title{% endtrans %}
                             </a>
 
@@ -65,7 +65,7 @@
                                     </button>
                                 {% else %}
                                     <a class="btn btn-outline-primary btn-sm" title="Phase nach oben sortieren"
-                                       href="{{ path('app_exercise-phase-change-sorting', {id: exercise.id, phase_id: exercisePhase.id, sortUp: true}) }}">
+                                       href="{{ path('exercise-overview__exercise-phase--change-sorting', {id: exercise.id, phase_id: exercisePhase.id, sortUp: true}) }}">
                                         <i class="fas fa-arrow-up"></i>
                                     </a>
                                 {% endif %}
@@ -76,7 +76,7 @@
                                     </button>
                                 {% else %}
                                     <a class="btn btn-outline-primary btn-sm" title="Phase nach unten sortieren"
-                                       href="{{ path('app_exercise-phase-change-sorting', {id: exercise.id, phase_id: exercisePhase.id, sortUp: false}) }}">
+                                       href="{{ path('exercise-overview__exercise-phase--change-sorting', {id: exercise.id, phase_id: exercisePhase.id, sortUp: false}) }}">
                                         <i class="fas fa-arrow-down"></i>
                                     </a>
                                 {% endif %}
@@ -85,13 +85,13 @@
                     </tr>
                 {% endfor %}
             </table>
-            <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-new', {id: exercise.id}) }}">
+            <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id}) }}">
                 <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>
         </div>
 
         <footer class="footer">
             <a class="btn btn-outline-primary"
-               href="{{ path('app_exercise-overview-show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+               href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
             {{ form_row(form.save) }}
         </footer>
         {{ form_end(form) }}

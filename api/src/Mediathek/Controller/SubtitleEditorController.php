@@ -16,7 +16,7 @@ use App\Entity\Video\Video;
 class SubtitleEditorController extends AbstractController
 {
     /**
-     * @Route("/subtitles/edit/{id}", name="app_subtitle-editor")
+     * @Route("/subtitles/edit/{id}", name="mediathek__subtitle-editor")
      */
     public function subtitleEditor(Video $video): Response
     {

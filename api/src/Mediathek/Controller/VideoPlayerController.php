@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class VideoPlayerController extends AbstractController
 {
     /**
-     * @Route("/video/play/{id}", name="app_videoplayer")
+     * @Route("/video/play/{id}", name="mediathek__video--player")
      */
     public function videoPlayer(Video $video): Response
     {

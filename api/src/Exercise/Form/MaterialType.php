@@ -29,7 +29,7 @@ class MaterialType extends AbstractType
             ->add('name', TextType::class, ['label' =>"material.labels.name", 'translation_domain' => 'forms'])
             ->add('file', VichFileType::class, [
                 'download_uri' => static function (Material $material) use ($router) {
-                    return $router->generate('app_material-download', ['id' => $material->getId()]);
+                    return $router->generate('exercise-overview__material--download', ['id' => $material->getId()]);
                 },
                 'label' => "material.labels.file",
                 'translation_domain' => 'forms',

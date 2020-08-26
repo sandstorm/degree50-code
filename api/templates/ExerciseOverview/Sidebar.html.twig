@@ -6,7 +6,7 @@
                 <ul>
                     {% for course in item.courses %}
                         <li class="sidebar-item {{ (currentItem != false and course.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
-                            <a class="nav-link" href="{{ path('app_exercise-overview-show-course', {id: course.id}) }}">{{ course.name }} ({{ course.exercises|length }})</a>
+                            <a class="nav-link" href="{{ path('exercise-overview--show-course', {id: course.id}) }}">{{ course.name }} ({{ course.exercises|length }})</a>
                         </li>
                     {% endfor %}
                 </ul>

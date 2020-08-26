@@ -12,7 +12,7 @@
 
             <div class="tiles">
                 <div tabindex="0" class="tile tile--active">
-                    <a class="tile__content" href="{{ path('app_exercise-phase-show-solutions', { 'id':phase.id }) }}">
+                    <a class="tile__content" href="{{ path('exercise-overview__exercise-phase--show-solutions', { 'id':phase.id }) }}">
                         <i class="tile__icon fas fa-users"></i>
                         <span>Alle Ergebnisse im Vergleich ansehen</span>
                     </a>
@@ -32,7 +32,7 @@
                             </div>
                             <div class="tile__extension-actions">
                                 {% if is_granted('show', team) %}
-                                    <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis ansehen</a>
+                                    <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis ansehen</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -43,14 +43,14 @@
             <h4>Bisherigen Ergebnisse: </h4>
             <div class="tiles">
                 <div tabindex="0" class="tile tile--active">
-                    <a class="tile__content" href="{{ path('app_exercise-phase-show-solutions', { 'id':phase.id }) }}">
+                    <a class="tile__content" href="{{ path('exercise-overview__exercise-phase--show-solutions', { 'id':phase.id }) }}">
                         <i class="tile__icon fas fa-users"></i>
                         <span>Alle Ergebnisse im Vergleich ansehen</span>
                     </a>
                 </div>
                 {% for team in phase.teams %}
                     <div tabindex="0" class="tile" >
-                        <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">
+                        <a class="tile__content" href="{{ path('exercise-overview__exercise-phase--show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">
                             <i class="tile__icon fas fa-user"></i>
                             <span>Ergebnis ansehen von <br /><em>{{ team.creator.username }}</em></span>
                         </a>

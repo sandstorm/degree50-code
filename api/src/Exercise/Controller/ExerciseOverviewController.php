@@ -29,7 +29,7 @@ class ExerciseOverviewController extends AbstractController
     }
 
     /**
-     * @Route("/", name="app_exercise-overview")
+     * @Route("/", name="exercise-overview")
      */
     public function index(): Response
     {
@@ -40,7 +40,7 @@ class ExerciseOverviewController extends AbstractController
     }
 
     /**
-     * @Route("/exercise-overview/{id}", name="app_exercise-overview-show-course")
+     * @Route("/exercise-overview/{id}", name="exercise-overview--show-course")
      */
     public function showExercisesForCourse(Course $course): Response
     {

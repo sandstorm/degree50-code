@@ -19,7 +19,7 @@
             {{ form_row(form.courses) }}
             <div class="form__data-privacy">
                 {{ form_row(form.dataPrivacyAccepted) }}
-                <a href="{{ path('app_data-privacy') }}" target="_blank">Datenschutzbestimmung ansehen</a>
+                <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmung ansehen</a>
             </div>
             <hr />
             <h4>Video wird in folgenden Aufgaben/Phasen verwendet</h4>
@@ -33,7 +33,7 @@
         </div>
 
         <footer class="footer">
-            <a class="btn btn-outline-primary" href="{{ path('app_mediathek-index') }}">{% trans %}video.upload.back{% endtrans %}</a>
+            <a class="btn btn-outline-primary" href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
             {{ form_row(form.save) }}
         </footer>
     {{ form_end(form) }}

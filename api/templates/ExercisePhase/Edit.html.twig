@@ -85,7 +85,7 @@
 
         <footer class="footer">
             <a class="btn btn-outline-primary"
-               href="{{ path('app_exercise-edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+               href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
             {{ form_row(form.save) }}
         </footer>
         {{ form_end(form) }}
@@ -97,13 +97,13 @@
     {% set componentTransVar = 'exercisePhase.components.' ~ (component) ~ '.label' %}
     {% if isActive %}
         <a class="btn btn-outline-primary"
-           href="{{ path('app_exercise-phase-toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
+           href="{{ path('exercise-overview__exercise-phase--toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
             <i class="fas fa-check"></i>
             {{ componentTransVar | trans }}
         </a>
     {% else %}
         <a class="btn btn-outline-danger"
-           href="{{ path('app_exercise-phase-toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
+           href="{{ path('exercise-overview__exercise-phase--toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
             <i class="fas fa-times"></i>
             {{ componentTransVar | trans }}
         </a>

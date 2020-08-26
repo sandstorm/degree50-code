@@ -18,7 +18,7 @@
                 <div class="col-3">
                     {% if is_granted('create', phase) %}
                         <div tabindex="0" class="tile tile--active" >
-                            <a class="tile__content" href="{{ path('app_exercise-phase-team-new', {id: phase.id}) }}">
+                            <a class="tile__content" href="{{ path('exercise-overview__exercise-phase-team--new', {id: phase.id}) }}">
                                 <i class="tile__icon fas fa-plus-circle"></i>
                                 <span>Neue Gruppe anlegen</span>
                             </a>
@@ -49,15 +49,15 @@
                                     </div>
                                     <div class="tile__extension-actions">
                                         {% if is_granted('join', team) %}
-                                            <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-team-join', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe beitreten</a>
+                                            <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase-team--join', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe beitreten</a>
                                         {% endif %}
                                         {% if is_granted('leave', team) %}
-                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-team-leave', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe verlassen</a>
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('exercise-overview__exercise-phase-team--leave', { 'id':phase.id, 'team_id': team.id }) }}">Gruppe verlassen</a>
                                         {% endif %}
                                         {% if is_granted('show', team) %}
-                                            <a class="btn btn-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id }) }}">Phase starten</a>
+                                            <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--show', { 'id':phase.id, 'team_id': team.id }) }}">Phase starten</a>
                                         {% else %}
-                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis ansehen</a>
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis ansehen</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
             <div class="tiles">
                 {% if is_granted('create', phase) %}
                     <div tabindex="0" class="tile tile--active" >
-                        <a class="tile__content" href="{{ path('app_exercise-phase-team-new', {id: phase.id}) }}">
+                        <a class="tile__content" href="{{ path('exercise-overview__exercise-phase-team--new', {id: phase.id}) }}">
                             <i class="tile__icon fas fa-play"></i>
                             <span>Phase starten</span>
                         </a>
@@ -82,14 +82,14 @@
                 {% for team in phase.teams %}
                     {% if team.creator == app.user %}
                         <div tabindex="0" class="tile tile--active" >
-                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id }) }}">
+                            <a class="tile__content" href="{{ path('exercise-overview__exercise-phase--show', { 'id':phase.id, 'team_id': team.id }) }}">
                                 <i class="tile__icon fas fa-play"></i>
                                 <span>Mein Ergebnis</span>
                             </a>
                         </div>
                     {% else %}
                         <div tabindex="0" class="tile" >
-                            <a class="tile__content" href="{{ path('app_exercise-phase-show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">
+                            <a class="tile__content" href="{{ path('exercise-overview__exercise-phase--show', { 'id':phase.id, 'team_id': team.id, 'showSolution': true }) }}">
                                 <i class="tile__icon fas fa-user"></i>
                                 <span>Ergebnis von <br />{{ team.creator.username }}</span>
                             </a>
