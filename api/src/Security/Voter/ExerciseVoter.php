@@ -54,7 +54,7 @@ class ExerciseVoter extends Voter
 
         switch ($attribute) {
             case self::VIEW:
-                return $this->canView($course, $user);
+                return $this->canView($course, $exercise, $user);
             case self::CREATE:
                 return $this->canCreate($course, $user);
             case self::EDIT or self::DELETE or self::SHOW_SOLUTION:
@@ -65,8 +65,11 @@ class ExerciseVoter extends Voter
     }
 
 
-    private function canView(Course $course, User $user)
+    private function canView(Course $course, Exercise $exercise, User $user)
     {
+        if ($exercise->getStatus() == Exercise::EXERCISE_CREATED) {
+            return false;
+        }
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course);
     }
 

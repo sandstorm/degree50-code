@@ -36,14 +36,14 @@ class Material
     /**
      * @var string
      *
-     * @ORM\Column(name="mimeType", type="string", length=255)
+     * @ORM\Column(name="mime_type", type="string", length=255)
      */
     private $mimeType;
 
     /**
      * @var \DateTimeImmutable|null
      *
-     * @ORM\Column(name="uploadAt", type="datetimetz_immutable")
+     * @ORM\Column(name="upload_at", type="datetimetz_immutable")
      */
     private $uploadAt;
 

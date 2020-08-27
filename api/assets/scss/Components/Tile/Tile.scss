@@ -77,16 +77,42 @@ $tileHeight--small: 150px;
     text-decoration: none;
     color: $theme__color__white;
   }
+}
 
-  span {
-    display: inline-block;
-    width: 100%;
+.tile__title {
+  display: inline-block;
+  width: 100%;
 
-    text-align: center;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
-    overflow: hidden;
+  overflow: hidden;
+}
+
+.tile__date, .tile__phases {
+  display: inline-block;
+  width: 100%;
+
+  text-align: left;
+  font-size: $base__fontSize--smaller;
+}
+
+.tile__status {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+
+  &--0 {
+    color: $theme__color__red;
+  }
+
+  &--1 {
+    color: $theme__color__green;
+  }
+
+  &--2 {
+    color: $theme__color__orange;
   }
 }
 

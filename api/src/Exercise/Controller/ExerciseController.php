@@ -167,6 +167,27 @@ class ExerciseController extends AbstractController
     }
 
     /**
+     * @IsGranted("edit", subject="exercise")
+     * @Route("/exercise/edit/{id}/change-status", name="exercise-overview__exercise--change-status")
+     */
+    public function changeStatus(Request $request, Exercise $exercise): Response
+    {
+        $newStatus = (int) $request->query->get('status', Exercise::EXERCISE_CREATED);
+        $exercise->setStatus($newStatus);
+
+        $this->eventStore->addEvent('ExerciseStatusUpdated', [
+            'exerciseId' => $exercise->getId(),
+            'status' => $newStatus,
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($exercise);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
+    }
+
+    /**
      * @IsGranted("delete", subject="exercise")
      * @Route("/exercise/delete/{id}", name="exercise-overview__exercise--delete")
      */

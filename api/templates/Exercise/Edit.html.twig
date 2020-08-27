@@ -13,6 +13,15 @@
                 </div>
             {% endif %}
         </header>
+        <p>
+            {% set statusTransVar = 'exercise.labels.status' ~ (exercise.status) %}
+            <strong>Status: </strong> {{ statusTransVar | trans }}
+            {% if exercise.status == 0 %}
+                <a href="{{ path('exercise-overview__exercise--change-status', {id: exercise.id, status: 2}) }}" class="btn btn-primary btn-sm">Aufgabe veröffentlichen</a>
+            {% elseif exercise.status == 2 %}
+                <a href="{{ path('exercise-overview__exercise--change-status', {id: exercise.id, status: 0}) }}" class="btn btn-danger btn-sm">Aufgabe verstecken</a>
+            {% endif %}
+        </p>
     </div>
 
     <div class="exercise-form">
@@ -87,6 +96,8 @@
             </table>
             <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id}) }}">
                 <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}</a>
+            <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id, isGroupPhase: true}) }}">
+                <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.titleForGroupPhase{% endtrans %}</a>
         </div>
 
         <footer class="footer">

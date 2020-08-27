@@ -13,7 +13,7 @@
     <div class="container">
         <div class="tiles">
             {% for type in types %}
-                <a href="{{ path('exercise-overview__exercise-phase--set-type', {id: exercise.id, type: type.id}) }}" class="tile">
+                <a href="{{ path('exercise-overview__exercise-phase--set-type', {id: exercise.id, type: type.id, isGroupPhase: isGroupPhase}) }}" class="tile">
                     <div class="tile__content">
                         <i class="tile__icon {{ type.iconClass}}"></i>
                         <span>

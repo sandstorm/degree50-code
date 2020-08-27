@@ -8,6 +8,12 @@ exercise:
     name: 'Titel der Aufgabe'
     description: 'Lernauftrag / Beschreibung'
     submit: 'Aufgabe speichern'
+    created: 'Erstellt'
+    phases: 'Phasen'
+    status: 'Status'
+    status0: 'Erstellt'
+    status1: 'Abgeschlossen'
+    status2: 'Veröffentlicht'
   show:
     title: 'Aufgabe starten'
   new:
@@ -62,6 +68,7 @@ exercisePhase:
   new:
     back: 'Zurück zur Aufgabe'
     title: 'Phase hinzufügen'
+    titleForGroupPhase: 'Gruppenphase hinzufügen'
   edit:
     title: 'Phase bearbeiten'
     messages:
