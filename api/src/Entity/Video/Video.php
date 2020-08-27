@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Video
 {
@@ -66,6 +67,13 @@ class Video
     private $creator;
 
     /**
+     * @var \DateTimeImmutable|null
+     *
+     * @ORM\Column(name="created_at", type="datetimetz_immutable")
+     */
+    private $createdAt;
+
+    /**
      * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="videos")
      */
     private Collection $courses;
@@ -82,7 +90,7 @@ class Video
      * 3 = error
      * @ORM\Column(type="integer")
      */
-    private $encodingStatus;
+    private $encodingStatus = self::ENCODING_NOT_STARTED;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -98,7 +106,6 @@ class Video
         $this->generateOrSetId($id);
         $this->videoAnalysisTypes = new ArrayCollection();
         $this->courses = new ArrayCollection();
-        $this->encodingStatus = self::ENCODING_NOT_STARTED;
     }
 
     /**
@@ -289,5 +296,21 @@ class Video
     public function setEncodingStatus(int $encodingStatus): void
     {
         $this->encodingStatus = $encodingStatus;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 }

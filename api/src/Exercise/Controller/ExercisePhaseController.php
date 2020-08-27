@@ -198,11 +198,13 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("view", subject="exercise")
+     * @IsGranted("edit", subject="exercise")
      * @Route("/exercise/edit/{id}/phase/new", name="exercise-overview__exercise-phase--new")
      */
     public function new(Request $request, Exercise $exercise): Response
     {
+        $isGroupPhase = $request->query->get('isGroupPhase', false);
+
         $types = [];
         foreach (ExercisePhase::PHASE_TYPES as $type) {
             array_push($types, [
@@ -214,17 +216,19 @@ class ExercisePhaseController extends AbstractController
 
         return $this->render('ExercisePhase/ChooseType.html.twig', [
             'types' => $types,
-            'exercise' => $exercise
+            'exercise' => $exercise,
+            'isGroupPhase' => $isGroupPhase
         ]);
     }
 
     /**
-     * @IsGranted("view", subject="exercise")
+     * @IsGranted("edit", subject="exercise")
      * @Route("/exercise/edit/{id}/phase/type", name="exercise-overview__exercise-phase--set-type")
      */
     public function setType(Request $request, Exercise $exercise): Response
     {
         $type = $request->query->get('type', null);
+        $isGroupPhase = $request->query->get('isGroupPhase', false);
         $exercisePhase = new ExercisePhase();
         switch ($type) {
             case ExercisePhase::TYPE_VIDEO_ANALYSE :
@@ -233,6 +237,7 @@ class ExercisePhaseController extends AbstractController
         }
 
         $exercisePhase->setBelongsToExcercise($exercise);
+        $exercisePhase->setIsGroupPhase($isGroupPhase);
 
         if ($type != null) {
             $exercisePhase->setSorting(count($exercise->getPhases()));

@@ -16,11 +16,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * This is a dummy entity. Remove it!
  *
  * @ApiResource
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity
  */
 class Exercise implements ExerciseInterface
 {
     use IdentityTrait;
+
+    const EXERCISE_CREATED = 0;
+    const EXERCISE_PUBLISHED = 2;
+    const EXERCISE_FINISHED = 1;
 
     /**
      * @var string A nice person
@@ -56,9 +61,32 @@ class Exercise implements ExerciseInterface
      */
     private $creator;
 
+    /**
+     * @var \DateTimeImmutable|null
+     *
+     * @ORM\Column(name="created_at", type="datetimetz_immutable")
+     */
+    private $createdAt;
+
+    /**
+     * 0 = created
+     * 1 = finished
+     * 2 = published
+     * @ORM\Column(type="integer")
+     */
+    private $status = self::EXERCISE_CREATED;
+
     public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
         $this->generateOrSetId($id);
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getType(): string
@@ -162,5 +190,29 @@ class Exercise implements ExerciseInterface
         $this->creator = $creator;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus(int $status): void
+    {
+        $this->status = $status;
     }
 }

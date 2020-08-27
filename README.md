@@ -31,6 +31,7 @@
 
 **Symfony commands**
 - ./symfony-console cache:clear
+- ./symfony-console make:entity
 - ./symfony-console make:migration
 - ./symfony-console doctrine:migrations:migrate
 - ./symfony-console messenger:consume async -vv
