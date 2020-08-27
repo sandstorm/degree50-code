@@ -57,7 +57,7 @@ type ExercisePhase implements Node {
   """Aufgabenstellung"""
   task: String!
   definition: String!
-  belongsToExcercise: Exercise
+  belongsToExercise: Exercise
   sorting: String!
 
   """The entity Id"""
@@ -229,7 +229,7 @@ input createExercisePhaseInput {
   """Aufgabenstellung"""
   task: String!
   definition: String!
-  belongsToExcercise: String
+  belongsToExercise: String
   sorting: String!
   clientMutationId: String
 }
@@ -313,7 +313,7 @@ input updateExercisePhaseInput {
   """Aufgabenstellung"""
   task: String
   definition: String
-  belongsToExcercise: String
+  belongsToExercise: String
   sorting: String
   clientMutationId: String
 }

@@ -48,7 +48,7 @@ class VideoAnalysisType extends ExercisePhaseType
             $componentChoices[$component] = $component;
         }
 
-        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExcercise()->getCourse());
+        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
 
         $builder
             ->add('videos', EntityType::class, [

@@ -67,7 +67,7 @@ class ExercisePhaseVoter extends Voter
 
     private function canGetToNextPhase(ExercisePhase $exercisePhase, User $user)
     {
-        if ($exercisePhase->getBelongsToExcercise()->getCreator() === $user) {
+        if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
             return true;
         }
         return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user));
@@ -76,11 +76,11 @@ class ExercisePhaseVoter extends Voter
     // TODO can only delete exercisePhases which have no results/teams
     private function canDelete(ExercisePhase $exercisePhase, User $user)
     {
-        return $user === $exercisePhase->getBelongsToExcercise()->getCreator();
+        return $user === $exercisePhase->getBelongsToExercise()->getCreator();
     }
 
     private function canShowSolutions(ExercisePhase $exercisePhase, User $user)
     {
-        return $user === $exercisePhase->getBelongsToExcercise()->getCreator();
+        return $user === $exercisePhase->getBelongsToExercise()->getCreator();
     }
 }

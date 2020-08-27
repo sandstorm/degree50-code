@@ -72,7 +72,7 @@ class ExercisePhase implements ExerciseInterface
      * @var Exercise
      * @ORM\ManyToOne(targetEntity="Exercise", inversedBy="phases")
      */
-    public $belongsToExcercise;
+    public $belongsToExercise;
 
     /**
      * @var int
@@ -150,17 +150,17 @@ class ExercisePhase implements ExerciseInterface
     /**
      * @return Exercise
      */
-    public function getBelongsToExcercise(): Exercise
+    public function getBelongsToExercise(): Exercise
     {
-        return $this->belongsToExcercise;
+        return $this->belongsToExercise;
     }
 
     /**
-     * @param Exercise $belongsToExcercise
+     * @param Exercise $belongsToExercise
      */
-    public function setBelongsToExcercise(Exercise $belongsToExcercise): void
+    public function setBelongsToExercise(Exercise $belongsToExercise): void
     {
-        $this->belongsToExcercise = $belongsToExcercise;
+        $this->belongsToExercise = $belongsToExercise;
     }
 
     /**

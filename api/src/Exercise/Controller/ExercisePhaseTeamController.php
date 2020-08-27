@@ -61,7 +61,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         /* @var User $user */
         $user = $this->getUser();
-        $exercise = $exercisePhase->getBelongsToExcercise();
+        $exercise = $exercisePhase->getBelongsToExercise();
 
         $existingTeams = $exercisePhase->getTeams();
         foreach($existingTeams as $team) {
@@ -98,7 +98,6 @@ class ExercisePhaseTeamController extends AbstractController
                 $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'forms')
             );
 
-            // TODO change route from int to id of phase
             return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phase' => $exercisePhase->getSorting()]);
         } else {
             return $this->redirectToRoute('exercise-overview__exercise-phase--show', ['id' => $exercisePhase->getId(), 'team_id' => $exercisePhaseTeam->getId()]);
@@ -133,7 +132,7 @@ class ExercisePhaseTeamController extends AbstractController
         );
 
         // TODO change route from int to id of phase
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
 
     }
 
@@ -165,7 +164,7 @@ class ExercisePhaseTeamController extends AbstractController
         );
 
         // TODO change route from int to id of phase
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
     }
 
     /**
@@ -203,7 +202,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->dispatchCutlistEncodingTask($exercisePhaseTeam, $entityManager);
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
     }
 
     private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam, EntityManagerInterface $entityManager) {

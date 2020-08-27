@@ -25,7 +25,7 @@
             <h4>Video wird in folgenden Aufgaben/Phasen verwendet</h4>
             <ul>
                 {% for phase in video.videoAnalysisTypes %}
-                    <li>{{ phase.belongsToExcercise.name }} / {{ phase.name }}</li>
+                    <li>{{ phase.belongsToExercise.name }} / {{ phase.name }}</li>
                 {% else %}
                     <li>Bisher in keiner Phase verwendet</li>
                 {% endfor %}
