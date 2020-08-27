@@ -58,7 +58,7 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @IsGranted("show", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/show/{id}/{team_id}", name="app_exercise-phase-show")
+     * @Route("/exercise-phase/show/{id}/{team_id}", name="exercise-overview__exercise-phase--show")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
     public function show(Request $request, ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
@@ -71,10 +71,10 @@ class ExercisePhaseController extends AbstractController
         // config for the ui to render the react components
         $config = $this->getConfig($exercisePhase, $showSolution);
         $config['apiEndpoints'] = [
-            'updateSolution' => $this->router->generate('app_exercise-phase-team-update-solution', [
+            'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
                 'id' => $exercisePhaseTeam->getId()
             ]),
-            'updateCurrentEditor' => $this->router->generate('app_exercise-phase-team-update-current-editor', [
+            'updateCurrentEditor' => $this->router->generate('exercise-overview__exercise-phase-team--update-current-editor', [
                 'id' => $exercisePhaseTeam->getId()
             ]),
         ];
@@ -155,7 +155,7 @@ class ExercisePhaseController extends AbstractController
                     'id' => $entry->getId(),
                     'name' => $entry->getName(),
                     'type' => $entry->getMimeType(),
-                    'url' => $this->generateUrl('app_material-download', ['id' => $entry->getId()])
+                    'url' => $this->generateUrl('exercise-overview__material--download', ['id' => $entry->getId()])
                 ];
             }, $exercisePhase->getMaterial()->toArray()),
             'videos' => array_map(function (Video $video) {
@@ -176,7 +176,7 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @IsGranted("showSolutions", subject="exercisePhase")
-     * @Route("/exercise-phase/show-solutions/{id}", name="app_exercise-phase-show-solutions")
+     * @Route("/exercise-phase/show-solutions/{id}", name="exercise-overview__exercise-phase--show-solutions")
      */
     public function showSolutions(Request $request, ExercisePhase $exercisePhase): Response
     {
@@ -199,7 +199,7 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/edit/{id}/phase/new", name="app_exercise-phase-new")
+     * @Route("/exercise/edit/{id}/phase/new", name="exercise-overview__exercise-phase--new")
      */
     public function new(Request $request, Exercise $exercise): Response
     {
@@ -220,7 +220,7 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/edit/{id}/phase/type", name="app_exercise-phase-new-set-type")
+     * @Route("/exercise/edit/{id}/phase/type", name="exercise-overview__exercise-phase--set-type")
      */
     public function setType(Request $request, Exercise $exercise): Response
     {
@@ -246,7 +246,7 @@ class ExercisePhaseController extends AbstractController
             $entityManager->persist($exercisePhase);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_exercise-phase-edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
         }
 
         return $this->render('ExercisePhase/ChooseType.html.twig', [
@@ -256,7 +256,7 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/edit/{id}/phase/{phase_id}/edit", name="app_exercise-phase-edit")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/edit", name="exercise-overview__exercise-phase--edit")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
     public function edit(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
@@ -303,7 +303,7 @@ class ExercisePhaseController extends AbstractController
                 $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('app_exercise-phase-edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
         }
 
         return $this->render('ExercisePhase/Edit.html.twig', [
@@ -315,7 +315,7 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/edit/{id}/phase/{phase_id}/toggle-component", name="app_exercise-phase-toggle-component")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/toggle-component", name="exercise-overview__exercise-phase--toggle-component")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
     public function toggleComponent(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
@@ -340,7 +340,7 @@ class ExercisePhaseController extends AbstractController
                 'Mindestens eine Komponente muss aktiv sein'
             );
 
-            return $this->redirectToRoute('app_exercise-phase-edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
         }
 
 
@@ -354,12 +354,12 @@ class ExercisePhaseController extends AbstractController
             'Komponente erfolgreich aktiviert/deaktiviert'
         );
 
-        return $this->redirectToRoute('app_exercise-phase-edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
     }
 
     /**
      * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/edit/{id}/phase/{phase_id}/change-sorting", name="app_exercise-phase-change-sorting")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/change-sorting", name="exercise-overview__exercise-phase--change-sorting")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
     public function changeSorting(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
@@ -379,13 +379,13 @@ class ExercisePhaseController extends AbstractController
         $entityManager->persist($exercisePhaseAtNewSortIndex);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
+        return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
     }
 
 
     /**
      * @IsGranted("delete", subject="exercisePhase")
-     * @Route("/exercise/edit/{id}/phase/{phase_id}/delete", name="app_exercise-phase-delete")
+     * @Route("/exercise/edit/{id}/phase/{phase_id}/delete", name="exercise-overview__exercise-phase--delete")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
     public function delete(Exercise $exercise, ExercisePhase $exercisePhase): Response
@@ -403,7 +403,7 @@ class ExercisePhaseController extends AbstractController
             $this->translator->trans('exercisePhase.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
+        return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
 
     }
 }

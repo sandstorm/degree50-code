@@ -1,3 +1,5 @@
+{% set route = app.request.get('_route') %}
+
 <header class="main-header">
     <nav class="navigation" role="navigation">
         <a class="navigation__brand" href="/">Degree 4.0</a>
@@ -7,11 +9,11 @@
         </button>
         <div class="navigation__inner" id="navigation">
             <ul class="navigation__items">
-                <li class="navigation__item">
-                    <a href="{{ path('app_exercise-overview') }}">Übersicht</a>
+                <li class="navigation__item {{ 'exercise-overview' in route ? 'navigation__item--active' }}">
+                    <a href="{{ path('exercise-overview') }}">Übersicht</a>
                 </li>
-                <li class="navigation__item">
-                    <a href="{{ path('app_mediathek-index') }}">Mediathek</a>
+                <li class="navigation__item {{ 'mediathek' in route ? 'navigation__item--active' }}">
+                    <a href="{{ path('mediathek--index') }}">Mediathek</a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
                 <li class="navigation__item">
@@ -22,7 +24,7 @@
 
             <div class="navigation__user navigation__item">
                 <i class="fas fa-user"></i> {{ app.user.username }}
-                <a href="{{ path('app_logout') }}">Logout</a>
+                <a href="{{ path('logout') }}">Logout</a>
             </div>
         </div>
     </nav>

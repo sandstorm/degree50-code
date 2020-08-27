@@ -27,7 +27,7 @@ class MaterialController extends AbstractController
     }
 
     /**
-     * @Route("/material/download/{id}", name="app_material-download")
+     * @Route("/material/download/{id}", name="exercise-overview__material--download")
      */
     public function downloadAction(DownloadHandler $downloadHandler, Material $material): Response
     {

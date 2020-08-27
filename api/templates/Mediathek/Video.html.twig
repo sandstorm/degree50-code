@@ -7,17 +7,17 @@
         <span>{{ video.title }}</span>
     </label>
     <div class="tile__actions">
-        <a href="{{ path('app_videoplayer', {id: video.id}) }}">
+        <a href="{{ path('mediathek__video--player', {id: video.id}) }}">
             <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
         </a>
         {% if video.creator == app.user %}
-            <a href="{{ path('app_video-edit', {id: video.id}) }}">
+            <a href="{{ path('mediathek__video--edit', {id: video.id}) }}">
                 <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
             </a>
-            <a href="{{ path('app_subtitle-editor', {id: video.id}) }}">
+            <a href="{{ path('mediathek__subtitle-editor', {id: video.id}) }}">
                 <i class="fas fa-pencil-alt"></i> {% trans %}video.subtitle.title{% endtrans %}
             </a>
-            <a href="{{ path('app_video-delete', {id: video.id}) }}" class="color-alert">
+            <a href="{{ path('mediathek__video--delete', {id: video.id}) }}" class="color-alert">
                 <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
             </a>
         {% endif %}

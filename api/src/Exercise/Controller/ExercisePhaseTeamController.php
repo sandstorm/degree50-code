@@ -53,7 +53,7 @@ class ExercisePhaseTeamController extends AbstractController
 
     /**
      * @IsGranted("create", subject="exercisePhase")
-     * @Route("/exercise-phase/{id}/team/new", name="app_exercise-phase-team-new")
+     * @Route("/exercise-phase/{id}/team/new", name="exercise-overview__exercise-phase-team--new")
      */
     public function new(Request $request, ExercisePhase $exercisePhase): Response
     {
@@ -70,7 +70,7 @@ class ExercisePhaseTeamController extends AbstractController
                     'danger',
                     $this->translator->trans('exercisePhaseTeam.new.messages.alreadyCreatedATeam', [], 'forms')
                 );
-                return $this->redirectToRoute('app_exercise', ['id' => $exercise->getId(), 'phase' => $exercisePhase->getSorting()]);
+                return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phase' => $exercisePhase->getSorting()]);
             }
         }
 
@@ -99,15 +99,15 @@ class ExercisePhaseTeamController extends AbstractController
             );
 
             // TODO change route from int to id of phase
-            return $this->redirectToRoute('app_exercise', ['id' => $exercise->getId(), 'phase' => $exercisePhase->getSorting()]);
+            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phase' => $exercisePhase->getSorting()]);
         } else {
-            return $this->redirectToRoute('app_exercise-phase-show', ['id' => $exercisePhase->getId(), 'team_id' => $exercisePhaseTeam->getId()]);
+            return $this->redirectToRoute('exercise-overview__exercise-phase--show', ['id' => $exercisePhase->getId(), 'team_id' => $exercisePhaseTeam->getId()]);
         }
     }
 
     /**
      * @IsGranted("join", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/{id}/team/{team_id}/join", name="app_exercise-phase-team-join")
+     * @Route("/exercise-phase/{id}/team/{team_id}/join", name="exercise-overview__exercise-phase-team--join")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
     public function join(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
@@ -133,13 +133,13 @@ class ExercisePhaseTeamController extends AbstractController
         );
 
         // TODO change route from int to id of phase
-        return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
 
     }
 
     /**
      * @IsGranted("leave", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/{id}/team/{team_id}/leave", name="app_exercise-phase-team-leave")
+     * @Route("/exercise-phase/{id}/team/{team_id}/leave", name="exercise-overview__exercise-phase-team--leave")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
     public function leave(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
@@ -165,11 +165,11 @@ class ExercisePhaseTeamController extends AbstractController
         );
 
         // TODO change route from int to id of phase
-        return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
     }
 
     /**
-     * @Route("/exercise-phase/share-result/{id}", name="app_exercise-phase-team-share-result")
+     * @Route("/exercise-phase/share-result/{id}", name="exercise-overview__exercise-phase-team--share-result")
      */
     public function shareResult(ExercisePhaseTeam $exercisePhaseTeam): Response
     {
@@ -203,7 +203,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->dispatchCutlistEncodingTask($exercisePhaseTeam, $entityManager);
 
-        return $this->redirectToRoute('app_exercise', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExcercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
     }
 
     private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam, EntityManagerInterface $entityManager) {
@@ -243,7 +243,7 @@ class ExercisePhaseTeamController extends AbstractController
      * Try to create a new AutosaveSolution and then publish the most recent version of the solution.
      *
      * @IsGranted("updateSolution", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/update-solution/{id}", name="app_exercise-phase-team-update-solution")
+     * @Route("/exercise-phase/update-solution/{id}", name="exercise-overview__exercise-phase-team--update-solution")
      */
     public function updateSolution(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
@@ -284,7 +284,7 @@ class ExercisePhaseTeamController extends AbstractController
      * Try to update the currentEditor of the TeamPhase and then publish the most recent solution
      *
      * @IsGranted("updateSolution", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/update-current-editor/{id}", name="app_exercise-phase-team-update-current-editor")
+     * @Route("/exercise-phase/update-current-editor/{id}", name="exercise-overview__exercise-phase-team--update-current-editor")
      */
     public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {

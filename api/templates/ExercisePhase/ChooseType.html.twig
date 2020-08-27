@@ -13,7 +13,7 @@
     <div class="container">
         <div class="tiles">
             {% for type in types %}
-                <a href="{{ path('app_exercise-phase-new-set-type', {id: exercise.id, type: type.id}) }}" class="tile">
+                <a href="{{ path('exercise-overview__exercise-phase--set-type', {id: exercise.id, type: type.id}) }}" class="tile">
                     <div class="tile__content">
                         <i class="tile__icon {{ type.iconClass}}"></i>
                         <span>
@@ -26,7 +26,7 @@
     </div>
 
     <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('app_exercise-edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
     </footer>
 
 {% endblock %}

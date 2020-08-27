@@ -40,7 +40,7 @@ class ExerciseController extends AbstractController
 
     /**
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show/{id}/{phase<\d+>}", name="app_exercise")
+     * @Route("/exercise/show/{id}/{phase<\d+>}", name="exercise-overview__exercise--show")
      */
     public function show(Request $request, Exercise $exercise, int $phase = 0): Response
     {
@@ -53,7 +53,7 @@ class ExerciseController extends AbstractController
                     'danger',
                     $this->translator->trans('exercise.showSolution.messages.error', [], 'forms')
                 );
-                return $this->redirectToRoute('app_exercise-overview-show-course', ['id' => $exercise->getCourse()->getId()]);
+                return $this->redirectToRoute('exercise-overview--show-course', ['id' => $exercise->getCourse()->getId()]);
             }
             $template = 'Exercise/ShowSolution.html.twig';
         }
@@ -69,7 +69,7 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * @Route("/exercise/new", name="app_exercise-new")
+     * @Route("/exercise/new", name="exercise-overview__exercise--new")
      */
     public function new(Request $request): Response
     {
@@ -107,7 +107,7 @@ class ExerciseController extends AbstractController
                 $this->translator->trans('exercise.new.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
+            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
         }
 
         return $this->render('Exercise/New.html.twig', [
@@ -118,7 +118,7 @@ class ExerciseController extends AbstractController
 
     /**
      * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/edit/{id}", name="app_exercise-edit")
+     * @Route("/exercise/edit/{id}", name="exercise-overview__exercise--edit")
      */
     public function edit(Request $request, Exercise $exercise): Response
     {
@@ -146,7 +146,7 @@ class ExerciseController extends AbstractController
                 $this->translator->trans('exercise.edit.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('app_exercise-edit', ['id' => $exercise->getId()]);
+            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
         }
 
         $exerciseHasSolutions = false;
@@ -168,7 +168,7 @@ class ExerciseController extends AbstractController
 
     /**
      * @IsGranted("delete", subject="exercise")
-     * @Route("/exercise/delete/{id}", name="app_exercise-delete")
+     * @Route("/exercise/delete/{id}", name="exercise-overview__exercise--delete")
      */
     public function delete(Exercise $exercise): Response
     {
@@ -188,6 +188,6 @@ class ExerciseController extends AbstractController
             $this->translator->trans('exercise.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('app_exercise-overview-show-course', ['id' => $courseId]);
+        return $this->redirectToRoute('exercise-overview--show-course', ['id' => $courseId]);
     }
 }

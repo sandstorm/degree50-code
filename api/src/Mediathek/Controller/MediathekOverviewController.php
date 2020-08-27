@@ -25,7 +25,7 @@ class MediathekOverviewController extends AbstractController
 
 
     /**
-     * @Route("/mediathek", name="app_mediathek-index")
+     * @Route("/mediathek", name="mediathek--index")
      */
     public function index(): Response
     {
