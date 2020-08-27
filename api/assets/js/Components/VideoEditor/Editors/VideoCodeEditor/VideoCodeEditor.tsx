@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import PlayerComponent from '../components/ArtPlayer'
+import ArtPlayer from '../components/ArtPlayer'
 import MediaLane from '../components/MediaLane'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
@@ -9,16 +9,17 @@ import { secondToTime, timeToSecond } from '../utils'
 import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
 import VideoCodes from './VideoCodes'
-import { VideoCode, VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
+import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import { VideoCodePrototype } from './types'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 
 const storage = new Storage()
 
 type OwnProps = {
     height: number
     headerContent: React.ReactNode
-    videos: Array<{ url: { hls: string; mp4: string }; name: string; duration: string }>
+    videos: Array<Video>
     itemUpdateCallback: () => void
     itemUpdateCondition: boolean
     videoCodesPool: VideoCodePrototype[]
@@ -94,10 +95,12 @@ const VideoCodeEditor = (props: Props) => {
     // All options
     const firstVideo = props.videos[0]
     const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
-    const firstVideoUrl = firstVideo ? firstVideo.url.hls : ''
+    const firstVideoUrl = firstVideo?.url?.hls || ''
+    const subtitleUrl = firstVideo?.url?.vtt || undefined
 
     const artPlayerOptions = {
         videoUrl: firstVideoUrl,
+        subtitleUrl,
         uploadDialog: false,
         translationLanguage: 'en',
     }
@@ -169,7 +172,7 @@ const VideoCodeEditor = (props: Props) => {
         <React.Fragment>
             <div ref={measuredContainerRef} className="video-editor__main" style={{ height: height - 200 }}>
                 <div className="video-editor__section video-editor__left">
-                    <PlayerComponent
+                    <ArtPlayer
                         containerHeight={containerHeight}
                         options={artPlayerOptions}
                         currentTimeCallback={setCurrentTimeForMediaItems}

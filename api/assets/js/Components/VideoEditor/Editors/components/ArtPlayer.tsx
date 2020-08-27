@@ -91,7 +91,7 @@ const ArtPlayer = ({
                     fullscreen: true,
                     fullscreenWeb: true,
                     miniProgressBar: true,
-                    ...(options.subtitleUrl ? { url: options.subtitleUrl } : {}),
+                    ...(options.subtitleUrl ? { subtitle: { url: options.subtitleUrl } } : {}),
                     moreVideoAttr: {
                         crossOrigin: 'anonymous',
                         preload: 'auto',

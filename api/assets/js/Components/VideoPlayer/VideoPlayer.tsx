@@ -2,11 +2,13 @@ import React, { useRef, useState, useEffect } from 'react'
 import videojs, { VideoJsPlayerOptions, VideoJsPlayer } from 'video.js'
 
 import 'video.js/dist/video-js.css'
+import { Video } from './VideoPlayerWrapper'
 
 type VideoPlayerProps = {
     videoJsOptions: VideoJsPlayerOptions
     updateCurrentTime: (time: number) => void
     videoNodeRef: React.RefObject<HTMLVideoElement>
+    videoMap?: Video
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
@@ -30,10 +32,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
         }
     }
 
+    const vttPath = props?.videoMap?.url?.vtt
+
     return (
         <div className={'video-player'}>
             <div data-vjs-player>
-                <video id={'video-js'} ref={videoRef} onTimeUpdate={updateTime} className="video-js" />
+                <video id={'video-js'} ref={videoRef} onTimeUpdate={updateTime} className="video-js">
+                    {vttPath && <track kind="captions" src={vttPath} label="English" default />}
+                </video>
             </div>
         </div>
     )

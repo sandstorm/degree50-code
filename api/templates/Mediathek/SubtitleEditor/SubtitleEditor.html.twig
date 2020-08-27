@@ -23,6 +23,7 @@
         </div>
     {% endif %}
     <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('mediathek--index') }}">Speichern</a>
+        <a class="btn btn-outline-primary" href="{{ path('mediathek--index') }}">Zurück</a>
+        <a class="btn btn-outline-primary" href="{{ path('mediathek__subtitle-editor--persist-vtt', {id: video.id}) }}">Speichern</a>
     </footer>
 {% endblock %}

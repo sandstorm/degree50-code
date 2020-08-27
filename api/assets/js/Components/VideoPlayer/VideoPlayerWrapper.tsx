@@ -6,7 +6,7 @@ export type Video = {
     id: string
     name: string
     description: string
-    url: { hls: string; mp4: string }
+    url: { hls?: string; mp4?: string; vtt?: string }
     duration: string
 }
 
@@ -28,7 +28,7 @@ const VideoPlayerWrapper: React.FC<Props> = (props) => {
             controls: true,
             sources: [
                 {
-                    src: activeVideo.url.hls,
+                    src: activeVideo.url?.hls || '',
                 },
             ],
         }),
