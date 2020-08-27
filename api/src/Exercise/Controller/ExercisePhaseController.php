@@ -236,11 +236,12 @@ class ExercisePhaseController extends AbstractController
                 break;
         }
 
-        $exercisePhase->setBelongsToExcercise($exercise);
         $exercisePhase->setIsGroupPhase($isGroupPhase);
+        $exercisePhase->setBelongsToExercise($exercise);
 
         if ($type != null) {
-            $exercisePhase->setSorting(count($exercise->getPhases()));
+            $existingPhaseWithHighestSorting = $this->exercisePhaseRepository->findOneBy(['belongsToExercise' => $exercise], ['sorting' => 'desc']);
+            $exercisePhase->setSorting($existingPhaseWithHighestSorting ? $existingPhaseWithHighestSorting->getSorting() + 1 : 0);
 
             $this->eventStore->addEvent('ExercisePhaseCreated', [
                 'exercisePhaseId' => $exercisePhase->getId(),
@@ -371,11 +372,14 @@ class ExercisePhaseController extends AbstractController
     {
         $sortUp = $request->query->get('sortUp', false);
         $currentSortIndex = $exercisePhase->getSorting();
-        $newSortIndex = $sortUp ? $currentSortIndex - 1 : $currentSortIndex + 1;
 
-        $exercisePhaseAtNewSortIndex = $this->exercisePhaseRepository->findOneBy(['sorting' => $newSortIndex]);
+        if ($sortUp) {
+            $exercisePhaseAtNewSortIndex = $this->exercisePhaseRepository->findExercisePhasesLesserThen($currentSortIndex, $exercise);
+        } else {
+            $exercisePhaseAtNewSortIndex = $this->exercisePhaseRepository->findExercisePhasesLargerThen($currentSortIndex, $exercise);
+        }
 
-        $exercisePhase->setSorting($newSortIndex);
+        $exercisePhase->setSorting($exercisePhaseAtNewSortIndex->getSorting());
         $exercisePhaseAtNewSortIndex->setSorting($currentSortIndex);
 
         $this->eventStore->disableEventPublishingForNextFlush();

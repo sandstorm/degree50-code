@@ -77,7 +77,7 @@ class ExercisePhaseTeamVoter extends Voter
     // TODO: anyone can view a result
     private function canShow(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
-        if ($exercisePhaseTeam->getExercisePhase()->getBelongsToExcercise()->getCreator() === $user) {
+        if ($exercisePhaseTeam->getExercisePhase()->getBelongsToExercise()->getCreator() === $user) {
             return true;
         }
         return $exercisePhaseTeam->getMembers()->contains($user);

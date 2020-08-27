@@ -44,7 +44,7 @@ class Exercise implements ExerciseInterface
 
     /**
      * @var ExercisePhase[]
-     * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExcercise", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExercise", cascade={"all"})
      * @ORM\OrderBy({"sorting" = "ASC"})
      */
     private $phases;
@@ -113,14 +113,14 @@ class Exercise implements ExerciseInterface
     public function setPhases(iterable $phases): void
     {
         foreach ($phases as $phase) {
-            $phase->belongsToExcercise = $this;
+            $phase->belongsToExercise = $this;
         }
         $this->phases = $phases;
     }
 
     public function addPhase(ExercisePhase $exercisePhase): void
     {
-        $exercisePhase->belongsToExcercise = $this;
+        $exercisePhase->belongsToExercise = $this;
         $exercisePhase->sorting = $this->phases->count();
         $this->phases->add($exercisePhase);
     }
