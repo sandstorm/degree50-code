@@ -4,12 +4,38 @@ import createSagaMiddleware from 'redux-saga'
 import { select } from 'redux-saga/effects'
 import { all, spawn, call } from 'redux-saga/effects'
 import VideoEditorSlice from 'Components/VideoEditor/VideoEditorSlice'
+import SubtitlesSlice from '../SubtitlesSlice'
+import subtitleEditSaga from '../SubtitlesSaga'
 
 const sagaMiddleWare = createSagaMiddleware()
 
 export const store = configureStore({
-    reducer: VideoEditorSlice,
+    reducer: {
+        videoEditor: VideoEditorSlice,
+        subtitlesApp: SubtitlesSlice,
+    },
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
+    devTools: {
+        name: 'SubtitleApp',
+    },
+})
+
+const sagas = [subtitleEditSaga]
+sagaMiddleWare.run(function* rootSaga() {
+    yield all(
+        sagas.map((saga) =>
+            spawn(function* () {
+                while (true) {
+                    try {
+                        yield call(saga)
+                        break
+                    } catch (e) {
+                        console.error(e)
+                    }
+                }
+            })
+        )
+    )
 })
 
 export type AppState = ReturnType<typeof store.getState>

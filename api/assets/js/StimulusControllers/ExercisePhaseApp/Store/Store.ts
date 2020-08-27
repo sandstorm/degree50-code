@@ -28,6 +28,9 @@ export const store = configureStore({
         currentEditor: currentEditorReducer,
     }),
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
+    devTools: {
+        name: 'ExercisePhaseApp',
+    },
 })
 
 const sagas = [presenceSaga, solutionSaga]

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import ArtplayerComponent from 'artplayer-react'
 import Hls from 'hls.js'
@@ -13,8 +13,10 @@ export type PlayerOptions = {
 }
 
 type OwnProps = {
+    worker?: Worker
     currentTimeCallback: (time: number) => void
     options: PlayerOptions
+    containerHeight: number
 }
 
 const mapStateToProps = (state: VideoEditorState) => {
@@ -32,10 +34,22 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 // TODO handle pause from outside
-const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosition, isPaused, setPause }: Props) => {
-    const [height, setHeight] = useState(200)
+const ArtPlayer = ({
+    worker,
+    options,
+    currentTimeCallback,
+    setSyncPlayPosition,
+    playPosition,
+    isPaused,
+    setPause,
+    containerHeight,
+}: Props) => {
+    const { player, setPlayer } = useMutablePlayer(worker)
 
-    const { player, setPlayer } = useMutablePlayer()
+    const height =
+        containerHeight === 0
+            ? 200 // min height
+            : containerHeight
 
     // Set player position from the outside.
     useEffect(() => {
@@ -50,13 +64,6 @@ const ArtPlayer = ({ options, currentTimeCallback, setSyncPlayPosition, playPosi
             player.play = !isPaused
         }
     }, [player, isPaused])
-
-    // Get initial height
-    useEffect(() => {
-        const container = document.getElementsByClassName('video-editor__main')[0]
-        const clientHeight = container.clientHeight
-        setHeight(clientHeight)
-    }, [])
 
     return (
         <div className="video-editor-player">

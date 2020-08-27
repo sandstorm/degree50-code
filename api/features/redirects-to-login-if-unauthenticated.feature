@@ -23,7 +23,7 @@ Feature: Redirections to the login if unauthenticated
     Examples:
       | route                                       | params                            |
       | mediathek--index                            |                                   |
-      | mediathek__subtitle-editor                  | {"id": "foo"}                     |
+      | mediathek__subtitle-editor--show                  | {"id": "foo"}                     |
       | mediathek__video--player                    | {"id": "foo"}                     |
       | mediathek__video--upload                    |                                   |
       | mediathek__video--edit                      | {"id": "foo"}                     |

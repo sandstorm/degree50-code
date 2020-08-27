@@ -13,12 +13,14 @@ export type MediaItemType = {
 
 export type Annotation = MediaItemType
 export type VideoCode = MediaItemType
+export type Subtitle = MediaItemType
 
 export type VideoListsState = {
     annotations: Array<Annotation>
     videoCodes: Array<VideoCode>
     customVideoCodesPool: Array<VideoCodePrototype>
     cutlist: CutList
+    subtitles: Subtitle[]
 }
 
 const initialState: VideoListsState = {
@@ -26,6 +28,7 @@ const initialState: VideoListsState = {
     videoCodes: [],
     customVideoCodesPool: [],
     cutlist: [],
+    subtitles: [],
 }
 
 export const videoListsSlice = createSlice({
@@ -44,11 +47,14 @@ export const videoListsSlice = createSlice({
         setCustomVideoCodesPool: (state, action: PayloadAction<Array<VideoCodePrototype>>) => {
             state.customVideoCodesPool = action.payload
         },
+        setSubtitles: (state, action: PayloadAction<Subtitle[]>) => {
+            state.subtitles = action.payload
+        },
         setVideoEditor: (state, action: PayloadAction<VideoListsState>) => {
             state.annotations = action.payload?.annotations || []
             state.videoCodes = action.payload?.videoCodes || []
             state.customVideoCodesPool = action.payload?.customVideoCodesPool || []
-
+            state.subtitles = action.payload?.subtitles || []
             state.cutlist = action.payload?.cutlist || []
         },
     },

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import PlayerComponent from '../components/ArtPlayer'
@@ -42,6 +42,13 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & Ow
 
 const VideoCodeEditor = (props: Props) => {
     const height = props.height
+    const [containerHeight, setContainerHeight] = useState(0)
+
+    const measuredContainerRef = useCallback((node) => {
+        if (node !== null) {
+            setContainerHeight(node.getBoundingClientRect().height)
+        }
+    }, [])
 
     // All videoCodes
     const mediaItems = solveConflicts(
@@ -160,9 +167,13 @@ const VideoCodeEditor = (props: Props) => {
 
     return (
         <React.Fragment>
-            <div className="video-editor__main" style={{ height: height - 200 }}>
+            <div ref={measuredContainerRef} className="video-editor__main" style={{ height: height - 200 }}>
                 <div className="video-editor__section video-editor__left">
-                    <PlayerComponent options={artPlayerOptions} currentTimeCallback={setCurrentTimeForMediaItems} />
+                    <PlayerComponent
+                        containerHeight={containerHeight}
+                        options={artPlayerOptions}
+                        currentTimeCallback={setCurrentTimeForMediaItems}
+                    />
                 </div>
                 <div className="video-editor__section video-editor__right">
                     <header className="video-editor__section-header">{props.headerContent}</header>

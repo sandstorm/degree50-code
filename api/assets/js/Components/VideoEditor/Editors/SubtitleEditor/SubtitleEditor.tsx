@@ -1,9 +1,160 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
+import { connect } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
+import { t } from 'react-i18nify'
 
-type Props = {}
+import MediaLane from '../components/MediaLane'
+import ArtPlayer from '../components/ArtPlayer'
+import MediaItemList from '../components/MediaItemList/MediaItemList'
+import Storage from '../utils/storage'
 
-const SubtitleEditor = ({}: Props) => {
-    return <h1>Hi, Dude!</h1>
+import { useMediaItemHandling } from '../utils/hooks'
+import { MediaItem } from '../components/types'
+import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { Subtitle } from 'Components/VideoEditor/VideoListsSlice'
+import { vttToUrlUseWorker } from '../utils/subtitleUtils'
+
+const storage = new Storage()
+const worker = new Worker(vttToUrlUseWorker())
+
+type OwnProps = {
+    height: number
+    headerContent: React.ReactNode
+    videos: Array<{ url: { hls: string; mp4: string }; name: string; duration: string }>
+    itemUpdateCallback: () => void
+    itemUpdateCondition: boolean
 }
 
-export default React.memo(SubtitleEditor)
+const mapStateToProps = (state: VideoEditorState) => {
+    return {
+        subtitles: selectors.lists.selectVideoEditorLists(state).subtitles,
+        playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
+    }
+}
+
+const mapDispatchToProps = {
+    setSubtitles: actions.lists.setSubtitles,
+    setPlayPosition: actions.player.setPlayPosition,
+}
+
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+
+const SubtitleEditor = ({
+    height,
+    headerContent,
+    videos,
+    itemUpdateCallback,
+    itemUpdateCondition,
+    subtitles,
+    playerSyncPlayPosition,
+    setSubtitles,
+    setPlayPosition,
+}: Props) => {
+    const [containerHeight, setContainerHeight] = useState(0)
+
+    const measuredContainerRef = useCallback((node) => {
+        if (node !== null) {
+            setContainerHeight(node.getBoundingClientRect().height)
+        }
+    }, [])
+
+    // All annotations
+    const itemsFromSubtitles = subtitles.map(
+        (sub) =>
+            new MediaItem({
+                start: sub.start,
+                end: sub.end,
+                text: sub.text,
+                memo: sub.memo,
+                originalData: sub,
+                lane: 0,
+            })
+    )
+
+    const mediaItems: MediaItem<Subtitle>[] =
+        itemsFromSubtitles.length > 0
+            ? itemsFromSubtitles
+            : [
+                  new MediaItem({
+                      start: '00:00:00.000',
+                      end: '00:00:01.000',
+                      text: t('Kommentar'),
+                      memo: '',
+                      lane: 0,
+                      originalData: {} as Subtitle,
+                  }),
+              ]
+
+    // All options
+    const firstVideo = videos[0]
+    const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
+    const firstVideoUrl = firstVideo ? firstVideo.url.hls : ''
+
+    const artPlayerOptions = {
+        videoUrl: firstVideoUrl,
+        uploadDialog: false,
+        translationLanguage: 'en',
+    }
+
+    const {
+        currentIndex,
+
+        setCurrentTimeForMediaItems,
+        addMediaItem,
+        removeMediaItem,
+        updateMediaItem,
+        checkMediaItem,
+    } = useMediaItemHandling<Subtitle>({
+        worker,
+        updateCondition: itemUpdateCondition,
+        mediaItems,
+        setMediaItems: setSubtitles,
+        updateCallback: itemUpdateCallback,
+        storage,
+    })
+
+    const amountOfLanes = 1
+
+    return (
+        <React.Fragment>
+            <div ref={measuredContainerRef} className="video-editor__main" style={{ height: height - 200 }}>
+                <div className="video-editor__section video-editor__left">
+                    <ArtPlayer
+                        worker={worker}
+                        containerHeight={containerHeight}
+                        options={artPlayerOptions}
+                        currentTimeCallback={setCurrentTimeForMediaItems}
+                    />
+                </div>
+                <div className="video-editor__section video-editor__right">
+                    <header className="video-editor__section-header">{headerContent}</header>
+
+                    <div className="video-editor__section-content">
+                        <MediaItemList
+                            mediaItems={mediaItems}
+                            addMediaItem={addMediaItem}
+                            currentIndex={currentIndex}
+                            updateMediaItem={updateMediaItem}
+                            removeMediaItem={removeMediaItem}
+                            checkMediaItem={checkMediaItem}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <MediaLane
+                currentTime={playerSyncPlayPosition}
+                mediaItems={mediaItems}
+                updateMediaItem={updateMediaItem}
+                setPlayPosition={setPlayPosition}
+                amountOfLanes={amountOfLanes}
+                checkMediaItem={checkMediaItem}
+                removeMediaItem={removeMediaItem}
+                videoDuration={firstVideoDuration}
+            />
+            <ToastContainer />
+        </React.Fragment>
+    )
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(SubtitleEditor))

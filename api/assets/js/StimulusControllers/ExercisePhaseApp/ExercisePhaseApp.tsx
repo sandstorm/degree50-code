@@ -21,7 +21,7 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
 
     const toolbar = readOnly ? null : <Toolbar />
     return (
-        <div className={'exercise-phase__inner'}>
+        <div className="exercise-phase__inner js-video-editor-container">
             <OverlayProvider>
                 <div className={'exercise-phase__content'}>
                     {exercisePhase}

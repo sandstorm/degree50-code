@@ -49,8 +49,8 @@ const VideoEditor: React.FC<Props> = ({
     )
 
     useEffect(() => {
-        setHeight(document.getElementsByClassName('exercise-phase__inner')[0].clientHeight)
-    })
+        setHeight(document.getElementsByClassName('js-video-editor-container')[0].clientHeight)
+    }, [])
 
     switch (activeTabId) {
         case TabsTypesEnum.VIDEO_ANNOTATIONS: {
@@ -97,7 +97,17 @@ const VideoEditor: React.FC<Props> = ({
         }
 
         case TabsTypesEnum.VIDEO_SUBTITLES: {
-            return <SubtitleEditor />
+            return (
+                <SubtitleEditor
+                    height={height}
+                    videos={videos}
+                    headerContent={
+                        <EditorTabs tabs={availableTabs} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
+                    }
+                    itemUpdateCallback={itemUpdateCallback}
+                    itemUpdateCondition={itemUpdateCondition}
+                />
+            )
         }
 
         default: {
