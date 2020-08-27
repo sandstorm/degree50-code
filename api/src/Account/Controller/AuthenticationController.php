@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthenticationController extends AbstractController
 {
     /**
-     * @Route("/login", name="login")
+     * @Route("/login", name="app_login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -31,7 +31,7 @@ class AuthenticationController extends AbstractController
      *
      * DO NOT TOUCH; the SAML IDP calls /saml/logout (as the URL is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata)
      *
-     * @Route("/saml/logout", name="logout")
+     * @Route("/saml/logout", name="app_logout")
      */
     public function logout()
     {
