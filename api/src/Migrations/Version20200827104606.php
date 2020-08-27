@@ -22,7 +22,7 @@ final class Version20200827104606 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE exercise ADD status INT NOT NULL, DROP is_published');
+        $this->addSql('ALTER TABLE exercise ADD status INT NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -30,6 +30,6 @@ final class Version20200827104606 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE exercise ADD is_published TINYINT(1) NOT NULL, DROP status');
+        $this->addSql('ALTER TABLE exercise DROP status');
     }
 }
