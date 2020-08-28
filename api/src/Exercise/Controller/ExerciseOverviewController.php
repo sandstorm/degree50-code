@@ -3,6 +3,8 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\Course;
+use App\Entity\Account\User;
+use App\Entity\Exercise\Exercise;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,9 +35,11 @@ class ExerciseOverviewController extends AbstractController
      */
     public function index(): Response
     {
+        $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findBy(array(), array('createdAt' => 'DESC')));
+
         return $this->render('ExerciseOverview/Index.html.twig', [
             'sidebarItems' => $this->getSideBarItems(),
-            'exercises' => $this->exerciseRepository->findAll(),
+            'groupedExercises' => $groupedExercises,
         ]);
     }
 
@@ -44,10 +48,44 @@ class ExerciseOverviewController extends AbstractController
      */
     public function showExercisesForCourse(Course $course): Response
     {
+        $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findBy(array('course' => $course), array('createdAt' => 'DESC')));
+
         return $this->render('ExerciseOverview/ShowExercisesForCourse.html.twig', [
             'sidebarItems' => $this->getSideBarItems(),
-            'course' => $course
+            'course' => $course,
+            'groupedExercises' => $groupedExercises,
         ]);
+    }
+
+    private function getExercisesGrouped(array $exercises): array
+    {
+        $ownExercises = [
+            'id' => 'ownExercises',
+            'exercises' => []
+        ];
+        $otherExercises = [
+            'id' => 'otherExercises',
+            'exercises' => []
+        ];
+
+        /* @var User $user */
+        $user = $this->getUser();
+
+        /* @var $exercise Exercise */
+        foreach ($exercises as $exercise) {
+            if ($exercise->getCreator() === $user) {
+                array_push($ownExercises['exercises'], $exercise);
+            } else {
+                if ($exercise->getStatus() != Exercise::EXERCISE_CREATED) {
+                    array_push($otherExercises['exercises'], $exercise);
+                }
+            }
+        }
+
+        return [
+            $ownExercises,
+            $otherExercises
+        ];
     }
 
     /**
