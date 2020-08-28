@@ -83,7 +83,7 @@ export const useMediaItemHandling = <T>({
         const hasItems = items.length
         const notEqualToPreviousItems = !isEqual(items, mediaItems)
 
-        if ((force || updateCondition) && hasItems && notEqualToPreviousItems) {
+        if (force || (updateCondition && hasItems && notEqualToPreviousItems)) {
             const updatedItems = JSON.parse(JSON.stringify(items))
 
             // This makes sure that all properties from the original item will be written back to the store
@@ -114,7 +114,6 @@ export const useMediaItemHandling = <T>({
         }
     }
 
-    // Run only once
     useEffect(() => {
         updateLang(language)
         setCurrentIndex(

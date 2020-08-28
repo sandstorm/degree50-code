@@ -3,6 +3,7 @@ import { d2t } from 'duration-time-conversion'
 import { MediaItem } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { itemIsVisible } from './helpers'
+import { Handle } from './types'
 
 const getVisibleItems = <T>(items: MediaItem<T>[], timelineStartTime: number, duration: number): MediaItem<T>[] => {
     return items.filter((item) => itemIsVisible(item, timelineStartTime, duration))
@@ -24,11 +25,7 @@ export const useItemInteraction = <T>(
     const [lastDiffX, setLastDiffX] = useState<number>(0)
 
     const onItemMouseDown = useCallback(
-        (
-            event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-            item: MediaItem<T>,
-            side: 'left' | 'center' | 'right'
-        ) => {
+        (event: React.MouseEvent<HTMLDivElement, MouseEvent>, item: MediaItem<T>, side: Handle) => {
             setIsDraging(true)
             setLastClickedItem(item)
             setLastClickedItemSide(side)
