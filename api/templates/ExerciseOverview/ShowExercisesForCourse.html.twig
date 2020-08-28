@@ -16,7 +16,5 @@
         {% endif %}
     </header>
 
-    <div class="tiles">
-        {{ include('ExerciseOverview/Exercises.html.twig', {exercises: course.exercises}) }}
-    </div>
+    {{ include('ExerciseOverview/GroupedExercises.html.twig', {groupedExercises: groupedExercises}) }}
 {% endblock %}

@@ -1,0 +1,38 @@
+{% trans_default_domain 'forms' %}
+
+{% if is_granted('edit', exercise) %}
+    {% set statusTransVar = 'exercise.labels.status' ~ (exercise.status) %}
+    <div tabindex="0" class="tile" title="{{ exercise.description }}">
+        <input id="{{ exercise.id }}" type="checkbox" />
+        <label for="{{ exercise.id }}" class="tile__content">
+            <i class="tile__icon fas fa-film"></i>
+            <span class="tile__title">{{ exercise.name }}</span>
+            <span class="tile__date">{% trans %}exercise.labels.created{% endtrans %}: {{ exercise.createdAt|date("d.m.Y") }}</span>
+            <span class="tile__phases">{% trans %}exercise.labels.phases{% endtrans %}: {{ exercise.phases|length }}</span>
+            <span class="tile__status tile__status--{{ exercise.status }}" title="Status: {{ statusTransVar | trans }}"><i class="fas fa-circle"></i></span>
+        </label>
+        <div class="tile__actions">
+            <a href="{{ path('exercise-overview__exercise--show', {id: exercise.id, showSolution: true}) }}">
+                <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
+            </a>
+            <a href="{{ path('exercise-overview__exercise--show', {id: exercise.id}) }}">
+                <i class="fas fa-eye"></i> {% trans %}exercise.show.title{% endtrans %}
+            </a>
+            <a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">
+                <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
+            </a>
+            <a href="{{ path('exercise-overview__exercise--delete', {id: exercise.id}) }}" class="color-alert">
+                <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
+            </a>
+        </div>
+    </div>
+{% else %}
+    {% if is_granted('view', exercise) %}
+        <a href="{{ path('exercise-overview__exercise--show', {id: exercise.id}) }}" class="tile" title="{{ exercise.description }}">
+            <div class="tile__content">
+                <i class="tile__icon fas fa-film"></i>
+                <span>{{ exercise.name }}</span>
+            </div>
+        </a>
+    {% endif %}
+{% endif %}

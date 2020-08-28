@@ -15,12 +15,12 @@ class VideoAnalysis extends ExercisePhase
 {
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
-        ExercisePhase::DOCUMENT_UPLOAD,
+        //ExercisePhase::DOCUMENT_UPLOAD,
     ];
 
     const PHASE_COMPONENTS_GROUP = [
-        ExercisePhase::CHAT,
-        ExercisePhase::SHARED_DOCUMENT,
+        //ExercisePhase::CHAT,
+        //ExercisePhase::SHARED_DOCUMENT,
     ];
 
     /**

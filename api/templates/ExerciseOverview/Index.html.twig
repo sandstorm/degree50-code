@@ -11,7 +11,5 @@
         <h3>Alle Aufgaben...</h3>
     </header>
 
-    <div class="tiles">
-        {{ include('ExerciseOverview/Exercises.html.twig', {exercises: exercises}) }}
-    </div>
+    {{ include('ExerciseOverview/GroupedExercises.html.twig', {groupedExercises: groupedExercises}) }}
 {% endblock %}

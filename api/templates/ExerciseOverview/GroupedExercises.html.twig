@@ -1,0 +1,13 @@
+{% trans_default_domain 'exerciseOverview' %}
+{% for group in groupedExercises %}
+    {% if group.exercises|length > 0 %}
+        {% set groupIdTransVar = 'exerciseOverview.groups.' ~ (group.id) %}
+        <h5>{{ groupIdTransVar | trans }}</h5>
+        <hr />
+        <div class="tiles">
+            {% for exercise in group.exercises %}
+                {{ include('ExerciseOverview/Exercise.html.twig', {exercise: exercise}) }}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
