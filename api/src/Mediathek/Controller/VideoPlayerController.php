@@ -5,6 +5,7 @@ namespace App\Mediathek\Controller;
 
 
 use App\Entity\Video\Video;
+use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class VideoPlayerController extends AbstractController
 {
+
+    private AppRuntime $appRuntime;
+
+    function __construct(AppRuntime $appRuntime)
+    {
+        $this->appRuntime = $appRuntime;
+    }
+
     /**
      * @Route("/video/play/{id}", name="mediathek__video--player")
      */
@@ -22,6 +31,7 @@ class VideoPlayerController extends AbstractController
     {
         return $this->render('Mediathek/VideoUpload/VideoPlayer.html.twig', [
             'video' => $video,
+            'videoMap' => $video->getAsArray($this->appRuntime)
         ]);
     }
 }

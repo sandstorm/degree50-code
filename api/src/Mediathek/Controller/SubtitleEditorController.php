@@ -3,7 +3,7 @@
 
 namespace App\Mediathek\Controller;
 
-
+use App\Core\FileSystemService;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoSubtitles;
+use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Video\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,14 +29,16 @@ class SubtitleEditorController extends AbstractController
     private EntityManagerInterface $entityManager;
     private $eventStore;
     private LoggerInterface $logger;
+    private FileSystemService $fileSystemService;
 
-    function __construct(AppRuntime $appRuntime, VideoRepository $videoRepository, EntityManagerInterface $entityManager, LoggerInterface $logger, DoctrineIntegratedEventStore $eventStore)
+    function __construct(AppRuntime $appRuntime, VideoRepository $videoRepository, EntityManagerInterface $entityManager, LoggerInterface $logger, DoctrineIntegratedEventStore $eventStore, FileSystemService $fileSystemService)
     {
         $this->appRuntime = $appRuntime;
         $this->videoRepository = $videoRepository;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->eventStore = $eventStore;
+        $this->fileSystemService= $fileSystemService;
     }
 
     /**
@@ -71,32 +74,48 @@ class SubtitleEditorController extends AbstractController
     }
 
     /**
-     * @Route("/subtitles/edit/{id}", name="mediathek__subtitle-editor--show")
+     * @Route("/subtitles/persist/{id}", name="mediathek__subtitle-editor--persist-vtt", methods={"GET"})
+     */
+    public function persistVtt(Video $video) {
+
+        try {
+            $subtitles = $video->getSubtitles()->getSubtitles();
+            $vttString = 'WEBVTT'. PHP_EOL . PHP_EOL;
+
+            foreach ($subtitles as $index => $subtitle) {
+                $vttString = $vttString . ($index + 1) . PHP_EOL;
+                $vttString = $vttString . $subtitle['start'] . ' --> ' . $subtitle['end'] . PHP_EOL;
+                $vttString = $vttString . $subtitle['text'] . PHP_EOL . PHP_EOL;
+            }
+
+            $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
+            $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
+
+            if (!file_exists($localOutputDirectory)) {
+                mkdir($localOutputDirectory, 0777, true);
+            }
+
+            $path = $localOutputDirectory . '/subtitles.vtt';
+
+            file_put_contents($path, $vttString);
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+        }
+
+        return $this->redirectToRoute('mediathek--index');
+    }
+
+    /**
+     * @Route("/subtitles/edit/{id}", name="mediathek__subtitle-editor--show", methods={"GET"})
      */
     public function show(Video $video): Response
     {
-        $videoUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
-
-        if (empty($video->getSubtitles())) {
-            // Initialize subtitles
-            $video->setSubtitles(new VideoSubtitles());
-        }
 
         return $this->render('Mediathek/SubtitleEditor/SubtitleEditor.html.twig', [
             'updateUrl' => $this->generateUrl("mediathek__subtitle-editor--update", [], UrlGeneratorInterface::ABSOLUTE_URL),
             'video' => $video,
             // Structure which is consumed by the frontend
-            'videoMap' => [
-                'id' => $video->getId(),
-                'name' => $video->getTitle(),
-                'description' => $video->getDescription(),
-                'duration' => $video->getVideoDuration(),
-                'subtitles' => $video->getSubtitles()->getSubtitles(),
-                'url' => [
-                    'hls' => $videoUrl . '/hls.m3u8',
-                    'mp4' => $videoUrl . '/x264.mp4',
-                ]
-            ]
+            'videoMap' => $video->getAsArray($this->appRuntime)
         ]);
     }
 }

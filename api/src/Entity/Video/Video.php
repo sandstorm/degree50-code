@@ -10,6 +10,7 @@ use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\VirtualizedFile;
+use App\Twig\AppRuntime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -312,5 +313,27 @@ class Video
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getAsArray(AppRuntime $appRuntime): array {
+        $videoUrl = $appRuntime->virtualizedFileUrl($this->getEncodedVideoDirectory());
+
+        if (empty($this->getSubtitles())) {
+            // Initialize subtitles
+            $this->setSubtitles(new VideoSubtitles());
+        }
+
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'duration' => $this->getVideoDuration(),
+            'subtitles' => $this->getSubtitles()->getSubtitles(),
+            'url' => [
+                'hls' => $videoUrl . '/hls.m3u8',
+                'mp4' => $videoUrl . '/x264.mp4',
+                'vtt' => $videoUrl . '/subtitles.vtt',
+            ]
+        ];
     }
 }

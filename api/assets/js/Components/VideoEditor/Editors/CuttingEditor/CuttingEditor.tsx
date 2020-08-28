@@ -13,13 +13,14 @@ import { Cut } from './types'
 import { useVolume, useCuttingMediaItemHandling } from './util'
 import { d2t } from 'duration-time-conversion'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 
 const storage = new Storage()
 
 type OwnProps = {
     height: number
     headerContent: React.ReactNode
-    videos: Array<{ url: { hls: string; mp4: string }; name: string; duration: string }>
+    videos: Array<Video>
     itemUpdateCallback: () => void
     itemUpdateCondition: boolean
 }

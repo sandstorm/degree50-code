@@ -159,17 +159,7 @@ class ExercisePhaseController extends AbstractController
                 ];
             }, $exercisePhase->getMaterial()->toArray()),
             'videos' => array_map(function (Video $video) {
-                $videoUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
-                return [
-                    'id' => $video->getId(),
-                    'name' => $video->getTitle(),
-                    'description' => $video->getDescription(),
-                    'duration' => $video->getVideoDuration(),
-                    'url' => [
-                        'hls' => $videoUrl . '/hls.m3u8',
-                        'mp4' => $videoUrl . '/x264.mp4',
-                    ]
-                ];
+                return $video->getAsArray($this->appRuntime);
             }, $exercisePhase->getVideos()->toArray())
         ];
     }
