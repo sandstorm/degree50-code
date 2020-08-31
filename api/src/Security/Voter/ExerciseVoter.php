@@ -67,7 +67,8 @@ class ExerciseVoter extends Voter
 
     private function canView(Course $course, Exercise $exercise, User $user)
     {
-        if ($exercise->getStatus() == Exercise::EXERCISE_CREATED) {
+        $exerciseIsNotPublished = $exercise->getStatus() == Exercise::EXERCISE_CREATED;
+        if ($exerciseIsNotPublished && $exercise->getCreator() !== $user) {
             return false;
         }
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course);
