@@ -94,6 +94,7 @@ class Video
     private $encodingStatus = self::ENCODING_NOT_STARTED;
 
     /**
+     * @var float|null
      * @ORM\Column(type="float", nullable=true)
      */
     private $videoDuration;
@@ -266,9 +267,9 @@ class Video
     /**
      * Get videoDuration.
      *
-     * @return float.
+     * @return ?float.
      */
-    public function getVideoDuration(): float
+    public function getVideoDuration(): ?float
     {
         return $this->videoDuration;
     }

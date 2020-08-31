@@ -81,7 +81,7 @@ class VideoUploadController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                'success',
+                'info',
                 $this->translator->trans('video.upload.messages.success', [], 'forms')
             );
 

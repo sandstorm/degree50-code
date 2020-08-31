@@ -89,7 +89,7 @@ video:
     title: 'Video hochladen'
     back: 'Zurück zur Übersicht'
     messages:
-      success: 'Video erfolgreich gespeichert!'
+      success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
   show:
     title: 'Video abspielen'
   edit:
