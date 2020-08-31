@@ -81,6 +81,7 @@ exercisePhase:
 video:
   labels:
     title: 'Titel'
+    created: 'Erstellt'
     description: 'Beschreibung'
     courses: 'Kurse mit Berechtigung für dieses Video'
     dataPrivacyAccepted: 'Datenschutzbestimmung akzeptiert'

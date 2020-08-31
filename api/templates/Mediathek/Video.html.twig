@@ -4,7 +4,8 @@
     <input id="{{ video.id }}" type="checkbox" />
     <label for="{{ video.id }}" class="tile__content">
         <div class="tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
-        <span>{{ video.title }}</span>
+        <span class="tile__title">{{ video.title }}</span>
+        <span class="tile__date">{% trans %}video.labels.created{% endtrans %}: {{ video.createdAt|date("d.m.Y") }}</span>
     </label>
     <div class="tile__actions">
         <a href="{{ path('mediathek__video--player', {id: video.id}) }}">

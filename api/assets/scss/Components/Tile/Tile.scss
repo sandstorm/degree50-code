@@ -53,7 +53,6 @@ $tileHeight--small: 150px;
     .tile__content {
       width: $tileHeight;
       height: $tileHeight;
-      padding: 0;
     }
   }
 }
@@ -117,7 +116,7 @@ $tileHeight--small: 150px;
 }
 
 .tile__image {
-  height: $tileHeight * 0.7;;
+  height: $tileHeight * 0.6;;
   width: 100%;
   margin-bottom: 10px;
 
