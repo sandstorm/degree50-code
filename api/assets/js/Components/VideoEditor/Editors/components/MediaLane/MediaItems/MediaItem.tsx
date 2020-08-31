@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { MediaItem as MediaItemClass } from '../../types'
 import { RenderConfig } from '../MediaTrack'
@@ -56,6 +56,8 @@ const MediaItem = ({
     setPause,
     setPlayPosition,
 }: Props) => {
+    const itemRef = useRef<HTMLDivElement>(null)
+
     const handleLeftHandleMouseDown = useCallback(
         (event) => {
             onItemMouseDown(event, item, 'left')
@@ -113,8 +115,25 @@ const MediaItem = ({
         return splitStr.join('')
     }
 
+    const width = (item.endTime - item.startTime) * renderConfig.gridGap * 10
+
+    // WHY:
+    // This is a hack to make sure, that media items will always reflect the correct width if either their
+    // DOM node or the item changes. This means, that even if just some part of item.originalData
+    //  (e.g. the offset on a cutlist item) has been changed, the width will be explicitly set to the DOM node.
+    // This is necessary, because our useItemInteraction() hook directly messes with the DOM nodes of media items and
+    // updating the width of the react virtual dom node wont take effect after some renders otherwise.
+    //
+    // This helps preventing bugs like this: https://gitlab.sandstorm.de/degree-4.0/code/-/issues/59
+    useEffect(() => {
+        if (itemRef.current) {
+            itemRef.current.style.width = `${width}px`
+        }
+    }, [itemRef, item])
+
     return (
         <div
+            ref={itemRef}
             className={[
                 'video-editor__media-items__item',
                 isPlayedBack ? 'video-editor__media-items__item--highlight' : '',
@@ -127,7 +146,7 @@ const MediaItem = ({
             style={{
                 backgroundColor: item.color ? item.color : '',
                 left: positionLeft,
-                width: (item.endTime - item.startTime) * renderConfig.gridGap * 10,
+                width,
                 top: item.lane * mediaItemHeight + '%',
                 height: mediaItemHeight + '%',
             }}
