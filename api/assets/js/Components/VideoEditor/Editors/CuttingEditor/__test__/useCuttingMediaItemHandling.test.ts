@@ -152,7 +152,8 @@ describe('useCuttingMediaItemHandling()', () => {
                 result.current.updateMediaItem(itemB, { start: '00:00:03.000' })
             })
 
-            expect(originalUpdateMediaItemsSpy).not.toHaveBeenCalled()
+            // Should've been called once after rendering
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(1)
         })
 
         it('it should update offset', () => {
@@ -163,6 +164,8 @@ describe('useCuttingMediaItemHandling()', () => {
                 result.current.updateMediaItem(itemA, { start: '00:00:03.000' })
             })
 
+            // One call after rendering and one after the update
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
             expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
                 [
                     new MediaItem({
@@ -198,6 +201,8 @@ describe('useCuttingMediaItemHandling()', () => {
                 result.current.updateMediaItem(itemA, { end: '00:00:00.000' })
             })
 
+            // One call after rendering and one after the update
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
             expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
                 [
                     new MediaItem({
@@ -233,6 +238,8 @@ describe('useCuttingMediaItemHandling()', () => {
                 result.current.updateMediaItem(itemA, { end: '00:00:03.056' })
             })
 
+            // One call after rendering and one after the update
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
             expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
                 [
                     new MediaItem({
@@ -263,6 +270,7 @@ describe('useCuttingMediaItemHandling()', () => {
                 result.current.updateMediaItem(itemA, { end: '00:00:03.556' })
             })
 
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(3)
             expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
                 [
                     new MediaItem({
@@ -305,6 +313,8 @@ describe('useCuttingMediaItemHandling()', () => {
                 result.current.handleSplitAtCursor()
             })
 
+            // One call after rendering and one after the update
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
             expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
                 [
                     new MediaItem({
@@ -361,6 +371,8 @@ describe('useCuttingMediaItemHandling()', () => {
                 result.current.duplicateCut(0)
             })
 
+            // One call after rendering and one after the update
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
             expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
                 [
                     itemA,

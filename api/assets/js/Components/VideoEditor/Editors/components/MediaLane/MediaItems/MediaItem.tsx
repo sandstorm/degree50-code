@@ -8,6 +8,7 @@ import MediaItemMemoForm from './MediaItemMemoForm'
 import { useModal } from 'Components/Modal/useModal'
 import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
+import { Handle } from './types'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>
@@ -18,7 +19,7 @@ type OwnProps = {
     onItemMouseDown: (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         item: MediaItemClass<MediaItemType>,
-        side: 'left' | 'right' | 'center'
+        side: Handle
     ) => void
     removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
     updateMediaItem: (

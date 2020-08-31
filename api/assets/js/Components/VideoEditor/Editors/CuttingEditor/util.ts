@@ -1,4 +1,4 @@
-import { RefObject, useState, useCallback } from 'react'
+import { RefObject, useState, useCallback, useEffect } from 'react'
 import VideoContext from 'videocontext'
 import { t } from 'react-i18nify'
 import { d2t, t2d } from 'duration-time-conversion'
@@ -10,6 +10,7 @@ import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
 import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { Handle } from '../components/MediaLane/MediaItems/types'
 
 export const useVolume = () => {
     const [volume, setVolume] = useState<number>(0)
@@ -61,8 +62,14 @@ export const useCuttingMediaItemHandling = ({
         storage,
     })
 
-    const updateMediaItems = (items: Array<MediaItem<Cut>>, saveToHistory = true, force = false) => {
-        const withResolvedOverlapAndSnap = resolveOverlapAndSnapItems(items)
+    const updateMediaItems = (
+        items: Array<MediaItem<Cut>>,
+        saveToHistory = true,
+        force = false,
+        config?: { handle: Handle }
+    ) => {
+        const withResolvedOverlapAndSnap =
+            config?.handle === 'center' ? resolveOverlapAndSnapItems(items) : snapItems(items)
         updateMediaItemsOriginal(withResolvedOverlapAndSnap, saveToHistory, force)
     }
 
@@ -70,7 +77,7 @@ export const useCuttingMediaItemHandling = ({
      * Handles the update of Cut media items and makes sure that their offset is handled correctly
      */
     const updateMediaItem = useCallback(
-        (item: MediaItem<Cut>, updatedValues: { start?: string; end?: string }) => {
+        (item: MediaItem<Cut>, { start, end, ...rest }: { start?: string; end?: string; rest?: any[] }) => {
             const index = hasMediaItem(item)
 
             if (index < 0) return
@@ -78,9 +85,8 @@ export const useCuttingMediaItemHandling = ({
             const copiedItems = copyMediaItems()
             const { clone } = item
 
-            const { start: updatedStart, end: updatedEnd } = updatedValues
-            const newStart = updatedStart || item.start
-            const newEnd = updatedEnd || item.end
+            const newStart = start || item.start
+            const newEnd = end || item.end
 
             const duration = t2d(newEnd) - t2d(newStart)
 
@@ -94,13 +100,13 @@ export const useCuttingMediaItemHandling = ({
             const adjustedEnd = d2t((t2d(newStart) + adjustedDuration).toFixed(3))
 
             const newValues = {
-                ...updatedValues,
+                ...rest,
                 // NOTE: It's important that we DO NOT use the adjustedEnd value here, to correctly determine
                 // what item handle was used to change the item.
-                originalData: updatedValues.start
+                originalData: start
                     ? {
                           ...item.originalData,
-                          offset: updateOffset(item, newStart, updatedValues?.end),
+                          offset: updateOffset(item, newStart, end),
                       }
                     : item.originalData,
                 start: newStart,
@@ -120,7 +126,9 @@ export const useCuttingMediaItemHandling = ({
 
             if (clone.check) {
                 copiedItems[index] = clone
-                updateMediaItems(copiedItems)
+
+                const handle = determineDraggedHandle({ start, end })
+                updateMediaItems(copiedItems, true, false, { handle })
             } else {
                 notify(t('parameter-error'), 'error')
             }
@@ -196,6 +204,12 @@ export const useCuttingMediaItemHandling = ({
         [copyMediaItems, updateMediaItems]
     )
 
+    // Run only once
+    useEffect(() => {
+        // Hydrate store on initial render
+        updateMediaItems(mediaItems, true, true)
+    }, [])
+
     return {
         currentIndex,
 
@@ -208,6 +222,16 @@ export const useCuttingMediaItemHandling = ({
         setCurrentTimeForMediaItems,
         updateMediaItem,
         updateMediaItems,
+    }
+}
+
+export const determineDraggedHandle = (updatedValues: { start?: string; end?: string }): Handle => {
+    if (updatedValues.start && !updatedValues.end) {
+        return 'left'
+    } else if (!updatedValues.start && updatedValues.end) {
+        return 'right'
+    } else {
+        return 'center'
     }
 }
 
