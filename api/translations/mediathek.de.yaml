@@ -1,0 +1,4 @@
+mediathek:
+  groups:
+    ownVideos: 'Selbst erstellte Videos'
+    otherVideos: 'Bereitgestellte Videos'

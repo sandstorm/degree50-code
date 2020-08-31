@@ -2,6 +2,8 @@
 
 namespace App\Mediathek\Controller;
 
+use App\Entity\Account\User;
+use App\Entity\Video\Video;
 use App\Repository\Video\VideoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,7 +33,36 @@ class MediathekOverviewController extends AbstractController
     {
         return $this->render('Mediathek/Index.html.twig', [
             'sidebarItems' => [],
-            'videos' => $this->videoRepository->findAll()
+            'groupedVideos' => $this->getVideosGrouped($this->videoRepository->findAll())
         ]);
+    }
+
+    private function getVideosGrouped(array $videos): array
+    {
+        $ownVideos = [
+            'id' => 'ownVideos',
+            'videos' => []
+        ];
+        $otherVideos = [
+            'id' => 'otherVideos',
+            'videos' => []
+        ];
+
+        /* @var User $user */
+        $user = $this->getUser();
+
+        /* @var $video Video */
+        foreach ($videos as $video) {
+            if ($video->getCreator() === $user) {
+                array_push($ownVideos['videos'], $video);
+            } else {
+                array_push($otherVideos['videos'], $video);
+            }
+        }
+
+        return [
+            $ownVideos,
+            $otherVideos
+        ];
     }
 }
