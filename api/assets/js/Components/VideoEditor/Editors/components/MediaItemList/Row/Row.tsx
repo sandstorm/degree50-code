@@ -19,7 +19,7 @@ type OwnProps = {
     checkMediaItem: (item: MediaItem<MediaItemType>) => boolean
     rowData: MediaItem<MediaItemType>
     removeMediaItem: (item: MediaItem<MediaItemType>) => void
-    addMediaItem: (index: number, item?: MediaItem<MediaItemType>) => void
+    addMediaItem?: (index: number, item?: MediaItem<MediaItemType>) => void
     updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Object) => void
 }
 
@@ -64,7 +64,10 @@ const Row = ({
                 setPlayPosition(rowData.startTime + 0.001)
             }}
         >
-            <Actions removeMediaItem={() => removeMediaItem(rowData)} addMediaItem={() => addMediaItem(index)} />
+            <Actions
+                removeMediaItem={() => removeMediaItem(rowData)}
+                addMediaItem={addMediaItem ? () => addMediaItem(index) : undefined}
+            />
             <div
                 className="video-editor__media-item-list__column video-editor__media-item-list__column--time"
                 style={{ width: 150 }}

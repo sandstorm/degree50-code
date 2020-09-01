@@ -35,14 +35,14 @@ describe('useCuttingMediaItemHandling()', () => {
     const itemA = new MediaItem({
         start: '00:00:00.000',
         end: '00:00:05.000',
-        text: 'Test',
+        text: 'A',
         memo: 'Some test memo...',
         color: null,
         originalData: {
             start: '00:00:00.000',
             end: '00:00:05.000',
             color: null,
-            text: 'Test',
+            text: 'A',
             memo: 'Some test memo...',
             lane: 0,
             offset: 0,
@@ -55,14 +55,34 @@ describe('useCuttingMediaItemHandling()', () => {
     const itemB = new MediaItem({
         start: '00:00:03.000',
         end: '00:00:05.000',
-        text: 'Test',
+        text: 'B',
         memo: 'Some test memo...',
         color: null,
         originalData: {
             start: '00:00:03.000',
             end: '00:00:05.000',
             color: null,
-            text: 'Test',
+            text: 'B',
+            memo: 'Some test memo...',
+            lane: 0,
+            offset: 0,
+            playbackRate: 1,
+            url: '/some.mp4',
+        },
+        lane: 0,
+    })
+
+    const itemC = new MediaItem({
+        start: '00:00:05.010',
+        end: '00:00:07.010',
+        text: 'C',
+        memo: 'Some test memo...',
+        color: null,
+        originalData: {
+            start: '00:00:05.010',
+            end: '00:00:07.010',
+            color: null,
+            text: 'C',
             memo: 'Some test memo...',
             lane: 0,
             offset: 0,
@@ -101,14 +121,14 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:00.000',
                         end: '00:00:05.000',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
                             start: '00:00:00.000',
                             end: '00:00:05.000',
                             color: null,
-                            text: 'Test',
+                            text: 'A',
                             memo: 'Some test memo...',
                             lane: 0,
                             offset: 0,
@@ -120,14 +140,14 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:05.010',
                         end: '00:00:07.010',
-                        text: 'Test',
+                        text: 'B',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
                             start: '00:00:03.000',
                             end: '00:00:05.000',
                             color: null,
-                            text: 'Test',
+                            text: 'B',
                             memo: 'Some test memo...',
                             lane: 0,
                             offset: 0,
@@ -171,7 +191,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:03.000',
                         end: '00:00:05.010',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
@@ -179,7 +199,7 @@ describe('useCuttingMediaItemHandling()', () => {
                             end: '00:00:05.000',
                             offset: 3,
                             color: null,
-                            text: 'Test',
+                            text: 'A',
                             memo: 'Some test memo...',
                             lane: 0,
                             playbackRate: 1,
@@ -208,7 +228,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:00.000',
                         end: '00:00:01.000',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
@@ -216,7 +236,7 @@ describe('useCuttingMediaItemHandling()', () => {
                             end: '00:00:05.000',
                             offset: 0,
                             color: null,
-                            text: 'Test',
+                            text: 'A',
                             memo: 'Some test memo...',
                             lane: 0,
                             playbackRate: 1,
@@ -245,7 +265,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:00.000',
                         end: '00:00:03.000',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
@@ -253,7 +273,7 @@ describe('useCuttingMediaItemHandling()', () => {
                             end: '00:00:05.000',
                             offset: 0,
                             color: null,
-                            text: 'Test',
+                            text: 'A',
                             memo: 'Some test memo...',
                             lane: 0,
                             playbackRate: 1,
@@ -276,7 +296,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:00.000',
                         end: '00:00:04.000',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
@@ -284,7 +304,67 @@ describe('useCuttingMediaItemHandling()', () => {
                             end: '00:00:05.000',
                             offset: 0,
                             color: null,
-                            text: 'Test',
+                            text: 'A',
+                            memo: 'Some test memo...',
+                            lane: 0,
+                            playbackRate: 1,
+                            url: '/some.mp4',
+                        },
+                        lane: 0,
+                    }),
+                ],
+                true,
+                false
+            )
+        })
+    })
+
+    describe('removeMediaItem()', () => {
+        it('should correctly snap items', () => {
+            const { result } = renderHook(() =>
+                // @ts-ignore
+                useCuttingMediaItemHandling({ ...baseConfig, mediaItems: [itemA, itemB, itemC] })
+            )
+
+            act(() => {
+                result.current.removeMediaItem(itemB)
+            })
+
+            // One call after rendering and one after the update
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
+                [
+                    new MediaItem({
+                        start: '00:00:00.000',
+                        end: '00:00:05.000',
+                        text: 'A',
+                        memo: 'Some test memo...',
+                        color: null,
+                        originalData: {
+                            start: '00:00:00.000',
+                            end: '00:00:05.000',
+                            offset: 0,
+                            color: null,
+                            text: 'A',
+                            memo: 'Some test memo...',
+                            lane: 0,
+                            playbackRate: 1,
+                            url: '/some.mp4',
+                        },
+                        lane: 0,
+                    }),
+                    new MediaItem({
+                        start: '00:00:05.010',
+                        end: '00:00:07.010',
+                        text: 'C',
+                        memo: 'Some test memo...',
+                        color: null,
+                        originalData: {
+                            start: '00:00:05.010',
+                            end: '00:00:07.010',
+                            offset: 0,
+                            color: null,
+                            text: 'C',
                             memo: 'Some test memo...',
                             lane: 0,
                             playbackRate: 1,
@@ -320,7 +400,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:00.000',
                         end: '00:00:02.000',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
@@ -328,7 +408,7 @@ describe('useCuttingMediaItemHandling()', () => {
                             end: '00:00:05.000',
                             offset: 0,
                             color: null,
-                            text: 'Test',
+                            text: 'A',
                             memo: 'Some test memo...',
                             lane: 0,
                             playbackRate: 1,
@@ -339,7 +419,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:02.010',
                         end: '00:00:05.000',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
@@ -347,7 +427,7 @@ describe('useCuttingMediaItemHandling()', () => {
                             end: '00:00:05.000',
                             offset: 2,
                             color: null,
-                            text: 'Test',
+                            text: 'A',
                             memo: 'Some test memo...',
                             lane: 0,
                             playbackRate: 1,
@@ -379,14 +459,14 @@ describe('useCuttingMediaItemHandling()', () => {
                     new MediaItem({
                         start: '00:00:05.010',
                         end: '00:00:10.000',
-                        text: 'Test',
+                        text: 'A',
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
                             start: '00:00:00.000',
                             end: '00:00:05.000',
                             color: null,
-                            text: 'Test',
+                            text: 'A',
                             memo: 'Some test memo...',
                             lane: 0,
                             offset: 0,

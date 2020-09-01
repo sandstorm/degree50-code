@@ -98,15 +98,6 @@ describe('useMediaItemHandling()', () => {
 
     describe('updateMediaItems()', () => {
         describe('updateCallback and media item setter', () => {
-            it('should not be called when there are not items (unless force is true)', () => {
-                const { result } = renderHook(() => useMediaItemHandling(baseConfig))
-
-                act(() => result.current.updateMediaItems([], true, false))
-
-                expect(baseConfig.setMediaItems).not.toHaveBeenCalled()
-                expect(baseConfig.updateCallback).not.toHaveBeenCalled()
-            })
-
             it('should not be called when new items are equal to previous items', () => {
                 const { result } = renderHook(() => useMediaItemHandling(baseConfig))
 
@@ -533,17 +524,6 @@ describe('useMediaItemHandling()', () => {
                 },
             ])
         })
-
-        it('should not remove last remaining media item', () => {
-            const { result } = renderHook(() => useMediaItemHandling(baseConfig))
-
-            act(() => {
-                result.current.removeMediaItem(itemA)
-            })
-
-            expect(setMediaItemsSpy).not.toHaveBeenCalled()
-            expect(t).toHaveBeenCalledWith('keep-one')
-        })
     })
 
     describe('addMediaItem()', () => {
@@ -551,7 +531,7 @@ describe('useMediaItemHandling()', () => {
             const { result } = renderHook(() => useMediaItemHandling({ ...baseConfig, mediaItems: [] }))
 
             act(() => {
-                result.current.addMediaItem(0)
+                result.current.appendMediaItem()
             })
 
             expect(setMediaItemsSpy).toHaveBeenCalledWith([
@@ -570,7 +550,7 @@ describe('useMediaItemHandling()', () => {
             const { result } = renderHook(() => useMediaItemHandling(baseConfig))
 
             act(() => {
-                result.current.addMediaItem(0)
+                result.current.appendMediaItem()
             })
 
             expect(setMediaItemsSpy).toHaveBeenCalledWith([
