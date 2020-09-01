@@ -1,8 +1,10 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react'
+import React, { useRef, useState, useCallback } from 'react'
 import VideoPlayerWrapper, { Video } from '../../Components/VideoPlayer/VideoPlayerWrapper'
 import { VideoListsState } from '../../Components/VideoEditor/VideoListsSlice'
 import { Teams } from './Components/Teams/Teams'
 import { TabsTypesEnum } from '../../types'
+import { OverlayProvider } from '@react-aria/overlays'
+import { watchModals } from '@react-aria/aria-modal-polyfill'
 
 export type SolutionByTeam = {
     teamCreator: string
@@ -16,10 +18,13 @@ type ReadOnlyExercisePhaseProps = {
 }
 
 export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions, videos }) => {
+    // react-aria-modal watches a container element for aria-modal nodes and
+    // hides the rest of the dom from screen readers with aria-hidden when one is open.
+    watchModals()
+
     const [activeTab, setActiveTab] = useState<TabsTypesEnum>(TabsTypesEnum.VIDEO_ANNOTATIONS)
     const [currentTime, setCurrentTime] = useState(0)
     const [currentZoom, setCurrentZoom] = useState(25)
-    const [player, setPlayer] = useState(null)
 
     const videoNodeRef: React.RefObject<HTMLVideoElement> = useRef(null)
 
@@ -29,13 +34,6 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions, 
         },
         [setActiveTab]
     )
-
-    useEffect(() => {
-        if (videoNodeRef.current) {
-            // TODO set player to get the current duration for better ux, like better zooming
-            //setPlayer(videoNodeRef.current)
-        }
-    }, [videoNodeRef.current?.duration])
 
     const updateCurrentTime = useCallback(
         (time: number) => {
@@ -57,7 +55,7 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions, 
     const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
 
     return (
-        <div className={'exercise-phase__inner'}>
+        <OverlayProvider className={'exercise-phase__inner'}>
             <div className={'exercise-phase__content'}>
                 <div className={'solutions'}>
                     <VideoPlayerWrapper
@@ -103,6 +101,6 @@ export const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = ({ solutions, 
                     />
                 </div>
             </div>
-        </div>
+        </OverlayProvider>
     )
 }

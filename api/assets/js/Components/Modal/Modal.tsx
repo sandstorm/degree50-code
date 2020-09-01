@@ -1,6 +1,6 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { useOverlay, usePreventScroll, useModal, OverlayContainer } from '@react-aria/overlays'
+import { useDialog } from '@react-aria/dialog'
 import { FocusScope } from '@react-aria/focus'
 import Button from 'Components/Button/Button'
 
@@ -11,48 +11,43 @@ type Props = {
     closeModal: () => void
 }
 
-const Modal = React.memo(({ children, title, isVisible, closeModal }: Props) => {
-    const domEl = document.getElementById('modal-root')
-
+const Modal = (props: Props) => {
     // Handle interacting outside the dialog and pressing
     // the Escape key to close the modal.
-    // @ts-ignore
-    const modalRef: React.RefObject<HTMLDivElement> = React.useRef()
+    const modalRef: React.RefObject<HTMLDivElement> = React.useRef(null)
     const { overlayProps } = useOverlay(
-        { isOpen: isVisible, isDismissable: true, onClose: closeModal },
-        // @ts-ignore
+        { isOpen: props.isVisible, isDismissable: true, onClose: props.closeModal },
         modalRef
     )
 
     // Prevent scrolling while the modal is open, and hide content
     // outside the modal from screen readers.
     usePreventScroll()
-    useModal()
+    const { modalProps } = useModal()
+    const { dialogProps, titleProps } = useDialog({ role: 'dialog' }, modalRef)
 
-    if (!domEl) return null
-
-    return ReactDOM.createPortal(
+    // react-aria places the modal at the bottom of the body
+    return (
         <OverlayContainer>
-            <div role="dialog" tabIndex={-1} className={'modal'} aria-modal={true} aria-label={title}>
+            <div className={'modal'}>
                 <FocusScope contain restoreFocus autoFocus>
-                    <div className={'modal__inner'} ref={modalRef} {...overlayProps}>
+                    <div className={'modal__inner'} ref={modalRef} {...overlayProps} {...dialogProps} {...modalProps}>
                         <header className={'modal__header'}>
-                            <h3>{title}</h3>
+                            <h3 {...titleProps}>{props.title}</h3>
                         </header>
                         <div className={'modal__content-wrapper'}>
-                            <div className={'modal__content'}>{children}</div>
+                            <div className={'modal__content'}>{props.children}</div>
                         </div>
                         <footer className={'modal__footer'}>
-                            <Button onPress={closeModal} className={'btn btn-primary'}>
+                            <Button onPress={props.closeModal} className={'btn btn-primary'}>
                                 Close
                             </Button>
                         </footer>
                     </div>
                 </FocusScope>
             </div>
-        </OverlayContainer>,
-        domEl
+        </OverlayContainer>
     )
-})
+}
 
-export default Modal
+export default React.memo(Modal)

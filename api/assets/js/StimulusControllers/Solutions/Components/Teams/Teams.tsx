@@ -1,6 +1,6 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
-import { Team } from './Team'
+import Team from './Team'
 
 type TeamMembersListProps = {
     solutions: Array<SolutionByTeam>
