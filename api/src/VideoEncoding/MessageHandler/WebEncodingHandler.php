@@ -71,6 +71,7 @@ class WebEncodingHandler implements MessageHandlerInterface
             $this->encodeHLS($config, $mp4Url, $localOutputDirectory);
 
             $this->createPreviewImage($config, $mp4Url, $localOutputDirectory, $videoDuration);
+            $this->createEmptyDefaultSubtitlesFile($localOutputDirectory);
 
             $video->setVideoDuration($videoDuration);
             $video->setEncodingStatus(Video::ENCODING_FINISHED);
@@ -119,6 +120,12 @@ class WebEncodingHandler implements MessageHandlerInterface
         $ffmpegVideo->save(new X264('libmp3lame'), $localOutputDirectory . '/x264.mp4');
 
         $this->logger->info('Finished encoding MP4 of file <' . $inputVideoFilename . '>',);
+    }
+
+    private function createEmptyDefaultSubtitlesFile($localOutputDirectory) {
+        $path = $localOutputDirectory . '/subtitles.vtt';
+
+        file_put_contents($path, '');
     }
 
     private function encodeHLS(array $config, string $inputVideoFilename, string $localOutputDirectory)
