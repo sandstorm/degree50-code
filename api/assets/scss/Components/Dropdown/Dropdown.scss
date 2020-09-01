@@ -1,0 +1,12 @@
+.dropdown {
+
+}
+
+.dropdown-menu {
+  right: 0;
+  left: auto;
+
+  &--is-visible {
+    display: block;
+  }
+}

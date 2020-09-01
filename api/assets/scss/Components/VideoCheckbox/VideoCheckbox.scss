@@ -26,7 +26,7 @@ $tileHeight: 200px;
   width: $tileHeight;
   display: block;
   margin: 0;
-  padding: 0;
+  padding: 10px;
 
   text-align: center;
 
@@ -40,21 +40,10 @@ $tileHeight: 200px;
 
     text-decoration: none;
   }
-
-  span {
-    display: inline-block;
-    width: 100%;
-
-    text-align: center;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-
-    overflow: hidden;
-  }
 }
 
 .video-checkbox__image {
-  height: $tileHeight * 0.7;;
+  height: $tileHeight * 0.6;
   width: 100%;
   margin-bottom: 10px;
 

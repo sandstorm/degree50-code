@@ -5,6 +5,7 @@ type ButtonProps = {
     onPress: () => void
     children: React.ReactNode
     className: string
+    id?: string
 }
 
 const Button = (props: ButtonProps) => {
@@ -14,7 +15,7 @@ const Button = (props: ButtonProps) => {
     const { children } = props
 
     return (
-        <button {...buttonProps} className={props.className} ref={buttonRef}>
+        <button {...buttonProps} id={props.id} className={props.className} ref={buttonRef}>
             {children}
         </button>
     )

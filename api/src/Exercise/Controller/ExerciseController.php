@@ -40,9 +40,9 @@ class ExerciseController extends AbstractController
 
     /**
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show/{id}/{phase<\d+>}", name="exercise-overview__exercise--show")
+     * @Route("/exercise/show/{id}/{phaseIndex<\d+>}", name="exercise-overview__exercise--show")
      */
-    public function show(Request $request, Exercise $exercise, int $phase = 0): Response
+    public function show(Request $request, Exercise $exercise, int $phaseIndex = 0): Response
     {
         $showSolution = $request->get('showSolution');
 
@@ -58,11 +58,16 @@ class ExerciseController extends AbstractController
             $template = 'Exercise/ShowSolution.html.twig';
         }
 
+        /* @var ExercisePhase $exercisePhase */
+        $exercisePhase = $exercise->getPhases()->get($phaseIndex);
+        $teams = $exercisePhase->getTeams();
+
         return $this->render($template,
             [
                 'exercise' => $exercise,
-                'phase' => $exercise->getPhases()->get($phase),
-                'currentPhase' => $phase,
+                'exercisePhase' => $exercisePhase,
+                'currentPhaseIndex' => $phaseIndex,
+                'teams' => $teams,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
                 'showSolution' => $showSolution
             ]);

@@ -1,7 +1,7 @@
 {% trans_default_domain 'forms' %}
 
 <footer class="footer">
-    {% if currentPhase == 0 %}
+    {% if currentPhaseIndex == 0 %}
         <a class="btn btn-outline-primary" href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
     {% else %}
         <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phase: currentPhaseIndex - 1, showSolution: showSolution}) }}">Vorherige Phase</a>
