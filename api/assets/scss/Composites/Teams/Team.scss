@@ -3,6 +3,9 @@
   min-height: 100px;
 
   > header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 5px;
     padding-left: 20px;
     padding-right: 20px;

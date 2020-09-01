@@ -33,7 +33,7 @@ class MediathekOverviewController extends AbstractController
     {
         return $this->render('Mediathek/Index.html.twig', [
             'sidebarItems' => [],
-            'groupedVideos' => $this->getVideosGrouped($this->videoRepository->findAll())
+            'groupedVideos' => $this->getVideosGrouped($this->videoRepository->findBy(array(), array('createdAt' => 'DESC')))
         ]);
     }
 

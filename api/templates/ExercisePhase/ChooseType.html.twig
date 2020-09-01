@@ -1,5 +1,5 @@
 {% trans_default_domain 'forms' %}
-{% extends 'BaseNoHeader.html.twig' %}
+{% extends 'BaseFullscreen.html.twig' %}
 
 {% block title %}{% trans %}exercisePhase.new.title{% endtrans %}{% endblock %}
 
@@ -16,9 +16,7 @@
                 <a href="{{ path('exercise-overview__exercise-phase--set-type', {id: exercise.id, type: type.id, isGroupPhase: isGroupPhase}) }}" class="tile">
                     <div class="tile__content">
                         <i class="tile__icon {{ type.iconClass}}"></i>
-                        <span>
-                        {{ type.label }}
-                    </span>
+                        <span>{{ type.label }}</span>
                     </div>
                 </a>
             {% endfor %}
