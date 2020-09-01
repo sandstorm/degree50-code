@@ -49,7 +49,7 @@ export const useCuttingMediaItemHandling = ({
         currentIndex,
 
         setCurrentTimeForMediaItems,
-        removeMediaItem,
+        removeMediaItem: removeMediaItemsOriginal,
         updateMediaItems: updateMediaItemsOriginal,
         checkMediaItem,
         hasMediaItem,
@@ -71,6 +71,16 @@ export const useCuttingMediaItemHandling = ({
         const withResolvedOverlapAndSnap =
             config?.handle === 'center' ? resolveOverlapAndSnapItems(items) : snapItems(items)
         updateMediaItemsOriginal(withResolvedOverlapAndSnap, saveToHistory, force)
+    }
+
+    const removeMediaItem = (mediaItem: MediaItem<Cut>) => {
+        // WHY:
+        // We need to make sure, that our snapping is applied after removing an item.
+        //
+        // TODO
+        // We should probably refactor this, so that we do not update the items twice.
+        const updatedItems = removeMediaItemsOriginal(mediaItem)
+        updateMediaItems(updatedItems)
     }
 
     /**

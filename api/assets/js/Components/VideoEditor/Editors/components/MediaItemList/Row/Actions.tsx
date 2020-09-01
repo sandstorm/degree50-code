@@ -4,7 +4,7 @@ import DeleteAnnotationButton from './DeleteButton'
 import AddAnnotationButton from './AddButton'
 
 type Props = {
-    addMediaItem: () => void
+    addMediaItem?: () => void
     removeMediaItem: () => void
 }
 
@@ -15,7 +15,7 @@ const Actions = ({ addMediaItem, removeMediaItem }: Props) => {
             style={{ width: 30 }}
         >
             <DeleteAnnotationButton removeMediaItem={removeMediaItem} />
-            <AddAnnotationButton addMediaItem={addMediaItem} />
+            {addMediaItem && <AddAnnotationButton addMediaItem={addMediaItem} />}
         </div>
     )
 }

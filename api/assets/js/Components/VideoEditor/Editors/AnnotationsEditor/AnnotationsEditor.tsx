@@ -14,6 +14,7 @@ import { solveConflicts } from '../helpers'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
+import AddItemButton from '../components/MediaItemList/AddItemButton'
 
 const storage = new Storage()
 
@@ -62,20 +63,7 @@ const AnnotationsEditor = (props: Props) => {
             })
     )
 
-    const mediaItems: MediaItem<Annotation>[] = solveConflicts(
-        itemsFromAnnotations.length > 0
-            ? itemsFromAnnotations
-            : [
-                  new MediaItem({
-                      start: '00:00:00.000',
-                      end: '00:00:01.000',
-                      text: t('Kommentar'),
-                      memo: '',
-                      lane: 0,
-                      originalData: {} as Annotation,
-                  }),
-              ]
-    )
+    const mediaItems: MediaItem<Annotation>[] = solveConflicts(itemsFromAnnotations)
 
     // All options
     const firstVideo = props.videos[0]
@@ -94,7 +82,7 @@ const AnnotationsEditor = (props: Props) => {
         currentIndex,
 
         setCurrentTimeForMediaItems,
-        addMediaItem,
+        appendMediaItem,
         removeMediaItem,
         updateMediaItem,
     } = useMediaItemHandling<Annotation>({
@@ -140,12 +128,15 @@ const AnnotationsEditor = (props: Props) => {
                     <div className="video-editor__section-content">
                         <MediaItemList
                             mediaItems={mediaItems}
-                            addMediaItem={addMediaItem}
                             currentIndex={currentIndex}
                             updateMediaItem={updateMediaItem}
                             removeMediaItem={removeMediaItem}
                             checkMediaItem={checkMediaItem}
-                        />
+                        >
+                            <AddItemButton addMediaItemCallback={appendMediaItem}>
+                                <i className={'fas fa-plus'} /> Neue Annotation
+                            </AddItemButton>
+                        </MediaItemList>
                     </div>
                 </div>
             </div>

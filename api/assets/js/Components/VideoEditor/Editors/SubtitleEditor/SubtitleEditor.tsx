@@ -14,6 +14,7 @@ import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/Vid
 import { Subtitle } from 'Components/VideoEditor/VideoListsSlice'
 import { vttToUrlUseWorker } from '../utils/subtitleUtils'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
+import AddItemButton from '../components/MediaItemList/AddItemButton'
 
 const storage = new Storage()
 const worker = new Worker(vttToUrlUseWorker())
@@ -72,19 +73,7 @@ const SubtitleEditor = ({
             })
     )
 
-    const mediaItems: MediaItem<Subtitle>[] =
-        itemsFromSubtitles.length > 0
-            ? itemsFromSubtitles
-            : [
-                  new MediaItem({
-                      start: '00:00:00.000',
-                      end: '00:00:01.000',
-                      text: t('Kommentar'),
-                      memo: '',
-                      lane: 0,
-                      originalData: {} as Subtitle,
-                  }),
-              ]
+    const mediaItems: MediaItem<Subtitle>[] = itemsFromSubtitles
 
     // All options
     const firstVideo = videos[0]
@@ -101,7 +90,7 @@ const SubtitleEditor = ({
         currentIndex,
 
         setCurrentTimeForMediaItems,
-        addMediaItem,
+        appendMediaItem,
         removeMediaItem,
         updateMediaItem,
         checkMediaItem,
@@ -133,12 +122,15 @@ const SubtitleEditor = ({
                     <div className="video-editor__section-content">
                         <MediaItemList
                             mediaItems={mediaItems}
-                            addMediaItem={addMediaItem}
                             currentIndex={currentIndex}
                             updateMediaItem={updateMediaItem}
                             removeMediaItem={removeMediaItem}
                             checkMediaItem={checkMediaItem}
-                        />
+                        >
+                            <AddItemButton addMediaItemCallback={appendMediaItem}>
+                                <i className={'fas fa-plus'} /> Neuer Untertitel
+                            </AddItemButton>
+                        </MediaItemList>
                     </div>
                 </div>
             </div>

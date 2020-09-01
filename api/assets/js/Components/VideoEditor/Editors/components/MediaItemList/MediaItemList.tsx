@@ -1,47 +1,33 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React from 'react'
 import { Table } from 'react-virtualized'
-import debounce from 'lodash/debounce'
 import Row from './Row/Row'
 import { MediaItem } from '../types'
+import { useWindowResize } from './useWindowResize'
 
 export type Props = {
     mediaItems: MediaItem<any>[]
-    addMediaItem: (index: number, sub?: MediaItem<any>) => void
+    addMediaItem?: (index: number, sub?: MediaItem<any>) => void
     currentIndex: number
     updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine updatedValues
     removeMediaItem: (item: MediaItem<any>) => void
     checkMediaItem: (item: MediaItem<any>) => boolean
+    children?: React.ReactNode | React.ReactNodeArray
 }
 
 const MediaItemList = ({
     mediaItems,
     addMediaItem,
+    children,
     currentIndex,
     updateMediaItem,
     removeMediaItem,
     checkMediaItem,
 }: Props) => {
-    const [width, setWidth] = useState(100)
-    const [height, setHeight] = useState(100)
-
-    const resize = useCallback(() => {
-        setWidth(document.body.clientWidth / 2)
-        setHeight(document.body.clientHeight - 210)
-    }, [setWidth, setHeight])
-
-    let resizeInitialized = false
-
-    useEffect(() => {
-        resize()
-        if (!resizeInitialized) {
-            resizeInitialized = true
-            const debounceResize = debounce(resize, 500)
-            window.addEventListener('resize', debounceResize)
-        }
-    }, [resize, resizeInitialized])
+    const { width, height } = useWindowResize()
 
     return (
         <div className="video-editor__media-item-list">
+            {children}
             <Table
                 className="video-editor__media-item-list__table"
                 headerHeight={40}
