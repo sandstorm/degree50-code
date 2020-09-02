@@ -40,6 +40,7 @@ describe('useMediaItemHandling()', () => {
             otherProperty: 'something else',
         },
         lane: 0,
+        idFromPrototype: null,
     })
 
     const baseConfig = {
@@ -125,8 +126,10 @@ describe('useMediaItemHandling()', () => {
                                     memo: 'Some test memo...',
                                     lane: 0,
                                     otherProperty: 'something else',
+                                    idFromPrototype: null,
                                 },
                                 lane: 0,
+                                idFromPrototype: null,
                             }),
                         ],
                         true,
@@ -157,8 +160,10 @@ describe('useMediaItemHandling()', () => {
                                     memo: 'Some test memo...',
                                     lane: 0,
                                     otherProperty: 'something else',
+                                    idFromPrototype: null,
                                 },
                                 lane: 0,
+                                idFromPrototype: null,
                             }),
                         ],
                         true,
@@ -190,8 +195,10 @@ describe('useMediaItemHandling()', () => {
                                     lane: 0,
                                     otherProperty: 'something else',
                                     anotherProperty: 'foooooo',
+                                    idFromPrototype: null,
                                 },
                                 lane: 0,
+                                idFromPrototype: null,
                             }),
                         ],
                         true,
@@ -208,6 +215,7 @@ describe('useMediaItemHandling()', () => {
                         lane: 0,
                         otherProperty: 'something else',
                         color: null,
+                        idFromPrototype: null,
                     },
                     {
                         start: '00:00:00.000',
@@ -218,6 +226,7 @@ describe('useMediaItemHandling()', () => {
                         otherProperty: 'something else',
                         anotherProperty: 'foooooo',
                         color: null,
+                        idFromPrototype: null,
                     },
                 ])
             })
@@ -254,8 +263,10 @@ describe('useMediaItemHandling()', () => {
                             memo: 'Some test memo...',
                             lane: 0,
                             otherProperty: 'something else',
+                            idFromPrototype: null,
                         },
                         lane: 0,
+                        idFromPrototype: null,
                     })
                 )
             ).toBe(-1)
@@ -292,8 +303,10 @@ describe('useMediaItemHandling()', () => {
                             memo: 'Some test memo...',
                             lane: 0,
                             otherProperty: 'something else',
+                            idFromPrototype: null,
                         },
                         lane: 0,
+                        idFromPrototype: null,
                     })
                 )
             ).toBe(false)
@@ -317,8 +330,10 @@ describe('useMediaItemHandling()', () => {
                                 memo: 'Some test memo...',
                                 lane: 0,
                                 otherProperty: 'something else',
+                                idFromPrototype: null,
                             },
                             lane: 0,
+                            idFromPrototype: null,
                         }),
                     ],
                 })
@@ -340,8 +355,10 @@ describe('useMediaItemHandling()', () => {
                     memo: 'Some test memo...',
                     lane: 0,
                     otherProperty: 'something else',
+                    idFromPrototype: null,
                 },
                 lane: 0,
+                idFromPrototype: null,
             })
 
             const { result } = renderHook(() =>
@@ -367,8 +384,10 @@ describe('useMediaItemHandling()', () => {
                     memo: 'Some test memo...',
                     lane: 0,
                     otherProperty: 'something else',
+                    idFromPrototype: null,
                 },
                 lane: 0,
+                idFromPrototype: null,
             })
 
             const { result } = renderHook(() =>
@@ -394,8 +413,10 @@ describe('useMediaItemHandling()', () => {
                     memo: 'Some test memo...',
                     lane: 0,
                     otherProperty: 'something else',
+                    idFromPrototype: null,
                 },
                 lane: 0,
+                idFromPrototype: null,
             })
 
             const { result } = renderHook(() =>
@@ -425,6 +446,7 @@ describe('useMediaItemHandling()', () => {
                     otherProperty: 'something else',
                 },
                 lane: 0,
+                idFromPrototype: null,
             })
 
             const { result } = renderHook(() => useMediaItemHandling(baseConfig))
@@ -455,6 +477,7 @@ describe('useMediaItemHandling()', () => {
                     lane: 0,
                     otherProperty: 'something else',
                     color: null,
+                    idFromPrototype: null,
                 },
             ])
         })
@@ -478,6 +501,7 @@ describe('useMediaItemHandling()', () => {
                     otherProperty: 'something else',
                 },
                 lane: 0,
+                idFromPrototype: null,
             })
 
             const { result } = renderHook(() => useMediaItemHandling(baseConfig))
@@ -504,6 +528,7 @@ describe('useMediaItemHandling()', () => {
                     otherProperty: 'something else',
                 },
                 lane: 0,
+                idFromPrototype: null,
             })
 
             const { result } = renderHook(() => useMediaItemHandling({ ...baseConfig, mediaItems: [itemA, itemB] }))
@@ -521,6 +546,7 @@ describe('useMediaItemHandling()', () => {
                     lane: 0,
                     otherProperty: 'something else',
                     color: null,
+                    idFromPrototype: null,
                 },
             ])
         })
@@ -542,6 +568,7 @@ describe('useMediaItemHandling()', () => {
                     memo: '',
                     lane: 0,
                     color: null,
+                    idFromPrototype: null,
                 },
             ])
         })
@@ -562,6 +589,7 @@ describe('useMediaItemHandling()', () => {
                     lane: 0,
                     otherProperty: 'something else',
                     color: null,
+                    idFromPrototype: null,
                 },
                 {
                     start: '00:00:05.100',
@@ -570,6 +598,7 @@ describe('useMediaItemHandling()', () => {
                     memo: '',
                     lane: 0,
                     color: null,
+                    idFromPrototype: null,
                 },
             ])
         })

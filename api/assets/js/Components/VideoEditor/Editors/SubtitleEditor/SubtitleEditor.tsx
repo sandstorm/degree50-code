@@ -61,7 +61,7 @@ const SubtitleEditor = ({
     }, [])
 
     // All annotations
-    const itemsFromSubtitles = subtitles.map(
+    const mediaItems: MediaItem<Subtitle>[] = subtitles.map(
         (sub) =>
             new MediaItem({
                 start: sub.start,
@@ -70,10 +70,9 @@ const SubtitleEditor = ({
                 memo: sub.memo,
                 originalData: sub,
                 lane: 0,
+                idFromPrototype: sub.idFromPrototype,
             })
     )
-
-    const mediaItems: MediaItem<Subtitle>[] = itemsFromSubtitles
 
     // All options
     const firstVideo = videos[0]

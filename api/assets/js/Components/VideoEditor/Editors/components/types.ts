@@ -8,6 +8,7 @@ export class MediaItem<T> {
     memo: string
     color: null | string
     lane: number
+    idFromPrototype: null | string
     originalData: T
 
     constructor({
@@ -18,6 +19,7 @@ export class MediaItem<T> {
         color = null,
         originalData,
         lane = 0,
+        idFromPrototype,
     }: {
         start: string
         end: string
@@ -25,6 +27,7 @@ export class MediaItem<T> {
         memo: string
         color?: string | null
         lane: number
+        idFromPrototype: string | null
         originalData: T
     }) {
         this.start = start
@@ -34,6 +37,7 @@ export class MediaItem<T> {
         this.color = color
         this.originalData = originalData
         this.lane = lane
+        this.idFromPrototype = idFromPrototype
     }
 
     public startsBefore(item: MediaItem<any>): boolean {
@@ -53,6 +57,7 @@ export class MediaItem<T> {
             color: this.color,
             originalData: this.originalData,
             lane: this.lane,
+            idFromPrototype: this.idFromPrototype,
         })
     }
 

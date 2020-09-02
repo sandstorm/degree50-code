@@ -204,6 +204,7 @@ export const useCuttingMediaItemHandling = ({
                 memo: cutToCopy.memo,
                 originalData: cutToCopy.originalData,
                 lane: 0,
+                idFromPrototype: cutToCopy.idFromPrototype,
             })
 
             setPlayPosition(t2d(newCut.start))

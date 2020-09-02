@@ -14,6 +14,7 @@ type Props = {
     mediaItems: MediaItem<MediaItemType>[]
     amountOfLanes: number
     videoDuration: number
+    showTextInMediaItems: boolean
 }
 
 const initialRender: RenderConfig = {
@@ -32,6 +33,7 @@ const ReadOnlyMediaLane = ({
     mediaItems,
     amountOfLanes,
     videoDuration,
+    showTextInMediaItems,
 }: Props) => {
     // TODO this should later become part of the api and probably the redux store
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
@@ -81,7 +83,12 @@ const ReadOnlyMediaLane = ({
 
                 <MediaTrackInteractionArea renderConfig={renderConfig} clickCallback={handleLaneClick} />
 
-                <ReadOnlyMediaItems renderConfig={renderConfig} mediaItems={mediaItems} amountOfLanes={amountOfLanes} />
+                <ReadOnlyMediaItems
+                    renderConfig={renderConfig}
+                    mediaItems={mediaItems}
+                    amountOfLanes={amountOfLanes}
+                    showTextInMediaItems={showTextInMediaItems}
+                />
             </div>
         </div>
     )

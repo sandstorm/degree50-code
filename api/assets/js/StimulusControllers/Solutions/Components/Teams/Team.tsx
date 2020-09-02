@@ -8,6 +8,7 @@ import { solveConflicts } from 'Components/VideoEditor/Editors/helpers'
 import { Item } from '@react-stately/collections'
 import Dropdown from '../../../../Components/Dropdown/Dropdown'
 import { useModalHook } from '../../../../Components/Modal/useModalHook'
+import VideoCodesList from './VideoCodesList'
 
 type TeamProps = {
     solution: SolutionByTeam
@@ -28,6 +29,7 @@ const Team = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime
                 memo: annotation.memo,
                 originalData: annotation,
                 lane: 0,
+                idFromPrototype: annotation.idFromPrototype,
             })
     )
 
@@ -42,15 +44,18 @@ const Team = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime
                     color: videoCode.color,
                     originalData: videoCode,
                     lane: 0,
+                    idFromPrototype: videoCode.idFromPrototype,
                 })
         )
     )
 
     let mediaItems = null
+    let showTextInMediaItems = true
     if (activeTab === TabsTypesEnum.VIDEO_ANNOTATIONS) {
         mediaItems = itemsFromAnnotations
     } else {
         mediaItems = itemsFromVideoCodes
+        showTextInMediaItems = false
     }
 
     const amountOfLanes = Math.max.apply(
@@ -83,9 +88,15 @@ const Team = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime
                     mediaItems={mediaItems}
                     amountOfLanes={amountOfLanes}
                     videoDuration={videoDuration}
+                    showTextInMediaItems={showTextInMediaItems}
                 />
             </div>
-            <RenderVideoCodesModal title={'Video-Codes'}>test</RenderVideoCodesModal>
+            <RenderVideoCodesModal title={'Video-Codes'}>
+                <VideoCodesList
+                    videoCodesPool={solution.solution.customVideoCodesPool}
+                    usedVideoCodes={solution.solution.videoCodes}
+                />
+            </RenderVideoCodesModal>
         </div>
     )
 }

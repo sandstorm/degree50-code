@@ -20,8 +20,10 @@ describe('updateOffset()', () => {
             memo: 'Some test memo...',
             url: '/some/test.mp4',
             playbackRate: 1,
+            idFromPrototype: null,
         },
         lane: 0,
+        idFromPrototype: null,
     })
 
     it('should return original offset, if it was neither dragged on right or left handle', () => {

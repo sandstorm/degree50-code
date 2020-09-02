@@ -9,6 +9,7 @@ import { useModalHook } from 'Components/Modal/useModalHook'
 import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 import { Handle } from './types'
+import MediaItemLabel from './MediaItemLabel'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>
@@ -110,15 +111,6 @@ const MediaItem = ({
 
     const contentMenuItemHeight = 30
 
-    // Used for video-codes
-    const getShortCodeForItemLabel = (title: string) => {
-        const splitStr = title.toLowerCase().split(' ')
-        for (let i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase()
-        }
-        return splitStr.join('')
-    }
-
     const width = (item.endTime - item.startTime) * renderConfig.gridGap * 10
 
     // WHY:
@@ -189,9 +181,7 @@ const MediaItem = ({
             />
 
             <div className="video-editor__media-items__text" onMouseDown={handleItemCenterMouseDown}>
-                {showTextInMediaItems
-                    ? item.text.split(/\r?\n/).map((line: any, index: any /* FIXME any */) => <p key={index}>{line}</p>)
-                    : getShortCodeForItemLabel(item.text)}
+                <MediaItemLabel item={item} showTextInMediaItems={showTextInMediaItems} />
             </div>
 
             <div

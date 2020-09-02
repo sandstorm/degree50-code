@@ -9,6 +9,7 @@ export type MediaItemType = {
     text: string
     memo: string
     color: null | string
+    idFromPrototype: null | string
 }
 
 export type Annotation = MediaItemType
