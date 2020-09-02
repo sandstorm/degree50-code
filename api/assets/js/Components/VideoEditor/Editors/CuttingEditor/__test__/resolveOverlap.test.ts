@@ -15,6 +15,7 @@ describe('resolveOverlap()', () => {
         // we don't actually need this for our tests
         // @ts-ignore disable-line
         originalData: {},
+        idFromPrototype: null,
     })
     const itemB = new MediaItem<any>({
         start: '00:00:04.000',
@@ -26,6 +27,7 @@ describe('resolveOverlap()', () => {
         // we don't actually need this for our tests
         // @ts-ignore disable-line
         originalData: {},
+        idFromPrototype: null,
     })
     const itemC = new MediaItem<any>({
         start: '00:00:06.000',
@@ -37,6 +39,7 @@ describe('resolveOverlap()', () => {
         // we don't actually need this for our tests
         // @ts-ignore disable-line
         originalData: {},
+        idFromPrototype: null,
     })
     const itemD = new MediaItem<any>({
         start: '00:00:01.000',
@@ -48,6 +51,7 @@ describe('resolveOverlap()', () => {
         // we don't actually need this for our tests
         // @ts-ignore disable-line
         originalData: {},
+        idFromPrototype: null,
     })
 
     test.each([
@@ -65,6 +69,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemA
@@ -77,6 +82,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemC
@@ -89,6 +95,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
             ],
         ],
@@ -107,6 +114,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
             ],
         ],
@@ -125,6 +133,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
             ],
         ],
@@ -142,6 +151,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemC
@@ -154,6 +164,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemC
@@ -166,6 +177,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemC
@@ -178,6 +190,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
             ],
         ],
@@ -195,6 +208,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemC
@@ -207,6 +221,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemC
@@ -219,6 +234,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
                 new MediaItem<any>({
                     // former itemC
@@ -231,6 +247,7 @@ describe('resolveOverlap()', () => {
                     // we don't actually need this for our tests
                     // @ts-ignore disable-line
                     originalData: {},
+                    idFromPrototype: null,
                 }),
             ],
         ],

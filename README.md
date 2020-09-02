@@ -45,13 +45,16 @@
 - http://localhost:8080/login
     - login with: admin@sandstorm.de / password
 - http://localhost:8080/admin/
-- http://localhost:8080/api/graphql
-- http://localhost:8080/api/graphql/graphql_playground
 - http://localhost:8080/subtitle-editor
 
-**Running Behat**
+**Running Behat Tests**
 
 make test
+
+**Running Frontend Tests**
+
+yarn jest
+yarn test:debug
 
 
 **Graphql**

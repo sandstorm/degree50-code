@@ -69,6 +69,7 @@ const CuttingEditor = ({
                           memo: '',
                           originalData: cut,
                           lane: 0,
+                          idFromPrototype: cut.idFromPrototype,
                       })
               )
             : [
@@ -83,6 +84,7 @@ const CuttingEditor = ({
                           playbackRate: 1,
                       } as Cut,
                       lane: 0,
+                      idFromPrototype: null,
                   }),
               ]
 

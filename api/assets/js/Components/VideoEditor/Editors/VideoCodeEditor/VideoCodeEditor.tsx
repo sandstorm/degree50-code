@@ -63,6 +63,7 @@ const VideoCodeEditor = (props: Props) => {
                     color: videoCode.color,
                     originalData: videoCode,
                     lane: 0,
+                    idFromPrototype: videoCode.idFromPrototype,
                 })
         )
     )
@@ -106,19 +107,23 @@ const VideoCodeEditor = (props: Props) => {
     }
 
     const addVideoCode = useCallback(
-        (videoCode) => {
+        (videoCode: VideoCodePrototype) => {
             const index = mediaItems.length
             const videoCodes = copyMediaItems()
             const previous = videoCodes[index - 1]
             const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
             const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
-            const code = new MediaItem({
+            const mediaItem = {
                 start,
                 end,
                 text: videoCode.name,
-                memo: videoCode.memo,
+                memo: '',
                 color: videoCode.color,
-                originalData: videoCode,
+                idFromPrototype: videoCode.id,
+            }
+            const code: MediaItem<VideoCode> = new MediaItem({
+                ...mediaItem,
+                originalData: mediaItem,
                 lane: 0,
             })
 

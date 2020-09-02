@@ -12,6 +12,7 @@ const itemA = new MediaItem({
     memo: 'Some test memo...',
     originalData: {},
     lane: 0,
+    idFromPrototype: null,
 })
 
 const itemB = new MediaItem({
@@ -21,6 +22,7 @@ const itemB = new MediaItem({
     memo: 'Some test memo...',
     originalData: {},
     lane: 0,
+    idFromPrototype: null,
 })
 
 const itemC = new MediaItem({
@@ -30,6 +32,7 @@ const itemC = new MediaItem({
     memo: 'Some test memo...',
     originalData: {},
     lane: 0,
+    idFromPrototype: null,
 })
 
 describe('sortItemsByStartTime()', () => {
@@ -88,6 +91,7 @@ describe('snapItems()', () => {
                     memo: 'Some test memo...',
                     originalData: {},
                     lane: 0,
+                    idFromPrototype: null,
                 }),
                 new MediaItem({
                     start: '00:00:07.010',
@@ -96,6 +100,7 @@ describe('snapItems()', () => {
                     memo: 'Some test memo...',
                     originalData: {},
                     lane: 0,
+                    idFromPrototype: null,
                 }),
                 new MediaItem({
                     start: '00:00:11.020',
@@ -104,6 +109,7 @@ describe('snapItems()', () => {
                     memo: 'Some test memo...',
                     originalData: {},
                     lane: 0,
+                    idFromPrototype: null,
                 }),
             ],
         ],
@@ -118,6 +124,7 @@ describe('snapItems()', () => {
                     memo: 'Some test memo...',
                     originalData: {},
                     lane: 0,
+                    idFromPrototype: null,
                 }),
             ],
             '00:00:02.000',
@@ -129,6 +136,7 @@ describe('snapItems()', () => {
                     memo: 'Some test memo...',
                     originalData: {},
                     lane: 0,
+                    idFromPrototype: null,
                 }),
                 new MediaItem({
                     start: '00:00:07.010',
@@ -137,6 +145,7 @@ describe('snapItems()', () => {
                     memo: 'Some test memo...',
                     originalData: {},
                     lane: 0,
+                    idFromPrototype: null,
                 }),
                 new MediaItem({
                     start: '00:00:11.020',
@@ -145,6 +154,7 @@ describe('snapItems()', () => {
                     memo: 'Some test memo...',
                     originalData: {},
                     lane: 0,
+                    idFromPrototype: null,
                 }),
             ],
         ],

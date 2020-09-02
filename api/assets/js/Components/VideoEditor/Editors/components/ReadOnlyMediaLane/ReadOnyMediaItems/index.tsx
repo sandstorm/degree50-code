@@ -4,7 +4,12 @@ import { MediaItem } from '../../types'
 import { RenderConfig } from '../../MediaLane/MediaTrack'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 
-const renderItems = (mediaItems: MediaItem<MediaItemType>[], renderConfig: RenderConfig, amountOfLanes: number) =>
+const renderItems = (
+    mediaItems: MediaItem<MediaItemType>[],
+    renderConfig: RenderConfig,
+    amountOfLanes: number,
+    showTextInMediaItems: boolean
+) =>
     mediaItems.map((item, index) => {
         return (
             <ReadOnlyMediaItem
@@ -13,6 +18,7 @@ const renderItems = (mediaItems: MediaItem<MediaItemType>[], renderConfig: Rende
                 item={item}
                 renderConfig={renderConfig}
                 amountOfLanes={amountOfLanes}
+                showTextInMediaItems={showTextInMediaItems}
             />
         )
     })
@@ -21,14 +27,15 @@ type Props = {
     mediaItems: MediaItem<MediaItemType>[]
     renderConfig: RenderConfig
     amountOfLanes: number
+    showTextInMediaItems: boolean
 }
 
-const ReadOnlyMediaItems = ({ mediaItems, renderConfig, amountOfLanes }: Props) => {
+const ReadOnlyMediaItems = ({ mediaItems, renderConfig, amountOfLanes, showTextInMediaItems }: Props) => {
     const $mediaItemsRef: React.RefObject<HTMLDivElement> = useRef(null)
 
     return (
         <div className="video-editor__media-items">
-            <div ref={$mediaItemsRef}>{renderItems(mediaItems, renderConfig, amountOfLanes)}</div>
+            <div ref={$mediaItemsRef}>{renderItems(mediaItems, renderConfig, amountOfLanes, showTextInMediaItems)}</div>
         </div>
     )
 }

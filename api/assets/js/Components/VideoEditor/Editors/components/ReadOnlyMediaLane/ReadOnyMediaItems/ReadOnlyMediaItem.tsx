@@ -4,15 +4,17 @@ import { RenderConfig } from '../../MediaLane/MediaTrack'
 import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 import { useModalHook } from 'Components/Modal/useModalHook'
+import MediaItemLabel from '../../MediaLane/MediaItems/MediaItemLabel'
 
 type Props = {
     item: MediaItem<MediaItemType>
     id: number
     renderConfig: RenderConfig
+    showTextInMediaItems: boolean
     amountOfLanes?: number
 }
 
-const ReadOnlyMediaItem = ({ item, id, renderConfig, amountOfLanes = 0 }: Props) => {
+const ReadOnlyMediaItem = ({ item, id, renderConfig, showTextInMediaItems, amountOfLanes = 0 }: Props) => {
     const mediaItemHeight = 100 / (amountOfLanes + 1)
     const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModalHook()
 
@@ -36,9 +38,7 @@ const ReadOnlyMediaItem = ({ item, id, renderConfig, amountOfLanes = 0 }: Props)
                 </Button>
             ) : null}
             <div className="video-editor__media-items__text">
-                {item.text.split(/\r?\n/).map((line, index) => (
-                    <p key={index}>{line}</p>
-                ))}
+                <MediaItemLabel item={item} showTextInMediaItems={showTextInMediaItems} />
             </div>
             <RenderMemoModal title={'Memo'}>{item.memo}</RenderMemoModal>
         </div>

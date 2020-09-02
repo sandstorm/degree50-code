@@ -204,6 +204,7 @@ export const useMediaItemHandling = <T>({
             memo: '',
             originalData: {} as T,
             lane: 0,
+            idFromPrototype: null,
         })
 
         updateMediaItems([...mediaItems, newItem])

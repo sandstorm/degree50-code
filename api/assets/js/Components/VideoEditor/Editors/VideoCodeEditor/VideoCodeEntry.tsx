@@ -35,7 +35,7 @@ const VideoCodeEntry = ({
         >
             <div className={'video-code__content'}>
                 <div className={'video-code__color'} style={{ backgroundColor: videoCode.color || '' }} />
-                <span>{videoCode.name}</span>
+                <span className={'video-code__name'}>{videoCode.name}</span>
                 {videoCode.userCreated ? (
                     <button
                         type="button"

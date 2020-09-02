@@ -1,7 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { t } from 'react-i18nify'
 
 import MediaLane from '../components/MediaLane'
 import ArtPlayer from '../components/ArtPlayer'
@@ -60,6 +59,7 @@ const AnnotationsEditor = (props: Props) => {
                 memo: sub.memo,
                 originalData: sub,
                 lane: 0,
+                idFromPrototype: null,
             })
     )
 

@@ -40,16 +40,6 @@
   justify-content: space-between;
   align-items: center;
 
-  span {
-    display: inline-block;
-    margin-right: auto;
-    width: 85%;
-
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
   button {
     margin-left: 5px;
   }
@@ -66,6 +56,16 @@
   height: 20px;
   margin-right: 10px;
   flex-shrink: 0;
+}
+
+.video-code__name {
+  display: inline-block;
+  margin-right: auto;
+  width: 85%;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .new-video-code {
