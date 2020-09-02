@@ -5,7 +5,7 @@ import { RenderConfig } from '../MediaTrack'
 import { actions } from '../../../../PlayerSlice'
 import MediaItemContextMenu from './MediaItemContextMenu'
 import MediaItemMemoForm from './MediaItemMemoForm'
-import { useModal } from 'Components/Modal/useModal'
+import { useModalHook } from 'Components/Modal/useModalHook'
 import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 import { Handle } from './types'
@@ -101,8 +101,12 @@ const MediaItem = ({
         renderConfig.padding * renderConfig.gridGap +
         (item.startTime - renderConfig.timelineStartTime) * renderConfig.gridGap * 10
 
-    const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModal()
-    const { showModal: showMemoEditModal, hideModal: closeMemoEditModal, RenderModal: RenderMemoEditModal } = useModal()
+    const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModalHook()
+    const {
+        showModal: showMemoEditModal,
+        hideModal: closeMemoEditModal,
+        RenderModal: RenderMemoEditModal,
+    } = useModalHook()
 
     const contentMenuItemHeight = 30
 

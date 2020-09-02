@@ -1782,6 +1782,15 @@
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
 
+"@react-aria/aria-modal-polyfill@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@react-aria/aria-modal-polyfill/-/aria-modal-polyfill-3.2.0.tgz#b89203f4f8ee5854ad8f807eccd09f93d7ebaed3"
+  integrity sha512-YMQQ8fRPrumIWauK+Vs9G7UERIn5IYFZZ3Y2Yz6QCjrT27EYD+UyXkQYoExSJ2ZvelgP1mTGhwX2yNA/7IjgsA==
+  dependencies:
+    "@babel/runtime" "^7.6.2"
+    "@react-types/shared" "^3.2.0"
+    aria-hidden "^1.1.1"
+
 "@react-aria/button@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@react-aria/button/-/button-3.1.0.tgz#50e3cdcef7e4ae8c0653edf479fde848488dcb0d"
@@ -1870,21 +1879,6 @@
     "@react-types/menu" "^3.1.0"
     "@react-types/shared" "^3.2.0"
 
-"@react-aria/overlays@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@react-aria/overlays/-/overlays-3.1.0.tgz#0f435b6232028f6d52cd0f872798c8b783bedd6a"
-  integrity sha512-Rlj1dj9l0I43ZooshFTEB7dSmbgQ0IKmydnmYhjeU3rFXM0dJGDfwO4vA/BB41rN2eY5XzIAbr+q0+SkDyCatg==
-  dependencies:
-    "@babel/runtime" "^7.6.2"
-    "@react-aria/i18n" "^3.1.0"
-    "@react-aria/interactions" "^3.1.0"
-    "@react-aria/utils" "^3.1.0"
-    "@react-aria/visually-hidden" "^3.1.0"
-    "@react-stately/overlays" "^3.1.0"
-    "@react-types/button" "^3.1.0"
-    "@react-types/overlays" "^3.1.0"
-    dom-helpers "^3.3.1"
-
 "@react-aria/overlays@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@react-aria/overlays/-/overlays-3.2.0.tgz#c69ee3396493e7fa2bed6bf39cef081baabba719"
@@ -1931,14 +1925,6 @@
     "@babel/runtime" "^7.6.2"
     "@react-types/shared" "^3.2.0"
     clsx "^1.1.1"
-
-"@react-aria/visually-hidden@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@react-aria/visually-hidden/-/visually-hidden-3.1.0.tgz#0dcbd55a92ebb0641b249ac5644cd6e8423c512b"
-  integrity sha512-cZqtwQ8Rckzj8PS4LR/MGYPIKtXnw7OvJ+SLrEBq03EskYfyrdCeFBk9Lq4Ut91KK3aHLOrmy4h486FPb17A9w==
-  dependencies:
-    "@babel/runtime" "^7.6.2"
-    classnames "^2.2.5"
 
 "@react-aria/visually-hidden@^3.2.0":
   version "3.2.0"
@@ -3386,6 +3372,13 @@ argparse@^1.0.7:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
   dependencies:
     sprintf-js "~1.0.2"
+
+aria-hidden@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/aria-hidden/-/aria-hidden-1.1.1.tgz#0c356026d3f65e2bd487a3adb73f0c586be2c37e"
+  integrity sha512-M7zYxCcOQPOaxGHoMTKUFD2UNcVFTp9ycrdStLcTPLf8zgTXC3+YcGe+UuzSh5X1BX/0/PtS8xTNy4xyH/6xtw==
+  dependencies:
+    tslib "^1.0.0"
 
 aria-query@^3.0.0:
   version "3.0.0"
@@ -13298,7 +13291,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1, tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@^1, tslib@^1.0.0, tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
 

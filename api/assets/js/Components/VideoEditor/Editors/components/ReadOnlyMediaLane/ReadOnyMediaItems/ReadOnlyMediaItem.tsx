@@ -3,7 +3,7 @@ import { MediaItem } from '../../types'
 import { RenderConfig } from '../../MediaLane/MediaTrack'
 import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
-import { useModal } from 'Components/Modal/useModal'
+import { useModalHook } from 'Components/Modal/useModalHook'
 
 type Props = {
     item: MediaItem<MediaItemType>
@@ -14,7 +14,7 @@ type Props = {
 
 const ReadOnlyMediaItem = ({ item, id, renderConfig, amountOfLanes = 0 }: Props) => {
     const mediaItemHeight = 100 / (amountOfLanes + 1)
-    const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModal()
+    const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModalHook()
 
     return (
         <div

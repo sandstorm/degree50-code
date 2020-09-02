@@ -7,6 +7,7 @@ import ReadOnlyMediaLane from 'Components/VideoEditor/Editors/components/ReadOnl
 import { solveConflicts } from 'Components/VideoEditor/Editors/helpers'
 import { Item } from '@react-stately/collections'
 import Dropdown from '../../../../Components/Dropdown/Dropdown'
+import { useModalHook } from '../../../../Components/Modal/useModalHook'
 
 type TeamProps = {
     solution: SolutionByTeam
@@ -17,14 +18,7 @@ type TeamProps = {
     videoDuration: number
 }
 
-export const Team: React.FC<TeamProps> = ({
-    solution,
-    activeTab,
-    currentTime,
-    currentZoom,
-    updateCurrentTime,
-    videoDuration,
-}) => {
+const Team = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime, videoDuration }: TeamProps) => {
     const itemsFromAnnotations = solution.solution.annotations.map(
         (annotation) =>
             new MediaItem({
@@ -66,9 +60,10 @@ export const Team: React.FC<TeamProps> = ({
         })
     )
 
+    const { showModal: showVideoCodesModal, RenderModal: RenderVideoCodesModal } = useModalHook()
     const handleDropdownClick = (key: React.Key) => {
         if (key === 'showVideoCodes') {
-            // do stuff
+            showVideoCodesModal()
         }
     }
 
@@ -90,6 +85,9 @@ export const Team: React.FC<TeamProps> = ({
                     videoDuration={videoDuration}
                 />
             </div>
+            <RenderVideoCodesModal title={'Video-Codes'}>test</RenderVideoCodesModal>
         </div>
     )
 }
+
+export default React.memo(Team)

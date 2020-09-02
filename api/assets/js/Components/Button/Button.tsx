@@ -9,8 +9,7 @@ type ButtonProps = {
 }
 
 const Button = (props: ButtonProps) => {
-    // @ts-ignore
-    const buttonRef: React.RefObject<HTMLButtonElement> = useRef()
+    const buttonRef: React.RefObject<HTMLButtonElement> = useRef(null)
     const { buttonProps } = useButton(props, buttonRef)
     const { children } = props
 
