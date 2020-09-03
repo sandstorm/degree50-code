@@ -48,13 +48,6 @@ $tileHeight--small: 150px;
       width: $tileHeight--small;
     }
   }
-
-  &--video {
-    .tile__content {
-      width: $tileHeight;
-      height: $tileHeight;
-    }
-  }
 }
 
 .tile__content {
@@ -94,7 +87,15 @@ $tileHeight--small: 150px;
   width: 100%;
 
   text-align: left;
-  font-size: $base__fontSize--smaller;
+  font-size: $base__fontSize--tiny;
+}
+
+.tile__action-icon {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+
+  color: $theme__color__green;
 }
 
 .tile__status {
@@ -113,17 +114,6 @@ $tileHeight--small: 150px;
   &--2 {
     color: $theme__color__orange;
   }
-}
-
-.tile__image {
-  height: $tileHeight * 0.6;;
-  width: 100%;
-  margin-bottom: 10px;
-
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-
 }
 
 .tile__icon {

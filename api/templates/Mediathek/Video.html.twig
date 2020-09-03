@@ -1,17 +1,18 @@
 {% trans_default_domain 'forms' %}
 
-<div tabindex="0" class="tile tile--video" title="{{ video.description }}">
-    <input id="{{ video.id }}" type="checkbox" />
-    <label for="{{ video.id }}" class="tile__content">
-        <div class="tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
-        <span class="tile__title">{{ video.title }}</span>
-        <span class="tile__date">{% trans %}video.labels.created{% endtrans %}: {{ video.createdAt|date("d.m.Y") }}</span>
-    </label>
-    <div class="tile__actions">
-        <a href="{{ path('mediathek__video--player', {id: video.id}) }}">
-            <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
-        </a>
-        {% if video.creator == app.user %}
+{% if video.creator == app.user %}
+    <div tabindex="0" class="video-tile" title="{{ video.description }}">
+        <input id="{{ video.id }}" type="checkbox" />
+        <label for="{{ video.id }}" class="video-tile__content">
+            <div class="video-tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <span class="tile__date">{{ video.createdAt|date("d.m.Y") }}</span>
+            <span class="tile__title">{{ video.title }}</span>
+            <i class="tile__action-icon fas fa-arrow-down"></i>
+        </label>
+        <div class="tile__actions">
+            <a href="{{ path('mediathek__video--player', {id: video.id}) }}">
+                <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
+            </a>
             <a href="{{ path('mediathek__video--edit', {id: video.id}) }}">
                 <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
             </a>
@@ -21,6 +22,15 @@
             <a href="{{ path('mediathek__video--delete', {id: video.id}) }}" class="color-alert">
                 <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
             </a>
-        {% endif %}
+        </div>
     </div>
-</div>
+{% else %}
+    <a href="{{ path('mediathek__video--player', {id: video.id}) }}" class="video-tile" title="{{ video.description }}">
+        <div class="video-tile__content">
+            <div class="video-tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <span class="tile__date">{{ video.createdAt|date("d.m.Y") }}</span>
+            <span class="tile__title">{{ video.title }}</span>
+            <i class="tile__action-icon  fas fa-arrow-right"></i>
+        </div>
+    </a>
+{% endif %}
