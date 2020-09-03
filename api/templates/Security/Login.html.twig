@@ -5,6 +5,7 @@
 {% block body %}
     <div class="container">
         <form method="post" class="login-form" role="form">
+            <img src="{{ asset('build/images/logo_tmp.png') }}" alt="Logo der TU Dortmund" />
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}

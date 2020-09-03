@@ -2,7 +2,7 @@
 
 <header class="main-header">
     <nav class="navigation" role="navigation">
-        <a class="navigation__brand" href="/">Degree 4.0</a>
+        <a class="navigation__brand" href="/"><img src="{{ asset('build/images/logo_tmp.png') }}" alt="Logo der TU Dortmund" /></a>
         <button class="navigation__toggler" type="button" data-toggle="collapse" data-target="#navigation"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
@@ -22,7 +22,7 @@
                 {% endif %}
             </ul>
 
-            <div class="navigation__user navigation__item">
+            <div class="navigation__user">
                 <i class="fas fa-user"></i> {{ app.user.username }}
                 <a href="{{ path('app_logout') }}">Logout</a>
             </div>

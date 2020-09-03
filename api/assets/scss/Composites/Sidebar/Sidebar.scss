@@ -9,14 +9,35 @@
 
   overflow-y: scroll;
 
-  ul {
-    margin: 0;
-    padding: 0;
+  .card-header {
+    .btn {
+      text-align: left;
+    }
 
-    list-style: none;
+    > * {
+      margin-bottom: 0;
+    }
+  }
+}
 
-    ul {
-      margin-left: 10px;
+.sidebar__toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  text-decoration: none !important;
+
+  .fa-chevron-down {
+    display: none;
+  }
+
+  &.collapsed {
+    .fa-chevron-down {
+      display: inline-block;
+    }
+
+    .fa-chevron-up {
+      display: none;
     }
   }
 }

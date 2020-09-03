@@ -18,38 +18,38 @@ ul {
 
 h1 {
     font-size: $h1__fontSize;
-    font-weight: 400;
-    line-height: $base__lineHeight;
+    font-weight: $theme__heading__fontWeight;
+    line-height: $base__heading__lineHeight;
 }
 
 h2 {
     font-size: $h2__fontSize;
-    font-weight: 400;
-    line-height: $base__lineHeight;
+    font-weight: $theme__heading__fontWeight;
+    line-height: $base__heading__lineHeight;
 }
 
 h3 {
     font-size: $h3__fontSize;
-    font-weight: 400;
-    line-height: $base__lineHeight;
+    font-weight: $theme__heading__fontWeight;
+    line-height: $base__heading__lineHeight;
 }
 
 h4 {
     font-size: 24px;
-    font-weight: 400;
-    line-height: $base__lineHeight;
+    font-weight: $theme__heading__fontWeight;
+    line-height: $base__heading__lineHeight;
 }
 
 h5 {
     font-size: 20px;
-    font-weight: 400;
-    line-height: $base__lineHeight;
+    font-weight: $theme__heading__fontWeight;
+    line-height: $base__heading__lineHeight;
 }
 
 h6 {
     font-size: 16px;
-    font-weight: 400;
-    line-height: $base__lineHeight;
+    font-weight: $theme__heading__fontWeight;
+    line-height: $base__heading__lineHeight;
 }
 
 .color-success {
