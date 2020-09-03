@@ -1,16 +1,24 @@
-<div class="sidebar">
-    <ul>
-        {% for item in sidebarItems %}
-            <li class="sidebar-item">
-                <span>{{ item.label }}</span>
-                <ul>
-                    {% for course in item.courses %}
-                        <li class="sidebar-item {{ (currentItem != false and course.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
-                            <a class="nav-link" href="{{ path('exercise-overview--show-course', {id: course.id}) }}">{{ course.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
+<div id="sidebar" class="sidebar">
+    {% for item in sidebarItems %}
+        <div class="card">
+            <div class="card-header" id="heading{{ loop.index }}">
+                <h5>
+                    <button class="sidebar__toggle btn btn-link btn-block" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                        {{ item.label }} <i class="fas fa-chevron-up"></i><i class="fas fa-chevron-down"></i>
+                    </button>
+                </h5>
+            </div>
+            <div id="collapse{{ loop.index }}" class="collapse show" aria-labelledby="heading{{ loop.index }}" data-parent="#sidebar">
+                <div class="card-body">
+                    <ul>
+                        {% for course in item.courses %}
+                            <li class="sidebar-item {{ (currentItem != false and course.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
+                                <a class="nav-link" href="{{ path('exercise-overview--show-course', {id: course.id}) }}">{{ course.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 </div>

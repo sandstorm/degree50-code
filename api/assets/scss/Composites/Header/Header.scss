@@ -2,7 +2,8 @@
   position: fixed;
   width: 100%;
 
-  border-bottom: 1px solid $theme__color__grey--dark;
+  background-color: $theme__color__white;
+  border-bottom: 4px solid $theme__color__green;
 
   z-index: 9000;
 }

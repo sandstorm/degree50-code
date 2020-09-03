@@ -1,4 +1,3 @@
-
 $theme__color__white: #fff;
 $theme__color__black: #000;
 $theme__color__grey: #ededed;
@@ -20,18 +19,21 @@ $theme__color__blue--dark: #1f2133;
 
 $theme__content__boxShadow: 0 5px 5px 0 transparentize($theme__color__black, 0.8);
 
-$theme__heading__fontWeight: 300;
+$theme__heading__fontWeight: 400;
 $theme__default__fontWeight: 400;
 
-$theme__font__verdana: 'Verdana', Arial, Helvetica, sans-serif;
+$theme__font__akkurat: 'Akkurat-Regular', Helvetica, Arial, sans-serif;
+$theme__font__akkurat--bold: 'Akkurat-Bold', Helvetica, Arial, sans-serif;
 
-$theme__default__fontStack: $theme__font__verdana;
+$theme__default__fontStack: $theme__font__akkurat;
+$theme__bold__fontStack: $theme__font__akkurat--bold;
 
 $base__fontSize: 16px;
 $base__fontSize--larger: 18px;
 $base__fontSize--smaller: 14px;
 $base__fontSize--tiny: 12px;
-$base__lineHeight: 1.6;
+$base__lineHeight: 1.5;
+$base__heading__lineHeight: 1.3;
 
 $h1__fontSize: 2.2rem;
 $h2__fontSize: 1.8rem;
@@ -52,3 +54,15 @@ $breakpoints: (
         large: "(max-width: 1400px)",
         xlarge: "(max-width: 1800px)"
 );
+
+@font-face {
+  font-family: Akkurat-Regular;
+  src: url(../../fonts/lineto-akkurat-pro-regular.eot);
+  src: url(../../fonts/lineto-akkurat-pro-regular.eot?#iefix) format("embedded-opentype"), url(../../fonts/lineto-akkurat-pro-regular.woff2) format("woff2"), url(../../fonts/lineto-akkurat-pro-regular.woff) format("woff")
+}
+
+@font-face {
+  font-family: Akkurat-Bold;
+  src: url(../../fonts/lineto-akkurat-pro-bold.eot);
+  src: url(../../fonts/lineto-akkurat-pro-bold.eot?#iefix) format("embedded-opentype"), url(../../fonts/lineto-akkurat-pro-bold.woff2) format("woff2"), url(../../fonts/lineto-akkurat-pro-bold.woff) format("woff")
+}
