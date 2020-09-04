@@ -40,8 +40,8 @@
         <label for="{{ choice.value }}" class="video-checkbox__label">
             <div class="video-checkbox__image" role="img"
                  style="background-image: url({{ choice.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
-            <span class="tile__title">{{ choice.data.title }}</span>
             <span class="tile__date">{% trans %}video.labels.created{% endtrans %}: {{ choice.data.createdAt|date("d.m.Y") }}</span>
+            <span class="tile__title">{{ choice.data.title }}</span>
         </label>
     </div>
 {% endblock %}

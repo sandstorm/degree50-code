@@ -48,6 +48,18 @@ $tileHeight--small: 150px;
       width: $tileHeight--small;
     }
   }
+
+  &--status-0 {
+    .tile__content {
+      border-style: dashed;
+    }
+  }
+
+  &--is-new {
+    .ribbon {
+      display: block;
+    }
+  }
 }
 
 .tile__content {
@@ -59,15 +71,14 @@ $tileHeight--small: 150px;
 
   text-align: center;
 
-  background-color: $theme__color__grey;
+  border: 1px solid $theme__color__grey--darker;
 
   cursor: pointer;
 
   &:hover {
-    background-color: $theme__color__green;
+    border-color: $theme__color__green;
 
     text-decoration: none;
-    color: $theme__color__white;
   }
 }
 
@@ -136,6 +147,10 @@ $tileHeight--small: 150px;
   transform-origin: top left;
   transition-duration: 0.2s;
   z-index: 100;
+
+  i {
+    width: 30px;
+  }
 
   a {
     display: block;
