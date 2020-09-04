@@ -8,6 +8,7 @@ use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\UserExerciseInteraction;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -18,10 +19,12 @@ class ExerciseVoter extends Voter
     const CREATE = 'create';
     const EDIT = 'edit';
     const DELETE = 'delete';
+    const IS_OPENED = 'isOpened';
+    const IS_FINISHED = 'isFinished';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::VIEW, self::SHOW_SOLUTION, self::CREATE, self::EDIT, self::DELETE])) {
+        if (!in_array($attribute, [self::VIEW, self::SHOW_SOLUTION, self::CREATE, self::EDIT, self::DELETE, self::IS_OPENED, self::IS_FINISHED])) {
             return false;
         }
 
@@ -53,6 +56,10 @@ class ExerciseVoter extends Voter
         }
 
         switch ($attribute) {
+            case self::IS_FINISHED:
+                return $this->exercisesIsFinished($exercise, $user);
+            case self::IS_OPENED:
+                return $this->exercisesIsOpened($exercise, $user);
             case self::VIEW:
                 return $this->canView($course, $exercise, $user);
             case self::CREATE:
@@ -64,6 +71,15 @@ class ExerciseVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
+    private function exercisesIsOpened(Exercise $exercise, User $user)
+    {
+        return $exercise->getUserExerciseInteractions()->exists(fn($i, UserExerciseInteraction $userExerciseInteraction) => $userExerciseInteraction->isOpened() && $userExerciseInteraction->getUser() === $user);
+    }
+
+    private function exercisesIsFinished(Exercise $exercise, User $user)
+    {
+        return $exercise->getUserExerciseInteractions()->exists(fn($i, UserExerciseInteraction $userExerciseInteraction) => $userExerciseInteraction->isFinished() && $userExerciseInteraction->getUser() === $user);
+    }
 
     private function canView(Course $course, Exercise $exercise, User $user)
     {

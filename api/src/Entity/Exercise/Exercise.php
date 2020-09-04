@@ -9,7 +9,6 @@ use App\Entity\Account\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -76,8 +75,15 @@ class Exercise implements ExerciseInterface
      */
     private $status = self::EXERCISE_CREATED;
 
+    /**
+     * @var UserExerciseInteraction[]
+     * @ORM\OneToMany(targetEntity="UserExerciseInteraction", mappedBy="exercise")
+     */
+    private $userExerciseInteractions;
+
     public function __construct(string $id = null) {
         $this->phases = new ArrayCollection();
+        $this->userExerciseInteractions = new ArrayCollection();
         $this->generateOrSetId($id);
     }
 
@@ -214,5 +220,13 @@ class Exercise implements ExerciseInterface
     public function setStatus(int $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return Collection|UserExerciseInteraction[]
+     */
+    public function getUserExerciseInteractions(): Collection
+    {
+        return $this->userExerciseInteractions;
     }
 }

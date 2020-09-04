@@ -2,12 +2,15 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\UserExerciseInteraction;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
+use App\Repository\Exercise\UserExerciseInteractionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +25,7 @@ class ExerciseController extends AbstractController
 {
     private CourseRepository $courseRepository;
     private ExerciseRepository $exerciseRepository;
+    private UserExerciseInteractionRepository $userExerciseInteractionRepository;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
 
@@ -30,12 +34,13 @@ class ExerciseController extends AbstractController
      * @param ExerciseRepository $exerciseRepository
      * @param TranslatorInterface $translator
      */
-    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, UserExerciseInteractionRepository $userExerciseInteractionRepository)
     {
         $this->courseRepository = $courseRepository;
         $this->exerciseRepository = $exerciseRepository;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
+        $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
     }
 
     /**
@@ -62,6 +67,23 @@ class ExerciseController extends AbstractController
         $exercisePhase = $exercise->getPhases()->get($phaseIndex);
         $teams = $exercisePhase->getTeams();
 
+        /* @var User $user */
+        $user = $this->getUser();
+        $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
+
+        if (!$userExerciseInteraction) {
+            $userExerciseInteraction = new UserExerciseInteraction();
+            $userExerciseInteraction->setExercise($exercise);
+            $userExerciseInteraction->setUser($user);
+            $userExerciseInteraction->setOpened(true);
+
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($userExerciseInteraction);
+            $entityManager->flush();
+        }
+
+
         return $this->render($template,
             [
                 'exercise' => $exercise,
@@ -71,6 +93,30 @@ class ExerciseController extends AbstractController
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
                 'showSolution' => $showSolution
             ]);
+    }
+
+    /**
+     * @IsGranted("view", subject="exercise")
+     * @Route("/exercise/finish/{id}", name="exercise-overview__exercise--finish")
+     */
+    public function finish(Request $request, Exercise $exercise): Response
+    {
+        /* @var User $user */
+        $user = $this->getUser();
+        $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
+
+        $userExerciseInteraction->setFinished(true);
+
+        $this->eventStore->addEvent('UserFinishedExercise', [
+            'exerciseId' => $exercise->getId(),
+            'userId' => $user->getId(),
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($userExerciseInteraction);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('exercise-overview--show-course', ['id' => $exercise->getCourse()->getId()]);
     }
 
     /**
@@ -179,6 +225,15 @@ class ExerciseController extends AbstractController
     {
         $newStatus = (int) $request->query->get('status', Exercise::EXERCISE_CREATED);
         $exercise->setStatus($newStatus);
+
+        if ($newStatus == Exercise::EXERCISE_PUBLISHED && count($exercise->getPhases()) == 0) {
+            $this->addFlash(
+                'danger',
+                'Aufgabe hat noch keine Phasen!'
+            );
+
+            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
+        }
 
         $this->eventStore->addEvent('ExerciseStatusUpdated', [
             'exerciseId' => $exercise->getId(),

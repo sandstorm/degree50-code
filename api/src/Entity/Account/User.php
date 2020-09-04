@@ -4,6 +4,7 @@ namespace App\Entity\Account;
 
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\UserExerciseInteraction;
 use App\Entity\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -50,11 +51,18 @@ class User implements UserInterface
      */
     private $createdVideos;
 
+    /**
+     * @var UserExerciseInteraction[]
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\UserExerciseInteraction", mappedBy="user")
+     */
+    private $userExerciseInteractions;
+
     public function __construct(?string $id = null)
     {
         $this->courseRoles = new ArrayCollection();
         $this->createdExercises = new ArrayCollection();
         $this->createdVideos = new ArrayCollection();
+        $this->userExerciseInteractions = new ArrayCollection();
         $this->generateOrSetId($id);
     }
 
