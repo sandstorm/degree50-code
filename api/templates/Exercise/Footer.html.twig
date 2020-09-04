@@ -4,14 +4,14 @@
     {% if currentPhaseIndex == 0 %}
         <a class="btn btn-outline-primary" href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
     {% else %}
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phase: currentPhaseIndex - 1, showSolution: showSolution}) }}">Vorherige Phase</a>
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: currentPhaseIndex - 1, showSolution: showSolution}) }}">Vorherige Phase</a>
     {% endif %}
 
     <span>Phase {{ currentPhaseIndex + 1 }} / {{ amountOfPhases + 1 }}</span>
 
     {% if currentPhaseIndex < amountOfPhases %}
         {% if is_granted('next', exercisePhase) %}
-            <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phase: currentPhaseIndex + 1, showSolution: showSolution}) }}">Nächste Phase</a>
+            <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: currentPhaseIndex + 1, showSolution: showSolution}) }}">Nächste Phase</a>
         {% else %}
             <button type="button" class="btn btn-primary disabled" disabled="disabled">Nächste Phase</button>
         {% endif %}

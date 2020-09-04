@@ -1,108 +1,124 @@
-{% extends 'BaseFullscreen.html.twig' %}
+{% extends 'BaseWithSidebar.html.twig' %}
 
 {% block title %}{{ exercise.name }}{% endblock %}
 
-{% block body %}
-    <div class="container">
-        <h2 class="text-center">Phase {{ currentPhaseIndex + 1 }}: {{ exercisePhase.name }}</h2>
-        <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong></p>
-        <p class="text-center text-small">
-            {{ exercisePhase.task }}
-        </p>
-        <hr />
-        {% if exercisePhase.isGroupPhase %}
-            <h4>Bestehende Gruppen</h4>
-            <p>Tritt einer Gruppe bei um die Aufgabe zu bearbeiten oder erstelle eine neue Gruppe.</p>
+{% block sidebar %}
+    {{ include('Exercise/Sidebar.html.twig', {sidebarItems: exercise.phases, currentItem: exercisePhase, showSolution: showSolution}) }}
+{% endblock %}
 
-            <div class="row">
-                <div class="col-3">
-                    {% if is_granted('create', exercisePhase) %}
-                        <div tabindex="0" class="tile tile--active" >
-                            <a class="tile__content" href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
-                                <i class="tile__icon fas fa-plus-circle"></i>
-                                <span>Neue Gruppe anlegen</span>
-                            </a>
-                        </div>
-                    {% else %}
-                        <div tabindex="0" class="tile tile--active tile--disabled" >
-                            <div class="tile__content">
-                                <i class="tile__icon fas fa-plus-circle"></i>
-                                <span>Neue Gruppe anlegen</span>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="col-9">
-                    <div class="tiles">
-                        {% for team in teams %}
-                            <div tabindex="0" class="tile tile--with-extension tile--active">
-                                <div class="tile__content">
-                                    <i class="tile__icon fas fa-users"></i>
-                                    <span>Gruppe von {{ team.creator.username }}</span>
-                                </div>
-                                <div class="tile__extension">
-                                    <div class="tile__extension-content">
-                                        <strong>Mitglider:</strong> <br />
-                                        {% for member in team.members %}
-                                            {{ member.username }} <br />
-                                        {% endfor %}
-                                    </div>
-                                    <div class="tile__extension-actions">
-                                        {% if is_granted('join', team) %}
-                                            <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase-team--join', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe beitreten</a>
-                                        {% endif %}
-                                        {% if is_granted('leave', team) %}
-                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('exercise-overview__exercise-phase-team--leave', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe verlassen</a>
-                                        {% endif %}
-                                        {% if is_granted('show', team) %}
-                                            <a class="btn btn-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Phase starten</a>
-                                        {% else %}
-                                            <a class="btn btn-outline-primary btn-sm" href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis ansehen</a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
+{% block body %}
+    <h2 class="text-center">Phase {{ currentPhaseIndex + 1 }}: {{ exercisePhase.name }}</h2>
+    <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong>
+    </p>
+    <p class="text-center text-small">
+        {{ exercisePhase.task }}
+    </p>
+    <hr/>
+    {% if exercisePhase.isGroupPhase %}
+        <h4>Bestehende Gruppen</h4>
+        <p>Tritt einer Gruppe bei um die Aufgabe zu bearbeiten oder erstelle eine neue Gruppe.</p>
+
+        <div class="row">
+            <div class="col-3">
+                {% if is_granted('create', exercisePhase) %}
+                    <div tabindex="0" class="tile tile--active">
+                        <a class="tile__content"
+                           href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
+                            <i class="tile__icon fas fa-plus-circle"></i>
+                            <span>Neue Gruppe anlegen</span>
+                        </a>
                     </div>
+                {% else %}
+                    <div tabindex="0" class="tile tile--active tile--disabled">
+                        <div class="tile__content">
+                            <i class="tile__icon fas fa-plus-circle"></i>
+                            <span>Neue Gruppe anlegen</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-9">
+                <div class="tiles">
+                    {% for team in teams %}
+                        <div tabindex="0" class="tile tile--with-extension tile--active">
+                            <div class="tile__content">
+                                <i class="tile__icon fas fa-users"></i>
+                                <span>Gruppe von {{ team.creator.username }}</span>
+                            </div>
+                            <div class="tile__extension">
+                                <div class="tile__extension-content">
+                                    <strong>Mitglider:</strong> <br/>
+                                    {% for member in team.members %}
+                                        {{ member.username }} <br/>
+                                    {% endfor %}
+                                </div>
+                                <div class="tile__extension-actions">
+                                    {% if is_granted('join', team) %}
+                                        <a class="btn btn-primary btn-sm"
+                                           href="{{ path('exercise-overview__exercise-phase-team--join', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
+                                            beitreten</a>
+                                    {% endif %}
+                                    {% if is_granted('leave', team) %}
+                                        <a class="btn btn-outline-primary btn-sm"
+                                           href="{{ path('exercise-overview__exercise-phase-team--leave', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
+                                            verlassen</a>
+                                    {% endif %}
+                                    {% if is_granted('show', team) %}
+                                        <a class="btn btn-primary btn-sm"
+                                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Phase
+                                            starten</a>
+                                    {% else %}
+                                        <a class="btn btn-outline-primary btn-sm"
+                                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis
+                                            ansehen</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-        {% else %}
-            <h4>Bisherigen Ergebnisse deiner Seminargruppe: </h4>
-            <div class="tiles">
-                {% if is_granted('create', exercisePhase) %}
-                    <div tabindex="0" class="tile tile--active" >
-                        <a class="tile__content" href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
+        </div>
+    {% else %}
+        <h4>Bisherigen Ergebnisse deiner Seminargruppe: </h4>
+        <div class="tiles">
+            {% if is_granted('create', exercisePhase) %}
+                <div tabindex="0" class="tile tile--active">
+                    <a class="tile__content"
+                       href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
+                        <i class="tile__icon fas fa-play"></i>
+                        <span>Phase starten</span>
+                    </a>
+                </div>
+            {% endif %}
+
+            {% for team in teams %}
+                {% if team.creator == app.user %}
+                    <div tabindex="0" class="tile tile--active">
+                        <a class="tile__content"
+                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}">
                             <i class="tile__icon fas fa-play"></i>
-                            <span>Phase starten</span>
+                            <span>Mein Ergebnis</span>
                         </a>
                     </div>
                 {% endif %}
+            {% endfor %}
 
-                {% for team in teams %}
-                    {% if team.creator == app.user %}
-                        <div tabindex="0" class="tile tile--active" >
-                            <a class="tile__content" href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}">
-                                <i class="tile__icon fas fa-play"></i>
-                                <span>Mein Ergebnis</span>
-                            </a>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+            {% for team in teams %}
+                {% if team.creator != app.user %}
+                    <div tabindex="0" class="tile">
+                        <a class="tile__content"
+                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
+                            <i class="tile__icon fas fa-user"></i>
+                            <span>Ergebnis von <br/>{{ team.creator.username }}</span>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
 
-                {% for team in teams %}
-                    {% if team.creator != app.user %}
-                        <div tabindex="0" class="tile" >
-                            <a class="tile__content" href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
-                                <i class="tile__icon fas fa-user"></i>
-                                <span>Ergebnis von <br />{{ team.creator.username }}</span>
-                            </a>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
-
+{% block footer %}
     {{ include('Exercise/Footer.html.twig', {exercise: exercise, exercisePhase: exercisePhase, currentPhaseIndex: currentPhaseIndex, amountOfPhases: amountOfPhases, showSolution: showSolution}) }}
-
 {% endblock %}
