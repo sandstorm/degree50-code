@@ -71,10 +71,12 @@ exercisePhase:
     titleForGroupPhase: 'Gruppenphase hinzufügen'
   edit:
     title: 'Phase bearbeiten'
+    button: 'Bearbeiten'
     messages:
       success: 'Phase erfolgreich gespeichert!'
   delete:
     title: 'Phase löschen'
+    button: 'Löschen'
     messages:
       success: 'Phase erfolgreich gelöscht!'
 
