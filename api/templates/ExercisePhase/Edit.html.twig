@@ -1,96 +1,102 @@
 {% trans_default_domain 'forms' %}
-{% extends 'BaseFullscreen.html.twig' %}
+{% extends 'BaseNoHeader.html.twig' %}
 
 {% block title %}{% trans %}exercisePhase.edit.title{% endtrans %}{% endblock %}
 
 {% block body %}
     <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">Übersicht</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercise.edit.title{% endtrans %}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans %}exercisePhase.edit.title{% endtrans %}</li>
+            </ol>
+        </nav>
+
         <header class="content-header content-header--center">
             {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
             <h3>{% trans %}exercisePhase.edit.title{% endtrans %} / {{ phaseTypeTransVar | trans }} </h3>
         </header>
-    </div>
 
-    <div class="exercise-form">
-        {{ form_start(form) }}
-        <div class="exercise-form__left">
-            {{ form_errors(form) }}
+        <div class="exercise-form">
+            {{ form_start(form) }}
+            <div class="exercise-form__left">
+                {{ form_errors(form) }}
 
-            {{ form_row(form.isGroupPhase) }}
-            {{ form_row(form.name) }}
-            {{ form_row(form.task) }}
-        </div>
-        <div class="exercise-form__right">
-            {% if exercisePhase.type == 'videoAnalysis' %}
-                <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
-                {{ _self.primary_component('videoAnnotation', exercisePhase.videoAnnotationsActive, exercise, exercisePhase) }}
-                {{ _self.primary_component('videoCode', exercisePhase.videoCodesActive, exercise, exercisePhase) }}
-                {{ _self.primary_component('videoCutting', exercisePhase.videoCuttingActive, exercise, exercisePhase) }}
-                <hr/>
-            {% endif %}
-
-            <ul class="nav nav-tabs" role="tablist">
+                {{ form_row(form.isGroupPhase) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.task) }}
+            </div>
+            <div class="exercise-form__right">
                 {% if exercisePhase.type == 'videoAnalysis' %}
-                    <li role="presentation" class="nav-item">
-                        <a class="nav-link active" href="#videos" aria-controls="videos" role="tab"
-                           data-toggle="tab">{% trans %}exercisePhase.labels.videos{% endtrans %}
-                            ({{ exercisePhase.videos|length }})</a>
-                    </li>
-                    {% if exercisePhase.videoCodesActive %}
+                    <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
+                    {{ _self.primary_component('videoAnnotation', exercisePhase.videoAnnotationsActive, exercise, exercisePhase) }}
+                    {{ _self.primary_component('videoCode', exercisePhase.videoCodesActive, exercise, exercisePhase) }}
+                    {{ _self.primary_component('videoCutting', exercisePhase.videoCuttingActive, exercise, exercisePhase) }}
+                    <hr/>
+                {% endif %}
+
+                <ul class="nav nav-tabs" role="tablist">
+                    {% if exercisePhase.type == 'videoAnalysis' %}
                         <li role="presentation" class="nav-item">
-                            <a class="nav-link" href="#videoCodes" aria-controls="videoCodes" role="tab"
-                               data-toggle="tab">{% trans %}exercisePhase.labels.videoCodes{% endtrans %}
-                                ({{ exercisePhase.videoCodes|length }})</a>
+                            <a class="nav-link active" href="#videos" aria-controls="videos" role="tab"
+                               data-toggle="tab">{% trans %}exercisePhase.labels.videos{% endtrans %}
+                                ({{ exercisePhase.videos|length }})</a>
                         </li>
+                        {% if exercisePhase.videoCodesActive %}
+                            <li role="presentation" class="nav-item">
+                                <a class="nav-link" href="#videoCodes" aria-controls="videoCodes" role="tab"
+                                   data-toggle="tab">{% trans %}exercisePhase.labels.videoCodes{% endtrans %}
+                                    ({{ exercisePhase.videoCodes|length }})</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#material" aria-controls="material" role="tab"
-                       data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %}
-                        ({{ exercisePhase.material|length }})</a>
-                </li>
-                <li role="presentation" class="nav-item">
-                    <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab"
-                       data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %}
-                        ({{ exercisePhase.components|length }})</a>
-                </li>
-            </ul>
+                    <li role="presentation" class="nav-item">
+                        <a class="nav-link" href="#material" aria-controls="material" role="tab"
+                           data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %}
+                            ({{ exercisePhase.material|length }})</a>
+                    </li>
+                    <li role="presentation" class="nav-item">
+                        <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab"
+                           data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %}
+                            ({{ exercisePhase.components|length }})</a>
+                    </li>
+                </ul>
 
-            <div class="tab-content">
-                {% if exercisePhase.type == 'videoAnalysis' %}
-                    <div role="tabpanel" class="tab-pane active" id="videos">
-                        <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
-                        {{ form_row(form.videos) }}
-                    </div>
-                    {% if exercisePhase.videoCodesActive %}
-                        <div role="tabpanel" class="tab-pane" id="videoCodes">
-                            <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
-                            <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
-                            {{ form_row(form.videoCodes) }}
+                <div class="tab-content">
+                    {% if exercisePhase.type == 'videoAnalysis' %}
+                        <div role="tabpanel" class="tab-pane active" id="videos">
+                            <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
+                            {{ form_row(form.videos) }}
                         </div>
+                        {% if exercisePhase.videoCodesActive %}
+                            <div role="tabpanel" class="tab-pane" id="videoCodes">
+                                <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
+                                <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
+                                {{ form_row(form.videoCodes) }}
+                            </div>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                <div role="tabpanel" class="tab-pane" id="material">
-                    <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
-                    <div data-controller="collectionHandling">
-                        {{ form_row(form.material) }}
+                    <div role="tabpanel" class="tab-pane" id="material">
+                        <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
+                        <div data-controller="collectionHandling">
+                            {{ form_row(form.material) }}
+                        </div>
                     </div>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="komponenten">
-                    <h4>{% trans %}exercisePhase.labels.components{% endtrans %}</h4>
-                    {{ form_row(form.components) }}
+                    <div role="tabpanel" class="tab-pane" id="komponenten">
+                        <h4>{% trans %}exercisePhase.labels.components{% endtrans %}</h4>
+                        {{ form_row(form.components) }}
+                    </div>
                 </div>
             </div>
         </div>
-
-        <footer class="footer">
-            <a class="btn btn-outline-primary"
-               href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
-            {{ form_row(form.save) }}
-        </footer>
-        {{ form_end(form) }}
     </div>
-
+    <footer class="footer">
+        <a class="btn btn-outline-primary"
+           href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+        {{ form_row(form.save) }}
+    </footer>
+    {{ form_end(form) }}
 {% endblock %}
 
 {% macro primary_component(component, isActive, exercise, exercisePhase) %}

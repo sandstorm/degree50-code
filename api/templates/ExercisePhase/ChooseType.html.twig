@@ -5,12 +5,18 @@
 
 {% block body %}
     <div class="container">
-        <header class="content-header content-header--center">
-            <h3>{% trans %}exercisePhase.new.title{% endtrans %} / Typ auswählen</h3>
-        </header>
-    </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">Übersicht</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercise.edit.title{% endtrans %}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans %}exercisePhase.new.title{% endtrans %}</li>
+            </ol>
+        </nav>
 
-    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}exercisePhase.new.title{% endtrans %}</h3>
+        </header>
+
         <div class="tiles">
             {% for type in types %}
                 <a href="{{ path('exercise-overview__exercise-phase--set-type', {id: exercise.id, type: type.id, isGroupPhase: isGroupPhase}) }}" class="tile">
