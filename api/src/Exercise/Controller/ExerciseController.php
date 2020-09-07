@@ -52,19 +52,7 @@ class ExerciseController extends AbstractController
      */
     public function show(Request $request, Exercise $exercise, int $phaseIndex = 0): Response
     {
-        $showSolution = $request->get('showSolution');
-
         $template = 'Exercise/Show.html.twig';
-        if ($showSolution) {
-            if ($this->getUser() !== $exercise->getCreator()) {
-                $this->addFlash(
-                    'danger',
-                    $this->translator->trans('exercise.showSolution.messages.error', [], 'forms')
-                );
-                return $this->redirectToRoute('exercise-overview--show-course', ['id' => $exercise->getCourse()->getId()]);
-            }
-            $template = 'Exercise/ShowSolution.html.twig';
-        }
 
         /* @var User $user */
         $user = $this->getUser();
@@ -96,7 +84,6 @@ class ExerciseController extends AbstractController
                 'teams' => $teams,
                 'teamOfCurrentUser' => $teamOfCurrentUser,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
-                'showSolution' => $showSolution
             ]);
     }
 

@@ -1,4 +1,11 @@
+{% trans_default_domain 'forms' %}
+
+
 <div id="sidebar" class="sidebar">
+    {% if showSolution %}
+        <a class="btn btn-primary btn-block" href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+        <hr />
+    {% endif %}
     <div class="sidebar__group">
         <header id="heading-phases">
             <h5>
@@ -10,8 +17,11 @@
                 <ul>
                     {% for item in sidebarItems %}
                         <li class="sidebar-item {{ (item.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
-                            <a class="nav-link"
-                               href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1, showSolution: showSolution}) }}">{{ item.name }}</a>
+                            {% if showSolution %}
+                                <a class="nav-link" href="{{ path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id}) }}">{{ item.name }}</a>
+                            {% else %}
+                                <a class="nav-link" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1}) }}">{{ item.name }}</a>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>

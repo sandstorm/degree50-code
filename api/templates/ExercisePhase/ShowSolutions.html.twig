@@ -1,8 +1,12 @@
-{% extends 'BaseNoHeader.html.twig' %}
+{% extends 'BaseWithSidebar.html.twig' %}
 
 {% block title %}{{ exercisePhase.name }}{% endblock %}
 
-{% block layoutCssClass %}main--with-footer main--without-scrollbar{% endblock %}
+{% block layoutCssClass %}main--without-scrollbar{% endblock %}
+
+{% block sidebar %}
+    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItem: exercisePhase, showSolution: true}) }}
+{% endblock %}
 
 {% block body %}
     <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {solutions: solutions, config: config} |json_encode|e('html_attr') }}">
@@ -10,7 +14,4 @@
             <i class="fas fa-spinner fa-spin"></i>
         </div>
     </div>
-    <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercisePhase.belongsToExercise.id, phaseIndex: exercisePhase.sorting, showSolution: true}) }}">Zurück</a>
-    </footer>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block title %}{{ exercise.name }}{% endblock %}
 
 {% block sidebar %}
-    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItem: exercisePhase, showSolution: showSolution}) }}
+    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItem: exercisePhase, showSolution: false}) }}
 {% endblock %}
 
 {% block layoutCssClass %}main--with-footer{% endblock %}
@@ -137,5 +137,5 @@
 {% endblock %}
 
 {% block footer %}
-    {{ include('Exercise/Footer.html.twig', {exercise: exercise, exercisePhase: exercisePhase, currentPhaseIndex: currentPhaseIndex, amountOfPhases: amountOfPhases, showSolution: showSolution}) }}
+    {{ include('Exercise/Footer.html.twig', {exercise: exercise, exercisePhase: exercisePhase, currentPhaseIndex: currentPhaseIndex, amountOfPhases: amountOfPhases}) }}
 {% endblock %}
