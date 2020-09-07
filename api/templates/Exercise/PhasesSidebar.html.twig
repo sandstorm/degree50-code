@@ -2,10 +2,7 @@
     <div class="sidebar__group">
         <header id="heading-phases">
             <h5>
-                <button class="sidebar__toggle btn" data-toggle="collapse" data-target="#collapse-phases"
-                        aria-expanded="true" aria-controls="collapse-phases">
-                    Phasen <i class="fas fa-chevron-up"></i><i class="fas fa-chevron-down"></i>
-                </button>
+                Phasen
             </h5>
         </header>
         <div id="collapse-phases" class="collapse show" aria-labelledby="heading-phases" data-parent="#sidebar">
@@ -16,7 +13,6 @@
                             <a class="nav-link"
                                href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1, showSolution: showSolution}) }}">{{ item.name }}</a>
                         </li>
-
                     {% endfor %}
                 </ul>
             </div>

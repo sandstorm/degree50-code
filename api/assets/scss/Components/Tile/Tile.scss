@@ -23,6 +23,7 @@ $tileHeight--small: 150px;
   &--active {
     .tile__content {
       background-color: $theme__color__green;
+      border-color: $theme__color__green;
 
       color: $theme__color__white;
     }
@@ -34,12 +35,24 @@ $tileHeight--small: 150px;
 
   &--disabled {
     opacity: 0.5;
+
+    .tile__content {
+      cursor: default;
+
+      &:hover {
+        border-color: $theme__color__grey--darker;
+      }
+    }
   }
 
   &--with-extension {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+
+    .tile__content {
+      cursor: default;
+    }
   }
 
   &--small {

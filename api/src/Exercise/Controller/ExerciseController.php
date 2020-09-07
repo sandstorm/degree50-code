@@ -9,6 +9,7 @@ use App\Entity\Exercise\UserExerciseInteraction;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Account\CourseRepository;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use App\Repository\Exercise\UserExerciseInteractionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -28,19 +29,21 @@ class ExerciseController extends AbstractController
     private UserExerciseInteractionRepository $userExerciseInteractionRepository;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
     /**
      * @param CourseRepository $courseRepository
      * @param ExerciseRepository $exerciseRepository
      * @param TranslatorInterface $translator
      */
-    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, UserExerciseInteractionRepository $userExerciseInteractionRepository)
+    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, UserExerciseInteractionRepository $userExerciseInteractionRepository, ExercisePhaseTeamRepository $exercisePhaseTeamRepository)
     {
         $this->courseRepository = $courseRepository;
         $this->exerciseRepository = $exerciseRepository;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
     }
 
     /**
@@ -63,12 +66,14 @@ class ExerciseController extends AbstractController
             $template = 'Exercise/ShowSolution.html.twig';
         }
 
-        /* @var ExercisePhase $exercisePhase */
-        $exercisePhase = $exercise->getPhases()->get($phaseIndex);
-        $teams = $exercisePhase->getTeams();
-
         /* @var User $user */
         $user = $this->getUser();
+
+        /* @var ExercisePhase $exercisePhase */
+        $exercisePhase = $exercise->getPhases()->get($phaseIndex);
+        $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($user, $exercisePhase);
+        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findOneBy(['creator' => $user, 'exercisePhase' => $exercisePhase]);
+
         $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
 
         if (!$userExerciseInteraction) {
@@ -83,13 +88,13 @@ class ExerciseController extends AbstractController
             $entityManager->flush();
         }
 
-
         return $this->render($template,
             [
                 'exercise' => $exercise,
                 'exercisePhase' => $exercisePhase,
                 'currentPhaseIndex' => $phaseIndex,
                 'teams' => $teams,
+                'teamOfCurrentUser' => $teamOfCurrentUser,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
                 'showSolution' => $showSolution
             ]);

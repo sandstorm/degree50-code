@@ -8,6 +8,7 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Exercise\Material;
+use App\Entity\Exercise\Solution;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -79,11 +80,6 @@ class ExercisePhaseController extends AbstractController
             ]),
         ];
 
-        $response = new Response();
-        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user));
-
-        $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
-
         $currentEditor = null;
 
         if (!$showSolution) {
@@ -92,18 +88,30 @@ class ExercisePhaseController extends AbstractController
             } else {
                 $currentEditor = $user->getId();
                 $exercisePhaseTeam->setCurrentEditor($user);
-                $entityManager = $this->getDoctrine()->getManager();
-                $this->eventStore->disableEventPublishingForNextFlush();
-                $entityManager->persist($exercisePhaseTeam);
-                $entityManager->flush();
             }
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $this->eventStore->disableEventPublishingForNextFlush();
+
+            if (!$exercisePhaseTeam->getSolution()) {
+                $solution = new Solution();
+                $exercisePhaseTeam->setSolution($solution);
+                $entityManager->persist($solution);
+            }
+
+            $entityManager->persist($exercisePhaseTeam);
+            $entityManager->flush();
         }
+
+        $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
 
         $template = 'ExercisePhase/Show.html.twig';
         if ($showSolution) {
             $template = 'ExercisePhase/ShowSolution.html.twig';
         }
 
+        $response = new Response();
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user));
         return $this->render($template, [
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
