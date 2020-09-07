@@ -2,12 +2,16 @@
   margin-bottom: 70px;
 
   textarea#exercise_description, textarea#exercise_phase_task {
-    min-height: 400px;
+    min-height: 200px;
   }
 
   > form {
     display: flex;
     flex-direction: row;
+
+    @include mq(medium) {
+      flex-direction: column;
+    }
   }
 }
 
@@ -16,11 +20,24 @@
   width: 40%;
 
   border-right: 1px solid $theme__color__grey;
+
+  @include mq(medium) {
+    width: 100%;
+    padding-right: 0;
+    margin-bottom: 40px;
+
+    border-right: none;
+  }
 }
 
 .exercise-form__right {
   padding-left: 20px;
   width: 60%;
+
+  @include mq(medium) {
+    width: 100%;
+    padding-left: 0;
+  }
 }
 
 label.required:before {

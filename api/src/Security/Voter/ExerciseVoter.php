@@ -87,6 +87,9 @@ class ExerciseVoter extends Voter
         if ($exerciseIsNotPublished && $exercise->getCreator() !== $user) {
             return false;
         }
+        if (count($exercise->getPhases()) === 0) {
+            return false;
+        }
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course);
     }
 

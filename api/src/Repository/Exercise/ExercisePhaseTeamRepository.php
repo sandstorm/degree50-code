@@ -3,6 +3,7 @@
 namespace App\Repository\Exercise;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,5 +34,23 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * @param User $creator
+     * @param ExercisePhase $exercisePhase
+     * @return ExercisePhaseTeam[]|\iterable
+     */
+    public function findAllCreatedByOtherUsers(User $creator, ExercisePhase $exercisePhase): iterable
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.creator != :creator')
+            ->andWhere('e.exercisePhase = :exercisePhase')
+            ->setParameter('creator', $creator)
+            ->setParameter('exercisePhase', $exercisePhase)
+            ->orderBy('e.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
     }
 }

@@ -16,11 +16,12 @@ class ExercisePhaseTeamVoter extends Voter
     const CREATE = 'create';
     const SHOW = 'show';
     const LEAVE = 'leave';
+    const DELETE = 'delete';
     const UPDATE_SOLUTION = 'updateSolution';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::JOIN, self::CREATE, self::SHOW, self::LEAVE, self::UPDATE_SOLUTION])) {
+        if (!in_array($attribute, [self::JOIN, self::CREATE, self::SHOW, self::LEAVE, self::DELETE, self::UPDATE_SOLUTION])) {
             return false;
         }
 
@@ -58,6 +59,8 @@ class ExercisePhaseTeamVoter extends Voter
                 return $this->canCreate($exercisePhase, $user);
             case self::LEAVE:
                 return $this->canLeave($exercisePhaseTeam, $user);
+            case self::DELETE:
+                return $this->canDelete($exercisePhaseTeam, $user);
             case self::UPDATE_SOLUTION:
                 return $this->canUpdateSolution($exercisePhaseTeam, $user);
         }
@@ -72,6 +75,11 @@ class ExercisePhaseTeamVoter extends Voter
             return false;
         }
         return $exercisePhaseTeam->getMembers()->contains($user);
+    }
+
+    private function canDelete(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
+    {
+        return $exercisePhaseTeam->getCreator() === $user;
     }
 
     // TODO: anyone can view a result

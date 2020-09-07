@@ -70,16 +70,13 @@ class ExercisePhaseTeamController extends AbstractController
                     'danger',
                     $this->translator->trans('exercisePhaseTeam.new.messages.alreadyCreatedATeam', [], 'forms')
                 );
-                return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phase' => $exercisePhase->getSorting()]);
+                return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
             }
         }
 
         $exercisePhaseTeam = new ExercisePhaseTeam();
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
-
-        $solution = new Solution();
-        $exercisePhaseTeam->setSolution($solution);
 
         $this->eventStore->addEvent('MemberAddedToTeam', [
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
@@ -88,8 +85,6 @@ class ExercisePhaseTeamController extends AbstractController
         ]);
 
         $entityManager->persist($exercisePhaseTeam);
-        $entityManager->persist($solution);
-
         $entityManager->flush();
 
         if ($exercisePhase->isGroupPhase()) {
@@ -98,7 +93,7 @@ class ExercisePhaseTeamController extends AbstractController
                 $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phase' => $exercisePhase->getSorting()]);
+            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
         } else {
             return $this->redirectToRoute('exercise-overview__exercise-phase--show', ['id' => $exercisePhase->getId(), 'team_id' => $exercisePhaseTeam->getId()]);
         }
@@ -131,9 +126,43 @@ class ExercisePhaseTeamController extends AbstractController
             $this->translator->trans('exercisePhaseTeam.join.messages.success', [], 'forms')
         );
 
-        // TODO change route from int to id of phase
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+    }
 
+    /**
+     * @IsGranted("delete", subject="exercisePhaseTeam")
+     * @Route("/exercise-phase/{id}/team/{team_id}/delete", name="exercise-overview__exercise-phase-team--delete")
+     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
+     */
+    public function delete(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        /* @var User $user */
+        $user = $this->getUser();
+
+        if ($exercisePhaseTeam->getSolution() || count($exercisePhaseTeam->getAutosavedSolutions()) > 0) {
+            $this->addFlash(
+                'danger',
+                $this->translator->trans('exercisePhaseTeam.delete.messages.hasSolution', [], 'forms')
+            );
+            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+        }
+
+        $this->eventStore->addEvent('TeamDeleted', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'userId' => $user->getId(),
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($exercisePhaseTeam);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans('exercisePhaseTeam.delete.messages.success', [], 'forms')
+        );
+
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
     }
 
     /**
@@ -164,7 +193,7 @@ class ExercisePhaseTeamController extends AbstractController
         );
 
         // TODO change route from int to id of phase
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
     }
 
     /**
@@ -202,7 +231,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->dispatchCutlistEncodingTask($exercisePhaseTeam, $entityManager);
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phase' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
     }
 
     private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam, EntityManagerInterface $entityManager) {

@@ -120,6 +120,10 @@ exercisePhaseTeam:
   join:
     messages:
       success: 'Gruppe beigetreten'
+  delete:
+    messages:
+      hasSolution: 'Gruppe kann nicht gelöscht werden. Es gibt bereits ein Ergebnis.'
+      success: 'Gruppe gelöscht'
   leave:
     messages:
       success: 'Gruppe verlassen'
