@@ -3,6 +3,7 @@
 namespace App\Exercise\LiveSync;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use Firebase\JWT\JWT;
@@ -33,20 +34,16 @@ class LiveSyncService
         $this->publisher = $publisher;
     }
 
-    public function getSubscriberJwtCookie(User $user): Cookie
+    public function getSubscriberJwtCookie(User $user, ExercisePhase $exercisePhase): Cookie
     {
-        $exercisePhaseTeams = $this->exercisePhaseTeamRepository->findByMember($user);
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
 
         $exercisePhaseTeamTopicIdentifiers = [];
-        foreach ($exercisePhaseTeams as $exercisePhaseTeam) {
-            $exercisePhaseTeamTopicIdentifiers[] = self::buildMercureTopicIdentifier($exercisePhaseTeam);
-
-            // we also need to enable access to the subscription topic
-            $exercisePhaseTeamTopicIdentifiers[] = self::buildPresenceTopicIdentifier($exercisePhaseTeam);
-
-            // we also need to enable access to the subscription API
-            $exercisePhaseTeamTopicIdentifiers[] = self::buildSubscriptionAPIEndpoint($exercisePhaseTeam);
-        }
+        $exercisePhaseTeamTopicIdentifiers[] = self::buildMercureTopicIdentifier($exercisePhaseTeam);
+        // we also need to enable access to the subscription topic
+        $exercisePhaseTeamTopicIdentifiers[] = self::buildPresenceTopicIdentifier($exercisePhaseTeam);
+        // we also need to enable access to the subscription API
+        $exercisePhaseTeamTopicIdentifiers[] = self::buildSubscriptionAPIEndpoint($exercisePhaseTeam);
 
         $payload = self::getBaseJwtPayload();
         $payload['mercure'] = [

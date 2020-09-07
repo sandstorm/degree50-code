@@ -30,9 +30,9 @@
             <div class="exercise-form__right">
                 {% if exercisePhase.type == 'videoAnalysis' %}
                     <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
-                    {{ _self.primary_component('videoAnnotation', exercisePhase.videoAnnotationsActive, exercise, exercisePhase) }}
-                    {{ _self.primary_component('videoCode', exercisePhase.videoCodesActive, exercise, exercisePhase) }}
-                    {{ _self.primary_component('videoCutting', exercisePhase.videoCuttingActive, exercise, exercisePhase) }}
+                    {{ form_widget(form.videoAnnotationsActive) }}
+                    {{ form_widget(form.videoCodesActive) }}
+                    {{ form_widget(form.videoCuttingActive) }}
                     <hr/>
                 {% endif %}
 
@@ -99,19 +99,3 @@
     {{ form_end(form) }}
 {% endblock %}
 
-{% macro primary_component(component, isActive, exercise, exercisePhase) %}
-    {% set componentTransVar = 'exercisePhase.components.' ~ (component) ~ '.label' %}
-    {% if isActive %}
-        <a class="btn btn-outline-primary"
-           href="{{ path('exercise-overview__exercise-phase--toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
-            <i class="fas fa-check"></i>
-            {{ componentTransVar | trans }}
-        </a>
-    {% else %}
-        <a class="btn btn-outline-danger"
-           href="{{ path('exercise-overview__exercise-phase--toggle-component', {id: exercise.id, phase_id: exercisePhase.id, component: component}) }}">
-            <i class="fas fa-times"></i>
-            {{ componentTransVar | trans }}
-        </a>
-    {% endif %}
-{% endmacro %}

@@ -9,6 +9,7 @@ use App\Entity\Video\VideoCode;
 use App\Repository\Video\VideoCodeRepository;
 use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -51,6 +52,24 @@ class VideoAnalysisType extends ExercisePhaseType
         $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
 
         $builder
+            ->add('videoAnnotationsActive', CheckboxType::class, [
+                'required' => false,
+                'label' => "exercisePhase.components.videoAnnotation.label",
+                'translation_domain' => 'forms',
+                'block_prefix' => 'component_checkbox',
+            ])
+            ->add('videoCodesActive', CheckboxType::class, [
+                'required' => false,
+                'label' => "exercisePhase.components.videoCode.label",
+                'translation_domain' => 'forms',
+                'block_prefix' => 'component_checkbox',
+            ])
+            ->add('videoCuttingActive', CheckboxType::class, [
+                'required' => false,
+                'label' => "exercisePhase.components.videoCutting.label",
+                'translation_domain' => 'forms',
+                'block_prefix' => 'component_checkbox',
+            ])
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
                 'choices' => $videoChoices,

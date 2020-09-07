@@ -45,3 +45,10 @@
         </label>
     </div>
 {% endblock %}
+
+{% block component_checkbox_widget %}
+    <div class="button-checkbox">
+        <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        <label class="btn btn-outline-primary" for="{{ id }}"><i class="fas fa-times"></i><i class="fas fa-check"></i> {{- label|trans(label_translation_parameters, translation_domain) -}}</label>
+    </div>
+{% endblock %}

@@ -109,20 +109,20 @@
 
         <h5>Bisherigen Ergebnisse deiner Seminargruppe: </h5>
         {% if teams %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th></th>
-                    </tr>
+            <table class="table table-sm">
+                <thead class="thead-light">
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
                 </thead>
                 <tbody>
                 {% for team in teams %}
                     <tr>
                         <td>{{ team.creator.username }}</td>
                         <td>
-                            <a class="btn btn-link"
-                               href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
+                            <a
+                                    href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
                                 Ergebnis anzeigen
                             </a>
                         </td>

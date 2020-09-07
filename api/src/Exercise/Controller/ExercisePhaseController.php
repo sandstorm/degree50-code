@@ -111,7 +111,7 @@ class ExercisePhaseController extends AbstractController
         }
 
         $response = new Response();
-        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user));
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
         return $this->render($template, [
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
@@ -298,16 +298,23 @@ class ExercisePhaseController extends AbstractController
                     ]);
             }
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($exercisePhase);
-            $entityManager->flush();
+            if (!$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive() && !$exercisePhase->getVideoCuttingActive()) {
+                $this->addFlash(
+                    'danger',
+                    'Mindestens eine Komponente muss aktiv sein'
+                );
+            } else {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($exercisePhase);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
-            );
+                $this->addFlash(
+                    'success',
+                    $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
+                );
 
-            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+                return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+            }
         }
 
         return $this->render('ExercisePhase/Edit.html.twig', [
@@ -315,50 +322,6 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'form' => $form->createView()
         ]);
-    }
-
-    /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/edit/{id}/phase/{phase_id}/toggle-component", name="exercise-overview__exercise-phase--toggle-component")
-     * @Entity("exercisePhase", expr="repository.find(phase_id)")
-     */
-    public function toggleComponent(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
-    {
-        $component = $request->query->get('component', null);
-        /* @var $exercisePhase VideoAnalysis */
-        switch ($component) {
-            case ExercisePhase::VIDEO_ANNOTATION :
-                $exercisePhase->setVideoAnnotationsActive(!$exercisePhase->getVideoAnnotationsActive());
-                break;
-            case ExercisePhase::VIDEO_CODE :
-                $exercisePhase->setVideoCodesActive(!$exercisePhase->getVideoCodesActive());
-                break;
-            case ExercisePhase::VIDEO_CUTTING :
-                $exercisePhase->setVideoCuttingActive(!$exercisePhase->getVideoCuttingActive());
-                break;
-        }
-
-        if (!$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive() && !$exercisePhase->getVideoCuttingActive()) {
-            $this->addFlash(
-                'danger',
-                'Mindestens eine Komponente muss aktiv sein'
-            );
-
-            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-        }
-
-
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($exercisePhase);
-        $entityManager->flush();
-
-        $this->addFlash(
-            'success',
-            'Komponente erfolgreich aktiviert/deaktiviert'
-        );
-
-        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
     }
 
     /**

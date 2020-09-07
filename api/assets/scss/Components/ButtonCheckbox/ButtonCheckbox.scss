@@ -1,0 +1,39 @@
+.button-checkbox {
+  position: relative;
+  display: inline-block;
+
+  i.fa-times {
+    margin-right: 10px;
+    display: inline-block;
+  }
+
+  i.fa-check {
+    margin-right: 10px;
+    display: none
+  }
+
+  label {
+    border-color: $theme__color__red;
+
+    color: $theme__color__red;
+  }
+
+  input[type='checkbox'] {
+    display: none;
+
+    &:checked ~ label {
+      background-color: $theme__color__green !important;
+      border-color: $theme__color__green !important;
+
+      color: $theme__color__white !important;
+
+      i.fa-check {
+        display: inline-block;
+      }
+
+      i.fa-times {
+        display: none;
+      }
+    }
+  }
+}
