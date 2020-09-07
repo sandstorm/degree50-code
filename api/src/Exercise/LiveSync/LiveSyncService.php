@@ -36,6 +36,8 @@ class LiveSyncService
 
     public function getSubscriberJwtCookie(User $user, ExercisePhase $exercisePhase): Cookie
     {
+        // !!! taking only the team for the current phase prohibits the user from editing two phases
+        // in two browser windows at the same time !!!
         $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
 
         $exercisePhaseTeamTopicIdentifiers = [];

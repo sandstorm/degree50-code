@@ -173,11 +173,18 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("showSolutions", subject="exercisePhase")
-     * @Route("/exercise-phase/show-solutions/{id}", name="exercise-overview__exercise-phase--show-solutions")
+     * @IsGranted("showSolution", subject="exercise")
+     * @Route("/exercise-phase/show-solutions/{id}/{phase_id?}", name="exercise-overview__exercise-phase--show-solutions")
      */
-    public function showSolutions(Request $request, ExercisePhase $exercisePhase): Response
+    public function showSolutions(Request $request, Exercise $exercise): Response
     {
+        $phaseId = $request->get('phase_id', null);
+        if (!$phaseId) {
+            $exercisePhase = $exercise->getPhases()->first();
+        } else {
+            $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+        }
+
         $solutions = array_map(function (ExercisePhaseTeam $team) {
             return [
                 'teamCreator' => $team->getCreator()->getUsername(),
@@ -191,6 +198,7 @@ class ExercisePhaseController extends AbstractController
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
             'config' => $this->getConfig($exercisePhase, true),
             'solutions' => $solutions,
+            'exercise' => $exercise,
             'exercisePhase' => $exercisePhase,
         ]);
     }
