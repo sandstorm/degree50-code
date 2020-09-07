@@ -23,16 +23,20 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
 
     /**
      * @param User $member
-     * @return ExercisePhaseTeam[]|\iterable
+     * @param ExercisePhase $exercisePhase
+     * @return ExercisePhaseTeam|null
      */
-    public function findByMember(User $member): iterable
+    public function findByMember(User $member, ExercisePhase $exercisePhase)
     {
         return $this->createQueryBuilder('e')
             ->andWhere(':member MEMBER OF e.members')
+            ->andWhere('e.exercisePhase = :exercisePhase')
             ->setParameter('member', $member)
+            ->setParameter('exercisePhase', $exercisePhase)
             ->orderBy('e.id', 'ASC')
+            ->setMaxResults(1)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
         ;
     }
 

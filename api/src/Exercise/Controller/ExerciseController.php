@@ -72,7 +72,7 @@ class ExerciseController extends AbstractController
         /* @var ExercisePhase $exercisePhase */
         $exercisePhase = $exercise->getPhases()->get($phaseIndex);
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($user, $exercisePhase);
-        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findOneBy(['creator' => $user, 'exercisePhase' => $exercisePhase]);
+        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
 
         $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
 
