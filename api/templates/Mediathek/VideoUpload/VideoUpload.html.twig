@@ -9,24 +9,28 @@
         <header class="content-header content-header--center">
             <h3>{% trans %}video.upload.title{% endtrans %}</h3>
         </header>
-        <div class="dropzone" data-controller="fileupload" data-fileupload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}" data-fileupload-id="{{ uuid }}">
+        <div class="dropzone" data-controller="videoUpload"
+             data-videoUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}"
+             data-videoUpload-id="{{ uuid }}"
+             data-videoUpload-label="Hier klicken um Video hochzuladen">
             <i class="fas fa-spinner fa-spin"></i>
         </div>
     </div>
 
     {{ form_start(form) }}
-        <div class="container">
-            {{ form_row(form.title) }}
-            {{ form_row(form.description) }}
-            {{ form_row(form.courses) }}
-            <div class="form__data-privacy">
-                {{ form_row(form.dataPrivacyAccepted) }}
-                <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmung ansehen</a>
-            </div>
+    <div class="container">
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.courses) }}
+        <div class="form__data-privacy">
+            {{ form_row(form.dataPrivacyAccepted) }}
+            <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmung ansehen</a>
         </div>
-        <footer class="footer">
-            <a class="btn btn-outline-primary" href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
-            {{ form_row(form.save) }}
-        </footer>
+    </div>
+    <footer class="footer">
+        <a class="btn btn-outline-primary"
+           href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
+        {{ form_row(form.save) }}
+    </footer>
     {{ form_end(form) }}
 {% endblock %}

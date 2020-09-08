@@ -1,5 +1,5 @@
 {% trans_default_domain 'forms' %}
-{% extends 'BaseNoHeader.html.twig' %}
+{% extends 'BaseFullscreen.html.twig' %}
 
 {% block title %}{% trans %}exercisePhase.edit.title{% endtrans %}{% endblock %}
 
@@ -7,9 +7,13 @@
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">Übersicht</a></li>
-                <li class="breadcrumb-item"><a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercise.edit.title{% endtrans %}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{% trans %}exercisePhase.edit.title{% endtrans %}</li>
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">Übersicht</a>
+                </li>
+                <li class="breadcrumb-item"><a
+                            href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercise.edit.title{% endtrans %}</a>
+                </li>
+                <li class="breadcrumb-item active"
+                    aria-current="page">{% trans %}exercisePhase.edit.title{% endtrans %}</li>
             </ol>
         </nav>
 
@@ -26,6 +30,32 @@
                 {{ form_row(form.isGroupPhase) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.task) }}
+
+                <hr />
+                <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
+                <p>Material hochladen das zur Lösung der Aufgabe bereit steht:</p>
+                <div class="dropzone" data-controller="materialUpload"
+                     data-materialUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_material') }}"
+                     data-materialUpload-remove-endpoint="{{ path('exercise-overview__material--delete-ajax') }}"
+                     data-materialUpload-label="Hier klicken um Material hochzuladen"
+                     data-materialUpload-phase-id="{{ exercisePhase.id }}">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <p>
+                    Bereits hochgelandene Dateien:
+                </p>
+                <ul>
+                    {% for material in exercisePhase.material %}
+                        <li>
+                            <a href="{{ path('exercise-overview__material--download', {id: material.id}) }}">{{ material.name }}</a>
+                            <a href="{{ path('exercise-overview__material--delete', {id: material.id}) }}" class="btn btn-sm btn-danger">Datei Löschen</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            Noch keine.
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="exercise-form__right">
                 {% if exercisePhase.type == 'videoAnalysis' %}
@@ -52,11 +82,6 @@
                         {% endif %}
                     {% endif %}
                     <li role="presentation" class="nav-item">
-                        <a class="nav-link" href="#material" aria-controls="material" role="tab"
-                           data-toggle="tab">{% trans %}exercisePhase.labels.material{% endtrans %}
-                            ({{ exercisePhase.material|length }})</a>
-                    </li>
-                    <li role="presentation" class="nav-item">
                         <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab"
                            data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %}
                             ({{ exercisePhase.components|length }})</a>
@@ -77,12 +102,6 @@
                             </div>
                         {% endif %}
                     {% endif %}
-                    <div role="tabpanel" class="tab-pane" id="material">
-                        <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
-                        <div data-controller="collectionHandling">
-                            {{ form_row(form.material) }}
-                        </div>
-                    </div>
                     <div role="tabpanel" class="tab-pane" id="komponenten">
                         <h4>{% trans %}exercisePhase.labels.components{% endtrans %}</h4>
                         {{ form_row(form.components) }}

@@ -215,11 +215,14 @@ final class DemoContext implements Context
     public function iHaveAMaterialWithId($materialId)
     {
         $material = new Material($materialId);
-        $material->setLink('link');
         $fileName = tempnam(sys_get_temp_dir(), 'foo');
         file_put_contents($fileName, 'my file');
         $file = new File($fileName);
-        $material->setFile($file);
+        $material->setName($file);
+        $material->setMimeType('application/pdf');
+
+        $user = $this->entityManager->find(User::class, 'foo@bar.de');
+        $material->setCreator($user);
 
         $this->entityManager->persist($material);
         $this->eventStore->disableEventPublishingForNextFlush();

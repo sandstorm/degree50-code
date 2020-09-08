@@ -14,22 +14,6 @@
     "isGroupPhase": {
       "type": "boolean"
     },
-    "material": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "materialId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": ["materialId", "name"],
-        "additionalProperties": false
-      }
-    },
     "videos": {
       "type": "array",
       "items": {
@@ -68,7 +52,6 @@
     "name",
     "task",
     "isGroupPhase",
-    "material",
     "videos",
     "components"
   ],
