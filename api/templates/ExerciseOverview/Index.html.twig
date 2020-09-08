@@ -3,13 +3,40 @@
 {% block title %}Aufgaben Übersicht{% endblock %}
 
 {% block sidebar %}
-    {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: false}) }}
+    {{ include('ExerciseOverview/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: course}) }}
 {% endblock %}
 
 {% block body %}
     <header class="content-header">
-        <h3>Alle Aufgaben...</h3>
+        {% if course %}
+            <h3>Alle Aufgaben für {{ course.name }}</h3>
+            {% if is_granted('create', course) %}
+                <a href="{{ path('exercise-overview__exercise--new', {courseId: course.id}) }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Neue Aufgabe
+                </a>
+            {% endif %}
+        {% else %}
+            <h3>Alle Aufgaben...</h3>
+        {% endif %}
     </header>
+    <div class="overview-filter">
+        <div class="btn-group" role="group" aria-label="Aufgaben filtern nach Status">
+            <div class="input-group-prepend">
+                <div class="input-group-text">Filter</div>
+            </div>
+            {{ _self.filter(courseId, 0, activeFilter, 'Versteckt') }}
+            {{ _self.filter(courseId, 2, activeFilter, 'Veröffentlicht') }}
+            {{ _self.filter(courseId, 1, activeFilter, 'Abgeschlossen') }}
+        </div>
+    </div>
 
     {{ include('ExerciseOverview/GroupedExercises.html.twig', {groupedExercises: groupedExercises}) }}
 {% endblock %}
+
+{% macro filter(courseId, filter, activeFilter, label) %}
+    {% if filter == activeFilter and activeFilter is not null %}
+        <a href="{{ path('exercise-overview', {id: courseId, status: null}) }}" class="btn btn-primary">{{ label }}</a>
+    {% else %}
+        <a href="{{ path('exercise-overview', {id: courseId, status: filter}) }}" class="btn btn-outline-primary">{{ label }}</a>
+    {% endif %}
+{% endmacro %}

@@ -21,7 +21,7 @@
 
 
             <footer class="footer">
-                <a class="btn btn-outline-primary" href="{{ path('exercise-overview--show-course', {id: course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+                <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
                 {{ form_row(form.save) }}
             </footer>
         {{ form_end(form) }}

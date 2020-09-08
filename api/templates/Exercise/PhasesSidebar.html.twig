@@ -3,7 +3,7 @@
 
 <div id="sidebar" class="sidebar">
     {% if showSolution %}
-        <a class="btn btn-primary btn-block" href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+        <a class="btn btn-primary btn-block" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
         <hr />
     {% endif %}
     <div class="sidebar__group">

@@ -9,6 +9,7 @@ use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,28 +32,36 @@ class ExerciseOverviewController extends AbstractController
     }
 
     /**
-     * @Route("/", name="exercise-overview")
+     * @Route("/", name="app")
      */
     public function index(): Response
     {
-        $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findBy(array(), array('createdAt' => 'DESC')));
-
-        return $this->render('ExerciseOverview/Index.html.twig', [
-            'sidebarItems' => $this->getSideBarItems(),
-            'groupedExercises' => $groupedExercises,
-        ]);
+        return $this->redirectToRoute('exercise-overview');
     }
 
     /**
-     * @Route("/exercise-overview/{id}", name="exercise-overview--show-course")
+     * @Route("/exercise-overview/{id?}", name="exercise-overview")
      */
-    public function showExercisesForCourse(Course $course): Response
+    public function overview(Request $request, Course $course = null): Response
     {
-        $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findBy(array('course' => $course), array('createdAt' => 'DESC')));
+        $statusFilter = $request->query->get('status', null);
 
-        return $this->render('ExerciseOverview/ShowExercisesForCourse.html.twig', [
+        $queryCriteria = [];
+        if ($course) {
+            $queryCriteria['course'] = $course;
+        }
+
+        if ($statusFilter != null) {
+            $queryCriteria['status'] = intval($statusFilter);
+        }
+
+        $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findBy($queryCriteria, array('createdAt' => 'DESC')));
+
+        return $this->render('ExerciseOverview/Index.html.twig', [
             'sidebarItems' => $this->getSideBarItems(),
             'course' => $course,
+            'courseId' => $course ? $course->getId() : null,
+            'activeFilter' => $statusFilter,
             'groupedExercises' => $groupedExercises,
         ]);
     }

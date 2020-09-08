@@ -13,7 +13,7 @@
 // tmp bootstrap override
 .btn-primary, .btn-primary.disabled, .btn-primary:disabled {
   background-color: $theme__color__green;
-  border-color: $theme__color__green--dark;
+  border-color: $theme__color__green;
 
   &:hover, &:focus, &:active {
     background-color: $theme__color__green--dark;
@@ -22,20 +22,20 @@
 }
 
 .btn-outline-primary {
-  border-color: $theme__color__green--dark;
+  border-color: $theme__color__green;
 
   color: $theme__color__green--dark;
 
   &:hover, &:focus, &:active {
-    background-color: $theme__color__green !important;
+    background-color: $theme__color__green--dark !important;
     border-color: $theme__color__green--dark !important;
 
     color: $theme__color__white !important;
   }
 
-  &.disabled, &:disabled {
-    background-color: transparent;
+  &.disabled, &:disabled, &.disabled, &:disabled {
+    background-color: transparent !important;
 
-    color: $theme__color__green--light;
+    color: $theme__color__green--light !important;
   }
 }
