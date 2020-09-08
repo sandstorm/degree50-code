@@ -2,7 +2,7 @@
 
 <footer class="footer">
     {% if currentPhaseIndex == 0 %}
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview--show-course', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
     {% else %}
         <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: currentPhaseIndex - 1}) }}">Vorherige Phase</a>
     {% endif %}

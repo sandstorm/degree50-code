@@ -108,7 +108,7 @@ class ExerciseController extends AbstractController
         $entityManager->persist($userExerciseInteraction);
         $entityManager->flush();
 
-        return $this->redirectToRoute('exercise-overview--show-course', ['id' => $exercise->getCourse()->getId()]);
+        return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);
     }
 
     /**
@@ -261,6 +261,6 @@ class ExerciseController extends AbstractController
             $this->translator->trans('exercise.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview--show-course', ['id' => $courseId]);
+        return $this->redirectToRoute('exercise-overview', ['id' => $courseId]);
     }
 }

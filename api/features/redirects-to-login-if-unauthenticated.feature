@@ -23,7 +23,7 @@ Feature: Redirections to the login if unauthenticated
     Examples:
       | route                                       | params                            |
       | mediathek--index                            |                                   |
-      | mediathek__subtitle-editor--show                  | {"id": "foo"}                     |
+      | mediathek__subtitle-editor--show            | {"id": "foo"}                     |
       | mediathek__video--player                    | {"id": "foo"}                     |
       | mediathek__video--upload                    |                                   |
       | mediathek__video--edit                      | {"id": "foo"}                     |
@@ -31,8 +31,7 @@ Feature: Redirections to the login if unauthenticated
       | exercise-overview__exercise--show           | {"id": "ex"}                      |
       | exercise-overview__exercise--new            |                                   |
       | exercise-overview__exercise--edit           | {"id": "ex"}                      |
-      | exercise-overview                           |                                   |
-      | exercise-overview--show-course              | {"id": "c"}                       |
+      | exercise-overview                           | {"id": "c"}                       |
       | exercise-overview__exercise-phase--new      | {"id": "ex"}                      |
       | exercise-overview__exercise-phase--set-type | {"id": "ex"}                      |
       | exercise-overview__exercise-phase--edit     | {"id": "ex", "phase_id": "ex-p1"} |
