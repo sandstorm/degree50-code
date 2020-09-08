@@ -7,7 +7,6 @@ use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
-use App\Entity\Exercise\Solution;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;

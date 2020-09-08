@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\VirtualizedFile;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -11,7 +12,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * Material
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Exercise\MaterialRepository")
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
@@ -27,11 +28,9 @@ class Material
     private $name = "";
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="link", type="string", length=255)
+     * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private $link;
+    private ?VirtualizedFile $uploadedFile;
 
     /**
      * @var string
@@ -48,13 +47,10 @@ class Material
     private $uploadAt;
 
     /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     * @var File
-     *
-     * @Vich\UploadableField(mapping="exercise_material", fileNameProperty="link")
-     * @Assert\File(maxSize = "20M")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdVideos")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $file;
+    private $creator;
 
     /**
      * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="material")
@@ -79,22 +75,6 @@ class Material
     }
 
     /**
-     * @param string $link
-     */
-    public function setLink($link)
-    {
-        $this->link = $link;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLink()
-    {
-        return $this->link;
-    }
-
-    /**
      * @ORM\PrePersist
      */
     public function setUploadedAtValue()
@@ -103,35 +83,11 @@ class Material
     }
 
     /**
-     * @ORM\PrePersist
-     */
-    public function setMimeTypeValue()
-    {
-        $this->mimeType = $this->getFile()->getMimeType();
-    }
-
-    /**
      * @return \DateTimeImmutable
      */
     public function getUploadAt()
     {
         return $this->uploadAt;
-    }
-
-    /**
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $file
-     */
-    public function setFile(File $file = null): void
-    {
-        $this->file = $file;
-    }
-
-    /**
-     * @return File|null
-     */
-    public function getFile(): ?File
-    {
-        return $this->file;
     }
 
     /**
@@ -151,10 +107,50 @@ class Material
     }
 
     /**
+     * @param string $mimeType
+     */
+    public function setMimeType(string $mimeType): void
+    {
+        $this->mimeType = $mimeType;
+    }
+
+    /**
      * @return string
      */
     public function getMimeType(): string
     {
         return $this->mimeType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * @param mixed $creator
+     */
+    public function setCreator($creator): void
+    {
+        $this->creator = $creator;
+    }
+
+    /**
+     * @return ?VirtualizedFile
+     */
+    public function getUploadedFile(): ?VirtualizedFile
+    {
+        return $this->uploadedFile;
+    }
+
+    /**
+     * @param VirtualizedFile $uploadedFile
+     */
+    public function setUploadedFile(VirtualizedFile $uploadedFile): void
+    {
+        $this->uploadedFile = $uploadedFile;
     }
 }

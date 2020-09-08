@@ -22,14 +22,6 @@ class ExercisePhaseType extends AbstractType
                 'label' => "exercisePhase.labels.isGroupPhase",
                 'translation_domain' => 'forms'
             ])
-            ->add('material', CollectionType::class, [
-                'attr' => ['class' => 'form-collection'],
-                'label' => false,
-                'entry_type' => MaterialType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false
-            ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             ->add('task', TextareaType::class, ['label' => "exercisePhase.labels.task", 'translation_domain' => 'forms'])
             ->add('save', SubmitType::class, ['label' => 'exercisePhase.labels.submit', 'translation_domain' => 'forms']);

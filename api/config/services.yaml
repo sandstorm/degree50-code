@@ -41,7 +41,6 @@ services:
         class: Imagine\Vips\Imagine
     liip_imagine: '@app.image_processing.vips'
 
-
     League\Flysystem\MountManager: '@oneup_flysystem.mount_manager'
 
     app.mediathek.upload_listener:

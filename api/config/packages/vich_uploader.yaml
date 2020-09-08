@@ -4,7 +4,7 @@ vich_uploader:
     mappings:
         exercise_material:
             uri_prefix: /exercise/material
-            upload_destination: exercise_material_filesystem
+            upload_destination: uploaded_material
             namer: Vich\UploaderBundle\Naming\OrignameNamer
             #  default false, should the file be injected into the uploadable entity when it is loaded from the data store. The object will be an instance of Symfony\Component\HttpFoundation\File\File.
             inject_on_load:     false

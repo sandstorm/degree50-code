@@ -10,14 +10,17 @@ export default class extends Controller {
         formSubmitButton.setAttribute('disabled', 'disabled')
         const endpoint = this.data.get('endpoint');
         const id = this.data.get('id');
+        const uploadLabel = this.data.get('label');
 
         this.element.classList.add('dropzone');
+
+        // TODO add delete/cancel of uploaded videos
 
         new Dropzone(this.element, {
             url: endpoint,
             chunking: true,
             chunkSize: 10000000, // 10 MB
-            dictDefaultMessage: 'Hier klicken um Video hochzuladen',
+            dictDefaultMessage: uploadLabel,
             maxFiles: 1,
             maxFilesize: 10000, // 10 GB
             acceptedFiles: 'video/*',
@@ -25,6 +28,7 @@ export default class extends Controller {
                 if (chunk) {
                     return {
                         id: id,
+                        target: 'video',
 
                         dzuuid: chunk.file.upload.uuid,
                         dzchunkindex: chunk.index,
@@ -36,7 +40,8 @@ export default class extends Controller {
                 }
 
                 return {
-                    id: id
+                    id: id,
+                    target: 'video',
                 };
             },
             accept: function (file, done) {
