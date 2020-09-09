@@ -1,18 +1,32 @@
 import {Controller} from "stimulus"
-const Dropzone = require('dropzone/dist/min/dropzone.min');
 import 'dropzone/dist/dropzone.css';
 import Axios from 'axios'
 
+const Dropzone = require('dropzone/dist/min/dropzone.min');
 
 Dropzone.autoDiscover = false;
 
 export default class extends Controller {
     connect() {
+        const updateMaterialList = (materialList) => {
+            const updateEndPoint = materialList.getAttribute('data-update-endpoint')
+
+            Axios.post(updateEndPoint)
+                .then(function (response) {
+                    materialList.innerHTML = response.data
+                })
+                .catch(function (e) {
+                    console.error('>>>>> update material list failed', e);
+                })
+        }
+
         const endpoint = this.data.get('endpoint');
         const removeEndpoint = this.data.get('remove-endpoint');
         const id = this.data.get('id');
         const phaseId = this.data.get('phase-id')
         const uploadLabel = this.data.get('label');
+        const updateOnSuccess = this.data.get('update');
+        const materialList = document.getElementById(updateOnSuccess);
 
         this.element.classList.add('dropzone');
 
@@ -50,25 +64,29 @@ export default class extends Controller {
             accept: function (file, done) {
                 if (file.name == "justinbieber.jpg") {
                     done("Naha, you don't.");
-                }
-                else {
+                } else {
                     done();
                 }
             },
-            success: function(file, response) {
+            success: function (file, response) {
+                // add materialId to the file to eventually delete it after direct upload
                 file.materialId = response.materialId;
-                // Do what you want to do with your response
+
+                // update list of material
+                updateMaterialList(materialList);
+
                 // This return statement is necessary to remove progress bar after uploading.
                 return file.previewElement.classList.add("dz-success");
             },
-            removedfile: function(file) {
-                try {
-                    Axios.post(removeEndpoint, {
-                        materialId: file.materialId,
-                    })
-                } catch (e) {
+            removedfile: function (file) {
+                Axios.post(removeEndpoint, {
+                    materialId: file.materialId,
+                }).then(function () {
+                    // update list of material
+                    updateMaterialList(materialList)
+                }).catch(function (e) {
                     console.error('>>>>> remove material failed', e)
-                }
+                })
 
                 let _ref;
                 return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;

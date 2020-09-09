@@ -94,7 +94,7 @@ class ExercisePhase implements ExerciseInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Material", mappedBy="exercisePhase", cascade={"persist", "remove"})
-     * @Assert\Valid()
+     * @ORM\OrderBy({"uploadAt" = "DESC"})
      */
     private $material;
 
