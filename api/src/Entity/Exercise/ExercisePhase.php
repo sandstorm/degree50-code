@@ -4,7 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
-use App\Entity\Video\VideoCode;
+use App\Entity\Exercise\VideoCode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -99,7 +99,8 @@ class ExercisePhase implements ExerciseInterface
     private $material;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Video\VideoCode", inversedBy="exercisePhases")
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\VideoCode", mappedBy="exercisePhase", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     private $videoCodes;
 

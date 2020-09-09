@@ -24,82 +24,71 @@
 
         <div class="exercise-form">
             {{ form_start(form) }}
-            <div class="exercise-form__left">
-                {{ form_errors(form) }}
+            {{ form_errors(form) }}
 
-                {{ form_row(form.isGroupPhase) }}
-                {{ form_row(form.name) }}
-                {{ form_row(form.task) }}
+            {{ form_row(form.isGroupPhase) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.task) }}
 
-                <hr />
-                <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
-                <p>Material hochladen das zur Lösung der Aufgabe bereit steht:</p>
-                <div class="dropzone" data-controller="materialUpload"
-                     data-materialUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_material') }}"
-                     data-materialUpload-remove-endpoint="{{ path('exercise-overview__material--delete-ajax') }}"
-                     data-materialUpload-label="Hier klicken um Material hochzuladen"
-                     data-materialUpload-phase-id="{{ exercisePhase.id }}"
-                     data-materialUpload-update="material-list">
-                    <i class="fas fa-spinner fa-spin"></i>
+            <hr/>
+            {% if exercisePhase.type == 'videoAnalysis' %}
+                <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
+                {{ form_widget(form.videoAnnotationsActive) }}
+                {{ form_widget(form.videoCodesActive) }}
+                {{ form_widget(form.videoCuttingActive) }}
+
+                <p>{% trans %}exercisePhase.labels.components{% endtrans %}</p>
+                {{ form_row(form.components) }}
+                <hr/>
+            {% endif %}
+
+            {% if exercisePhase.type == 'videoAnalysis' %}
+                <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
+                {{ form_row(form.videos) }}
+                <hr/>
+            {% endif %}
+
+            {% if exercisePhase.videoCodesActive %}
+                <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
+                <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
+                <div class="form-inline video-code-form" id="add-new-video-code-form" data-controller="videoCodeForm"
+                     data-videoCodeForm-endpoint="{{ path('exercise-overview__video-codes--add', {id: exercisePhase.id}) }}"
+                     data-videoCodeForm-update="video-codes-list">
+                    <label class="sr-only" for="video-code-color">Farbe des Video-Codes</label>
+                    <input class="form-control" id="video-code-color" type="color" placeholder="#ccc"/>
+                    <label class="sr-only" for="video-code-name">Name des Video-Codes</label>
+                    <input class="form-control" id="video-code-name" type="text"
+                           placeholder="Name des Video-Codes"/>
+                    <button id="add-new-video-code" type="button" class="btn btn-primary"><i class="fas fa-plus"></i>
+                        Video-Code hinzufügen
+                    </button>
                 </div>
-                <p>
-                    Bereits hochgelandene Dateien:
-                </p>
-                <div id="material-list" data-update-endpoint="{{ path('exercise-overview__material--list', {id: exercisePhase.id}) }}">
-                    {{ render(path('exercise-overview__material--list', {id: exercisePhase.id})) }}
+                <div id="video-codes-list"
+                     data-update-endpoint="{{ path('exercise-overview__video-codes--list', {id: exercisePhase.id}) }}">
+                    {{ render(path('exercise-overview__video-codes--list', {id: exercisePhase.id})) }}
                 </div>
+
+                <hr/>
+            {% endif %}
+
+            <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
+            <p>Material hochladen das zur Lösung der Aufgabe bereit steht:</p>
+            <div class="dropzone" data-controller="materialUpload"
+                 data-materialUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_material') }}"
+                 data-materialUpload-remove-endpoint="{{ path('exercise-overview__material--delete-ajax') }}"
+                 data-materialUpload-label="Hier klicken um Material hochzuladen"
+                 data-materialUpload-phase-id="{{ exercisePhase.id }}"
+                 data-materialUpload-update="material-list">
+                <i class="fas fa-spinner fa-spin"></i>
             </div>
-            <div class="exercise-form__right">
-                {% if exercisePhase.type == 'videoAnalysis' %}
-                    <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
-                    {{ form_widget(form.videoAnnotationsActive) }}
-                    {{ form_widget(form.videoCodesActive) }}
-                    {{ form_widget(form.videoCuttingActive) }}
-                    <hr/>
-                {% endif %}
-
-                <ul class="nav nav-tabs" role="tablist">
-                    {% if exercisePhase.type == 'videoAnalysis' %}
-                        <li role="presentation" class="nav-item">
-                            <a class="nav-link active" href="#videos" aria-controls="videos" role="tab"
-                               data-toggle="tab">{% trans %}exercisePhase.labels.videos{% endtrans %}
-                                ({{ exercisePhase.videos|length }})</a>
-                        </li>
-                        {% if exercisePhase.videoCodesActive %}
-                            <li role="presentation" class="nav-item">
-                                <a class="nav-link" href="#videoCodes" aria-controls="videoCodes" role="tab"
-                                   data-toggle="tab">{% trans %}exercisePhase.labels.videoCodes{% endtrans %}
-                                    ({{ exercisePhase.videoCodes|length }})</a>
-                            </li>
-                        {% endif %}
-                    {% endif %}
-                    <li role="presentation" class="nav-item">
-                        <a class="nav-link" href="#komponenten" aria-controls="komponenten" role="tab"
-                           data-toggle="tab">{% trans %}exercisePhase.labels.components{% endtrans %}
-                            ({{ exercisePhase.components|length }})</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    {% if exercisePhase.type == 'videoAnalysis' %}
-                        <div role="tabpanel" class="tab-pane active" id="videos">
-                            <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
-                            {{ form_row(form.videos) }}
-                        </div>
-                        {% if exercisePhase.videoCodesActive %}
-                            <div role="tabpanel" class="tab-pane" id="videoCodes">
-                                <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
-                                <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
-                                {{ form_row(form.videoCodes) }}
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                    <div role="tabpanel" class="tab-pane" id="komponenten">
-                        <h4>{% trans %}exercisePhase.labels.components{% endtrans %}</h4>
-                        {{ form_row(form.components) }}
-                    </div>
-                </div>
+            <p>
+                Bereits hochgelandene Dateien:
+            </p>
+            <div id="material-list"
+                 data-update-endpoint="{{ path('exercise-overview__material--list', {id: exercisePhase.id}) }}">
+                {{ render(path('exercise-overview__material--list', {id: exercisePhase.id})) }}
             </div>
+            <hr/>
         </div>
     </div>
     <footer class="footer">

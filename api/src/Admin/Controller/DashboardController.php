@@ -4,7 +4,7 @@ namespace App\Admin\Controller;
 
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
-use App\Entity\Video\VideoCode;
+use App\Entity\Exercise\VideoCode;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;

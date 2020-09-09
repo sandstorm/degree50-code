@@ -1,17 +1,17 @@
 .exercise-form {
   margin-bottom: 70px;
 
-  textarea#exercise_description, textarea#exercise_phase_task {
+  textarea#exercise_description, textarea#video_analysis_task {
     min-height: 200px;
   }
+}
 
-  > form {
-    display: flex;
-    flex-direction: row;
+.exercise-form__columns {
+  display: flex;
+  flex-direction: row;
 
-    @include mq(medium) {
-      flex-direction: column;
-    }
+  @include mq(medium) {
+    flex-direction: column;
   }
 }
 

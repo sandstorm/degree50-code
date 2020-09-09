@@ -1,3 +1,7 @@
+.form-control {
+  border-radius: 0;
+}
+
 .form-collection {
   > fieldset > .col-form-label {
     display: none;
@@ -47,4 +51,27 @@ label {
 
 .input-group-text {
   border-radius: 0;
+}
+
+input[type=color] {
+  width: 40px !important;
+  padding: 0;
+}
+
+.video-code-form {
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  margin-bottom: 20px;
+
+  .btn {
+    white-space: nowrap;
+  }
+
+  input {
+    margin-right: 10px;
+  }
+
+  input[type=text] {
+    flex: 1;
+  }
 }

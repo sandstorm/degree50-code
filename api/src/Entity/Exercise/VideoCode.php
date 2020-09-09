@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Entity\Video;
+namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
-use App\Entity\Exercise\ExercisePhase;
-use App\Repository\Video\VideoCodeRepository;
+use App\Repository\Exercise\VideoCodeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,9 +32,10 @@ class VideoCode
     private ?string $description = '';
 
     /**
-     * @ORM\ManyToMany(targetEntity=ExercisePhase::class, mappedBy="videoCodes")
+     * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="videoCodes")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private Collection $exercisePhases;
+    private $exercisePhase;
 
     /**
      * @var string
@@ -47,7 +47,6 @@ class VideoCode
     public function __construct($id = null)
     {
         $this->generateOrSetId($id);
-        $this->exercisePhases = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -74,14 +73,6 @@ class VideoCode
         return $this;
     }
 
-    /**
-     * @return Collection|ExercisePhase[]
-     */
-    public function getExercisePhases(): Collection
-    {
-        return $this->exercisePhases;
-    }
-
     public function getColor(): ?string
     {
         return $this->color;
@@ -92,5 +83,21 @@ class VideoCode
         $this->color = $color;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExercisePhase()
+    {
+        return $this->exercisePhase;
+    }
+
+    /**
+     * @param mixed $exercisePhase
+     */
+    public function setExercisePhase($exercisePhase): void
+    {
+        $this->exercisePhase = $exercisePhase;
     }
 }

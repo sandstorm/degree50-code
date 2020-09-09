@@ -3,13 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
-use App\Entity\Video\VideoCode;
+use App\Entity\Exercise\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {

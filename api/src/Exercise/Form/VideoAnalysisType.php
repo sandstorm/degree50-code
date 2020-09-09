@@ -5,8 +5,8 @@ namespace App\Exercise\Form;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Video\Video;
-use App\Entity\Video\VideoCode;
-use App\Repository\Video\VideoCodeRepository;
+use App\Entity\Exercise\VideoCode;
+use App\Repository\Exercise\VideoCodeRepository;
 use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -90,20 +90,6 @@ class VideoAnalysisType extends ExercisePhaseType
                 },
                 'choice_translation_domain' => 'forms'
             ]);
-
-        if ($videoCodesActive) {
-            $videoCodeChoices = $this->videoCodeRepository->findAll();
-            $builder
-                ->add('videoCodes', EntityType::class, [
-                    'class' => VideoCode::class,
-                    'choices' => $videoCodeChoices,
-                    'required' => false,
-                    'choice_label' => 'name',
-                    'multiple' => true,
-                    'label' => false
-                ]);
-        }
-
     }
 
     public function configureOptions(OptionsResolver $resolver)

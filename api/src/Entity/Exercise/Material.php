@@ -59,6 +59,15 @@ class Material
     private $exercisePhase;
 
     /**
+     * Material constructor.
+     */
+    public function __construct($id = null)
+    {
+        $this->generateOrSetId($id);
+    }
+
+
+    /**
      * @param string $name
      */
     public function setName($name)
