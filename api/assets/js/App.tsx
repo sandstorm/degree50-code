@@ -17,6 +17,7 @@ import ReactController from './StimulusControllers/ReactController'
 import ExercisePhaseController from './StimulusControllers/ExercisePhaseController'
 import SolutionsController from './StimulusControllers/SolutionsController'
 import SubtitleEditorController from 'StimulusControllers/SubtitleEditorController'
+import VideoCodeFormController from 'StimulusControllers/VideoCodeFormController'
 
 const application = Application.start()
 
@@ -26,3 +27,4 @@ application.register('react', ReactController)
 application.register('exercisePhase', ExercisePhaseController)
 application.register('subtitleEditor', SubtitleEditorController)
 application.register('solutions', SolutionsController)
+application.register('videoCodeForm', VideoCodeFormController)

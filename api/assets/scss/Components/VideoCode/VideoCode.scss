@@ -40,8 +40,10 @@
   justify-content: space-between;
   align-items: center;
 
-  button {
+  button, .btn {
     margin-left: 5px;
+
+    white-space: nowrap;
   }
 }
 
@@ -77,11 +79,6 @@
   padding-right: 10px;
 
   background-color: $theme__color__grey--dark;
-
-  input[type=color] {
-    width: 40px;
-    padding: 0;
-  }
 
   input {
     margin-right: 10px;

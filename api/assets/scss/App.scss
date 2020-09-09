@@ -30,7 +30,7 @@
 // composites
 @import "Composites/Login/Login";
 @import "Composites/Form/ExerciseForm";
-@import "Composites/Form/FormCollection";
+@import "Composites/Form/Form";
 @import "Composites/Header/Header";
 @import "Composites/Header/ContentHeader";
 @import "Composites/Footer/Footer";
@@ -57,6 +57,7 @@
 @import 'Composites/Breadcrumb/Breadcrumb';
 @import 'Composites/OverviewFilter/OverviewFilter';
 @import 'Composites/MaterialList/MaterialList';
+@import 'Composites/VideoCodesList/VideoCodesList';
 
 @import "Composites/VideoEditor/VideoEditor";
 @import "Composites/VideoEditor/MediaLane";
