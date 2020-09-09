@@ -3,6 +3,7 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\Material;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Exercise\MaterialRepository;
@@ -106,5 +107,15 @@ class MaterialController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($material);
         $entityManager->flush();
+    }
+
+    /**
+     * @Route("/material/list/{id}", name="exercise-overview__material--list")
+     */
+    public function uploadedMaterial(ExercisePhase $exercisePhase): Response
+    {
+        return $this->render('ExercisePhase/MaterialList.html.twig', [
+            'materialList' => $exercisePhase->getMaterial()
+        ]);
     }
 }

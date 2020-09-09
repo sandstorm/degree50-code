@@ -1,0 +1,12 @@
+<ul class="material-list">
+    {% for material in materialList %}
+        <li>
+            <a class="material-list__name" href="{{ path('exercise-overview__material--download', {id: material.id}) }}">{{ material.name }}</a>
+            <a class="btn btn-sm btn-danger" href="{{ path('exercise-overview__material--delete', {id: material.id}) }}">Datei Löschen</a>
+        </li>
+    {% else %}
+        <li>
+            Noch keine.
+        </li>
+    {% endfor %}
+</ul>
