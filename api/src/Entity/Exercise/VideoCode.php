@@ -2,15 +2,11 @@
 
 namespace App\Entity\Exercise;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Repository\Exercise\VideoCodeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=VideoCodeRepository::class)
  */
 class VideoCode
