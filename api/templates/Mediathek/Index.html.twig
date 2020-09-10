@@ -3,16 +3,24 @@
 {% block title %}Mediathek{% endblock %}
 
 {% block sidebar %}
-    {{ include('Mediathek/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: false}) }}
+    {{ include('Mediathek/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: course}) }}
 {% endblock %}
 
 {% block body %}
     <header class="content-header">
-        <h3>Alle Videos...</h3>
-        <a href="{{ path('mediathek__video--upload') }}" class="btn btn-primary">
-            <i class="fas fa-plus-circle"></i>
-            Neues Video
-        </a>
+        {% if course %}
+            <h3>Alle Videos für {{ course.name }}</h3>
+            <a href="{{ path('mediathek__video--upload', {id: course.id}) }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i>
+                Neues Video
+            </a>
+        {% else %}
+            <h3>Alle Videos</h3>
+            <a href="{{ path('mediathek__video--upload') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i>
+                Neues Video
+            </a>
+        {% endif %}
     </header>
 
     {{ include('Mediathek/GroupedVideos.html.twig', {groupedVideos: groupedVideos}) }}

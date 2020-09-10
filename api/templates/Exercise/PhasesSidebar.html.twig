@@ -18,9 +18,9 @@
                     {% for item in sidebarItems %}
                         <li class="sidebar-item {{ (item.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
                             {% if showSolution %}
-                                <a class="nav-link" href="{{ path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id}) }}">{{ item.name }}</a>
+                                {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id})) }}
                             {% else %}
-                                <a class="nav-link" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1}) }}">{{ item.name }}</a>
+                                {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1})) }}
                             {% endif %}
                         </li>
                     {% endfor %}
@@ -31,3 +31,11 @@
     </div>
 
 </div>
+
+
+{% macro sidebarLink(item, iconClass, href) %}
+    <a class="nav-link" href="{{ href }}">
+        <i class="{{ iconClass }}"></i>
+        {{ item.name }}
+    </a>
+{% endmacro %}

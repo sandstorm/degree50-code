@@ -1,6 +1,12 @@
 .sidebar-item {
   width: 100%;
 
+  i {
+    width: 24px;
+
+    text-align: center;
+  }
+
   a {
     display: inline-block;
     padding: 5px;

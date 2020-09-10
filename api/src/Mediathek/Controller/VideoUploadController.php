@@ -4,6 +4,7 @@
 namespace App\Mediathek\Controller;
 
 
+use App\Entity\Account\Course;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -30,20 +31,26 @@ class VideoUploadController extends AbstractController
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private Security $security;
+    private VideoRepository $videoRepository;
+    private AppRuntime $appRuntime;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security, VideoRepository $videoRepository, AppRuntime $appRuntime)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->messageBus = $messageBus;
         $this->security = $security;
+        $this->videoRepository = $videoRepository;
+        $this->appRuntime = $appRuntime;
     }
 
     /**
-     * @Route("/video/uploads/{videoUuid}", name="mediathek__video--upload")
+     * @Route("/video/uploads/{id?}", name="mediathek__video--upload")
      */
-    public function videoUpload(VideoRepository $videoRepository, Request $request, string $videoUuid = null): Response
+    public function videoUpload(Request $request, Course $course = null): Response
     {
+        $videoUuid = $request->query->get('videoUuid', null);
+
         if (!$videoUuid) {
             $videoUuid = Uuid::uuid4()->toString();
         }
@@ -51,11 +58,14 @@ class VideoUploadController extends AbstractController
         // we need to disable the video-filter here, cause the uploaded video has already created an video db entry
         // but without courses set. With the filter active we could not find the existing db entry at this point.
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
-        $video = $videoRepository->find($videoUuid);
+        $video = $this->videoRepository->find($videoUuid);
         if (!$video) {
             $video = new Video($videoUuid);
         }
         $video->setCreator($this->security->getUser());
+        if ($course) {
+            $video->addCourse($course);
+        }
 
         $form = $this->createForm(VideoType::class, $video, [
             'action' => $this->generateUrl('mediathek__video--upload', ['videoUuid' => $videoUuid])
@@ -129,7 +139,8 @@ class VideoUploadController extends AbstractController
 
         return $this->render('Mediathek/VideoUpload/Edit.html.twig', [
             'video' => $video,
-            'form' => $form->createView()
+            'videoMap' => $video->getAsArray($this->appRuntime),
+            'form' => $form->createView(),
         ]);
     }
 

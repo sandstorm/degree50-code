@@ -10,7 +10,7 @@
             <h3>{% trans %}video.edit.title{% endtrans %}</h3>
         </header>
 
-        <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] } | json_encode|e('html_attr')}}"></div>
+        <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] }, videoMap: videoMap } | json_encode|e('html_attr')}}"></div>
     </div>
     {{ form_start(form) }}
         <div class="container">
