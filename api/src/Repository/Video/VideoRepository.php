@@ -29,7 +29,7 @@ class VideoRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('v')
             ->andWhere(':course MEMBER OF v.courses')
             ->setParameter('course', $course)
-            ->orderBy('v.title', 'ASC')
+            ->orderBy('v.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

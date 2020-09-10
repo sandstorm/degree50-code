@@ -103,7 +103,7 @@ class Video
      * Video constructor.
      * @param string $id
      */
-    public function __construct(string $id)
+    public function __construct(string $id = '')
     {
         $this->generateOrSetId($id);
         $this->videoAnalysisTypes = new ArrayCollection();

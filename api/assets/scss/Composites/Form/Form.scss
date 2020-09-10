@@ -2,6 +2,13 @@
   border-radius: 0;
 }
 
+.form-group {
+  .tiles {
+    max-height: 440px;
+    overflow-y: scroll;
+  }
+}
+
 .form-collection {
   > fieldset > .col-form-label {
     display: none;
