@@ -7,7 +7,7 @@ Dropzone.autoDiscover = false;
 export default class extends Controller {
     connect() {
         const formSubmitButton = document.getElementById('video_save')
-        formSubmitButton.setAttribute('disabled', 'disabled')
+        formSubmitButton.setAttribute('disabled', '')
         const endpoint = this.data.get('endpoint');
         const id = this.data.get('id');
         const uploadLabel = this.data.get('label');

@@ -1,4 +1,6 @@
 <div id="sidebar" class="sidebar">
+    <a class="btn btn-primary btn-block" href="{{ path('mediathek--index') }}">Alle Videos</a>
+    <hr />
     {% for item in sidebarItems %}
         <div class="sidebar__group">
             <header id="heading{{ loop.index }}">

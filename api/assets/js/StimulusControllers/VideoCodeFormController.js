@@ -24,7 +24,7 @@ export default class extends Controller {
             const color = document.getElementById('video-code-color').value
             const name = document.getElementById('video-code-name').value
 
-            formSubmitButton.setAttribute('disabled', 'distabled')
+            formSubmitButton.setAttribute('disabled', '')
 
             if (color && name) {
                 Axios.post(endpoint, {
@@ -32,7 +32,6 @@ export default class extends Controller {
                     name: name
                 })
                     .then(function (response) {
-                        console.log(response)
                         updateVideoCodesList(videoCodesList)
                     })
                     .catch(function (e) {

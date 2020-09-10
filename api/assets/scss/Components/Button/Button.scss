@@ -11,13 +11,17 @@
 }
 
 // tmp bootstrap override
-.btn-primary, .btn-primary.disabled, .btn-primary:disabled {
+.btn-primary {
   background-color: $theme__color__green;
   border-color: $theme__color__green;
 
   &:hover, &:focus, &:active {
     background-color: $theme__color__green--dark;
     border-color: $theme__color__green--dark;
+  }
+
+  &.disabled, &:disabled {
+    background-color: $theme__color__green--light !important;
   }
 }
 
@@ -33,7 +37,7 @@
     color: $theme__color__white !important;
   }
 
-  &.disabled, &:disabled, &.disabled, &:disabled {
+  &.disabled, &:disabled {
     background-color: transparent !important;
 
     color: $theme__color__green--light !important;

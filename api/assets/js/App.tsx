@@ -18,6 +18,7 @@ import ExercisePhaseController from './StimulusControllers/ExercisePhaseControll
 import SolutionsController from './StimulusControllers/SolutionsController'
 import SubtitleEditorController from 'StimulusControllers/SubtitleEditorController'
 import VideoCodeFormController from 'StimulusControllers/VideoCodeFormController'
+import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
 
 const application = Application.start()
 
@@ -28,3 +29,4 @@ application.register('exercisePhase', ExercisePhaseController)
 application.register('subtitleEditor', SubtitleEditorController)
 application.register('solutions', SolutionsController)
 application.register('videoCodeForm', VideoCodeFormController)
+application.register('deleteEntity', DeleteEntityController)
