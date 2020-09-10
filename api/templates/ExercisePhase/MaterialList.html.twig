@@ -1,8 +1,8 @@
 <ul class="material-list">
     {% for material in materialList %}
         <li>
-            <a class="material-list__name" href="{{ path('exercise-overview__material--download', {id: material.id}) }}">{{ material.name }}</a>
-            <a class="btn btn-sm btn-danger" href="{{ path('exercise-overview__material--delete', {id: material.id}) }}"><i class="fas fa-trash-alt"></i> Datei Löschen</a>
+            <a class="material-list__name" href="{{ path('exercise-overview__material--download', {id: material.id}) }}" target="_blank">{{ material.name }}</a>
+            <a class="btn btn-sm btn-danger" data-controller="deleteEntity" href="{{ path('exercise-overview__material--delete', {id: material.id}) }}"><i class="fas fa-trash-alt"></i> Datei Löschen</a>
         </li>
     {% else %}
         <li>
