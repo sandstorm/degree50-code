@@ -3,7 +3,15 @@
     {{ include('Partials/Header.html.twig') }}
     <main class="main main--with-header {% block layoutCssClass %}{% endblock %}">
         <div class="main-inner">
-            {% block sidebar %}{% endblock %}
+            <div id="sidebar" class="sidebar" data-controller="sidebar">
+                <div class="sidebar__toggle">
+                    <button id="sidebar-toggle" class="btn btn-link btn-sm" type="button" title="Sidebar auf- und zuklappen">
+                        <i class="fas fa-chevron-left"></i>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="sidebar__content">{% block sidebar %}{% endblock %}</div>
+            </div>
             <div class="content-with-sidebar">
                 {{ include('Partials/FlashMessages.html.twig') }}
                 {% block body %}{% endblock %}

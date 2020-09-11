@@ -3,10 +3,40 @@
   left: 0;
   width: 300px;
   height: 100%;
-  padding: 10px;
+  padding-right: 20px;
 
   background-color: $theme__color__grey;
 
+  @include transition(left 250ms ease);
+
+  .fa-chevron-right {
+    display: none;
+  }
+
+  &--is-closed {
+    left: -280px;
+
+    .fa-chevron-left {
+      display: none;
+    }
+
+    .fa-chevron-right {
+      display: inline-block;
+    }
+
+    ~ .content-with-sidebar {
+      padding-left: 40px;
+    }
+  }
+}
+
+.sidebar__content {
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  padding-right: 5px;
+
+  overflow: hidden;
   overflow-y: scroll;
 
   .card-header {
@@ -17,6 +47,29 @@
 }
 
 .sidebar__toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 20px;
+
+  border-left: 1px solid $theme__color__white;
+
+  button {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    padding: 5px;
+
+    color: $theme__color__green;
+
+    &:hover, &:focus, &:active {
+      color: $theme__color__green--dark;
+    }
+  }
+}
+
+.sidebar__group-toggle {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -87,4 +140,5 @@
   padding-left: 320px;
 
   overflow-y: scroll;
+  @include transition(padding-left 250ms ease);
 }

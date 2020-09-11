@@ -14,7 +14,7 @@
   box-shadow: -5px 0px 5px 0px transparentize($theme__color__black, 0.5);
 
   z-index: 7000;
-  transition: width 0.2s ease;
+  @include transition(width 250ms ease);
 
   &--is-visible {
     display: block;

@@ -21,6 +21,7 @@ class User implements UserInterface
     use IdentityTrait;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
