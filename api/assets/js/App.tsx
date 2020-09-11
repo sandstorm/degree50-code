@@ -19,6 +19,7 @@ import SolutionsController from './StimulusControllers/SolutionsController'
 import SubtitleEditorController from 'StimulusControllers/SubtitleEditorController'
 import VideoCodeFormController from 'StimulusControllers/VideoCodeFormController'
 import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
+import SidebarController from 'StimulusControllers/SidebarController'
 
 const application = Application.start()
 
@@ -30,3 +31,4 @@ application.register('subtitleEditor', SubtitleEditorController)
 application.register('solutions', SolutionsController)
 application.register('videoCodeForm', VideoCodeFormController)
 application.register('deleteEntity', DeleteEntityController)
+application.register('sidebar', SidebarController)

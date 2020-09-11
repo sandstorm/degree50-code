@@ -16,7 +16,7 @@ $toolbarWidth: 50px;
   outline: 1px solid $theme__color__grey--darker;
 
 
-  transition: width 0.2s ease 0s;
+  @include transition(width 250ms ease 0s);
   z-index: 8000;
 
   &--is-visible {

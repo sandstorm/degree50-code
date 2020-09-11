@@ -1,35 +1,32 @@
 {% trans_default_domain 'forms' %}
 
-<div id="sidebar" class="sidebar">
-    {% if showSolution %}
-        <a class="btn btn-primary btn-block" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
-        <hr />
-    {% endif %}
-    <div class="sidebar__group">
-        <header id="heading-phases">
-            <h5>
-                Phasen
-            </h5>
-        </header>
-        <div id="collapse-phases" class="collapse show" aria-labelledby="heading-phases" data-parent="#sidebar">
-            <div class="sidebar__group-body">
-                <ul>
-                    {% for item in sidebarItems %}
-                        <li class="sidebar-item {{ (item.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
-                            {% if showSolution %}
-                                {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id})) }}
-                            {% else %}
-                                {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1})) }}
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+{% if showSolution %}
+    <a class="btn btn-primary btn-block" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+    <hr />
+{% endif %}
+<div class="sidebar__group">
+    <header id="heading-phases">
+        <h5>
+            Phasen
+        </h5>
+    </header>
+    <div id="collapse-phases" class="collapse show" aria-labelledby="heading-phases" data-parent="#sidebar">
+        <div class="sidebar__group-body">
+            <ul>
+                {% for item in sidebarItems %}
+                    <li class="sidebar-item {{ (item.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
+                        {% if showSolution %}
+                            {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id})) }}
+                        {% else %}
+                            {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1})) }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
-
     </div>
-
 </div>
+
 
 
 {% macro sidebarLink(item, iconClass, href) %}

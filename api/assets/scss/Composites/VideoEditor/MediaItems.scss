@@ -33,7 +33,7 @@
 
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s ease;
+  @include transition(all 250ms ease);
 
   &:hover {
     color: $theme__color__white;

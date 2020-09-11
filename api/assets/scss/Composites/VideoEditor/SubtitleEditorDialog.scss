@@ -24,7 +24,7 @@
   box-shadow: 0 0 3px 0 transparentize($theme__color__black, 0.5);
   border-radius: 3px;
 
-  transition: all 0.2s ease 0s;
+  @include transition(all 250ms ease 0s);
   opacity: 0;
 
   &--active {
@@ -57,7 +57,7 @@
 
   opacity: 0.5;
   cursor: pointer;
-  transition: all 0.2s ease 0s;
+  @include transition(all 250ms ease 0s);
 
   &:hover {
     opacity: 1;

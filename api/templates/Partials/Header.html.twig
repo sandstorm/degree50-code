@@ -16,9 +16,9 @@
                     <a href="{{ path('mediathek--index') }}">Mediathek</a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
-                <li class="navigation__item">
-                    <a href="/admin">Administration</a>
-                </li>
+                    <li class="navigation__item">
+                        <a href="/admin">Administration</a>
+                    </li>
                 {% endif %}
             </ul>
 
