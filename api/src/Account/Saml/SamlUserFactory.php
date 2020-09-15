@@ -27,7 +27,8 @@ class SamlUserFactory implements SamlUserFactoryInterface
         $userIdentifier = $attributes['mail'][0];
 
         $user = new User();
-        $user->setRoles(array('ROLE_SSO_USER'));
+        $user->setIsSSOUser(true);
+        $user->setIsStudent(true);
         $user->setPassword('notused');
         $user->setEmail($userIdentifier);
 

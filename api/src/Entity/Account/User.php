@@ -19,6 +19,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
     use IdentityTrait;
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_STUDENT = 'ROLE_STUDENT';
+    const ROLE_DOZENT = 'ROLE_DOZENT';
+    const ROLE_SSO_USER = 'ROLE_SSO_USER';
 
     /**
      * @var string
@@ -96,7 +101,7 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = self::ROLE_USER;
 
         return array_unique($roles);
     }
@@ -194,17 +199,47 @@ class User implements UserInterface
 
     public function setIsAdmin(bool $isAdmin): void
     {
-        if ($isAdmin) {
-            $this->roles[] = 'ROLE_ADMIN';
+        $this->setRole(self::ROLE_ADMIN, $isAdmin);
+    }
+
+    public function setIsStudent(bool $isStudent): void
+    {
+        $this->setRole(self::ROLE_STUDENT, $isStudent);
+    }
+
+    public function setIsDozent(bool $isDozent): void
+    {
+        $this->setRole(self::ROLE_DOZENT, $isDozent);
+    }
+
+    public function setIsSSOUser(bool $isSSOUser): void
+    {
+        $this->setRole(self::ROLE_SSO_USER, $isSSOUser);
+    }
+
+    private function setRole(string $roleToSet, bool $set): void
+    {
+        if ($set) {
+            $this->roles[] = $roleToSet;
         } else {
-            $this->roles = array_filter($this->roles, function($role) {
-                return $role !== 'ROLE_ADMIN';
+            $this->roles = array_filter($this->roles, function($role) use ($roleToSet) {
+                return $role !== $roleToSet;
             });
         }
     }
 
     public function isAdmin(): bool
     {
-        return in_array('ROLE_ADMIN', $this->roles);
+        return in_array(self::ROLE_ADMIN, $this->roles);
+    }
+
+    public function isStudent(): bool
+    {
+        return in_array(self::ROLE_STUDENT, $this->roles);
+    }
+
+    public function isDozent(): bool
+    {
+        return in_array(self::ROLE_DOZENT, $this->roles);
     }
 }
