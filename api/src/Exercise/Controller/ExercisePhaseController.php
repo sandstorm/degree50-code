@@ -9,14 +9,15 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Exercise\Material;
 use App\Entity\Exercise\Solution;
-use App\Entity\Video\Video;
 use App\Entity\Exercise\VideoCode;
+use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseRepository;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\VideoCodeRepository;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -41,11 +42,12 @@ class ExercisePhaseController extends AbstractController
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private VideoCodeRepository $videoCodeRepository;
     private ExercisePhaseRepository $exercisePhaseRepository;
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository, VideoCodeRepository $videoCodeRepository, ExercisePhaseRepository $exercisePhaseRepository)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository, VideoCodeRepository $videoCodeRepository, ExercisePhaseRepository $exercisePhaseRepository, ExercisePhaseTeamRepository $exercisePhaseTeamRepository)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -55,6 +57,7 @@ class ExercisePhaseController extends AbstractController
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->videoCodeRepository = $videoCodeRepository;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
     }
 
     /**
@@ -185,7 +188,8 @@ class ExercisePhaseController extends AbstractController
             $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         }
 
-        $solutions = array_map(function (ExercisePhaseTeam $team) {
+        $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
+        $solutions = array_map(function (ExercisePhaseTeam $team) use ($exercise) {
             return [
                 'teamCreator' => $team->getCreator()->getUsername(),
                 'teamMembers' => array_map(function (User $member) {
@@ -193,7 +197,7 @@ class ExercisePhaseController extends AbstractController
                 }, $team->getMembers()->toArray()),
                 'solution' => $team->getSolution()->getSolution(),
             ];
-        }, $exercisePhase->getTeams()->toArray());
+        }, $teams);
 
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
             'config' => $this->getConfig($exercisePhase, true),

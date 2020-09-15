@@ -42,15 +42,18 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
 
     /**
      * @param User $creator
+     * @param User $exerciseCreator
      * @param ExercisePhase $exercisePhase
      * @return ExercisePhaseTeam[]|\iterable
      */
-    public function findAllCreatedByOtherUsers(User $creator, ExercisePhase $exercisePhase): iterable
+    public function findAllCreatedByOtherUsers(User $creator, User $exerciseCreator, ExercisePhase $exercisePhase): iterable
     {
         return $this->createQueryBuilder('e')
             ->andWhere('e.creator != :creator')
+            ->andWhere('e.creator != :exerciseCreator')
             ->andWhere('e.exercisePhase = :exercisePhase')
             ->setParameter('creator', $creator)
+            ->setParameter('exerciseCreator', $exerciseCreator)
             ->setParameter('exercisePhase', $exercisePhase)
             ->orderBy('e.id', 'ASC')
             ->getQuery()

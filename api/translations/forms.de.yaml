@@ -8,6 +8,7 @@ exercise:
     name: 'Titel der Aufgabe'
     description: 'Lernauftrag / Beschreibung'
     submit: 'Aufgabe speichern'
+    test: 'Aufgabe testen'
     created: 'Erstellt'
     phases: 'Phasen'
     status: 'Status'
