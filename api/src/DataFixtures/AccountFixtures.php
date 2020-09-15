@@ -35,17 +35,17 @@ class AccountFixtures extends Fixture
         // other fixtures can get this object using the AccountFixtures::COURSE_REFERENCE constant
         $this->addReference(self::COURSE_REFERENCE, $course);
 
-        $dozent = $this->createUser($manager, 'admin@sandstorm.de', ['ROLE_ADMIN']);
+        $dozent = $this->createUser($manager, 'admin@sandstorm.de', [User::ROLE_ADMIN, User::ROLE_DOZENT]);
         $this->addReference(self::CREATOR_REFERENCE, $dozent);
 
         $this->createCourseRole($manager, CourseRole::DOZENT, $course, $dozent);
         $this->createCourseRole($manager, CourseRole::DOZENT, $course2, $dozent);
 
         // student user
-        $student = $this->createUser($manager, 'student@sandstorm.de');
+        $student = $this->createUser($manager, 'student@sandstorm.de', [User::ROLE_STUDENT]);
         $this->createCourseRole($manager, CourseRole::STUDENT, $course, $student);
 
-        $student2 = $this->createUser($manager, 'student2@sandstorm.de');
+        $student2 = $this->createUser($manager, 'student2@sandstorm.de', [User::ROLE_STUDENT]);
         $this->createCourseRole($manager, CourseRole::STUDENT, $course, $student2);
 
         $this->eventStore->disableEventPublishingForNextFlush();

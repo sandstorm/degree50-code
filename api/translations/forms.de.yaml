@@ -16,6 +16,8 @@ exercise:
     status2: 'Veröffentlicht'
   show:
     title: 'Aufgabe starten'
+  test:
+    title: 'Aufgabe testen'
   new:
     back: 'Zurück zur Übersicht'
     title: 'Neue Aufgabe anlegen'

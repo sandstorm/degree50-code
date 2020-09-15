@@ -19,16 +19,18 @@
             <h3>Alle Aufgaben...</h3>
         {% endif %}
     </header>
-    <div class="overview-filter">
-        <div class="btn-group" role="group" aria-label="Aufgaben filtern nach Status">
-            <div class="input-group-prepend">
-                <div class="input-group-text">Filter</div>
+    {% if is_granted('ROLE_DOZENT') %}
+        <div class="overview-filter">
+            <div class="btn-group" role="group" aria-label="Aufgaben filtern nach Status">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Filter</div>
+                </div>
+                {{ _self.filter(courseId, 0, activeFilter, 'Versteckt') }}
+                {{ _self.filter(courseId, 2, activeFilter, 'Veröffentlicht') }}
+                {{ _self.filter(courseId, 1, activeFilter, 'Abgeschlossen') }}
             </div>
-            {{ _self.filter(courseId, 0, activeFilter, 'Versteckt') }}
-            {{ _self.filter(courseId, 2, activeFilter, 'Veröffentlicht') }}
-            {{ _self.filter(courseId, 1, activeFilter, 'Abgeschlossen') }}
         </div>
-    </div>
+    {% endif %}
 
     {{ include('ExerciseOverview/GroupedExercises.html.twig', {groupedExercises: groupedExercises}) }}
 {% endblock %}

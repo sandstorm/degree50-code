@@ -31,6 +31,8 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            // new users are ROLE::STUDENT by default
+            $user->setIsStudent(true);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
