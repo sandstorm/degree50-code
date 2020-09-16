@@ -2,6 +2,8 @@
   background-color: $theme__color__blue--dark;
 
   .ReactVirtualized__Table__Grid {
+    height: 100% !important;
+
     outline: none;
   }
 }

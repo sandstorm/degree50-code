@@ -1,10 +1,11 @@
-import React, { useRef, useState, useCallback } from 'react'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
 import VideoPlayerWrapper, { Video } from '../../Components/VideoPlayer/VideoPlayerWrapper'
 import { VideoListsState } from '../../Components/VideoEditor/VideoListsSlice'
 import { Teams } from './Components/Teams/Teams'
 import { TabsTypesEnum } from '../../types'
 import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
+import useResizeObserver from 'use-resize-observer'
 
 export type SolutionByTeam = {
     teamCreator: string

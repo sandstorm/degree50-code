@@ -1,6 +1,6 @@
-import { useState, useLayoutEffect, useEffect } from 'react'
+import { useLayoutEffect, useEffect } from 'react'
 import { RenderConfig } from './MediaTrack'
-import { useWindowSize } from './MediaTrack/hooks'
+import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
 
 export const useMediaLane = ({
     setRender,
@@ -15,23 +15,15 @@ export const useMediaLane = ({
     currentTime: number
     videoDuration: number
 }) => {
-    const [containerWidth, setContainerWidth] = useState(0)
-    const [containerHeight, setContainerHeight] = useState(0)
-    const windowSize = useWindowSize()
+    const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver($container, 500)
 
-    const updateContainerDimensions = () => {
-        if ($container.current) {
-            const containerWidth = $container.current.clientWidth
-            const newGridGap = containerWidth / renderConfig.gridNum
+    const updateRenderConfigOnResize = (containerWidth: number) => {
+        const newGridGap = containerWidth / renderConfig.gridNum
 
-            setRender({
-                ...renderConfig,
-                gridGap: newGridGap,
-            })
-
-            setContainerWidth(containerWidth)
-            setContainerHeight($container.current.clientHeight)
-        }
+        setRender({
+            ...renderConfig,
+            gridGap: newGridGap,
+        })
     }
 
     const getDurationForRenderConfig = (durationInPercentage: number) => {
@@ -67,13 +59,13 @@ export const useMediaLane = ({
 
     // Update after initial rendering
     useLayoutEffect(() => {
-        updateContainerDimensions()
+        updateRenderConfigOnResize(containerWidth)
     }, [])
 
-    // Update after window resize
-    useLayoutEffect(() => {
-        updateContainerDimensions()
-    }, [windowSize])
+    // Update after resize
+    useEffect(() => {
+        updateRenderConfigOnResize(containerWidth)
+    }, [containerWidth])
 
     // Update when the player plays (and therefore currentTime changes)
     useEffect(() => {
