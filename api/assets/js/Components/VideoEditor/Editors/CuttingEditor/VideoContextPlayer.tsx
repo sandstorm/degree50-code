@@ -5,8 +5,8 @@ import VideoContext from 'videocontext'
 import { actions, selectors } from '../../PlayerSlice'
 import { initVideoContext, addCut } from './util'
 import { CutList } from './types'
-import { useWindowSize } from '../components/MediaLane/MediaTrack/hooks'
 import { VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { useDebouncedResizeObserver } from '../utils/useDebouncedResizeObserver'
 
 type OwnProps = {
     cutList: CutList
@@ -35,9 +35,10 @@ const VideoContextPlayer = ({
     isPaused,
     setPause,
 }: Props) => {
-    const windowSize = useWindowSize()
     const [videoContext, setVideoContext] = useState<VideoContext | undefined>(undefined)
-    const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null)
+    const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver(canvasRef, 500)
+
     const [canvasWidth, setCanvasWidth] = useState(0)
     const [canvasHeight, setCanvasHeight] = useState(0)
     const [videoSrcAttributes, setVideoSourceAttributes] = useState<{ videoHeight: number; videoWidth: number }>({
@@ -61,7 +62,7 @@ const VideoContextPlayer = ({
                 setCanvasHeight(videoHeight * aspectRatio)
             }
         }
-    }, [canvasRef.current, videoSrcAttributes, windowSize])
+    }, [canvasRef.current, videoSrcAttributes, containerWidth])
 
     const resetVideoContext = () => {
         const { videoCtx } = initVideoContext(canvasRef)

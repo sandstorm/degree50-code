@@ -4,7 +4,7 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { store } from './ExercisePhaseApp/Store/Store'
 import { Config, hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
-import { SolutionsApp } from './Solutions/SolutionsApp'
+import { SolutionsApp } from './SolutionsApp/SolutionsApp'
 
 export default class extends Controller {
     connect() {

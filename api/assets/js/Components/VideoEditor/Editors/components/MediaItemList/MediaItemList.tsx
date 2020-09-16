@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { Table } from 'react-virtualized'
 import Row from './Row/Row'
 import { MediaItem } from '../types'
-import { useWindowResize } from './useWindowResize'
 
 export type Props = {
     mediaItems: MediaItem<any>[]
@@ -23,10 +22,22 @@ const MediaItemList = ({
     removeMediaItem,
     checkMediaItem,
 }: Props) => {
-    const { width, height } = useWindowResize()
+    const ref: React.RefObject<HTMLDivElement> = useRef(null)
+
+    const [width, setWidth] = useState(0)
+    const [height, setHeight] = useState(0)
+
+    useEffect(() => {
+        const divWithTable = ref.current
+
+        if (divWithTable && divWithTable.parentElement) {
+            setWidth(divWithTable.parentElement.clientWidth)
+            setHeight(divWithTable.clientHeight)
+        }
+    }, [ref.current])
 
     return (
-        <div className="video-editor__media-item-list">
+        <div className="video-editor__media-item-list" ref={ref}>
             {children}
             <Table
                 className="video-editor__media-item-list__table"
