@@ -4,6 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Video\Video;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +32,11 @@ class Solution
      */
     private $update_timestamp;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Video::class, cascade={"persist", "remove"})
+     */
+    private $cutVideo;
+    
     /**
      * Solution constructor.
      */
@@ -91,5 +97,17 @@ class Solution
     public function setUpdateTimestamp(?\DateTimeImmutable $update_timestamp): void
     {
         $this->update_timestamp = $update_timestamp;
+    }
+
+    public function getCutVideo(): ?Video
+    {
+        return $this->cutVideo;
+    }
+
+    public function setCutVideo(?Video $cutVideo): self
+    {
+        $this->cutVideo = $cutVideo;
+
+        return $this;
     }
 }
