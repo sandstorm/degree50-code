@@ -53,23 +53,25 @@ class MediathekOverviewController extends AbstractController
      */
     private function getVideosGrouped(array $videos): array
     {
+        /* @var User $user */
+        $user = $this->getUser();
+
+        // we need all the videos, also the private ones that dont belong to any course
+        $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
         $ownVideos = [
             'id' => 'ownVideos',
-            'videos' => []
+            'videos' => $this->videoRepository->findBy(array('creator' => $user), array('createdAt' => 'DESC'))
         ];
+        $this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
+
         $otherVideos = [
             'id' => 'otherVideos',
             'videos' => []
         ];
 
-        /* @var User $user */
-        $user = $this->getUser();
-
         /* @var $video Video */
         foreach ($videos as $video) {
-            if ($video->getCreator() === $user) {
-                array_push($ownVideos['videos'], $video);
-            } else {
+            if ($video->getCreator() !== $user) {
                 array_push($otherVideos['videos'], $video);
             }
         }

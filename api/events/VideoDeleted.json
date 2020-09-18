@@ -4,10 +4,14 @@
   "properties": {
     "videoId": {
       "type": "string"
+    },
+    "uploadedFile": {
+      "type": "string"
     }
   },
   "required": [
-    "videoId"
+    "videoId",
+    "uploadedFile"
   ],
   "additionalProperties": false
 }

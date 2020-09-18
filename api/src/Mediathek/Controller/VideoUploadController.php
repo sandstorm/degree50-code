@@ -5,6 +5,7 @@ namespace App\Mediathek\Controller;
 
 
 use App\Entity\Account\Course;
+use App\Entity\Account\User;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -15,8 +16,10 @@ use App\VideoEncoding\Message\WebEncodingTask;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -33,8 +36,9 @@ class VideoUploadController extends AbstractController
     private Security $security;
     private VideoRepository $videoRepository;
     private AppRuntime $appRuntime;
+    private KernelInterface  $kernel;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security, VideoRepository $videoRepository, AppRuntime $appRuntime)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security, VideoRepository $videoRepository, AppRuntime $appRuntime, KernelInterface $kernel)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -42,6 +46,7 @@ class VideoUploadController extends AbstractController
         $this->security = $security;
         $this->videoRepository = $videoRepository;
         $this->appRuntime = $appRuntime;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -59,10 +64,13 @@ class VideoUploadController extends AbstractController
         // but without courses set. With the filter active we could not find the existing db entry at this point.
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($videoUuid);
+        $this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
         if (!$video) {
             $video = new Video($videoUuid);
         }
-        $video->setCreator($this->security->getUser());
+        /* @var User $user */
+        $user = $this->getUser();
+        $video->setCreator($user);
         if ($course) {
             $video->addCourse($course);
         }
@@ -145,18 +153,20 @@ class VideoUploadController extends AbstractController
     }
 
     /**
+     * Delete the video entity and the encoded video
+     *
      * @IsGranted("delete", subject="video")
      * @Route("/video/delete/{id}", name="mediathek__video--delete")
      */
     public function delete(AppRuntime $appRuntime, Video $video): Response
     {
-        /* @var \App\Entity\VirtualizedFile $encodedDirectory */
-        $encodedDirectory = $video->getEncodedVideoDirectory();
-        // TODO remove file?
-        // TODO check for usage of the video
         if ($video) {
+            $folderUrl = $appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
+            $this->removeVideo($folderUrl);
+
             $this->eventStore->addEvent('VideoDeleted', [
                 'videoId' => $video->getId(),
+                'uploadedFile' => $folderUrl
             ]);
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -170,5 +180,40 @@ class VideoUploadController extends AbstractController
         }
 
         return $this->redirectToRoute('mediathek--index');
+    }
+
+    /**
+     * Used from VideoUploadController.js to remove newly uploaded videos
+     *
+     * @Route("/video/delete-ajax/{id}", name="mediathek__video--delete-ajax")
+     */
+    public function deleteAjax(AppRuntime $appRuntime, Video $video): Response
+    {
+        /* @var User $user */
+        $user = $this->getUser();
+
+        if ($video->getCreator() !== $user) {
+            return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
+        }
+
+        // remove uploaded video
+        $fileUrl = $appRuntime->virtualizedFileUrl($video->getUploadedVideoFile());
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->kernel->getProjectDir().$fileUrl);
+
+        $this->eventStore->addEvent('VideoDeleted', [
+            'videoId' => $video->getId(),
+            'uploadedFile' => $fileUrl
+        ]);
+
+        return Response::create('OK');
+    }
+
+    private function removeVideo(string $fileUrl): void
+    {
+        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
+
+        $filesystem = new Filesystem();
+        $filesystem->remove($publicResourcesFolderPath.$fileUrl);
     }
 }
