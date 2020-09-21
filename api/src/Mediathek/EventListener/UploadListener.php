@@ -92,6 +92,7 @@ class UploadListener
         $id = $event->getRequest()->get('id');
         assert($id !== '', 'ID is set');
 
+        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($id);
         if (!$video) {
             $video = new Video($id);
@@ -110,6 +111,7 @@ class UploadListener
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
+        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         $response = $event->getResponse();
         $response['success'] = true;

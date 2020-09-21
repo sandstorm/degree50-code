@@ -82,7 +82,7 @@ class MaterialController extends AbstractController
         /* @var User $user */
         $user = $this->getUser();
 
-        if ($material->getCreator() != $user) {
+        if ($material->getCreator() !== $user) {
             return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
         }
 

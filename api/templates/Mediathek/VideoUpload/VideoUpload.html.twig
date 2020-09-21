@@ -11,10 +11,12 @@
         </header>
         <div class="dropzone" data-controller="videoUpload"
              data-videoUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}"
+             data-videoUpload-remove-endpoint="{{ path('mediathek__video--delete-ajax', {id: uuid}) }}"
              data-videoUpload-id="{{ uuid }}"
              data-videoUpload-label="Hier klicken um Video hochzuladen">
             <i class="fas fa-spinner fa-spin"></i>
         </div>
+        <span class="form-text text-muted">Es kann immer nur ein Video hochgeladen werden.</span>
     </div>
 
     {{ form_start(form) }}

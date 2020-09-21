@@ -61,13 +61,6 @@ export default class extends Controller {
                     phaseId: phaseId,
                 };
             },
-            accept: function (file, done) {
-                if (file.name == "justinbieber.jpg") {
-                    done("Naha, you don't.");
-                } else {
-                    done();
-                }
-            },
             success: function (file, response) {
                 // add materialId to the file to eventually delete it after direct upload
                 file.materialId = response.materialId;

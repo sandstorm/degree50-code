@@ -1,12 +1,17 @@
 {% trans_default_domain 'forms' %}
 
-{% if video.creator == app.user %}
+{% if is_granted('edit', video) %}
     <div tabindex="0" class="video-tile" title="{{ video.description }}">
         <input id="{{ video.id }}" type="checkbox" />
         <label for="{{ video.id }}" class="video-tile__content">
             <div class="video-tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
             <span class="tile__date">{{ video.createdAt|date("d.m.Y") }}</span>
-            <span class="tile__title">{{ video.title }}</span>
+            <span class="tile__title">
+                {% if video.courses | length == 0 %}
+                    <i class="fas fa-eye-slash" title="Video ist privat"></i>
+                {% endif %}
+                {{ video.title }}
+            </span>
             <i class="tile__action-icon fas fa-arrow-down"></i>
         </label>
         <div class="tile__actions">

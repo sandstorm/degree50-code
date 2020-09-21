@@ -25,7 +25,7 @@ class VideoType extends AbstractType
             ->add('dataPrivacyAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyAccepted", 'translation_domain' => 'forms', 'required' => true])
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
-                'required' => true,
+                'required' => false,
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => false,
@@ -34,7 +34,7 @@ class VideoType extends AbstractType
                 'group_by' => function (Course $choice, $key, $value) {
                     return $choice->getCreationDateYear();
                 },
-                'help' => 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden.',
+                'help' => 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.',
                 'query_builder' => function (CourseRepository $courseRepository) {
                     return $courseRepository->createQueryBuilder('c')
                         ->orderBy('c.name', 'ASC');
