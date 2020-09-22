@@ -176,8 +176,8 @@ const CuttingEditor = ({
                                 defaultValue={volume}
                                 type="range"
                                 min="0"
-                                max="10"
-                                step="1"
+                                max="100"
+                                step="10"
                                 onChange={handleVolumeChange}
                             />
                         </div>

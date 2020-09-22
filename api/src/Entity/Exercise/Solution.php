@@ -21,11 +21,6 @@ class Solution
     private $solution = [];
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Exercise\ExercisePhaseTeam", mappedBy="solution")
-     */
-    private $team;
-
-    /**
      * @var \DateTimeImmutable|null
      *
      * @ORM\Column(type="datetimetz_immutable")
@@ -33,10 +28,10 @@ class Solution
     private $update_timestamp;
 
     /**
-     * @ORM\OneToOne(targetEntity=Video::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Video\Video", cascade={"remove"})
      */
     private $cutVideo;
-    
+
     /**
      * Solution constructor.
      */
@@ -61,24 +56,6 @@ class Solution
     public function setSolution(array $solution): self
     {
         $this->solution = $solution;
-
-        return $this;
-    }
-
-    public function getTeam(): ?ExercisePhaseTeam
-    {
-        return $this->team;
-    }
-
-    public function setTeam(?ExercisePhaseTeam $team): self
-    {
-        $this->team = $team;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newSolution = null === $team ? null : $this;
-        if ($team->getSolution() !== $newSolution) {
-            $team->setSolution($newSolution);
-        }
 
         return $this;
     }

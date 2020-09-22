@@ -9,6 +9,7 @@ use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\CutlistEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +21,9 @@ use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as MediaVideo;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use function GuzzleHttp\Psr7\mimetype_from_filename;
 
 /*
  * Handler which is responsible for the encoding of videos from a given cutlist
@@ -37,8 +40,9 @@ class CutlistEncodingHandler implements MessageHandlerInterface
     private EntityManagerInterface $entityManager;
     private DoctrineIntegratedEventStore $eventStore;
     private ParameterBagInterface $parameterBag;
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
-    public function __construct(LoggerInterface $logger, ParameterBagInterface $parameterBag, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(LoggerInterface $logger, ParameterBagInterface $parameterBag, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, ExercisePhaseTeamRepository $exercisePhaseTeamRepository)
     {
         $this->logger = $logger;
         $this->parameterBag = $parameterBag;
@@ -46,20 +50,20 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         $this->videoRepository = $videoRepository;
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
     }
 
 
     public function __invoke(CutlistEncodingTask $encodingTask)
     {
-        $exercisePhaseTeam = $encodingTask->getExercisePhaseTeam();
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($encodingTask->getExercisePhaseTeamId());
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         if (!$exercisePhase instanceof VideoAnalysis) {
             return;
         }
 
-        $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutlist= $solution['cutlist'];
+        $cutlist = $exercisePhaseTeam->getSolution()->getSolution()['cutlist'];
 
         if (empty($cutlist)) {
             return;
@@ -98,13 +102,20 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
             $video->setEncodedVideoDirectory($outputDirectory);
 
-            $this->logger->info('Done combining clips into video <' . $mp4Url . '>');
+            $this->logger->info('>>>>> Done combining clips into video <' . $mp4Url . '>');
 
             $video->setTitle('Cut_video, ' . $video->getCreator()->getUsername() . ', ' . $exercisePhaseTeam->getExercisePhase()->getName());
 
             $this->pingAndReconnectDB();
 
+            // Add Video to Solution
+            $solution = $exercisePhaseTeam->getSolution();
+            $solution->setCutVideo($video);
+
             $this->entityManager->persist($video);
+            $this->entityManager->persist($solution);
+            $this->logger->info('>>>>> added cut to solution');
+            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         } catch(\Exception $exception) {
             $this->logger->error($exception->getMessage());
@@ -157,6 +168,12 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
         if (!file_exists($localOutputDirectory)) {
             mkdir($localOutputDirectory, 0777, true);
+        }
+
+        $fileSystem = new Filesystem();
+        if (file_exists($mp4Url)) {
+            $this->logger->debug('>>>>> file already exists.. removing it.');
+            $fileSystem->remove($mp4Url);
         }
 
         if (empty($remaingingClipPaths)) {

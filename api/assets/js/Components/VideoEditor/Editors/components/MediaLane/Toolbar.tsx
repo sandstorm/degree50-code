@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-i18nify'
 import { RenderConfig } from './MediaTrack'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { INITIAL_ZOOM } from './utils'
 
 type OwnProps = {
     zoomHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -57,9 +58,9 @@ const Toolbar = ({
                         <Translate value="zoom" />
                     </label>
                     <input
-                        name={'timeline-zoom-handöer'}
-                        id={'timeline-zoom-handöer'}
-                        defaultValue="25"
+                        name={'timeline-zoom-handler'}
+                        id={'timeline-zoom-handler'}
+                        defaultValue={INITIAL_ZOOM}
                         type="range"
                         min="5"
                         max="100"

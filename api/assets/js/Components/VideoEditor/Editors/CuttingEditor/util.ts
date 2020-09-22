@@ -12,12 +12,17 @@ import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
 
+/**
+ * Default volume value (100 is max)
+ */
+export const INITIAL_VOLUME = 100
+
 export const useVolume = () => {
-    const [volume, setVolume] = useState<number>(0)
+    const [volume, setVolume] = useState<number>(INITIAL_VOLUME)
 
     const handleVolumeChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
-            setVolume(parseInt(event.currentTarget.value) / 10)
+            setVolume(parseInt(event.currentTarget.value))
         },
         [setVolume]
     )

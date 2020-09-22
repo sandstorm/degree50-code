@@ -8,30 +8,30 @@ class CutlistEncodingTask
 {
 
     private string $videoId;
-    private ExercisePhaseTeam $exercisePhaseTeam;
+    private string $exercisePhaseTeamId;
 
-    public function __construct(ExercisePhaseTeam $exercisePhaseTeam, string $videoId)
+    public function __construct(string $exercisePhaseTeamId, string $videoId)
     {
-        $this->exercisePhaseTeam = $exercisePhaseTeam;
+        $this->exercisePhaseTeamId = $exercisePhaseTeamId;
         $this->videoId = $videoId;
     }
 
      /**
       * Get exercisePhaseTeam.
       *
-      * @return exercisePhaseTeam.
+      * @return string.
       */
-     public function getExercisePhaseTeam(): ExercisePhaseTeam
+     public function getExercisePhaseTeamId(): string
      {
-         return $this->exercisePhaseTeam;
+         return $this->exercisePhaseTeamId;
      }
 
     /**
      * Get video.
      *
-     * @return video.
+     * @return string
      */
-    public function getVideoId()
+    public function getVideoId(): string
     {
         return $this->videoId;
     }

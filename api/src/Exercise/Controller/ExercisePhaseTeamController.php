@@ -203,7 +203,6 @@ class ExercisePhaseTeamController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $solution = $exercisePhaseTeam->getSolution();
-        $solution->setTeam($exercisePhaseTeam);
 
         // use solution of the latest autosaved one
         $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(['team' => $exercisePhaseTeam], ['update_timestamp' => 'desc']);
@@ -228,12 +227,12 @@ class ExercisePhaseTeamController extends AbstractController
         $entityManager->persist($solution);
         $entityManager->flush();
 
-        $this->dispatchCutlistEncodingTask($exercisePhaseTeam, $entityManager);
+        $this->dispatchCutlistEncodingTask($exercisePhaseTeam);
 
         return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
     }
 
-    private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam, EntityManagerInterface $entityManager) {
+    private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam) {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         if (!$exercisePhase instanceof VideoAnalysis) {
@@ -247,11 +246,11 @@ class ExercisePhaseTeamController extends AbstractController
             return;
         }
 
-        $cutlistVideo = $this->createVideo($entityManager, $exercisePhaseTeam->getCreator());
-        $this->messageBus->dispatch(new CutlistEncodingTask($exercisePhaseTeam, $cutlistVideo->getId()));
+        $cutlistVideo = $this->createVideo($exercisePhaseTeam->getCreator());
+        $this->messageBus->dispatch(new CutlistEncodingTask($exercisePhaseTeam->getId(), $cutlistVideo->getId()));
     }
 
-    private function createVideo(EntityManagerInterface $entityManager, User $creator): ?Video {
+    private function createVideo(User $creator): ?Video {
         $videoUuid = Uuid::uuid4()->toString();
         $video = new Video($videoUuid);
         $video->setCreator($creator);
@@ -259,6 +258,7 @@ class ExercisePhaseTeamController extends AbstractController
         $video->setTitle('Video to be cut <' . $videoUuid . '>');
         $video->setDataPrivacyAccepted(true);
         $this->eventStore->disableEventPublishingForNextFlush();
+        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($video);
         $entityManager->flush();
 

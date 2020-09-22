@@ -79,7 +79,8 @@ const VideoContextPlayer = ({
     // Update volume
     useEffect(() => {
         if (videoContext) {
-            videoContext.volume = volume
+            // WHY: VideoContext expects a value between 0 and 1.
+            videoContext.volume = volume / 100
         }
     }, [videoContext, volume])
 
