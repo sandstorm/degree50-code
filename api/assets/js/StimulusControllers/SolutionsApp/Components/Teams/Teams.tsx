@@ -2,10 +2,11 @@ import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
 import Team from './Team'
 import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
+import { TabsTypesEnum } from '../../../../types'
 
 type TeamMembersListProps = {
     solutions: Array<SolutionByTeam>
-    activeTab: string
+    activeTab: TabsTypesEnum
     renderConfig: RenderConfig
     updateCurrentTime: (time: number) => void
 }

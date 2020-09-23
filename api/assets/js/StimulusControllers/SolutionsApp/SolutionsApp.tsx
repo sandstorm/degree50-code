@@ -8,13 +8,14 @@ import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import Toolbar from '../../Components/VideoEditor/Editors/components/MediaLane/Toolbar'
 import { RenderConfig } from '../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
-import { useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/utils'
+import { INITIAL_ZOOM, useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/utils'
 import { actions, selectors, VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
 
 export type SolutionByTeam = {
     teamCreator: string
     teamMembers: Array<string>
     solution: VideoListsState
+    cutVideo?: Video
 }
 
 type OwnProps = {
@@ -50,7 +51,8 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props) => {
 
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
-    const [activeTab, setActiveTab] = useState<TabsTypesEnum>(TabsTypesEnum.VIDEO_ANNOTATIONS)
+    // TODO: reset to Annotations
+    const [activeTab, setActiveTab] = useState<TabsTypesEnum>(TabsTypesEnum.VIDEO_CUTTING)
     const firstVideo = props.videos[0]
     const videoDuration: number = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
     const currentTime = props.playerSyncPlayPosition
@@ -63,7 +65,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props) => {
         videoDuration,
     })
 
-    initialRender.duration = getDurationForRenderConfig(25)
+    initialRender.duration = getDurationForRenderConfig(INITIAL_ZOOM)
     initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
     initialRender.gridGap = containerWidth / initialRender.gridNum
 
@@ -116,6 +118,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props) => {
                         >
                             <option value={TabsTypesEnum.VIDEO_ANNOTATIONS}>Annotations</option>
                             <option value={TabsTypesEnum.VIDEO_CODES}>Video-Codes</option>
+                            <option value={TabsTypesEnum.VIDEO_CUTTING}>Video-Cuts</option>
                         </select>
                     </div>
                 </form>

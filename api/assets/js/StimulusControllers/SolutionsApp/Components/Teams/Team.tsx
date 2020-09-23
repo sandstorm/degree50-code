@@ -1,70 +1,68 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
 import { TabsTypesEnum } from '../../../../types'
-import { VideoCode } from '../../../../Components/VideoEditor/VideoListsSlice'
+import { VideoListsState } from '../../../../Components/VideoEditor/VideoListsSlice'
 import { MediaItem } from 'Components/VideoEditor/Editors/components/types'
 import ReadOnlyMediaLane from 'Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
-import { solveConflicts } from 'Components/VideoEditor/Editors/helpers'
 import { Item } from '@react-stately/collections'
 import Dropdown from '../../../../Components/Dropdown/Dropdown'
 import { useModalHook } from '../../../../Components/Modal/useModalHook'
 import VideoCodesList from './VideoCodesList'
 import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
+import { solveConflicts } from '../../../../Components/VideoEditor/Editors/helpers'
+import VideoCutSolutionVideo from './VideoCutSolutionVideo'
 
 type TeamProps = {
     solution: SolutionByTeam
-    activeTab: string
+    activeTab: TabsTypesEnum
     renderConfig: RenderConfig
     updateCurrentTime: (time: number) => void
 }
 
-const Team = ({ solution, activeTab, renderConfig, updateCurrentTime }: TeamProps) => {
-    const itemsFromAnnotations = solution.solution.annotations.map(
-        (annotation) =>
-            new MediaItem({
-                start: annotation.start,
-                end: annotation.end,
-                text: annotation.text,
-                memo: annotation.memo,
-                originalData: annotation,
-                lane: 0,
-                idFromPrototype: annotation.idFromPrototype,
-            })
-    )
-
-    const itemsFromVideoCodes = solveConflicts(
-        solution.solution.videoCodes.map(
-            (videoCode) =>
-                new MediaItem({
-                    start: videoCode.start,
-                    end: videoCode.end,
-                    text: videoCode.text,
-                    memo: videoCode.memo,
-                    color: videoCode.color,
-                    originalData: videoCode,
-                    lane: 0,
-                    idFromPrototype: videoCode.idFromPrototype,
-                })
-        )
-    )
-
-    let mediaItems = null
-    let showTextInMediaItems = true
-    if (activeTab === TabsTypesEnum.VIDEO_ANNOTATIONS) {
-        mediaItems = itemsFromAnnotations
-    } else {
-        mediaItems = itemsFromVideoCodes
-        showTextInMediaItems = false
+const prepareMediaItems = (solution: VideoListsState, activeTab: TabsTypesEnum) => {
+    switch (activeTab) {
+        case TabsTypesEnum.VIDEO_ANNOTATIONS:
+            return solution.annotations.map(
+                (annotation) =>
+                    new MediaItem({
+                        ...annotation,
+                        originalData: annotation,
+                        lane: 0,
+                    })
+            )
+        case TabsTypesEnum.VIDEO_CODES:
+            return solveConflicts(
+                solution.videoCodes.map(
+                    (videoCode) =>
+                        new MediaItem({
+                            ...videoCode,
+                            originalData: videoCode,
+                            lane: 0,
+                        })
+                )
+            )
+        case TabsTypesEnum.VIDEO_CUTTING:
+            return solution.cutlist.map(
+                (videoCut, index) =>
+                    new MediaItem({
+                        ...videoCut,
+                        // TODO: What should be the text? e.g. (start : end) of the cut in the original video?
+                        text: `Cut ${index + 1}`,
+                        originalData: videoCut,
+                        lane: 0,
+                    })
+            )
+        default:
+            throw new Error(`Invalid value for activeTab: "${activeTab}"`)
     }
+}
 
-    const amountOfLanes = Math.max.apply(
-        Math,
-        mediaItems.map((item: MediaItem<VideoCode>) => {
-            return item.lane
-        })
-    )
-
+const Team = ({ solution, activeTab, renderConfig, updateCurrentTime }: TeamProps) => {
+    const mediaItems = prepareMediaItems(solution.solution, activeTab)
+    const showTextInMediaItems = activeTab !== TabsTypesEnum.VIDEO_ANNOTATIONS
+    const amountOfLanes = Math.max(...mediaItems.map((item) => item.lane))
     const { showModal: showVideoCodesModal, RenderModal: RenderVideoCodesModal } = useModalHook()
+
     const handleDropdownClick = (key: React.Key) => {
         if (key === 'showVideoCodes') {
             showVideoCodesModal()
@@ -80,13 +78,17 @@ const Team = ({ solution, activeTab, renderConfig, updateCurrentTime }: TeamProp
                 </Dropdown>
             </header>
             <div className={'team__solution'}>
-                <ReadOnlyMediaLane
-                    updateCurrentTime={updateCurrentTime}
-                    mediaItems={mediaItems}
-                    amountOfLanes={amountOfLanes}
-                    showTextInMediaItems={showTextInMediaItems}
-                    renderConfig={renderConfig}
-                />
+                {activeTab === TabsTypesEnum.VIDEO_CUTTING ? (
+                    <VideoCutSolutionVideo videoUrl={solution.cutVideo?.url.mp4} />
+                ) : (
+                    <ReadOnlyMediaLane
+                        updateCurrentTime={updateCurrentTime}
+                        mediaItems={mediaItems}
+                        amountOfLanes={amountOfLanes}
+                        showTextInMediaItems={showTextInMediaItems}
+                        renderConfig={renderConfig}
+                    />
+                )}
             </div>
             <RenderVideoCodesModal title={'Video-Codes'}>
                 <VideoCodesList
