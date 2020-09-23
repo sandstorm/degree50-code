@@ -35,10 +35,7 @@ type OverlayProps = AdditionalProps & ReturnType<typeof mapStateToProps> & Retur
 
 const Overlay: React.FC<OverlayProps> = (props) => {
     let componentToRender = null
-    const videoNodeRef: React.RefObject<HTMLVideoElement> = useRef(null)
-    const updateCurrentTime = (time: number) => {
-        // nothing
-    }
+
     switch (props.component) {
         case ComponentTypesEnum.TASK:
             componentToRender = <ExerciseDescription />
@@ -50,13 +47,7 @@ const Overlay: React.FC<OverlayProps> = (props) => {
             componentToRender = <MaterialViewer />
             break
         case ComponentTypesEnum.VIDEO_PLAYER:
-            componentToRender = (
-                <VideoPlayerWrapper
-                    videos={props.videos}
-                    updateCurrentTime={updateCurrentTime}
-                    videoNodeRef={videoNodeRef}
-                />
-            )
+            componentToRender = <VideoPlayerWrapper videos={props.videos} />
             break
         case ComponentTypesEnum.PRESENCE:
             componentToRender = <Presence />

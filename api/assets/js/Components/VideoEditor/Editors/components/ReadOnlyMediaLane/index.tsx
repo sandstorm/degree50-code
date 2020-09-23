@@ -6,60 +6,27 @@ import { RenderConfig } from '../MediaLane/MediaTrack'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
 import { useMediaLane } from '../MediaLane/utils'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
+import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
 
 type Props = {
-    currentTime: number
-    currentZoom: number
     updateCurrentTime: (time: number) => void
     mediaItems: MediaItem<MediaItemType>[]
     amountOfLanes: number
-    videoDuration: number
     showTextInMediaItems: boolean
-}
-
-const initialRender: RenderConfig = {
-    padding: 5,
-    duration: 10,
-    gridNum: 110,
-    gridGap: 10,
-    currentTime: 0,
-    timelineStartTime: 0,
+    renderConfig: RenderConfig
 }
 
 const ReadOnlyMediaLane = ({
-    currentTime,
-    currentZoom,
     updateCurrentTime,
     mediaItems,
     amountOfLanes,
-    videoDuration,
     showTextInMediaItems,
+    renderConfig,
 }: Props) => {
-    // TODO this should later become part of the api and probably the redux store
-    const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
     const mediaTrackConfig = {} // TODO
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
-    const { containerWidth, containerHeight, getDurationForRenderConfig, getRenderConfigForZoom } = useMediaLane({
-        setRender,
-        $container,
-        renderConfig,
-        currentTime,
-        videoDuration,
-    })
-
-    initialRender.duration = getDurationForRenderConfig(currentZoom)
-    initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
-    initialRender.gridGap = containerWidth / initialRender.gridNum
-
-    useEffect(() => {
-        const newRenderConfig = getRenderConfigForZoom(currentZoom)
-
-        setRender({
-            ...renderConfig,
-            ...newRenderConfig,
-        })
-    }, [currentZoom])
+    const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver($container, 500)
 
     const handleLaneClick = useCallback(
         (clickTime) => {
