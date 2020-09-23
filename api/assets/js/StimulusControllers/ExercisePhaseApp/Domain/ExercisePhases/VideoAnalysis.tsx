@@ -7,7 +7,9 @@ import VideoEditor from 'Components/VideoEditor/VideoEditor'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { selectCurrentEditorId } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 
-type OwnProps = {}
+type OwnProps = {
+    height: number
+}
 
 const mapStateToProps = (state: AppState) => {
     return {
@@ -35,6 +37,7 @@ const VideoAnalysis: React.FC<Props> = (props) => {
         <VideoEditor
             videos={props.videos}
             components={videoComponents}
+            height={props.height}
             itemUpdateCallback={props.syncSolution}
             itemUpdateCondition={itemUpdateCondition}
             videoCodesPool={props.videoCodesPool}
