@@ -9,17 +9,16 @@ import { Item } from '@react-stately/collections'
 import Dropdown from '../../../../Components/Dropdown/Dropdown'
 import { useModalHook } from '../../../../Components/Modal/useModalHook'
 import VideoCodesList from './VideoCodesList'
+import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
 
 type TeamProps = {
     solution: SolutionByTeam
     activeTab: string
-    currentTime: number
-    currentZoom: number
+    renderConfig: RenderConfig
     updateCurrentTime: (time: number) => void
-    videoDuration: number
 }
 
-const Team = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime, videoDuration }: TeamProps) => {
+const Team = ({ solution, activeTab, renderConfig, updateCurrentTime }: TeamProps) => {
     const itemsFromAnnotations = solution.solution.annotations.map(
         (annotation) =>
             new MediaItem({
@@ -82,13 +81,11 @@ const Team = ({ solution, activeTab, currentTime, currentZoom, updateCurrentTime
             </header>
             <div className={'team__solution'}>
                 <ReadOnlyMediaLane
-                    currentTime={currentTime}
-                    currentZoom={currentZoom}
                     updateCurrentTime={updateCurrentTime}
                     mediaItems={mediaItems}
                     amountOfLanes={amountOfLanes}
-                    videoDuration={videoDuration}
                     showTextInMediaItems={showTextInMediaItems}
+                    renderConfig={renderConfig}
                 />
             </div>
             <RenderVideoCodesModal title={'Video-Codes'}>

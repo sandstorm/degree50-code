@@ -11,8 +11,6 @@ export type Video = {
 }
 
 type Props = {
-    updateCurrentTime: (time: number) => void
-    videoNodeRef: React.RefObject<HTMLVideoElement>
     videos: Video[]
 }
 
@@ -71,11 +69,7 @@ const VideoPlayerWrapper: React.FC<Props> = (props) => {
                     <header>
                         <h4>{activeVideo.name}</h4>
                     </header>
-                    <VideoPlayer
-                        videoJsOptions={videoPlayerOptions}
-                        updateCurrentTime={props.updateCurrentTime}
-                        videoNodeRef={props.videoNodeRef}
-                    />
+                    <VideoPlayer videoJsOptions={videoPlayerOptions} />
                     {activeVideo.description}
                 </div>
             </div>

@@ -1,24 +1,16 @@
 import React from 'react'
 import { SolutionByTeam } from '../../SolutionsApp'
 import Team from './Team'
+import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
 
 type TeamMembersListProps = {
     solutions: Array<SolutionByTeam>
     activeTab: string
-    currentTime: number
-    currentZoom: number
+    renderConfig: RenderConfig
     updateCurrentTime: (time: number) => void
-    videoDuration: number
 }
 
-export const Teams: React.FC<TeamMembersListProps> = ({
-    solutions,
-    activeTab,
-    currentTime,
-    currentZoom,
-    updateCurrentTime,
-    videoDuration,
-}) => {
+export const Teams: React.FC<TeamMembersListProps> = ({ solutions, activeTab, renderConfig, updateCurrentTime }) => {
     return (
         <div className={'teams'}>
             {solutions.map((solutionsEntry: SolutionByTeam) => (
@@ -26,10 +18,8 @@ export const Teams: React.FC<TeamMembersListProps> = ({
                     key={solutionsEntry.teamCreator}
                     solution={solutionsEntry}
                     activeTab={activeTab}
-                    currentTime={currentTime}
-                    currentZoom={currentZoom}
+                    renderConfig={renderConfig}
                     updateCurrentTime={updateCurrentTime}
-                    videoDuration={videoDuration}
                 />
             ))}
         </div>
