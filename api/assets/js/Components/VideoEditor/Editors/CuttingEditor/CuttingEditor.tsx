@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import { Translate } from 'react-i18nify'
 
 import VideoContextPlayer from './VideoContextPlayer'
-import MediaLane from '../components/MediaLane'
+import MediaLane, { MEDIA_LANE_HEIGHT } from '../components/MediaLane'
 
 import Storage from '../utils/storage'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
@@ -49,9 +49,7 @@ const CuttingEditor = ({
     itemUpdateCondition,
 }: Props) => {
     const { volume, handleVolumeChange } = useVolume()
-    // TODO calc height of timeline
-    const timeLineHeight = 200
-    const containerHeight = height - timeLineHeight
+    const containerHeight = height - MEDIA_LANE_HEIGHT
 
     const firstVideo = videos[0]
     const firstVideoUrl = firstVideo ? firstVideo.url.mp4 : ''

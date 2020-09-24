@@ -30,6 +30,18 @@
   }
 }
 
+.main--no-padding {
+  .sidebar--is-closed {
+    ~ .content-with-sidebar {
+      padding-left: 20px;
+    }
+  }
+
+  .content-with-sidebar {
+    padding-left: 300px;
+  }
+}
+
 .sidebar__content {
   height: 100%;
   width: 100%;
@@ -63,9 +75,24 @@
 
     color: $theme__color__green;
 
+    @include transition(all 250ms ease);
+
     &:hover, &:focus, &:active {
       color: $theme__color__green--dark;
     }
+  }
+}
+
+.sidebar--is-closed .sidebar__toggle button {
+  top: 0;
+  height: 100%;
+
+  border-right: 1px solid $theme__color__grey--darker;
+
+  &:hover {
+    background-color: $theme__color__green;
+
+    color: $theme__color__white;
   }
 }
 
@@ -131,14 +158,4 @@
   flex: 1 1 auto;
   min-height: 1px;
   padding: 1.25rem;
-}
-
-.content-with-sidebar {
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  padding-left: 320px;
-
-  overflow-y: scroll;
-  @include transition(padding-left 250ms ease);
 }

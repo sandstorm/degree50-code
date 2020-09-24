@@ -20,7 +20,11 @@ export default class extends Controller {
         ReactDOM.render(
             <React.StrictMode>
                 <Provider store={store}>
-                    <SolutionsApp solutions={solutions} videos={config.videos} />
+                    <SolutionsApp
+                        solutions={solutions}
+                        videos={config.videos}
+                        availableComponents={config.components}
+                    />
                 </Provider>
             </React.StrictMode>,
             this.element

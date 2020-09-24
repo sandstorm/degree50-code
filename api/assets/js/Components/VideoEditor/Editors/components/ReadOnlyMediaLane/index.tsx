@@ -1,32 +1,41 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useCallback, useRef } from 'react'
 import ReadOnlyMediaItems from './ReadOnyMediaItems'
 import { MediaItem } from '../types'
 import ReadOnlyMediaTrack from '../MediaLane/MediaTrack/index'
 import { RenderConfig } from '../MediaLane/MediaTrack'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
-import { useMediaLane } from '../MediaLane/utils'
-import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
+import { MediaItemType, VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
+import { MEDIA_LANE_HEIGHT } from '../MediaLane'
+import { defaultMediaTrackConfig } from '../MediaLane/MediaTrack/helpers'
 
 type Props = {
     updateCurrentTime: (time: number) => void
     mediaItems: MediaItem<MediaItemType>[]
-    amountOfLanes: number
     showTextInMediaItems: boolean
     renderConfig: RenderConfig
 }
 
-const ReadOnlyMediaLane = ({
-    updateCurrentTime,
-    mediaItems,
-    amountOfLanes,
-    showTextInMediaItems,
-    renderConfig,
-}: Props) => {
-    const mediaTrackConfig = {} // TODO
+const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems, renderConfig }: Props) => {
+    const rulerHeight = 40
+    const mediaTrackConfig = {
+        ...defaultMediaTrackConfig,
+        rulerHeight: rulerHeight,
+        render: renderConfig,
+    }
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
     const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver($container, 500)
+
+    const amountOfLanes = Math.max(
+        0,
+        ...mediaItems.map((item: MediaItem<VideoCode>) => {
+            return item.lane
+        })
+    )
+
+    const heightPerLane = 60
+    const mediaTrackHeight = (amountOfLanes + 1) * heightPerLane + rulerHeight
 
     const handleLaneClick = useCallback(
         (clickTime) => {
@@ -37,12 +46,11 @@ const ReadOnlyMediaLane = ({
     )
 
     return (
-        <div className="video-editor-timeline">
+        <div className="video-editor-timeline" style={{ height: mediaTrackHeight }}>
             <div className="video-editor-timeline__body">
                 <div ref={$container} className="media-track">
                     <ReadOnlyMediaTrack
-                        config={mediaTrackConfig} /* empty object = use default values */
-                        renderConfig={renderConfig}
+                        mediaTrackConfig={mediaTrackConfig}
                         containerHeight={containerHeight}
                         containerWidth={containerWidth}
                     />
@@ -55,6 +63,7 @@ const ReadOnlyMediaLane = ({
                     mediaItems={mediaItems}
                     amountOfLanes={amountOfLanes}
                     showTextInMediaItems={showTextInMediaItems}
+                    height={mediaTrackHeight - rulerHeight}
                 />
             </div>
         </div>

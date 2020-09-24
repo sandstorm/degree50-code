@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-i18nify'
 import { RenderConfig } from './MediaTrack'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { MEDIA_LANE_TOOLBAR_HEIGHT } from './index'
 
 type OwnProps = {
     zoomHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -49,7 +50,7 @@ const Toolbar = ({
     }
 
     return (
-        <div className="video-editor-toolbar">
+        <div className="video-editor-toolbar" style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}>
             <div className="video-editor-toolbar__item-group">
                 <label className={'video-editor-toolbar__item-group-label'}>Timeline: </label>
                 <div className="video-editor-toolbar__item">
@@ -59,7 +60,7 @@ const Toolbar = ({
                     <input
                         name={'timeline-zoom-handöer'}
                         id={'timeline-zoom-handöer'}
-                        defaultValue="25"
+                        defaultValue="100"
                         type="range"
                         min="5"
                         max="100"
