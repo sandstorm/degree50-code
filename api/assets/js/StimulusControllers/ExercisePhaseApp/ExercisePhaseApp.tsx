@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Toolbar from './Components/Toolbar/Toolbar'
 import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { ExercisePhaseTypesEnum } from './Store/ExercisePhaseTypesEnum'
 import Overlay from './Components/Overlay/Overlay'
 import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
+import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
 
 type ExercisePhaseProps = {
     type: ExercisePhaseTypesEnum
@@ -16,10 +17,18 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
     // hides the rest of the dom from screen readers with aria-hidden when one is open.
     watchModals()
 
+    const ref: React.RefObject<HTMLDivElement> = useRef(null)
+
+    let { height } = useDebouncedResizeObserver(ref, 500)
+    // workaround to avoid height of 0 at intial render
+    if (height === 0) {
+        height = 400
+    }
+
     let exercisePhase = null
     switch (type) {
         case ExercisePhaseTypesEnum.VIDEO_ANALYSIS:
-            exercisePhase = <VideoAnalysis />
+            exercisePhase = <VideoAnalysis height={height} />
             break
         default:
     }
@@ -27,7 +36,7 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
     const toolbar = readOnly ? null : <Toolbar />
     return (
         <OverlayProvider className="exercise-phase__inner js-video-editor-container">
-            <div className={'exercise-phase__content'}>
+            <div className={'exercise-phase__content'} ref={ref}>
                 {exercisePhase}
                 <Overlay />
                 {toolbar}

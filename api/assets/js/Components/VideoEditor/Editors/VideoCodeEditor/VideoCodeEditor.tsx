@@ -42,14 +42,9 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const VideoCodeEditor = (props: Props) => {
-    const height = props.height
-    const [containerHeight, setContainerHeight] = useState(0)
-
-    const measuredContainerRef = useCallback((node) => {
-        if (node !== null) {
-            setContainerHeight(node.getBoundingClientRect().height)
-        }
-    }, [])
+    // TODO calc height of timeline
+    const timeLineHeight = 200
+    const height = props.height - timeLineHeight
 
     // All videoCodes
     const mediaItems = solveConflicts(
@@ -175,10 +170,10 @@ const VideoCodeEditor = (props: Props) => {
 
     return (
         <React.Fragment>
-            <div ref={measuredContainerRef} className="video-editor__main" style={{ height: height - 200 }}>
+            <div className="video-editor__main" style={{ height: height }}>
                 <div className="video-editor__section video-editor__left">
                     <ArtPlayer
-                        containerHeight={containerHeight}
+                        containerHeight={height - 40}
                         options={artPlayerOptions}
                         currentTimeCallback={setCurrentTimeForMediaItems}
                     />

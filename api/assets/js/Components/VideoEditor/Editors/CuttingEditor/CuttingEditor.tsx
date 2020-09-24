@@ -49,6 +49,9 @@ const CuttingEditor = ({
     itemUpdateCondition,
 }: Props) => {
     const { volume, handleVolumeChange } = useVolume()
+    // TODO calc height of timeline
+    const timeLineHeight = 200
+    const containerHeight = height - timeLineHeight
 
     const firstVideo = videos[0]
     const firstVideoUrl = firstVideo ? firstVideo.url.mp4 : ''
@@ -123,7 +126,7 @@ const CuttingEditor = ({
 
     return (
         <React.Fragment>
-            <div className="video-editor__main" style={{ height: height - 200 }}>
+            <div className="video-editor__main" style={{ height: containerHeight }}>
                 <div className="video-editor__section video-editor__left">
                     <VideoContextPlayer
                         cutList={cutList}

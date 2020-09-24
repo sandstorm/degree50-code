@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 // @ts-ignore
 import NProgress from 'nprogress'
 import { setTranslations } from 'react-i18nify'
@@ -26,6 +26,7 @@ NProgress.configure({ minimum: 0, showSpinner: false })
 type Props = {
     videos: Array<Video>
     components: Array<TabsTypesEnum>
+    height: number
     itemUpdateCallback: () => void
     itemUpdateCondition: boolean
     videoCodesPool: VideoCodePrototype[]
@@ -34,12 +35,11 @@ type Props = {
 const VideoEditor: React.FC<Props> = ({
     components,
     videos,
+    height,
     itemUpdateCallback,
     itemUpdateCondition,
     videoCodesPool,
 }) => {
-    const [height, setHeight] = useState(0)
-
     const availableTabs = Object.values(tabs).filter((tab) => {
         return components.includes(tab.id)
     })
@@ -47,10 +47,6 @@ const VideoEditor: React.FC<Props> = ({
     const [activeTabId, setActiveTabId] = useState<TabsTypesEnum>(
         availableTabs[0].id || TabsTypesEnum.VIDEO_ANNOTATIONS
     )
-
-    useEffect(() => {
-        setHeight(document.getElementsByClassName('js-video-editor-container')[0].clientHeight)
-    }, [])
 
     switch (activeTabId) {
         case TabsTypesEnum.VIDEO_ANNOTATIONS: {

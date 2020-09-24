@@ -1,7 +1,6 @@
-import React, { useState, useCallback } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { t } from 'react-i18nify'
 
 import MediaLane from '../components/MediaLane'
 import ArtPlayer from '../components/ArtPlayer'
@@ -52,13 +51,9 @@ const SubtitleEditor = ({
     setSubtitles,
     setPlayPosition,
 }: Props) => {
-    const [containerHeight, setContainerHeight] = useState(0)
-
-    const measuredContainerRef = useCallback((node) => {
-        if (node !== null) {
-            setContainerHeight(node.getBoundingClientRect().height)
-        }
-    }, [])
+    // TODO calc height of timeline
+    const timeLineHeight = 200
+    const containerHeight = height - timeLineHeight
 
     // All annotations
     const mediaItems: MediaItem<Subtitle>[] = subtitles.map(
@@ -106,11 +101,11 @@ const SubtitleEditor = ({
 
     return (
         <React.Fragment>
-            <div ref={measuredContainerRef} className="video-editor__main" style={{ height: height - 200 }}>
+            <div className="video-editor__main" style={{ height: containerHeight }}>
                 <div className="video-editor__section video-editor__left">
                     <ArtPlayer
                         worker={worker}
-                        containerHeight={containerHeight}
+                        containerHeight={containerHeight - 40}
                         options={artPlayerOptions}
                         currentTimeCallback={setCurrentTimeForMediaItems}
                     />
