@@ -14,18 +14,17 @@ use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\CutlistEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use FFMpeg\Coordinate\TimeCode;
-use Ramsey\Uuid\Uuid;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
 use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as MediaVideo;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use function GuzzleHttp\Psr7\mimetype_from_filename;
 
-/*
+/**
  * Handler which is responsible for the encoding of videos from a given cutlist
  * Invokes an FFMPEG worker to do the actual encoding
  *  NOTE: empty space between cutlist items which might exist inside the
@@ -102,7 +101,7 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
             $video->setEncodedVideoDirectory($outputDirectory);
 
-            $this->logger->info('>>>>> Done combining clips into video <' . $mp4Url . '>');
+            $this->logger->info('Done combining clips into video <' . $mp4Url . '>');
 
             $video->setTitle('Cut_video, ' . $video->getCreator()->getUsername() . ', ' . $exercisePhaseTeam->getExercisePhase()->getName());
 
@@ -114,10 +113,9 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
             $this->entityManager->persist($video);
             $this->entityManager->persist($solution);
-            $this->logger->info('>>>>> added cut to solution');
             $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage());
             $video->setEncodingStatus(Video::ENCODING_ERROR);
             $this->eventStore->disableEventPublishingForNextFlush();
@@ -130,7 +128,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         }
     }
 
-    private function probeForVideoDuration(string $filePath) {
+    private function probeForVideoDuration(string $filePath)
+    {
         $ffprobe = FFProbe::create();
         $duration = $ffprobe
             ->format($filePath) // extracts file informations
@@ -139,7 +138,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         return $duration;
     }
 
-    private function probeForFrameRate(string $filePath) {
+    private function probeForFrameRate(string $filePath)
+    {
         $ffprobe = FFProbe::create();
         $frameRate = $ffprobe
             ->streams($filePath)
@@ -156,11 +156,12 @@ class CutlistEncodingHandler implements MessageHandlerInterface
      *
      * @returns string - URL of the created video
      */
-    private function concatAndEncodeClips(array $clipPaths, VirtualizedFile $outputDirectory, FFMpeg $ffmpeg): string {
+    private function concatAndEncodeClips(array $clipPaths, VirtualizedFile $outputDirectory, FFMpeg $ffmpeg): string
+    {
         $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
 
         $firstClipPath = $clipPaths[0];
-        $remaingingClipPaths = array_slice($clipPaths, 1);
+        $remainingClipPaths = array_slice($clipPaths, 1);
 
         $mp4Url = $localOutputDirectory . '/x264.mp4';
 
@@ -171,17 +172,19 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         }
 
         $fileSystem = new Filesystem();
-        if (file_exists($mp4Url)) {
-            $this->logger->debug('>>>>> file already exists.. removing it.');
+        if ($fileSystem->exists($mp4Url)) {
             $fileSystem->remove($mp4Url);
         }
 
-        if (empty($remaingingClipPaths)) {
+        if (empty($remainingClipPaths)) {
             // TODO we could probably simply copy the temporary
             // clip instead of encoding it twice...
             $firstClip->save(new X264('libmp3lame'), $mp4Url);
         } else {
-            $ffmpegVideo = $firstClip->concat($remaingingClipPaths);
+            // TODO: Somehow concatenating ignores the Video itself
+            // The result is missing the $firstClip.
+            // Fix for now is to use all clipPaths again.
+            $ffmpegVideo = $firstClip->concat($clipPaths);
             $ffmpegVideo->saveFromSameCodecs($mp4Url);
         }
 
@@ -192,17 +195,18 @@ class CutlistEncodingHandler implements MessageHandlerInterface
      * Encodes intermediate video clips from a given cutlist which are later used to
      * eventually concatenate them into a single video
      */
-    private function createTemporaryClips(FFMpeg $ffmpeg, $cutlist) {
+    private function createTemporaryClips(FFMpeg $ffmpeg, $cutlist)
+    {
         $clipOutputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
         $rootDir = $this->parameterBag->get('kernel.project_dir');
 
-        $clipPaths = array_map(function($cut) use($ffmpeg, $clipOutputDirectory, $rootDir) {
+        $clipPaths = array_map(function ($cut) use ($ffmpeg, $clipOutputDirectory, $rootDir) {
             $this->logger->info('Creating new intermediate clip...');
 
             $inputVideoFilename = $rootDir . '/public' . $cut['url'];
             $localOutputDirectory = $this->fileSystemService->localPath($clipOutputDirectory);
             $clipUuid = Uuid::uuid4()->toString();
-            $outputPath =  $localOutputDirectory . '/' . $clipUuid . '_x264.mp4';
+            $outputPath = $localOutputDirectory . '/' . $clipUuid . '_x264.mp4';
 
             $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
             $frameRate = $this->probeForFrameRate($inputVideoFilename);
@@ -215,10 +219,10 @@ class CutlistEncodingHandler implements MessageHandlerInterface
                 $videoTimelineStart = TimeCode::fromString($cut['start']);
                 $videoTimelineEnd = TimeCode::fromString($cut['end']);
 
-                $fps = (int) explode('/', $frameRate)[0];
+                $fps = (int)explode('/', $frameRate)[0];
                 $videoStartSeconds = $this->getSecondsFromTimeCode($videoTimelineStart, $fps);
                 $videoEndSeconds = $this->getSecondsFromTimeCode($videoTimelineEnd, $fps);
-                $videoDurationInSeconds =  $videoEndSeconds - $videoStartSeconds;
+                $videoDurationInSeconds = $videoEndSeconds - $videoStartSeconds;
 
                 $duration = $videoDurationInSeconds > 0 ? $videoDurationInSeconds : 1;
                 $videoDurationTimeCode = TimeCode::fromSeconds($duration);
@@ -233,6 +237,7 @@ class CutlistEncodingHandler implements MessageHandlerInterface
                 // clips of the original cutlist. This is due to some rounding we have to do
                 // to remain compatible with the @FFMpeg/Coordinate/TimeCode-class, which
                 // expects integers or otherwise does also round (but worse than our rounding, in most situations).
+                // TODO Add this constraint to the UX so that the user knows.
                 $ffmpegVideo
                     ->clip($videoStartOffset, $videoDurationTimeCode)
                     ->save(new X264('libmp3lame'), $outputPath);
@@ -250,7 +255,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
      * The toSeconds() method of @FFMpeg/Coordinate/TimeCode does not take frames into account.
      * Therefore we do our own conversion with the detected frames per second.
      */
-    private function getSecondsFromTimeCode(TimeCode $timeCode, int $fps) {
+    private function getSecondsFromTimeCode(TimeCode $timeCode, int $fps)
+    {
         $secondsWithoutFrames = $timeCode->toSeconds();
 
         // Small hack to access private properties of the TimeCode class
@@ -259,12 +265,13 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         }, null, TimeCode::class);
 
         $frames = $frameGetter($timeCode, $fps);
-        $secondsWithFrames = $secondsWithoutFrames + ($frames / ($fps * 10) );
+        $secondsWithFrames = $secondsWithoutFrames + ($frames / ($fps * 10));
 
-        return (int) $secondsWithFrames;
+        return (int)$secondsWithFrames;
     }
 
-    private function pingAndReconnectDB() {
+    private function pingAndReconnectDB()
+    {
         // WHY: The encoding process might take quite long and the db connection might have been
         // lost/closed in the meantime. Therefore we check if we still have a connection and
         // otherwise reconnect.
