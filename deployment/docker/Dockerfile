@@ -1,12 +1,12 @@
 # NOTE: this file is executed from the ROOT DIRECTORY of the project, i.e. "../"
 FROM php:7.4.5-fpm-buster
 
-# Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips
+# Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips, zip
 RUN apt-get update -y && \
-    apt-get install --no-install-recommends -y libicu-dev libxslt1-dev nginx-light libvips42 libvips-dev supervisor procps redis ffmpeg unzip git acl libpq-dev && \
+    apt-get install --no-install-recommends -y libzip-dev zip libicu-dev libxslt1-dev nginx-light libvips42 libvips-dev supervisor procps redis ffmpeg unzip git acl libpq-dev && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* && \
-    docker-php-ext-install intl bcmath pdo pdo_mysql mysqli xsl && \
+    docker-php-ext-install intl bcmath pdo pdo_mysql mysqli xsl zip && \
     pecl install vips && \
     echo "extension=vips.so" > /usr/local/etc/php/conf.d/vips.ini && \
     pecl install redis && docker-php-ext-enable redis && \
