@@ -18,7 +18,6 @@
     - Run the assets build (locally) using `cd api && nvm use && yarn`
     - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
     - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
-    - The API types can be regenerated using `make build-types`
     - The Symfony Console can be executed via `./symfony-console`
 
 **Connect with database**
@@ -51,16 +50,23 @@
 
 make test
 
+**troubleshooting for Behat Tests**
+
+When seeing the following error
+```
+SQLSTATE[HY000] [1044] Access denied for user ‘api-platform’@‘%’ to database ‘app_test’
+```
+
+Try to connect to the local db and execute the following script
+```
+CREATE DATABASE app_test;
+GRANT ALL ON app_test.* TO 'api-platform'@'%';
+```
+
 **Running Frontend Tests**
 
 yarn jest
 yarn test:debug
-
-
-**Graphql**
-
-make build-types
-
 
 ## Testing the SAML Authentication locally
  

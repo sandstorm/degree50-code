@@ -21,7 +21,7 @@ const ExerciseDescription: React.FC<ExerciseDescriptionProps> = ({ config }) => 
     return (
         <div>
             <h3>{config.title}</h3>
-            <p>{config.description}</p>
+            <div dangerouslySetInnerHTML={{ __html: config.description }} />
         </div>
     )
 }

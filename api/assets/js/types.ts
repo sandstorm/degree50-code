@@ -3,6 +3,8 @@ export enum TabsTypesEnum {
     VIDEO_CUTTING = 'videoCutting',
     VIDEO_ANNOTATIONS = 'videoAnnotation',
     VIDEO_SUBTITLES = 'videoSubtitles',
+    SOLUTIONS = 'solutions',
+    SOLUTION_FILTERS = 'solutionFilters',
 }
 
 export enum ComponentTypesEnum {

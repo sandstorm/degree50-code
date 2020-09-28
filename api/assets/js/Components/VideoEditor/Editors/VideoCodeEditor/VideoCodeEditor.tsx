@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import ArtPlayer from '../components/ArtPlayer'
-import MediaLane from '../components/MediaLane'
+import MediaLane, { MEDIA_LANE_HEIGHT } from '../components/MediaLane'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
 import { secondToTime, timeToSecond } from '../utils'
@@ -42,9 +42,7 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const VideoCodeEditor = (props: Props) => {
-    // TODO calc height of timeline
-    const timeLineHeight = 200
-    const height = props.height - timeLineHeight
+    const height = props.height - MEDIA_LANE_HEIGHT
 
     // All videoCodes
     const mediaItems = solveConflicts(

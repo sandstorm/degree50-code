@@ -20,7 +20,10 @@ const ReadOnlyMediaItem = ({ item, id, renderConfig, showTextInMediaItems, amoun
 
     return (
         <div
-            className={['video-editor__media-items__item'].join(' ').trim()}
+            className={['video-editor__media-items__item', 'video-editor__media-items__item--read-only']
+                .join(' ')
+                .trim()}
+            title={item.text}
             key={id}
             style={{
                 backgroundColor: item.color ? item.color : '',

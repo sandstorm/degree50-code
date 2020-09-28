@@ -28,14 +28,13 @@ type Props = {
     renderConfig: RenderConfig
     amountOfLanes: number
     showTextInMediaItems: boolean
+    height: number
 }
 
-const ReadOnlyMediaItems = ({ mediaItems, renderConfig, amountOfLanes, showTextInMediaItems }: Props) => {
-    const $mediaItemsRef: React.RefObject<HTMLDivElement> = useRef(null)
-
+const ReadOnlyMediaItems = ({ mediaItems, renderConfig, amountOfLanes, showTextInMediaItems, height }: Props) => {
     return (
-        <div className="video-editor__media-items">
-            <div ref={$mediaItemsRef}>{renderItems(mediaItems, renderConfig, amountOfLanes, showTextInMediaItems)}</div>
+        <div className="video-editor__media-items" style={{ height: height }}>
+            {renderItems(mediaItems, renderConfig, amountOfLanes, showTextInMediaItems)}
         </div>
     )
 }
