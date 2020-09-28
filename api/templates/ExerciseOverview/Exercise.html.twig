@@ -3,7 +3,7 @@
 {% if is_granted('ROLE_DOZENT') %}
     {% set statusTransVar = 'exercise.labels.status' ~ (exercise.status) %}
     {% set statusClassVar = 'tile--status-' ~ (exercise.status) %}
-    <div tabindex="0" class="tile {{ statusClassVar }}" title="{{ exercise.description }}">
+    <div tabindex="0" class="tile {{ statusClassVar }}" title="{{ exercise.description | striptags }}">
         <input id="{{ exercise.id }}" type="checkbox" />
         <label for="{{ exercise.id }}" class="tile__content">
             {% if exercise.status == 0 %}

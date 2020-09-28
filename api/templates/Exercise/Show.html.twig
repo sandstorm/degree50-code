@@ -18,7 +18,7 @@
     <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong>
     </p>
     <p class="text-center text-small">
-        {{ exercisePhase.task }}
+        {{ exercisePhase.task | raw }}
     </p>
     {% if exercisePhase.isGroupPhase %}
         <hr/>
