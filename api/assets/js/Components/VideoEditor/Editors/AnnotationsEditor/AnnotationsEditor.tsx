@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
-import MediaLane from '../components/MediaLane'
+import MediaLane, { MEDIA_LANE_HEIGHT } from '../components/MediaLane'
 import ArtPlayer from '../components/ArtPlayer'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
 import Storage from '../utils/storage'
@@ -40,9 +40,7 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const AnnotationsEditor = (props: Props) => {
-    // TODO calc height of timeline
-    const timeLineHeight = 200
-    const height = props.height - timeLineHeight
+    const height = props.height - MEDIA_LANE_HEIGHT
 
     // All annotations
     const itemsFromAnnotations = props.annotations.map(

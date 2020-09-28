@@ -11,61 +11,34 @@ export type RenderConfig = {
 }
 
 export type MediaTrackConfig = {
-    backgroundColor?: string
-    rulerBackgroundColor?: string
-    gridColor?: string
-    rulerColor?: string
-    cursorColor?: string
-    fontSize?: number
-    fontHeight?: number
-    fontTop?: number
+    backgroundColor: string
+    rulerBackgroundColor: string
+    rulerHeight: number
+    gridColor: string
+    pixelRatio: number
+    rulerColor: string
+    fontSize: number
+    fontHeight: number
+    fontTop: number
+    cursorColor: string
+    render: RenderConfig
 }
 
 type Props = {
-    renderConfig: RenderConfig
-    config: MediaTrackConfig
+    mediaTrackConfig: MediaTrackConfig
     containerHeight: number
     containerWidth: number
 }
 
-const MediaTrack = ({
-    config: {
-        backgroundColor = '#454545',
-        rulerBackgroundColor = '#333',
-        gridColor = '#636363',
-        rulerColor = '#fff',
-        cursorColor = '#ff0000',
-        fontSize = 13,
-        fontHeight = 15,
-        fontTop = 30,
-    },
-    containerHeight,
-    containerWidth,
-    renderConfig,
-}: Props) => {
-    const pixelRatio = 1
-
+const MediaTrack = ({ mediaTrackConfig, containerHeight, containerWidth }: Props) => {
     const $canvas: React.RefObject<HTMLCanvasElement> = useRef(null)
-
-    const config = {
-        backgroundColor,
-        rulerBackgroundColor,
-        gridColor,
-        pixelRatio,
-        rulerColor,
-        fontSize,
-        fontHeight,
-        fontTop,
-        cursorColor,
-        render: renderConfig,
-    }
 
     // Update tracks elements when container size or config changed
     useLayoutEffect(() => {
         if ($canvas.current) {
-            updateCanvas($canvas.current, config)
+            updateCanvas($canvas.current, mediaTrackConfig)
         }
-    }, [containerHeight, containerWidth, config])
+    }, [containerHeight, containerWidth, mediaTrackConfig])
 
     return <canvas ref={$canvas} width={containerWidth} height={containerHeight} />
 }

@@ -1,7 +1,6 @@
 import React from 'react'
-import { SolutionByTeam } from '../../SolutionsApp'
+import { SolutionByTeam, SolutionFilterType } from '../../SolutionsApp'
 import { TabsTypesEnum } from '../../../../types'
-import { VideoCode } from '../../../../Components/VideoEditor/VideoListsSlice'
 import { MediaItem } from 'Components/VideoEditor/Editors/components/types'
 import ReadOnlyMediaLane from 'Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 import { solveConflicts } from 'Components/VideoEditor/Editors/helpers'
@@ -10,15 +9,16 @@ import Dropdown from '../../../../Components/Dropdown/Dropdown'
 import { useModalHook } from '../../../../Components/Modal/useModalHook'
 import VideoCodesList from './VideoCodesList'
 import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
+import { MediaItemType } from '../../../../Components/VideoEditor/VideoListsSlice'
 
 type TeamProps = {
     solution: SolutionByTeam
-    activeTab: string
+    visibleSolutionFilters: Array<SolutionFilterType>
     renderConfig: RenderConfig
     updateCurrentTime: (time: number) => void
 }
 
-const Team = ({ solution, activeTab, renderConfig, updateCurrentTime }: TeamProps) => {
+const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTime }: TeamProps) => {
     const itemsFromAnnotations = solution.solution.annotations.map(
         (annotation) =>
             new MediaItem({
@@ -48,22 +48,6 @@ const Team = ({ solution, activeTab, renderConfig, updateCurrentTime }: TeamProp
         )
     )
 
-    let mediaItems = null
-    let showTextInMediaItems = true
-    if (activeTab === TabsTypesEnum.VIDEO_ANNOTATIONS) {
-        mediaItems = itemsFromAnnotations
-    } else {
-        mediaItems = itemsFromVideoCodes
-        showTextInMediaItems = false
-    }
-
-    const amountOfLanes = Math.max.apply(
-        Math,
-        mediaItems.map((item: MediaItem<VideoCode>) => {
-            return item.lane
-        })
-    )
-
     const { showModal: showVideoCodesModal, RenderModal: RenderVideoCodesModal } = useModalHook()
     const handleDropdownClick = (key: React.Key) => {
         if (key === 'showVideoCodes') {
@@ -79,15 +63,40 @@ const Team = ({ solution, activeTab, renderConfig, updateCurrentTime }: TeamProp
                     <Item key="showVideoCodes">Video-Codes anzeigen</Item>
                 </Dropdown>
             </header>
-            <div className={'team__solution'}>
-                <ReadOnlyMediaLane
-                    updateCurrentTime={updateCurrentTime}
-                    mediaItems={mediaItems}
-                    amountOfLanes={amountOfLanes}
-                    showTextInMediaItems={showTextInMediaItems}
-                    renderConfig={renderConfig}
-                />
-            </div>
+            {visibleSolutionFilters.map((solutionFilter: SolutionFilterType) => {
+                let mediaItems: MediaItem<MediaItemType>[] = []
+                switch (solutionFilter.id) {
+                    case TabsTypesEnum.VIDEO_ANNOTATIONS:
+                        mediaItems = itemsFromAnnotations
+                        break
+                    case TabsTypesEnum.VIDEO_CODES:
+                        mediaItems = itemsFromVideoCodes
+                        break
+                    case TabsTypesEnum.VIDEO_CUTTING:
+                        mediaItems = []
+                        break
+                    default:
+                        mediaItems = itemsFromAnnotations
+                }
+
+                return solutionFilter.visible ? (
+                    <div key={solution.teamCreator + '' + solutionFilter.id} className={'team__solution'}>
+                        <h5 className={'team__solution-headline'}>
+                            {solutionFilter.label} (Anzahl: {mediaItems.length})
+                        </h5>
+                        {mediaItems.length > 0 ? (
+                            <ReadOnlyMediaLane
+                                updateCurrentTime={updateCurrentTime}
+                                mediaItems={mediaItems}
+                                showTextInMediaItems={solutionFilter.id === TabsTypesEnum.VIDEO_ANNOTATIONS}
+                                renderConfig={renderConfig}
+                            />
+                        ) : (
+                            <p>Kein Ergebnis vorhanden</p>
+                        )}
+                    </div>
+                ) : null
+            })}
             <RenderVideoCodesModal title={'Video-Codes'}>
                 <VideoCodesList
                     videoCodesPool={solution.solution.customVideoCodesPool}

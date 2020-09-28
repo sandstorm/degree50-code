@@ -28,6 +28,16 @@ html, body {
         .main-inner {
             overflow-y: hidden;
         }
+
+        .content-with-sidebar {
+            overflow-y: hidden;
+        }
+    }
+
+    &--no-padding {
+        .content-with-sidebar {
+            padding: 0;
+        }
     }
 }
 
@@ -43,4 +53,14 @@ html, body {
         padding-top: 20px;
         padding-bottom: 70px;
     }
+}
+
+.content-with-sidebar {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    padding-left: 320px;
+
+    overflow-y: scroll;
+    @include transition(padding-left 250ms ease);
 }

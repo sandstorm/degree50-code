@@ -1,17 +1,17 @@
 import DT from 'duration-time-conversion'
-import { RenderConfig } from '.'
+import { MediaTrackConfig } from '.'
 
-export type MediaTrackConfig = {
-    backgroundColor: string
-    rulerBackgroundColor: string
-    gridColor: string
-    pixelRatio: number
-    rulerColor: string
-    fontSize: number
-    fontHeight: number
-    fontTop: number
-    cursorColor: string
-    render: RenderConfig
+export const defaultMediaTrackConfig = {
+    backgroundColor: '#454545',
+    rulerBackgroundColor: '#333',
+    gridColor: '#636363',
+    rulerColor: '#fff',
+    cursorColor: '#ff0000',
+    fontSize: 13,
+    fontHeight: 15,
+    fontTop: 30,
+    pixelRatio: 1,
+    rulerHeight: 40,
 }
 
 export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig) => {
@@ -19,8 +19,8 @@ export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig
         backgroundColor: config.backgroundColor,
     })
     drawRulerBackground(canvas, {
-        fontTop: config.fontTop,
         rulerBackgroundColor: config.rulerBackgroundColor,
+        rulerHeight: config.rulerHeight,
     })
     drawGrid(canvas, {
         gridNum: config.render.gridNum,
@@ -100,11 +100,11 @@ const drawGrid = (
 const drawRulerBackground = (
     canvas: HTMLCanvasElement,
     {
-        fontTop,
         rulerBackgroundColor,
+        rulerHeight,
     }: {
-        fontTop: number
         rulerBackgroundColor: string
+        rulerHeight: number
     }
 ) => {
     const ctx = canvas.getContext('2d')
@@ -113,8 +113,7 @@ const drawRulerBackground = (
     const { width } = canvas
 
     ctx.fillStyle = rulerBackgroundColor
-
-    ctx.fillRect(0, 0, width, fontTop + 11)
+    ctx.fillRect(0, 0, width, rulerHeight)
 }
 
 const drawRuler = (

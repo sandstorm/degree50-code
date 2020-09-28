@@ -9,7 +9,7 @@ export type Tabs = {
     [key in TabsTypesEnum]: Tab
 }
 
-export const tabs: Tabs = {
+export const tabs = {
     [TabsTypesEnum.VIDEO_ANNOTATIONS]: {
         id: TabsTypesEnum.VIDEO_ANNOTATIONS,
         label: 'Annotations',
@@ -25,5 +25,16 @@ export const tabs: Tabs = {
     [TabsTypesEnum.VIDEO_SUBTITLES]: {
         id: TabsTypesEnum.VIDEO_SUBTITLES,
         label: 'Video Subtitles',
+    },
+}
+
+export const solutionTabs = {
+    [TabsTypesEnum.SOLUTIONS]: {
+        id: TabsTypesEnum.SOLUTIONS,
+        label: 'Ergebnisse',
+    },
+    [TabsTypesEnum.SOLUTION_FILTERS]: {
+        id: TabsTypesEnum.SOLUTION_FILTERS,
+        label: 'Filter',
     },
 }

@@ -61,6 +61,7 @@ type Props = {
     removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
     checkMediaItem: (item: MediaItemClass<MediaItemType>) => boolean
     showTextInMediaItems: boolean
+    height: number
     amountOfLanes?: number
 }
 
@@ -72,6 +73,7 @@ const MediaItems = ({
     removeMediaItem,
     checkMediaItem,
     showTextInMediaItems,
+    height,
     amountOfLanes,
 }: Props) => {
     const $mediaItemsRef: React.RefObject<HTMLDivElement> = useRef(null)
@@ -79,7 +81,7 @@ const MediaItems = ({
     const activeItemIndex = mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime)
 
     return (
-        <div className="video-editor__media-items">
+        <div className="video-editor__media-items" style={{ height: height }}>
             <div ref={$mediaItemsRef}>
                 {renderItems(
                     mediaItems,

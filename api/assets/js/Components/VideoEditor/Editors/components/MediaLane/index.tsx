@@ -1,12 +1,16 @@
 import React, { useState, useCallback, useRef } from 'react'
 import MediaItems from './MediaItems'
 import { MediaItem } from '../types'
-import MediaTrack, { MediaTrackConfig } from './MediaTrack'
+import MediaTrack from './MediaTrack'
 import { RenderConfig } from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
 import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
 import { useMediaLane } from './utils'
+import { defaultMediaTrackConfig } from './MediaTrack/helpers'
+
+export const MEDIA_LANE_HEIGHT = 200
+export const MEDIA_LANE_TOOLBAR_HEIGHT = 40
 
 const initialRender: RenderConfig = {
     padding: 0,
@@ -22,7 +26,6 @@ type Props = {
     mediaItems: MediaItem<any>[]
     updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine key
     removeMediaItem: (item: MediaItem<any>) => void
-    mediaTrackConfig?: MediaTrackConfig
     setPlayPosition: typeof actions.setPlayPosition
     checkMediaItem: (item: MediaItem<any>) => boolean
     videoDuration: number
@@ -33,7 +36,6 @@ type Props = {
 
 const MediaLane = ({
     currentTime,
-    mediaTrackConfig = {},
     updateMediaItem,
     removeMediaItem,
     mediaItems,
@@ -101,8 +103,13 @@ const MediaLane = ({
         [renderConfig]
     )
 
+    const mediaTrackConfig = {
+        ...defaultMediaTrackConfig,
+        render: renderConfig,
+    }
+
     return (
-        <div className="video-editor-timeline">
+        <div className="video-editor-timeline" style={{ height: MEDIA_LANE_HEIGHT }}>
             <Toolbar
                 zoomHandler={handleZoom}
                 videoDuration={videoDuration}
@@ -112,11 +119,13 @@ const MediaLane = ({
                 {ToolbarActions}
             </Toolbar>
 
-            <div className="video-editor-timeline__body">
+            <div
+                className="video-editor-timeline__body"
+                style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
+            >
                 <div ref={$container} className="media-track">
                     <MediaTrack
-                        config={mediaTrackConfig} /* empty object = use default values */
-                        renderConfig={renderConfig}
+                        mediaTrackConfig={mediaTrackConfig}
                         containerHeight={containerHeight}
                         containerWidth={containerWidth}
                     />
@@ -133,6 +142,7 @@ const MediaLane = ({
                     checkMediaItem={checkMediaItem}
                     amountOfLanes={amountOfLanes}
                     showTextInMediaItems={showTextInMediaItems}
+                    height={MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT - mediaTrackConfig.rulerHeight}
                 />
             </div>
         </div>

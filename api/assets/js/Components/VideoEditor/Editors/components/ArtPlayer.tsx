@@ -14,7 +14,7 @@ export type PlayerOptions = {
 
 type OwnProps = {
     worker?: Worker
-    currentTimeCallback: (time: number) => void
+    currentTimeCallback?: (time: number) => void
     options: PlayerOptions
     containerHeight: number
 }
@@ -102,7 +102,9 @@ const ArtPlayer = ({
                     ;(function loop() {
                         window.requestAnimationFrame(() => {
                             if (art.playing) {
-                                currentTimeCallback(art.currentTime)
+                                if (currentTimeCallback) {
+                                    currentTimeCallback(art.currentTime)
+                                }
                                 setSyncPlayPosition(art.currentTime)
                             }
                             loop()
@@ -113,7 +115,9 @@ const ArtPlayer = ({
                     // @ts-ignore disable-line
                     art.on('seek', () => {
                         setSyncPlayPosition(art.currentTime)
-                        currentTimeCallback(art.currentTime)
+                        if (currentTimeCallback) {
+                            currentTimeCallback(art.currentTime)
+                        }
                     })
 
                     // @ts-ignore disable-line

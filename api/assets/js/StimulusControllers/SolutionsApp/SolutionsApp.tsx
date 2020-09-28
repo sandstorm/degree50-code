@@ -1,6 +1,5 @@
-import React, { useRef, useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
-import VideoPlayerWrapper, { Video } from '../../Components/VideoPlayer/VideoPlayerWrapper'
 import { VideoListsState } from '../../Components/VideoEditor/VideoListsSlice'
 import { Teams } from './Components/Teams/Teams'
 import { TabsTypesEnum } from '../../types'
@@ -10,16 +9,32 @@ import Toolbar from '../../Components/VideoEditor/Editors/components/MediaLane/T
 import { RenderConfig } from '../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
 import { useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/utils'
 import { actions, selectors, VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
+import ArtPlayer from '../../Components/VideoEditor/Editors/components/ArtPlayer'
+import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
+import EditorTabs from '../../Components/VideoEditor/EditorTabs'
+import { solutionTabs } from '../../Components/VideoEditor/Tabs'
+import { Video } from '../../Components/VideoPlayer/VideoPlayerWrapper'
+import ResultsFilter from './Components/Filters/ResultsFilter'
+import SolutionFilter from './Components/Filters/SolutionFilter'
+import { ComponentId } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
 
 export type SolutionByTeam = {
     teamCreator: string
     teamMembers: Array<string>
     solution: VideoListsState
+    visible: boolean
+}
+
+export type SolutionFilterType = {
+    id: ComponentId
+    label: ComponentId
+    visible: boolean
 }
 
 type OwnProps = {
     solutions: Array<SolutionByTeam>
     videos: Array<Video>
+    availableComponents: Array<ComponentId>
 }
 
 const initialRender: RenderConfig = {
@@ -43,19 +58,28 @@ const mapDispatchToProps = {
 
 type ReadOnlyExercisePhaseProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props) => {
+const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExercisePhaseProps) => {
     // react-aria-modal watches a container element for aria-modal nodes and
     // hides the rest of the dom from screen readers with aria-hidden when one is open.
     watchModals()
 
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
     const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
-    const [activeTab, setActiveTab] = useState<TabsTypesEnum>(TabsTypesEnum.VIDEO_ANNOTATIONS)
+
+    const availableTabs = Object.values(solutionTabs)
+    const [activeTabId, setActiveTabId] = useState<TabsTypesEnum>(availableTabs[0].id)
+
     const firstVideo = props.videos[0]
     const videoDuration: number = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
     const currentTime = props.playerSyncPlayPosition
 
-    const { containerWidth, getDurationForRenderConfig, getRenderConfigForZoom } = useMediaLane({
+    let { width, height } = useDebouncedResizeObserver($container, 500)
+    // workaround to avoid height of 0 at intial render
+    if (height === 0) {
+        height = 400
+    }
+
+    const { getDurationForRenderConfig, getRenderConfigForZoom } = useMediaLane({
         setRender,
         $container,
         renderConfig,
@@ -63,16 +87,9 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props) => {
         videoDuration,
     })
 
-    initialRender.duration = getDurationForRenderConfig(25)
+    initialRender.duration = getDurationForRenderConfig(100)
     initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
-    initialRender.gridGap = containerWidth / initialRender.gridNum
-
-    const updateActiveTab = useCallback(
-        (event) => {
-            setActiveTab(event.target.value)
-        },
-        [setActiveTab]
-    )
+    initialRender.gridGap = width / initialRender.gridNum
 
     const updateCurrentTime = useCallback(
         (time: number) => {
@@ -101,38 +118,87 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props) => {
         [renderConfig]
     )
 
-    return (
-        <OverlayProvider className={'exercise-phase__inner solutions'}>
-            <div className={'exercise-phase__content'} ref={$container}>
-                <VideoPlayerWrapper videos={props.videos} />
-                <form className={'solutions__form'}>
-                    <div className={'form-group'}>
-                        <label htmlFor={'select-solution'}>Lösung auswählen</label>
-                        <select
-                            id={'select-solution'}
-                            className={'form-control'}
-                            onChange={updateActiveTab}
-                            value={activeTab}
-                        >
-                            <option value={TabsTypesEnum.VIDEO_ANNOTATIONS}>Annotations</option>
-                            <option value={TabsTypesEnum.VIDEO_CODES}>Video-Codes</option>
-                        </select>
-                    </div>
-                </form>
+    const firstVideoUrl = firstVideo?.url?.hls || ''
+    const subtitleUrl = firstVideo?.url?.vtt || undefined
+    const artPlayerOptions = {
+        videoUrl: firstVideoUrl,
+        subtitleUrl,
+        uploadDialog: false,
+        translationLanguage: 'en',
+    }
 
-                <Teams
-                    solutions={props.solutions}
-                    activeTab={activeTab}
-                    renderConfig={renderConfig}
-                    updateCurrentTime={updateCurrentTime}
+    // Run only once
+    useEffect(() => {
+        setVisibleSolutions(
+            props.solutions.map((solutionsEntry: SolutionByTeam) => {
+                solutionsEntry.visible = true
+                return solutionsEntry
+            })
+        )
+
+        setVisibleSolutionFilters(
+            props.availableComponents.map((componentId: ComponentId) => {
+                return {
+                    id: componentId,
+                    label: componentId, // TODO translate
+                    visible: true,
+                }
+            })
+        )
+    }, [])
+
+    const [visibleSolutions, setVisibleSolutions] = useState<Array<SolutionByTeam>>([])
+    const [visibleSolutionFilters, setVisibleSolutionFilters] = useState<Array<SolutionFilterType>>([])
+
+    let tabContent = null
+    switch (activeTabId) {
+        case TabsTypesEnum.SOLUTIONS:
+            tabContent = <ResultsFilter solutions={visibleSolutions} setVisibleSolutions={setVisibleSolutions} />
+            break
+        case TabsTypesEnum.SOLUTION_FILTERS:
+            tabContent = (
+                <SolutionFilter
+                    solutionFilters={visibleSolutionFilters}
+                    setVisibleSolutionFilters={setVisibleSolutionFilters}
                 />
+            )
+            break
+        default:
+    }
+
+    return (
+        <OverlayProvider className={'exercise-phase__inner solutions-container'}>
+            <div className={'exercise-phase__content'} ref={$container}>
+                <div className={'video-editor__main'} style={{ height: height * 0.4 }}>
+                    <div className={'video-editor__section video-editor__left'}>
+                        <ArtPlayer containerHeight={height * 0.4 - 40} options={artPlayerOptions} />
+                    </div>
+                    <div className={'video-editor__section video-editor__right'}>
+                        <header className={'video-editor__section-header'}>
+                            <EditorTabs
+                                tabs={availableTabs}
+                                activeTabId={activeTabId}
+                                setActiveTabId={setActiveTabId}
+                            />
+                        </header>
+                        <div className={'video-editor__section-content'}>{tabContent}</div>
+                    </div>
+                </div>
+                <div className={'solutions'} style={{ height: height * 0.6 }}>
+                    <Toolbar
+                        zoomHandler={handleZoom}
+                        videoDuration={videoDuration}
+                        renderConfig={renderConfig}
+                        handleTimeLineAction={updateCurrentTime}
+                    />
+                    <Teams
+                        solutions={visibleSolutions}
+                        visibleSolutionFilters={visibleSolutionFilters}
+                        renderConfig={renderConfig}
+                        updateCurrentTime={updateCurrentTime}
+                    />
+                </div>
             </div>
-            <Toolbar
-                zoomHandler={handleZoom}
-                videoDuration={videoDuration}
-                renderConfig={renderConfig}
-                handleTimeLineAction={updateCurrentTime}
-            />
         </OverlayProvider>
     )
 }

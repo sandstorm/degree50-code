@@ -1,32 +1,29 @@
-.solutions {
-  width: 100%;
-  height: 100%;
-
-  .video-player-wrapper {
-    margin: 0;
-  }
-
+.solutions-container {
   .video-editor-toolbar {
-    position: fixed;
+    position: sticky;
+    top: 0;
     width: 100%;
-    bottom: 0;
-    left: 0;
 
     z-index: 999;
   }
 }
 
-.solutions__form {
-  display: flex;
-  justify-content: space-between;
+.solutions {
+  width: 100%;
+
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.solutions-filter {
   padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin-bottom: 20px;
+}
 
-  background-color: $theme__color__grey--darker;
+.solutions-filter__entry {
+  display: block;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
 
-  .form-group {
-    width: 48%;
-  }
+  color: $theme__color__white;
 }

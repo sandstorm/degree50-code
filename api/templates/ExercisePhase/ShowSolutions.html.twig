@@ -2,7 +2,7 @@
 
 {% block title %}{{ exercisePhase.name }}{% endblock %}
 
-{% block layoutCssClass %}main--without-scrollbar{% endblock %}
+{% block layoutCssClass %}main--without-scrollbar main--no-padding{% endblock %}
 
 {% block sidebar %}
     {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItem: exercisePhase, showSolution: true}) }}
