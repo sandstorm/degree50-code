@@ -199,7 +199,9 @@ class ExercisePhaseController extends AbstractController
         }
 
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
+
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
+
         $solutions = array_map(function (ExercisePhaseTeam $team) use ($exercise) {
             return [
                 'teamCreator' => $team->getCreator()->getUsername(),
@@ -210,6 +212,7 @@ class ExercisePhaseController extends AbstractController
                 'cutVideo' => $team->getSolution()->getCutVideo() ? $team->getSolution()->getCutVideo()->getAsArray($this->appRuntime) : null
             ];
         }, $teams);
+
         // TODO throws Parameter 'userId' does not exist.... why?
         //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
