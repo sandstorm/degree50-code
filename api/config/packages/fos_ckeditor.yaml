@@ -3,4 +3,5 @@ fos_ck_editor:
     js_path:   "build/ckeditor/ckeditor.js"
     configs:
         my_config:
+            entities: false
             toolbar: basic
