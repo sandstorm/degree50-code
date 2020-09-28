@@ -137,9 +137,6 @@ function* handleMessages(channel: EventChannel<unknown>) {
             }
         }
     } finally {
-        if (yield cancelled()) {
-            console.log('>>>>> Presence Saga: message channel closed by cancellation')
-        }
         channel.close()
     }
 }

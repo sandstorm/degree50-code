@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import VideoContext from 'videocontext'
 
 import { actions, selectors } from '../../PlayerSlice'
-import { initVideoContext, addCut } from './util'
+import { initVideoContext, addVideoContextPlaylistElement, transformCutListToVideoContextPlaylist } from './util'
 import { CutList } from './types'
 import { VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import { useDebouncedResizeObserver } from '../utils/useDebouncedResizeObserver'
@@ -57,7 +57,7 @@ const VideoContextPlayer = ({
             const { videoWidth, videoHeight } = videoSrcAttributes
             const aspectRatio = Math.min(parentWidth / videoWidth, parentHeight / videoHeight)
 
-            if (aspectRatio !== Infinity) {
+            if (aspectRatio !== Infinity && !isNaN(aspectRatio)) {
                 setCanvasWidth(videoWidth * aspectRatio)
                 setCanvasHeight(videoHeight * aspectRatio)
             }
@@ -119,7 +119,9 @@ const VideoContextPlayer = ({
         const { videoCtx } = resetVideoContext()
 
         if (videoCtx && cutList.length > 0) {
-            const nodesAndElements = cutList.map((cut) => addCut(cut, videoCtx))
+            const nodesAndElements = transformCutListToVideoContextPlaylist(cutList).map((cut) =>
+                addVideoContextPlaylistElement(cut, videoCtx)
+            )
             const firstVideoElement = nodesAndElements[0].videoElement
 
             // Determine aspect ratio by the first videoElement we encounter - we do not directly set an aspect ration, but get the videos height/width instead

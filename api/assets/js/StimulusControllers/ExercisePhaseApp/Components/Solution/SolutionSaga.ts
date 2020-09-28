@@ -68,9 +68,6 @@ function* handleMessages(channel: EventChannel<unknown>) {
             yield put(actions.lists.setVideoEditor(solution))
         }
     } finally {
-        if (yield cancelled()) {
-            console.log('>>>>> Presence Saga: message channel closed by cancellation')
-        }
         channel.close()
     }
 }

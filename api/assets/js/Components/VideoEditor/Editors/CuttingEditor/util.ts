@@ -3,12 +3,11 @@ import VideoContext from 'videocontext'
 import { t } from 'react-i18nify'
 import { d2t, t2d } from 'duration-time-conversion'
 
-import { Cut } from './types'
+import { Cut, CutList } from './types'
 import { MediaItem } from '../components/types'
-import { notify } from '../utils'
+import { notify, secondToTime } from '../utils'
 import { useMediaItemHandling } from '../utils/hooks'
 import Storage from '../utils/storage'
-import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
 
@@ -41,6 +40,7 @@ export const useCuttingMediaItemHandling = ({
     playerSyncPlayPosition,
     setPlayPosition,
     updateCondition,
+    originalVideoUrl,
 }: {
     mediaItems: Array<MediaItem<Cut>>
     setCutList: (mediaItems: Array<Cut>) => void
@@ -49,13 +49,15 @@ export const useCuttingMediaItemHandling = ({
     playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
     setPlayPosition: typeof actions.player.setPlayPosition
     updateCondition: boolean
+    originalVideoUrl?: string
 }) => {
     const {
         currentIndex,
 
+        setCurrentIndex,
         setCurrentTimeForMediaItems,
-        removeMediaItem: removeMediaItemsOriginal,
-        updateMediaItems: updateMediaItemsOriginal,
+        removeMediaItem,
+        updateMediaItems,
         checkMediaItem,
         hasMediaItem,
         copyMediaItems,
@@ -66,27 +68,6 @@ export const useCuttingMediaItemHandling = ({
         updateCallback,
         storage,
     })
-
-    const updateMediaItems = (
-        items: Array<MediaItem<Cut>>,
-        saveToHistory = true,
-        force = false,
-        config?: { handle: Handle }
-    ) => {
-        const withResolvedOverlapAndSnap =
-            config?.handle === 'center' ? resolveOverlapAndSnapItems(items) : snapItems(items)
-        updateMediaItemsOriginal(withResolvedOverlapAndSnap, saveToHistory, force)
-    }
-
-    const removeMediaItem = (mediaItem: MediaItem<Cut>) => {
-        // WHY:
-        // We need to make sure, that our snapping is applied after removing an item.
-        //
-        // TODO
-        // We should probably refactor this, so that we do not update the items twice.
-        const updatedItems = removeMediaItemsOriginal(mediaItem)
-        updateMediaItems(updatedItems)
-    }
 
     /**
      * Handles the update of Cut media items and makes sure that their offset is handled correctly
@@ -121,7 +102,7 @@ export const useCuttingMediaItemHandling = ({
                 originalData: start
                     ? {
                           ...item.originalData,
-                          offset: updateOffset(item, newStart, end),
+                          offset: t2d(start),
                       }
                     : item.originalData,
                 start: newStart,
@@ -142,8 +123,7 @@ export const useCuttingMediaItemHandling = ({
             if (clone.check) {
                 copiedItems[index] = clone
 
-                const handle = determineDraggedHandle({ start, end })
-                updateMediaItems(copiedItems, true, false, { handle })
+                updateMediaItems(copiedItems, true, false)
             } else {
                 notify(t('parameter-error'), 'error')
             }
@@ -189,36 +169,35 @@ export const useCuttingMediaItemHandling = ({
         }
     }
 
-    /**
-     * Duplicates the cut at a certain index from the cutList
-     */
-    const duplicateCut = useCallback(
-        (index) => {
-            const cuts = copyMediaItems()
+    // Add a mediaItem
+    const appendCut = useCallback(() => {
+        if (originalVideoUrl === undefined) {
+            // TODO show toast
+            return
+        }
 
-            const cutToCopy = cuts[index]
+        const lastItem = mediaItems[mediaItems.length - 1]
 
-            const startTime = (cutToCopy.endTime + 0.01).toFixed(3)
-            const endTime = (cutToCopy.endTime + (cutToCopy.endTime - cutToCopy.startTime)).toFixed(3)
+        // TODO: Why 1 millisecond padding?
+        const start = lastItem ? secondToTime(lastItem.endTime + 1) : '00:00:00.001'
+        const end = lastItem ? secondToTime(lastItem.endTime + 2) : '00:00:01.001'
 
-            const newCut = new MediaItem<Cut>({
-                start: d2t(startTime),
-                end: d2t(endTime),
-                text: cutToCopy.text,
-                color: cutToCopy.color,
-                memo: cutToCopy.memo,
-                originalData: cutToCopy.originalData,
-                lane: 0,
-                idFromPrototype: cutToCopy.idFromPrototype,
-            })
+        const cut: Cut = {
+            url: originalVideoUrl,
+            start,
+            end,
+            text: `Schnitt ${mediaItems.length + 1}`,
+            playbackRate: 1,
+            offset: t2d(start),
+            memo: '',
+            color: null,
+            idFromPrototype: null,
+        }
 
-            setPlayPosition(t2d(newCut.start))
+        const newItem = getMediaItemFromCut(cut)
 
-            const updatedCuts = [...cuts.slice(0, index), cutToCopy, newCut, ...cuts.slice(index + 1)]
-            updateMediaItems(updatedCuts)
-        },
-        [copyMediaItems, updateMediaItems]
-    )
+        updateMediaItems([...mediaItems, newItem])
+    }, [updateMediaItems, mediaItems])
 
     // Run only once
     useEffect(() => {
@@ -229,15 +208,16 @@ export const useCuttingMediaItemHandling = ({
     return {
         currentIndex,
 
+        setCurrentIndex,
         checkMediaItem,
         copyMediaItems,
-        duplicateCut,
         handleSplitAtCursor,
         hasMediaItem,
         removeMediaItem,
         setCurrentTimeForMediaItems,
         updateMediaItem,
         updateMediaItems,
+        appendCut,
     }
 }
 
@@ -250,112 +230,6 @@ export const determineDraggedHandle = (updatedValues: { start?: string; end?: st
         return 'center'
     }
 }
-
-/**
- * Sorts media items by their startTime, resolves overlaps between items and also
- * removes blank space between items.
- *
- * HOW:
- * How the overlap between two items is resolved, depends on the relative positioning of the items to each other.
- * If the right overlapping items start is closer to the left items start than to the left items end, it
- * will swap places with the left item. Otherwise the right item will snap to the end of the left item:
- *
- * Case A:
- *  [--- ItemA ---]
- *    [--- ItemB ---]
- *  ===> results in: [--- ItemB ---][--- ItemA ---]
- *
- * Case B:
- *  [--- ItemA ---]
- *           [--- ItemB ---]
- *  ===> results in: [--- ItemA ---][--- ItemB ---]
- *
- * This function assumes that there will always be one overlap at max (because the user can't do more than one change
- * at a time) and therefore snaps all items, which come after the resolved overlap to their predecessors endTime.
- */
-export const resolveOverlapAndSnapItems = (items: MediaItem<Cut>[]): MediaItem<Cut>[] => {
-    const sortedItems = sortItemsByStartTime(items)
-
-    const resolvedItems = sortedItems.reduce((acc, item, index) => {
-        const nextItems = acc.slice(index + 1)
-
-        if (nextItems.length < 1) {
-            return acc
-        }
-
-        const earliestOverlappingItem = nextItems.find((nextItem) => hasConflictWithItem(nextItem, item))
-
-        if (!earliestOverlappingItem) {
-            return acc
-        }
-
-        const overlapsInFirstHalfOfCurrentItem =
-            earliestOverlappingItem.startTime - item.startTime < item.endTime - earliestOverlappingItem.startTime
-
-        // Position either at start of current item or immediately behind current item
-        const newOverlappingItemStartTime = overlapsInFirstHalfOfCurrentItem
-            ? item.start
-            : d2t((item.endTime + 0.01).toFixed(3))
-
-        const updatedOverlappingItem = Object.assign(earliestOverlappingItem.clone, {
-            ...earliestOverlappingItem,
-            start: newOverlappingItemStartTime,
-            end: d2t((t2d(newOverlappingItemStartTime) + parseFloat(earliestOverlappingItem.duration)).toFixed(3)),
-        })
-
-        // Either keep position or move directly behind new previous item
-        const newItemStartTime = overlapsInFirstHalfOfCurrentItem
-            ? d2t((updatedOverlappingItem.endTime + 0.01).toFixed(3))
-            : item.start
-        const updatedItem = Object.assign(item.clone, {
-            ...item,
-            start: newItemStartTime,
-            end: d2t((t2d(newItemStartTime) + parseFloat(item.duration)).toFixed(3)),
-        })
-
-        // Snap all other items into place
-        const remainingItems = nextItems.filter((nextItem) => nextItem !== earliestOverlappingItem)
-        const firstRemainingItemStartTime =
-            updatedOverlappingItem.endTime > updatedItem.endTime
-                ? d2t((updatedOverlappingItem.endTime + 0.01).toFixed(3))
-                : d2t((updatedItem.endTime + 0.01).toFixed(3))
-        const snappedItems = snapItems(remainingItems, firstRemainingItemStartTime)
-
-        return [...acc.slice(0, index), ...sortItemsByStartTime([updatedOverlappingItem, updatedItem]), ...snappedItems]
-    }, sortedItems)
-
-    // WHY: Make sure that also possible previously unmodified items are being snapped
-    return snapItems(resolvedItems)
-}
-
-/**
- * Makes sure that each mediaItem immediately follows its predecessor with almost no
- * blank space between them.
- *
- * WHY: The server side rendered cutList is currently unable to reflect empty space between media items
- * and concatenates them anyway. By also removing blank space in the frontend, we make sure, that the users
- * expectations are in line with the server side rendered result.
- *
- * NOTE: Because the server does some rounding for start and offset values, the final result
- * might still slightly deviate from the video in the Editor.
- *
- * @returns list - snapped items
- */
-export const snapItems = (items: MediaItem<any>[], firstItemStartTime?: string) =>
-    items.reduce((acc, item, index) => {
-        if (index === 0 && firstItemStartTime) {
-            return adjustItemTimelinePositionInList(acc, item, index, firstItemStartTime)
-        }
-
-        if (index === 0) {
-            return acc
-        }
-
-        const previousItem = acc[index - 1]
-        const newStartTime = d2t((previousItem.endTime + 0.01).toFixed(3))
-
-        return adjustItemTimelinePositionInList(acc, item, index, newStartTime)
-    }, items)
 
 /**
  * Adjusts the start and endtime of a given item and updates it in the context of its surrounding items.
@@ -376,32 +250,6 @@ export const adjustItemTimelinePositionInList = (
     }),
     ...items.slice(index + 1),
 ]
-
-/**
- * Checks if a media item has been dragged on its left handle (either to the right or the left side).
- * If the handle was dragged left, the offset of the video is reduced (in other words, the video starts earlier).
- * If the handle was dragged right, the offset of the video is increased (the start point inside the video is set to a later point).
- */
-export const updateOffset = (oldItem: MediaItem<Cut>, newStartValue: string, newEndValue: string | undefined) => {
-    const { startTime } = oldItem
-    const newStartTime = t2d(newStartValue)
-    const newEndTime = newEndValue ? t2d(newEndValue) : undefined
-
-    const wasDraggedToLeft = startTime > newStartTime && (!newEndTime || newEndTime === oldItem.endTime) // end should not have changed
-    const wasDraggedToRight = startTime < newStartTime && (!newEndTime || newEndTime === oldItem.endTime) // end should not have changed
-
-    if (wasDraggedToLeft) {
-        const newOffset = oldItem.originalData.offset - (oldItem.startTime - newStartTime)
-
-        return newOffset > 0 ? newOffset : 0
-    } else if (wasDraggedToRight) {
-        const newOffset = oldItem.originalData.offset + (newStartTime - oldItem.startTime)
-
-        return newOffset
-    } else {
-        return oldItem.originalData.offset
-    }
-}
 
 /**
  * Initializes a VideoContext and binds it to a given canvas ref
@@ -427,45 +275,106 @@ export const initVideoContext = (canvasRef: RefObject<HTMLCanvasElement>) => {
     return { videoCtx, combineEffect }
 }
 
-export const sortItemsByStartTime = (items: MediaItem<any>[]) => {
-    return [...items].sort((a, b) => {
-        if (a.startsBefore(b)) {
-            return 1
-        } else if (b.startsBefore(a)) {
-            return -1
-        } else {
-            return 0
-        }
-    })
+export type VideoContextPlaylistElement = {
+    url: string
+    offset: number
+    playbackRate: number
+    start: number
+    duration: number
 }
+
+const CUT_PADDING_SECS = 0.001
+
+/**
+ * Transforms a list of MediaItemType<Cut> into elements which are playable by the video context player.
+ * All items are snapped back to back to their predecessor, so that there remains no empty space between cuts.
+ */
+export const transformCutListToVideoContextPlaylist = (cuts: CutList): Array<VideoContextPlaylistElement> =>
+    cuts.reduce(
+        (acc: { nextStart: number; videoContextElements: Array<VideoContextPlaylistElement> }, cut) => {
+            const newElement: VideoContextPlaylistElement = {
+                url: cut.url,
+                offset: cut.offset,
+                playbackRate: cut.playbackRate,
+                start: acc.nextStart,
+                duration: t2d(cut.end) - t2d(cut.start),
+            }
+
+            return {
+                ...acc,
+                videoContextElements: [...acc.videoContextElements, newElement],
+                // New nextStart for the next element is the starting position of the current element
+                // added up with the duration of the current element -> which is basically the end of the current item
+                nextStart: acc.nextStart + newElement.duration + CUT_PADDING_SECS,
+            }
+        },
+        { videoContextElements: [], nextStart: 0 }
+    ).videoContextElements
 
 /**
  * Given a VideoContext and a Cut this directly adds a new videoNode to the context
  */
-export const addCut = (cut: Cut, videoCtx: VideoContext) => {
-    // We create the video node ourselfs, because we need it asap, to retrieve
+export const addVideoContextPlaylistElement = (
+    videoContextPlaylistElement: VideoContextPlaylistElement,
+    videoCtx: VideoContext
+) => {
+    // We create the video node ourselves, because we need it asap, to retrieve
     // the aspect ratio of the first video node to determine the dimensions of
     // the canvas it is rendered to.
     const newVideoElement = document.createElement('video')
-    newVideoElement.setAttribute('src', cut.url)
+    newVideoElement.setAttribute('src', videoContextPlaylistElement.url)
     newVideoElement.setAttribute('crossorigin', 'anonymous')
     newVideoElement.setAttribute('webkit-playsinline', '')
     newVideoElement.setAttribute('playsinline', '')
     newVideoElement.setAttribute('data-video', '')
 
-    const videoNode = videoCtx.video(newVideoElement, cut.offset, 4, {
+    const videoNode = videoCtx.video(newVideoElement, videoContextPlaylistElement.offset, 4, {
+        // TODO: Why set volume here?
         volume: 0.6,
         loop: false,
     })
 
-    const start = t2d(cut.start)
-    const duration = t2d(cut.end) - t2d(cut.start)
-
-    videoNode._playbackRate = cut.playbackRate
-    videoNode.start(start)
-    videoNode.stop(start + duration)
+    videoNode._playbackRate = videoContextPlaylistElement.playbackRate
+    videoNode.start(videoContextPlaylistElement.start)
+    videoNode.stop(videoContextPlaylistElement.start + videoContextPlaylistElement.duration)
 
     videoNode.connect(videoCtx.destination)
 
     return { videoNode, videoElement: newVideoElement }
 }
+
+export const getMediaItemFromCut = (cut: Cut) => {
+    return new MediaItem({
+        start: cut.start,
+        end: cut.end,
+        text: cut.text || cut.url,
+        memo: '',
+        originalData: cut,
+        lane: 0,
+        idFromPrototype: cut.idFromPrototype,
+    })
+}
+
+/**
+ * Transform CutList to MediaItems that represent the cuts in the VideoContext player.
+ */
+export const transformCutListToMediaItemsForCutContext = (cutList: CutList): Array<MediaItem<Cut>> =>
+    cutList
+        .reduce(
+            (acc: { nextStart: number; cuts: CutList }, cut) => {
+                const newNextStart = acc.nextStart + t2d(cut.end) - t2d(cut.start)
+                const newCut: Cut = {
+                    ...cut,
+                    start: d2t(acc.nextStart.toFixed(3)),
+                    end: d2t(newNextStart.toFixed(3)),
+                }
+
+                return {
+                    ...acc,
+                    cuts: [...acc.cuts, newCut],
+                    nextStart: newNextStart + CUT_PADDING_SECS,
+                }
+            },
+            { cuts: [], nextStart: 0 }
+        )
+        .cuts.map(getMediaItemFromCut)

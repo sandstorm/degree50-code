@@ -14,6 +14,7 @@ type Props = {
     amountOfLanes?: number
 }
 
+// TODO: `amountOfLanes` is misquiding. Amount of lanes can not be "< 1".
 const ReadOnlyMediaItem = ({ item, id, renderConfig, showTextInMediaItems, amountOfLanes = 0 }: Props) => {
     const mediaItemHeight = 100 / (amountOfLanes + 1)
     const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModalHook()

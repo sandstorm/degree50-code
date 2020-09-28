@@ -1,5 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
-import { Table } from 'react-virtualized'
+import React from 'react'
 import Row from './Row/Row'
 import { MediaItem } from '../types'
 
@@ -7,63 +6,68 @@ export type Props = {
     mediaItems: MediaItem<any>[]
     addMediaItem?: (index: number, sub?: MediaItem<any>) => void
     currentIndex: number
+    setCurrentIndex?: (index: number) => void
     updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine updatedValues
     removeMediaItem: (item: MediaItem<any>) => void
     checkMediaItem: (item: MediaItem<any>) => boolean
     children?: React.ReactNode | React.ReactNodeArray
+    moveItemUp?: (indexToMove: number) => void
+    moveItemDown?: (indexToMove: number) => void
 }
 
 const MediaItemList = ({
     mediaItems,
     addMediaItem,
+    setCurrentIndex,
     children,
     currentIndex,
     updateMediaItem,
     removeMediaItem,
     checkMediaItem,
+    moveItemUp,
+    moveItemDown,
 }: Props) => {
-    const ref: React.RefObject<HTMLDivElement> = useRef(null)
-
-    const [width, setWidth] = useState(0)
-    const [height, setHeight] = useState(0)
-
-    useEffect(() => {
-        const divWithTable = ref.current
-
-        if (divWithTable && divWithTable.parentElement) {
-            setWidth(divWithTable.parentElement.clientWidth)
-            setHeight(divWithTable.clientHeight)
-        }
-    }, [ref.current])
-
     return (
-        <div className="video-editor__media-item-list" ref={ref}>
+        <div className="video-editor__media-item-list">
             {children}
-            <Table
-                className="video-editor__media-item-list__table"
-                headerHeight={40}
-                width={width}
-                height={height}
-                rowHeight={80}
-                scrollToIndex={currentIndex}
-                rowCount={mediaItems.length}
-                rowGetter={({ index }) => mediaItems[index]}
-                headerRowRenderer={() => null}
-                rowRenderer={(props) => (
-                    <Row
-                        key={props.key}
-                        id={props.key}
-                        rowData={props.rowData}
-                        style={props.style}
-                        index={props.index}
-                        checkMediaItem={checkMediaItem}
-                        removeMediaItem={removeMediaItem}
-                        addMediaItem={addMediaItem}
-                        updateMediaItem={updateMediaItem}
-                        currentIndex={currentIndex}
-                    />
-                )}
-            ></Table>
+            <ul className="video-editor__media-item-list__table">
+                {mediaItems.map((mediaItem, index) => {
+                    const id = index.toString()
+                    const handleMoveItemUp =
+                        index !== 0
+                            ? moveItemUp &&
+                              (() => {
+                                  moveItemUp(index)
+                                  setCurrentIndex && setCurrentIndex(index - 1)
+                              })
+                            : undefined
+
+                    const handleMoveItemDown =
+                        index < mediaItems.length - 1
+                            ? moveItemDown &&
+                              (() => {
+                                  moveItemDown(index)
+                                  setCurrentIndex && setCurrentIndex(index + 1)
+                              })
+                            : undefined
+
+                    return (
+                        <Row
+                            key={id}
+                            id={id}
+                            rowData={mediaItem}
+                            index={index}
+                            checkMediaItem={checkMediaItem}
+                            removeMediaItem={removeMediaItem}
+                            addMediaItem={addMediaItem}
+                            updateMediaItem={updateMediaItem}
+                            currentIndex={currentIndex}
+                            moveItemUp={handleMoveItemUp}
+                            moveItemDown={handleMoveItemDown}
+                        />
+                    )
+                })}
+            </ul>
         </div>
     )
 }

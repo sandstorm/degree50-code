@@ -16,7 +16,6 @@ export const initVideoContext = () => {
       videoCtx.currentTime = 0;
     }
 
-    console.log(videoCtx)
     videoCtx.play();
   };
 
