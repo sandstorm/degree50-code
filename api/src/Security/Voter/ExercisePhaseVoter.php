@@ -16,10 +16,11 @@ class ExercisePhaseVoter extends Voter
     const NEXT = 'next';
     const DELETE = 'delete';
     const SHOW_SOLUTIONS = 'showSolutions';
+    const CREATE_TEAM = 'createTeam';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::SHOW_SOLUTIONS])) {
+        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::SHOW_SOLUTIONS, self::CREATE_TEAM])) {
             return false;
         }
 
@@ -54,6 +55,8 @@ class ExercisePhaseVoter extends Voter
                 return $this->canDelete($exercisePhase, $user);
             case self::SHOW_SOLUTIONS:
                 return $this->canShowSolutions($exercisePhase, $user);
+            case self::CREATE_TEAM:
+                return $this->canCreateTeam($exercisePhase, $user);
 
         }
 
@@ -82,5 +85,22 @@ class ExercisePhaseVoter extends Voter
     private function canShowSolutions(ExercisePhase $exercisePhase, User $user)
     {
         return $user === $exercisePhase->getBelongsToExercise()->getCreator();
+    }
+
+    private function canCreateTeam(ExercisePhase $exercisePhase, User $user): bool
+    {
+        $existingTeams = $exercisePhase->getTeams();
+        $canCreate = true;
+        foreach($existingTeams as $team) {
+            if($team->getMembers()->contains($user)) {
+                $canCreate = false;
+            }
+
+            if ($team->getCreator() === $user) {
+                $canCreate = false;
+            }
+        }
+
+        return $canCreate;
     }
 }

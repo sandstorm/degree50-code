@@ -30,6 +30,9 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
         case ExercisePhaseTypesEnum.VIDEO_ANALYSIS:
             exercisePhase = <VideoAnalysis height={height} />
             break
+        case ExercisePhaseTypesEnum.VIDEO_CUTTING:
+            exercisePhase = <VideoAnalysis height={height} />
+            break
         default:
     }
 

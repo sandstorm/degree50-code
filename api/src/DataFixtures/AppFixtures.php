@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -28,7 +28,7 @@ class AppFixtures extends Fixture
         $exercise->setCourse($this->getReference(AccountFixtures::COURSE_REFERENCE));
         $exercise->setCreator($this->getReference(AccountFixtures::CREATOR_REFERENCE));
 
-        $exercise_p1 = new VideoAnalysis("e1-p1");
+        $exercise_p1 = new VideoAnalysisPhase("e1-p1");
         $exercise_p1->isGroupPhase = false;
         $exercise_p1->name = "Vorbereitung";
         $exercise_p1->task = '
@@ -39,7 +39,7 @@ class AppFixtures extends Fixture
         ';
         $exercise->addPhase($exercise_p1);
 
-        $exercise_p2 = new VideoAnalysis("e1-p2");
+        $exercise_p2 = new VideoAnalysisPhase("e1-p2");
         $exercise_p2->isGroupPhase = true;
         $exercise_p2->name = "Erstellen eines Analytical Shortfilms";
         $exercise_p2->task = '
@@ -51,7 +51,7 @@ class AppFixtures extends Fixture
         ';
         $exercise->addPhase($exercise_p2);
 
-        $exercise_p3 = new VideoAnalysis("e1-p3");
+        $exercise_p3 = new VideoAnalysisPhase("e1-p3");
         $exercise_p3->isGroupPhase = true;
         $exercise_p3->name = "Austausch über die erstellten Filme";
         $exercise_p3->task = '

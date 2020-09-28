@@ -4,7 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
-use App\Entity\Exercise\VideoCode;
+use App\Entity\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @DiscriminatorColumn(name="phaseType", type="string")
  * @DiscriminatorMap({
  *     "exercisePhase" = "App\Entity\Exercise\ExercisePhase",
- *     "videoAnalysis" = "App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis"
+ *     "videoAnalysisPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase",
+ *     "videoCutPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase",
  * })
  */
 class ExercisePhase implements ExerciseInterface
@@ -29,7 +30,8 @@ class ExercisePhase implements ExerciseInterface
 
     // types of phases
     const TYPE_VIDEO_ANALYSE = 'videoAnalysis';
-    const PHASE_TYPES = [self::TYPE_VIDEO_ANALYSE];
+    const TYPE_VIDEO_CUTTING = 'videoCutting';
+    const PHASE_TYPES = [self::TYPE_VIDEO_ANALYSE, self::TYPE_VIDEO_CUTTING];
 
     // components for phases
     const VIDEO_PLAYER = 'videoPlayer';
@@ -104,12 +106,18 @@ class ExercisePhase implements ExerciseInterface
      */
     private $videoCodes;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Video\Video", inversedBy="exercisePhases")
+     */
+    private $videos;
+
     public function __construct(string $id = null)
     {
         $this->generateOrSetId($id);
         $this->teams = new ArrayCollection();
         $this->material = new ArrayCollection();
         $this->videoCodes = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function __toString()
@@ -294,7 +302,6 @@ class ExercisePhase implements ExerciseInterface
     {
         if (!$this->videoCodes->contains($videoCode)) {
             $this->videoCodes[] = $videoCode;
-            $videoCode->addExercisePhase($this);
         }
 
         return $this;
@@ -304,7 +311,32 @@ class ExercisePhase implements ExerciseInterface
     {
         if ($this->videoCodes->contains($videoCode)) {
             $this->videoCodes->removeElement($videoCode);
-            $videoCode->removeExercisePhase($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->contains($video)) {
+            $this->videos->removeElement($video);
         }
 
         return $this;

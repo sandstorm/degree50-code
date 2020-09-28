@@ -35,18 +35,15 @@
                 <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
                 {{ form_widget(form.videoAnnotationsActive) }}
                 {{ form_widget(form.videoCodesActive) }}
-                {{ form_widget(form.videoCuttingActive) }}
-                {{ form_row(form.components) }}
-                <hr/>
             {% endif %}
+            {{ form_row(form.components) }}
+            <hr/>
 
-            {% if exercisePhase.type == 'videoAnalysis' %}
-                <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
-                {{ form_row(form.videos) }}
-                <hr/>
-            {% endif %}
+            <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
+            {{ form_row(form.videos) }}
+            <hr/>
 
-            {% if exercisePhase.videoCodesActive %}
+            {% if exercisePhase.type == 'videoAnalysis' and exercisePhase.videoCodesActive %}
                 <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
                 <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
                 <div class="form-inline video-code-form" id="add-new-video-code-form" data-controller="videoCodeForm"

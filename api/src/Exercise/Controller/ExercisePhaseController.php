@@ -6,7 +6,8 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\Material;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
@@ -14,6 +15,7 @@ use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
+use App\Exercise\Form\VideoCutType;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseRepository;
@@ -135,22 +137,39 @@ class ExercisePhaseController extends AbstractController
         ], $response);
     }
 
-    private function getConfig($exercisePhase, $readOnly = false)
+    private function getConfig(ExercisePhase $exercisePhase, $readOnly = false)
     {
         /* @var User $user */
         $user = $this->getUser();
 
         $components = $exercisePhase->getComponents();
+        $videoCodesPool = [];
 
-        /* @var $exercisePhase VideoAnalysis */
-        if ($exercisePhase->getVideoAnnotationsActive()) {
-            array_push($components, ExercisePhase::VIDEO_ANNOTATION);
-        }
-        if ($exercisePhase->getVideoCodesActive()) {
-            array_push($components, ExercisePhase::VIDEO_CODE);
-        }
-        if ($exercisePhase->getVideoCuttingActive()) {
-            array_push($components, ExercisePhase::VIDEO_CUTTING);
+        switch ($exercisePhase->getType()) {
+            case ExercisePhase::TYPE_VIDEO_ANALYSE :
+                /* @var $exercisePhase VideoAnalysisPhase */
+                if ($exercisePhase->getVideoAnnotationsActive()) {
+                    array_push($components, ExercisePhase::VIDEO_ANNOTATION);
+                }
+                if ($exercisePhase->getVideoCodesActive()) {
+                    array_push($components, ExercisePhase::VIDEO_CODE);
+                }
+
+                $videoCodesPool = array_map(function (VideoCode $videoCode) {
+                    return [
+                        'id' => $videoCode->getId(),
+                        'name' => $videoCode->getName(),
+                        'description' => $videoCode->getDescription(),
+                        'color' => $videoCode->getColor(),
+                        'userCreated' => false,
+                        'videoCodes' => []
+                    ];
+                }, $exercisePhase->getVideoCodes()->toArray());
+
+                break;
+            case ExercisePhase::TYPE_VIDEO_CUTTING :
+                array_push($components, ExercisePhase::VIDEO_CUTTING);
+                break;
         }
 
         return [
@@ -161,16 +180,7 @@ class ExercisePhaseController extends AbstractController
             'userId' => $user->getId(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'readOnly' => $readOnly,
-            'videoCodesPool' => array_map(function (VideoCode $videoCode) {
-                return [
-                    'id' => $videoCode->getId(),
-                    'name' => $videoCode->getName(),
-                    'description' => $videoCode->getDescription(),
-                    'color' => $videoCode->getColor(),
-                    'userCreated' => false,
-                    'videoCodes' => []
-                ];
-            }, $exercisePhase->getVideoCodes()->toArray()),
+            'videoCodesPool' => $videoCodesPool,
             'material' => array_map(function (Material $entry) {
                 return [
                     'id' => $entry->getId(),
@@ -257,9 +267,13 @@ class ExercisePhaseController extends AbstractController
         $type = $request->query->get('type', null);
         $isGroupPhase = $request->query->get('isGroupPhase', false);
         $exercisePhase = new ExercisePhase();
+
         switch ($type) {
             case ExercisePhase::TYPE_VIDEO_ANALYSE :
-                $exercisePhase = new VideoAnalysis();
+                $exercisePhase = new VideoAnalysisPhase();
+                break;
+            case ExercisePhase::TYPE_VIDEO_CUTTING :
+                $exercisePhase = new VideoCutPhase();
                 break;
         }
 
@@ -299,31 +313,31 @@ class ExercisePhaseController extends AbstractController
             case ExercisePhase::TYPE_VIDEO_ANALYSE :
                 $form = $this->createForm(VideoAnalysisType::class, $exercisePhase);
                 break;
+            case ExercisePhase::TYPE_VIDEO_CUTTING :
+                $form = $this->createForm(VideoCutType::class, $exercisePhase);
+                break;
         }
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $exercisePhase = $form->getData();
+            /* @var $exercisePhase VideoAnalysisPhase */
+            $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
+                'exercisePhaseId' => $exercisePhase->getId(),
+                'name' => $exercisePhase->getName(),
+                'task' => $exercisePhase->getTask(),
+                'isGroupPhase' => $exercisePhase->isGroupPhase(),
+                'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
+                    'videoId' => $video->getId()
+                ])->toArray(),
+                'videoCodes' => $exercisePhase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
+                    'videoCodeId' => $videoCode->getId()
+                ])->toArray(),
+                'components' => $exercisePhase->getComponents()
+            ]);
 
-            switch ($exercisePhase->getType()) {
-                case ExercisePhase::TYPE_VIDEO_ANALYSE :
-                    /* @var $exercisePhase VideoAnalysis */
-                    $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
-                        'exercisePhaseId' => $exercisePhase->getId(),
-                        'name' => $exercisePhase->getName(),
-                        'task' => $exercisePhase->getTask(),
-                        'isGroupPhase' => $exercisePhase->isGroupPhase(),
-                        'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
-                            'videoId' => $video->getId()
-                        ])->toArray(),
-                        'videoCodes' => $exercisePhase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
-                            'videoCodeId' => $videoCode->getId()
-                        ])->toArray(),
-                        'components' => $exercisePhase->getComponents()
-                    ]);
-            }
 
-            if (!$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive() && !$exercisePhase->getVideoCuttingActive()) {
+            if ($exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE && !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive()) {
                 $this->addFlash(
                     'danger',
                     'Mindestens eine Komponente muss aktiv sein'
