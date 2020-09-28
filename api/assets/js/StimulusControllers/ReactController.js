@@ -1,9 +1,9 @@
 import {Controller} from "stimulus"
+import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom';
 import React from 'react';
-import {ApolloProvider} from '@apollo/react-hooks';
-import {client} from '../ApolloGraphqlClient';
 import widgets from '../Widgets/Index';
+import {store} from "./ExercisePhaseApp/Store/Store";
 
 export default class extends Controller {
     connect() {
@@ -14,9 +14,9 @@ export default class extends Controller {
         const props = propsAsString ? JSON.parse(propsAsString) : {};
 
         ReactDOM.render(
-            <ApolloProvider client={client}>
+            <Provider store={store}>
                 <ReactWidget {...props} />
-            </ApolloProvider>
+            </Provider>
             , this.element);
     }
 }
