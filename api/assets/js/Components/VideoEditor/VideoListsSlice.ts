@@ -20,7 +20,7 @@ export type VideoListsState = {
     annotations: Array<Annotation>
     videoCodes: Array<VideoCode>
     customVideoCodesPool: Array<VideoCodePrototype>
-    cutlist: CutList
+    cutList: CutList
     subtitles: Subtitle[]
 }
 
@@ -28,7 +28,7 @@ const initialState: VideoListsState = {
     annotations: [],
     videoCodes: [],
     customVideoCodesPool: [],
-    cutlist: [],
+    cutList: [],
     subtitles: [],
 }
 
@@ -43,7 +43,7 @@ export const videoListsSlice = createSlice({
             state.videoCodes = action.payload
         },
         setCutList: (state, action: PayloadAction<CutList>) => {
-            state.cutlist = action.payload
+            state.cutList = action.payload
         },
         setCustomVideoCodesPool: (state, action: PayloadAction<Array<VideoCodePrototype>>) => {
             state.customVideoCodesPool = action.payload
@@ -56,7 +56,7 @@ export const videoListsSlice = createSlice({
             state.videoCodes = action.payload?.videoCodes || []
             state.customVideoCodesPool = action.payload?.customVideoCodesPool || []
             state.subtitles = action.payload?.subtitles || []
-            state.cutlist = action.payload?.cutlist || []
+            state.cutList = action.payload?.cutList || []
         },
     },
 })

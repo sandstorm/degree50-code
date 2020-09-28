@@ -1,12 +1,12 @@
 import { initVideoContext, addNode } from './utils.js'
 import store from './Redux/Store/store'
-import { cutlistSlice } from './Redux/Store/cutlistReducer'
+import { cutListSlice } from './Redux/Store/cutListReducer'
 
 window.onload = function() {
   let { videoCtx, combineEffect } = initVideoContext()
 
   store.subscribe(() => {
-    const cutlist = store.getState().cutlist;
+    const cutList = store.getState().cutList;
 
     // Re-initialize video context
     // NOTE: If we don't do this, somehow we get tons of WEBGL error messages and
@@ -15,7 +15,7 @@ window.onload = function() {
     videoCtx = newVideoCtx
     combineEffect = newCombineEffect
 
-    cutlist.forEach(cut => addNode(cut, videoCtx, combineEffect))
+    cutList.forEach(cut => addNode(cut, videoCtx, combineEffect))
   })
 
   // simulateLotsOfCuts(50)
@@ -26,7 +26,7 @@ window.onload = function() {
 };
 
 const simulateMultipleLongVideos = () => {
-  const cutlist = Array.from({ length: 20 }, (_, index) => ({
+  const cutList = Array.from({ length: 20 }, (_, index) => ({
     url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     offset: 0, // can be different from start
     start: index * 540,
@@ -34,11 +34,11 @@ const simulateMultipleLongVideos = () => {
     playbackRate: 1
   }))
 
-  store.dispatch(cutlistSlice.actions.appendNodeList(cutlist))
+  store.dispatch(cutListSlice.actions.appendNodeList(cutList))
 }
 
 const simulateLotsOfCuts = (amount) => {
-  const cutlist = Array.from({ length: amount }, (_, index) => ({
+  const cutList = Array.from({ length: amount }, (_, index) => ({
     url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     offset: 0, // can be different from start
     start: index * 10,
@@ -46,11 +46,11 @@ const simulateLotsOfCuts = (amount) => {
     playbackRate: 1
   }))
 
-  store.dispatch(cutlistSlice.actions.appendNodeList(cutlist))
+  store.dispatch(cutListSlice.actions.appendNodeList(cutList))
 }
 
 const simulateEdits = () => {
-  store.dispatch(cutlistSlice.actions.appendNode(
+  store.dispatch(cutListSlice.actions.appendNode(
     {
       id: 'a',
       url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
@@ -61,7 +61,7 @@ const simulateEdits = () => {
     },
   ))
 
-  store.dispatch(cutlistSlice.actions.appendNode(
+  store.dispatch(cutListSlice.actions.appendNode(
     {
       id: 'b',
       url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
@@ -72,7 +72,7 @@ const simulateEdits = () => {
     },
   ))
 
-  store.dispatch(cutlistSlice.actions.appendNode(
+  store.dispatch(cutListSlice.actions.appendNode(
     {
       id: 'c',
       url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
@@ -83,7 +83,7 @@ const simulateEdits = () => {
     },
   ))
 
-  store.dispatch(cutlistSlice.actions.appendNode(
+  store.dispatch(cutListSlice.actions.appendNode(
     {
       id: 'd',
       url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
@@ -94,12 +94,12 @@ const simulateEdits = () => {
     },
   ))
 
-  store.dispatch(cutlistSlice.actions.moveNode(
+  store.dispatch(cutListSlice.actions.moveNode(
     {
       fromIndex: 2,
       toIndex: 0
     },
   ))
 
-  store.dispatch(cutlistSlice.actions.deleteNode(1))
+  store.dispatch(cutListSlice.actions.deleteNode(1))
 }

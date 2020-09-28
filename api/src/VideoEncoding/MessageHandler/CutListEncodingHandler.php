@@ -11,7 +11,7 @@ use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Video\VideoRepository;
-use App\VideoEncoding\Message\CutlistEncodingTask;
+use App\VideoEncoding\Message\CutListEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
@@ -25,13 +25,13 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
- * Handler which is responsible for the encoding of videos from a given cutlist
+ * Handler which is responsible for the encoding of videos from a given cutList
  * Invokes an FFMPEG worker to do the actual encoding
- *  NOTE: empty space between cutlist items which might exist inside the
+ *  NOTE: empty space between cutList items which might exist inside the
  *  frontend view, is not taken into consideration when creating the video
  *  on the serverside.
  */
-class CutlistEncodingHandler implements MessageHandlerInterface
+class CutListEncodingHandler implements MessageHandlerInterface
 {
     private LoggerInterface $logger;
     private FileSystemService $fileSystemService;
@@ -53,7 +53,7 @@ class CutlistEncodingHandler implements MessageHandlerInterface
     }
 
 
-    public function __invoke(CutlistEncodingTask $encodingTask)
+    public function __invoke(CutListEncodingTask $encodingTask)
     {
         $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($encodingTask->getExercisePhaseTeamId());
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
@@ -62,9 +62,9 @@ class CutlistEncodingHandler implements MessageHandlerInterface
             return;
         }
 
-        $cutlist = $exercisePhaseTeam->getSolution()->getSolution()['cutlist'];
+        $cutList = $exercisePhaseTeam->getSolution()->getSolution()['cutList'];
 
-        if (empty($cutlist)) {
+        if (empty($cutList)) {
             return;
         }
 
@@ -83,8 +83,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
             $ffmpeg = FFMpeg::create($config, $this->logger);
 
-            $this->logger->info('Creating intermediate clips from cutlist...');
-            $clipPaths = $this->createTemporaryClips($ffmpeg, $cutlist);
+            $this->logger->info('Creating intermediate clips from cutList...');
+            $clipPaths = $this->createTemporaryClips($ffmpeg, $cutList);
 
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
 
@@ -192,10 +192,10 @@ class CutlistEncodingHandler implements MessageHandlerInterface
     }
 
     /*
-     * Encodes intermediate video clips from a given cutlist which are later used to
+     * Encodes intermediate video clips from a given cutList which are later used to
      * eventually concatenate them into a single video
      */
-    private function createTemporaryClips(FFMpeg $ffmpeg, $cutlist)
+    private function createTemporaryClips(FFMpeg $ffmpeg, $cutList)
     {
         $clipOutputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
         $rootDir = $this->parameterBag->get('kernel.project_dir');
@@ -234,7 +234,7 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
                 // NOTE:
                 // The clips offset and duration might slightly deviate from the actual
-                // clips of the original cutlist. This is due to some rounding we have to do
+                // clips of the original cutList. This is due to some rounding we have to do
                 // to remain compatible with the @FFMpeg/Coordinate/TimeCode-class, which
                 // expects integers or otherwise does also round (but worse than our rounding, in most situations).
                 // TODO Add this constraint to the UX so that the user knows.
@@ -246,7 +246,7 @@ class CutlistEncodingHandler implements MessageHandlerInterface
             } else {
                 return null;
             }
-        }, $cutlist);
+        }, $cutList);
 
         return $clipPaths;
     }

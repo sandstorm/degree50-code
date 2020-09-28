@@ -124,7 +124,7 @@ const VideoContextPlayer = ({
 
             // Determine aspect ratio by the first videoElement we encounter - we do not directly set an aspect ration, but get the videos height/width instead
             // NOTE: If we have more than one video source at some point, we might need to
-            // change this to accomodate for different aspect ratios
+            // change this to accommodate for different aspect ratios
             firstVideoElement.addEventListener('loadedmetadata', () => {
                 setVideoSourceAttributes({
                     videoWidth: firstVideoElement.videoWidth,

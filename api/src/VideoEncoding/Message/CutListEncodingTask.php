@@ -4,7 +4,7 @@ namespace App\VideoEncoding\Message;
 
 use App\Entity\Exercise\ExercisePhaseTeam;
 
-class CutlistEncodingTask
+class CutListEncodingTask
 {
 
     private string $videoId;

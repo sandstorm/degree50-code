@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { cutlistSlice } from './cutlistReducer'
+import { cutListSlice } from './cutListReducer'
 
 const store = configureStore({
-  reducer: { cutlist: cutlistSlice.reducer }
+  reducer: { cutList: cutListSlice.reducer }
 })
 
 export default store

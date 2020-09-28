@@ -42,7 +42,7 @@ const prepareMediaItems = (solution: VideoListsState, activeTab: TabsTypesEnum) 
                 )
             )
         case TabsTypesEnum.VIDEO_CUTTING:
-            return solution.cutlist.map(
+            return solution.cutList.map(
                 (videoCut, index) =>
                     new MediaItem({
                         ...videoCut,

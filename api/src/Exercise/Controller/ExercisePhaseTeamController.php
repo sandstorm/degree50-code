@@ -10,7 +10,7 @@ use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
-use App\VideoEncoding\Message\CutlistEncodingTask;
+use App\VideoEncoding\Message\CutListEncodingTask;
 use App\Entity\Video\Video;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -227,12 +227,12 @@ class ExercisePhaseTeamController extends AbstractController
         $entityManager->persist($solution);
         $entityManager->flush();
 
-        $this->dispatchCutlistEncodingTask($exercisePhaseTeam);
+        $this->dispatchCutListEncodingTask($exercisePhaseTeam);
 
         return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
     }
 
-    private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam) {
+    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam) {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         if (!$exercisePhase instanceof VideoAnalysis) {
@@ -240,14 +240,14 @@ class ExercisePhaseTeamController extends AbstractController
         }
 
         $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutlist= $solution['cutlist'];
+        $cutList= $solution['cutList'];
 
-        if (empty($cutlist)) {
+        if (empty($cutList)) {
             return;
         }
 
-        $cutlistVideo = $this->createVideo($exercisePhaseTeam->getCreator());
-        $this->messageBus->dispatch(new CutlistEncodingTask($exercisePhaseTeam->getId(), $cutlistVideo->getId()));
+        $cutListVideo = $this->createVideo($exercisePhaseTeam->getCreator());
+        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutListVideo->getId()));
     }
 
     private function createVideo(User $creator): ?Video {
