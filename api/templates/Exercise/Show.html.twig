@@ -27,7 +27,7 @@
 
         <div class="row">
             <div class="col-3">
-                {% if is_granted('create', exercisePhase) %}
+                {% if is_granted('createTeam', exercisePhase) %}
                     <div class="tile">
                         <a class="tile__content"
                            href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
@@ -126,7 +126,7 @@
                     Mein Ergebnis
                 </a>
             {% else %}
-                {% if is_granted('create', exercisePhase) %}
+                {% if is_granted('createTeam', exercisePhase) %}
                     <a class="btn btn-lg btn-primary"
                        href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
                         <i class="fas fa-play"></i>

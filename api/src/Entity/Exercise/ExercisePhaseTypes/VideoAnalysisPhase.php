@@ -3,15 +3,12 @@
 namespace App\Entity\Exercise\ExercisePhaseTypes;
 
 use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Video\Video;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\ExercisePhaseTypes\VideoAnalysisTypeRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Exercise\ExercisePhaseRepository")
  */
-class VideoAnalysis extends ExercisePhase
+class VideoAnalysisPhase extends ExercisePhase
 {
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
@@ -24,11 +21,6 @@ class VideoAnalysis extends ExercisePhase
     ];
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Video\Video", inversedBy="videoAnalysisTypes")
-     */
-    private $videos;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $videoAnnotationsActive = true;
@@ -38,15 +30,9 @@ class VideoAnalysis extends ExercisePhase
      */
     private $videoCodesActive = false;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $videoCuttingActive = false;
-
     public function __construct(string $id = null)
     {
         parent::__construct($id);
-        $this->videos = new ArrayCollection();
     }
 
     /**
@@ -69,32 +55,6 @@ class VideoAnalysis extends ExercisePhase
         }
     }
 
-    /**
-     * @return Collection|Video[]
-     */
-    public function getVideos(): Collection
-    {
-        return $this->videos;
-    }
-
-    public function addVideo(Video $video): self
-    {
-        if (!$this->videos->contains($video)) {
-            $this->videos[] = $video;
-        }
-
-        return $this;
-    }
-
-    public function removeVideo(Video $video): self
-    {
-        if ($this->videos->contains($video)) {
-            $this->videos->removeElement($video);
-        }
-
-        return $this;
-    }
-
     public function getVideoAnnotationsActive(): ?bool
     {
         return $this->videoAnnotationsActive;
@@ -115,18 +75,6 @@ class VideoAnalysis extends ExercisePhase
     public function setVideoCodesActive(bool $videoCodesActive): self
     {
         $this->videoCodesActive = $videoCodesActive;
-
-        return $this;
-    }
-
-    public function getVideoCuttingActive(): ?bool
-    {
-        return $this->videoCuttingActive;
-    }
-
-    public function setVideoCuttingActive(bool $videoCuttingActive): self
-    {
-        $this->videoCuttingActive = $videoCuttingActive;
 
         return $this;
     }

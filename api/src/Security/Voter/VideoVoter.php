@@ -58,7 +58,7 @@ class VideoVoter extends Voter
 
     private function canDelete(Video $video, User $user)
     {
-        if (count($video->getVideoAnalysisTypes()) > 0) {
+        if (count($video->getExercisePhases()) > 0) {
             return false;
         }
         return $user === $video->getCreator();

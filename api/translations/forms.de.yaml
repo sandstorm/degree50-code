@@ -53,6 +53,9 @@ exercisePhase:
     videoAnalysis:
       label: 'Videoanalyse'
       iconClass: 'fas fa-film'
+    videoCutting:
+      label: 'Videoschnitt'
+      iconClass: 'fas fa-cut'
   components:
     videoPlayer:
       label: 'Videoplayer'

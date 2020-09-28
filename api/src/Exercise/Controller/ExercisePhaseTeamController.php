@@ -6,7 +6,7 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
@@ -51,7 +51,7 @@ class ExercisePhaseTeamController extends AbstractController
     }
 
     /**
-     * @IsGranted("create", subject="exercisePhase")
+     * @IsGranted("createTeam", subject="exercisePhase")
      * @Route("/exercise-phase/{id}/team/new", name="exercise-overview__exercise-phase-team--new")
      */
     public function new(Request $request, ExercisePhase $exercisePhase): Response
@@ -236,7 +236,7 @@ class ExercisePhaseTeamController extends AbstractController
     private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam, EntityManagerInterface $entityManager) {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
-        if (!$exercisePhase instanceof VideoAnalysis) {
+        if (!$exercisePhase instanceof VideoAnalysisPhase) {
             return;
         }
 

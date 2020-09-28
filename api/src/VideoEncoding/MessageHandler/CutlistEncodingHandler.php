@@ -5,7 +5,7 @@ namespace App\VideoEncoding\MessageHandler;
 
 
 use App\Core\FileSystemService;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -54,7 +54,7 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         $exercisePhaseTeam = $encodingTask->getExercisePhaseTeam();
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
-        if (!$exercisePhase instanceof VideoAnalysis) {
+        if (!$exercisePhase instanceof VideoAnalysisPhase) {
             return;
         }
 

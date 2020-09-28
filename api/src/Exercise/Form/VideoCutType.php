@@ -3,18 +3,16 @@
 namespace App\Exercise\Form;
 
 use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Video\Video;
-use App\Entity\Exercise\VideoCode;
 use App\Repository\Exercise\VideoCodeRepository;
 use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class VideoAnalysisType extends ExercisePhaseType
+class VideoCutType extends ExercisePhaseType
 {
     private VideoRepository $videoRepository;
     private VideoCodeRepository $videoCodeRepository;
@@ -46,18 +44,6 @@ class VideoAnalysisType extends ExercisePhaseType
         $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
 
         $builder
-            ->add('videoAnnotationsActive', CheckboxType::class, [
-                'required' => false,
-                'label' => "exercisePhase.components.videoAnnotation.label",
-                'translation_domain' => 'forms',
-                'block_prefix' => 'component_checkbox',
-            ])
-            ->add('videoCodesActive', CheckboxType::class, [
-                'required' => false,
-                'label' => "exercisePhase.components.videoCode.label",
-                'translation_domain' => 'forms',
-                'block_prefix' => 'component_checkbox',
-            ])
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
                 'choices' => $videoChoices,
@@ -84,7 +70,7 @@ class VideoAnalysisType extends ExercisePhaseType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => VideoAnalysisPhase::class,
+            'data_class' => VideoCutPhase::class,
         ]);
     }
 }

@@ -8,12 +8,13 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
+use App\Entity\Exercise\ExercisePhase;
 use App\Entity\VirtualizedFile;
 use App\Twig\AppRuntime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * @ApiResource
  * @ORM\Entity
@@ -57,9 +58,9 @@ class Video
     private $subtitles;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis", mappedBy="videos")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhase", mappedBy="videos")
      */
-    private $videoAnalysisTypes;
+    private $exercisePhases;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdVideos")
@@ -106,7 +107,7 @@ class Video
     public function __construct(string $id = '')
     {
         $this->generateOrSetId($id);
-        $this->videoAnalysisTypes = new ArrayCollection();
+        $this->exercisePhases = new ArrayCollection();
         $this->courses = new ArrayCollection();
     }
 
@@ -187,28 +188,28 @@ class Video
     }
 
     /**
-     * @return Collection|VideoAnalysis[]
+     * @return Collection|ExercisePhase[]
      */
-    public function getVideoAnalysisTypes(): Collection
+    public function getExercisePhases(): Collection
     {
-        return $this->videoAnalysisTypes;
+        return $this->exercisePhases;
     }
 
-    public function addVideoAnalysisType(VideoAnalysis $videoAnalysisType): self
+    public function addVideoAnalysisType(ExercisePhase $exercisePhase): self
     {
-        if (!$this->videoAnalysisTypes->contains($videoAnalysisType)) {
-            $this->videoAnalysisTypes[] = $videoAnalysisType;
-            $videoAnalysisType->addVideo($this);
+        if (!$this->exercisePhases->contains($exercisePhase)) {
+            $this->exercisePhases[] = $exercisePhase;
+            $exercisePhase->addVideo($this);
         }
 
         return $this;
     }
 
-    public function removeVideoAnalysisType(VideoAnalysis $videoAnalysisType): self
+    public function removeVideoAnalysisType(ExercisePhase $exercisePhase): self
     {
-        if ($this->videoAnalysisTypes->contains($videoAnalysisType)) {
-            $this->videoAnalysisTypes->removeElement($videoAnalysisType);
-            $videoAnalysisType->removeVideo($this);
+        if ($this->exercisePhases->contains($exercisePhase)) {
+            $this->exercisePhases->removeElement($exercisePhase);
+            $exercisePhase->removeVideo($this);
         }
 
         return $this;
