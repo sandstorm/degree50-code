@@ -10,7 +10,7 @@ use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
-use App\VideoEncoding\Message\CutlistEncodingTask;
+use App\VideoEncoding\Message\CutListEncodingTask;
 use App\Entity\Video\Video;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -203,7 +203,6 @@ class ExercisePhaseTeamController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $solution = $exercisePhaseTeam->getSolution();
-        $solution->setTeam($exercisePhaseTeam);
 
         // use solution of the latest autosaved one
         $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(['team' => $exercisePhaseTeam], ['update_timestamp' => 'desc']);
@@ -228,12 +227,12 @@ class ExercisePhaseTeamController extends AbstractController
         $entityManager->persist($solution);
         $entityManager->flush();
 
-        $this->dispatchCutlistEncodingTask($exercisePhaseTeam, $entityManager);
+        $this->dispatchCutListEncodingTask($exercisePhaseTeam);
 
         return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
     }
 
-    private function dispatchCutlistEncodingTask(ExercisePhaseTeam $exercisePhaseTeam, EntityManagerInterface $entityManager) {
+    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam) {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         if (!$exercisePhase instanceof VideoAnalysis) {
@@ -241,17 +240,17 @@ class ExercisePhaseTeamController extends AbstractController
         }
 
         $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutlist= $solution['cutlist'];
+        $cutList= $solution['cutList'];
 
-        if (empty($cutlist)) {
+        if (empty($cutList)) {
             return;
         }
 
-        $cutlistVideo = $this->createVideo($entityManager, $exercisePhaseTeam->getCreator());
-        $this->messageBus->dispatch(new CutlistEncodingTask($exercisePhaseTeam, $cutlistVideo->getId()));
+        $cutListVideo = $this->createVideo($exercisePhaseTeam->getCreator());
+        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutListVideo->getId()));
     }
 
-    private function createVideo(EntityManagerInterface $entityManager, User $creator): ?Video {
+    private function createVideo(User $creator): ?Video {
         $videoUuid = Uuid::uuid4()->toString();
         $video = new Video($videoUuid);
         $video->setCreator($creator);
@@ -259,6 +258,7 @@ class ExercisePhaseTeamController extends AbstractController
         $video->setTitle('Video to be cut <' . $videoUuid . '>');
         $video->setDataPrivacyAccepted(true);
         $this->eventStore->disableEventPublishingForNextFlush();
+        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($video);
         $entityManager->flush();
 

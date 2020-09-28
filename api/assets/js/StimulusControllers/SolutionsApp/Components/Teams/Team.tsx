@@ -2,14 +2,14 @@ import React from 'react'
 import { SolutionByTeam, SolutionFilterType } from '../../SolutionsApp'
 import { TabsTypesEnum } from '../../../../types'
 import { MediaItem } from 'Components/VideoEditor/Editors/components/types'
-import ReadOnlyMediaLane from 'Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
 import { solveConflicts } from 'Components/VideoEditor/Editors/helpers'
 import { Item } from '@react-stately/collections'
 import Dropdown from '../../../../Components/Dropdown/Dropdown'
 import { useModalHook } from '../../../../Components/Modal/useModalHook'
 import VideoCodesList from './VideoCodesList'
 import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
-import { MediaItemType } from '../../../../Components/VideoEditor/VideoListsSlice'
+import SolutionItemRenderer from './SolutionItemRenderer'
+import VideoCutSolutionVideo from './VideoCutSolutionVideo'
 
 type TeamProps = {
     solution: SolutionByTeam
@@ -48,6 +48,17 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
         )
     )
 
+    const itemsFromVideoCuts = solution.solution.cutList.map(
+        (videoCut, index) =>
+            new MediaItem({
+                ...videoCut,
+                // TODO: What should be the text? e.g. (start : end) of the cut in the original video?
+                text: `Cut ${index + 1}`,
+                originalData: videoCut,
+                lane: 0,
+            })
+    )
+
     const { showModal: showVideoCodesModal, RenderModal: RenderVideoCodesModal } = useModalHook()
     const handleDropdownClick = (key: React.Key) => {
         if (key === 'showVideoCodes') {
@@ -64,38 +75,39 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
                 </Dropdown>
             </header>
             {visibleSolutionFilters.map((solutionFilter: SolutionFilterType) => {
-                let mediaItems: MediaItem<MediaItemType>[] = []
                 switch (solutionFilter.id) {
                     case TabsTypesEnum.VIDEO_ANNOTATIONS:
-                        mediaItems = itemsFromAnnotations
-                        break
-                    case TabsTypesEnum.VIDEO_CODES:
-                        mediaItems = itemsFromVideoCodes
-                        break
-                    case TabsTypesEnum.VIDEO_CUTTING:
-                        mediaItems = []
-                        break
-                    default:
-                        mediaItems = itemsFromAnnotations
-                }
-
-                return solutionFilter.visible ? (
-                    <div key={solution.teamCreator + '' + solutionFilter.id} className={'team__solution'}>
-                        <h5 className={'team__solution-headline'}>
-                            {solutionFilter.label} (Anzahl: {mediaItems.length})
-                        </h5>
-                        {mediaItems.length > 0 ? (
-                            <ReadOnlyMediaLane
-                                updateCurrentTime={updateCurrentTime}
-                                mediaItems={mediaItems}
-                                showTextInMediaItems={solutionFilter.id === TabsTypesEnum.VIDEO_ANNOTATIONS}
+                        return (
+                            <SolutionItemRenderer
+                                key={solutionFilter.id}
                                 renderConfig={renderConfig}
+                                updateCurrentTime={updateCurrentTime}
+                                solutionFilter={solutionFilter}
+                                mediaItems={itemsFromAnnotations}
                             />
-                        ) : (
-                            <p>Kein Ergebnis vorhanden</p>
-                        )}
-                    </div>
-                ) : null
+                        )
+                    case TabsTypesEnum.VIDEO_CODES:
+                        return (
+                            <SolutionItemRenderer
+                                key={solutionFilter.id}
+                                renderConfig={renderConfig}
+                                updateCurrentTime={updateCurrentTime}
+                                solutionFilter={solutionFilter}
+                                mediaItems={itemsFromVideoCodes}
+                            />
+                        )
+                    case TabsTypesEnum.VIDEO_CUTTING:
+                        return (
+                            <div key={solutionFilter.id} className={'team__solution'}>
+                                <h5 className={'team__solution-headline'}>
+                                    {solutionFilter.label} (Anzahl: {itemsFromVideoCuts.length})
+                                </h5>
+                                <VideoCutSolutionVideo videoUrl={solution.cutVideo?.url.mp4} />
+                            </div>
+                        )
+                    default:
+                        throw new Error(`Invalid solution filter type: "${solutionFilter.id}"`)
+                }
             })}
             <RenderVideoCodesModal title={'Video-Codes'}>
                 <VideoCodesList

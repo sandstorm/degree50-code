@@ -12,9 +12,9 @@ const updateStartingTime = (nodes) => {
   return updatedNodes.nodes
 }
 
-export const cutlistSlice =  createSlice({
+export const cutListSlice =  createSlice({
       // A name, used in action types
-    name: "cutlist",
+    name: "cutList",
         // The initial state for the reducer
     initialState: [ ],
     // An object of "case reducers". Key names will be used to generate actions.

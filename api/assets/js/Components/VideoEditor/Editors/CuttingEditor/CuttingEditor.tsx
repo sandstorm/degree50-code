@@ -27,7 +27,7 @@ type OwnProps = {
 
 const mapStateToProps = (state: VideoEditorState) => ({
     playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
-    cutList: selectors.lists.selectVideoEditorLists(state).cutlist,
+    cutList: selectors.lists.selectVideoEditorLists(state).cutList,
 })
 
 const mapDispatchToProps = {
@@ -36,6 +36,34 @@ const mapDispatchToProps = {
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+
+const getMediaItemForCompleteVideo = (video: Video) => {
+    const cut: Cut = {
+        url: video.url.mp4 ?? '',
+        start: '00:00:00.000',
+        end: d2t(parseFloat(video.duration).toFixed(3)),
+        offset: 0,
+        playbackRate: 1,
+        text: video.name,
+        memo: '',
+        color: null,
+        idFromPrototype: null,
+    }
+
+    return getMediaItemFromCut(cut)
+}
+
+const getMediaItemFromCut = (cut: Cut) => {
+    return new MediaItem({
+        start: cut.start,
+        end: cut.end,
+        text: cut.text || cut.url,
+        memo: '',
+        originalData: cut,
+        lane: 0,
+        idFromPrototype: cut.idFromPrototype,
+    })
+}
 
 const CuttingEditor = ({
     setCutList,
@@ -51,43 +79,11 @@ const CuttingEditor = ({
     const { volume, handleVolumeChange } = useVolume()
     const containerHeight = height - MEDIA_LANE_HEIGHT
 
-    const firstVideo = videos[0]
-    const firstVideoUrl = firstVideo ? firstVideo.url.mp4 : ''
-
-    // WHY: we need  the full duration of the video to create a cut media item
-    // of the same length on the media track.
-    // If we somehow do not have a duration, we default to 5 seconds.
-    const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
+    // WHY: hard code source videos to the first video
+    const originalVideo = videos[0]
 
     const mediaItems: MediaItem<Cut>[] =
-        cutList.length > 0
-            ? cutList.map(
-                  (cut) =>
-                      new MediaItem({
-                          start: cut.start,
-                          end: cut.end,
-                          text: typeof cut.text === 'string' ? cut.text : cut.url,
-                          memo: '',
-                          originalData: cut,
-                          lane: 0,
-                          idFromPrototype: cut.idFromPrototype,
-                      })
-              )
-            : [
-                  new MediaItem({
-                      start: '00:00:00.000',
-                      end: d2t(firstVideoDuration.toFixed(3)),
-                      text: videos[0]?.name || '',
-                      memo: '',
-                      originalData: {
-                          url: firstVideoUrl,
-                          offset: 0,
-                          playbackRate: 1,
-                      } as Cut,
-                      lane: 0,
-                      idFromPrototype: null,
-                  }),
-              ]
+        cutList.length > 0 ? cutList.map(getMediaItemFromCut) : [getMediaItemForCompleteVideo(originalVideo)]
 
     const {
         currentIndex,
@@ -115,12 +111,20 @@ const CuttingEditor = ({
             // with a media item to write it to the store).
             // This is a bit hacky. Perhaps we should find a better way than to force this.
             // The issue currently is, that 'updateMediaItems' does make an equality check comparing
-            // its inital items with the new media items.
+            // its initial items with the new media items.
             // Initially, when a video is opened the very first time
-            // inside the cutting editor, both lists will be identical and the cutlist wont be written to the store.
+            // inside the cutting editor, both lists will be identical and the cutList wont be written to the store.
             updateMediaItems(mediaItems, true, true)
         }
     }, [cutList, mediaItems])
+
+    // If there is no video, we can't cut any
+    // TODO: What needs to happen here?
+    if (!originalVideo) {
+        return null
+    }
+
+    const firstVideoDuration = parseFloat(originalVideo.duration)
 
     return (
         <React.Fragment>
@@ -174,8 +178,8 @@ const CuttingEditor = ({
                                 defaultValue={volume}
                                 type="range"
                                 min="0"
-                                max="10"
-                                step="1"
+                                max="100"
+                                step="10"
                                 onChange={handleVolumeChange}
                             />
                         </div>

@@ -24,7 +24,7 @@ class ExercisePhaseTeam
     private $exercisePhase;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Exercise\Solution", inversedBy="team", cascade={"all"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Exercise\Solution", cascade={"remove"})
      */
     private $solution;
 
@@ -39,7 +39,7 @@ class ExercisePhaseTeam
     private $currentEditor;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\AutosavedSolution", mappedBy="team", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\AutosavedSolution", mappedBy="team", orphanRemoval=true, cascade={"remove"})
      */
     private $autosavedSolutions;
 
@@ -145,10 +145,6 @@ class ExercisePhaseTeam
     {
         if ($this->autosavedSolutions->contains($autosavedSolution)) {
             $this->autosavedSolutions->removeElement($autosavedSolution);
-            // set the owning side to null (unless already changed)
-            if ($autosavedSolution->getTeam() === $this) {
-                $autosavedSolution->setTeam(null);
-            }
         }
 
         return $this;

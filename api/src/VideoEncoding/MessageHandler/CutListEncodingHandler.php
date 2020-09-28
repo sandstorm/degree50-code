@@ -9,27 +9,29 @@ use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysis;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Video\VideoRepository;
-use App\VideoEncoding\Message\CutlistEncodingTask;
+use App\VideoEncoding\Message\CutListEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use FFMpeg\Coordinate\TimeCode;
-use Ramsey\Uuid\Uuid;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
 use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as MediaVideo;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-/*
- * Handler which is responsible for the encoding of videos from a given cutlist
+/**
+ * Handler which is responsible for the encoding of videos from a given cutList
  * Invokes an FFMPEG worker to do the actual encoding
- *  NOTE: empty space between cutlist items which might exist inside the
+ *  NOTE: empty space between cutList items which might exist inside the
  *  frontend view, is not taken into consideration when creating the video
  *  on the serverside.
  */
-class CutlistEncodingHandler implements MessageHandlerInterface
+class CutListEncodingHandler implements MessageHandlerInterface
 {
     private LoggerInterface $logger;
     private FileSystemService $fileSystemService;
@@ -37,8 +39,9 @@ class CutlistEncodingHandler implements MessageHandlerInterface
     private EntityManagerInterface $entityManager;
     private DoctrineIntegratedEventStore $eventStore;
     private ParameterBagInterface $parameterBag;
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
-    public function __construct(LoggerInterface $logger, ParameterBagInterface $parameterBag, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(LoggerInterface $logger, ParameterBagInterface $parameterBag, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, ExercisePhaseTeamRepository $exercisePhaseTeamRepository)
     {
         $this->logger = $logger;
         $this->parameterBag = $parameterBag;
@@ -46,22 +49,22 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         $this->videoRepository = $videoRepository;
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
     }
 
 
-    public function __invoke(CutlistEncodingTask $encodingTask)
+    public function __invoke(CutListEncodingTask $encodingTask)
     {
-        $exercisePhaseTeam = $encodingTask->getExercisePhaseTeam();
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($encodingTask->getExercisePhaseTeamId());
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         if (!$exercisePhase instanceof VideoAnalysis) {
             return;
         }
 
-        $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutlist= $solution['cutlist'];
+        $cutList = $exercisePhaseTeam->getSolution()->getSolution()['cutList'];
 
-        if (empty($cutlist)) {
+        if (empty($cutList)) {
             return;
         }
 
@@ -80,8 +83,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
             $ffmpeg = FFMpeg::create($config, $this->logger);
 
-            $this->logger->info('Creating intermediate clips from cutlist...');
-            $clipPaths = $this->createTemporaryClips($ffmpeg, $cutlist);
+            $this->logger->info('Creating intermediate clips from cutList...');
+            $clipPaths = $this->createTemporaryClips($ffmpeg, $cutList);
 
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
 
@@ -104,9 +107,15 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
             $this->pingAndReconnectDB();
 
+            // Add Video to Solution
+            $solution = $exercisePhaseTeam->getSolution();
+            $solution->setCutVideo($video);
+
             $this->entityManager->persist($video);
+            $this->entityManager->persist($solution);
+            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage());
             $video->setEncodingStatus(Video::ENCODING_ERROR);
             $this->eventStore->disableEventPublishingForNextFlush();
@@ -119,7 +128,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         }
     }
 
-    private function probeForVideoDuration(string $filePath) {
+    private function probeForVideoDuration(string $filePath)
+    {
         $ffprobe = FFProbe::create();
         $duration = $ffprobe
             ->format($filePath) // extracts file informations
@@ -128,7 +138,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         return $duration;
     }
 
-    private function probeForFrameRate(string $filePath) {
+    private function probeForFrameRate(string $filePath)
+    {
         $ffprobe = FFProbe::create();
         $frameRate = $ffprobe
             ->streams($filePath)
@@ -145,11 +156,12 @@ class CutlistEncodingHandler implements MessageHandlerInterface
      *
      * @returns string - URL of the created video
      */
-    private function concatAndEncodeClips(array $clipPaths, VirtualizedFile $outputDirectory, FFMpeg $ffmpeg): string {
+    private function concatAndEncodeClips(array $clipPaths, VirtualizedFile $outputDirectory, FFMpeg $ffmpeg): string
+    {
         $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
 
         $firstClipPath = $clipPaths[0];
-        $remaingingClipPaths = array_slice($clipPaths, 1);
+        $remainingClipPaths = array_slice($clipPaths, 1);
 
         $mp4Url = $localOutputDirectory . '/x264.mp4';
 
@@ -159,12 +171,20 @@ class CutlistEncodingHandler implements MessageHandlerInterface
             mkdir($localOutputDirectory, 0777, true);
         }
 
-        if (empty($remaingingClipPaths)) {
+        $fileSystem = new Filesystem();
+        if ($fileSystem->exists($mp4Url)) {
+            $fileSystem->remove($mp4Url);
+        }
+
+        if (empty($remainingClipPaths)) {
             // TODO we could probably simply copy the temporary
             // clip instead of encoding it twice...
             $firstClip->save(new X264('libmp3lame'), $mp4Url);
         } else {
-            $ffmpegVideo = $firstClip->concat($remaingingClipPaths);
+            // TODO: Somehow concatenating ignores the Video itself
+            // The result is missing the $firstClip.
+            // Fix for now is to use all clipPaths again.
+            $ffmpegVideo = $firstClip->concat($clipPaths);
             $ffmpegVideo->saveFromSameCodecs($mp4Url);
         }
 
@@ -172,20 +192,21 @@ class CutlistEncodingHandler implements MessageHandlerInterface
     }
 
     /*
-     * Encodes intermediate video clips from a given cutlist which are later used to
+     * Encodes intermediate video clips from a given cutList which are later used to
      * eventually concatenate them into a single video
      */
-    private function createTemporaryClips(FFMpeg $ffmpeg, $cutlist) {
+    private function createTemporaryClips(FFMpeg $ffmpeg, $cutList)
+    {
         $clipOutputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
         $rootDir = $this->parameterBag->get('kernel.project_dir');
 
-        $clipPaths = array_map(function($cut) use($ffmpeg, $clipOutputDirectory, $rootDir) {
+        $clipPaths = array_map(function ($cut) use ($ffmpeg, $clipOutputDirectory, $rootDir) {
             $this->logger->info('Creating new intermediate clip...');
 
             $inputVideoFilename = $rootDir . '/public' . $cut['url'];
             $localOutputDirectory = $this->fileSystemService->localPath($clipOutputDirectory);
             $clipUuid = Uuid::uuid4()->toString();
-            $outputPath =  $localOutputDirectory . '/' . $clipUuid . '_x264.mp4';
+            $outputPath = $localOutputDirectory . '/' . $clipUuid . '_x264.mp4';
 
             $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
             $frameRate = $this->probeForFrameRate($inputVideoFilename);
@@ -198,10 +219,10 @@ class CutlistEncodingHandler implements MessageHandlerInterface
                 $videoTimelineStart = TimeCode::fromString($cut['start']);
                 $videoTimelineEnd = TimeCode::fromString($cut['end']);
 
-                $fps = (int) explode('/', $frameRate)[0];
+                $fps = (int)explode('/', $frameRate)[0];
                 $videoStartSeconds = $this->getSecondsFromTimeCode($videoTimelineStart, $fps);
                 $videoEndSeconds = $this->getSecondsFromTimeCode($videoTimelineEnd, $fps);
-                $videoDurationInSeconds =  $videoEndSeconds - $videoStartSeconds;
+                $videoDurationInSeconds = $videoEndSeconds - $videoStartSeconds;
 
                 $duration = $videoDurationInSeconds > 0 ? $videoDurationInSeconds : 1;
                 $videoDurationTimeCode = TimeCode::fromSeconds($duration);
@@ -213,9 +234,10 @@ class CutlistEncodingHandler implements MessageHandlerInterface
 
                 // NOTE:
                 // The clips offset and duration might slightly deviate from the actual
-                // clips of the original cutlist. This is due to some rounding we have to do
+                // clips of the original cutList. This is due to some rounding we have to do
                 // to remain compatible with the @FFMpeg/Coordinate/TimeCode-class, which
                 // expects integers or otherwise does also round (but worse than our rounding, in most situations).
+                // TODO Add this constraint to the UX so that the user knows.
                 $ffmpegVideo
                     ->clip($videoStartOffset, $videoDurationTimeCode)
                     ->save(new X264('libmp3lame'), $outputPath);
@@ -224,7 +246,7 @@ class CutlistEncodingHandler implements MessageHandlerInterface
             } else {
                 return null;
             }
-        }, $cutlist);
+        }, $cutList);
 
         return $clipPaths;
     }
@@ -233,7 +255,8 @@ class CutlistEncodingHandler implements MessageHandlerInterface
      * The toSeconds() method of @FFMpeg/Coordinate/TimeCode does not take frames into account.
      * Therefore we do our own conversion with the detected frames per second.
      */
-    private function getSecondsFromTimeCode(TimeCode $timeCode, int $fps) {
+    private function getSecondsFromTimeCode(TimeCode $timeCode, int $fps)
+    {
         $secondsWithoutFrames = $timeCode->toSeconds();
 
         // Small hack to access private properties of the TimeCode class
@@ -242,12 +265,13 @@ class CutlistEncodingHandler implements MessageHandlerInterface
         }, null, TimeCode::class);
 
         $frames = $frameGetter($timeCode, $fps);
-        $secondsWithFrames = $secondsWithoutFrames + ($frames / ($fps * 10) );
+        $secondsWithFrames = $secondsWithoutFrames + ($frames / ($fps * 10));
 
-        return (int) $secondsWithFrames;
+        return (int)$secondsWithFrames;
     }
 
-    private function pingAndReconnectDB() {
+    private function pingAndReconnectDB()
+    {
         // WHY: The encoding process might take quite long and the db connection might have been
         // lost/closed in the meantime. Therefore we check if we still have a connection and
         // otherwise reconnect.

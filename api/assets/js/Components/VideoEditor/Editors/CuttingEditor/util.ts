@@ -12,12 +12,17 @@ import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
 
+/**
+ * Default volume value (100 is max)
+ */
+export const INITIAL_VOLUME = 100
+
 export const useVolume = () => {
-    const [volume, setVolume] = useState<number>(0)
+    const [volume, setVolume] = useState<number>(INITIAL_VOLUME)
 
     const handleVolumeChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
-            setVolume(parseInt(event.currentTarget.value) / 10)
+            setVolume(parseInt(event.currentTarget.value))
         },
         [setVolume]
     )
@@ -104,7 +109,7 @@ export const useCuttingMediaItemHandling = ({
             // a) always be at least on second long
             // b) always have an exact second count (e.g. not 1 second + 20 frames)
             //
-            // WHY: The serverside rendering of the cutlist will always be full seconds
+            // WHY: The serverside rendering of the cutList will always be full seconds
             // and its result might otherwise deviate from the representation inside the frontend.
             const adjustedDuration = Math.round(duration) < 1 ? 1 : Math.round(duration)
             const adjustedEnd = d2t((t2d(newStart) + adjustedDuration).toFixed(3))
@@ -185,7 +190,7 @@ export const useCuttingMediaItemHandling = ({
     }
 
     /**
-     * Duplicates the cut at a certain index from the cutlist
+     * Duplicates the cut at a certain index from the cutList
      */
     const duplicateCut = useCallback(
         (index) => {
@@ -327,7 +332,7 @@ export const resolveOverlapAndSnapItems = (items: MediaItem<Cut>[]): MediaItem<C
  * Makes sure that each mediaItem immediately follows its predecessor with almost no
  * blank space between them.
  *
- * WHY: The server side rendered cutlist is currently unable to reflect empty space between media items
+ * WHY: The server side rendered cutList is currently unable to reflect empty space between media items
  * and concatenates them anyway. By also removing blank space in the frontend, we make sure, that the users
  * expectations are in line with the server side rendered result.
  *

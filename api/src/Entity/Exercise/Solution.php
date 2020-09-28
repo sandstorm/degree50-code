@@ -4,6 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Video\Video;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,16 +21,16 @@ class Solution
     private $solution = [];
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Exercise\ExercisePhaseTeam", mappedBy="solution")
-     */
-    private $team;
-
-    /**
      * @var \DateTimeImmutable|null
      *
      * @ORM\Column(type="datetimetz_immutable")
      */
     private $update_timestamp;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Video\Video", cascade={"remove"})
+     */
+    private $cutVideo;
 
     /**
      * Solution constructor.
@@ -39,7 +40,7 @@ class Solution
         $solutionPrototype = [
             'annotations' => [],
             'videoCodes' => [],
-            'cutlist' => [],
+            'cutList' => [],
         ];
         $this->solution = $solutionPrototype;
         $this->generateOrSetId($id);
@@ -59,24 +60,6 @@ class Solution
         return $this;
     }
 
-    public function getTeam(): ?ExercisePhaseTeam
-    {
-        return $this->team;
-    }
-
-    public function setTeam(?ExercisePhaseTeam $team): self
-    {
-        $this->team = $team;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newSolution = null === $team ? null : $this;
-        if ($team->getSolution() !== $newSolution) {
-            $team->setSolution($newSolution);
-        }
-
-        return $this;
-    }
-
     /**
      * @return \DateTimeImmutable|null
      */
@@ -91,5 +74,17 @@ class Solution
     public function setUpdateTimestamp(?\DateTimeImmutable $update_timestamp): void
     {
         $this->update_timestamp = $update_timestamp;
+    }
+
+    public function getCutVideo(): ?Video
+    {
+        return $this->cutVideo;
+    }
+
+    public function setCutVideo(?Video $cutVideo): self
+    {
+        $this->cutVideo = $cutVideo;
+
+        return $this;
     }
 }

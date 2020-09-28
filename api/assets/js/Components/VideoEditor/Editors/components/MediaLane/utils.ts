@@ -2,6 +2,11 @@ import { useLayoutEffect, useEffect } from 'react'
 import { RenderConfig } from './MediaTrack'
 import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
 
+/**
+ * The initial zoom value in %.
+ */
+export const INITIAL_ZOOM = 100
+
 export const useMediaLane = ({
     setRender,
     $container,

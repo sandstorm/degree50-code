@@ -116,7 +116,7 @@ const MediaItem = ({
     // WHY:
     // This is a hack to make sure, that media items will always reflect the correct width if either their
     // DOM node or the item changes. This means, that even if just some part of item.originalData
-    //  (e.g. the offset on a cutlist item) has been changed, the width will be explicitly set to the DOM node.
+    //  (e.g. the offset on a cutList item) has been changed, the width will be explicitly set to the DOM node.
     // This is necessary, because our useItemInteraction() hook directly messes with the DOM nodes of media items and
     // updating the width of the react virtual dom node wont take effect after some renders otherwise.
     //

@@ -1,6 +1,6 @@
 import VideoContext from 'videocontext'
 import store from './Redux/Store/store'
-import { cutlistSlice } from './Redux/Store/cutlistReducer'
+import { cutListSlice } from './Redux/Store/cutListReducer'
 
 export const initVideoContext = () => {
   const canvas = document.getElementById("canvas");
@@ -31,7 +31,7 @@ export const initVideoContext = () => {
 
   const splitButton = document.getElementById('split-button')
   splitButton.onclick = () => {
-    store.dispatch(cutlistSlice.actions.splitAtCursor(videoCtx.currentTime))
+    store.dispatch(cutListSlice.actions.splitAtCursor(videoCtx.currentTime))
   }
 
   // init timeline

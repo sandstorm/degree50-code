@@ -7,7 +7,7 @@ declare module 'videocontext' {
             STALLED: 'stalled'
             ENDED: 'ended'
             CONTENT: 'content'
-            NOCONTENT: 'nocontent'
+            NO_CONTENT: 'no-content'
         }
         static STATE: {
             PLAYING: 0

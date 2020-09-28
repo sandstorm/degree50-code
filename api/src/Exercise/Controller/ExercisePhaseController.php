@@ -47,7 +47,17 @@ class ExercisePhaseController extends AbstractController
     /**
      * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AppRuntime $appRuntime, LiveSyncService $liveSyncService, RouterInterface $router, AutosavedSolutionRepository $autosavedSolutionRepository, VideoCodeRepository $videoCodeRepository, ExercisePhaseRepository $exercisePhaseRepository, ExercisePhaseTeamRepository $exercisePhaseTeamRepository)
+    public function __construct(
+        TranslatorInterface $translator,
+        DoctrineIntegratedEventStore $eventStore,
+        AppRuntime $appRuntime,
+        LiveSyncService $liveSyncService,
+        RouterInterface $router,
+        AutosavedSolutionRepository $autosavedSolutionRepository,
+        VideoCodeRepository $videoCodeRepository,
+        ExercisePhaseRepository $exercisePhaseRepository,
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository
+    )
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -189,6 +199,9 @@ class ExercisePhaseController extends AbstractController
         }
 
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
+
+        $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
+
         $solutions = array_map(function (ExercisePhaseTeam $team) use ($exercise) {
             return [
                 'teamCreator' => $team->getCreator()->getUsername(),
@@ -196,8 +209,12 @@ class ExercisePhaseController extends AbstractController
                     return $member->getUsername();
                 }, $team->getMembers()->toArray()),
                 'solution' => $team->getSolution()->getSolution(),
+                'cutVideo' => $team->getSolution()->getCutVideo() ? $team->getSolution()->getCutVideo()->getAsArray($this->appRuntime) : null
             ];
         }, $teams);
+
+        // TODO throws Parameter 'userId' does not exist.... why?
+        //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
             'config' => $this->getConfig($exercisePhase, true),

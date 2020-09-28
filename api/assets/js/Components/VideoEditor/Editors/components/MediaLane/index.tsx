@@ -6,7 +6,7 @@ import { RenderConfig } from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
 import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
-import { useMediaLane } from './utils'
+import { INITIAL_ZOOM, useMediaLane } from './utils'
 import { defaultMediaTrackConfig } from './MediaTrack/helpers'
 
 export const MEDIA_LANE_HEIGHT = 200
@@ -58,7 +58,7 @@ const MediaLane = ({
         videoDuration,
     })
 
-    initialRender.duration = getDurationForRenderConfig(25)
+    initialRender.duration = getDurationForRenderConfig(INITIAL_ZOOM)
     initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
     initialRender.gridGap = containerWidth / initialRender.gridNum
 

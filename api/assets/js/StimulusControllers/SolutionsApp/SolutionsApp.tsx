@@ -7,7 +7,7 @@ import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import Toolbar from '../../Components/VideoEditor/Editors/components/MediaLane/Toolbar'
 import { RenderConfig } from '../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
-import { useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/utils'
+import { INITIAL_ZOOM, useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/utils'
 import { actions, selectors, VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
 import ArtPlayer from '../../Components/VideoEditor/Editors/components/ArtPlayer'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
@@ -23,6 +23,7 @@ export type SolutionByTeam = {
     teamMembers: Array<string>
     solution: VideoListsState
     visible: boolean
+    cutVideo?: Video
 }
 
 export type SolutionFilterType = {
@@ -87,7 +88,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
         videoDuration,
     })
 
-    initialRender.duration = getDurationForRenderConfig(100)
+    initialRender.duration = getDurationForRenderConfig(INITIAL_ZOOM)
     initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
     initialRender.gridGap = width / initialRender.gridNum
 
