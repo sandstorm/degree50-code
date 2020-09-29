@@ -8,7 +8,7 @@ use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\Material;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -202,7 +202,7 @@ final class DemoContext implements Context
     {
         /* @var $exercise Exercise */
         $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
-        $exercise->addPhase(new ExercisePhase($exercisePhaseId));
+        $exercise->addPhase(new VideoAnalysisPhase($exercisePhaseId));
 
         $this->entityManager->persist($exercise);
         $this->eventStore->disableEventPublishingForNextFlush();
