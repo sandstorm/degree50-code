@@ -9,7 +9,7 @@ import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/Vid
 
 export type PlayerOptions = {
     videoUrl: string
-    subtitleUrl?: string
+    subtitleUrl: string
 }
 
 type OwnProps = {
@@ -33,7 +33,6 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-// TODO handle pause from outside
 const ArtPlayer = ({
     worker,
     options,

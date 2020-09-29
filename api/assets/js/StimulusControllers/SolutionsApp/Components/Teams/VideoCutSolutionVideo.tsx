@@ -1,15 +1,24 @@
 import React from 'react'
+import ArtPlayer from '../../../../Components/VideoEditor/Editors/components/ArtPlayer'
+import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 
 type Props = {
-    videoUrl?: string
+    videoConfig?: Video
 }
 
 const VideoCutSolutionVideo: React.FC<Props> = (props) => {
-    if (props.videoUrl === undefined) {
+    if (props.videoConfig === undefined) {
         return <p>No solution, yet!</p>
     }
 
-    return <video controls height={'500px'} src={props.videoUrl} />
+    const artPlayerOptions = {
+        videoUrl: props.videoConfig?.url?.mp4 || '',
+        subtitleUrl: props.videoConfig?.url?.vtt || '',
+        uploadDialog: false,
+        translationLanguage: 'en',
+    }
+
+    return <ArtPlayer containerHeight={200} options={artPlayerOptions} />
 }
 
 export default React.memo(VideoCutSolutionVideo)

@@ -74,6 +74,10 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     const videoDuration: number = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
     const currentTime = props.playerSyncPlayPosition
 
+    const videoComponents = Object.values(TabsTypesEnum).filter((tabType) =>
+        props.availableComponents.includes(tabType)
+    )
+
     let { width, height } = useDebouncedResizeObserver($container, 500)
     // workaround to avoid height of 0 at intial render
     if (height === 0) {
@@ -119,11 +123,9 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
         [renderConfig]
     )
 
-    const firstVideoUrl = firstVideo?.url?.hls || ''
-    const subtitleUrl = firstVideo?.url?.vtt || undefined
     const artPlayerOptions = {
-        videoUrl: firstVideoUrl,
-        subtitleUrl,
+        videoUrl: firstVideo?.url?.hls || '',
+        subtitleUrl: firstVideo?.url?.vtt || '',
         uploadDialog: false,
         translationLanguage: 'en',
     }
@@ -138,7 +140,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
         )
 
         setVisibleSolutionFilters(
-            props.availableComponents.map((componentId: ComponentId) => {
+            videoComponents.map((componentId: ComponentId) => {
                 return {
                     id: componentId,
                     label: componentId, // TODO translate

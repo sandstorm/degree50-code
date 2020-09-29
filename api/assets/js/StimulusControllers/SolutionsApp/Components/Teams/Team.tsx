@@ -99,10 +99,8 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
                     case TabsTypesEnum.VIDEO_CUTTING:
                         return (
                             <div key={solutionFilter.id} className={'team__solution'}>
-                                <h5 className={'team__solution-headline'}>
-                                    {solutionFilter.label} (Anzahl: {itemsFromVideoCuts.length})
-                                </h5>
-                                <VideoCutSolutionVideo videoUrl={solution.cutVideo?.url.mp4} />
+                                <h5 className={'team__solution-headline'}>{solutionFilter.label}</h5>
+                                <VideoCutSolutionVideo videoConfig={solution.cutVideo} />
                             </div>
                         )
                     default:
