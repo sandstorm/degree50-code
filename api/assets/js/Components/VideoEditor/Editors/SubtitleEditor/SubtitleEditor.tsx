@@ -70,10 +70,10 @@ const SubtitleEditor = ({
     // All options
     const firstVideo = videos[0]
     const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
-    const firstVideoUrl = firstVideo?.url?.hls || ''
 
     const artPlayerOptions = {
-        videoUrl: firstVideoUrl,
+        videoUrl: firstVideo?.url?.hls || '',
+        subtitleUrl: firstVideo?.url?.vtt || '',
         uploadDialog: false,
         translationLanguage: 'en',
     }

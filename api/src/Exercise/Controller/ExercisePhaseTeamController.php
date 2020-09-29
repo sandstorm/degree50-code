@@ -7,6 +7,7 @@ use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
@@ -235,7 +236,7 @@ class ExercisePhaseTeamController extends AbstractController
     private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam) {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
-        if (!$exercisePhase instanceof VideoAnalysisPhase) {
+        if (!$exercisePhase instanceof VideoCutPhase) {
             return;
         }
 

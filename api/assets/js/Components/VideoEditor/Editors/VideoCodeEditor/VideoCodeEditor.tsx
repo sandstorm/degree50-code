@@ -89,12 +89,10 @@ const VideoCodeEditor = (props: Props) => {
     // All options
     const firstVideo = props.videos[0]
     const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
-    const firstVideoUrl = firstVideo?.url?.hls || ''
-    const subtitleUrl = firstVideo?.url?.vtt || undefined
 
     const artPlayerOptions = {
-        videoUrl: firstVideoUrl,
-        subtitleUrl,
+        videoUrl: firstVideo?.url?.hls || '',
+        subtitleUrl: firstVideo?.url?.vtt || '',
         uploadDialog: false,
         translationLanguage: 'en',
     }
