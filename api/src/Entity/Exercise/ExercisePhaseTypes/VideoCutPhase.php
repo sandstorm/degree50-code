@@ -2,7 +2,6 @@
 
 namespace App\Entity\Exercise\ExercisePhaseTypes;
 
-use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\ExercisePhase;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,8 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoCutPhase extends ExercisePhase
 {
-    use IdentityTrait;
-
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
         //ExercisePhase::DOCUMENT_UPLOAD,
