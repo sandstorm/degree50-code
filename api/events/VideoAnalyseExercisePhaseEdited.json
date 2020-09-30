@@ -14,6 +14,9 @@
     "isGroupPhase": {
       "type": "boolean"
     },
+    "dependsOnPreviousPhase": {
+      "type": "boolean"
+    },
     "videos": {
       "type": "array",
       "items": {
@@ -52,6 +55,7 @@
     "name",
     "task",
     "isGroupPhase",
+    "dependsOnPreviousPhase",
     "videos",
     "components"
   ],

@@ -39,7 +39,8 @@ exercise:
 
 exercisePhase:
   labels:
-    isGroupPhase: 'Gruppenarbeit'
+    isGroupPhase: 'Ist eine Gruppenarbeit'
+    dependsOnPreviousPhase: 'Nutzt Ergebnis vorheriger Phase'
     name: 'Titel der Phase'
     task: 'Lernauftrag / Beschreibung'
     videos: 'Videos'
@@ -49,6 +50,9 @@ exercisePhase:
     material: 'Material'
     submit: 'Phase speichern'
     type: 'Typ'
+  help:
+    isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
+    dependsOnPreviousPhase: 'Wenn aktiv, können die Studenten beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden.'
   types:
     videoAnalysis:
       label: 'Videoanalyse'
@@ -94,6 +98,8 @@ video:
     courses: 'Kurse mit Berechtigung für dieses Video'
     dataPrivacyAccepted: 'Datenschutzbestimmung akzeptiert'
     submit: 'Video speichern'
+  help:
+    courses: 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
   upload:
     title: 'Video hochladen'
     back: 'Zurück zur Übersicht'

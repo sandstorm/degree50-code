@@ -1,4 +1,5 @@
 {% trans_default_domain 'forms' %}
+{% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
 {% extends 'BaseFullscreen.html.twig' %}
 
 {% block title %}{% trans %}exercisePhase.edit.title{% endtrans %}{% endblock %}
@@ -18,15 +19,22 @@
         </nav>
 
         <header class="content-header">
-            {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
-            <h3>{% trans %}exercisePhase.edit.title{% endtrans %} / {{ phaseTypeTransVar | trans }} </h3>
+            <h3>{% trans %}exercisePhase.edit.title{% endtrans %}</h3>
         </header>
+        <p>
+            Typ: {{ phaseTypeTransVar | trans }}
+        </p>
 
         <div class="exercise-form">
             {{ form_start(form) }}
             {{ form_errors(form) }}
 
-            {{ form_row(form.isGroupPhase) }}
+            <div class="row">
+                <div class="col-md-6">{{ form_row(form.isGroupPhase) }}</div>
+                <div class="col-md-6">{{ form_row(form.dependsOnPreviousPhase) }}</div>
+            </div>
+            <hr />
+
             {{ form_row(form.name) }}
             {{ form_row(form.task) }}
 

@@ -62,6 +62,10 @@
                                     {% else %}
                                         <i class="fas fa-user"></i>
                                     {% endif %}
+                                    {% if exercisePhase.dependsOnPreviousPhase %}
+                                        <i class="fas fa-arrow-up"
+                                           title="{% trans %}exercisePhase.labels.dependsOnPreviousPhase{% endtrans %}"></i>
+                                    {% endif %}
                                 </td>
                                 <td>{{ phaseTypeTransVar | trans }}</td>
                                 <td>{{ exercisePhase.name }}</td>

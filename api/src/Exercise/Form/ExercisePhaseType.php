@@ -15,11 +15,25 @@ class ExercisePhaseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /* @var ExercisePhase $exercisePhase */
+        $exercisePhase = $options['data'];
+        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0;
+
         $builder
             ->add('isGroupPhase', CheckboxType::class, [
                 'required' => false,
                 'label' => "exercisePhase.labels.isGroupPhase",
-                'translation_domain' => 'forms'
+                'translation_domain' => 'forms',
+                'block_prefix' => 'toggleable_button_checkbox',
+                'help' => "exercisePhase.help.isGroupPhase",
+            ])
+            ->add('dependsOnPreviousPhase', CheckboxType::class, [
+                'required' => false,
+                'disabled' => $dependsOnPreviousPhaseIsDisabled,
+                'label' => "exercisePhase.labels.dependsOnPreviousPhase",
+                'translation_domain' => 'forms',
+                'block_prefix' => 'toggleable_button_checkbox',
+                'help' => "exercisePhase.help.dependsOnPreviousPhase",
             ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             ->add('task', CKEditorType::class, ['label' => "exercisePhase.labels.task", 'translation_domain' => 'forms'])

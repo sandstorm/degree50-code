@@ -21,6 +21,22 @@
   input[type='checkbox'] {
     display: none;
 
+    &:disabled ~ label {
+      background-color: $theme__color__red--light !important;
+      border-color: $theme__color__red--light !important;
+
+      color: $theme__color__white !important;
+
+      cursor: default;
+    }
+
+    &:disabled:checked ~ label {
+      background-color: $theme__color__green--light !important;
+      border-color: $theme__color__green--light !important;
+
+      color: $theme__color__white !important;
+    }
+
     &:checked ~ label {
       background-color: $theme__color__green !important;
       border-color: $theme__color__green !important;
