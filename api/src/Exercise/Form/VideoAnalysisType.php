@@ -50,13 +50,13 @@ class VideoAnalysisType extends ExercisePhaseType
                 'required' => false,
                 'label' => "exercisePhase.components.videoAnnotation.label",
                 'translation_domain' => 'forms',
-                'block_prefix' => 'component_checkbox',
+                'block_prefix' => 'toggleable_button_checkbox',
             ])
             ->add('videoCodesActive', CheckboxType::class, [
                 'required' => false,
                 'label' => "exercisePhase.components.videoCode.label",
                 'translation_domain' => 'forms',
-                'block_prefix' => 'component_checkbox',
+                'block_prefix' => 'toggleable_button_checkbox',
             ])
             ->add('videos', EntityType::class, [
                 'class' => Video::class,

@@ -34,7 +34,7 @@ class VideoType extends AbstractType
                 'group_by' => function (Course $choice, $key, $value) {
                     return $choice->getCreationDateYear();
                 },
-                'help' => 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.',
+                'help' => 'video.help.courses',
                 'query_builder' => function (CourseRepository $courseRepository) {
                     return $courseRepository->createQueryBuilder('c')
                         ->orderBy('c.name', 'ASC');

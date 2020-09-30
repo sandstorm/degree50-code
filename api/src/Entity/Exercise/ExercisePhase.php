@@ -111,6 +111,11 @@ class ExercisePhase implements ExerciseInterface
      */
     private $videos;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $dependsOnPreviousPhase = false;
+
     public function __construct(string $id = null)
     {
         $this->generateOrSetId($id);
@@ -338,6 +343,18 @@ class ExercisePhase implements ExerciseInterface
         if ($this->videos->contains($video)) {
             $this->videos->removeElement($video);
         }
+
+        return $this;
+    }
+
+    public function getDependsOnPreviousPhase(): ?bool
+    {
+        return $this->dependsOnPreviousPhase;
+    }
+
+    public function setDependsOnPreviousPhase(bool $dependsOnPreviousPhase): self
+    {
+        $this->dependsOnPreviousPhase = $dependsOnPreviousPhase;
 
         return $this;
     }

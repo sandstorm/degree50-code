@@ -85,7 +85,7 @@ class ExercisePhaseController extends AbstractController
         $showSolution = !!$request->get('showSolution');
 
         // config for the ui to render the react components
-        $config = $this->getConfig($exercisePhase, $showSolution);
+        $config = $this->getConfig($exercisePhase, $exercisePhaseTeam, $showSolution);
         $config['apiEndpoints'] = [
             'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
                 'id' => $exercisePhaseTeam->getId()
@@ -137,7 +137,7 @@ class ExercisePhaseController extends AbstractController
         ], $response);
     }
 
-    private function getConfig(ExercisePhase $exercisePhase, $readOnly = false)
+    private function getConfig(ExercisePhase $exercisePhase, ExercisePhaseTeam  $exercisePhaseTeam = null, $readOnly = false)
     {
         /* @var User $user */
         $user = $this->getUser();
@@ -172,6 +172,22 @@ class ExercisePhaseController extends AbstractController
                 break;
         }
 
+        $previousSolutions = [];
+        // Get the relevant solutions of the previous phase,
+        // meaning we get the solutions of each of the members of the current team
+        if ($exercisePhase->getDependsOnPreviousPhase() && $exercisePhaseTeam != null) {
+            $previousPhase = $this->exercisePhaseRepository->findOneBy(['sorting' => $exercisePhase->getSorting() - 1, 'belongsToExercise' => $exercisePhase->getBelongsToExercise()]);
+            if ($previousPhase) {
+                $previousSolutions = array_map(function (User $teamMember) use ($previousPhase) {
+                    $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $previousPhase);
+                    return [
+                        'userId' => $teamMember->getId(),
+                        'solution' => $teamOfPreviousPhase ? $teamOfPreviousPhase->getSolution()->getSolution() : [],
+                    ];
+                }, $exercisePhaseTeam->getMembers()->toArray());
+            }
+        }
+
         return [
             'title' => $exercisePhase->getName(),
             'description' => $exercisePhase->getTask(),
@@ -179,6 +195,8 @@ class ExercisePhaseController extends AbstractController
             'components' => $components,
             'userId' => $user->getId(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
+            'previousSolutions' => $previousSolutions,
             'readOnly' => $readOnly,
             'videoCodesPool' => $videoCodesPool,
             'material' => array_map(function (Material $entry) {
@@ -227,7 +245,7 @@ class ExercisePhaseController extends AbstractController
         //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
-            'config' => $this->getConfig($exercisePhase, true),
+            'config' => $this->getConfig($exercisePhase, null, true),
             'solutions' => $solutions,
             'exercise' => $exercise,
             'exercisePhase' => $exercisePhase,
@@ -327,6 +345,7 @@ class ExercisePhaseController extends AbstractController
                 'name' => $exercisePhase->getName(),
                 'task' => $exercisePhase->getTask(),
                 'isGroupPhase' => $exercisePhase->isGroupPhase(),
+                'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
                 'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
                     'videoId' => $video->getId()
                 ])->toArray(),
@@ -335,7 +354,6 @@ class ExercisePhaseController extends AbstractController
                 ])->toArray(),
                 'components' => $exercisePhase->getComponents()
             ]);
-
 
             if ($exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE && !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive()) {
                 $this->addFlash(
@@ -381,6 +399,9 @@ class ExercisePhaseController extends AbstractController
 
         $exercisePhase->setSorting($exercisePhaseAtNewSortIndex->getSorting());
         $exercisePhaseAtNewSortIndex->setSorting($currentSortIndex);
+        // reset the depending status to false just to avoid strange behavior -> user hast to set it anew
+        $exercisePhase->setDependsOnPreviousPhase(false);
+        $exercisePhaseAtNewSortIndex->setDependsOnPreviousPhase(false);
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $entityManager = $this->getDoctrine()->getManager();

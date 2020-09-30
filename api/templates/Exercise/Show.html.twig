@@ -15,11 +15,16 @@
         </div>
     {% endif %}
     <h2 class="text-center">Phase {{ currentPhaseIndex + 1 }}: {{ exercisePhase.name }}</h2>
-    <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong>
-    </p>
+    <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong></p>
+    {% if exercisePhase.dependsOnPreviousPhase %}
+        <p class="text-center">
+            <strong>ACHTUNG:</strong> Diese Phase baut auf der vorherigen auf. Es muss ein Ergenis aus der vorherigen Phase vorliegen.
+        </p>
+    {% endif %}
     <p class="text-center text-small">
         {{ exercisePhase.task | raw }}
     </p>
+
     {% if exercisePhase.isGroupPhase %}
         <hr/>
         <h4>Bestehende Gruppen</h4>
