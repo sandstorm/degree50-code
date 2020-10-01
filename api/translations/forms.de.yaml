@@ -95,11 +95,13 @@ video:
     title: 'Titel'
     created: 'Erstellt'
     description: 'Beschreibung'
+    visiblePersons: 'Zu sehende Personen im Video'
     courses: 'Kurse mit Berechtigung für dieses Video'
     dataPrivacyAccepted: 'Datenschutzbestimmung akzeptiert'
     submit: 'Video speichern'
   help:
     courses: 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
+    visiblePersons: 'Bitte alle Personen auflisten (Vor- und Nachname) die im Video zu sehen sind. Dieses Feld ist aus Datenschutzgründen relevant.'
   upload:
     title: 'Video hochladen'
     back: 'Zurück zur Übersicht'

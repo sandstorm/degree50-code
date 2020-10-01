@@ -101,6 +101,21 @@ class Video
     private $videoDuration;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $visiblePersons;
+
+    /**
+     * @ORM\Column(type="datetimetz_immutable", nullable=true)
+     */
+    private $encodingStarted;
+
+    /**
+     * @ORM\Column(type="datetimetz_immutable", nullable=true)
+     */
+    private $encodingFinished;
+
+    /**
      * Video constructor.
      * @param string $id
      */
@@ -303,6 +318,15 @@ class Video
      */
     public function setEncodingStatus(int $encodingStatus): void
     {
+        switch ($encodingStatus) {
+            case self::ENCODING_STARTED:
+                $this->encodingStarted = new \DateTimeImmutable();
+                break;
+            case self::ENCODING_FINISHED:
+                $this->encodingFinished = new \DateTimeImmutable();
+                break;
+        }
+
         $this->encodingStatus = $encodingStatus;
     }
 
@@ -342,5 +366,41 @@ class Video
                 'vtt' => $videoUrl . '/subtitles.vtt',
             ]
         ];
+    }
+
+    public function getVisiblePersons(): ?string
+    {
+        return $this->visiblePersons;
+    }
+
+    public function setVisiblePersons(?string $visiblePersons): self
+    {
+        $this->visiblePersons = $visiblePersons;
+
+        return $this;
+    }
+
+    public function getEncodingStarted(): ?\DateTimeImmutable
+    {
+        return $this->encodingStarted;
+    }
+
+    public function setEncodingStarted(?\DateTimeImmutable $encodingStarted): self
+    {
+        $this->encodingStarted = $encodingStarted;
+
+        return $this;
+    }
+
+    public function getEncodingFinished(): ?\DateTimeImmutable
+    {
+        return $this->encodingFinished;
+    }
+
+    public function setEncodingFinished(?\DateTimeImmutable $encodingFinished): self
+    {
+        $this->encodingFinished = $encodingFinished;
+
+        return $this;
     }
 }
