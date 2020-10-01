@@ -45,6 +45,7 @@ const initialRender: RenderConfig = {
     gridGap: 10,
     currentTime: 0,
     timelineStartTime: 0,
+    drawRuler: true,
 }
 
 const mapStateToProps = (state: VideoEditorState) => {

@@ -76,9 +76,7 @@ const Toolbar = ({
                         disabled={leftInteractionAreaIsDisabled}
                         title={'Shift timeline left'}
                         onClick={() => {
-                            if (!leftInteractionAreaIsDisabled) {
-                                onClick('left')
-                            }
+                            onClick('left')
                         }}
                     >
                         <i className={'fas fa-chevron-left'} />
@@ -91,9 +89,7 @@ const Toolbar = ({
                         disabled={rightInteractionAreaIsDisabled}
                         title={'Shift timeline right'}
                         onClick={() => {
-                            if (!rightInteractionAreaIsDisabled) {
-                                onClick('right')
-                            }
+                            onClick('right')
                         }}
                     >
                         <i className={'fas fa-chevron-right'} />

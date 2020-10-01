@@ -13,14 +13,14 @@ export type ApiEndpoints = {
     updateCurrentEditor: string
 }
 
-export type Config = {
+export interface ConfigState {
     title: string
     description: string
     type: ExercisePhaseTypesEnum
     userId: string
     isGroupPhase: boolean
     dependsOnPreviousPhase: boolean
-    previousSolutions: Array<{ userId: string; solution: VideoListsState }>
+    previousSolutions: Array<{ userId: string; userName: string; solution: VideoListsState }>
     readOnly: boolean
     components: Array<ComponentId>
     material: Array<Material>
@@ -29,7 +29,7 @@ export type Config = {
     apiEndpoints: ApiEndpoints
 }
 
-const initialState: Config = {
+const initialState: ConfigState = {
     title: '',
     description: '',
     type: ExercisePhaseTypesEnum.VIDEO_ANALYSIS,
@@ -52,7 +52,7 @@ export const configSlice = createSlice({
     name: 'config',
     initialState,
     reducers: {
-        hydrateConfig: (state, action: PayloadAction<Config>): Config => ({
+        hydrateConfig: (state, action: PayloadAction<ConfigState>): ConfigState => ({
             ...state,
             ...action.payload,
         }),
@@ -60,9 +60,16 @@ export const configSlice = createSlice({
 })
 
 export const { hydrateConfig } = configSlice.actions
+export const { actions } = configSlice
 
-export const selectConfig = (state: { config: Config }) => state.config
-export const selectUserId = (state: { config: Config }) => state.config.userId
-export const selectReadOnly = (state: { config: Config }) => state.config.readOnly
+export const selectConfig = (state: { config: ConfigState }) => state.config
+export const selectUserId = (state: { config: ConfigState }) => state.config.userId
+export const selectReadOnly = (state: { config: ConfigState }) => state.config.readOnly
+
+export const selectors = {
+    selectConfig,
+    selectUserId,
+    selectReadOnly,
+}
 
 export default configSlice.reducer

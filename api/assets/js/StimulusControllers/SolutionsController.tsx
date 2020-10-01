@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { store } from './ExercisePhaseApp/Store/Store'
-import { Config, hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
+import { ConfigState, hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import SolutionsApp from './SolutionsApp/SolutionsApp'
 
 export default class extends Controller {
@@ -12,7 +12,7 @@ export default class extends Controller {
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
         const { solutions } = props
-        const config = props.config as Config
+        const config = props.config as ConfigState
 
         // set initial Redux state
         store.dispatch(hydrateConfig(config))

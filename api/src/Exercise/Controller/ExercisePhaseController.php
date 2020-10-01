@@ -182,6 +182,7 @@ class ExercisePhaseController extends AbstractController
                     $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $previousPhase);
                     return [
                         'userId' => $teamMember->getId(),
+                        'userName' => $teamMember->getEmail(),
                         'solution' => $teamOfPreviousPhase ? $teamOfPreviousPhase->getSolution()->getSolution() : [],
                     ];
                 }, $exercisePhaseTeam->getMembers()->toArray());
@@ -355,11 +356,25 @@ class ExercisePhaseController extends AbstractController
                 'components' => $exercisePhase->getComponents()
             ]);
 
+            if ($exercisePhase->getDependsOnPreviousPhase()) {
+                $previousPhase = $this->exercisePhaseRepository->findOneBy(['sorting' => $exercisePhase->getSorting() - 1, 'belongsToExercise' => $exercisePhase->getBelongsToExercise()]);
+                if ($previousPhase && $previousPhase->getType() != ExercisePhase::TYPE_VIDEO_ANALYSE) {
+                    $this->addFlash(
+                        'danger',
+                        'Verknüpfung von Phasen aktuell nur möglich wenn die vorherige Phase vom Typ "Video-Analyse" ist.'
+                    );
+
+                    return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+                }
+            }
+
             if ($exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE && !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive()) {
                 $this->addFlash(
                     'danger',
                     'Mindestens eine Komponente muss aktiv sein'
                 );
+
+                return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
             } else {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($exercisePhase);

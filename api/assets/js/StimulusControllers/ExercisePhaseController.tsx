@@ -8,7 +8,7 @@ import { hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
 import { presenceActions, PresenceState, TeamMember } from './ExercisePhaseApp/Components/Presence/PresenceSlice'
 import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/SolutionSaga'
-import { Config } from './ExercisePhaseApp/Components/Config/ConfigSlice'
+import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 
@@ -18,7 +18,7 @@ export default class extends Controller {
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
         const { liveSyncConfig, solution, currentEditor } = props
-        const config = props.config as Config
+        const config = props.config as ConfigState
 
         // set initial Redux state
         store.dispatch(hydrateConfig(config))

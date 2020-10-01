@@ -52,7 +52,7 @@ exercisePhase:
     type: 'Typ'
   help:
     isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
-    dependsOnPreviousPhase: 'Wenn aktiv, können die Studenten beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden.'
+    dependsOnPreviousPhase: 'Wenn aktiv, können die Studenten beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
   types:
     videoAnalysis:
       label: 'Videoanalyse'

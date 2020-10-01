@@ -17,7 +17,7 @@ class ExercisePhaseType extends AbstractType
     {
         /* @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
-        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0;
+        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE;
 
         $builder
             ->add('isGroupPhase', CheckboxType::class, [
