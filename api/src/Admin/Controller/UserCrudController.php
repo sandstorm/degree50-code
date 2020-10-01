@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("data-privacy-accepted")
  */
 class UserCrudController extends AbstractCrudController
 {

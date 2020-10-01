@@ -17,6 +17,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @IsGranted("ROLE_USER")
+ * @IsGranted("data-privacy-accepted")
  */
 class VideoCodeController extends AbstractController
 {

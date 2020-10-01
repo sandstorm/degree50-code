@@ -26,6 +26,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * @IsGranted("ROLE_USER")
+ * @IsGranted("data-privacy-accepted")
  */
 class ExercisePhaseTeamController extends AbstractController
 {

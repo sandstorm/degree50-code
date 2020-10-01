@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 
 /**
  * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("data-privacy-accepted")
  */
 class DashboardController extends AbstractDashboardController
 {
