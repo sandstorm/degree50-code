@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @IsGranted("ROLE_USER")
+ * @IsGranted("data-privacy-accepted")
  */
 class SubtitleEditorController extends AbstractController
 {

@@ -63,6 +63,11 @@ class User implements UserInterface
      */
     private $userExerciseInteractions;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $dataPrivacyAccepted = false;
+
     public function __construct(?string $id = null)
     {
         $this->courseRoles = new ArrayCollection();
@@ -241,5 +246,16 @@ class User implements UserInterface
     public function isDozent(): bool
     {
         return in_array(self::ROLE_DOZENT, $this->roles);
+    }
+
+    public function getDataPrivacyAccepted(): ?bool
+    {
+        return $this->dataPrivacyAccepted;
+    }
+
+    public function setDataPrivacyAccepted(bool $dataPrivacyAccepted): self
+    {
+        $this->dataPrivacyAccepted = $dataPrivacyAccepted;
+        return $this;
     }
 }

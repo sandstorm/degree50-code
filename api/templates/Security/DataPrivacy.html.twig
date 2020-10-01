@@ -1,13 +1,16 @@
 {% extends 'BaseNoHeader.html.twig' %}
 
-{% block title %}Datenschutzerklärung{% endblock %}
+{% block title %}Degree 4.0 - Datenschutzerklärung{% endblock %}
 
 {% block body %}
     <div class="container">
         <header class="content-header">
             <h3>Datenschutzerklärung</h3>
         </header>
+
         {{ include('Partials/DataPrivacyContent.html.twig') }}
     </div>
-
+    <footer class="footer footer--center">
+        <a class="btn btn-primary" href="{{ path('app_data-privacy', {accepted: true}) }}" role="link">Datenschutzerklärung akzeptieren</a>
+    </footer>
 {% endblock %}

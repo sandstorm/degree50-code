@@ -17,6 +17,7 @@ security:
         main:
             anonymous: lazy
             provider: app_user_provider
+            access_denied_handler: App\Security\AccessDeniedHandler
 
             # we allow logging in both via SAML (Single Signon) and via form_login.
             saml:

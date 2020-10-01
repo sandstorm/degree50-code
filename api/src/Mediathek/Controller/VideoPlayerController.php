@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @IsGranted("ROLE_USER")
+ * @IsGranted("data-privacy-accepted")
  */
 class VideoPlayerController extends AbstractController
 {
