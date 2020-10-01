@@ -80,7 +80,6 @@ class CutListEncodingHandler implements MessageHandlerInterface
                 'ffmpeg.threads'   => 12,   // The number of threads that FFmpeg should use
             ];
 
-
             $ffmpeg = FFMpeg::create($config, $this->logger);
 
             $this->logger->info('Creating intermediate clips from cutList...');

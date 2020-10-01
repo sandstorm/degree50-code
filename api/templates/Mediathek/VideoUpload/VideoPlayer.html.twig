@@ -3,14 +3,14 @@
 {% block title %}Video - {{ video.title }}{% endblock %}
 
 {% block body %}
-    <h2>Titel: {{ video.title }}</h2>
+    <h2>{{ video.title }}</h2>
     <p>
         {{ video.description }}
     </p>
     {% if video.encodingStatus == 1 %}
         {% if video.courses | length == 0 %}
         <div class="alert alert-warning">
-            Achtung: Video ist aktuell keinen Kursen zugewiesen.
+            Achtung: Video ist aktuell keinen Kursen zugewiesen und nur für dich sichtbar.
         </div>
         {% endif %}
 

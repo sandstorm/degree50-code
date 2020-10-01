@@ -16,6 +16,7 @@
         <div class="container">
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
+            {{ form_row(form.visiblePersons) }}
             {{ form_row(form.courses) }}
             <div class="form__data-privacy">
                 {{ form_row(form.dataPrivacyAccepted) }}
@@ -24,7 +25,7 @@
             <hr />
             <h4>Video wird in folgenden Aufgaben/Phasen verwendet</h4>
             <ul>
-                {% for phase in video.videoAnalysisTypes %}
+                {% for phase in video.exercisePhases %}
                     <li>{{ phase.belongsToExercise.name }} / {{ phase.name }}</li>
                 {% else %}
                     <li>Bisher in keiner Phase verwendet</li>
