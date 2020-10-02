@@ -1,0 +1,51 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseFullscreen.html.twig' %}
+
+{% block title %}{% trans %}course.edit.title{% endtrans %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: course.id}) }}">Übersicht</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans %}course.edit.title{% endtrans %}</li>
+            </ol>
+        </nav>
+
+        <header class="content-header">
+            <h3>{% trans %}course.edit.title{% endtrans %}</h3>
+        </header>
+
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        {{ form_row(form.users) }}
+        {{ form_row(form.save) }}
+
+        {{ form_end(form) }}
+
+        <h5>{% trans %}course.labels.members{% endtrans %}</h5>
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th>{% trans %}course.labels.user{% endtrans %}</th>
+                <th>{% trans %}course.labels.role{% endtrans %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            {% for courseRole in course.courseRoles %}
+                {% if courseRole.name == 'STUDENT' %}
+                    <tr>
+                        <td>{{ courseRole.user.userName }}</td>
+                        <td>{{ courseRole.name }}</td>
+                        <td class="text-right">
+                            <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: courseRole.id}) }}"
+                               class="btn btn-danger btn-sm">{% trans %}course.delete.title{% endtrans %}</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

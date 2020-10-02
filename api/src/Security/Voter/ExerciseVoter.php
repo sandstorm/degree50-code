@@ -4,7 +4,6 @@
 namespace App\Security\Voter;
 
 
-use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
@@ -16,7 +15,6 @@ class ExerciseVoter extends Voter
 {
     const VIEW = 'view';
     const SHOW_SOLUTION = 'showSolution';
-    const CREATE = 'create';
     const EDIT = 'edit';
     const DELETE = 'delete';
     const IS_OPENED = 'isOpened';
@@ -24,11 +22,11 @@ class ExerciseVoter extends Voter
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::VIEW, self::SHOW_SOLUTION, self::CREATE, self::EDIT, self::DELETE, self::IS_OPENED, self::IS_FINISHED])) {
+        if (!in_array($attribute, [self::VIEW, self::SHOW_SOLUTION, self::EDIT, self::DELETE, self::IS_OPENED, self::IS_FINISHED])) {
             return false;
         }
 
-        if (!$subject instanceof Exercise && !$subject instanceof Course) {
+        if (!$subject instanceof Exercise) {
             return false;
         }
 
@@ -48,22 +46,13 @@ class ExerciseVoter extends Voter
             $exercise = $subject;
         }
 
-        if ($subject instanceof Course) {
-            /** @var Course $course */
-            $course = $subject;
-        } else {
-            $course = $exercise->getCourse();
-        }
-
         switch ($attribute) {
             case self::IS_FINISHED:
                 return $this->exercisesIsFinished($exercise, $user);
             case self::IS_OPENED:
                 return $this->exercisesIsOpened($exercise, $user);
             case self::VIEW:
-                return $this->canView($course, $exercise, $user);
-            case self::CREATE:
-                return $this->canCreate($course, $user);
+                return $this->canView($exercise, $user);
             case self::EDIT or self::DELETE or self::SHOW_SOLUTION:
                 return $this->canEditOrDelete($exercise, $user);
         }
@@ -81,8 +70,9 @@ class ExerciseVoter extends Voter
         return $exercise->getUserExerciseInteractions()->exists(fn($i, UserExerciseInteraction $userExerciseInteraction) => $userExerciseInteraction->isFinished() && $userExerciseInteraction->getUser() === $user);
     }
 
-    private function canView(Course $course, Exercise $exercise, User $user)
+    private function canView(Exercise $exercise, User $user)
     {
+        $course = $exercise->getCourse();
         $exerciseIsNotPublished = $exercise->getStatus() == Exercise::EXERCISE_CREATED;
         if ($exerciseIsNotPublished && $exercise->getCreator() !== $user) {
             return false;
@@ -90,12 +80,7 @@ class ExerciseVoter extends Voter
         if (count($exercise->getPhases()) === 0) {
             return false;
         }
-        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course);
-    }
-
-    private function canCreate(Course $course, User $user)
-    {
-        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getName() == CourseRole::DOZENT);
+        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user);
     }
 
     private function canEditOrDelete(Exercise $exercise, User $user)
