@@ -144,3 +144,15 @@ exercisePhaseTeam:
   leave:
     messages:
       success: 'Gruppe verlassen'
+
+course:
+  edit:
+    title: 'Kursmitglieder verwalten'
+  labels:
+    members: 'Kursmitglieder'
+    user: 'Nutzer'
+    role: 'Rolle'
+    submit: 'Zum Kurs hinzufügen'
+  delete:
+    title: 'Entfernen'
+

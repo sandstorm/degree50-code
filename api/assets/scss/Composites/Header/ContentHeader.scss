@@ -3,10 +3,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 5px;
 
   border-bottom: 1px solid $theme__color__grey--dark;
 
   &--center {
     text-align: center;
+  }
+
+  > * {
+    margin-bottom: 0;
   }
 }

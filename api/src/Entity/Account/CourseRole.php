@@ -32,7 +32,7 @@ class CourseRole
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="courseRoles")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?User $user = null;
+    private User $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\Course", inversedBy="courseRoles")
