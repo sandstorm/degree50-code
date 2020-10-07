@@ -117,7 +117,7 @@ Host degree40.tu-dortmund.de
   `docker-compose exec api /bin/bash`
 
 **Connect to the Production Database**
-
+- Prod database is a MariaDB
 - Run the SSH command as above(`ssh [your-username]@degree40.tu-dortmund.de`), keep the connection open
 - Connect (e.g. in Sequel Pro or IntelliJ) using the following settings:
   - Host: 127.0.0.1
@@ -148,3 +148,15 @@ Ansible takes care of:
 **Deployment via Gitlab CI**
 
 - 
+
+## How to remove a Video from Prod
+> Admin should be able to do this inside the plattform
+
+* Connect to Prod DB (see above)
+* Look for video in `video` table and "memorize" id
+* Delete references in tables:
+    * `video_course`
+    * `exercise_phase_video`
+    * `video`
+    * `video_subtitles`
+* These are all reference _we_ found for now. There might be more in `exercise_phase*` if the video was used in a phase.
