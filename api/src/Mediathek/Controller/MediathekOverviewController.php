@@ -61,7 +61,7 @@ class MediathekOverviewController extends AbstractController
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
         $ownVideos = [
             'id' => 'ownVideos',
-            'videos' => $this->videoRepository->findBy(array('creator' => $user), array('createdAt' => 'DESC'))
+            'videos' => $this->videoRepository->findByCreatorWithoutCutVideos($user)
         ];
         $this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
