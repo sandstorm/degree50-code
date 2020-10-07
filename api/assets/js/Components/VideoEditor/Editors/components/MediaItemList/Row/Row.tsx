@@ -14,13 +14,14 @@ type OwnProps = {
     key: string
     id: string
     index: number
-    style: Object
     currentIndex: number
     checkMediaItem: (item: MediaItem<MediaItemType>) => boolean
     rowData: MediaItem<MediaItemType>
     removeMediaItem: (item: MediaItem<MediaItemType>) => void
     addMediaItem?: (index: number, item?: MediaItem<MediaItemType>) => void
     updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Object) => void
+    moveItemUp?: () => void
+    moveItemDown?: () => void
 }
 
 const mapStateToProps = (state: {}) => {
@@ -37,7 +38,6 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & Ow
 const Row = ({
     id,
     index,
-    style,
     currentIndex,
     checkMediaItem,
     rowData,
@@ -46,9 +46,11 @@ const Row = ({
     updateMediaItem,
     setPause,
     setPlayPosition,
+    moveItemUp,
+    moveItemDown,
 }: Props) => {
     return (
-        <div
+        <li
             key={id}
             className={[
                 'video-editor__media-item-list__row',
@@ -58,7 +60,6 @@ const Row = ({
             ]
                 .join(' ')
                 .trim()}
-            style={style}
             onClick={() => {
                 setPause(true)
                 setPlayPosition(rowData.startTime + 0.001)
@@ -67,6 +68,8 @@ const Row = ({
             <Actions
                 removeMediaItem={() => removeMediaItem(rowData)}
                 addMediaItem={addMediaItem ? () => addMediaItem(index) : undefined}
+                moveItemUp={moveItemUp}
+                moveItemDown={moveItemDown}
             />
             <div
                 className="video-editor__media-item-list__column video-editor__media-item-list__column--time"
@@ -80,7 +83,7 @@ const Row = ({
                 text={rowData.text}
                 updateText={(event) => updateMediaItem(rowData, { text: event.target.value })}
             />
-        </div>
+        </li>
     )
 }
 

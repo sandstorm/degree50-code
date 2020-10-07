@@ -5,9 +5,6 @@
 // import for the jest.mock below
 import { renderHook, act } from '@testing-library/react-hooks'
 
-// import for the jest.mock below
-import { useMediaItemHandling as useMediaItemHandlingMock } from '../../utils/hooks'
-
 import { useCuttingMediaItemHandling } from '../util'
 
 import { MediaItem } from '../../components/types'
@@ -111,66 +108,6 @@ describe('useCuttingMediaItemHandling()', () => {
 
     afterEach(() => {
         jest.clearAllMocks()
-    })
-
-    describe('updateMediatems()', () => {
-        it('should call originalUpdateCallback() with correct args', () => {
-            // @ts-ignore
-            const { result } = renderHook(() => useCuttingMediaItemHandling(baseConfig))
-
-            act(() => {
-                result.current.updateMediaItems([itemA, itemB])
-            })
-
-            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
-                [
-                    new MediaItem({
-                        start: '00:00:00.000',
-                        end: '00:00:05.000',
-                        text: 'A',
-                        memo: 'Some test memo...',
-                        color: null,
-                        originalData: {
-                            start: '00:00:00.000',
-                            end: '00:00:05.000',
-                            color: null,
-                            text: 'A',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            offset: 0,
-                            playbackRate: 1,
-                            url: '/some.mp4',
-                            idFromPrototype: null,
-                        },
-                        lane: 0,
-                        idFromPrototype: null,
-                    }),
-                    new MediaItem({
-                        start: '00:00:05.010',
-                        end: '00:00:07.010',
-                        text: 'B',
-                        memo: 'Some test memo...',
-                        color: null,
-                        originalData: {
-                            start: '00:00:03.000',
-                            end: '00:00:05.000',
-                            color: null,
-                            text: 'B',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            offset: 0,
-                            playbackRate: 1,
-                            url: '/some.mp4',
-                            idFromPrototype: null,
-                        },
-                        lane: 0,
-                        idFromPrototype: null,
-                    }),
-                ],
-                true,
-                false
-            )
-        })
     })
 
     describe('updateMediaItem()', () => {
@@ -337,70 +274,6 @@ describe('useCuttingMediaItemHandling()', () => {
         })
     })
 
-    describe('removeMediaItem()', () => {
-        it('should correctly snap items', () => {
-            const { result } = renderHook(() =>
-                // @ts-ignore
-                useCuttingMediaItemHandling({ ...baseConfig, mediaItems: [itemA, itemB, itemC] })
-            )
-
-            act(() => {
-                result.current.removeMediaItem(itemB)
-            })
-
-            // One call after rendering and one after the update
-            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
-            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
-                [
-                    new MediaItem({
-                        start: '00:00:00.000',
-                        end: '00:00:05.000',
-                        text: 'A',
-                        memo: 'Some test memo...',
-                        color: null,
-                        originalData: {
-                            start: '00:00:00.000',
-                            end: '00:00:05.000',
-                            offset: 0,
-                            color: null,
-                            text: 'A',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            playbackRate: 1,
-                            url: '/some.mp4',
-                            idFromPrototype: null,
-                        },
-                        lane: 0,
-                        idFromPrototype: null,
-                    }),
-                    new MediaItem({
-                        start: '00:00:05.010',
-                        end: '00:00:07.010',
-                        text: 'C',
-                        memo: 'Some test memo...',
-                        color: null,
-                        originalData: {
-                            start: '00:00:05.010',
-                            end: '00:00:07.010',
-                            offset: 0,
-                            color: null,
-                            text: 'C',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            playbackRate: 1,
-                            url: '/some.mp4',
-                            idFromPrototype: null,
-                        },
-                        lane: 0,
-                        idFromPrototype: null,
-                    }),
-                ],
-                true,
-                false
-            )
-        })
-    })
-
     describe('handleSplitAtCursor()', () => {
         it('should correctly split item', () => {
             const { result } = renderHook(() =>
@@ -417,96 +290,50 @@ describe('useCuttingMediaItemHandling()', () => {
 
             // One call after rendering and one after the update
             expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
-            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
-                [
-                    new MediaItem({
+            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith([
+                new MediaItem({
+                    start: '00:00:00.000',
+                    end: '00:00:02.000',
+                    text: 'A',
+                    memo: 'Some test memo...',
+                    color: null,
+                    originalData: {
                         start: '00:00:00.000',
-                        end: '00:00:02.000',
-                        text: 'A',
-                        memo: 'Some test memo...',
-                        color: null,
-                        originalData: {
-                            start: '00:00:00.000',
-                            end: '00:00:05.000',
-                            offset: 0,
-                            color: null,
-                            text: 'A',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            playbackRate: 1,
-                            url: '/some.mp4',
-                            idFromPrototype: null,
-                        },
-                        lane: 0,
-                        idFromPrototype: null,
-                    }),
-                    new MediaItem({
-                        start: '00:00:02.010',
                         end: '00:00:05.000',
+                        offset: 0,
+                        color: null,
                         text: 'A',
                         memo: 'Some test memo...',
-                        color: null,
-                        originalData: {
-                            start: '00:00:00.000',
-                            end: '00:00:05.000',
-                            offset: 2,
-                            color: null,
-                            text: 'A',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            playbackRate: 1,
-                            url: '/some.mp4',
-                            idFromPrototype: null,
-                        },
                         lane: 0,
+                        playbackRate: 1,
+                        url: '/some.mp4',
                         idFromPrototype: null,
-                    }),
-                ],
-                true,
-                false
-            )
-        })
-    })
-
-    describe('duplicateCut()', () => {
-        it('should correctly append copy of item at index', () => {
-            // @ts-ignore
-            const { result } = renderHook(() => useCuttingMediaItemHandling(baseConfig))
-
-            act(() => {
-                result.current.duplicateCut(0)
-            })
-
-            // One call after rendering and one after the update
-            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledTimes(2)
-            expect(originalUpdateMediaItemsSpy).toHaveBeenCalledWith(
-                [
-                    itemA,
-                    new MediaItem({
-                        start: '00:00:05.010',
-                        end: '00:00:10.000',
+                    },
+                    lane: 0,
+                    idFromPrototype: null,
+                }),
+                new MediaItem({
+                    start: '00:00:02.010',
+                    end: '00:00:05.000',
+                    text: 'A',
+                    memo: 'Some test memo...',
+                    color: null,
+                    originalData: {
+                        start: '00:00:00.000',
+                        end: '00:00:05.000',
+                        offset: 2,
+                        color: null,
                         text: 'A',
                         memo: 'Some test memo...',
-                        color: null,
-                        originalData: {
-                            start: '00:00:00.000',
-                            end: '00:00:05.000',
-                            color: null,
-                            text: 'A',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            offset: 0,
-                            playbackRate: 1,
-                            url: '/some.mp4',
-                            idFromPrototype: null,
-                        },
                         lane: 0,
+                        playbackRate: 1,
+                        url: '/some.mp4',
                         idFromPrototype: null,
-                    }),
-                ],
-                true,
-                false
-            )
+                    },
+                    lane: 0,
+                    idFromPrototype: null,
+                }),
+            ])
         })
     })
 })

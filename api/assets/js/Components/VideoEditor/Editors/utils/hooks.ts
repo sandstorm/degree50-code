@@ -185,8 +185,6 @@ export const useMediaItemHandling = <T>({
             const updatedItems = [...mediaItems.slice(0, index), ...mediaItems.slice(index + 1)]
 
             updateMediaItems(updatedItems)
-
-            return updatedItems
         },
         [hasMediaItem, copyMediaItems, updateMediaItems]
     )

@@ -10,6 +10,7 @@ import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 import { Handle } from './types'
 import MediaItemLabel from './MediaItemLabel'
+import { clamp } from './helpers'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>
@@ -127,6 +128,9 @@ const MediaItem = ({
         }
     }, [itemRef, item])
 
+    // WHY: Clamp width of lane item drag handle between min and max value
+    const laneItemHandleWidth = clamp(renderConfig.gridGap, 8, 12)
+
     return (
         <div
             ref={itemRef}
@@ -175,7 +179,7 @@ const MediaItem = ({
                 className="video-editor__media-item__handle"
                 style={{
                     left: 0,
-                    width: renderConfig.gridGap,
+                    width: laneItemHandleWidth,
                 }}
                 onMouseDown={handleLeftHandleMouseDown}
             />
@@ -188,7 +192,7 @@ const MediaItem = ({
                 className="video-editor__media-item__handle"
                 style={{
                     right: 0,
-                    width: renderConfig.gridGap,
+                    width: laneItemHandleWidth,
                 }}
                 onMouseDown={handleRightHandleMouseDown}
             />

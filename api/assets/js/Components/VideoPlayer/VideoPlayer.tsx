@@ -27,12 +27,10 @@ type VideoPlayerProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 
 const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
     const [player, setPlayer] = useState<VideoJsPlayer | undefined>(undefined)
-    const handlePlayerReady = () => console.log('Video Player Ready')
-
     const videoRef: React.RefObject<HTMLVideoElement> = useRef(null)
 
     useEffect(() => {
-        setPlayer(videojs(videoRef.current, props.videoJsOptions, handlePlayerReady))
+        setPlayer(videojs(videoRef.current, props.videoJsOptions))
 
         return () => {
             player?.dispose()

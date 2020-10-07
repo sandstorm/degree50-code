@@ -22,7 +22,7 @@ const FileUpload: React.FC<FileUploadProbs> = (props) => {
     const id = 'id'
 
     const onDrop = useCallback((acceptedFiles) => {
-        console.log(acceptedFiles)
+        // TODO: implement!
         // send files to server
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })

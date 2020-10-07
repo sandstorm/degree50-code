@@ -14,3 +14,5 @@ export const itemIsVisible = <T>(
 
     return item.startTime <= timelineClippingEnd && item.endTime >= currentTimelineClippingStart
 }
+
+export const clamp = (value: number, min: number, max: number) => Math.min(Math.max(min, value), max)

@@ -9,6 +9,17 @@ export type Tabs = {
     [key in TabsTypesEnum]: Tab
 }
 
+export const videoEditorPlayerTabs = {
+    [TabsTypesEnum.ORIGINAL_VIDEO]: {
+        id: TabsTypesEnum.ORIGINAL_VIDEO,
+        label: 'Original',
+    },
+    [TabsTypesEnum.CUT_VIDEO]: {
+        id: TabsTypesEnum.CUT_VIDEO,
+        label: 'Cut',
+    },
+}
+
 export const tabs = {
     [TabsTypesEnum.VIDEO_ANNOTATIONS]: {
         id: TabsTypesEnum.VIDEO_ANNOTATIONS,

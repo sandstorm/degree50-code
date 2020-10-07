@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
@@ -96,9 +96,9 @@ const AnnotationsEditor = (props: Props) => {
         return false
     }, [])
 
-    const amountOfLanes = Math.max.apply(
-        Math,
-        mediaItems.map((item: MediaItem<any>) => {
+    const amountOfLanes = Math.max(
+        0,
+        ...mediaItems.map((item: MediaItem<any>) => {
             return item.lane
         })
     )
