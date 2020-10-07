@@ -5,7 +5,7 @@ import { selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, sele
 import { setOverlayVisibility, setOverlayComponent, setOverlaySize } from '../Overlay/OverlaySlice'
 import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
 import { ComponentTypesEnum } from '../../../../types'
-import { ComponentId, Config, selectConfig } from '../Config/ConfigSlice'
+import { ComponentId, ConfigState, selectConfig } from '../Config/ConfigSlice'
 import { overlaySizesEnum } from '../Overlay/Overlay'
 import { PresenceToolbarItem } from './PresenceToolbarItem'
 
@@ -29,8 +29,8 @@ export type Component = {
     isMandatory: boolean
     label: string
     icon: string
-    isVisible: (config: Config) => boolean
-    onClick: (dispatch: AppDispatch, component: Component, config: Config, closeComponent: boolean) => void
+    isVisible: (config: ConfigState) => boolean
+    onClick: (dispatch: AppDispatch, component: Component, config: ConfigState, closeComponent: boolean) => void
 }
 
 type ToolbarProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
@@ -49,7 +49,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: true,
         label: 'Gruppenmitglieder',
         icon: 'fas fa-users',
-        isVisible: (config: Config) => {
+        isVisible: (config: ConfigState) => {
             return config.isGroupPhase
         },
         onClick: (dispatch, component, config, closeComponent) => {
@@ -63,7 +63,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: true,
         label: 'Aufgabenstellung',
         icon: 'fas fa-tasks',
-        isVisible: (config: Config) => {
+        isVisible: (config: ConfigState) => {
             return true
         },
         onClick: (dispatch, component, config, closeComponent) => {
@@ -77,7 +77,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: true,
         label: 'Material',
         icon: 'fas fa-folder-open',
-        isVisible: (config: Config) => {
+        isVisible: (config: ConfigState) => {
             return true
         },
         onClick: (dispatch, component, config, closeComponent) => {
@@ -91,7 +91,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: false,
         label: 'Videos',
         icon: 'fas fa-file-video',
-        isVisible: (config: Config) => {
+        isVisible: (config: ConfigState) => {
             return true
         },
         onClick: (dispatch, component, config, closeComponent) => {
@@ -105,7 +105,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: false,
         label: 'Dokumenten-Upload',
         icon: 'fas fa-file-upload',
-        isVisible: (config: Config) => {
+        isVisible: (config: ConfigState) => {
             return true
         },
         onClick: (dispatch, component, config, closeComponent) => {

@@ -8,6 +8,7 @@ export type RenderConfig = {
     gridGap: number
     timelineStartTime: number
     currentTime: number
+    drawRuler: boolean
 }
 
 export type MediaTrackConfig = {

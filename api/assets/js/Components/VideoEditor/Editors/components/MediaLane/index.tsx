@@ -8,6 +8,8 @@ import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
 import { INITIAL_ZOOM, useMediaLane } from './utils'
 import { defaultMediaTrackConfig } from './MediaTrack/helpers'
+import { VideoListsState } from '../../../VideoListsSlice'
+import PreviousSolutions from './PreviousSolutions'
 
 export const MEDIA_LANE_HEIGHT = 200
 export const MEDIA_LANE_TOOLBAR_HEIGHT = 40
@@ -19,6 +21,7 @@ const initialRender: RenderConfig = {
     gridGap: 10,
     currentTime: 0,
     timelineStartTime: 0,
+    drawRuler: true,
 }
 
 type Props = {
@@ -32,6 +35,7 @@ type Props = {
     showTextInMediaItems?: boolean
     amountOfLanes?: number
     ToolbarActions?: React.ReactNode
+    previousSolutions?: Array<{ userId: string; userName: string; solution: VideoListsState }>
 }
 
 const MediaLane = ({
@@ -39,6 +43,7 @@ const MediaLane = ({
     updateMediaItem,
     removeMediaItem,
     mediaItems,
+    previousSolutions,
     setPlayPosition,
     checkMediaItem,
     videoDuration,
@@ -120,29 +125,37 @@ const MediaLane = ({
             </Toolbar>
 
             <div
-                className="video-editor-timeline__body"
+                className={'video-editor-timeline__entries'}
                 style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
             >
-                <div ref={$container} className="media-track">
-                    <MediaTrack
-                        mediaTrackConfig={mediaTrackConfig}
-                        containerHeight={containerHeight}
-                        containerWidth={containerWidth}
+                <div
+                    className="video-editor-timeline__entry"
+                    style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
+                >
+                    <div ref={$container} className="media-track">
+                        <MediaTrack
+                            mediaTrackConfig={mediaTrackConfig}
+                            containerHeight={containerHeight}
+                            containerWidth={containerWidth}
+                        />
+                    </div>
+                    <MediaTrackInteractionArea renderConfig={renderConfig} clickCallback={handleLaneClick} />
+                    <MediaItems
+                        currentTime={currentTime}
+                        renderConfig={renderConfig}
+                        mediaItems={mediaItems}
+                        updateMediaItem={handleMediaItemUpdate}
+                        removeMediaItem={removeMediaItem}
+                        checkMediaItem={checkMediaItem}
+                        amountOfLanes={amountOfLanes}
+                        showTextInMediaItems={showTextInMediaItems}
+                        height={MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT - mediaTrackConfig.rulerHeight}
                     />
                 </div>
-
-                <MediaTrackInteractionArea renderConfig={renderConfig} clickCallback={handleLaneClick} />
-
-                <MediaItems
-                    currentTime={currentTime}
+                <PreviousSolutions
+                    previousSolutions={previousSolutions}
+                    handleLaneClick={handleLaneClick}
                     renderConfig={renderConfig}
-                    mediaItems={mediaItems}
-                    updateMediaItem={handleMediaItemUpdate}
-                    removeMediaItem={removeMediaItem}
-                    checkMediaItem={checkMediaItem}
-                    amountOfLanes={amountOfLanes}
-                    showTextInMediaItems={showTextInMediaItems}
-                    height={MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT - mediaTrackConfig.rulerHeight}
                 />
             </div>
         </div>

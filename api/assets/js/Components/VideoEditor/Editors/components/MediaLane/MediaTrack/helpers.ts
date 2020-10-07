@@ -18,27 +18,29 @@ export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig
     drawBackground(canvas, {
         backgroundColor: config.backgroundColor,
     })
-    drawRulerBackground(canvas, {
-        rulerBackgroundColor: config.rulerBackgroundColor,
-        rulerHeight: config.rulerHeight,
-    })
     drawGrid(canvas, {
         gridNum: config.render.gridNum,
         gridGap: config.render.gridGap,
         gridColor: config.gridColor,
         pixelRatio: config.pixelRatio,
     })
-    drawRuler(canvas, {
-        rulerColor: config.rulerColor,
-        pixelRatio: config.pixelRatio,
-        padding: config.render.padding,
-        fontSize: config.fontSize,
-        fontHeight: config.fontHeight,
-        fontTop: config.fontTop,
-        timelineStartTime: config.render.timelineStartTime,
-        gridNum: config.render.gridNum,
-        gridGap: config.render.gridGap,
-    })
+    if (config.render.drawRuler) {
+        drawRulerBackground(canvas, {
+            rulerBackgroundColor: config.rulerBackgroundColor,
+            rulerHeight: config.rulerHeight,
+        })
+        drawRuler(canvas, {
+            rulerColor: config.rulerColor,
+            pixelRatio: config.pixelRatio,
+            padding: config.render.padding,
+            fontSize: config.fontSize,
+            fontHeight: config.fontHeight,
+            fontTop: config.fontTop,
+            timelineStartTime: config.render.timelineStartTime,
+            gridNum: config.render.gridNum,
+            gridGap: config.render.gridGap,
+        })
+    }
     drawCursor(canvas, {
         currentTime: config.render.currentTime,
         cursorColor: config.cursorColor,

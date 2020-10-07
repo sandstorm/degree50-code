@@ -6,7 +6,6 @@ import { RenderConfig } from '../MediaLane/MediaTrack'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
 import { MediaItemType, VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
-import { MEDIA_LANE_HEIGHT } from '../MediaLane'
 import { defaultMediaTrackConfig } from '../MediaLane/MediaTrack/helpers'
 
 type Props = {
@@ -17,7 +16,7 @@ type Props = {
 }
 
 const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems, renderConfig }: Props) => {
-    const rulerHeight = 40
+    const rulerHeight = renderConfig.drawRuler ? 40 : 10
     const mediaTrackConfig = {
         ...defaultMediaTrackConfig,
         rulerHeight: rulerHeight,
@@ -47,7 +46,7 @@ const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems
 
     return (
         <div className="video-editor-timeline" style={{ height: mediaTrackHeight }}>
-            <div className="video-editor-timeline__body">
+            <div className="video-editor-timeline__entry">
                 <div ref={$container} className="media-track">
                     <ReadOnlyMediaTrack
                         mediaTrackConfig={mediaTrackConfig}

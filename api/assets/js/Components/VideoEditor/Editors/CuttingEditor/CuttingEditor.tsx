@@ -28,6 +28,7 @@ type OwnProps = {
 const mapStateToProps = (state: VideoEditorState) => ({
     playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
     cutList: selectors.lists.selectVideoEditorLists(state).cutList,
+    previousSolutions: selectors.config.selectConfig(state.videoEditor).previousSolutions,
 })
 
 const mapDispatchToProps = {
@@ -75,6 +76,7 @@ const CuttingEditor = ({
     videos,
     itemUpdateCallback,
     itemUpdateCondition,
+    previousSolutions,
 }: Props) => {
     const { volume, handleVolumeChange } = useVolume()
     const containerHeight = height - MEDIA_LANE_HEIGHT
@@ -155,6 +157,7 @@ const CuttingEditor = ({
             <MediaLane
                 currentTime={playerSyncPlayPosition}
                 mediaItems={mediaItems}
+                previousSolutions={previousSolutions}
                 updateMediaItem={updateMediaItem}
                 setPlayPosition={setPlayPosition}
                 checkMediaItem={checkMediaItem}
