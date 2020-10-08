@@ -1,8 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import ArtPlayer from '../components/ArtPlayer'
-import MediaLane, { MEDIA_LANE_HEIGHT } from '../components/MediaLane'
+import MediaLane from '../components/MediaLane'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
 import { secondToTime, timeToSecond } from '../utils'
@@ -13,6 +13,7 @@ import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import { VideoCodePrototype } from './types'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
+import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
 
 const storage = new Storage()
 

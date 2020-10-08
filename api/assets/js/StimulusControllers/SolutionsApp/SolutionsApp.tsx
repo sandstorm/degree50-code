@@ -6,8 +6,7 @@ import { TabsTypesEnum } from '../../types'
 import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import Toolbar from '../../Components/VideoEditor/Editors/components/MediaLane/Toolbar'
-import { RenderConfig } from '../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
-import { INITIAL_ZOOM, useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/utils'
+import { useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/useMediaLane'
 import { actions, selectors, VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
 import ArtPlayer from '../../Components/VideoEditor/Editors/components/ArtPlayer'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
@@ -38,16 +37,6 @@ type OwnProps = {
     availableComponents: Array<ComponentId>
 }
 
-const initialRender: RenderConfig = {
-    padding: 0,
-    duration: 10,
-    gridNum: 110,
-    gridGap: 10,
-    currentTime: 0,
-    timelineStartTime: 0,
-    drawRuler: true,
-}
-
 const mapStateToProps = (state: VideoEditorState) => {
     return {
         playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
@@ -66,7 +55,6 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     watchModals()
 
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
-    const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
     const availableTabs = Object.values(solutionTabs)
     const [activeTabId, setActiveTabId] = useState<TabsTypesEnum>(availableTabs[0].id)
@@ -79,50 +67,21 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
         props.availableComponents.includes(tabType)
     )
 
-    let { width, height } = useDebouncedResizeObserver($container, 500)
+    // FIXME use const and find better way to handle height === 0
+    let { height } = useDebouncedResizeObserver($container, 500)
     // workaround to avoid height of 0 at intial render
     if (height === 0) {
         height = 400
     }
 
-    const { getDurationForRenderConfig, getRenderConfigForZoom } = useMediaLane({
-        setRender,
+    const { handleZoom, renderConfig, handleLaneClick } = useMediaLane({
         $container,
-        renderConfig,
         currentTime,
         videoDuration,
+        laneClickCallback: props.setPlayPosition,
     })
 
-    initialRender.duration = getDurationForRenderConfig(INITIAL_ZOOM)
-    initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
-    initialRender.gridGap = width / initialRender.gridNum
-
-    const updateCurrentTime = useCallback(
-        (time: number) => {
-            const newTimelineStartTime = Math.floor(time / renderConfig.duration) * renderConfig.duration
-
-            props.setPlayPosition(time)
-
-            setRender({
-                ...renderConfig,
-                currentTime: time,
-                timelineStartTime: newTimelineStartTime,
-            })
-        },
-        [currentTime]
-    )
-
-    const handleZoom = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const newRenderConfig = getRenderConfigForZoom(parseInt(event.currentTarget.value))
-
-            setRender({
-                ...renderConfig,
-                ...newRenderConfig,
-            })
-        },
-        [renderConfig]
-    )
+    const updateCurrentTime = handleLaneClick
 
     const artPlayerOptions = {
         videoUrl: firstVideo?.url?.hls || '',

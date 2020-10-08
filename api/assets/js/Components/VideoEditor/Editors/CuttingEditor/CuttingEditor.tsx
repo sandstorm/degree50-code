@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import { Translate } from 'react-i18nify'
 
 import VideoContextPlayer from './VideoContextPlayer'
-import MediaLane, { MEDIA_LANE_HEIGHT } from '../components/MediaLane'
+import MediaLane from '../components/MediaLane'
 
 import Storage from '../utils/storage'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
@@ -22,6 +22,7 @@ import { videoEditorPlayerTabs } from '../../Tabs'
 import { TabsTypesEnum } from '../../../../types'
 import AddItemButton from '../components/MediaItemList/AddItemButton'
 import ReadonlyMediaLaneWithToolbar from '../components/MediaLane/ReadonlyMediaLaneWithToolbar'
+import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
 
 const storage = new Storage()
 

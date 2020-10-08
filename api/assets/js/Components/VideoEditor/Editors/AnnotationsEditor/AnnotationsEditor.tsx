@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
-import MediaLane, { MEDIA_LANE_HEIGHT } from '../components/MediaLane'
+import MediaLane from '../components/MediaLane'
 import ArtPlayer from '../components/ArtPlayer'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
 import Storage from '../utils/storage'
@@ -14,6 +14,7 @@ import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/Vid
 import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import AddItemButton from '../components/MediaItemList/AddItemButton'
+import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
 
 const storage = new Storage()
 

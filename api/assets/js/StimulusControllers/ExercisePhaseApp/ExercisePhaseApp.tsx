@@ -7,6 +7,26 @@ import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
 
+const renderExercisePhase = (phase: ExercisePhaseTypesEnum, height: number) => {
+    if (!height) {
+        return null
+    }
+
+    // TODO I just extracted that code, but am unsure why it even exists
+    // I assume that it's planned to add more types rendering something else then a <VideoAnalysis /> component?
+    // If that should not be the case, we should remove this and simplify the code without switch statement.
+    switch (phase) {
+        case ExercisePhaseTypesEnum.VIDEO_ANALYSIS: {
+            return <VideoAnalysis height={height} />
+        }
+        case ExercisePhaseTypesEnum.VIDEO_CUTTING: {
+            return <VideoAnalysis height={height} />
+        }
+        default:
+            return null
+    }
+}
+
 type ExercisePhaseProps = {
     type: ExercisePhaseTypesEnum
     readOnly: boolean
@@ -19,28 +39,13 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
 
     const ref: React.RefObject<HTMLDivElement> = useRef(null)
 
-    let { height } = useDebouncedResizeObserver(ref, 500)
-    // workaround to avoid height of 0 at intial render
-    if (height === 0) {
-        height = 400
-    }
-
-    let exercisePhase = null
-    switch (type) {
-        case ExercisePhaseTypesEnum.VIDEO_ANALYSIS:
-            exercisePhase = <VideoAnalysis height={height} />
-            break
-        case ExercisePhaseTypesEnum.VIDEO_CUTTING:
-            exercisePhase = <VideoAnalysis height={height} />
-            break
-        default:
-    }
+    const { height } = useDebouncedResizeObserver(ref, 500)
 
     const toolbar = readOnly ? null : <Toolbar />
     return (
         <OverlayProvider className="exercise-phase__inner js-video-editor-container">
             <div className={'exercise-phase__content'} ref={ref}>
-                {exercisePhase}
+                {renderExercisePhase(type, height)}
                 <Overlay />
                 {toolbar}
             </div>

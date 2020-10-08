@@ -48,17 +48,6 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
         )
     )
 
-    const itemsFromVideoCuts = solution.solution.cutList.map(
-        (videoCut, index) =>
-            new MediaItem({
-                ...videoCut,
-                // TODO: What should be the text? e.g. (start : end) of the cut in the original video?
-                text: `Cut ${index + 1}`,
-                originalData: videoCut,
-                lane: 0,
-            })
-    )
-
     const { showModal: showVideoCodesModal, RenderModal: RenderVideoCodesModal } = useModalHook()
     const handleDropdownClick = (key: React.Key) => {
         if (key === 'showVideoCodes') {
