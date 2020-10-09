@@ -1,26 +1,12 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { MediaItem } from '../types'
 import MediaTrack from './MediaTrack'
-import { RenderConfig } from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
 import Toolbar from './Toolbar'
 import { actions } from '../../../PlayerSlice'
-import { INITIAL_ZOOM, useMediaLane } from './utils'
+import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
 import { defaultMediaTrackConfig } from './MediaTrack/helpers'
 import ReadOnlyMediaItems from '../ReadOnlyMediaLane/ReadOnyMediaItems'
-
-export const MEDIA_LANE_HEIGHT = 200
-export const MEDIA_LANE_TOOLBAR_HEIGHT = 40
-
-const initialRender: RenderConfig = {
-    padding: 0,
-    duration: 10,
-    gridNum: 110,
-    gridGap: 10,
-    currentTime: 0,
-    timelineStartTime: 0,
-    drawRuler: true,
-}
 
 type Props = {
     currentTime: number
@@ -42,49 +28,13 @@ const ReadonlyMediaLaneWithToolbar = ({
     ToolbarActions,
 }: Props) => {
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
-    // TODO this should later become part of the api and probably the redux store
-    const [renderConfig, setRender] = useState<RenderConfig>(initialRender)
 
-    const { containerWidth, containerHeight, getDurationForRenderConfig, getRenderConfigForZoom } = useMediaLane({
-        setRender,
+    const { containerWidth, containerHeight, handleZoom, handleLaneClick, renderConfig } = useMediaLane({
         $container,
-        renderConfig,
         currentTime,
         videoDuration,
+        laneClickCallback: setPlayPosition,
     })
-
-    initialRender.duration = getDurationForRenderConfig(INITIAL_ZOOM)
-    initialRender.gridNum = initialRender.duration * 10 + initialRender.padding * 2
-    initialRender.gridGap = containerWidth / initialRender.gridNum
-
-    const handleLaneClick = useCallback(
-        (clickTime) => {
-            const newCurrentTime = clickTime >= 0 ? clickTime : 0
-
-            setPlayPosition(newCurrentTime)
-
-            const newTimelineStartTime = Math.floor(newCurrentTime / renderConfig.duration) * renderConfig.duration
-
-            setRender({
-                ...renderConfig,
-                currentTime: newCurrentTime,
-                timelineStartTime: newTimelineStartTime,
-            })
-        },
-        [renderConfig]
-    )
-
-    const handleZoom = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const newRenderConfig = getRenderConfigForZoom(parseInt(event.currentTarget.value))
-
-            setRender({
-                ...renderConfig,
-                ...newRenderConfig,
-            })
-        },
-        [renderConfig]
-    )
 
     const mediaTrackConfig = {
         ...defaultMediaTrackConfig,

@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect } from 'react'
 import { updateCanvas } from './helpers'
 
-export type RenderConfig = {
+export type RenderConfig = Readonly<{
     padding: number
     duration: number
     gridNum: number
@@ -9,9 +9,9 @@ export type RenderConfig = {
     timelineStartTime: number
     currentTime: number
     drawRuler: boolean
-}
+}>
 
-export type MediaTrackConfig = {
+export type MediaTrackConfig = Readonly<{
     backgroundColor: string
     rulerBackgroundColor: string
     rulerHeight: number
@@ -23,7 +23,7 @@ export type MediaTrackConfig = {
     fontTop: number
     cursorColor: string
     render: RenderConfig
-}
+}>
 
 type Props = {
     mediaTrackConfig: MediaTrackConfig
