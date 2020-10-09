@@ -19,11 +19,11 @@ export function getExt(url: string): string | undefined {
     return url.trim().toLowerCase().split('.').pop()
 }
 
-export function sleep(ms: number = 0) {
+export function sleep(ms = 0) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export function secondToTime(seconds: number = 0) {
+export function secondToTime(seconds = 0) {
     return DT.d2t(seconds.toFixed(3))
 }
 
@@ -41,7 +41,7 @@ export function downloadFile(url: string, name: string): void {
     document.body.removeChild(elink)
 }
 
-export function notify(text: string = '', type: TypeOptions = 'info') {
+export function notify(text = '', type: TypeOptions = 'info') {
     // info success warning error default
 
     // FIXME

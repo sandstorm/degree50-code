@@ -50,7 +50,7 @@ export const useMediaItemHandling = <T>({
 }: {
     mediaItems: Array<MediaItem<T>>
     setMediaItems: (mediaItems: Array<T>) => void
-    updateCallback: Function
+    updateCallback: () => void
     updateCondition: boolean
     worker?: Worker
     storage?: Storage
@@ -155,7 +155,7 @@ export const useMediaItemHandling = <T>({
 
     // Update a single mediaItem
     const updateMediaItem = useCallback(
-        (item: MediaItem<T>, updatedValues: Object) => {
+        (item: MediaItem<T>, updatedValues: Record<string, unknown>) => {
             const index = hasMediaItem(item)
 
             if (index < 0) return

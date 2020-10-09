@@ -19,13 +19,9 @@ type OwnProps = {
     rowData: MediaItem<MediaItemType>
     removeMediaItem: (item: MediaItem<MediaItemType>) => void
     addMediaItem?: (index: number, item?: MediaItem<MediaItemType>) => void
-    updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Object) => void
+    updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Record<string, unknown>) => void
     moveItemUp?: () => void
     moveItemDown?: () => void
-}
-
-const mapStateToProps = (state: {}) => {
-    return {}
 }
 
 const mapDispatchToProps = {
@@ -33,7 +29,7 @@ const mapDispatchToProps = {
     setPlayPosition: actions.setPlayPosition,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type Props = typeof mapDispatchToProps & OwnProps
 
 const Row = ({
     id,
@@ -87,4 +83,4 @@ const Row = ({
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Row))
+export default connect(undefined, mapDispatchToProps)(React.memo(Row))

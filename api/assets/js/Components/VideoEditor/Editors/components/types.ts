@@ -88,5 +88,5 @@ export type Player = {
     seek: number
     playing: boolean
     currentTime: number
-    subtitle: { switch: Function } // FIXME
+    subtitle: { switch: (data: Record<string, unknown>) => void }
 }

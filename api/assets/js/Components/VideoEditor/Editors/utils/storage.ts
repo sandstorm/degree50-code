@@ -12,7 +12,7 @@ export default class Storage {
         return key ? storage[key] : storage
     }
 
-    set(key: string, value: Object): void {
+    set(key: string, value: Record<string, unknown>): void {
         const storage = Object.assign({}, this.get(), {
             [key]: value,
         })

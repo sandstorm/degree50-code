@@ -38,13 +38,13 @@ export const useCuttingMediaItemHandling = ({
     updateCallback,
     storage,
     playerSyncPlayPosition,
-    setPlayPosition,
+    setPlayPosition, // FIXME unused
     updateCondition,
     originalVideoUrl,
 }: {
     mediaItems: Array<MediaItem<Cut>>
     setCutList: (mediaItems: Array<Cut>) => void
-    updateCallback: Function
+    updateCallback: () => void
     storage?: Storage
     playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
     setPlayPosition: typeof actions.player.setPlayPosition

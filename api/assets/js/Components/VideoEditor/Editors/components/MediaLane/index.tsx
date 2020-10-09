@@ -13,7 +13,7 @@ import PreviousSolutions from './PreviousSolutions'
 type Props = {
     currentTime: number
     mediaItems: MediaItem<any>[]
-    updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine key
+    updateMediaItem: (item: MediaItem<any>, updatedValues: Record<string, unknown>) => void // FIXME refine key
     removeMediaItem: (item: MediaItem<any>) => void
     setPlayPosition: typeof actions.setPlayPosition
     checkMediaItem: (item: MediaItem<any>) => boolean
