@@ -11,6 +11,7 @@ type ItemWithId = {
  * JS does not support proper tail call optimization.
  * This trampoline function prevents us from exceeding the tail stack when doing tail recursion.
  */
+// eslint-disable-next-line
 const trampoline = (f: Function) => {
     return function trampolined(...args: unknown[]) {
         let result = f.bind(null, ...args)

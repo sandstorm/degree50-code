@@ -7,7 +7,7 @@ export type Props = {
     addMediaItem?: (index: number, sub?: MediaItem<any>) => void
     currentIndex: number
     setCurrentIndex?: (index: number) => void
-    updateMediaItem: (item: MediaItem<any>, updatedValues: Object) => void // FIXME refine updatedValues
+    updateMediaItem: (item: MediaItem<any>, updatedValues: Record<string, unknown>) => void // FIXME refine updatedValues
     removeMediaItem: (item: MediaItem<any>) => void
     checkMediaItem: (item: MediaItem<any>) => boolean
     children?: React.ReactNode | React.ReactNodeArray

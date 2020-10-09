@@ -65,9 +65,10 @@ const VideoCodeEditor = (props: Props) => {
     // pool of available video-codes
     const videoCodesPool = props.customVideoCodesPool.length > 0 ? props.customVideoCodesPool : props.videoCodesPool
 
-    const amountOfLanes = Math.max.apply(
-        Math,
-        mediaItems.map((item: MediaItem<VideoCode>) => {
+    // TODO we have multiple duplicates of this function -> extract into helper
+    const amountOfLanes = Math.max(
+        0,
+        ...mediaItems.map((item: MediaItem<VideoCode>) => {
             return item.lane
         })
     )

@@ -18,16 +18,16 @@ declare module 'videocontext' {
         }
 
         canvas: HTMLElement | null
-        compositor: Function
-        destination: Object
+        compositor: (effect: any) => any
+        destination: Record<string, unknown>
         currentTime: number
-        registerCallback: Function
+        registerCallback: (event: any, callback: () => void) => void
         state: number
         volume: number
         duration: number
-        play: Function
-        pause: Function
-        video: Function
+        play: () => void
+        pause: () => void
+        video: (el: HTMLVideoElement, offset: number, preloadTime: number, config: Record<string, unknown>) => any // FIXME
 
         constructor(canvas: HTMLElement | null)
     }

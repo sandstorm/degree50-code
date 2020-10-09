@@ -7,8 +7,6 @@ import { selectors } from './SubtitlesSlice'
 import { updateSubtitlesAction } from './SubtitlesSaga'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
 
-type OwnProps = {}
-
 const mapStateToProps = (state: AppState) => {
     return {
         video: selectors.selectVideo(state),
@@ -18,7 +16,7 @@ const mapDispatchToProps = {
     updateSubtitles: updateSubtitlesAction,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const SubtitleEditorApp = ({ video, updateSubtitles }: Props) => {
     const ref: React.RefObject<HTMLDivElement> = useRef(null)

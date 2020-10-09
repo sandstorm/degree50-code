@@ -33,16 +33,12 @@ type OwnProps = {
     showTextInMediaItems: boolean
 }
 
-const mapStateToProps = (state: {}) => {
-    return {}
-}
-
 const mapDispatchToProps = {
     setPause: actions.setPause,
     setPlayPosition: actions.setPlayPosition,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type Props = typeof mapDispatchToProps & OwnProps
 
 const MediaItem = ({
     item,
@@ -218,4 +214,4 @@ const MediaItem = ({
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(MediaItem))
+export default connect(undefined, mapDispatchToProps)(React.memo(MediaItem))
