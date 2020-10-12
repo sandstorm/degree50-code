@@ -3,7 +3,11 @@ set -ex
 
 mkdir -p var/cache var/log
 setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
+# TODO: Why?
 setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
+
+# chown of data directory to "www-data:www-data" so the app can write material to the FS
+chown -R www-data:www-data /app/public/data/
 
 if [ "$APP_ENV" != 'prod' ]; then
 	composer install --prefer-dist --no-progress --no-suggest --no-interaction
