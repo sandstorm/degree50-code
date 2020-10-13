@@ -98,6 +98,9 @@ class WebEncodingHandler implements MessageHandlerInterface
             // Disabling the filter happens globally and not on a per request basis.
             // Therefore we have to re-enable the filter after we are done encoding.
             $this->entityManager->getFilters()->enable('video_doctrine_filter');
+
+            // WHY: chown output directory recursively because they're created as root by encoder process
+            shell_exec('chown -R www-data:www-data ' . $this->fileSystemService->localPath($video->getEncodedVideoDirectory()));
         }
     }
 
