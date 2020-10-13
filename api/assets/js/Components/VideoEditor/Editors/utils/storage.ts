@@ -21,6 +21,7 @@ export default class Storage {
 
     del(key: string): void {
         const storage = this.get()
+        // eslint-disable-next-line
         delete storage[key]
         window.localStorage.setItem(this.name, JSON.stringify(storage))
     }

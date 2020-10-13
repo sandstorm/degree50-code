@@ -14,6 +14,7 @@ type ItemWithId = {
 // eslint-disable-next-line
 const trampoline = (f: Function) => {
     return function trampolined(...args: unknown[]) {
+        // eslint-disable-next-line
         let result = f.bind(null, ...args)
 
         while (typeof result === 'function') result = result()

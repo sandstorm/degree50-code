@@ -13,6 +13,7 @@ export const useMutablePlayer = (worker?: Worker) => {
     // Run only once
     useEffect(() => {
         if (player && worker && !worker.onmessage) {
+            // eslint-disable-next-line
             worker.onmessage = (event) => {
                 player.subtitle.switch(event.data)
             }
@@ -166,8 +167,7 @@ export const useMediaItemHandling = <T>({
             Object.assign(clone, updatedValues)
 
             if (clone.check) {
-                copiedItems[index] = clone
-                updateMediaItems(copiedItems)
+                updateMediaItems([...copiedItems.slice(0, index), clone, ...copiedItems.slice(index + 1)])
             } else {
                 notify(t('parameter-error'), 'error')
             }

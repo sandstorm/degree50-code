@@ -10,10 +10,10 @@ const SolutionFilter = (props: SolutionFilterProps) => {
     const handleOnChange = (targetSolutionFilter: SolutionFilterType, show: boolean) => {
         props.setVisibleSolutionFilters(
             props.solutionFilters.map((solutionFilter: SolutionFilterType) => {
-                if (solutionFilter === targetSolutionFilter) {
-                    solutionFilter.visible = show
+                return {
+                    ...solutionFilter,
+                    ...(solutionFilter === targetSolutionFilter ? { visible: show } : {}),
                 }
-                return solutionFilter
             })
         )
     }

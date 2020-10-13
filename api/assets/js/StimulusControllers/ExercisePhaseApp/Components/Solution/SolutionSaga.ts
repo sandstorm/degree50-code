@@ -43,6 +43,7 @@ function* solutionSyncListener() {
 
 function connect(eventSource: EventSource) {
     return eventChannel((emit) => {
+        // eslint-disable-next-line
         eventSource.onmessage = (ev) => {
             emit(updateSolutionAction(ev.data))
         }

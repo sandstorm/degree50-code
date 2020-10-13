@@ -129,22 +129,17 @@ const VideoCodeEditor = (props: Props) => {
     )
 
     const createVideoCode = (newVideoCode: VideoCodePrototype, parentVideoCode?: VideoCodePrototype) => {
-        let currentVideoCodes = [...videoCodesPool]
-        if (parentVideoCode) {
-            currentVideoCodes = currentVideoCodes.map((item: VideoCodePrototype) => {
-                if (item.id === parentVideoCode.id) {
-                    return {
-                        ...item,
-                        videoCodes: [...item.videoCodes, newVideoCode],
-                    }
-                } else {
-                    return item
-                }
-            })
-        } else {
-            currentVideoCodes.push(newVideoCode)
-        }
-        props.setCustomVideoCodesPool(currentVideoCodes)
+        const updatedVideoCodes = parentVideoCode
+            ? videoCodesPool.map((item) => {
+                  if (item.id === parentVideoCode.id) {
+                      return { ...item, videoCodes: [...item.videoCodes, newVideoCode] }
+                  } else {
+                      return item
+                  }
+              })
+            : [...videoCodesPool, newVideoCode]
+
+        props.setCustomVideoCodesPool(updatedVideoCodes)
         props.itemUpdateCallback()
     }
 

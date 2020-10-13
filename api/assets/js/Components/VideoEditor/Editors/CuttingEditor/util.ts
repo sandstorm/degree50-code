@@ -121,9 +121,7 @@ export const useCuttingMediaItemHandling = ({
             Object.assign(clone, newValues)
 
             if (clone.check) {
-                copiedItems[index] = clone
-
-                updateMediaItems(copiedItems, true, false)
+                updateMediaItems([...copiedItems.slice(0, index), clone, ...copiedItems.slice(index + 1)], true, false)
             } else {
                 notify(t('parameter-error'), 'error')
             }
@@ -334,6 +332,7 @@ export const addVideoContextPlaylistElement = (
         loop: false,
     })
 
+    // eslint-disable-next-line
     videoNode._playbackRate = videoContextPlaylistElement.playbackRate
     videoNode.start(videoContextPlaylistElement.start)
     videoNode.stop(videoContextPlaylistElement.start + videoContextPlaylistElement.duration)

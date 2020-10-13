@@ -5,10 +5,34 @@ import FileUpload from '../FileUpload/FileUpload'
 import { ComponentTypesEnum } from '../../../../types'
 import MaterialViewer from '../MaterialViewer/MaterialViewer'
 import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
-import VideoPlayerWrapper from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
+import VideoPlayerWrapper, { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import Presence from '../Presence/Presence'
 import ExerciseDescription from '../ExerciseDescription/ExerciseDescription'
 import { selectConfig } from '../Config/ConfigSlice'
+
+export const overlaySizesEnum = {
+    DEFAULT: 'default',
+    SMALL: 'small',
+    LARGE: 'large',
+}
+
+const renderOverlayComponent = (component?: ComponentTypesEnum, videos: Video[] = []) => {
+    switch (component) {
+        case ComponentTypesEnum.TASK:
+            return <ExerciseDescription />
+        case ComponentTypesEnum.DOCUMENT_UPLOAD:
+            return <FileUpload />
+        case ComponentTypesEnum.MATERIAL_VIEWER:
+            return <MaterialViewer />
+        case ComponentTypesEnum.VIDEO_PLAYER:
+            return <VideoPlayerWrapper videos={videos} />
+        case ComponentTypesEnum.PRESENCE:
+            return <Presence />
+        default: {
+            return null
+        }
+    }
+}
 
 const mapStateToProps = (state: AppState) => ({
     isVisible: selectIsVisible(state),
@@ -21,40 +45,9 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     setOverlayVisibility: (isVisible: boolean) => dispatch(setOverlayVisibility(isVisible)),
 })
 
-type AdditionalProps = {
-    // currently none
-}
-
-export const overlaySizesEnum = {
-    DEFAULT: 'default',
-    SMALL: 'small',
-    LARGE: 'large',
-}
-
-type OverlayProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+type OverlayProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
 
 const Overlay: React.FC<OverlayProps> = (props) => {
-    let componentToRender = null
-
-    switch (props.component) {
-        case ComponentTypesEnum.TASK:
-            componentToRender = <ExerciseDescription />
-            break
-        case ComponentTypesEnum.DOCUMENT_UPLOAD:
-            componentToRender = <FileUpload />
-            break
-        case ComponentTypesEnum.MATERIAL_VIEWER:
-            componentToRender = <MaterialViewer />
-            break
-        case ComponentTypesEnum.VIDEO_PLAYER:
-            componentToRender = <VideoPlayerWrapper videos={props.videos} />
-            break
-        case ComponentTypesEnum.PRESENCE:
-            componentToRender = <Presence />
-            break
-        default:
-    }
-
     const handleVisibilityToggle = () => {
         props.setOverlayVisibility(!props.isVisible)
     }
@@ -66,7 +59,7 @@ const Overlay: React.FC<OverlayProps> = (props) => {
             <button className={'overlay__close btn'} type="button" onClick={handleVisibilityToggle}>
                 <i className={'fas fa-times'} />
             </button>
-            <div className={'overlay__content'}>{componentToRender}</div>
+            <div className={'overlay__content'}>{renderOverlayComponent(props.component, props.videos)}</div>
         </div>
     )
 }

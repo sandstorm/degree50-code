@@ -66,10 +66,12 @@ function* presenceListener() {
 
 function connect(eventSource: EventSource) {
     return eventChannel((emit) => {
+        // eslint-disable-next-line
         eventSource.onmessage = (ev) => {
             emit(eventStreamMessageAction()) // the payload is irrelevant because we call the subscription api anyways
         }
 
+        // eslint-disable-next-line
         eventSource.onopen = () => {
             emit(eventStreamOpenedAction()) // the payload is irrelevant because we call the subscription api anyways
         }

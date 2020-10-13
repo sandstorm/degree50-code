@@ -53,6 +53,7 @@ const ArtPlayer = ({
     // Set player position from the outside.
     useEffect(() => {
         if (player) {
+            // eslint-disable-next-line
             player.seek = playPosition
         }
     }, [player, playPosition])
@@ -60,7 +61,7 @@ const ArtPlayer = ({
     useEffect(() => {
         if (player) {
             // @ts-ignore
-            player.play = !isPaused
+            player.play = !isPaused // eslint-disable-line
         }
     }, [player, isPaused])
 
@@ -79,7 +80,7 @@ const ArtPlayer = ({
                             hls.loadSource(url)
                             hls.attachMedia(video)
                             if (!video.src) {
-                                video.src = url
+                                video.setAttribute('src', url)
                             }
                         },
                     },

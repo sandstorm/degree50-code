@@ -29,6 +29,7 @@ test_frontend:
     script:
         - yarn config set cache-folder .yarn
         - cd api
+        - yarn lint
         - yarn test:ci
 
 test_app:
@@ -59,7 +60,6 @@ package_app:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - docker build -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
-
 
 deploy-prod:
     stage: deploy

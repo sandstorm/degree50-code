@@ -31,6 +31,37 @@ export type SolutionFilterType = {
     visible: boolean
 }
 
+const renderTabContent = ({
+    activeTabId,
+    visibleSolutions,
+    setVisibleSolutions,
+    visibleSolutionFilters,
+    setVisibleSolutionFilters,
+}: {
+    activeTabId: TabsTypesEnum
+    visibleSolutions: SolutionByTeam[]
+    setVisibleSolutions: (solutions: SolutionByTeam[]) => void
+    visibleSolutionFilters: SolutionFilterType[]
+    setVisibleSolutionFilters: (filters: SolutionFilterType[]) => void
+}) => {
+    switch (activeTabId) {
+        case TabsTypesEnum.SOLUTIONS: {
+            return <ResultsFilter solutions={visibleSolutions} setVisibleSolutions={setVisibleSolutions} />
+        }
+        case TabsTypesEnum.SOLUTION_FILTERS: {
+            return (
+                <SolutionFilter
+                    solutionFilters={visibleSolutionFilters}
+                    setVisibleSolutionFilters={setVisibleSolutionFilters}
+                />
+            )
+        }
+        default: {
+            return null
+        }
+    }
+}
+
 type OwnProps = {
     solutions: Array<SolutionByTeam>
     videos: Array<Video>
@@ -67,12 +98,8 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
         props.availableComponents.includes(tabType)
     )
 
-    // FIXME use const and find better way to handle height === 0
-    let { height } = useDebouncedResizeObserver($container, 500)
-    // workaround to avoid height of 0 at intial render
-    if (height === 0) {
-        height = 400
-    }
+    const { height } = useDebouncedResizeObserver($container, 500)
+    const heightOrDefault = height === 0 ? 400 : height
 
     const { handleZoom, renderConfig, handleLaneClick } = useMediaLane({
         $container,
@@ -94,8 +121,10 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     useEffect(() => {
         setVisibleSolutions(
             props.solutions.map((solutionsEntry: SolutionByTeam) => {
-                solutionsEntry.visible = true
-                return solutionsEntry
+                return {
+                    ...solutionsEntry,
+                    visible: true,
+                }
             })
         )
 
@@ -113,28 +142,12 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     const [visibleSolutions, setVisibleSolutions] = useState<Array<SolutionByTeam>>([])
     const [visibleSolutionFilters, setVisibleSolutionFilters] = useState<Array<SolutionFilterType>>([])
 
-    let tabContent = null
-    switch (activeTabId) {
-        case TabsTypesEnum.SOLUTIONS:
-            tabContent = <ResultsFilter solutions={visibleSolutions} setVisibleSolutions={setVisibleSolutions} />
-            break
-        case TabsTypesEnum.SOLUTION_FILTERS:
-            tabContent = (
-                <SolutionFilter
-                    solutionFilters={visibleSolutionFilters}
-                    setVisibleSolutionFilters={setVisibleSolutionFilters}
-                />
-            )
-            break
-        default:
-    }
-
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>
             <div className={'exercise-phase__content'} ref={$container}>
-                <div className={'video-editor__main'} style={{ height: height * 0.4 }}>
+                <div className={'video-editor__main'} style={{ height: heightOrDefault * 0.4 }}>
                     <div className={'video-editor__section video-editor__left'}>
-                        <ArtPlayer containerHeight={height * 0.4 - 40} options={artPlayerOptions} />
+                        <ArtPlayer containerHeight={heightOrDefault * 0.4 - 40} options={artPlayerOptions} />
                     </div>
                     <div className={'video-editor__section video-editor__right'}>
                         <header className={'video-editor__section-header'}>
@@ -144,10 +157,18 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
                                 setActiveTabId={setActiveTabId}
                             />
                         </header>
-                        <div className={'video-editor__section-content'}>{tabContent}</div>
+                        <div className={'video-editor__section-content'}>
+                            {renderTabContent({
+                                activeTabId,
+                                visibleSolutions,
+                                setVisibleSolutions,
+                                visibleSolutionFilters,
+                                setVisibleSolutionFilters,
+                            })}
+                        </div>
                     </div>
                 </div>
-                <div className={'solutions'} style={{ height: height * 0.6 }}>
+                <div className={'solutions'} style={{ height: heightOrDefault * 0.6 }}>
                     <Toolbar
                         zoomHandler={handleZoom}
                         videoDuration={videoDuration}

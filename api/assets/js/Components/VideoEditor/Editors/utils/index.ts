@@ -31,16 +31,6 @@ export function timeToSecond(time: string): number {
     return DT.t2d(time)
 }
 
-export function downloadFile(url: string, name: string): void {
-    const elink = document.createElement('a')
-    elink.style.display = 'none'
-    elink.href = url
-    elink.download = name
-    document.body.appendChild(elink)
-    elink.click()
-    document.body.removeChild(elink)
-}
-
 export function notify(text = '', type: TypeOptions = 'info') {
     // info success warning error default
 
