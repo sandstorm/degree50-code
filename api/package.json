@@ -21,6 +21,7 @@
         "node-sass": "^4.14.1",
         "popper.js": "^1.16.1",
         "postcss-loader": "^3.0.0",
+        "pretty-quick": "^3.0.2",
         "regenerator-runtime": "^0.13.2",
         "sass-loader": "^7.0.1",
         "ts-loader": "^5.3.0",
@@ -39,8 +40,8 @@
         "build-types:ExercisePhaseConfigSchema": "json2ts -i assets/api-definitions/ExercisePhaseConfigSchema.json -o assets/api-definitions/generated/ExercisePhaseConfigSchema.ts",
         "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
         "test:ci": "jest --runInBand",
-        "lint": "eslint --quiet ./assets/js/**/* && ./node_modules/.bin/prettier --check \"assets/js/**/*.{tsx,ts}\"",
-        "lint:fix": "eslint ./assets/js/**/* --fix && ./node_modules/.bin/prettier --write \"assets/js/**/*.{tsx,ts}\""
+        "lint": "eslint ./assets/js/**/*",
+        "lint:fix": "eslint --quiet ./assets/js/**/* --fix"
     },
     "dependencies": {
         "@apollo/react-hooks": "^3.1.5",
@@ -131,7 +132,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-push": "yarn lint"
+            "pre-commit": "pretty-quick --staged"
         }
     }
 }
