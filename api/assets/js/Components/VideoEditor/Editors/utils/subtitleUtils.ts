@@ -75,11 +75,17 @@ export async function getSubFromVttUrl(url: string) {
     return new Promise((resolve) => {
         const $video = document.createElement('video')
         const $track = document.createElement('track')
+
+        // eslint-disable-next-line
         $track.default = true
+        // eslint-disable-next-line
         $track.kind = 'metadata'
+        // eslint-disable-next-line
+        $track.src = url
+
         $video.appendChild($track)
 
-        $track.onload = () => {
+        $track.addEventListener('load', () => {
             resolve(
                 // FIXME
                 // @ts-ignore disable-line
@@ -101,8 +107,6 @@ export async function getSubFromVttUrl(url: string) {
                     })
                 })
             )
-        }
-
-        $track.src = url
+        })
     })
 }

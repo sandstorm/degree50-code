@@ -20,10 +20,8 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const SubtitleEditorApp = ({ video, updateSubtitles }: Props) => {
     const ref: React.RefObject<HTMLDivElement> = useRef(null)
-    let { height } = useDebouncedResizeObserver(ref, 500)
-    if (height === 0) {
-        height = 400
-    }
+    const { height } = useDebouncedResizeObserver(ref, 500)
+    const heightOrDefault = height === 0 ? 400 : height
 
     if (!video) {
         return null
@@ -35,7 +33,7 @@ const SubtitleEditorApp = ({ video, updateSubtitles }: Props) => {
         <div className="js-video-editor-container" ref={ref}>
             <VideoEditor
                 videos={[video]}
-                height={height}
+                height={heightOrDefault}
                 components={components}
                 itemUpdateCallback={updateSubtitles}
                 itemUpdateCondition={true}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { Translate } from 'react-i18nify'
 
@@ -19,20 +19,21 @@ const MediaItemContextMenu = ({
     addMemoToMediaItem,
     handleClose,
 }: Props) => {
+    const timeOut = useRef<NodeJS.Timeout | null>(null)
+
     const domEl = document.getElementById('media-item-context-menu')
     if (!domEl) return null
 
-    let timer: any
-
     const handleOnMouseOut = () => {
-        timer = setTimeout(() => {
+        // eslint-disable-next-line
+        timeOut.current = setTimeout(() => {
             handleClose()
         }, 250)
     }
 
     const handleOnMouseOver = () => {
-        if (timer) {
-            clearTimeout(timer)
+        if (timeOut.current) {
+            clearTimeout(timeOut.current)
         }
     }
 

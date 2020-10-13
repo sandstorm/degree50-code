@@ -33,11 +33,11 @@ const VideoContextPlayer = ({
     playPosition,
     volume,
     isPaused,
-    setPause,
+    setPause, // TODO use or remove me
 }: Props) => {
     const [videoContext, setVideoContext] = useState<VideoContext | undefined>(undefined)
     const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null)
-    const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver(canvasRef, 500)
+    const { width: containerWidth } = useDebouncedResizeObserver(canvasRef, 500)
 
     const [canvasWidth, setCanvasWidth] = useState(0)
     const [canvasHeight, setCanvasHeight] = useState(0)
@@ -80,6 +80,7 @@ const VideoContextPlayer = ({
     useEffect(() => {
         if (videoContext) {
             // WHY: VideoContext expects a value between 0 and 1.
+            // eslint-disable-next-line
             videoContext.volume = volume / 100
         }
     }, [videoContext, volume])
@@ -108,6 +109,7 @@ const VideoContextPlayer = ({
     // Set player position from the outside.
     useEffect(() => {
         if (videoContext) {
+            // eslint-disable-next-line
             videoContext.currentTime = playPosition
             setSyncPlayPosition(playPosition)
             currentTimeCallback(playPosition)

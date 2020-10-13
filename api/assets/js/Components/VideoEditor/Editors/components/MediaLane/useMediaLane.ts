@@ -1,6 +1,7 @@
 import { useLayoutEffect, useEffect, useState, useCallback } from 'react'
 import { RenderConfig } from './MediaTrack'
 import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
+import { calculateTimelineStartTime } from './helpers'
 
 /**
  * The initial zoom value in %.
@@ -24,7 +25,6 @@ const getDurationForRenderConfig = (durationInPercentage: number, videoDuration:
 }
 
 // TODO comment and refactor
-
 export const useMediaLane = ({
     $container,
     currentTime,
@@ -49,27 +49,15 @@ export const useMediaLane = ({
     }
 
     const setRenderConfigForZoom = (zoomInPercent: number) => {
-        const newDuration = getDurationForRenderConfig(zoomInPercent, videoDuration)
-        const newGridNum = newDuration * 10 + renderConfig.padding * 2
+        const newRenderedDuration = getDurationForRenderConfig(zoomInPercent, videoDuration)
+        const newGridNum = newRenderedDuration * 10 + renderConfig.padding * 2
         const newGridGap = containerWidth / newGridNum
 
-        // we zoom around the current time
-        let newTimelineStartTime = Math.round(currentTime - newDuration / 2)
-
-        // in case the new start-time + the new duration is larger than the duration of video
-        if (newTimelineStartTime + newDuration >= videoDuration) {
-            newTimelineStartTime = Math.round(
-                newTimelineStartTime - (newTimelineStartTime + newDuration - videoDuration)
-            )
-        }
-
-        if (newTimelineStartTime < 0) {
-            newTimelineStartTime = 0
-        }
+        const newTimelineStartTime = calculateTimelineStartTime(currentTime, newRenderedDuration, videoDuration)
 
         setRenderConfig({
             ...renderConfig,
-            duration: newDuration,
+            duration: newRenderedDuration,
             gridNum: newGridNum,
             gridGap: newGridGap,
             timelineStartTime: newTimelineStartTime,

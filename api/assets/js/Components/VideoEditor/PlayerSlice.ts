@@ -23,16 +23,28 @@ export const playerSlice = createSlice({
     initialState,
     reducers: {
         setSyncPlayPosition: (state, action: PayloadAction<number>) => {
-            state.syncPlayPosition = action.payload
+            return {
+                ...state,
+                syncPlayPosition: action.payload,
+            }
         },
         setPlayPosition: (state, action: PayloadAction<number>) => {
-            state.playPosition = action.payload
+            return {
+                ...state,
+                playPosition: action.payload,
+            }
         },
         togglePlay: (state) => {
-            state.isPaused = !state.isPaused
+            return {
+                ...state,
+                isPaused: !state.isPaused,
+            }
         },
         setPause: (state, action: PayloadAction<boolean>) => {
-            state.isPaused = action.payload
+            return {
+                ...state,
+                isPaused: action.payload,
+            }
         },
     },
 })

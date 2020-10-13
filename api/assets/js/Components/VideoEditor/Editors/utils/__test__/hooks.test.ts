@@ -18,7 +18,7 @@ jest.mock('react-i18nify', () => {
 
 // Overwrite navigator for this test suite
 // @ts-ignore
-global.navigator = {
+global.navigator = { // eslint-disable-line
     language: 'EN',
 }
 

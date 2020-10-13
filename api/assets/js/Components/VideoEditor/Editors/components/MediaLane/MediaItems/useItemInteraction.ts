@@ -71,11 +71,15 @@ export const useItemInteraction = <T>(
                 setLastDiffX(lastDiffX)
 
                 if (lastClickedItemSide === 'left') {
+                    // eslint-disable-next-line
                     lastTargetNode.style.width = `${lastTargetNodeWidth - lastDiffX}px`
+                    // eslint-disable-next-line
                     lastTargetNode.style.transform = `translate(${lastDiffX}px)`
                 } else if (lastClickedItemSide === 'right') {
+                    // eslint-disable-next-line
                     lastTargetNode.style.width = `${lastTargetNodeWidth + lastDiffX}px`
                 } else {
+                    // eslint-disable-next-line
                     lastTargetNode.style.transform = `translate(${lastDiffX}px)`
                 }
             }
@@ -96,6 +100,7 @@ export const useItemInteraction = <T>(
 
                     updateMediaItem(lastClickedItem, { start }, newStartTime)
                 } else {
+                    // eslint-disable-next-line
                     lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             } else if (lastClickedItemSide === 'right') {
@@ -105,6 +110,7 @@ export const useItemInteraction = <T>(
 
                     updateMediaItem(lastClickedItem, { end }, lastClickedItem.startTime) // start time should not've changed here
                 } else {
+                    // eslint-disable-next-line
                     lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             } else {
@@ -122,10 +128,12 @@ export const useItemInteraction = <T>(
                         newStartTime
                     )
                 } else {
+                    // eslint-disable-next-line
                     lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             }
 
+            // eslint-disable-next-line
             lastTargetNode.style.transform = `translate(0)`
         }
 

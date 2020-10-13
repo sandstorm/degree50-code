@@ -9,19 +9,16 @@ type Props = {
 
 const MediaItemLabel = ({ item, showTextInMediaItems }: Props) => {
     // Used for video-codes
-    const getShortCodeForItemLabel = (title: string) => {
-        const splitStr = title.toLowerCase().split(' ')
-        for (let i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase()
-        }
-        return splitStr.join('')
+    const titleToAcronym = (title: string) => {
+        const titleWords = title.toLowerCase().split(' ')
+        return titleWords.map((word) => word.charAt(0).toUpperCase()).join('')
     }
 
     return (
         <span>
             {showTextInMediaItems
                 ? item.text.split(/\r?\n/).map((line: string, index: number) => <p key={index}>{line}</p>)
-                : getShortCodeForItemLabel(item.text)}
+                : titleToAcronym(item.text)}
         </span>
     )
 }

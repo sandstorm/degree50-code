@@ -10,7 +10,7 @@ import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
 import { Handle } from './types'
 import MediaItemLabel from './MediaItemLabel'
-import { clamp } from './helpers'
+import { clamp, getContextYPosition } from './helpers'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>
@@ -120,6 +120,7 @@ const MediaItem = ({
     // This helps preventing bugs like this: https://gitlab.sandstorm.de/degree-4.0/code/-/issues/59
     useEffect(() => {
         if (itemRef.current) {
+            // eslint-disable-next-line
             itemRef.current.style.width = `${width}px`
         }
     }, [itemRef, item])
@@ -159,10 +160,14 @@ const MediaItem = ({
                 setContextMenuPosX(event.pageX)
                 const mediaItemsHeight = document.getElementsByClassName('video-editor__media-items')[0].clientHeight
                 const phaseHeight = document.getElementsByClassName('exercise-phase__inner')[0].clientHeight
-                let posY = mediaItemsHeight - (phaseHeight - event.pageY)
-                if (posY >= mediaItemsHeight / 2) {
-                    posY = posY - 3 * contentMenuItemHeight
-                }
+
+                const posY = getContextYPosition({
+                    mediaItemsHeight,
+                    phaseHeight,
+                    pageY: event.pageY,
+                    contentMenuItemHeight,
+                })
+
                 setContextMenuPosY(posY)
             }}
         >

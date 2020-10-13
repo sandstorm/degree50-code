@@ -37,26 +37,43 @@ export const videoListsSlice = createSlice({
     initialState,
     reducers: {
         setAnnotations: (state, action: PayloadAction<Array<Annotation>>) => {
-            state.annotations = action.payload
+            return {
+                ...state,
+                annotations: action.payload,
+            }
         },
         setVideoCodes: (state, action: PayloadAction<Array<VideoCode>>) => {
-            state.videoCodes = action.payload
+            return {
+                ...state,
+                videoCodes: action.payload,
+            }
         },
         setCutList: (state, action: PayloadAction<CutList>) => {
-            state.cutList = action.payload
+            return {
+                ...state,
+                cutList: action.payload,
+            }
         },
         setCustomVideoCodesPool: (state, action: PayloadAction<Array<VideoCodePrototype>>) => {
-            state.customVideoCodesPool = action.payload
+            return {
+                ...state,
+                customVideoCodesPool: action.payload,
+            }
         },
         setSubtitles: (state, action: PayloadAction<Subtitle[]>) => {
-            state.subtitles = action.payload
+            return {
+                ...state,
+                subtitles: action.payload,
+            }
         },
-        setVideoEditor: (state, action: PayloadAction<VideoListsState>) => {
-            state.annotations = action.payload?.annotations || []
-            state.videoCodes = action.payload?.videoCodes || []
-            state.customVideoCodesPool = action.payload?.customVideoCodesPool || []
-            state.subtitles = action.payload?.subtitles || []
-            state.cutList = action.payload?.cutList || []
+        setVideoEditor: (_, action: PayloadAction<VideoListsState>) => {
+            return {
+                annotations: action.payload?.annotations || [],
+                videoCodes: action.payload?.videoCodes || [],
+                customVideoCodesPool: action.payload?.customVideoCodesPool || [],
+                subtitles: action.payload?.subtitles || [],
+                cutList: action.payload?.cutList || [],
+            }
         },
     },
 })

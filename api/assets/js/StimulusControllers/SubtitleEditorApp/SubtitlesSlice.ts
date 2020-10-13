@@ -17,10 +17,16 @@ export const subtitlesSlice = createSlice({
     initialState,
     reducers: {
         setVideo: (state: SubtitlesState, action: PayloadAction<Video>) => {
-            state.video = action.payload
+            return {
+                ...state,
+                video: action.payload,
+            }
         },
         setUpdateUrl: (state: SubtitlesState, action: PayloadAction<string>) => {
-            state.updateUrl = action.payload
+            return {
+                ...state,
+                updateUrl: action.payload,
+            }
         },
     },
 })

@@ -20,13 +20,22 @@ export const overlaySlice = createSlice({
     initialState,
     reducers: {
         setOverlayVisibility: (state, action: PayloadAction<boolean>) => {
-            state.isVisible = action.payload
+            return {
+                ...state,
+                isVisible: action.payload,
+            }
         },
         setOverlayComponent: (state, action: PayloadAction<ComponentTypesEnum>) => {
-            state.component = action.payload
+            return {
+                ...state,
+                component: action.payload,
+            }
         },
         setOverlaySize: (state, action: PayloadAction<string>) => {
-            state.size = action.payload
+            return {
+                ...state,
+                size: action.payload,
+            }
         },
     },
 })

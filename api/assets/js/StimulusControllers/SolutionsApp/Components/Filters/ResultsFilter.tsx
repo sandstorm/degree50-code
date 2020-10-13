@@ -12,8 +12,10 @@ const ResultsFilter = (props: ResultsFilterProps) => {
     const handleToggleAllSolutions = (event: React.ChangeEvent<HTMLInputElement>) => {
         props.setVisibleSolutions(
             props.solutions.map((solutionsEntry: SolutionByTeam) => {
-                solutionsEntry.visible = event.target.checked
-                return solutionsEntry
+                return {
+                    ...solutionsEntry,
+                    visible: event.target.checked,
+                }
             })
         )
         setAllSolutionsVisible(event.target.checked)
@@ -21,10 +23,10 @@ const ResultsFilter = (props: ResultsFilterProps) => {
     const handleSolutionsFilterOnChange = (targetSolutionsEntry: SolutionByTeam, show: boolean) => {
         props.setVisibleSolutions(
             props.solutions.map((solutionsEntry: SolutionByTeam) => {
-                if (solutionsEntry === targetSolutionsEntry) {
-                    solutionsEntry.visible = show
+                return {
+                    ...solutionsEntry,
+                    ...(solutionsEntry === targetSolutionsEntry ? { visible: show } : {}),
                 }
-                return solutionsEntry
             })
         )
     }

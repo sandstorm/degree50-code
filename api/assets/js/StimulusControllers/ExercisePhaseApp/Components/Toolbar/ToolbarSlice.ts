@@ -16,14 +16,18 @@ export const toolbarSlice = createSlice({
     initialState,
     reducers: {
         toggleComponent: (state, action: PayloadAction<string>) => {
-            if (state.activeToolbarItem === action.payload) {
-                state.activeToolbarItem = ''
-            } else {
-                state.activeToolbarItem = action.payload
+            const toggledItem = state.activeToolbarItem === action.payload ? '' : action.payload
+
+            return {
+                ...state,
+                activeToolbarItem: toggledItem,
             }
         },
         toggleToolbarVisibility: (state) => {
-            state.isVisible = !state.isVisible
+            return {
+                ...state,
+                isVisible: !state.isVisible,
+            }
         },
     },
 })

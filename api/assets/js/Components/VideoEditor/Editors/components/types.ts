@@ -65,16 +65,8 @@ export class MediaItem<T> {
         return timeToSecond(this.start)
     }
 
-    set startTime(time) {
-        this.start = secondToTime(clamp(time, 0, Infinity))
-    }
-
     get endTime(): number {
         return timeToSecond(this.end)
-    }
-
-    set endTime(time) {
-        this.end = secondToTime(clamp(time, 0, Infinity))
     }
 
     get duration(): string {

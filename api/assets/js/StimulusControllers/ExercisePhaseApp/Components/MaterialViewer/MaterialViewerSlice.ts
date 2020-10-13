@@ -15,7 +15,10 @@ export const materialViewerSlice = createSlice({
     initialState,
     reducers: {
         setActiveMaterial: (state, action: PayloadAction<Material | undefined>) => {
-            state.activeMaterial = action.payload
+            return {
+                ...state,
+                activeMaterial: action.payload,
+            }
         },
     },
 })

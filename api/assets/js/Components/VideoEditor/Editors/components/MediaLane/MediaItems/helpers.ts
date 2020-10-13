@@ -15,4 +15,22 @@ export const itemIsVisible = <T>(
     return item.startTime <= timelineClippingEnd && item.endTime >= currentTimelineClippingStart
 }
 
+export const getContextYPosition = ({
+    mediaItemsHeight,
+    phaseHeight,
+    pageY,
+    contentMenuItemHeight,
+}: {
+    mediaItemsHeight: number
+    phaseHeight: number
+    pageY: number
+    contentMenuItemHeight: number
+}) => {
+    const baseY = mediaItemsHeight - (phaseHeight - pageY)
+
+    // WHY: Adjusts the menu to be above the cursor, if the user clicks
+    // into the second half of the item
+    return baseY >= mediaItemsHeight / 2 ? baseY - 3 * contentMenuItemHeight : baseY
+}
+
 export const clamp = (value: number, min: number, max: number) => Math.min(Math.max(min, value), max)
