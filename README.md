@@ -4,47 +4,49 @@
 
 **Prerequisites**
 
-- docker & docker-compose
-- Make
-- yarn (cd api && nvm use && npm install yarn -g)
+-   docker & docker-compose
+-   Make
+-   yarn (cd api && nvm use && npm install yarn -g)
 
 **Get Started with Development**
 
-- Initially, run `make build-docker` to build the docker container
-- run `docker-compose up -d`
-- check installation with `docker-compose logs -f api`
-- When the container is running:
-    - import fixtures by running `make import-fixtures` (dummy data)
-    - Run the assets build (locally) using `cd api && nvm use && yarn`
-    - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
-    - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
-    - The Symfony Console can be executed via `./symfony-console`
+-   Initially, run `make build-docker` to build the docker container
+-   run `docker-compose up -d`
+-   check installation with `docker-compose logs -f api`
+-   When the container is running:
+    -   import fixtures by running `make import-fixtures` (dummy data)
+    -   Run the assets build (locally) using `cd api && nvm use && yarn`
+    -   Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
+    -   After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
+    -   The Symfony Console can be executed via `./symfony-console`
 
 **Connect with database**
 
-- mariadb
-    - db: api
-    - user: api-platform
-    - pw: !ChangeMe!
-    - host: localhost:13306
+-   mariadb
+    -   db: api
+    -   user: api-platform
+    -   pw: !ChangeMe!
+    -   host: localhost:13306
 
 **Symfony commands**
-- ./symfony-console cache:clear
-- ./symfony-console make:entity
-- ./symfony-console make:migration
-- ./symfony-console doctrine:migrations:migrate
-- ./symfony-console messenger:consume async -vv
-- ./symfony-console messenger:consume async -vv --limit=1
 
-- Debug commands:
-  - for re-encoding a single video: ./symfony-console app:enqueue-video-encoding ac40cc6c-ad1f-4af0-881a-47d65cbae66d
+-   ./symfony-console cache:clear
+-   ./symfony-console make:entity
+-   ./symfony-console make:migration
+-   ./symfony-console doctrine:migrations:migrate
+-   ./symfony-console messenger:consume async -vv
+-   ./symfony-console messenger:consume async -vv --limit=1
+
+-   Debug commands:
+    -   for re-encoding a single video: ./symfony-console app:enqueue-video-encoding ac40cc6c-ad1f-4af0-881a-47d65cbae66d
 
 **Imported endpoints**
-- http://localhost:8080
-- http://localhost:8080/login
-    - login with: admin@sandstorm.de / password
-- http://localhost:8080/admin/
-- http://localhost:8080/subtitle-editor
+
+-   http://localhost:8080
+-   http://localhost:8080/login
+    -   login with: admin@sandstorm.de / password
+-   http://localhost:8080/admin/
+-   http://localhost:8080/subtitle-editor
 
 **Running Behat Tests**
 
@@ -53,11 +55,13 @@ make test
 **troubleshooting for Behat Tests**
 
 When seeing the following error
+
 ```
 SQLSTATE[HY000] [1044] Access denied for user ‘api-platform’@‘%’ to database ‘app_test’
 ```
 
 Try to connect to the local db and execute the following script
+
 ```
 CREATE DATABASE app_test;
 GRANT ALL ON app_test.* TO 'api-platform'@'%';
@@ -69,15 +73,15 @@ yarn jest
 yarn test:debug
 
 ## Testing the SAML Authentication locally
- 
+
 In order to test the SAML authentication locally, you need the following `/etc/hosts` entry:
 
 ```
 127.0.0.1 degree40.tu-dortmund.de
 ```
 
-- now, browse to [https://degree40.tu-dortmund.de](https://degree40.tu-dortmund.de) and accept the certificate warning.
-- then, press the `SAML Login` link, and log in at TU dortmund (credentials in vault)
+-   now, browse to [https://degree40.tu-dortmund.de](https://degree40.tu-dortmund.de) and accept the certificate warning.
+-   then, press the `SAML Login` link, and log in at TU dortmund (credentials in vault)
 
 After testing, **remember to remove the `/etc/hosts` entry again** - as you still want to access the staging system.
 
@@ -109,22 +113,23 @@ Host degree40.tu-dortmund.de
 
 **Connect**
 
-- Run `ssh [your-username]@degree40.tu-dortmund.de`
-- Touch your Yubikey TWICE
-- Now, you can become the **deployment** user (which runs `docker-compose`):
-  `sudo su - deployment`
-- To enter the container, use the following commmand:
-  `docker-compose exec api /bin/bash`
+-   Run `ssh [your-username]@degree40.tu-dortmund.de`
+-   Touch your Yubikey TWICE
+-   Now, you can become the **deployment** user (which runs `docker-compose`):
+    `sudo su - deployment`
+-   To enter the container, use the following commmand:
+    `docker-compose exec api /bin/bash`
 
 **Connect to the Production Database**
-- Prod database is a MariaDB
-- Run the SSH command as above(`ssh [your-username]@degree40.tu-dortmund.de`), keep the connection open
-- Connect (e.g. in Sequel Pro or IntelliJ) using the following settings:
-  - Host: 127.0.0.1
-  - Port: 23306
-  - User: api-platform
-  - Password: see bitwarden vault
-  - DB: api
+
+-   Prod database is a MariaDB
+-   Run the SSH command as above(`ssh [your-username]@degree40.tu-dortmund.de`), keep the connection open
+-   Connect (e.g. in Sequel Pro or IntelliJ) using the following settings:
+    -   Host: 127.0.0.1
+    -   Port: 23306
+    -   User: api-platform
+    -   Password: see bitwarden vault
+    -   DB: api
 
 **Ansible Setup**
 
@@ -141,22 +146,31 @@ ansible-playbook -i inventories/production.yml -K server.yml
 
 Ansible takes care of:
 
-- adding/configuring users
-- hardening the server (SSH config; TODO firewall)
-- installing `docker`
+-   adding/configuring users
+-   hardening the server (SSH config; TODO firewall)
+-   installing `docker`
 
 **Deployment via Gitlab CI**
 
-- 
+-
 
 ## How to remove a Video from Prod
+
 > Admin should be able to do this inside the plattform
 
-* Connect to Prod DB (see above)
-* Look for video in `video` table and "memorize" id
-* Delete references in tables:
-    * `video_course`
-    * `exercise_phase_video`
-    * `video`
-    * `video_subtitles`
-* These are all reference _we_ found for now. There might be more in `exercise_phase*` if the video was used in a phase.
+-   Connect to Prod DB (see above)
+-   Look for video in `video` table and "memorize" id
+-   Delete references in tables:
+    -   `video_course`
+    -   `exercise_phase_video`
+    -   `video`
+    -   `video_subtitles`
+-   These are all reference _we_ found for now. There might be more in `exercise_phase*` if the video was used in a phase.
+
+## Known Issues
+
+### (random) Unexpected Behavior (i.e. Login suddenly not working)
+
+-   The current production system does not have a lot of resources and runs `out of space` quickly.
+-   As quick fix try to remove unused docker resources with `docker system prune`.
+-   Hint: to see how much disc space docker is using, run: `docker system df`.
