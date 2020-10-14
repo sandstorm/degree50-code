@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { CutList } from 'Components/VideoEditor/Editors/CuttingEditor/types'
 import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
+import { timeToSecond } from './Editors/utils'
 
 // Media item type without methods, so that it is serializable
 export type MediaItemType = {
@@ -61,9 +62,26 @@ export const videoListsSlice = createSlice({
             }
         },
         setSubtitles: (state, action: PayloadAction<Subtitle[]>) => {
+            // WHY:
+            // New items are always placed at the current cursor position.
+            // This might lead to a situation, where it is placed before another item, which
+            // is considered to be an illegal state. Therefore we reorder items in that case.
+            const sortedByStarttime = [...action.payload].sort((a, b) => {
+                const startA = timeToSecond(a.start)
+                const startB = timeToSecond(b.start)
+
+                if (startA < startB) {
+                    return -1
+                } else if (startA > startB) {
+                    return 1
+                } else {
+                    return 0
+                }
+            })
+
             return {
                 ...state,
-                subtitles: action.payload,
+                subtitles: sortedByStarttime,
             }
         },
         setVideoEditor: (_, action: PayloadAction<VideoListsState>) => {
