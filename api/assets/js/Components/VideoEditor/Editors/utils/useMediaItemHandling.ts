@@ -2,28 +2,15 @@ import { useCallback, useState, useEffect, useMemo } from 'react'
 import { t, setLocale } from 'react-i18nify'
 import isEqual from 'lodash/isEqual'
 
-import { secondToTime, notify } from '../utils'
-import { Player, MediaItem } from '../components/types'
-import Storage from '../utils/storage'
+import { secondToTime, notify } from '.'
+import { MediaItem } from '../components/types'
+import Storage from './storage'
 
-export const useMutablePlayer = (worker?: Worker) => {
-    // Player instance
-    const [player, setPlayer] = useState<Player | undefined>(undefined)
+export const getNewMediaItemStartAndEnd = (currentTime: number, duration: number) => {
+    const start = secondToTime(currentTime)
+    const end = secondToTime(Math.ceil(currentTime + duration / 10))
 
-    // Run only once
-    useEffect(() => {
-        if (player && worker && !worker.onmessage) {
-            // eslint-disable-next-line
-            worker.onmessage = (event) => {
-                player.subtitle.switch(event.data)
-            }
-        }
-    }, [player, worker])
-
-    return {
-        player,
-        setPlayer,
-    }
+    return { start, end }
 }
 
 const checkConflictWithPrevItem = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
@@ -41,21 +28,25 @@ const checkConflict = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index
 }
 
 export const useMediaItemHandling = <T>({
+    currentTime,
+    history,
     mediaItems,
     setMediaItems,
-    updateCallback,
-    worker,
     storage,
-    history,
+    updateCallback,
     updateCondition,
+    timelineDuration,
+    worker,
 }: {
+    currentTime: number
+    history?: Array<MediaItem<T>[]>
     mediaItems: Array<MediaItem<T>>
     setMediaItems: (mediaItems: Array<T>) => void
+    storage?: Storage
+    timelineDuration: number
     updateCallback: () => void
     updateCondition: boolean
     worker?: Worker
-    storage?: Storage
-    history?: Array<MediaItem<T>[]>
 }) => {
     const defaultLang = storage?.get('language') || navigator.language.toLowerCase() || 'en'
     const [language, setLanguage] = useState(defaultLang)
@@ -191,10 +182,8 @@ export const useMediaItemHandling = <T>({
 
     // Add a mediaItem
     const appendMediaItem = useCallback(() => {
-        const lastItem = mediaItems[mediaItems.length - 1]
+        const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
 
-        const start = lastItem ? secondToTime(lastItem.endTime + 0.1) : '00:00:00.001'
-        const end = lastItem ? secondToTime(lastItem.endTime + 1.1) : '00:00:01.001'
         const newItem = new MediaItem({
             start,
             end,

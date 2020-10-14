@@ -10,16 +10,6 @@ export const INITIAL_ZOOM = 100
 export const MEDIA_LANE_HEIGHT = 200
 export const MEDIA_LANE_TOOLBAR_HEIGHT = 40
 
-const initialRender: RenderConfig = {
-    padding: 0,
-    duration: 10,
-    gridNum: 110,
-    gridGap: 10,
-    currentTime: 0,
-    timelineStartTime: 0,
-    drawRuler: true,
-}
-
 const getDurationForRenderConfig = (durationInPercentage: number, videoDuration: number) => {
     return Math.round((videoDuration / 100) * durationInPercentage)
 }
@@ -30,13 +20,16 @@ export const useMediaLane = ({
     currentTime,
     videoDuration,
     laneClickCallback,
+    renderConfig,
+    setRenderConfig,
 }: {
     $container: React.RefObject<HTMLDivElement>
     currentTime: number
     videoDuration: number
     laneClickCallback: (newCurrentTime: number) => void
+    renderConfig: RenderConfig
+    setRenderConfig: (newRenderConfig: RenderConfig) => void
 }) => {
-    const [renderConfig, setRenderConfig] = useState<RenderConfig>(initialRender)
     const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver($container, 500)
 
     const updateRenderConfigOnResize = (containerWidth: number) => {

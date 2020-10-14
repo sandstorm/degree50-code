@@ -38,6 +38,7 @@ const mapStateToProps = (state: VideoEditorState) => ({
     playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
     cutList: selectors.lists.selectVideoEditorLists(state).cutList,
     previousSolutions: selectors.config.selectConfig(state.videoEditor).previousSolutions,
+    mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
 })
 
 const mapDispatchToProps = {
@@ -82,6 +83,7 @@ const CuttingEditor = ({
     itemUpdateCallback,
     itemUpdateCondition,
     previousSolutions,
+    mediaLaneRenderConfig,
 }: Props) => {
     const { volume, handleVolumeChange } = useVolume()
     const [activeContext, setActiveContext] = useState<TabsTypesEnum>(TabsTypesEnum.ORIGINAL_VIDEO)
@@ -126,23 +128,23 @@ const CuttingEditor = ({
             : transformCutListToMediaItemsForCutContext(cutList)
 
     const {
+        appendCut,
         currentIndex,
-
+        handleSplitAtCursor,
+        removeMediaItem,
         setCurrentIndex,
         setCurrentTimeForMediaItems,
-        removeMediaItem,
         updateMediaItem,
-        handleSplitAtCursor,
-        appendCut,
     } = useCuttingMediaItemHandling({
-        updateCondition: itemUpdateCondition,
+        currentTime: mediaLaneRenderConfig.currentTime,
         mediaItems,
-        setCutList,
-        updateCallback: itemUpdateCallback,
-        storage,
-        playerSyncPlayPosition,
-        setPlayPosition,
         originalVideoUrl: originalVideo.url.mp4,
+        playerSyncPlayPosition,
+        setCutList,
+        storage,
+        timelineDuration: mediaLaneRenderConfig.duration,
+        updateCallback: itemUpdateCallback,
+        updateCondition: itemUpdateCondition,
     })
 
     // If there is no video, we can't cut any

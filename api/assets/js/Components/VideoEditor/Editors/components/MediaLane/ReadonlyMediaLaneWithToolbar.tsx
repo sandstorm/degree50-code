@@ -1,22 +1,33 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useRef } from 'react'
 import { MediaItem } from '../types'
 import MediaTrack from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
 import Toolbar from './Toolbar'
-import { actions } from '../../../PlayerSlice'
 import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
 import { defaultMediaTrackConfig } from './MediaTrack/helpers'
 import ReadOnlyMediaItems from '../ReadOnlyMediaLane/ReadOnyMediaItems'
+import { actions, selectors, VideoEditorState } from '../../../VideoEditorSlice'
+import { connect } from 'react-redux'
 
-type Props = {
+type OwnProps = {
     currentTime: number
     mediaItems: MediaItem<any>[]
-    setPlayPosition: typeof actions.setPlayPosition
+    setPlayPosition: typeof actions.player.setPlayPosition
     videoDuration: number
     showTextInMediaItems?: boolean
     amountOfLanes?: number
     ToolbarActions?: React.ReactNode
 }
+
+const mapStateToProps = (state: VideoEditorState) => ({
+    mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+})
+
+const mapDispatchToProps = {
+    setRenderConfig: actions.mediaLaneRenderConfig.setRenderConfig,
+}
+
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const ReadonlyMediaLaneWithToolbar = ({
     currentTime,
@@ -26,19 +37,23 @@ const ReadonlyMediaLaneWithToolbar = ({
     showTextInMediaItems = true,
     amountOfLanes,
     ToolbarActions,
+    mediaLaneRenderConfig,
+    setRenderConfig,
 }: Props) => {
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
-    const { containerWidth, containerHeight, handleZoom, handleLaneClick, renderConfig } = useMediaLane({
+    const { containerWidth, containerHeight, handleZoom, handleLaneClick } = useMediaLane({
         $container,
         currentTime,
         videoDuration,
         laneClickCallback: setPlayPosition,
+        renderConfig: mediaLaneRenderConfig,
+        setRenderConfig,
     })
 
     const mediaTrackConfig = {
         ...defaultMediaTrackConfig,
-        render: renderConfig,
+        render: mediaLaneRenderConfig,
     }
 
     return (
@@ -46,7 +61,7 @@ const ReadonlyMediaLaneWithToolbar = ({
             <Toolbar
                 zoomHandler={handleZoom}
                 videoDuration={videoDuration}
-                renderConfig={renderConfig}
+                renderConfig={mediaLaneRenderConfig}
                 handleTimeLineAction={handleLaneClick}
             >
                 {ToolbarActions}
@@ -68,10 +83,10 @@ const ReadonlyMediaLaneWithToolbar = ({
                         />
                     </div>
 
-                    <MediaTrackInteractionArea renderConfig={renderConfig} clickCallback={handleLaneClick} />
+                    <MediaTrackInteractionArea renderConfig={mediaLaneRenderConfig} clickCallback={handleLaneClick} />
 
                     <ReadOnlyMediaItems
-                        renderConfig={renderConfig}
+                        renderConfig={mediaLaneRenderConfig}
                         mediaItems={mediaItems}
                         amountOfLanes={amountOfLanes ?? 0}
                         showTextInMediaItems={showTextInMediaItems}
@@ -83,4 +98,4 @@ const ReadonlyMediaLaneWithToolbar = ({
     )
 }
 
-export default React.memo(ReadonlyMediaLaneWithToolbar)
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ReadonlyMediaLaneWithToolbar))

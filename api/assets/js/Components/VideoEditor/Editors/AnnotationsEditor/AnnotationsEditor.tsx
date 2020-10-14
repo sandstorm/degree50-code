@@ -7,7 +7,7 @@ import ArtPlayer from '../components/ArtPlayer'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
 import Storage from '../utils/storage'
 
-import { useMediaItemHandling } from '../utils/hooks'
+import { useMediaItemHandling } from '../utils/useMediaItemHandling'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
@@ -30,6 +30,7 @@ const mapStateToProps = (state: VideoEditorState) => {
     return {
         annotations: selectors.lists.selectVideoEditorLists(state).annotations,
         playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
+        mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
     }
 }
 
@@ -78,11 +79,13 @@ const AnnotationsEditor = (props: Props) => {
         removeMediaItem,
         updateMediaItem,
     } = useMediaItemHandling<Annotation>({
-        updateCondition: props.itemUpdateCondition,
+        currentTime: props.mediaLaneRenderConfig.currentTime,
         mediaItems,
         setMediaItems: props.setAnnotations,
-        updateCallback: props.itemUpdateCallback,
         storage,
+        timelineDuration: props.mediaLaneRenderConfig.duration,
+        updateCallback: props.itemUpdateCallback,
+        updateCondition: props.itemUpdateCondition,
     })
 
     const checkMediaItem = useCallback(() => {

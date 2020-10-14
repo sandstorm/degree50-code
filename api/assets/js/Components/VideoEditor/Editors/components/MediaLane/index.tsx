@@ -4,18 +4,19 @@ import { MediaItem } from '../types'
 import MediaTrack from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
 import Toolbar from './Toolbar'
-import { actions } from '../../../PlayerSlice'
 import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
 import { defaultMediaTrackConfig } from './MediaTrack/helpers'
 import { VideoListsState } from '../../../VideoListsSlice'
 import PreviousSolutions from './PreviousSolutions'
+import { actions, selectors, VideoEditorState } from '../../../VideoEditorSlice'
+import { connect } from 'react-redux'
 
-type Props = {
+type OwnProps = {
     currentTime: number
     mediaItems: MediaItem<any>[]
     updateMediaItem: (item: MediaItem<any>, updatedValues: Record<string, unknown>) => void // FIXME refine key
     removeMediaItem: (item: MediaItem<any>) => void
-    setPlayPosition: typeof actions.setPlayPosition
+    setPlayPosition: typeof actions.player.setPlayPosition
     checkMediaItem: (item: MediaItem<any>) => boolean
     videoDuration: number
     showTextInMediaItems?: boolean
@@ -23,6 +24,16 @@ type Props = {
     ToolbarActions?: React.ReactNode
     previousSolutions?: Array<{ userId: string; userName: string; solution: VideoListsState }>
 }
+
+const mapStateToProps = (state: VideoEditorState) => ({
+    mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+})
+
+const mapDispatchToProps = {
+    setRenderConfig: actions.mediaLaneRenderConfig.setRenderConfig,
+}
+
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const MediaLane = ({
     currentTime,
@@ -36,14 +47,18 @@ const MediaLane = ({
     showTextInMediaItems = true,
     amountOfLanes,
     ToolbarActions,
+    mediaLaneRenderConfig,
+    setRenderConfig,
 }: Props) => {
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
-    const { containerWidth, containerHeight, handleZoom, renderConfig, handleLaneClick } = useMediaLane({
+    const { containerWidth, containerHeight, handleZoom, handleLaneClick } = useMediaLane({
         $container,
         currentTime,
         videoDuration,
         laneClickCallback: setPlayPosition,
+        renderConfig: mediaLaneRenderConfig,
+        setRenderConfig,
     })
 
     const handleMediaItemUpdate = useCallback(
@@ -60,7 +75,7 @@ const MediaLane = ({
 
     const mediaTrackConfig = {
         ...defaultMediaTrackConfig,
-        render: renderConfig,
+        render: mediaLaneRenderConfig,
     }
 
     return (
@@ -68,7 +83,7 @@ const MediaLane = ({
             <Toolbar
                 zoomHandler={handleZoom}
                 videoDuration={videoDuration}
-                renderConfig={renderConfig}
+                renderConfig={mediaLaneRenderConfig}
                 handleTimeLineAction={handleLaneClick}
             >
                 {ToolbarActions}
@@ -89,10 +104,10 @@ const MediaLane = ({
                             containerWidth={containerWidth}
                         />
                     </div>
-                    <MediaTrackInteractionArea renderConfig={renderConfig} clickCallback={handleLaneClick} />
+                    <MediaTrackInteractionArea renderConfig={mediaLaneRenderConfig} clickCallback={handleLaneClick} />
                     <MediaItems
                         currentTime={currentTime}
-                        renderConfig={renderConfig}
+                        renderConfig={mediaLaneRenderConfig}
                         mediaItems={mediaItems}
                         updateMediaItem={handleMediaItemUpdate}
                         removeMediaItem={removeMediaItem}
@@ -105,11 +120,11 @@ const MediaLane = ({
                 <PreviousSolutions
                     previousSolutions={previousSolutions}
                     handleLaneClick={handleLaneClick}
-                    renderConfig={renderConfig}
+                    renderConfig={mediaLaneRenderConfig}
                 />
             </div>
         </div>
     )
 }
 
-export default React.memo(MediaLane)
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(MediaLane))

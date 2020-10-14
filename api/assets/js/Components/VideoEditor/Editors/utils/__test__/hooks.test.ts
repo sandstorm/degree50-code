@@ -1,7 +1,7 @@
 // import for the jest.mock below
 import { setLocale, t } from 'react-i18nify'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useMediaItemHandling } from '../hooks'
+import { useMediaItemHandling } from '../useMediaItemHandling'
 import { MediaItem } from '../../components/types'
 
 // Mock module
@@ -18,7 +18,8 @@ jest.mock('react-i18nify', () => {
 
 // Overwrite navigator for this test suite
 // @ts-ignore
-global.navigator = { // eslint-disable-line
+// eslint-disable-next-line
+global.navigator = {
     language: 'EN',
 }
 
@@ -46,6 +47,8 @@ describe('useMediaItemHandling()', () => {
     const baseConfig = {
         mediaItems: [itemA],
         setMediaItems: setMediaItemsSpy,
+        currentTime: 0,
+        timelineDuration: 10,
         updateCallback: updateCallbackSpy,
         updateCondition: true,
     }
@@ -553,27 +556,7 @@ describe('useMediaItemHandling()', () => {
     })
 
     describe('addMediaItem()', () => {
-        it('should place item at first frame, if there is no previous item', () => {
-            const { result } = renderHook(() => useMediaItemHandling({ ...baseConfig, mediaItems: [] }))
-
-            act(() => {
-                result.current.appendMediaItem()
-            })
-
-            expect(setMediaItemsSpy).toHaveBeenCalledWith([
-                {
-                    start: '00:00:00.001',
-                    end: '00:00:01.001',
-                    text: 'subtitle-text',
-                    memo: '',
-                    lane: 0,
-                    color: null,
-                    idFromPrototype: null,
-                },
-            ])
-        })
-
-        it('should place new item immediately behind previous item', () => {
+        it('should place item at cursor', () => {
             const { result } = renderHook(() => useMediaItemHandling(baseConfig))
 
             act(() => {
@@ -592,8 +575,8 @@ describe('useMediaItemHandling()', () => {
                     idFromPrototype: null,
                 },
                 {
-                    start: '00:00:05.100',
-                    end: '00:00:06.100',
+                    start: '00:00:00.000',
+                    end: '00:00:01.000',
                     text: 'subtitle-text',
                     memo: '',
                     lane: 0,

@@ -6,10 +6,12 @@ import { d2t, t2d } from 'duration-time-conversion'
 import { Cut, CutList } from './types'
 import { MediaItem } from '../components/types'
 import { notify, secondToTime } from '../utils'
-import { useMediaItemHandling } from '../utils/hooks'
+import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
 import Storage from '../utils/storage'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
+
+// TODO refactor this file and split into multiple self contained files, e.g. 'useCuttingMediaItemHandling.ts'
 
 /**
  * Default volume value (100 is max)
@@ -33,23 +35,25 @@ export const useVolume = () => {
  * Specialized media item handling for cuts.
  */
 export const useCuttingMediaItemHandling = ({
+    currentTime,
     mediaItems,
-    setCutList,
-    updateCallback,
-    storage,
-    playerSyncPlayPosition,
-    setPlayPosition, // FIXME unused
-    updateCondition,
     originalVideoUrl,
+    playerSyncPlayPosition,
+    setCutList,
+    storage,
+    timelineDuration,
+    updateCallback,
+    updateCondition,
 }: {
+    currentTime: number
     mediaItems: Array<MediaItem<Cut>>
-    setCutList: (mediaItems: Array<Cut>) => void
-    updateCallback: () => void
-    storage?: Storage
-    playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
-    setPlayPosition: typeof actions.player.setPlayPosition
-    updateCondition: boolean
     originalVideoUrl?: string
+    playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
+    setCutList: (mediaItems: Array<Cut>) => void
+    storage?: Storage
+    timelineDuration: number
+    updateCallback: () => void
+    updateCondition: boolean
 }) => {
     const {
         currentIndex,
@@ -62,11 +66,13 @@ export const useCuttingMediaItemHandling = ({
         hasMediaItem,
         copyMediaItems,
     } = useMediaItemHandling<Cut>({
-        updateCondition,
+        currentTime,
         mediaItems,
         setMediaItems: setCutList,
-        updateCallback,
         storage,
+        timelineDuration,
+        updateCallback,
+        updateCondition,
     })
 
     /**
@@ -174,11 +180,7 @@ export const useCuttingMediaItemHandling = ({
             return
         }
 
-        const lastItem = mediaItems[mediaItems.length - 1]
-
-        // TODO: Why 1 millisecond padding?
-        const start = lastItem ? secondToTime(lastItem.endTime + 1) : '00:00:00.001'
-        const end = lastItem ? secondToTime(lastItem.endTime + 2) : '00:00:01.001'
+        const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
 
         const cut: Cut = {
             url: originalVideoUrl,
