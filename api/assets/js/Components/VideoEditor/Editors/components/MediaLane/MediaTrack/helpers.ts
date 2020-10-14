@@ -1,5 +1,6 @@
 import DT from 'duration-time-conversion'
 import { MediaTrackConfig } from '.'
+import { secondToTime } from 'Components/VideoEditor/Editors/utils'
 
 export const defaultMediaTrackConfig = {
     backgroundColor: '#454545',
@@ -169,7 +170,7 @@ const drawRuler = (
             second += adjustmentFactor
             ctx.fillRect(gridGap * index, 0, pixelRatio, fontHeight * pixelRatio)
 
-            const displayTime = DT.d2t(timelineStartTime + second).split('.')[0]
+            const displayTime = secondToTime(timelineStartTime + second).split('.')[0]
             ctx.fillText(displayTime, gridGap * index - fontSize * pixelRatio * 2 + pixelRatio, fontTop + 3)
         } else if (index && index % (5 * adjustmentFactor) === 0) {
             ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 2) * pixelRatio)

@@ -33,23 +33,25 @@ export const useVolume = () => {
  * Specialized media item handling for cuts.
  */
 export const useCuttingMediaItemHandling = ({
+    currentTime,
     mediaItems,
-    setCutList,
-    updateCallback,
-    storage,
-    playerSyncPlayPosition,
-    setPlayPosition, // FIXME unused
-    updateCondition,
     originalVideoUrl,
+    playerSyncPlayPosition,
+    setCutList,
+    storage,
+    timelineDuration,
+    updateCallback,
+    updateCondition,
 }: {
+    currentTime: number
     mediaItems: Array<MediaItem<Cut>>
-    setCutList: (mediaItems: Array<Cut>) => void
-    updateCallback: () => void
-    storage?: Storage
-    playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
-    setPlayPosition: typeof actions.player.setPlayPosition
-    updateCondition: boolean
     originalVideoUrl?: string
+    playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
+    setCutList: (mediaItems: Array<Cut>) => void
+    storage?: Storage
+    timelineDuration: number
+    updateCallback: () => void
+    updateCondition: boolean
 }) => {
     const {
         currentIndex,
@@ -174,11 +176,8 @@ export const useCuttingMediaItemHandling = ({
             return
         }
 
-        const lastItem = mediaItems[mediaItems.length - 1]
-
-        // TODO: Why 1 millisecond padding?
-        const start = lastItem ? secondToTime(lastItem.endTime + 1) : '00:00:00.001'
-        const end = lastItem ? secondToTime(lastItem.endTime + 2) : '00:00:01.001'
+        const start = secondToTime(currentTime)
+        const end = secondToTime(Math.ceil(currentTime + timelineDuration / 10))
 
         const cut: Cut = {
             url: originalVideoUrl,
