@@ -9,6 +9,7 @@ use App\Entity\Exercise\UserExerciseInteraction;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Account\CourseRepository;
+use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use App\Repository\Exercise\UserExerciseInteractionRepository;
@@ -27,6 +28,7 @@ class ExerciseController extends AbstractController
 {
     private CourseRepository $courseRepository;
     private ExerciseRepository $exerciseRepository;
+    private ExercisePhaseRepository $exercisePhaseRepository;
     private UserExerciseInteractionRepository $userExerciseInteractionRepository;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
@@ -37,10 +39,19 @@ class ExerciseController extends AbstractController
      * @param ExerciseRepository $exerciseRepository
      * @param TranslatorInterface $translator
      */
-    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository, TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, UserExerciseInteractionRepository $userExerciseInteractionRepository, ExercisePhaseTeamRepository $exercisePhaseTeamRepository)
+    public function __construct(
+        CourseRepository $courseRepository,
+        ExerciseRepository $exerciseRepository,
+        ExercisePhaseRepository $exercisePhaseRepository,
+        TranslatorInterface $translator,
+        DoctrineIntegratedEventStore $eventStore,
+        UserExerciseInteractionRepository $userExerciseInteractionRepository,
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository
+    )
     {
         $this->courseRepository = $courseRepository;
         $this->exerciseRepository = $exerciseRepository;
+        $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
@@ -49,9 +60,9 @@ class ExerciseController extends AbstractController
 
     /**
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show/{id}/{phaseIndex<\d+>}", name="exercise-overview__exercise--show")
+     * @Route("/exercise/show/{id}/{phaseId}", name="exercise-overview__exercise--show")
      */
-    public function show(Request $request, Exercise $exercise, int $phaseIndex = 0): Response
+    public function show(Request $request, Exercise $exercise, string $phaseId = ''): Response
     {
         $template = 'Exercise/Show.html.twig';
 
@@ -59,8 +70,13 @@ class ExerciseController extends AbstractController
         $user = $this->getUser();
         $userIsCreator = $user === $exercise->getCreator();
 
+
+        // Fallback to first phase of the exercise in case no phaseId is provided
         /* @var ExercisePhase $exercisePhase */
-        $exercisePhase = $exercise->getPhases()->get($phaseIndex);
+        $exercisePhase = empty($phaseId)
+            ? $this->exercisePhaseRepository->findFirstExercisePhase($exercise)
+            : $this->exercisePhaseRepository->find($phaseId);
+
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($user, $exercise->getCreator(), $exercisePhase);
         $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
 
@@ -83,7 +99,7 @@ class ExerciseController extends AbstractController
                 'userIsCreator' => $userIsCreator,
                 'exercise' => $exercise,
                 'exercisePhase' => $exercisePhase,
-                'currentPhaseIndex' => $phaseIndex,
+                'currentPhaseIndex' => $exercisePhase->getSorting(),
                 'teams' => $teams,
                 'teamOfCurrentUser' => $teamOfCurrentUser,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,

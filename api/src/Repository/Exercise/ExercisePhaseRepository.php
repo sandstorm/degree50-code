@@ -21,6 +21,25 @@ class ExercisePhaseRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param Exercise $exercise
+     * @return ExercisePhase|null
+     */
+    public function findFirstExercisePhase($exercise) {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+
+        return $this->createQueryBuilder('e')
+            ->where('e.belongsToExercise = :exercise')
+            ->andWhere(
+                $qb->expr()->eq('e.sorting', 0)
+            )
+            ->setMaxResults(1)
+            ->setParameter('exercise', $exercise)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param int $sorting
      * @param Exercise $exercise
      * @return ExercisePhase|null
