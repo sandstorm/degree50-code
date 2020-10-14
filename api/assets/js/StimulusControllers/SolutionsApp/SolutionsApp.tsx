@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { VideoListsState } from '../../Components/VideoEditor/VideoListsSlice'
 import { Teams } from './Components/Teams/Teams'
@@ -16,6 +16,8 @@ import { Video } from '../../Components/VideoPlayer/VideoPlayerWrapper'
 import ResultsFilter from './Components/Filters/ResultsFilter'
 import SolutionFilter from './Components/Filters/SolutionFilter'
 import { ComponentId } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
+import { RenderConfig } from '../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
+import { initialRenderConfig } from '../../Components/VideoEditor/MediaLaneRenderConfigSlice'
 
 export type SolutionByTeam = {
     teamCreator: string
@@ -85,6 +87,8 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     // hides the rest of the dom from screen readers with aria-hidden when one is open.
     watchModals()
 
+    const [renderConfig, setRenderConfig] = useState<RenderConfig>(initialRenderConfig)
+
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
     const availableTabs = Object.values(solutionTabs)
@@ -101,11 +105,13 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     const { height } = useDebouncedResizeObserver($container, 500)
     const heightOrDefault = height === 0 ? 400 : height
 
-    const { handleZoom, renderConfig, handleLaneClick } = useMediaLane({
+    const { handleZoom, handleLaneClick } = useMediaLane({
         $container,
         currentTime,
         videoDuration,
         laneClickCallback: props.setPlayPosition,
+        renderConfig,
+        setRenderConfig,
     })
 
     const updateCurrentTime = handleLaneClick
