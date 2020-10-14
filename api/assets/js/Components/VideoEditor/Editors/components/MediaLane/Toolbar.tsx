@@ -54,12 +54,12 @@ const Toolbar = ({
             <div className="video-editor-toolbar__item-group">
                 <label className={'video-editor-toolbar__item-group-label'}>Timeline: </label>
                 <div className="video-editor-toolbar__item">
-                    <label htmlFor={'timeline-zoom-handler'}>
+                    <label htmlFor="timeline-zoom-handler">
                         <Translate value="zoom" />
                     </label>
                     <input
-                        name={'timeline-zoom-handler'}
-                        id={'timeline-zoom-handler'}
+                        name="timeline-zoom-handler"
+                        id="timeline-zoom-handler"
                         defaultValue={INITIAL_ZOOM}
                         type="range"
                         min="5"
