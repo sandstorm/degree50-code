@@ -31,6 +31,7 @@ const mapStateToProps = (state: VideoEditorState) => {
     return {
         subtitles: selectors.lists.selectVideoEditorLists(state).subtitles,
         playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
+        mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
     }
 }
 
@@ -42,15 +43,16 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const SubtitleEditor = ({
-    height,
     headerContent,
-    videos,
+    height,
     itemUpdateCallback,
     itemUpdateCondition,
-    subtitles,
+    mediaLaneRenderConfig,
     playerSyncPlayPosition,
-    setSubtitles,
     setPlayPosition,
+    setSubtitles,
+    subtitles,
+    videos,
 }: Props) => {
     const containerHeight = height - MEDIA_LANE_HEIGHT
 
@@ -88,12 +90,14 @@ const SubtitleEditor = ({
         updateMediaItem,
         checkMediaItem,
     } = useMediaItemHandling<Subtitle>({
-        worker,
-        updateCondition: itemUpdateCondition,
+        currentTime: mediaLaneRenderConfig.currentTime,
         mediaItems,
         setMediaItems: setSubtitles,
-        updateCallback: itemUpdateCallback,
         storage,
+        timelineDuration: mediaLaneRenderConfig.duration,
+        updateCallback: itemUpdateCallback,
+        updateCondition: itemUpdateCondition,
+        worker,
     })
 
     const amountOfLanes = 1

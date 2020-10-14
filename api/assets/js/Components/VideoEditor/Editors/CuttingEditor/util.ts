@@ -64,11 +64,13 @@ export const useCuttingMediaItemHandling = ({
         hasMediaItem,
         copyMediaItems,
     } = useMediaItemHandling<Cut>({
-        updateCondition,
+        currentTime,
         mediaItems,
         setMediaItems: setCutList,
-        updateCallback,
         storage,
+        timelineDuration,
+        updateCallback,
+        updateCondition,
     })
 
     /**

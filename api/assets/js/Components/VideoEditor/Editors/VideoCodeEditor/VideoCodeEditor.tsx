@@ -31,6 +31,7 @@ const mapStateToProps = (state: VideoEditorState) => {
         videoCodes: selectors.lists.selectVideoEditorLists(state).videoCodes,
         customVideoCodesPool: selectors.lists.selectVideoEditorLists(state).customVideoCodesPool,
         playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
+        mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
     }
 }
 
@@ -81,9 +82,11 @@ const VideoCodeEditor = (props: Props) => {
         checkMediaItem,
         removeMediaItem,
     } = useMediaItemHandling<VideoCode>({
+        currentTime: props.mediaLaneRenderConfig.currentTime,
         updateCondition: props.itemUpdateCondition,
         mediaItems,
         setMediaItems: props.setVideoCodes,
+        timelineDuration: props.mediaLaneRenderConfig.duration,
         updateCallback: props.itemUpdateCallback,
         storage,
     })
@@ -103,9 +106,12 @@ const VideoCodeEditor = (props: Props) => {
         (videoCode: VideoCodePrototype) => {
             const index = mediaItems.length
             const videoCodes = copyMediaItems()
-            const previous = videoCodes[index - 1]
-            const start = previous ? secondToTime(previous.endTime + 0.1) : '00:00:00.001'
-            const end = previous ? secondToTime(previous.endTime + 1.1) : '00:00:01.001'
+
+            const { currentTime, duration } = props.mediaLaneRenderConfig
+
+            const start = secondToTime(currentTime)
+            const end = secondToTime(Math.ceil(currentTime + duration / 10))
+
             const mediaItem = {
                 start,
                 end,
