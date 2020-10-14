@@ -6,7 +6,7 @@ import MediaLane from '../components/MediaLane'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
 import { secondToTime, timeToSecond } from '../utils'
-import { useMediaItemHandling } from '../utils/hooks'
+import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
 import Storage from '../utils/storage'
 import VideoCodes from './VideoCodes'
 import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
@@ -109,8 +109,7 @@ const VideoCodeEditor = (props: Props) => {
 
             const { currentTime, duration } = props.mediaLaneRenderConfig
 
-            const start = secondToTime(currentTime)
-            const end = secondToTime(Math.ceil(currentTime + duration / 10))
+            const { start, end } = getNewMediaItemStartAndEnd(currentTime, duration)
 
             const mediaItem = {
                 start,

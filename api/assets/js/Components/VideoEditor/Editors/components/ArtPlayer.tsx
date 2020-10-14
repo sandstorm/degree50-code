@@ -4,8 +4,8 @@ import ArtplayerComponent from 'artplayer-react'
 import Hls from 'hls.js'
 import { Player as PlayerType } from './types'
 
-import { useMutablePlayer } from '../utils/hooks'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { useMutablePlayer } from '../utils/useMutablePlayer'
 
 export type PlayerOptions = {
     videoUrl: string

@@ -9,11 +9,11 @@ import { useCuttingMediaItemHandling } from '../util'
 
 import { MediaItem } from '../../components/types'
 
-const { useMediaItemHandling } = jest.requireActual('../../utils/hooks')
+const { useMediaItemHandling } = jest.requireActual('../../utils/useMediaItemHandling')
 
 const originalUpdateMediaItemsSpy = jest.fn()
 
-jest.mock('../../utils/hooks', () => {
+jest.mock('../../utils/useMediaItemHandling', () => {
     return {
         useMediaItemHandling: jest.fn((value) => {
             return {

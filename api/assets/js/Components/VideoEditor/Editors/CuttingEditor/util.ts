@@ -6,10 +6,12 @@ import { d2t, t2d } from 'duration-time-conversion'
 import { Cut, CutList } from './types'
 import { MediaItem } from '../components/types'
 import { notify, secondToTime } from '../utils'
-import { useMediaItemHandling } from '../utils/hooks'
+import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
 import Storage from '../utils/storage'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
+
+// TODO refactor this file and split into multiple self contained files, e.g. 'useCuttingMediaItemHandling.ts'
 
 /**
  * Default volume value (100 is max)
@@ -178,8 +180,7 @@ export const useCuttingMediaItemHandling = ({
             return
         }
 
-        const start = secondToTime(currentTime)
-        const end = secondToTime(Math.ceil(currentTime + timelineDuration / 10))
+        const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
 
         const cut: Cut = {
             url: originalVideoUrl,

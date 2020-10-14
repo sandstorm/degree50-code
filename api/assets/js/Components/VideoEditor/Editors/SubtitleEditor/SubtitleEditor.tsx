@@ -7,7 +7,7 @@ import ArtPlayer from '../components/ArtPlayer'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
 import Storage from '../utils/storage'
 
-import { useMediaItemHandling } from '../utils/hooks'
+import { useMediaItemHandling } from '../utils/useMediaItemHandling'
 import { MediaItem } from '../components/types'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Subtitle } from 'Components/VideoEditor/VideoListsSlice'

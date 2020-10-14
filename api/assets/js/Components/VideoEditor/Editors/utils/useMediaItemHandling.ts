@@ -2,31 +2,15 @@ import { useCallback, useState, useEffect, useMemo } from 'react'
 import { t, setLocale } from 'react-i18nify'
 import isEqual from 'lodash/isEqual'
 
-import { secondToTime, notify } from '../utils'
-import { Player, MediaItem } from '../components/types'
-import Storage from '../utils/storage'
+import { secondToTime, notify } from '.'
+import { MediaItem } from '../components/types'
+import Storage from './storage'
 
-// TODO
-// Refactor: split into two hook files 'useMutablePlayer.tsx' and 'useMediaItemHandling.tsx'
+export const getNewMediaItemStartAndEnd = (currentTime: number, duration: number) => {
+    const start = secondToTime(currentTime)
+    const end = secondToTime(Math.ceil(currentTime + duration / 10))
 
-export const useMutablePlayer = (worker?: Worker) => {
-    // Player instance
-    const [player, setPlayer] = useState<Player | undefined>(undefined)
-
-    // Run only once
-    useEffect(() => {
-        if (player && worker && !worker.onmessage) {
-            // eslint-disable-next-line
-            worker.onmessage = (event) => {
-                player.subtitle.switch(event.data)
-            }
-        }
-    }, [player, worker])
-
-    return {
-        player,
-        setPlayer,
-    }
+    return { start, end }
 }
 
 const checkConflictWithPrevItem = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
@@ -198,8 +182,7 @@ export const useMediaItemHandling = <T>({
 
     // Add a mediaItem
     const appendMediaItem = useCallback(() => {
-        const start = secondToTime(currentTime)
-        const end = secondToTime(Math.ceil(currentTime + timelineDuration / 10))
+        const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
 
         const newItem = new MediaItem({
             start,

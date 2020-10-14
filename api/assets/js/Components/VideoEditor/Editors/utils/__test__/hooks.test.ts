@@ -1,7 +1,7 @@
 // import for the jest.mock below
 import { setLocale, t } from 'react-i18nify'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useMediaItemHandling } from '../hooks'
+import { useMediaItemHandling } from '../useMediaItemHandling'
 import { MediaItem } from '../../components/types'
 
 // Mock module
@@ -18,8 +18,8 @@ jest.mock('react-i18nify', () => {
 
 // Overwrite navigator for this test suite
 // @ts-ignore
+// eslint-disable-next-line
 global.navigator = {
-    // eslint-disable-line
     language: 'EN',
 }
 
