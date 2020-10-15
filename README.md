@@ -1,14 +1,44 @@
 # Degree 4.0
 
+<!-- vim-markdown-toc GitLab -->
+
+-   [Development Setup](#development-setup)
+    -   [Prerequisites](#prerequisites)
+    -   [Get Started with Development](#get-started-with-development)
+    -   [Connect with database](#connect-with-database)
+    -   [Symfony commands](#symfony-commands)
+    -   [Imported endpoints](#imported-endpoints)
+    -   [Running Behat Tests](#running-behat-tests)
+    -   [Running Frontend Tests](#running-frontend-tests)
+-   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
+-   [Prodsystem](#prodsystem)
+    -   [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
+        -   [Prerequisites](#prerequisites-1)
+        -   [Setup](#setup)
+        -   [Connect](#connect)
+        -   [Connect to the Production Database](#connect-to-the-production-database)
+    -   [Ansible Setup](#ansible-setup)
+    -   [Monitoring](#monitoring)
+        -   [Uptime-robot](#uptime-robot)
+        -   [Netdata](#netdata)
+            -   [Access the GUI](#access-the-gui)
+    -   [Deployment via Gitlab CI](#deployment-via-gitlab-ci)
+    -   [How to remove a Video from Prod](#how-to-remove-a-video-from-prod)
+    -   [Additional Notes](#additional-notes)
+-   [Known Issues](#known-issues)
+    -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
+
+<!-- vim-markdown-toc -->
+
 ## Development Setup
 
-**Prerequisites**
+### Prerequisites
 
 -   docker & docker-compose
 -   Make
 -   yarn (cd api && nvm use && npm install yarn -g)
 
-**Get Started with Development**
+### Get Started with Development
 
 -   Initially, run `make build-docker` to build the docker container
 -   run `docker-compose up -d`
@@ -20,7 +50,7 @@
     -   After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
     -   The Symfony Console can be executed via `./symfony-console`
 
-**Connect with database**
+### Connect with database
 
 -   mariadb
     -   db: api
@@ -28,7 +58,7 @@
     -   pw: !ChangeMe!
     -   host: localhost:13306
 
-**Symfony commands**
+### Symfony commands
 
 -   ./symfony-console cache:clear
 -   ./symfony-console make:entity
@@ -40,7 +70,7 @@
 -   Debug commands:
     -   for re-encoding a single video: ./symfony-console app:enqueue-video-encoding ac40cc6c-ad1f-4af0-881a-47d65cbae66d
 
-**Imported endpoints**
+### Imported endpoints
 
 -   http://localhost:8080
 -   http://localhost:8080/login
@@ -48,7 +78,7 @@
 -   http://localhost:8080/admin/
 -   http://localhost:8080/subtitle-editor
 
-**Running Behat Tests**
+### Running Behat Tests
 
 make test
 
@@ -67,7 +97,7 @@ CREATE DATABASE app_test;
 GRANT ALL ON app_test.* TO 'api-platform'@'%';
 ```
 
-**Running Frontend Tests**
+### Running Frontend Tests
 
 yarn jest
 yarn test:debug
@@ -88,13 +118,15 @@ After testing, **remember to remove the `/etc/hosts` entry again** - as you stil
 The development container contains a self-signed SSL certificate and nginx is serving via SSL on port 8443 - so everything
 is prepared for testing the SAML authentication locally.
 
-## Connecting via SSH to the production server
+## Prodsystem
 
-**Prerequisites**
+### Connecting via SSH to the production server
+
+#### Prerequisites
 
 You need an account on gitlab-worker.sandstorm.de - try connecting via `ssh -p 29418 gitlab-worker.sandstorm.de` (TOUCH YUBIKEY!)
 
-**Setup**
+#### Setup
 
 You need the following entries in `~/.ssh/config`:
 
@@ -108,10 +140,13 @@ Host gitlab-worker.sandstorm.de
 
 Host degree40.tu-dortmund.de
   ProxyJump gitlab-worker.sandstorm.de
+  # MariaDB
   LocalForward 23306 127.0.0.1:3306
+  # Netdata Monitoring
+  LocalForward 19999 127.0.0.1:19999
 ```
 
-**Connect**
+#### Connect
 
 -   Run `ssh [your-username]@degree40.tu-dortmund.de`
 -   Touch your Yubikey TWICE
@@ -120,7 +155,7 @@ Host degree40.tu-dortmund.de
 -   To enter the container, use the following commmand:
     `docker-compose exec api /bin/bash`
 
-**Connect to the Production Database**
+#### Connect to the Production Database
 
 -   Prod database is a MariaDB
 -   Run the SSH command as above(`ssh [your-username]@degree40.tu-dortmund.de`), keep the connection open
@@ -131,7 +166,7 @@ Host degree40.tu-dortmund.de
     -   Password: see bitwarden vault
     -   DB: api
 
-**Ansible Setup**
+### Ansible Setup
 
 The ansible setup is run from the local computer; not from any CI pipeline (so far).
 
@@ -150,11 +185,45 @@ Ansible takes care of:
 -   hardening the server (SSH config; TODO firewall)
 -   installing `docker`
 
-**Deployment via Gitlab CI**
+### Monitoring
+
+#### Uptime-robot
+
+-   The system is monitored by uptime robot (credentials in bitwarden)
+
+#### Netdata
+
+-   Netdata collects system information and sends warnings to our `monitoring-production`-channel in slack
+-   Note that our netdata path differs from the official docs.
+    So you have to use `/opt/netdata/etc/netdata/...` instead of `/etc/netdata/...`
+-   Slack warnings are configured inside `health_alarm_notify.conf` (`SLACK_WEBHOOK_URL`, `DEFAULT_RECIPIENT_SLACK="#"`)
+-   Our `/opt/netdata/etc/netdata/netdata.conf` has been changed to the following:
+
+```conf
+[global]
+    ...
+    update every = 5
+    memory mode = dbengine
+    page cache size = 64
+    dbengine disk space = 1000
+    ...
+[web]
+    ...
+    bind to = 127.0.0.1
+    ...
+`
+```
+
+##### Access the GUI
+
+Connect to the degree server via ssh using the config above.
+This will forward port `19999` to localhost, so you can open the gui on `localhost:19999`.
+
+### Deployment via Gitlab CI
 
 -
 
-## How to remove a Video from Prod
+### How to remove a Video from Prod
 
 > Admin should be able to do this inside the plattform
 
@@ -166,6 +235,19 @@ Ansible takes care of:
     -   `video`
     -   `video_subtitles`
 -   These are all reference _we_ found for now. There might be more in `exercise_phase*` if the video was used in a phase.
+
+### Additional Notes
+
+-   The app partition is mounted to `/data` and is 100 GB size. the system partition is 20 GB big.
+-   In `/data`, there exist all the docker files; and the persistent volumes from the Degree project.
+-   The `home/deployment/data` directory has been symlinked to `/data/degree-data`
+-   The docker image location has been changed to `/data/docker` by adding the following `docker/daemon/json` to `/etc/` :
+
+```json
+{
+    "data-root": "/data/docker"
+}
+```
 
 ## Known Issues
 

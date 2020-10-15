@@ -5,7 +5,7 @@
 # Public ports:
 #  - 80 -> API
 #  - 13306 -> maria DB (used for Neos)
-version: '3.4'
+version: "3.4"
 
 services:
   traefik:
@@ -20,26 +20,26 @@ services:
     command:
       # discover docker labels automatically
       - --providers.docker=true
-      
+
       # enable both HTTP and HTTPS entrypoints
       - --entryPoints.web.address=:80
       - --entryPoints.websecure.address=:443
-    
+
       # redirect all HTTP traffic to HTTPS
       - --entryPoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
-      
-      # configure Let's Encrypt resolver named "letsencrypt" 
+
+      # configure Let's Encrypt resolver named "letsencrypt"
       - --certificatesResolvers.letsencrypt.acme.email=technik@sandstorm-media.de
       - --certificatesResolvers.letsencrypt.acme.storage=/data/acme.json
       - --certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint=web
-      # comment-in the next line for using a staging let's encrypt endpoint for testing 
+      # comment-in the next line for using a staging let's encrypt endpoint for testing
       #- --certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
     container_name: traefik
 
-
   api:
     image: docker-hub.sandstorm.de/degree-4.0/code:master
+    restart: always
     labels:
       # set the host to degree40.tu-dortmund.de
       - "traefik.http.routers.degree.rule=Host(`degree40.tu-dortmund.de`)"
@@ -54,29 +54,31 @@ services:
     #      start_period: 30s
     environment:
       TRUSTED_HOSTS: degree40.tu-dortmund.de
-      DATABASE_URL: 'mysql://api-platform:${MYSQL_PASSWORD}@db/api'
-      APP_SECRET: '${APP_SECRET}'
-      LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: '${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}'
-      JWT_KEY: '${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}'
+      DATABASE_URL: "mysql://api-platform:${MYSQL_PASSWORD}@db/api"
+      APP_SECRET: "${APP_SECRET}"
+      LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: "${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}"
+      JWT_KEY: "${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}"
     ports:
       - 8080
     depends_on:
       - db
     volumes:
-    - /home/deployment/data/app/var/data:/app/var/data
-    - /home/deployment/data/app/public/data:/app/public/data
-    - /home/deployment/data/app/config/secrets:/app/config/secrets
+      - /home/deployment/data/app/var/data:/app/var/data
+      - /home/deployment/data/app/public/data:/app/public/data
+      - /home/deployment/data/app/config/secrets:/app/config/secrets
 
   redis:
     image: redis:6.0.1-alpine3.11
+    restart: always
     ports:
       # Redis will only be exposed to LOCALHOST, so it can be accessed via SSH tunnel
       - 127.0.0.1:6379:6379
 
   redis-ui:
     image: rediscommander/redis-commander
+    restart: always
     environment:
-      REDIS_HOSTS: 'redis:redis:6379:0'
+      REDIS_HOSTS: "redis:redis:6379:0"
       PORT: 8900
     ports:
       - 8900
@@ -85,14 +87,15 @@ services:
   # DB
   db:
     image: mariadb:10.2.25
+    restart: always
     ports:
       # MySQL will only be exposed to LOCALHOST, so it can be accessed via SSH tunnel
       - 127.0.0.1:3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
       MYSQL_DATABASE: api
       MYSQL_USER: api-platform
-      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     volumes:
       - /home/deployment/data/mysql:/var/lib/mysql:rw
 
