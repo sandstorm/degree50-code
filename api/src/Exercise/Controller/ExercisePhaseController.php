@@ -444,6 +444,31 @@ class ExercisePhaseController extends AbstractController
         $entityManager->remove($exercisePhase);
         $entityManager->flush();
 
+        // Update sortings
+        $remainingPhases = $this->exercisePhaseRepository->findAllSortedBySorting($exercise);
+
+        foreach($remainingPhases as $index => $phase) {
+            $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
+                'exercisePhaseId' => $phase->getId(),
+                'name' => $phase->getName(),
+                'task' => $phase->getTask(),
+                'isGroupPhase' => $phase->isGroupPhase(),
+                'dependsOnPreviousPhase' => $phase->getDependsOnPreviousPhase(),
+                'videos' => $phase->getVideos()->map(fn(Video $video) => [
+                    'videoId' => $video->getId()
+                ])->toArray(),
+                'videoCodes' => $phase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
+                    'videoCodeId' => $videoCode->getId()
+                ])->toArray(),
+                'components' => $phase->getComponents()
+            ]);
+
+            /* @var $phase ExercisePhase */
+            $phase->setSorting($index);
+            $entityManager->persist($phase);
+            $entityManager->flush();
+        }
+
         $this->addFlash(
             'success',
             $this->translator->trans('exercisePhase.delete.messages.success', [], 'forms')

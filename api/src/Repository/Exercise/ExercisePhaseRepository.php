@@ -84,4 +84,14 @@ class ExercisePhaseRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
 
     }
+
+    public function findAllSortedBySorting($exercise) {
+        return $this->createQueryBuilder('e')
+            ->where('e.belongsToExercise = :exercise')
+            ->orderBy('e.sorting', 'ASC')
+            ->setParameter('exercise', $exercise)
+            ->getQuery()
+            ->getResult();
+
+    }
 }
