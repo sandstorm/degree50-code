@@ -71,7 +71,7 @@ class ExercisePhaseTeamController extends AbstractController
                     'danger',
                     $this->translator->trans('exercisePhaseTeam.new.messages.alreadyCreatedATeam', [], 'forms')
                 );
-                return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+                return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseId' => $exercisePhase->getId()]);
             }
         }
 
@@ -94,7 +94,7 @@ class ExercisePhaseTeamController extends AbstractController
                 $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseId' => $exercisePhase->getId()]);
         } else {
             return $this->redirectToRoute('exercise-overview__exercise-phase--show', ['id' => $exercisePhase->getId(), 'team_id' => $exercisePhaseTeam->getId()]);
         }
@@ -127,7 +127,7 @@ class ExercisePhaseTeamController extends AbstractController
             $this->translator->trans('exercisePhaseTeam.join.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
     }
 
     /**
@@ -145,7 +145,7 @@ class ExercisePhaseTeamController extends AbstractController
                 'danger',
                 $this->translator->trans('exercisePhaseTeam.delete.messages.hasSolution', [], 'forms')
             );
-            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
         }
 
         $this->eventStore->addEvent('TeamDeleted', [
@@ -163,7 +163,7 @@ class ExercisePhaseTeamController extends AbstractController
             $this->translator->trans('exercisePhaseTeam.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
     }
 
     /**
@@ -194,7 +194,7 @@ class ExercisePhaseTeamController extends AbstractController
         );
 
         // TODO change route from int to id of phase
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
     }
 
     /**
@@ -231,7 +231,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->dispatchCutListEncodingTask($exercisePhaseTeam);
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseIndex' => $exercisePhase->getSorting()]);
+        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
     }
 
     private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam) {
