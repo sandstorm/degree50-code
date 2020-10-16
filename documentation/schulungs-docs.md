@@ -6,7 +6,7 @@
 > Es kann sein, dass ich einige Issues in der Liste unten vergessen habe.
 > Die Liste hat keinen Anspruch auf Vollständigkeit, sollte aber wesentliche Punkte, die auffallen abdecken.
 
-> **NOTE 3**: Bitte noch einmal prüfen, ob ich irgendeinen wesentlichen Schritt vergessen habe. Alle dokumentierten Schritte habe ich auch mit den Prod-Accounts: test-student1@sandstorm.de, test-student2@sandstorm.de, test-dozent@sandstorm.de und admin@sandstorm.de getestet. Alle Account-Credentials sind im Bitwarden!
+> **NOTE 3**: Bitte noch einmal prüfen, ob ich irgendeinen wesentlichen Schritt vergessen habe. Alle dokumentierten Schritte habe ich auch mit den Prod-Accounts: test-student@sandstorm.de, test-student2@sandstorm.de, test-dozent@sandstorm.de und admin@sandstorm.de getestet. Alle Account-Credentials sind im Bitwarden!
 
 <!-- vim-markdown-toc GitLab -->
 
