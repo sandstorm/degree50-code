@@ -1,17 +1,17 @@
 {% trans_default_domain 'forms' %}
 
 <footer class="footer">
-    {% if currentPhaseIndex == 0 %}
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+    {% if previousExercisePhase %}
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseId: previousExercisePhase.id}) }}">Vorherige Phase</a>
     {% else %}
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: currentPhaseIndex - 1}) }}">Vorherige Phase</a>
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
     {% endif %}
 
     <span>Phase {{ currentPhaseIndex + 1 }} / {{ amountOfPhases + 1 }}</span>
 
-    {% if currentPhaseIndex < amountOfPhases %}
+    {% if nextExercisePhase %}
         {% if is_granted('next', exercisePhase) %}
-            <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: currentPhaseIndex + 1}) }}">Nächste Phase</a>
+            <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Nächste Phase</a>
         {% else %}
             <button type="button" class="btn btn-primary disabled" disabled="disabled">Nächste Phase</button>
         {% endif %}

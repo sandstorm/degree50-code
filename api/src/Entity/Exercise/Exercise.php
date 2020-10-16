@@ -77,7 +77,7 @@ class Exercise implements ExerciseInterface
 
     /**
      * @var UserExerciseInteraction[]
-     * @ORM\OneToMany(targetEntity="UserExerciseInteraction", mappedBy="exercise")
+     * @ORM\OneToMany(targetEntity="UserExerciseInteraction", mappedBy="exercise",  cascade={"remove"})
      */
     private $userExerciseInteractions;
 
