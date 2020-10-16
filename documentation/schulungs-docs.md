@@ -21,13 +21,13 @@
         -   [Wie wird eine Aufgabe erstellt?](#wie-wird-eine-aufgabe-erstellt)
         -   [Phasen + Phasenerstellung](#phasen-phasenerstellung)
             -   [Was sind Phasen?](#was-sind-phasen)
-    -   [- Es gibt verschiedene Phasentypen (z.B. Videoanalyse, Videoschnitt)](#-es-gibt-verschiedene-phasentypen-zb-videoanalyse-videoschnitt)
-        _ [Phasen verschieben](#phasen-verschieben)
-        _ [Einzelphase vs. Gruppenphase](#einzelphase-vs-gruppenphase)
-        _ [Aufeinander aufbauende Phasen](#aufeinander-aufbauende-phasen)
-        _ [Komponenten](#komponenten)
-        _ [Videocodes](#videocodes)
-        _ [Videos](#videos) \* [Material](#material)
+            - [Phasen verschieben](#phasen-verschieben)
+            - [Einzelphase vs. Gruppenphase](#einzelphase-vs-gruppenphase)
+            - [Aufeinander aufbauende Phasen](#aufeinander-aufbauende-phasen)
+            - [Komponenten](#komponenten)
+            - [Videocodes](#videocodes)
+            - [Videos](#videos)
+            - [Material](#material)
         -   [Wie teste ich als Dozent eine Aufgabe?](#wie-teste-ich-als-dozent-eine-aufgabe)
         -   [Wie sehe ich als Studierende eine Aufgabe?](#wie-sehe-ich-als-studierende-eine-aufgabe)
         -   [Wie löse ich eine Aufgabe als Studierende?](#wie-löse-ich-eine-aufgabe-als-studierende)
@@ -121,7 +121,6 @@
 
 -   Teilaufgabe innerhalb einer Aufgabe
 -   Es gibt verschiedene Phasentypen (z.B. Videoanalyse, Videoschnitt)
--
 
 #### Phasen verschieben
 
