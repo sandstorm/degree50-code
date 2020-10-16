@@ -10,7 +10,8 @@
     -   [Imported endpoints](#imported-endpoints)
     -   [Running Behat Tests](#running-behat-tests)
     -   [Running Frontend Tests](#running-frontend-tests)
--   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
+    -   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
+-   [Creating test users](#creating-test-users)
 -   [Prodsystem](#prodsystem)
     -   [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
         -   [Prerequisites](#prerequisites-1)
@@ -102,7 +103,7 @@ GRANT ALL ON app_test.* TO 'api-platform'@'%';
 yarn jest
 yarn test:debug
 
-## Testing the SAML Authentication locally
+### Testing the SAML Authentication locally
 
 In order to test the SAML authentication locally, you need the following `/etc/hosts` entry:
 
@@ -117,6 +118,9 @@ After testing, **remember to remove the `/etc/hosts` entry again** - as you stil
 
 The development container contains a self-signed SSL certificate and nginx is serving via SSL on port 8443 - so everything
 is prepared for testing the SAML authentication locally.
+
+## Creating test users
+We created a symfony command to easily create users via CLI: `./symfony-console app:create-user <email> <password>`
 
 ## Prodsystem
 
