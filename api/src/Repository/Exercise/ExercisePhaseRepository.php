@@ -62,6 +62,11 @@ class ExercisePhaseRepository extends ServiceEntityRepository
 
     }
 
+    public function findExercisePhaseAfter(ExercisePhase $exercisePhase)
+    {
+        return $this->findExercisePhasesLargerThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
+    }
+
     /**
      * @param int $sorting
      * @param Exercise $exercise
@@ -83,6 +88,11 @@ class ExercisePhaseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
 
+    }
+
+    public function findExercisePhaseBefore(ExercisePhase $exercisePhase)
+    {
+        return $this->findExercisePhasesLesserThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
     }
 
     public function findAllSortedBySorting($exercise) {

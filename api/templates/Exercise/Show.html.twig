@@ -173,5 +173,5 @@
 {% endblock %}
 
 {% block footer %}
-    {{ include('Exercise/Footer.html.twig', {exercise: exercise, exercisePhase: exercisePhase, currentPhaseIndex: currentPhaseIndex, amountOfPhases: amountOfPhases}) }}
+    {{ include('Exercise/Footer.html.twig', {exercise: exercise, exercisePhase: exercisePhase, amountOfPhases: amountOfPhases, previousExercisePhase: previousExercisePhase, nextExercisePhase: nextExercisePhase}) }}
 {% endblock %}

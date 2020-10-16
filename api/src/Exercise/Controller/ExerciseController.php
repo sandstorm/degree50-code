@@ -77,6 +77,10 @@ class ExerciseController extends AbstractController
             ? $this->exercisePhaseRepository->findFirstExercisePhase($exercise)
             : $this->exercisePhaseRepository->find($phaseId);
 
+        $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
+        $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
+
+
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($user, $exercise->getCreator(), $exercisePhase);
         $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
 
@@ -100,6 +104,8 @@ class ExerciseController extends AbstractController
                 'exercise' => $exercise,
                 'exercisePhase' => $exercisePhase,
                 'currentPhaseIndex' => $exercisePhase->getSorting(),
+                'previousExercisePhase' => $previousExercisePhase,
+                'nextExercisePhase' => $nextExercisePhase,
                 'teams' => $teams,
                 'teamOfCurrentUser' => $teamOfCurrentUser,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
