@@ -7,12 +7,15 @@ use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\CourseMembersType;
+use App\Exercise\Form\CourseType;
+use phpDocumentor\Reflection\Types\Boolean;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -21,14 +24,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class CourseController extends AbstractController
 {
     private DoctrineIntegratedEventStore $eventStore;
+    private TranslatorInterface $translator;
 
     /**
      * CourseController constructor.
      * @param DoctrineIntegratedEventStore $eventStore
+     * @param TranslatorInterface $translator
      */
-    public function __construct(DoctrineIntegratedEventStore $eventStore)
+    public function __construct(DoctrineIntegratedEventStore $eventStore, TranslatorInterface $translator)
     {
         $this->eventStore = $eventStore;
+        $this->translator = $translator;
     }
 
     /**
@@ -78,18 +84,177 @@ class CourseController extends AbstractController
      * @Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name="exercise-overview__course--remove-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
      */
-    public function delete(Course $course, CourseRole $courseRole): Response
+    public function removeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
     {
+        $redirectToEdit = !!$request->get('redirectToEdit');
+
         $this->eventStore->addEvent('CourseRoleRemoved', [
             'courseRoleId' => $courseRole->getId(),
             'courseId' => $course->getId(),
             'userName' => $courseRole->getUser()->getUsername(),
         ]);
 
+        $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $courseRole) =>  $courseRole->getName() == CourseRole::DOZENT);
+        if($redirectToEdit && count($courseRolesWithDozent) == 1) {
+            $this->addFlash(
+                'danger',
+                $this->translator->trans('course.removeMember.messages.notPossible', [], 'forms')
+            );
+
+            return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
+        }
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($courseRole);
         $entityManager->flush();
 
-        return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+        if ($redirectToEdit) {
+            return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
+        } else {
+            return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+        }
+    }
+
+    /**
+     * @IsGranted("ROLE_DOZENT")
+     * @Route("/exercise-overview/course/new", name="exercise-overview__course--new")
+     */
+    public function new(Request $request): Response
+    {
+        $course = new Course();
+
+        $form = $this->createForm(CourseType::class, $course);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$course` variable has also been updated
+            $course = $form->getData();
+
+            $newMembers = $form->get('users')->getData();
+
+            /* @var User $newMember */
+            foreach ($newMembers as $newMember) {
+                $courseRole = new CourseRole();
+                $courseRole->setName(CourseRole::DOZENT);
+                $courseRole->setUser($newMember);
+                $course->addCourseRole($courseRole);
+            }
+
+            $this->eventStore->addEvent('CourseRolesAdded', [
+                'courseId' => $course->getId(),
+                'courseRoles' => $course->getCourseRoles()->map(fn(CourseRole $courseRole) => [
+                    'courseRoleId' => $courseRole->getId(),
+                    'userName' => $courseRole->getUser()->getUsername()
+                ])->toArray(),
+            ]);
+
+            $this->eventStore->addEvent('CourseCreated', [
+                'courseId' => $course->getId(),
+                'name' => $course->getName(),
+            ]);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($course);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('course.new.messages.success', [], 'forms')
+            );
+
+            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+        }
+
+        return $this->render('Course/New.html.twig', [
+            'course' => $course,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @IsGranted("ROLE_DOZENT")
+     * @Route("/exercise-overview/course/edit/{id}", name="exercise-overview__course--edit")
+     */
+    public function edit(Request $request, Course $course): Response
+    {
+        $form = $this->createForm(CourseType::class, $course);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$course` variable has also been updated
+            $course = $form->getData();
+
+            $newMembers = $form->get('users')->getData();
+
+            /* @var User $newMember */
+            foreach ($newMembers as $newMember) {
+                $courseRole = new CourseRole();
+                $courseRole->setName(CourseRole::DOZENT);
+                $courseRole->setUser($newMember);
+                $course->addCourseRole($courseRole);
+            }
+
+            $this->eventStore->addEvent('CourseRolesAdded', [
+                'courseId' => $course->getId(),
+                'courseRoles' => $course->getCourseRoles()->map(fn(CourseRole $courseRole) => [
+                    'courseRoleId' => $courseRole->getId(),
+                    'userName' => $courseRole->getUser()->getUsername()
+                ])->toArray(),
+            ]);
+
+            $this->eventStore->addEvent('CourseCreated', [
+                'courseId' => $course->getId(),
+                'name' => $course->getName(),
+            ]);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($course);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('course.new.messages.success', [], 'forms')
+            );
+
+            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+        }
+
+        return $this->render('Course/Edit.html.twig', [
+            'course' => $course,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @IsGranted("ROLE_DOZENT")
+     * @Route("/exercise-overview/course/delete/{id}", name="exercise-overview__course--delete")
+     */
+    public function delete(Course $course): Response
+    {
+        if (count($course->getExercises()) > 0) {
+            $this->addFlash(
+                'danger',
+                $this->translator->trans('course.delete.messages.notPossible', [], 'forms')
+            );
+
+            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+        }
+
+        $this->eventStore->addEvent('CourseDeleted', [
+            'courseId' => $course->getId(),
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($course);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans('course.delete.messages.success', [], 'forms')
+        );
+
+        return $this->redirectToRoute('exercise-overview');
     }
 }

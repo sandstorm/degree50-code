@@ -1,158 +1,178 @@
 form:
-  label:
-    delete: 'Löschen'
-    download: 'Datei herunterladen'
+    label:
+        delete: 'Löschen'
+        download: 'Datei herunterladen'
 
 exercise:
-  labels:
-    name: 'Titel der Aufgabe'
-    description: 'Lernauftrag / Beschreibung'
-    submit: 'Aufgabe speichern'
-    test: 'Aufgabe testen'
-    created: 'Erstellt'
-    phases: 'Phasen'
-    status: 'Status'
-    status0: 'Erstellt'
-    status1: 'Abgeschlossen'
-    status2: 'Veröffentlicht'
-  show:
-    title: 'Aufgabe starten'
-  test:
-    title: 'Aufgabe testen'
-  new:
-    back: 'Zurück zur Übersicht'
-    title: 'Neue Aufgabe anlegen'
-    messages:
-      success: 'Aufgabe erfolgreich angelegt!'
-  showSolution:
-    title: 'Lösungen ansehen'
-    messages:
-      error: 'Lösung kann nicht angesehen werden!'
-  edit:
-    title: 'Aufgabe bearbeiten'
-    messages:
-      success: 'Aufgabe erfolgreich gespeichert!'
-  delete:
-    title: 'Aufgabe löschen'
-    messages:
-      success: 'Aufgabe erfolgreich gelöscht!'
+    labels:
+        name: 'Titel der Aufgabe'
+        description: 'Lernauftrag / Beschreibung'
+        submit: 'Aufgabe speichern'
+        test: 'Aufgabe testen'
+        created: 'Erstellt'
+        phases: 'Phasen'
+        status: 'Status'
+        status0: 'Erstellt'
+        status1: 'Abgeschlossen'
+        status2: 'Veröffentlicht'
+    show:
+        title: 'Aufgabe starten'
+    test:
+        title: 'Aufgabe testen'
+    new:
+        back: 'Zurück zur Übersicht'
+        title: 'Neue Aufgabe anlegen'
+        messages:
+            success: 'Aufgabe erfolgreich angelegt!'
+    showSolution:
+        title: 'Lösungen ansehen'
+        messages:
+            error: 'Lösung kann nicht angesehen werden!'
+    edit:
+        title: 'Aufgabe bearbeiten'
+        messages:
+            success: 'Aufgabe erfolgreich gespeichert!'
+    delete:
+        title: 'Aufgabe löschen'
+        messages:
+            success: 'Aufgabe erfolgreich gelöscht!'
 
 exercisePhase:
-  labels:
-    isGroupPhase: 'Ist eine Gruppenarbeit'
-    dependsOnPreviousPhase: 'Nutzt Ergebnis vorheriger Phase'
-    name: 'Titel der Phase'
-    task: 'Lernauftrag / Beschreibung'
-    videos: 'Videos'
-    videosExtended: 'Video(s) für die Aufgabe auswählen'
-    videoCodes: 'Video-Codes'
-    components: 'Zusätzlich Komponenten'
-    material: 'Material'
-    submit: 'Phase speichern'
-    type: 'Typ'
-  help:
-    isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
-    dependsOnPreviousPhase: 'Wenn aktiv, können die Studenten beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
-  types:
-    videoAnalysis:
-      label: 'Videoanalyse'
-      iconClass: 'fas fa-film'
-    videoCutting:
-      label: 'Videoschnitt'
-      iconClass: 'fas fa-cut'
-  components:
-    videoPlayer:
-      label: 'Videoplayer'
-    videoCutting:
-      label: 'Video-schnitt'
-    chat:
-      label: 'Chat'
-    documentUpload:
-      label: 'Dokumenten-Upload'
-    videoCode:
-      label: 'Video-kodierung'
-    sharedDocument:
-      label: 'Geteiltes Dokument'
-    videoAnnotation:
-      label: 'Video Annotation'
-  new:
-    back: 'Zurück zur Aufgabe'
-    title: 'Phase hinzufügen'
-    titleForGroupPhase: 'Gruppenphase hinzufügen'
-  edit:
-    title: 'Phase bearbeiten'
-    button: 'Bearbeiten'
-    messages:
-      success: 'Phase erfolgreich gespeichert!'
-  delete:
-    title: 'Phase löschen'
-    button: 'Löschen'
-    messages:
-      success: 'Phase erfolgreich gelöscht!'
+    labels:
+        isGroupPhase: 'Ist eine Gruppenarbeit'
+        dependsOnPreviousPhase: 'Nutzt Ergebnis vorheriger Phase'
+        name: 'Titel der Phase'
+        task: 'Lernauftrag / Beschreibung'
+        videos: 'Videos'
+        videosExtended: 'Video(s) für die Aufgabe auswählen'
+        videoCodes: 'Video-Codes'
+        components: 'Zusätzlich Komponenten'
+        material: 'Material'
+        submit: 'Phase speichern'
+        type: 'Typ'
+    help:
+        isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
+        dependsOnPreviousPhase: 'Wenn aktiv, können die Studenten beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
+    types:
+        videoAnalysis:
+            label: 'Videoanalyse'
+            iconClass: 'fas fa-film'
+        videoCutting:
+            label: 'Videoschnitt'
+            iconClass: 'fas fa-cut'
+    components:
+        videoPlayer:
+            label: 'Videoplayer'
+        videoCutting:
+            label: 'Video-schnitt'
+        chat:
+            label: 'Chat'
+        documentUpload:
+            label: 'Dokumenten-Upload'
+        videoCode:
+            label: 'Video-kodierung'
+        sharedDocument:
+            label: 'Geteiltes Dokument'
+        videoAnnotation:
+            label: 'Video Annotation'
+    new:
+        back: 'Zurück zur Aufgabe'
+        title: 'Phase hinzufügen'
+        titleForGroupPhase: 'Gruppenphase hinzufügen'
+    edit:
+        title: 'Phase bearbeiten'
+        button: 'Bearbeiten'
+        messages:
+            success: 'Phase erfolgreich gespeichert!'
+    delete:
+        title: 'Phase löschen'
+        button: 'Löschen'
+        messages:
+            success: 'Phase erfolgreich gelöscht!'
 
 video:
-  labels:
-    title: 'Titel'
-    created: 'Erstellt'
-    description: 'Beschreibung'
-    visiblePersons: 'Zu sehende Personen im Video'
-    courses: 'Kurse mit Berechtigung für dieses Video'
-    dataPrivacyAccepted: 'Datenschutzbestimmung akzeptiert'
-    submit: 'Video speichern'
-  help:
-    courses: 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
-    visiblePersons: 'Bitte alle Personen auflisten (Vor- und Nachname) die im Video zu sehen sind. Dieses Feld ist aus Datenschutzgründen relevant.'
-  upload:
-    title: 'Video hochladen'
-    back: 'Zurück zur Übersicht'
-    messages:
-      success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
-  show:
-    title: 'Video abspielen'
-  edit:
-    title: 'Video bearbeiten'
-    messages:
-      success: 'Video erfolgreich gespeichert!'
-  subtitle:
-    title: 'Untertitel bearbeiten'
-  delete:
-    title: 'Video löschen'
-    messages:
-      success: 'Video erfolgreich gelöscht!'
+    labels:
+        title: 'Titel'
+        created: 'Erstellt'
+        description: 'Beschreibung'
+        visiblePersons: 'Zu sehende Personen im Video'
+        courses: 'Kurse mit Berechtigung für dieses Video'
+        dataPrivacyAccepted: 'Datenschutzbestimmung akzeptiert'
+        submit: 'Video speichern'
+    help:
+        courses: 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
+        visiblePersons: 'Bitte alle Personen auflisten (Vor- und Nachname) die im Video zu sehen sind. Dieses Feld ist aus Datenschutzgründen relevant.'
+    upload:
+        title: 'Video hochladen'
+        back: 'Zurück zur Übersicht'
+        messages:
+            success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
+    show:
+        title: 'Video abspielen'
+    edit:
+        title: 'Video bearbeiten'
+        messages:
+            success: 'Video erfolgreich gespeichert!'
+    subtitle:
+        title: 'Untertitel bearbeiten'
+    delete:
+        title: 'Video löschen'
+        messages:
+            success: 'Video erfolgreich gelöscht!'
 
 material:
-  labels:
-    name: 'Name des Dokuments/Materials'
-    file: 'Datei'
-    selectFile: 'Datei auswählen'
-  delete:
-    messages:
-      success: 'Datei erfolgreich gelöscht!'
+    labels:
+        name: 'Name des Dokuments/Materials'
+        file: 'Datei'
+        selectFile: 'Datei auswählen'
+    delete:
+        messages:
+            success: 'Datei erfolgreich gelöscht!'
 
 exercisePhaseTeam:
-  new:
-    messages:
-      success: 'Neue Gruppe angelegt!'
-      alreadyCreatedATeam: 'Du hast bereits eine Gruppe angelegt!'
-  join:
-    messages:
-      success: 'Gruppe beigetreten'
-  delete:
-    messages:
-      hasSolution: 'Gruppe kann nicht gelöscht werden. Es gibt bereits ein Ergebnis.'
-      success: 'Gruppe gelöscht'
-  leave:
-    messages:
-      success: 'Gruppe verlassen'
+    new:
+        messages:
+            success: 'Neue Gruppe angelegt!'
+            alreadyCreatedATeam: 'Du hast bereits eine Gruppe angelegt!'
+    join:
+        messages:
+            success: 'Gruppe beigetreten'
+    delete:
+        messages:
+            hasSolution: 'Gruppe kann nicht gelöscht werden. Es gibt bereits ein Ergebnis.'
+            success: 'Gruppe gelöscht'
+    leave:
+        messages:
+            success: 'Gruppe verlassen'
 
 course:
-  edit:
-    title: 'Kursmitglieder verwalten'
-  labels:
-    members: 'Kursmitglieder'
-    user: 'Nutzer'
-    role: 'Rolle'
-    submit: 'Zum Kurs hinzufügen'
-  delete:
-    title: 'Entfernen'
-
+    new:
+        title: 'Kurs anlegen'
+        back: 'Zurück zur Übersicht'
+        messages:
+            success: 'Kurs erfolgreich angelegt!'
+    edit:
+        title: 'Kurs bearbeiten'
+    editMembers:
+        title: 'Kursmitglieder verwalten'
+    labels:
+        members: 'Kursmitglieder'
+        membersStudent: 'Aktuelle Kursmitglieder (Studenten)'
+        membersTutor: 'Aktuelle Kursmitglieder (Dozenten)'
+        name: 'Name'
+        user: 'Nutzer'
+        role: 'Rolle'
+        submit: 'Kurs speichern'
+        addMember: 'Zum Kurs hinzufügen'
+    help:
+        students: 'Hier können Studenten ausgewählt werden (mehrfahr-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
+        tutors: 'Hier können Dozenten ausgewählt werden (mehrfahr-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
+    removeMember:
+        title: 'Entfernen'
+        messages:
+            notPossible: 'Nicht möglich: Es muss mindestens einen Donzenten pro Kurs geben!'
+    delete:
+        title: 'Kurs löschen'
+        messages:
+            success: 'Kurs erfolgreich gelöscht!'
+            notPossible: 'Kurs kann nicht gelöscht werden, so lange Aufgaben zugewiesen sind!'

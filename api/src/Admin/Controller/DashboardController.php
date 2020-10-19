@@ -29,7 +29,7 @@ class DashboardController extends AbstractDashboardController
         // redirect to some CRUD controller
         $routeBuilder = $this->get(CrudUrlGenerator::class)->build();
 
-        return $this->redirect($routeBuilder->setController(CourseCrudController::class)->generateUrl());
+        return $this->redirect($routeBuilder->setController(UserCrudController::class)->generateUrl());
 
     }
 
@@ -57,6 +57,5 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToCrud('User', 'fas fa-folder-open', User::class);
-        yield MenuItem::linkToCrud('Course', 'fas fa-folder-open', Course::class);
     }
 }

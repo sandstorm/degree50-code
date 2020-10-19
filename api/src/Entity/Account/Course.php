@@ -47,7 +47,7 @@ class Course
     private Collection $courseRoles;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="Courses")
+     * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="courses")
      */
     private Collection $videos;
 
