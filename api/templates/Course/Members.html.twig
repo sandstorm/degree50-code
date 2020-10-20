@@ -1,7 +1,7 @@
 {% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 
-{% block title %}{% trans %}course.edit.title{% endtrans %}{% endblock %}
+{% block title %}{% trans %}course.editMembers.title{% endtrans %}{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -9,12 +9,13 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: course.id}) }}">Übersicht</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">{% trans %}course.edit.title{% endtrans %}</li>
+                <li class="breadcrumb-item active"
+                    aria-current="page">{% trans %}course.editMembers.title{% endtrans %}</li>
             </ol>
         </nav>
 
         <header class="content-header">
-            <h3>{% trans %}course.edit.title{% endtrans %}</h3>
+            <h3>{% trans %}course.editMembers.title{% endtrans %}</h3>
         </header>
 
         {{ form_start(form) }}
@@ -25,7 +26,7 @@
 
         {{ form_end(form) }}
 
-        <h5>{% trans %}course.labels.members{% endtrans %}</h5>
+        <h5>{% trans %}course.labels.membersStudent{% endtrans %}</h5>
         <table class="table table-sm">
             <thead>
             <tr>
@@ -41,10 +42,11 @@
                         <td>{{ courseRole.name }}</td>
                         <td class="text-right">
                             <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: courseRole.id}) }}"
-                               class="btn btn-danger btn-sm">{% trans %}course.delete.title{% endtrans %}</a>
+                               class="btn btn-danger btn-sm">{% trans %}course.removeMember.title{% endtrans %}</a>
                         </td>
                     </tr>
                 {% endif %}
+
             {% endfor %}
         </table>
     </div>

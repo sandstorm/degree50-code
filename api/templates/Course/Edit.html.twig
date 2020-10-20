@@ -1,0 +1,59 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseFullscreen.html.twig' %}
+
+{% block title %}{% trans %}course.edit.title{% endtrans %}{% endblock %}
+
+{% block body %}
+    <div class="exercise-form">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('exercise-overview') }}">Übersicht</a>
+                    </li>
+                    <li class="breadcrumb-item active"
+                        aria-current="page">{% trans %}course.edit.title{% endtrans %}</li>
+                </ol>
+            </nav>
+            <header class="content-header">
+                <h3>{% trans %}course.edit.title{% endtrans %}</h3>
+            </header>
+
+
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            {{ form_row(form.name) }}
+            {{ form_row(form.users) }}
+
+            <h5>{% trans %}course.labels.membersTutor{% endtrans %}</h5>
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th>{% trans %}course.labels.user{% endtrans %}</th>
+                    <th>{% trans %}course.labels.role{% endtrans %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {% for courseRole in course.courseRoles %}
+                    {% if courseRole.name == 'DOZENT' %}
+                        <tr>
+                            <td>{{ courseRole.user.userName }}</td>
+                            <td>{{ courseRole.name }}</td>
+                            <td class="text-right">
+                                <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: courseRole.id, redirectToEdit: true}) }}"
+                                   class="btn btn-danger btn-sm">{% trans %}course.removeMember.title{% endtrans %}</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <a class="btn btn-outline-primary"
+           href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}course.new.back{% endtrans %}</a>
+        {{ form_row(form.save) }}
+    </footer>
+    {{ form_end(form) }}
+{% endblock %}

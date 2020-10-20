@@ -1,12 +1,16 @@
 .dropdown {
-
 }
 
 .dropdown-menu {
-  right: 0;
-  left: auto;
+    right: 0;
+    left: auto;
 
-  &--is-visible {
-    display: block;
-  }
+    &--is-visible {
+        display: block;
+    }
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: $theme__color__green;
 }
