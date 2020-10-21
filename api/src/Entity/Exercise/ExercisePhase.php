@@ -116,6 +116,11 @@ class ExercisePhase implements ExerciseInterface
      */
     private $dependsOnPreviousPhase = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $otherSolutionsAreAccessible = false;
+
     public function __construct(string $id = null)
     {
         $this->generateOrSetId($id);
@@ -355,6 +360,18 @@ class ExercisePhase implements ExerciseInterface
     public function setDependsOnPreviousPhase(bool $dependsOnPreviousPhase): self
     {
         $this->dependsOnPreviousPhase = $dependsOnPreviousPhase;
+
+        return $this;
+    }
+
+    public function getOtherSolutionsAreAccessible(): ?bool
+    {
+        return $this->otherSolutionsAreAccessible;
+    }
+
+    public function setOtherSolutionsAreAccessible(bool $otherSolutionsAreAccessible): self
+    {
+        $this->otherSolutionsAreAccessible = $otherSolutionsAreAccessible;
 
         return $this;
     }

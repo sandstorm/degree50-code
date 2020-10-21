@@ -41,6 +41,7 @@ exercisePhase:
     labels:
         isGroupPhase: 'Ist eine Gruppenarbeit'
         dependsOnPreviousPhase: 'Nutzt Ergebnis vorheriger Phase'
+        otherSolutionsAreAccessible: 'Studenten können gegenseitig Ergebnisse einsehen'
         name: 'Titel der Phase'
         task: 'Lernauftrag / Beschreibung'
         videos: 'Videos'
@@ -53,6 +54,7 @@ exercisePhase:
     help:
         isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
         dependsOnPreviousPhase: 'Wenn aktiv, können die Studenten beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
+        otherSolutionsAreAccessible: 'Wenn aktiv, können die Studenten für diese Phase die Ergebnisse ihrer Mitstudenten einsehen.'
     types:
         videoAnalysis:
             label: 'Videoanalyse'
