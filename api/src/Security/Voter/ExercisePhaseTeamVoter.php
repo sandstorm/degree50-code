@@ -5,7 +5,6 @@ namespace App\Security\Voter;
 
 
 use App\Entity\Account\User;
-use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -14,13 +13,14 @@ class ExercisePhaseTeamVoter extends Voter
 {
     const JOIN = 'join';
     const SHOW = 'show';
+    const SHOW_SOLUTION = 'showSolution';
     const LEAVE = 'leave';
     const DELETE = 'delete';
     const UPDATE_SOLUTION = 'updateSolution';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::JOIN, self::SHOW, self::LEAVE, self::DELETE, self::UPDATE_SOLUTION])) {
+        if (!in_array($attribute, [self::JOIN, self::SHOW, self::SHOW_SOLUTION, self::LEAVE, self::DELETE, self::UPDATE_SOLUTION])) {
             return false;
         }
 
@@ -49,6 +49,8 @@ class ExercisePhaseTeamVoter extends Voter
         switch ($attribute) {
             case self::SHOW:
                 return $this->canShow($exercisePhaseTeam, $user);
+            case self::SHOW_SOLUTION:
+                return $this->canShowSolution($exercisePhaseTeam, $user);
             case self::JOIN:
                 return $this->canJoin($exercisePhaseTeam, $user);
             case self::LEAVE:
@@ -76,13 +78,22 @@ class ExercisePhaseTeamVoter extends Voter
         return $exercisePhaseTeam->getCreator() === $user;
     }
 
-    // TODO: anyone can view a result
     private function canShow(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
-        if ($exercisePhaseTeam->getExercisePhase()->getBelongsToExercise()->getCreator() === $user) {
-            return true;
-        }
         return $exercisePhaseTeam->getMembers()->contains($user);
+    }
+
+    private function canShowSolution(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
+    {
+        $existingTeams = $exercisePhaseTeam->getExercisePhase()->getTeams();
+        $canShowSolution = false;
+        foreach($existingTeams as $team) {
+            if($team->getMembers()->contains($user)) {
+                $canShowSolution = true;
+            }
+        }
+
+        return $canShowSolution;
     }
 
     private function canJoin(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
