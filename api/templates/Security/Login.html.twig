@@ -3,10 +3,6 @@
 {% block title %}Degree 4.0{% endblock %}
 
 {% block body %}
-    <div class="alert alert-info">
-        <p>Diese Platform kann nur mit aktuellen Browsern genutzt werden. Bitte achten Sie darauf, Ihren Browser möglichst up-to-date zu halten.</p>
-        <p>Weitere Infos: <a target="_blank" href="https://browser-update.org/de/update-browser.html">browser-update.org</a></p>
-    </div>
     <div class="container">
         <form method="post" class="login-form" role="form">
             <img src="{{ asset('build/images/logo_tmp.png') }}" alt="Logo der TU Dortmund" />
@@ -52,4 +48,32 @@
         <a class="btn btn-link" href="{{ path('imprint') }}" role="link">Impressum</a>
         <a class="btn btn-link" href="{{ path('data-privacy') }}" role="link">Datenschutz</a>
     </footer>
+
+    {# show notification when browser is out of date (https://browser-update.org/) #}
+    <script>
+        var $buoop = {
+            {# browser: required version (0 is latest) #}
+            required: {
+                e: 0,
+                f: 0,
+                o: 0,
+                s: 0,
+                c: 0
+            },
+            {# test for insecure browsers #}
+            insecure: true,
+            api: 2020.10,
+            nostatistics: true,
+            shift_page_down: false,
+            {# test the notification - even if browser is up-to-date #}
+            {# test: true, #}
+        };
+        function $buo_f(){
+            var e = document.createElement("script");
+            e.src = "//browser-update.org/update.min.js";
+            document.body.appendChild(e);
+        };
+        try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
+        catch(e){window.attachEvent("onload", $buo_f)}
+    </script>
 {% endblock %}
