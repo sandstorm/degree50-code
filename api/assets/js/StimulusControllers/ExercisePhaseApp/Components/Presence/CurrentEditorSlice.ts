@@ -3,12 +3,10 @@ import { TeamMemberId } from './PresenceSlice'
 
 export type CurrentEditorState = {
     currentEditorId?: TeamMemberId
-    currentEditorTokenRequests: Array<TeamMemberId>
 }
 
 const initialState: CurrentEditorState = {
     currentEditorId: undefined,
-    currentEditorTokenRequests: [],
 }
 
 const CurrentEditorSlice = createSlice({

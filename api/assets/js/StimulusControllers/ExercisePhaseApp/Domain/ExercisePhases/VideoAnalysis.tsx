@@ -31,7 +31,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & Ow
 const VideoAnalysis: React.FC<Props> = (props) => {
     const videoComponents = Object.values(TabsTypesEnum).filter((tabType) => props.components.includes(tabType))
     const userIsCurrentEditor = props.userId === props.currentEditorId
-    const itemUpdateCondition = userIsCurrentEditor || !props.readOnly
+    const itemUpdateCondition = userIsCurrentEditor && !props.readOnly
 
     return (
         <VideoEditor

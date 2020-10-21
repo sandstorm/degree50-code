@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 // @ts-ignore
 import NProgress from 'nprogress'
 import { setTranslations } from 'react-i18nify'
