@@ -18,7 +18,7 @@
                         {% if showSolution %}
                             {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id})) }}
                         {% else %}
-                            {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseIndex: loop.index - 1})) }}
+                            {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseId: item.id})) }}
                         {% endif %}
                     </li>
                 {% endfor %}
