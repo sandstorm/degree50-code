@@ -341,7 +341,9 @@ class ExercisePhaseController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /* @var $exercisePhase ExercisePhase */
             $exercisePhase = $form->getData();
+
             /* @var $exercisePhase VideoAnalysisPhase */
             $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
                 'exercisePhaseId' => $exercisePhase->getId(),

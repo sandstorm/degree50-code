@@ -48,7 +48,9 @@
             <hr/>
 
             <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
-            {{ form_row(form.videos) }}
+            <div data-controller="videosForm">
+                {{ form_row(form.videos) }}
+            </div>
             <hr/>
 
             {% if exercisePhase.type == 'videoAnalysis' and exercisePhase.videoCodesActive %}
