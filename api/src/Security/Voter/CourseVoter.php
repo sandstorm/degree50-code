@@ -11,11 +11,13 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CourseVoter extends Voter
 {
+    const EDIT_MEMBERS = 'editMembers';
     const EDIT = 'edit';
+    const DELETE = 'delete';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [ self::EDIT])) {
+        if (!in_array($attribute, [ self::EDIT_MEMBERS, self::EDIT, self::DELETE])) {
             return false;
         }
 
@@ -40,15 +42,22 @@ class CourseVoter extends Voter
         }
 
         switch ($attribute) {
-            case self::EDIT:
-                return $this->canEdit($course, $user);
+            case self::EDIT_MEMBERS:
+                return $this->canEditMembers($course, $user);
+            case self::EDIT || self::DELETE:
+                return $this->canEdit($user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canEdit(Course $course, User $user)
+    private function canEditMembers(Course $course, User $user)
     {
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user && $courseRole->getName() == CourseRole::DOZENT);
+    }
+
+    private function canEdit(User $user)
+    {
+        return $user->isDozent() || $user->isAdmin();
     }
 }

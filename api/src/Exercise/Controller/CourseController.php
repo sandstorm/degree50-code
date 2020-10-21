@@ -38,10 +38,10 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("edit", subject="course")
+     * @IsGranted("editMembers", subject="course")
      * @Route("/exercise-overview/{id}/course-members", name="exercise-overview__course--members")
      */
-    public function members(Request $request, Course $course): Response
+    public function adCourseMembers(Request $request, Course $course): Response
     {
         $form = $this->createForm(CourseMembersType::class, $course);
         $form->handleRequest($request);
@@ -69,8 +69,11 @@ class CourseController extends AbstractController
             $entityManager->persist($course);
             $entityManager->flush();
 
-            // redirect to clear form
-            return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+            $this->addFlash(
+                'success',
+                $this->translator->trans('course.editMembers.messages.success', [], 'forms')
+            );
+            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
         return $this->render('Course/Members.html.twig', [
@@ -80,6 +83,7 @@ class CourseController extends AbstractController
     }
 
     /**
+     * @IsGranted("editMembers", subject="course")
      * @IsGranted("edit", subject="course")
      * @Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name="exercise-overview__course--remove-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
@@ -173,7 +177,7 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("ROLE_DOZENT")
+     * @IsGranted("edit", subject="course")
      * @Route("/exercise-overview/course/edit/{id}", name="exercise-overview__course--edit")
      */
     public function edit(Request $request, Course $course): Response
@@ -215,7 +219,7 @@ class CourseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('course.new.messages.success', [], 'forms')
+                $this->translator->trans('course.edit.messages.success', [], 'forms')
             );
 
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
@@ -228,7 +232,7 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("ROLE_DOZENT")
+     * @IsGranted("delete", subject="course")
      * @Route("/exercise-overview/course/delete/{id}", name="exercise-overview__course--delete")
      */
     public function delete(Course $course): Response
