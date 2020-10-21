@@ -4,6 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Account\User;
 use App\Entity\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -374,5 +375,18 @@ class ExercisePhase implements ExerciseInterface
         $this->otherSolutionsAreAccessible = $otherSolutionsAreAccessible;
 
         return $this;
+    }
+
+    public function getHasSolutions() {
+        $parentExercise = $this->getBelongsToExercise();
+        $creator = $parentExercise->getCreator();
+        $teams = $this->getTeams()->toArray();
+
+        // A creator can test created phases and create solutions only the creator can see this way.
+        // Therefore we need to check if solutions exist, where the creator isn't also the creator of the phase.
+        $solutionsWithoutTestSolution = array_filter($teams, fn(ExercisePhaseTeam $team) => $team->getCreator() !== $creator);
+        $hasSolutionsWithoutTestSolution = !empty($solutionsWithoutTestSolution);
+
+        return $hasSolutionsWithoutTestSolution;
     }
 }

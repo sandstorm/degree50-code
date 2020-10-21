@@ -340,7 +340,7 @@ class ExercisePhaseController extends AbstractController
         return $this->render('ExercisePhase/Edit.html.twig', [
             'exercise' => $exercise,
             'exercisePhase' => $exercisePhase,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -398,7 +398,7 @@ class ExercisePhaseController extends AbstractController
             return false;
         }
 
-        return !$exercisePhase->getVideoAnnotationsActive && !$exercisePhase->getVideoCodesActive;
+        return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
     }
 
     private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase) {
