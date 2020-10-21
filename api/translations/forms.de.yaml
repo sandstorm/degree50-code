@@ -153,8 +153,12 @@ course:
             success: 'Kurs erfolgreich angelegt!'
     edit:
         title: 'Kurs bearbeiten'
+        messages:
+            success: 'Kurs erfolgreich gespeichert!'
     editMembers:
         title: 'Kursmitglieder verwalten'
+        messages:
+            success: 'Kursmitglieder erfolgreich gespeichert!'
     labels:
         members: 'Kursmitglieder'
         membersStudent: 'Aktuelle Kursmitglieder (Studenten)'
@@ -163,7 +167,7 @@ course:
         user: 'Nutzer'
         role: 'Rolle'
         submit: 'Kurs speichern'
-        addMember: 'Zum Kurs hinzufügen'
+        addMember: 'Kursmitglieder speichern'
     help:
         students: 'Hier können Studenten ausgewählt werden (mehrfahr-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
         tutors: 'Hier können Dozenten ausgewählt werden (mehrfahr-Auswahl) die Aufgaben für diesen Kurs erstellen können.'

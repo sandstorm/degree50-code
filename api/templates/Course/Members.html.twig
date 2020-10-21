@@ -22,9 +22,6 @@
         {{ form_errors(form) }}
 
         {{ form_row(form.users) }}
-        {{ form_row(form.save) }}
-
-        {{ form_end(form) }}
 
         <h5>{% trans %}course.labels.membersStudent{% endtrans %}</h5>
         <table class="table table-sm">
@@ -50,4 +47,11 @@
             {% endfor %}
         </table>
     </div>
+
+    <footer class="footer">
+        <a class="btn btn-outline-primary"
+           href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}course.new.back{% endtrans %}</a>
+        {{ form_row(form.save) }}
+    </footer>
+    {{ form_end(form) }}
 {% endblock %}
