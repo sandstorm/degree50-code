@@ -11,6 +11,7 @@ use App\Exercise\Form\CourseType;
 use phpDocumentor\Reflection\Types\Boolean;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,8 +84,7 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("editMembers", subject="course")
-     * @IsGranted("edit", subject="course")
+     * @Security("is_granted('edit', course) or is_granted('editMembers', course)")
      * @Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name="exercise-overview__course--remove-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
      */

@@ -24,6 +24,7 @@ use App\Repository\Exercise\VideoCodeRepository;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,7 +75,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("show", subject="exercisePhaseTeam")
+     * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
      * @Route("/exercise-phase/show/{id}/{team_id}", name="exercise-overview__exercise-phase--show")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
