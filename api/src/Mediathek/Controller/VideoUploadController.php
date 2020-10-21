@@ -162,6 +162,14 @@ class VideoUploadController extends AbstractController
     public function delete(AppRuntime $appRuntime, Video $video): Response
     {
         if ($video) {
+            if (count($video->getExercisePhases()) > 0) {
+                $this->addFlash(
+                    'danger',
+                    $this->translator->trans('video.delete.messages.isCurrentlyUsed', [], 'forms')
+                );
+                return $this->redirectToRoute('mediathek--index');
+            }
+
             $folderUrl = $appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
             $this->removeVideo($folderUrl);
 
