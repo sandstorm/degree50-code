@@ -51,6 +51,14 @@ class ExercisePhaseType extends AbstractType
                 'block_prefix' => 'toggleable_button_checkbox',
                 'help' => "exercisePhase.help.dependsOnPreviousPhase",
             ])
+            ->add('otherSolutionsAreAccessible', CheckboxType::class, [
+                'required' => false,
+                'disabled' => false,
+                'label' => "exercisePhase.labels.otherSolutionsAreAccessible",
+                'translation_domain' => 'forms',
+                'block_prefix' => 'toggleable_button_checkbox',
+                'help' => "exercisePhase.help.otherSolutionsAreAccessible",
+            ])
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
                 'choices' => $videoChoices,

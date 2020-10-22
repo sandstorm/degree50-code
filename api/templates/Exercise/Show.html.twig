@@ -111,9 +111,11 @@
                                            href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}"><i class="fas fa-play"></i> Phase
                                             starten</a>
                                     {% else %}
-                                        <a class="btn btn-outline-primary btn-sm"
-                                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis
-                                            ansehen</a>
+                                        {% if exercisePhase.otherSolutionsAreAccessible %}
+                                            <a class="btn btn-outline-primary btn-sm"
+                                               href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis
+                                                ansehen</a>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -157,10 +159,12 @@
                     <tr>
                         <td>{{ team.creator.username }}</td>
                         <td>
-                            <a
-                                    href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
-                                Ergebnis anzeigen
-                            </a>
+                            {% if exercisePhase.otherSolutionsAreAccessible %}
+                                <a
+                                        href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
+                                    Ergebnis anzeigen
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

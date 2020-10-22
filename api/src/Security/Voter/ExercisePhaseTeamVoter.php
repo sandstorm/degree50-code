@@ -83,17 +83,9 @@ class ExercisePhaseTeamVoter extends Voter
         return $exercisePhaseTeam->getMembers()->contains($user);
     }
 
-    private function canShowSolution(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
+    private function canShowSolution(ExercisePhaseTeam $exercisePhaseTeam): bool
     {
-        $existingTeams = $exercisePhaseTeam->getExercisePhase()->getTeams();
-        $canShowSolution = false;
-        foreach($existingTeams as $team) {
-            if($team->getMembers()->contains($user)) {
-                $canShowSolution = true;
-            }
-        }
-
-        return $canShowSolution;
+        return $exercisePhaseTeam->getExercisePhase()->getOtherSolutionsAreAccessible();
     }
 
     private function canJoin(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
