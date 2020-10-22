@@ -3,9 +3,13 @@
 namespace App\Exercise\Form;
 
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Video\Video;
+use App\Repository\Video\VideoRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,11 +17,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExercisePhaseType extends AbstractType
 {
+    private VideoRepository $videoRepository;
+
+    /**
+     * ExercisePhaseType constructor.
+     * @param VideoRepository $videoRepository
+     */
+    public function __construct(VideoRepository $videoRepository)
+    {
+        $this->videoRepository = $videoRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /* @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
         $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE;
+        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
 
         $builder
             ->add('isGroupPhase', CheckboxType::class, [
@@ -34,6 +50,16 @@ class ExercisePhaseType extends AbstractType
                 'translation_domain' => 'forms',
                 'block_prefix' => 'toggleable_button_checkbox',
                 'help' => "exercisePhase.help.dependsOnPreviousPhase",
+            ])
+            ->add('videos', EntityType::class, [
+                'class' => Video::class,
+                'choices' => $videoChoices,
+                'required' => true,
+                'choice_label' => 'title',
+                'multiple' => true,
+                'expanded' => true,
+                'label' => false,
+                'block_prefix' => 'video_entity'
             ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             ->add('task', CKEditorType::class, ['label' => "exercisePhase.labels.task", 'translation_domain' => 'forms'])

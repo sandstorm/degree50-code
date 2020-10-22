@@ -18,6 +18,7 @@ import ExercisePhaseController from './StimulusControllers/ExercisePhaseControll
 import SolutionsController from './StimulusControllers/SolutionsController'
 import SubtitleEditorController from 'StimulusControllers/SubtitleEditorController'
 import VideoCodeFormController from 'StimulusControllers/VideoCodeFormController'
+import VideosFormController from 'StimulusControllers/VideosFormController'
 import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
 import SidebarController from 'StimulusControllers/SidebarController'
 
@@ -30,5 +31,6 @@ application.register('exercisePhase', ExercisePhaseController)
 application.register('subtitleEditor', SubtitleEditorController)
 application.register('solutions', SolutionsController)
 application.register('videoCodeForm', VideoCodeFormController)
+application.register('videosForm', VideosFormController)
 application.register('deleteEntity', DeleteEntityController)
 application.register('sidebar', SidebarController)
