@@ -41,7 +41,7 @@ exercisePhase:
     labels:
         isGroupPhase: 'Ist eine Gruppenarbeit'
         dependsOnPreviousPhase: 'Nutzt Ergebnis vorheriger Phase'
-        otherSolutionsAreAccessible: 'Studenten können gegenseitig Ergebnisse einsehen'
+        otherSolutionsAreAccessible: 'Studierende können gegenseitig Ergebnisse einsehen'
         name: 'Titel der Phase'
         task: 'Lernauftrag / Beschreibung'
         videos: 'Videos'
@@ -53,8 +53,8 @@ exercisePhase:
         type: 'Typ'
     help:
         isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
-        dependsOnPreviousPhase: 'Wenn aktiv, können die Studenten beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
-        otherSolutionsAreAccessible: 'Wenn aktiv, können die Studenten für diese Phase die Ergebnisse ihrer Mitstudenten einsehen.'
+        dependsOnPreviousPhase: 'Wenn aktiv, können die Studierende beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
+        otherSolutionsAreAccessible: 'Wenn aktiv, können die Studierende für diese Phase die Ergebnisse ihrer Mitstudierende einsehen.'
     types:
         videoAnalysis:
             label: 'Videoanalyse'
@@ -66,17 +66,17 @@ exercisePhase:
         videoPlayer:
             label: 'Videoplayer'
         videoCutting:
-            label: 'Video-schnitt'
+            label: 'Videoschnitt'
         chat:
             label: 'Chat'
         documentUpload:
             label: 'Dokumenten-Upload'
         videoCode:
-            label: 'Video-kodierung'
+            label: 'Videokodierung'
         sharedDocument:
             label: 'Geteiltes Dokument'
         videoAnnotation:
-            label: 'Video Annotation'
+            label: 'Videoannotation'
     new:
         back: 'Zurück zur Aufgabe'
         title: 'Phase hinzufügen'
@@ -164,7 +164,7 @@ course:
             success: 'Kursmitglieder erfolgreich gespeichert!'
     labels:
         members: 'Kursmitglieder'
-        membersStudent: 'Aktuelle Kursmitglieder (Studenten)'
+        membersStudent: 'Aktuelle Kursmitglieder (Studierende)'
         membersTutor: 'Aktuelle Kursmitglieder (Dozenten)'
         name: 'Name'
         user: 'Nutzer'
@@ -172,7 +172,7 @@ course:
         submit: 'Kurs speichern'
         addMember: 'Kursmitglieder speichern'
     help:
-        students: 'Hier können Studenten ausgewählt werden (mehrfahr-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
+        students: 'Hier können Studierende ausgewählt werden (mehrfahr-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
         tutors: 'Hier können Dozenten ausgewählt werden (mehrfahr-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
     removeMember:
         title: 'Entfernen'

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { Translate } from 'react-i18nify'
+import { Translate, translate } from 'react-i18nify'
 
 import VideoContextPlayer from './VideoContextPlayer'
 import MediaLane from '../components/MediaLane'
@@ -191,16 +191,16 @@ const CuttingEditor = ({
 
     const toolbarActions = (
         <div className="video-editor-toolbar__item-group">
-            <label className={'video-editor-toolbar__item-group-label'}>Context: </label>
+            <label className={'video-editor-toolbar__item-group-label'}>{translate('context')}: </label>
             <EditorTabs
                 tabs={Object.values(videoEditorPlayerTabs)}
                 activeTabId={activeContext}
                 setActiveTabId={handleActiveContextSwitch}
             />
-            <label className={'video-editor-toolbar__item-group-label'}>Cutting: </label>
+            <label className={'video-editor-toolbar__item-group-label'}>{translate('cutting')}: </label>
             <div className={'video-editor-toolbar__item'}>
                 <button className={'btn btn-outline-primary btn-sm'} onClick={handleSplitAtCursor}>
-                    Split at cursor
+                    {translate('splitAtCursor')}
                 </button>
             </div>
             <div className="video-editor-toolbar__item">

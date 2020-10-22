@@ -89,14 +89,14 @@ describe('useMediaItemHandling()', () => {
         it("should correctly set default language to 'en' and reflect change accordingly", () => {
             const { result } = renderHook(() => useMediaItemHandling(baseConfig))
 
-            expect(result.current.language).toBe('en')
-
-            act(() => result.current.updateLang('de'))
-
             expect(result.current.language).toBe('de')
 
+            act(() => result.current.updateLang('en'))
+
+            expect(result.current.language).toBe('en')
+
             expect(setLocale).toHaveBeenCalledTimes(2)
-            expect(setLocale).toHaveBeenCalledWith('de')
+            expect(setLocale).toHaveBeenCalledWith('en')
         })
     })
 

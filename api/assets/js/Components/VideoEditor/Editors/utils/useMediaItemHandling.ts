@@ -48,7 +48,10 @@ export const useMediaItemHandling = <T>({
     updateCondition: boolean
     worker?: Worker
 }) => {
-    const defaultLang = storage?.get('language') || navigator.language.toLowerCase() || 'en'
+    // TODO
+    // we should probably refactor the language handling and put it somewhere else.
+    // It shouldn't be coupled with the mediaItemHandling
+    const defaultLang = 'de'
     const [language, setLanguage] = useState(defaultLang)
 
     // MediaItem currently playing index
