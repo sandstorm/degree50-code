@@ -5,6 +5,7 @@ namespace App\Exercise\Controller;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\UserExerciseInteraction;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
@@ -217,21 +218,21 @@ class ExerciseController extends AbstractController
             return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
         }
 
-        $exerciseHasSolutions = false;
-        $phases = $exercise->getPhases();
-        /* @var ExercisePhase $phase */
-        foreach ($phases as $phase) {
-            if (count($phase->getTeams()) > 0) {
-                $exerciseHasSolutions = true;
-                break;
-            }
-        }
+        $exerciseHasSolutions = $this->getExerciseHasSolutions($exercise);
 
         return $this->render('Exercise/Edit.html.twig', [
             'exercise' => $exercise,
             'exerciseHasSolutions' => $exerciseHasSolutions,
             'form' => $form->createView()
         ]);
+    }
+
+    private function getExerciseHasSolutions(Exercise $exercise): bool {
+        $phases = $exercise->getPhases()->toArray();
+
+        return array_reduce($phases, function($carry, $phase) {
+            return $carry || $phase->getHasSolutions();
+        }, false);
     }
 
     /**

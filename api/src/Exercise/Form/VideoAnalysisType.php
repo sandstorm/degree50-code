@@ -27,12 +27,14 @@ class VideoAnalysisType extends ExercisePhaseType
         $builder
             ->add('videoAnnotationsActive', CheckboxType::class, [
                 'required' => false,
+                'disabled' => $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.components.videoAnnotation.label",
                 'translation_domain' => 'forms',
                 'block_prefix' => 'toggleable_button_checkbox',
             ])
             ->add('videoCodesActive', CheckboxType::class, [
                 'required' => false,
+                'disabled' => $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.components.videoCode.label",
                 'translation_domain' => 'forms',
                 'block_prefix' => 'toggleable_button_checkbox',

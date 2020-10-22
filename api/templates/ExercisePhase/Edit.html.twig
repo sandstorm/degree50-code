@@ -20,7 +20,13 @@
 
         <header class="content-header">
             <h3>{% trans %}exercisePhase.edit.title{% endtrans %}</h3>
+            {% if exercisePhase.hasSolutions %}
+            <div class="alert alert-warning">
+                Achtung: Phase wird/wurde schon von Studenten bearbeitet.
+            </div>
+            {% endif %}
         </header>
+
         <p>
             Typ: {{ phaseTypeTransVar | trans }}
         </p>
@@ -104,6 +110,7 @@
            href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
         {{ form_row(form.save) }}
     </footer>
-    {{ form_end(form) }}
+{{ form_end(form) }}
+
 {% endblock %}
 

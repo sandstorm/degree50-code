@@ -39,13 +39,14 @@ class ExercisePhaseType extends AbstractType
             ->add('isGroupPhase', CheckboxType::class, [
                 'required' => false,
                 'label' => "exercisePhase.labels.isGroupPhase",
+                'disabled' => $exercisePhase->getHasSolutions(),
                 'translation_domain' => 'forms',
                 'block_prefix' => 'toggleable_button_checkbox',
                 'help' => "exercisePhase.help.isGroupPhase",
             ])
             ->add('dependsOnPreviousPhase', CheckboxType::class, [
                 'required' => false,
-                'disabled' => $dependsOnPreviousPhaseIsDisabled,
+                'disabled' => $dependsOnPreviousPhaseIsDisabled || $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.labels.dependsOnPreviousPhase",
                 'translation_domain' => 'forms',
                 'block_prefix' => 'toggleable_button_checkbox',
@@ -63,6 +64,7 @@ class ExercisePhaseType extends AbstractType
                 'class' => Video::class,
                 'choices' => $videoChoices,
                 'required' => true,
+                'disabled' => $exercisePhase->getHasSolutions(),
                 'choice_label' => 'title',
                 'multiple' => true,
                 'expanded' => true,
