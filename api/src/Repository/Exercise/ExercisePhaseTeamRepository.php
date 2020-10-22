@@ -42,17 +42,36 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
 
     /**
      * @param User $creator
+     * @param ExercisePhase $exercisePhase
+     * @return ExercisePhaseTeam|null
+     */
+    public function findByCreator(User $creator, ExercisePhase $exercisePhase)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.creator = :creator')
+            ->andWhere('e.exercisePhase = :exercisePhase')
+            ->setParameter('creator', $creator)
+            ->setParameter('exercisePhase', $exercisePhase)
+            ->orderBy('e.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    /**
+     * @param User $user
      * @param User $exerciseCreator
      * @param ExercisePhase $exercisePhase
      * @return ExercisePhaseTeam[]|\iterable
      */
-    public function findAllCreatedByOtherUsers(User $creator, User $exerciseCreator, ExercisePhase $exercisePhase): iterable
+    public function findAllCreatedByOtherUsers(User $user, User $exerciseCreator, ExercisePhase $exercisePhase): iterable
     {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.creator != :creator')
+            ->andWhere('e.creator != :user')
             ->andWhere('e.creator != :exerciseCreator')
             ->andWhere('e.exercisePhase = :exercisePhase')
-            ->setParameter('creator', $creator)
+            ->setParameter('user', $user)
             ->setParameter('exerciseCreator', $exerciseCreator)
             ->setParameter('exercisePhase', $exercisePhase)
             ->orderBy('e.id', 'ASC')
