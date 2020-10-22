@@ -1,12 +1,13 @@
 import React from 'react'
 import { Tab } from './Tabs'
 import { TabsTypesEnum } from 'types'
+import { Translate } from 'react-i18nify'
 
 const renderTabs = (tabs: Array<Tab>, activeTabId: TabsTypesEnum, setActiveTabId: (tab: TabsTypesEnum) => void) =>
     tabs.map((tab) => (
         <li role="presentation" key={tab.id}>
             <a className={tab.id === activeTabId ? 'active' : ''} role="tab" onClick={() => setActiveTabId(tab.id)}>
-                {tab.label}
+                <Translate value={tab.id} />
             </a>
         </li>
     ))

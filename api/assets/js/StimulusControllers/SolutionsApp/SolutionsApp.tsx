@@ -18,6 +18,7 @@ import SolutionFilter from './Components/Filters/SolutionFilter'
 import { ComponentId } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
 import { RenderConfig } from '../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
 import { initialRenderConfig } from '../../Components/VideoEditor/MediaLaneRenderConfigSlice'
+import { translate } from 'react-i18nify'
 
 export type SolutionByTeam = {
     teamCreator: string
@@ -29,7 +30,7 @@ export type SolutionByTeam = {
 
 export type SolutionFilterType = {
     id: ComponentId
-    label: ComponentId
+    label: string
     visible: boolean
 }
 
@@ -138,7 +139,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
             videoComponents.map((componentId: ComponentId) => {
                 return {
                     id: componentId,
-                    label: componentId, // TODO translate
+                    label: translate(componentId),
                     visible: true,
                 }
             })

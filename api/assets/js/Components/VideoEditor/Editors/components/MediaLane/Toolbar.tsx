@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Translate } from 'react-i18nify'
+import { Translate, translate } from 'react-i18nify'
 import { RenderConfig } from './MediaTrack'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { INITIAL_ZOOM, MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
@@ -52,7 +52,7 @@ const Toolbar = ({
     return (
         <div className="video-editor-toolbar" style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}>
             <div className="video-editor-toolbar__item-group">
-                <label className={'video-editor-toolbar__item-group-label'}>Timeline: </label>
+                <label className={'video-editor-toolbar__item-group-label'}>{translate('timeline')}: </label>
                 <div className="video-editor-toolbar__item">
                     <label htmlFor="timeline-zoom-handler">
                         <Translate value="zoom" />
@@ -96,16 +96,16 @@ const Toolbar = ({
                 </div>
             </div>
             <div className="video-editor-toolbar__item-group">
-                <label className={'video-editor-toolbar__item-group-label'}>Playback: </label>
+                <label className={'video-editor-toolbar__item-group-label'}>{translate('playback')}: </label>
                 <div className="video-editor-toolbar__item">
                     <button tabIndex={1} className={'btn btn-primary btn-sm'} onClick={onPlayPauseClick}>
                         {playerIsPaused ? (
                             <span>
-                                <i className="fas fa-play" /> Play
+                                <i className="fas fa-play" /> {translate('play')}
                             </span>
                         ) : (
                             <span>
-                                <i className="fas fa-pause" /> Pause
+                                <i className="fas fa-pause" /> {translate('pause')}
                             </span>
                         )}
                     </button>
