@@ -1,11 +1,14 @@
 .previous-solutions {
-  width: 100%;
+    width: 100%;
 }
 
 .previous-solutions__header {
-  span {
-    display: inline-block;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+        display: inline-block;
+    }
 }

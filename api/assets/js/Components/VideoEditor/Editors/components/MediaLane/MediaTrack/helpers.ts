@@ -1,4 +1,3 @@
-import DT from 'duration-time-conversion'
 import { MediaTrackConfig } from '.'
 import { secondToTime } from 'Components/VideoEditor/Editors/utils'
 
@@ -10,9 +9,9 @@ export const defaultMediaTrackConfig = {
     cursorColor: '#ff0000',
     fontSize: 13,
     fontHeight: 15,
-    fontTop: 30,
+    fontTop: 20,
     pixelRatio: 1,
-    rulerHeight: 40,
+    rulerHeight: 30,
 }
 
 export const updateCanvas = (canvas: HTMLCanvasElement, config: MediaTrackConfig) => {
@@ -168,12 +167,12 @@ const drawRuler = (
         if (index && index >= padding && index <= gridNum - padding && index % (10 * adjustmentFactor) === 0) {
             // eslint-disable-next-line
             second += adjustmentFactor
-            ctx.fillRect(gridGap * index, 0, pixelRatio, fontHeight * pixelRatio)
+            ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 2) * pixelRatio)
 
             const displayTime = secondToTime(timelineStartTime + second).split('.')[0]
             ctx.fillText(displayTime, gridGap * index - fontSize * pixelRatio * 2 + pixelRatio, fontTop + 3)
         } else if (index && index % (5 * adjustmentFactor) === 0) {
-            ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 2) * pixelRatio)
+            ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 3) * pixelRatio)
         }
     }
 }

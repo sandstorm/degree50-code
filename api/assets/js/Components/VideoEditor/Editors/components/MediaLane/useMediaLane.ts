@@ -7,7 +7,7 @@ import { calculateTimelineStartTime } from './helpers'
  * The initial zoom value in %.
  */
 export const INITIAL_ZOOM = 100
-export const MEDIA_LANE_HEIGHT = 200
+export const MEDIA_LANE_HEIGHT = 350
 export const MEDIA_LANE_TOOLBAR_HEIGHT = 40
 
 const getDurationForRenderConfig = (durationInPercentage: number, videoDuration: number) => {

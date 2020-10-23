@@ -10,14 +10,28 @@ type Props = {
     mediaItems: Array<MediaItem<any>>
     updateCurrentTime: (time: number) => void
     renderConfig: RenderConfig
+    showVideoCodesModal?: () => void
 }
 
-const SolutionItemRenderer: React.FC<Props> = ({ solutionFilter, mediaItems, updateCurrentTime, renderConfig }) => {
+const SolutionItemRenderer: React.FC<Props> = ({
+    solutionFilter,
+    mediaItems,
+    updateCurrentTime,
+    renderConfig,
+    showVideoCodesModal,
+}) => {
     return solutionFilter.visible ? (
         <div className={'team__solution'}>
-            <h5 className={'team__solution-headline'}>
-                {solutionFilter.label} (Anzahl: {mediaItems.length})
-            </h5>
+            <div className={'team__solution-headline'}>
+                <h5>
+                    {solutionFilter.label} (Anzahl: {mediaItems.length})
+                </h5>
+                {showVideoCodesModal ? (
+                    <button onClick={showVideoCodesModal} className={'btn btn-link btn-sm'}>
+                        verwendete Video-Codes anzeigen
+                    </button>
+                ) : null}
+            </div>
             {mediaItems.length > 0 ? (
                 <ReadOnlyMediaLane
                     updateCurrentTime={updateCurrentTime}

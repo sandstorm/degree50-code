@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 // @ts-ignore
 import NProgress from 'nprogress'
-import { setTranslations } from 'react-i18nify'
-// @ts-ignore
+import { setTranslations, setLocale } from 'react-i18nify'
 import i18n from './Editors/i18n'
 import 'normalize.css'
 import 'nprogress/nprogress.css'
@@ -21,6 +20,7 @@ import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 
 setTranslations(i18n)
+setLocale('de')
 NProgress.configure({ minimum: 0, showSpinner: false })
 
 type Props = {

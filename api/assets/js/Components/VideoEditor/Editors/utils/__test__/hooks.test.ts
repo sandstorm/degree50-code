@@ -1,5 +1,4 @@
 // import for the jest.mock below
-import { setLocale, t } from 'react-i18nify'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useMediaItemHandling } from '../useMediaItemHandling'
 import { MediaItem } from '../../components/types'
@@ -82,21 +81,6 @@ describe('useMediaItemHandling()', () => {
             // Playhead moved ahead of our only item and therefore
             // no item can be found
             expect(result.current.currentIndex).toBe(-1)
-        })
-    })
-
-    describe('language', () => {
-        it("should correctly set default language to 'en' and reflect change accordingly", () => {
-            const { result } = renderHook(() => useMediaItemHandling(baseConfig))
-
-            expect(result.current.language).toBe('de')
-
-            act(() => result.current.updateLang('en'))
-
-            expect(result.current.language).toBe('en')
-
-            expect(setLocale).toHaveBeenCalledTimes(2)
-            expect(setLocale).toHaveBeenCalledWith('en')
         })
     })
 

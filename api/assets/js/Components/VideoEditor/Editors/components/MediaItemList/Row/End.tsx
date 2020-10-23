@@ -5,7 +5,7 @@ type Props = {
 }
 
 const End = ({ end }: Props) => {
-    return <div className="input">{end}</div>
+    return <div>bis: {end}</div>
 }
 
 export default React.memo(End)

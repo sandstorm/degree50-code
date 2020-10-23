@@ -3,8 +3,10 @@
     padding: 5px 10px;
     width: calc(100% - 10px);
 
+    background-color: $theme__color__white;
+
     &:focus {
-        background-color: transparent;
+        background-color: $theme__color__green;
     }
 
     &:hover {

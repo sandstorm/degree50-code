@@ -1,97 +1,92 @@
 .video-editor__media-item-list {
-  background-color: $theme__color__blue--dark;
+    background-color: inherit;
 
-  .ReactVirtualized__Table__Grid {
-    height: 100% !important;
+    .ReactVirtualized__Table__Grid {
+        height: 100% !important;
 
-    outline: none;
-  }
+        outline: none;
+    }
 }
 
 .video-editor__media-item-list__table {
-  font-size: $base__fontSize--tiny;
+    font-size: $base__fontSize--smaller;
 
-  > div {
-    width: 100% !important;
-  }
+    > div {
+        width: 100% !important;
+    }
 }
 
 .video-editor__media-item-list__row + .video-editor__media-item-list__row {
-  border-top: 1px solid $theme__color__black;
+    border-top: 1px solid $theme__color__grey--dark;
 }
 
 .video-editor__media-item-list__row {
-  width: 100% !important;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 80px;
+    width: 100% !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-  @include transition(all 250ms ease);
+    @include transition(all 250ms ease);
 
-  &--odd {
-    background-color: $theme__color__grey--dark;
-  }
+    background-color: $theme__color__white;
 
-  &--highlight {
-    background-color: $theme__color__blue;
-  }
+    &--odd {
+        background-color: $theme__color__grey--light;
+    }
 
-  &--illegal {
-    background-color: $theme__color__red;
-  }
+    &--highlight {
+        background-color: $theme__color__green;
+    }
+
+    &--illegal {
+        background-color: $theme__color__red;
+    }
 }
 
 .video-editor__media-item-list__column {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 100%;
-  padding: 10px 5px;
-
-  color: $theme__color__white;
-
-  .input,
-  .textarea {
-    width: 100%;
-
-    color: $theme__color__white;
-    font-size: $base__fontSize--tiny;
-    text-align: center;
-
-    background-color: rgba(0, 0, 0, 0.4);
-    border: none;
-    border: 1px solid $theme__color__white;
-    resize: none;
-    outline: none;
-  }
-
-  .textarea {
-    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     height: 100%;
+    padding: 5px 5px;
 
-    line-height: 1.5;
-  }
+    color: $theme__color__black;
 
-  &--operation {
-    width: 30px;
+    .input,
+    .textarea {
+        width: 100%;
 
-    i {
-      font-size: 12px;
-      cursor: pointer;
+        color: $theme__color__black;
+        font-size: $base__fontSize--smaller;
+
+        background-color: $theme__color__white;
+        border: 1px solid $theme__color__grey--darker;
     }
-  }
 
-  &--time {
-    width: 150px;
-  }
+    .textarea {
+        padding: 5px;
+        height: 100%;
 
-  &--duration {
-    width: 70px;
-  }
+        line-height: 1.5;
+    }
 
-  &--text {
-    flex: 1;
-  }
+    &--operation {
+        width: 30px;
+
+        i {
+            cursor: pointer;
+        }
+    }
+
+    &--time {
+        width: 130px;
+
+        font-size: $base__fontSize--tiny;
+        text-align: center;
+    }
+
+    &--text {
+        flex: 1;
+    }
 }

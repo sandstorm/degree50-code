@@ -1,7 +1,7 @@
 import { TabsTypesEnum } from 'types'
 
 const de = {
-    zoom: 'Zoom',
+    zoom: 'Timeline-Zoom',
     volume: 'Lautstärke',
     [TabsTypesEnum.VIDEO_ANNOTATIONS]: 'Videoannotationen',
     [TabsTypesEnum.VIDEO_CODES]: 'Videokodierung',

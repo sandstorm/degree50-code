@@ -16,7 +16,7 @@ type Props = {
 }
 
 const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems, renderConfig }: Props) => {
-    const rulerHeight = renderConfig.drawRuler ? 40 : 10
+    const rulerHeight = renderConfig.drawRuler ? defaultMediaTrackConfig.rulerHeight : 10
     const mediaTrackConfig = {
         ...defaultMediaTrackConfig,
         rulerHeight: rulerHeight,

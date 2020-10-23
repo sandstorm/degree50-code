@@ -1,29 +1,29 @@
 .solutions-container {
-  .video-editor-toolbar {
-    position: sticky;
-    top: 0;
-    width: 100%;
+    .video-editor-toolbar {
+        position: sticky;
+        top: 0;
+        width: 100%;
 
-    z-index: 999;
-  }
+        z-index: 999;
+    }
 }
 
 .solutions {
-  width: 100%;
+    width: 100%;
 
-  overflow: hidden;
-  overflow-y: scroll;
+    overflow: hidden;
+    overflow-y: scroll;
 }
 
 .solutions-filter {
-  padding: 10px;
+    padding: 10px;
 }
 
 .solutions-filter__entry {
-  display: block;
-  width: 100%;
-  padding-top: 5px;
-  padding-bottom: 5px;
+    display: block;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
 
-  color: $theme__color__white;
+    color: $theme__color__black;
 }

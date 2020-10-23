@@ -1,27 +1,27 @@
 .footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
 
-  background-color: $theme__color__grey;
-  border-top: 1px solid $theme__color__grey--dark;
+    background-color: $theme__color__grey--light;
+    border-top: 1px solid $theme__color__grey--dark;
 
-  z-index: 8000;
+    z-index: 8000;
 
-  .form-group {
-    margin: 0 !important;
-  }
+    .form-group {
+        margin: 0 !important;
+    }
 
-  .pagination {
-    margin-bottom: 0;
-  }
+    .pagination {
+        margin-bottom: 0;
+    }
 
-  &--center {
-    justify-content: center;
-  }
+    &--center {
+        justify-content: center;
+    }
 }

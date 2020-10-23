@@ -6,7 +6,6 @@ import { Translate, translate } from 'react-i18nify'
 import VideoContextPlayer from './VideoContextPlayer'
 import MediaLane from '../components/MediaLane'
 
-import Storage from '../utils/storage'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
 import {
     getMediaItemFromCut,
@@ -23,8 +22,6 @@ import { TabsTypesEnum } from '../../../../types'
 import AddItemButton from '../components/MediaItemList/AddItemButton'
 import ReadonlyMediaLaneWithToolbar from '../components/MediaLane/ReadonlyMediaLaneWithToolbar'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
-
-const storage = new Storage()
 
 type OwnProps = {
     height: number
@@ -141,7 +138,6 @@ const CuttingEditor = ({
         originalVideoUrl: originalVideo.url.mp4,
         playerSyncPlayPosition,
         setCutList,
-        storage,
         timelineDuration: mediaLaneRenderConfig.duration,
         updateCallback: itemUpdateCallback,
         updateCondition: itemUpdateCondition,
@@ -191,18 +187,6 @@ const CuttingEditor = ({
 
     const toolbarActions = (
         <div className="video-editor-toolbar__item-group">
-            <label className={'video-editor-toolbar__item-group-label'}>{translate('context')}: </label>
-            <EditorTabs
-                tabs={Object.values(videoEditorPlayerTabs)}
-                activeTabId={activeContext}
-                setActiveTabId={handleActiveContextSwitch}
-            />
-            <label className={'video-editor-toolbar__item-group-label'}>{translate('cutting')}: </label>
-            <div className={'video-editor-toolbar__item'}>
-                <button className={'btn btn-outline-primary btn-sm'} onClick={handleSplitAtCursor}>
-                    {translate('splitAtCursor')}
-                </button>
-            </div>
             <div className="video-editor-toolbar__item">
                 <label htmlFor={'timeline-volume-handler'}>
                     <Translate value="volume" />
@@ -217,6 +201,18 @@ const CuttingEditor = ({
                     step="10"
                     onChange={handleVolumeChange}
                 />
+            </div>
+            <label className={'video-editor-toolbar__item-group-label'}>{translate('context')}: </label>
+            <EditorTabs
+                tabs={Object.values(videoEditorPlayerTabs)}
+                activeTabId={activeContext}
+                setActiveTabId={handleActiveContextSwitch}
+            />
+            <label className={'video-editor-toolbar__item-group-label'}>{translate('cutting')}: </label>
+            <div className={'video-editor-toolbar__item'}>
+                <button className={'btn btn-primary btn-sm'} onClick={handleSplitAtCursor}>
+                    {translate('splitAtCursor')}
+                </button>
             </div>
         </div>
     )

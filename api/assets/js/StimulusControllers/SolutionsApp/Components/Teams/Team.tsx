@@ -19,17 +19,19 @@ type TeamProps = {
 }
 
 const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTime }: TeamProps) => {
-    const itemsFromAnnotations = solution.solution.annotations.map(
-        (annotation) =>
-            new MediaItem({
-                start: annotation.start,
-                end: annotation.end,
-                text: annotation.text,
-                memo: annotation.memo,
-                originalData: annotation,
-                lane: 0,
-                idFromPrototype: annotation.idFromPrototype,
-            })
+    const itemsFromAnnotations = solveConflicts(
+        solution.solution.annotations.map(
+            (annotation) =>
+                new MediaItem({
+                    start: annotation.start,
+                    end: annotation.end,
+                    text: annotation.text,
+                    memo: annotation.memo,
+                    originalData: annotation,
+                    lane: 0,
+                    idFromPrototype: annotation.idFromPrototype,
+                })
+        )
     )
 
     const itemsFromVideoCodes = solveConflicts(
@@ -49,19 +51,17 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
     )
 
     const { showModal: showVideoCodesModal, RenderModal: RenderVideoCodesModal } = useModalHook()
-    const handleDropdownClick = (key: React.Key) => {
-        if (key === 'showVideoCodes') {
-            showVideoCodesModal()
-        }
-    }
 
     return (
         <div className={'team'}>
             <header>
-                {solution.teamCreator} {solution.teamMembers.length > 1 ? '(' + solution.teamMembers + ')' : ''}
+                Lösung von: {solution.teamCreator}{' '}
+                {solution.teamMembers.length > 1 ? '(' + solution.teamMembers + ')' : ''}
+                {/*
+                Disabled course we dont have enough items to fill this dropdown
                 <Dropdown ariaLabel={'Team-Einstellungen aus/einklappen'} onAction={handleDropdownClick}>
                     <Item key="showVideoCodes">Video-Codes anzeigen</Item>
-                </Dropdown>
+                </Dropdown>*/}
             </header>
             {visibleSolutionFilters.map((solutionFilter: SolutionFilterType) => {
                 switch (solutionFilter.id) {
@@ -83,6 +83,7 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
                                 updateCurrentTime={updateCurrentTime}
                                 solutionFilter={solutionFilter}
                                 mediaItems={itemsFromVideoCodes}
+                                showVideoCodesModal={showVideoCodesModal}
                             />
                         )
                     case TabsTypesEnum.VIDEO_CUTTING:

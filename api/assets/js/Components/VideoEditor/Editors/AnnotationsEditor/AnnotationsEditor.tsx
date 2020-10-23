@@ -5,7 +5,6 @@ import { ToastContainer } from 'react-toastify'
 import MediaLane from '../components/MediaLane'
 import ArtPlayer from '../components/ArtPlayer'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
-import Storage from '../utils/storage'
 
 import { useMediaItemHandling } from '../utils/useMediaItemHandling'
 import { MediaItem } from '../components/types'
@@ -15,8 +14,6 @@ import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import AddItemButton from '../components/MediaItemList/AddItemButton'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
-
-const storage = new Storage()
 
 type OwnProps = {
     height: number
@@ -82,7 +79,6 @@ const AnnotationsEditor = (props: Props) => {
         currentTime: props.mediaLaneRenderConfig.currentTime,
         mediaItems,
         setMediaItems: props.setAnnotations,
-        storage,
         timelineDuration: props.mediaLaneRenderConfig.duration,
         updateCallback: props.itemUpdateCallback,
         updateCondition: props.itemUpdateCondition,

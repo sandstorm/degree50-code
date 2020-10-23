@@ -1,20 +1,19 @@
 $theme__color__white: #fff;
 $theme__color__black: #000;
-$theme__color__grey: #ededed;
-$theme__color__grey--darker: #d4d4d4;
-$theme__color__grey--dark: #333333;
+$theme__color__grey: #d4d4d4;
+$theme__color__grey--light: #ededed;
+$theme__color__grey--dark: #999999;
+$theme__color__grey--darker: #333333;
 
-$theme__color__green: #84B819;
+$theme__color__green: #84b819;
 $theme__color__green--light: #a3e41f;
-$theme__color__green--dark: #639A00;
-$theme__color__orange: #D98207;
-$theme__color__orange--dark: #D89326;
-$theme__color__orange--darker: #CA7406;
+$theme__color__green--dark: #639a00;
+$theme__color__orange: #d89326;
+$theme__color__orange--dark: #ca7406;
 $theme__color__red: #cc3f2d;
 $theme__color__red--light: #e5887a;
 $theme__color__blue: #2196f3;
 $theme__color__blue--dark: #1f2133;
-
 
 // Add more colors here
 
@@ -48,22 +47,26 @@ $header__height: 100px;
 $header__height--small: 80px;
 
 $breakpoints: (
-        xxsmall: "(max-width: 374px)",
-        xsmall: "(max-width: 500px)",
-        small: "(max-width: 768px)",
-        medium: "(max-width: 996px)",
-        large: "(max-width: 1400px)",
-        xlarge: "(max-width: 1800px)"
+    xxsmall: '(max-width: 374px)',
+    xsmall: '(max-width: 500px)',
+    small: '(max-width: 768px)',
+    medium: '(max-width: 996px)',
+    large: '(max-width: 1400px)',
+    xlarge: '(max-width: 1800px)',
 );
 
 @font-face {
-  font-family: Akkurat-Regular;
-  src: url(../../fonts/lineto-akkurat-pro-regular.eot);
-  src: url(../../fonts/lineto-akkurat-pro-regular.eot?#iefix) format("embedded-opentype"), url(../../fonts/lineto-akkurat-pro-regular.woff2) format("woff2"), url(../../fonts/lineto-akkurat-pro-regular.woff) format("woff")
+    font-family: Akkurat-Regular;
+    src: url(../../fonts/lineto-akkurat-pro-regular.eot);
+    src: url(../../fonts/lineto-akkurat-pro-regular.eot?#iefix) format('embedded-opentype'),
+        url(../../fonts/lineto-akkurat-pro-regular.woff2) format('woff2'),
+        url(../../fonts/lineto-akkurat-pro-regular.woff) format('woff');
 }
 
 @font-face {
-  font-family: Akkurat-Bold;
-  src: url(../../fonts/lineto-akkurat-pro-bold.eot);
-  src: url(../../fonts/lineto-akkurat-pro-bold.eot?#iefix) format("embedded-opentype"), url(../../fonts/lineto-akkurat-pro-bold.woff2) format("woff2"), url(../../fonts/lineto-akkurat-pro-bold.woff) format("woff")
+    font-family: Akkurat-Bold;
+    src: url(../../fonts/lineto-akkurat-pro-bold.eot);
+    src: url(../../fonts/lineto-akkurat-pro-bold.eot?#iefix) format('embedded-opentype'),
+        url(../../fonts/lineto-akkurat-pro-bold.woff2) format('woff2'),
+        url(../../fonts/lineto-akkurat-pro-bold.woff) format('woff');
 }

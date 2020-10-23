@@ -78,6 +78,11 @@ const MediaLane = ({
         render: mediaLaneRenderConfig,
     }
 
+    const mediaEntryHeight =
+        previousSolutions && previousSolutions.length > 0
+            ? MEDIA_LANE_HEIGHT - 100 - MEDIA_LANE_TOOLBAR_HEIGHT
+            : MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT
+
     return (
         <div className="video-editor-timeline" style={{ height: MEDIA_LANE_HEIGHT }}>
             <Toolbar
@@ -93,10 +98,7 @@ const MediaLane = ({
                 className={'video-editor-timeline__entries'}
                 style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
             >
-                <div
-                    className="video-editor-timeline__entry"
-                    style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
-                >
+                <div className="video-editor-timeline__entry" style={{ height: mediaEntryHeight }}>
                     <div ref={$container} className="media-track">
                         <MediaTrack
                             mediaTrackConfig={mediaTrackConfig}
@@ -114,7 +116,7 @@ const MediaLane = ({
                         checkMediaItem={checkMediaItem}
                         amountOfLanes={amountOfLanes}
                         showTextInMediaItems={showTextInMediaItems}
-                        height={MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT - mediaTrackConfig.rulerHeight}
+                        height={mediaEntryHeight - mediaTrackConfig.rulerHeight}
                     />
                 </div>
                 <PreviousSolutions

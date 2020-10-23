@@ -5,7 +5,6 @@ import { ToastContainer } from 'react-toastify'
 import MediaLane from '../components/MediaLane'
 import ArtPlayer from '../components/ArtPlayer'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
-import Storage from '../utils/storage'
 
 import { useMediaItemHandling } from '../utils/useMediaItemHandling'
 import { MediaItem } from '../components/types'
@@ -16,7 +15,6 @@ import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import AddItemButton from '../components/MediaItemList/AddItemButton'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
 
-const storage = new Storage()
 const worker = new Worker(vttToUrlUseWorker())
 
 type OwnProps = {
@@ -93,7 +91,6 @@ const SubtitleEditor = ({
         currentTime: mediaLaneRenderConfig.currentTime,
         mediaItems,
         setMediaItems: setSubtitles,
-        storage,
         timelineDuration: mediaLaneRenderConfig.duration,
         updateCallback: itemUpdateCallback,
         updateCondition: itemUpdateCondition,

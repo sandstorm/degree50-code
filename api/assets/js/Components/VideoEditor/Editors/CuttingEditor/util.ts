@@ -5,10 +5,9 @@ import { d2t, t2d } from 'duration-time-conversion'
 
 import { Cut, CutList } from './types'
 import { MediaItem } from '../components/types'
-import { notify, secondToTime } from '../utils'
+import { notify } from '../utils'
 import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
-import Storage from '../utils/storage'
-import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
 
 // TODO refactor this file and split into multiple self contained files, e.g. 'useCuttingMediaItemHandling.ts'
@@ -40,7 +39,6 @@ export const useCuttingMediaItemHandling = ({
     originalVideoUrl,
     playerSyncPlayPosition,
     setCutList,
-    storage,
     timelineDuration,
     updateCallback,
     updateCondition,
@@ -50,7 +48,6 @@ export const useCuttingMediaItemHandling = ({
     originalVideoUrl?: string
     playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
     setCutList: (mediaItems: Array<Cut>) => void
-    storage?: Storage
     timelineDuration: number
     updateCallback: () => void
     updateCondition: boolean
@@ -69,7 +66,6 @@ export const useCuttingMediaItemHandling = ({
         currentTime,
         mediaItems,
         setMediaItems: setCutList,
-        storage,
         timelineDuration,
         updateCallback,
         updateCondition,
