@@ -32,8 +32,10 @@ export default class extends Controller {
 
         new Dropzone(this.element, {
             url: endpoint,
+            timeout: 2 * 60 * 1000, // 2 minutes
             chunking: true,
-            chunkSize: 10000000, // 10 MB
+            chunkSize: 5000000, // 5 MB
+            retryChunks: true,
             dictDefaultMessage: uploadLabel,
             maxFiles: 20,
             maxFilesize: 10000, // 10 GB
