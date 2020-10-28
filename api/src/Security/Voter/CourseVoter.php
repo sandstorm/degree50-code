@@ -53,6 +53,9 @@ class CourseVoter extends Voter
 
     private function canEditMembers(Course $course, User $user)
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user && $courseRole->getName() == CourseRole::DOZENT);
     }
 

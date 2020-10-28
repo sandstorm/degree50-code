@@ -72,6 +72,9 @@ class ExerciseVoter extends Voter
 
     private function canView(Exercise $exercise, User $user)
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         $course = $exercise->getCourse();
         $exerciseIsNotPublished = $exercise->getStatus() == Exercise::EXERCISE_CREATED;
         if ($exerciseIsNotPublished && $exercise->getCreator() !== $user) {
@@ -85,6 +88,9 @@ class ExerciseVoter extends Voter
 
     private function canEditOrDelete(Exercise $exercise, User $user)
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user === $exercise->getCreator();
     }
 }
