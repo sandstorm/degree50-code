@@ -1,5 +1,26 @@
 import {Controller} from "stimulus"
 
+function setCookie(cname, cvalue) {
+    const d = new Date();
+    document.cookie = cname + "=" + cvalue;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
 export default class extends Controller {
     connect() {
         const toggleSidebar = (closeSidebar) => {
@@ -12,16 +33,12 @@ export default class extends Controller {
 
         const sidebar = this.data.element;
         const sidebarToggle = document.getElementById('sidebar-toggle');
-        let closeTheSidebar = localStorage.getItem('sidebarIsOpen') === 'true';
-
-        toggleSidebar(!closeTheSidebar)
 
         sidebarToggle.onclick = ((event) => {
             event.preventDefault();
-            let closeTheSidebar = localStorage.getItem('sidebarIsOpen') === 'true';
-            toggleSidebar(closeTheSidebar);
-            // TODO save in session and open/close sidebar it when rendering the page
-            localStorage.setItem('sidebarIsOpen', !closeTheSidebar);
+            const sidebarIsOpen = getCookie('sidebarIsOpen') !== 'false';
+            toggleSidebar(sidebarIsOpen);
+            setCookie('sidebarIsOpen', !sidebarIsOpen)
         })
     }
 }
