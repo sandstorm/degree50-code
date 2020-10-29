@@ -76,6 +76,8 @@
 
         color: $theme__color__green;
 
+        border-right: 1px solid $theme__color__white;
+
         @include transition(all 250ms ease);
 
         &:hover {
@@ -84,10 +86,6 @@
             color: $theme__color__white;
         }
     }
-}
-
-.sidebar--is-closed .sidebar__toggle button {
-    border-right: 1px solid $theme__color__grey;
 }
 
 .sidebar__group-toggle {
