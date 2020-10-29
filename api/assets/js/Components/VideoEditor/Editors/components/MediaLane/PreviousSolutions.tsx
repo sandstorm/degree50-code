@@ -31,7 +31,7 @@ const PreviousSolutions = ({ previousSolutions, handleLaneClick, renderConfig }:
                                 handlePreviousSolutionChange(activePreviousSolution - 1)
                             }}
                         >
-                            <i className={'fas fa-chevron-left'} />
+                            <i className={'fas fa-chevron-left'} /> Vorherige Lösung
                         </button>
                         <span>Lösung von: {previousSolutions[activePreviousSolution].userName}</span>
                         <button
@@ -42,7 +42,7 @@ const PreviousSolutions = ({ previousSolutions, handleLaneClick, renderConfig }:
                                 handlePreviousSolutionChange(activePreviousSolution + 1)
                             }}
                         >
-                            <i className={'fas fa-chevron-right'} />
+                            Nächste Lösung <i className={'fas fa-chevron-right'} />
                         </button>
                     </header>
                     <ReadOnlyMediaLane

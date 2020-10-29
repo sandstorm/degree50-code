@@ -52,7 +52,6 @@ const Toolbar = ({
     return (
         <div className="video-editor-toolbar" style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}>
             <div className="video-editor-toolbar__item-group">
-                <label className={'video-editor-toolbar__item-group-label'}>{translate('timeline')}: </label>
                 <div className="video-editor-toolbar__item">
                     <label htmlFor="timeline-zoom-handler">
                         <Translate value="zoom" />
@@ -73,7 +72,7 @@ const Toolbar = ({
                         tabIndex={1}
                         className={'btn btn-primary btn-sm'}
                         disabled={leftInteractionAreaIsDisabled}
-                        title={'Shift timeline left'}
+                        title={'Timeline nach links verschieben'}
                         onClick={() => {
                             onClick('left')
                         }}
@@ -86,7 +85,7 @@ const Toolbar = ({
                         tabIndex={1}
                         className={'btn btn-primary btn-sm'}
                         disabled={rightInteractionAreaIsDisabled}
-                        title={'Shift timeline right'}
+                        title={'Timeline nach rechts verschieben'}
                         onClick={() => {
                             onClick('right')
                         }}
@@ -96,7 +95,6 @@ const Toolbar = ({
                 </div>
             </div>
             <div className="video-editor-toolbar__item-group">
-                <label className={'video-editor-toolbar__item-group-label'}>{translate('playback')}: </label>
                 <div className="video-editor-toolbar__item">
                     <button tabIndex={1} className={'btn btn-primary btn-sm'} onClick={onPlayPauseClick}>
                         {playerIsPaused ? (

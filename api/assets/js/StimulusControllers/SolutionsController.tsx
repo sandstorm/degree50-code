@@ -5,6 +5,11 @@ import { Provider } from 'react-redux'
 import { store } from './ExercisePhaseApp/Store/Store'
 import { ConfigState, hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import SolutionsApp from './SolutionsApp/SolutionsApp'
+import { setTranslations, setLocale } from 'react-i18nify'
+import i18n from 'Components/VideoEditor/Editors/i18n'
+
+setTranslations(i18n)
+setLocale('de')
 
 export default class extends Controller {
     connect() {

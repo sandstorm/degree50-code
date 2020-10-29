@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { MediaItem } from '../../types'
 import TextField from './TextField'
-import Duration from './Duration'
 import Start from './Start'
 import End from './End'
 import Actions from './Actions'
@@ -67,14 +66,10 @@ const Row = ({
                 moveItemUp={moveItemUp}
                 moveItemDown={moveItemDown}
             />
-            <div
-                className="video-editor__media-item-list__column video-editor__media-item-list__column--time"
-                style={{ width: 150 }}
-            >
+            <div className="video-editor__media-item-list__column video-editor__media-item-list__column--time">
                 <Start start={rowData.start} />
                 <End end={rowData.end} />
             </div>
-            <Duration duration={rowData.duration} />
             <TextField
                 text={rowData.text}
                 updateText={(event) => updateMediaItem(rowData, { text: event.target.value })}

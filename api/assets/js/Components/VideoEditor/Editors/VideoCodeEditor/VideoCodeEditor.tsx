@@ -5,17 +5,14 @@ import ArtPlayer from '../components/ArtPlayer'
 import MediaLane from '../components/MediaLane'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
-import { secondToTime, timeToSecond } from '../utils'
+import { timeToSecond } from '../utils'
 import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
-import Storage from '../utils/storage'
 import VideoCodes from './VideoCodes'
 import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import { VideoCodePrototype } from './types'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
-
-const storage = new Storage()
 
 type OwnProps = {
     height: number
@@ -88,7 +85,6 @@ const VideoCodeEditor = (props: Props) => {
         setMediaItems: props.setVideoCodes,
         timelineDuration: props.mediaLaneRenderConfig.duration,
         updateCallback: props.itemUpdateCallback,
-        storage,
     })
 
     // All options

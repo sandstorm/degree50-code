@@ -1,10 +1,9 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
-import { t, setLocale } from 'react-i18nify'
+import { t } from 'react-i18nify'
 import isEqual from 'lodash/isEqual'
 
 import { secondToTime, notify } from '.'
 import { MediaItem } from '../components/types'
-import Storage from './storage'
 
 export const getNewMediaItemStartAndEnd = (currentTime: number, duration: number) => {
     const start = secondToTime(currentTime)
@@ -32,7 +31,6 @@ export const useMediaItemHandling = <T>({
     history,
     mediaItems,
     setMediaItems,
-    storage,
     updateCallback,
     updateCondition,
     timelineDuration,
@@ -42,36 +40,16 @@ export const useMediaItemHandling = <T>({
     history?: Array<MediaItem<T>[]>
     mediaItems: Array<MediaItem<T>>
     setMediaItems: (mediaItems: Array<T>) => void
-    storage?: Storage
     timelineDuration: number
     updateCallback: () => void
     updateCondition: boolean
     worker?: Worker
 }) => {
-    // TODO
-    // we should probably refactor the language handling and put it somewhere else.
-    // It shouldn't be coupled with the mediaItemHandling
-    const defaultLang = 'de'
-    const [language, setLanguage] = useState(defaultLang)
-
     // MediaItem currently playing index
     const [currentIndex, setCurrentIndex] = useState(-1)
 
     // MediaItem currently playing time
     const [currentTimeForMediaItems, setCurrentTimeForMediaItems] = useState(0)
-
-    // Update language
-    const updateLang = useCallback(
-        (value) => {
-            setLocale(value)
-            setLanguage(value)
-
-            if (storage) {
-                storage.set('language', value)
-            }
-        },
-        [setLanguage]
-    )
 
     // Only way to update all mediaItems
     const updateMediaItems = (items: Array<MediaItem<T>>, saveToHistory = true, force = false) => {
@@ -109,7 +87,6 @@ export const useMediaItemHandling = <T>({
     }
 
     useEffect(() => {
-        updateLang(language)
         setCurrentIndex(
             mediaItems.findIndex(
                 (item) => item.startTime <= currentTimeForMediaItems && item.endTime > currentTimeForMediaItems
@@ -201,7 +178,6 @@ export const useMediaItemHandling = <T>({
     }, [updateMediaItems, mediaItems])
 
     return {
-        language,
         currentIndex,
         currentTimeForMediaItems,
         setCurrentIndex,
@@ -213,6 +189,5 @@ export const useMediaItemHandling = <T>({
         updateMediaItems,
         checkMediaItem,
         copyMediaItems,
-        updateLang,
     }
 }

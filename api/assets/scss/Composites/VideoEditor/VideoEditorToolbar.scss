@@ -3,10 +3,10 @@
     align-items: center;
 
     font-size: $base__fontSize--tiny;
-    color: transparentize($theme__color__white, 0.5);
+    color: $theme__color__white;
 
     border-bottom: 1px solid $theme__color__black;
-    background-color: transparentize($theme__color__black, 0.3);
+    background-color: $theme__color__grey--darker;
 }
 
 .video-editor-toolbar__item-group {
@@ -15,6 +15,12 @@
     height: 100%;
 
     border-right: 1px solid $theme__color__black;
+
+    .video-editor__tabs {
+        margin-left: 10px;
+
+        border-bottom: none;
+    }
 }
 
 .video-editor-toolbar__item-group-label {

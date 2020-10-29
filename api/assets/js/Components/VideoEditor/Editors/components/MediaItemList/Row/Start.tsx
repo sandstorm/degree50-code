@@ -5,11 +5,7 @@ type Props = {
 }
 
 const Start = ({ start }: Props) => {
-    return (
-        <div className="input" style={{ marginBottom: 10 }}>
-            {start}
-        </div>
-    )
+    return <div style={{ marginBottom: 5 }}>von: {start}</div>
 }
 
 export default React.memo(Start)

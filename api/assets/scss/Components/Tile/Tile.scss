@@ -2,207 +2,208 @@ $tileHeight: 200px;
 $tileHeight--small: 150px;
 
 .tile {
-  position: relative;
-  margin-right: 20px;
-  margin-bottom: 20px;
+    position: relative;
+    margin-right: 20px;
+    margin-bottom: 20px;
 
-  input[type='checkbox'] {
-    display: none;
+    input[type='checkbox'] {
+        display: none;
 
-    &:checked ~ .tile__actions {
-      display: block;
+        &:checked ~ .tile__actions {
+            display: block;
 
-      transform: scaleY(1);
-    }
-  }
-
-  &:hover {
-    text-decoration: none;
-  }
-
-  &--active {
-    .tile__content {
-      background-color: $theme__color__green;
-      border-color: $theme__color__green;
-
-      color: $theme__color__white;
+            transform: scaleY(1);
+        }
     }
 
-    .tile__extension {
-      border-color: $theme__color__green;
+    &:hover {
+        text-decoration: none;
     }
-  }
 
-  &--disabled {
-    opacity: 0.5;
+    &--active {
+        .tile__content {
+            background-color: $theme__color__green;
+            border-color: $theme__color__green;
 
-    .tile__content {
-      cursor: default;
+            color: $theme__color__white;
+        }
 
-      &:hover {
-        border-color: $theme__color__grey--darker;
-      }
+        .tile__extension {
+            border-color: $theme__color__green;
+        }
     }
-  }
 
-  &--with-extension {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    &--disabled {
+        opacity: 0.5;
 
-    .tile__content {
-      cursor: default;
+        .tile__content {
+            cursor: default;
+
+            &:hover {
+                border-color: $theme__color__grey;
+            }
+        }
     }
-  }
 
-  &--small {
-    .tile__content {
-      height: $tileHeight--small;
-      width: $tileHeight--small;
-    }
-  }
+    &--with-extension {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
 
-  &--status-0 {
-    .tile__content {
-      border-style: dashed;
+        .tile__content {
+            cursor: default;
+        }
     }
-  }
 
-  &--is-new {
-    .ribbon {
-      display: block;
+    &--small {
+        .tile__content {
+            height: $tileHeight--small;
+            width: $tileHeight--small;
+        }
     }
-  }
+
+    &--status-0 {
+        .tile__content {
+            border-style: dashed;
+        }
+    }
+
+    &--is-new {
+        .ribbon {
+            display: block;
+        }
+    }
 }
 
 .tile__content {
-  height: $tileHeight;
-  width: $tileHeight;
-  display: block;
-  margin: 0;
-  padding: 10px;
+    height: $tileHeight;
+    width: $tileHeight;
+    display: block;
+    margin: 0;
+    padding: 10px;
 
-  text-align: center;
+    text-align: center;
 
-  border: 1px solid $theme__color__grey--darker;
+    border: 1px solid $theme__color__grey;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  &:hover {
-    border-color: $theme__color__green;
+    &:hover {
+        border-color: $theme__color__green;
 
-    text-decoration: none;
-  }
+        text-decoration: none;
+    }
 }
 
 .tile__title {
-  display: inline-block;
-  width: 100%;
+    display: inline-block;
+    width: 100%;
 
-  text-align: left;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
-  overflow: hidden;
+    overflow: hidden;
 }
 
-.tile__date, .tile__phases {
-  display: inline-block;
-  width: 100%;
+.tile__date,
+.tile__phases {
+    display: inline-block;
+    width: 100%;
 
-  text-align: left;
-  font-size: $base__fontSize--tiny;
+    text-align: left;
+    font-size: $base__fontSize--tiny;
 }
 
 .tile__action-icon {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
 
-  color: $theme__color__green;
+    color: $theme__color__green;
 }
 
 .tile__status {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
 
-  &--0 {
-    color: $theme__color__red;
-  }
+    &--0 {
+        color: $theme__color__red;
+    }
 
-  &--1 {
-    color: $theme__color__green;
-  }
+    &--1 {
+        color: $theme__color__green;
+    }
 
-  &--2 {
-    color: $theme__color__orange;
-  }
+    &--2 {
+        color: $theme__color__orange;
+    }
 }
 
 .tile__icon {
-  display: block;
-  margin-top: 10px;
-  margin-bottom: 20px;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 20px;
 
-  font-size: 4em;
+    font-size: 4em;
 }
 
 .tile__actions {
-  position: absolute;
-  height: auto;
-  width: 100%;
-  top: 0;
-
-  background-color: $theme__color__white;
-  border: 1px solid $theme__color__green;
-
-  transform: scaleY(0);
-  transform-origin: top left;
-  transition-duration: 0.2s;
-  z-index: 100;
-
-  i {
-    width: 25px;
-
-    text-align: center;
-  }
-
-  a {
-    display: block;
+    position: absolute;
+    height: auto;
     width: 100%;
-    padding: 5px;
+    top: 0;
 
-    text-decoration: none;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.9rem;
-  }
+    background-color: $theme__color__white;
+    border: 1px solid $theme__color__green;
+
+    transform: scaleY(0);
+    transform-origin: top left;
+    transition-duration: 0.2s;
+    z-index: 100;
+
+    i {
+        width: 25px;
+
+        text-align: center;
+    }
+
+    a {
+        display: block;
+        width: 100%;
+        padding: 5px;
+
+        text-decoration: none;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
 }
 
 .tile__extension {
-  position: relative;
-  height: $tileHeight;
-  width: 400px;
-  padding-bottom: 50px;
+    position: relative;
+    height: $tileHeight;
+    width: 400px;
+    padding-bottom: 50px;
 
-  border: 1px solid $theme__color__grey;
+    border: 1px solid $theme__color__grey;
 }
 
 .tile__extension-content {
-  width: 100%;
-  height: 100%;
-  padding: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
 
-  overflow-y: scroll;
+    overflow-y: scroll;
 }
 
 .tile__extension-actions {
-  position: absolute;
-  width: 100%;
-  left: 0;
-  bottom: 0;
-  padding: 5px;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    padding: 5px;
 
-  text-align: right;
+    text-align: right;
 }

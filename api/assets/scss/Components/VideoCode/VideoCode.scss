@@ -1,88 +1,85 @@
 .video-code {
-  background-color: $theme__color__grey--dark;
+    .video-editor__video-codes,
+    .new-video-code {
+        display: none;
+    }
 
-  color: $theme__color__white;
+    &--show-children {
+        .video-editor__video-codes {
+            display: block;
+        }
 
-  .video-editor__video-codes, .new-video-code {
-    display: none;
-  }
+        .new-video-code {
+            display: flex;
+        }
+    }
 
-  &--show-children {
     .video-editor__video-codes {
-      display: block;
+        padding-top: 10px;
+
+        background-color: $theme__color__grey--light;
     }
 
     .new-video-code {
-      display: flex;
+        margin-bottom: 10px;
     }
-  }
 
-  .video-editor__video-codes {
-    padding-top: 10px;
-
-    background-color: $theme__color__blue--dark;
-  }
-
-  .new-video-code {
-    margin-bottom: 10px;
-  }
-
-  .video-code, .new-video-code {
-    background-color: $theme__color__blue--dark;
-  }
+    .video-code,
+    .new-video-code {
+        background-color: $theme__color__grey--light;
+    }
 }
 
 .video-code__content {
-  padding: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-  button, .btn {
-    margin-left: 5px;
+    button,
+    .btn {
+        margin-left: 5px;
 
-    white-space: nowrap;
-  }
+        white-space: nowrap;
+    }
 }
 
 .video-code__locked {
-  padding: 5px;
+    padding: 5px;
 
-  color: $theme__color__green;
+    color: $theme__color__green;
 }
 
 .video-code__color {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    flex-shrink: 0;
 }
 
 .video-code__name {
-  display: inline-block;
-  margin-right: auto;
-  width: 85%;
+    display: inline-block;
+    margin-right: auto;
+    width: 85%;
 
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .new-video-code {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
 
-  background-color: $theme__color__grey--dark;
+    input {
+        margin-right: 10px;
 
-  input {
-    margin-right: 10px;
-
-    background-color: transparent;
-  }
+        background-color: transparent;
+    }
 }
