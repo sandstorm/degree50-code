@@ -167,7 +167,7 @@ export const useMediaItemHandling = <T>({
         const newItem = new MediaItem({
             start,
             end,
-            text: t('subtitle-text'),
+            text: t(''),
             memo: '',
             originalData: {} as T,
             lane: 0,
