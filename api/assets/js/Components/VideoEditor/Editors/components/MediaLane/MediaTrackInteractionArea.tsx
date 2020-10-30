@@ -9,8 +9,9 @@ type Props = {
 const InteractionArea = ({ renderConfig, clickCallback }: Props) => {
     const getEventTime = useCallback(
         (event) => {
+            const xPosition = event.pageX - event.target.getBoundingClientRect().left
             return (
-                (event.pageX - renderConfig.padding * renderConfig.gridGap) / renderConfig.gridGap / 10 +
+                (xPosition - renderConfig.padding * renderConfig.gridGap) / renderConfig.gridGap / 10 +
                 renderConfig.timelineStartTime
             )
         },
