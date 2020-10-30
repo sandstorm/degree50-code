@@ -27,7 +27,7 @@ const SolutionItemRenderer: React.FC<Props> = ({
                     {solutionFilter.label} (Anzahl: {mediaItems.length})
                 </h5>
                 {showVideoCodesModal ? (
-                    <button onClick={showVideoCodesModal} className={'btn btn-link btn-sm'}>
+                    <button onClick={showVideoCodesModal} className={'btn btn-primary btn-sm'}>
                         verwendete Video-Codes anzeigen
                     </button>
                 ) : null}

@@ -40,7 +40,7 @@ const Modal = (props: Props) => {
                         </div>
                         <footer className={'modal__footer'}>
                             <Button onPress={props.closeModal} className={'btn btn-primary'}>
-                                Close
+                                Schließen
                             </Button>
                         </footer>
                     </div>
