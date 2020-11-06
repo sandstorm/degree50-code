@@ -13,12 +13,15 @@
     <div id="collapse-phases" class="collapse show" aria-labelledby="heading-phases" data-parent="#sidebar">
         <div class="sidebar__group-body">
             <ul>
+                <li class="sidebar-item {{ (currentItemId) ? '' : 'sidebar-item--active' }}">
+                    {{ _self.sidebarLink('Übersicht', false, '', path('exercise-overview__exercise--show', {id: exercise.id})) }}
+                </li>
                 {% for item in sidebarItems %}
-                    <li class="sidebar-item {{ (item.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
+                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }}">
                         {% if showSolution %}
-                            {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id})) }}
+                            {{ _self.sidebarLink(item.name, item.dependsOnPreviousPhase, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id})) }}
                         {% else %}
-                            {{ _self.sidebarLink(item, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseId: item.id})) }}
+                            {{ _self.sidebarLink(item.name, item.dependsOnPreviousPhase, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseId: item.id})) }}
                         {% endif %}
                     </li>
                 {% endfor %}
@@ -29,13 +32,13 @@
 
 
 
-{% macro sidebarLink(item, iconClass, href) %}
+{% macro sidebarLink(name, dependsOnPreviousPhase, iconClass, href) %}
     <a class="nav-link" href="{{ href }}">
         <i class="{{ iconClass }}"></i>
-        {% if item.dependsOnPreviousPhase %}
+        {% if dependsOnPreviousPhase %}
             <i class="fas fa-arrow-up"
                title="{% trans %}exercisePhase.labels.dependsOnPreviousPhase{% endtrans %}"></i>
         {% endif %}
-        {{ item.name }}
+        {{ name }}
     </a>
 {% endmacro %}

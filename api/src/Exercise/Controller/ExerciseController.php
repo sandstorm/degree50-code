@@ -71,20 +71,6 @@ class ExerciseController extends AbstractController
         $user = $this->getUser();
         $userIsCreator = $user === $exercise->getCreator();
 
-
-        // Fallback to first phase of the exercise in case no phaseId is provided
-        /* @var ExercisePhase $exercisePhase */
-        $exercisePhase = empty($phaseId)
-            ? $this->exercisePhaseRepository->findFirstExercisePhase($exercise)
-            : $this->exercisePhaseRepository->find($phaseId);
-
-        $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
-        $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
-
-
-        $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($user, $exercise->getCreator(), $exercisePhase);
-        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByCreator($user, $exercisePhase);
-
         $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
 
         if (!$userExerciseInteraction) {
@@ -99,18 +85,43 @@ class ExerciseController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->render($template,
-            [
-                'userIsCreator' => $userIsCreator,
-                'exercise' => $exercise,
-                'exercisePhase' => $exercisePhase,
-                'currentPhaseIndex' => $exercisePhase->getSorting(),
-                'previousExercisePhase' => $previousExercisePhase,
-                'nextExercisePhase' => $nextExercisePhase,
-                'teams' => $teams,
-                'teamOfCurrentUser' => $teamOfCurrentUser,
-                'amountOfPhases' => count($exercise->getPhases()) - 1,
-            ]);
+        if ($phaseId) {
+            /* @var ExercisePhase $exercisePhase */
+            $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+
+            $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
+            $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
+
+            $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($user, $exercise->getCreator(), $exercisePhase);
+            $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByCreator($user, $exercisePhase);
+            return $this->render($template,
+                [
+                    'userIsCreator' => $userIsCreator,
+                    'exercise' => $exercise,
+                    'exercisePhase' => $exercisePhase,
+                    'currentPhaseIndex' => $exercisePhase->getSorting(),
+                    'previousExercisePhase' => $previousExercisePhase,
+                    'nextExercisePhase' => $nextExercisePhase,
+                    'teams' => $teams,
+                    'teamOfCurrentUser' => $teamOfCurrentUser,
+                    'amountOfPhases' => count($exercise->getPhases()) - 1,
+                ]);
+        } else {
+            $template = 'Exercise/ShowOverview.html.twig';
+
+            $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
+
+            return $this->render($template,
+                [
+                    'userIsCreator' => $userIsCreator,
+                    'exercise' => $exercise,
+                    'exercisePhase' => null,
+                    'previousExercisePhase' => null,
+                    'currentPhaseIndex' => false,
+                    'nextExercisePhase' => $nextExercisePhase,
+                    'amountOfPhases' => count($exercise->getPhases()) - 1,
+                ]);
+        }
     }
 
     /**
