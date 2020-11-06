@@ -1,0 +1,44 @@
+{% extends 'BaseWithSidebar.html.twig' %}
+{% trans_default_domain 'forms' %}
+
+{% block title %}{{ exercise.name }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItemId: false, showSolution: false}) }}
+{% endblock %}
+
+{% block layoutCssClass %}main--with-footer{% endblock %}
+
+{% block body %}
+    {% if userIsCreator %}
+        <div class="striped-banner">
+            <span class="striped-banner__text">Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.</span>
+        </div>
+    {% endif %}
+    <h5 class="text-center">Aufgabe:</h5>
+    <h2 class="text-center">{{ exercise.name }}</h2>
+    <hr />
+
+    <h5>Aufgabenstellung:</h5>
+    <p class="text-center text-small">
+        {{ exercise.description | raw }}
+    </p>
+
+    <hr />
+    <h5>Übersicht der Phasen:</h5>
+    <ul>
+        {% for phase in exercise.phases %}
+            <li>
+                {{ loop.index }}: {{ phase.name }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block footer %}
+    <footer class="footer">
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+
+        <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Zu Phase 1 gehen</a>
+    </footer>
+{% endblock %}
