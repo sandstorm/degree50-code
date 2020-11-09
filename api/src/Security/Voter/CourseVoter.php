@@ -14,10 +14,11 @@ class CourseVoter extends Voter
     const EDIT_MEMBERS = 'editMembers';
     const EDIT = 'edit';
     const DELETE = 'delete';
+    const NEW_EXERCISE = 'newExercise';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [ self::EDIT_MEMBERS, self::EDIT, self::DELETE])) {
+        if (!in_array($attribute, [ self::EDIT_MEMBERS, self::EDIT, self::DELETE, self::NEW_EXERCISE])) {
             return false;
         }
 
@@ -42,16 +43,16 @@ class CourseVoter extends Voter
         }
 
         switch ($attribute) {
-            case self::EDIT_MEMBERS:
-                return $this->canEditMembers($course, $user);
-            case self::EDIT || self::DELETE:
-                return $this->canEdit($user);
+            case self::NEW_EXERCISE:
+                return $this->canCreateNewExercise($user, $course);
+            case self::EDIT || self::DELETE || self::EDIT_MEMBERS:
+                return $this->canEdit($user, $course);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canEditMembers(Course $course, User $user)
+    private function canCreateNewExercise(User $user, Course $course)
     {
         if ($user->isAdmin()) {
             return true;
@@ -59,8 +60,12 @@ class CourseVoter extends Voter
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user && $courseRole->getName() == CourseRole::DOZENT);
     }
 
-    private function canEdit(User $user)
+    private function canEdit(User $user, Course $course)
     {
-        return $user->isDozent() || $user->isAdmin();
+        if ($user->isAdmin()) {
+            return true;
+        }
+        // User which has ROLE_DOZENT and has the courseRole DOZENT
+        return $user->isDozent() && $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user && $courseRole->getName() == CourseRole::DOZENT);
     }
 }

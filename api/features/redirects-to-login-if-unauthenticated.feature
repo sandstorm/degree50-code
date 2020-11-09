@@ -10,11 +10,6 @@ Feature: Redirections to the login if unauthenticated
     Given I have a material with ID "m"
     Given I am not logged in
 
-  Scenario: Simple login
-    When I visit route "exercise-overview__exercise--new"
-    Then I am redirected to the login page
-    Then the response status code should be 200
-
   Scenario Outline: Redirections to the login page if we are not authenticated
     When I visit route "<route>" with parameters as JSON '<params>'
     Then I am redirected to the login page
@@ -29,7 +24,7 @@ Feature: Redirections to the login if unauthenticated
       | mediathek__video--edit                      | {"id": "foo"}                     |
       | mediathek__video--delete                    | {"id": "foo"}                     |
       | exercise-overview__exercise--show           | {"id": "ex"}                      |
-      | exercise-overview__exercise--new            |                                   |
+      | exercise-overview__exercise--new            | {"id": "c"}                       |
       | exercise-overview__exercise--edit           | {"id": "ex"}                      |
       | exercise-overview                           | {"id": "c"}                       |
       | exercise-overview__exercise-phase--new      | {"id": "ex"}                      |

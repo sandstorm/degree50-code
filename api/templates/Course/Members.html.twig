@@ -33,17 +33,23 @@
             </tr>
             </thead>
             {% for courseRole in course.courseRoles %}
-                {% if courseRole.name == 'STUDENT' %}
+                {% if courseRole.user.isStudent %}
                     <tr>
                         <td>{{ courseRole.user.userName }}</td>
-                        <td>{{ courseRole.name }}</td>
+                        <td>Student {% if courseRole.name == 'DOZENT' %}(Darf Aufgaben Erstellen){% endif %}</td>
                         <td class="text-right">
+                            {% if courseRole.name == 'STUDENT' %}
+                                <a href="{{ path('exercise-overview__course--upgrade-role', {id: course.id, userRole_id: courseRole.id}) }}"
+                                   class="btn btn-outline-primary btn-sm">{% trans %}course.upgradeMember.title{% endtrans %}</a>
+                            {% else %}
+                                <a href="{{ path('exercise-overview__course--downgrade-role', {id: course.id, userRole_id: courseRole.id}) }}"
+                                   class="btn btn-outline-primary btn-sm">{% trans %}course.downgradeMember.title{% endtrans %}</a>
+                            {% endif %}
                             <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: courseRole.id}) }}"
                                class="btn btn-danger btn-sm">{% trans %}course.removeMember.title{% endtrans %}</a>
                         </td>
                     </tr>
                 {% endif %}
-
             {% endfor %}
         </table>
     </div>

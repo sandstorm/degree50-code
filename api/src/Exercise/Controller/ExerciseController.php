@@ -2,10 +2,10 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\UserExerciseInteraction;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
@@ -149,19 +149,13 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * @Route("/exercise/new", name="exercise-overview__exercise--new")
+     * @IsGranted("newExercise", subject="course")
+     * @Route("/exercise/new/{id}", name="exercise-overview__exercise--new")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Course $course): Response
     {
-        $courseId = $request->query->get('courseId', null);
-
         $exercise = new Exercise();
-
-        $course = null;
-        if ($courseId) {
-            $course = $this->courseRepository->find($courseId);
-            $exercise->setCourse($course);
-        }
+        $exercise->setCourse($course);
 
         $form = $this->createForm(ExerciseType::class, $exercise);
 
@@ -173,7 +167,7 @@ class ExerciseController extends AbstractController
 
             $this->eventStore->addEvent('ExerciseCreated', [
                 'exerciseId' => $exercise->getId(),
-                'courseId' => $courseId,
+                'courseId' => $course->getId(),
                 'name' => $exercise->getName(),
                 'description' => $exercise->getDescription(),
             ]);

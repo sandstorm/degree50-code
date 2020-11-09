@@ -8,7 +8,6 @@ use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\CourseMembersType;
 use App\Exercise\Form\CourseType;
-use phpDocumentor\Reflection\Types\Boolean;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -42,7 +41,7 @@ class CourseController extends AbstractController
      * @IsGranted("editMembers", subject="course")
      * @Route("/exercise-overview/{id}/course-members", name="exercise-overview__course--members")
      */
-    public function adCourseMembers(Request $request, Course $course): Response
+    public function editCourseMembers(Request $request, Course $course): Response
     {
         $form = $this->createForm(CourseMembersType::class, $course);
         $form->handleRequest($request);
@@ -120,7 +119,51 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("ROLE_DOZENT")
+     * @IsGranted("editMembers", subject="course")
+     * @Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name="exercise-overview__course--upgrade-role")
+     * @Entity("courseRole", expr="repository.find(userRole_id)")
+     */
+    public function upgradeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
+    {
+        $this->eventStore->addEvent('CourseRoleUpgraded', [
+            'courseRoleId' => $courseRole->getId(),
+            'courseId' => $course->getId(),
+            'userName' => $courseRole->getUser()->getUsername(),
+        ]);
+
+        $courseRole->setName(CourseRole::DOZENT);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($courseRole);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+    }
+
+    /**
+     * @IsGranted("editMembers", subject="course")
+     * @Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name="exercise-overview__course--downgrade-role")
+     * @Entity("courseRole", expr="repository.find(userRole_id)")
+     */
+    public function downgradeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
+    {
+        $this->eventStore->addEvent('CourseRoleDowngraded', [
+            'courseRoleId' => $courseRole->getId(),
+            'courseId' => $course->getId(),
+            'userName' => $courseRole->getUser()->getUsername(),
+        ]);
+
+        $courseRole->setName(CourseRole::STUDENT);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($courseRole);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+    }
+
+    /**
+     * @Security("is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN')")
      * @Route("/exercise-overview/course/new", name="exercise-overview__course--new")
      */
     public function new(Request $request): Response

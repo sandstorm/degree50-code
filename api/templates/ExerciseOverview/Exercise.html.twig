@@ -19,9 +19,11 @@
             <i class="tile__action-icon fas fa-arrow-down"></i>
         </label>
         <div class="tile__actions">
-            <a href="{{ path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id}) }}">
-                <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
-            </a>
+            {% if is_granted('showSolution', exercise) %}
+                <a href="{{ path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id}) }}">
+                    <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
+                </a>
+            {% endif %}
             {% if is_granted('view', exercise) %}
                 <a href="{{ path('exercise-overview__exercise--show', {id: exercise.id}) }}">
                     <i class="fas fa-eye"></i> {% trans %}exercise.test.title{% endtrans %}

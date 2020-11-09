@@ -13,9 +13,11 @@
     <div id="collapse-phases" class="collapse show" aria-labelledby="heading-phases" data-parent="#sidebar">
         <div class="sidebar__group-body">
             <ul>
-                <li class="sidebar-item {{ (currentItemId) ? '' : 'sidebar-item--active' }}">
-                    {{ _self.sidebarLink('Übersicht', false, '', path('exercise-overview__exercise--show', {id: exercise.id})) }}
-                </li>
+                {% if showSolution == false %}
+                    <li class="sidebar-item {{ (currentItemId) ? '' : 'sidebar-item--active' }}">
+                        {{ _self.sidebarLink('Übersicht', false, '', path('exercise-overview__exercise--show', {id: exercise.id})) }}
+                    </li>
+                {% endif %}
                 {% for item in sidebarItems %}
                     <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }}">
                         {% if showSolution %}
