@@ -172,8 +172,12 @@ course:
         submit: 'Kurs speichern'
         addMember: 'Kursmitglieder speichern'
     help:
-        students: 'Hier können Studierende ausgewählt werden (mehrfahr-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
-        tutors: 'Hier können Dozenten ausgewählt werden (mehrfahr-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
+        students: 'Hier können Studierende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
+        tutors: 'Hier können Dozenten ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
+    upgradeMember:
+        title: 'Darf Aufgabe erstellen'
+    downgradeMember:
+        title: 'Darf keine Aufgabe erstellen'
     removeMember:
         title: 'Entfernen'
         messages:

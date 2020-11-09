@@ -5,7 +5,7 @@
 {% block layoutCssClass %}main--without-scrollbar main--no-padding{% endblock %}
 
 {% block sidebar %}
-    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItem: exercisePhase, showSolution: true}) }}
+    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItemId: exercisePhase.id, showSolution: true}) }}
 {% endblock %}
 
 {% block body %}

@@ -53,11 +53,17 @@ class VideoVoter extends Voter
 
     private function canEdit(Video $video, User $user)
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user === $video->getCreator();
     }
 
     private function canDelete(Video $video, User $user)
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
         return $user === $video->getCreator();
     }
 }

@@ -44,6 +44,7 @@ class DoctrineFilterConfigurerSubscriber implements EventSubscriberInterface
             if ($user->isAdmin()) {
                 $this->entityManager->getFilters()->disable('course_doctrine_filter');
                 $this->entityManager->getFilters()->disable('exercise_doctrine_filter');
+                $this->entityManager->getFilters()->disable('video_doctrine_filter');
             }
 
             $exerciseFilter->setParameter('userId', $user->getId());

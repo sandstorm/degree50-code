@@ -11,37 +11,39 @@
     <header class="content-header">
         {% if course %}
             <h3>Alle Aufgaben für {{ course.name }}</h3>
-            {% if is_granted('edit', course) or is_granted('editMembers', course) %}
+            {% if is_granted('edit', course) or is_granted('newExercise', course) %}
                 <div class="btn-group">
-                    <div class="dropdown">
-                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Kurs verwalten
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {% if is_granted('editMembers', course) %}
-                                <a href="{{ path('exercise-overview__course--members', {id: course.id}) }}"
-                                   class="dropdown-item">
-                                    <i class="fas fa-users"></i> {% trans %}course.editMembers.title{% endtrans %}
-                                </a>
-                            {% endif %}
-                            {% if is_granted('edit', course) %}
-                                <a href="{{ path('exercise-overview__course--edit', {id: course.id}) }}"
-                                   class="dropdown-item">
-                                    <i class="fas fa-pencil-alt"></i> {% trans %}course.edit.title{% endtrans %}
-                                </a>
-                            {% endif %}
-                            {% if is_granted('delete', course) %}
-                                <div class="dropdown-divider"></div>
-                                <a href="{{ path('exercise-overview__course--delete', {id: course.id}) }}"
-                                   class="dropdown-item text-danger">
-                                    <i class="fas fa-trash"></i> {% trans %}course.delete.title{% endtrans %}
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
                     {% if is_granted('edit', course) %}
-                        <a href="{{ path('exercise-overview__exercise--new', {courseId: course.id}) }}"
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Kurs verwalten
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% if is_granted('editMembers', course) %}
+                                    <a href="{{ path('exercise-overview__course--members', {id: course.id}) }}"
+                                       class="dropdown-item">
+                                        <i class="fas fa-users"></i> {% trans %}course.editMembers.title{% endtrans %}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('edit', course) %}
+                                    <a href="{{ path('exercise-overview__course--edit', {id: course.id}) }}"
+                                       class="dropdown-item">
+                                        <i class="fas fa-pencil-alt"></i> {% trans %}course.edit.title{% endtrans %}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('delete', course) %}
+                                    <div class="dropdown-divider"></div>
+                                    <a href="{{ path('exercise-overview__course--delete', {id: course.id}) }}"
+                                       class="dropdown-item text-danger">
+                                        <i class="fas fa-trash"></i> {% trans %}course.delete.title{% endtrans %}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if is_granted('newExercise', course) %}
+                        <a href="{{ path('exercise-overview__exercise--new', {id: course.id}) }}"
                            class="btn btn-primary">
                             <i class="fas fa-plus-circle"></i> {% trans %}exercise.new.title{% endtrans %}
                         </a>

@@ -1,7 +1,7 @@
 {% trans_default_domain 'forms' %}
 
 <a class="btn btn-primary btn-block" href="{{ path('exercise-overview') }}">Alle Aufgaben</a>
-{% if is_granted('ROLE_DOZENT') %}
+{% if is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN') %}
     <a class="btn btn-outline-primary btn-block" href="{{ path('exercise-overview__course--new') }}"><i class="fas fa-plus"></i> {% trans %}course.new.title{% endtrans %}</a>
 {% endif %}
 <hr />
