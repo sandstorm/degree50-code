@@ -58,7 +58,9 @@ class MediathekOverviewController extends AbstractController
         $user = $this->getUser();
 
         // we need all the videos, also the private ones that dont belong to any course
-        $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
+        if ($this->getDoctrine()->getManager()->getFilters()->isEnabled('video_doctrine_filter')) {
+            $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
+        }
         $ownVideos = [
             'id' => 'ownVideos',
             'videos' => $this->videoRepository->findByCreatorWithoutCutVideos($user)
