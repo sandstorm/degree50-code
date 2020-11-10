@@ -34,7 +34,7 @@
             </div>
             <hr />
             <h4>Video wird in folgenden Aufgaben/Phasen verwendet</h4>
-            <ul>
+            <ul class="list">
                 {% for phase in video.exercisePhases %}
                     <li>{{ phase.belongsToExercise.name }} / {{ phase.name }}</li>
                 {% else %}

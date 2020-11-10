@@ -1,9 +1,11 @@
 .video-codes-list {
-  li {
-    margin-bottom: 10px;
-  }
+    @include removeListStyles();
 
-  .video-code__content {
-    padding: 0;
-  }
+    li {
+        margin-bottom: 10px;
+    }
+
+    .video-code__content {
+        padding: 0;
+    }
 }

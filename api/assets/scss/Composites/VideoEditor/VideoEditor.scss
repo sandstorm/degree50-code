@@ -86,3 +86,7 @@
     height: 100%;
     width: 100%;
 }
+
+.video-editor__video-codes {
+    @include removeListStyles();
+}

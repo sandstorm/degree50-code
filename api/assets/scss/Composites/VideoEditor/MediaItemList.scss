@@ -9,6 +9,8 @@
 }
 
 .video-editor__media-item-list__table {
+    @include removeListStyles();
+
     font-size: $base__fontSize--smaller;
 
     > div {
