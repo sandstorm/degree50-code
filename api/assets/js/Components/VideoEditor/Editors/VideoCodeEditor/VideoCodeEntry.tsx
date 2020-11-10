@@ -30,7 +30,6 @@ const VideoCodeEntry = ({
     return (
         <li
             className={showChildren ? 'video-code video-code--show-children' : 'video-code'}
-            key={videoCode.id}
             title={videoCode.description}
         >
             <div className={'video-code__content'}>

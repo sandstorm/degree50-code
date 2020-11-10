@@ -49,6 +49,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
 
     useEffect(() => {
         if (player) {
+            console.log(props.playPosition)
             player.currentTime(props.playPosition)
         }
     }, [player, props.playPosition])
