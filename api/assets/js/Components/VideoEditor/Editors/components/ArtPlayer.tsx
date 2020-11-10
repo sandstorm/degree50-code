@@ -129,6 +129,12 @@ const ArtPlayer = ({
                     art.on('pause', () => {
                         setPause(true)
                     })
+
+                    // @ts-ignore disable-line
+                    art.on('ready', () => {
+                        // eslint-disable-next-line
+                        art.seek = playPosition
+                    })
                 }}
             />
         </div>

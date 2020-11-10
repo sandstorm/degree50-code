@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RenderConfig } from './Editors/components/MediaLane/MediaTrack'
+import { INITIAL_ZOOM } from './Editors/components/MediaLane/useMediaLane'
 
 export const initialRenderConfig: RenderConfig = {
     padding: 0,
@@ -9,6 +10,7 @@ export const initialRenderConfig: RenderConfig = {
     currentTime: 0,
     timelineStartTime: 0,
     drawRuler: true,
+    zoom: INITIAL_ZOOM,
 }
 
 const MediaLaneRenderConfigSlice = createSlice({

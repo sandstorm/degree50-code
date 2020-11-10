@@ -9,6 +9,7 @@ export type RenderConfig = Readonly<{
     timelineStartTime: number
     currentTime: number
     drawRuler: boolean
+    zoom: number
 }>
 
 export type MediaTrackConfig = Readonly<{

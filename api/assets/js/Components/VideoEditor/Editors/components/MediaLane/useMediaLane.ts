@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState, useCallback } from 'react'
+import { useLayoutEffect, useEffect, useCallback } from 'react'
 import { RenderConfig } from './MediaTrack'
 import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
 import { calculateTimelineStartTime } from './helpers'
@@ -54,6 +54,7 @@ export const useMediaLane = ({
             gridNum: newGridNum,
             gridGap: newGridGap,
             timelineStartTime: newTimelineStartTime,
+            zoom: zoomInPercent,
         })
     }
 
@@ -104,8 +105,8 @@ export const useMediaLane = ({
     }, [currentTime])
 
     useEffect(() => {
-        setRenderConfigForZoom(INITIAL_ZOOM)
-    }, [containerWidth, videoDuration])
+        setRenderConfigForZoom(renderConfig.zoom)
+    }, [containerWidth, videoDuration, renderConfig.zoom])
 
     return { containerWidth, containerHeight, renderConfig, setRender: setRenderConfig, handleZoom, handleLaneClick }
 }
