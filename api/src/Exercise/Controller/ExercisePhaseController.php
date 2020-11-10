@@ -232,7 +232,9 @@ class ExercisePhaseController extends AbstractController
 
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
 
-        $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
+        if ($this->getDoctrine()->getManager()->getFilters()->isEnabled('video_doctrine_filter')) {
+            $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
+        }
 
         $solutions = array_map(function (ExercisePhaseTeam $team) use ($exercise) {
             return [
