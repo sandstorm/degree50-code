@@ -40,16 +40,12 @@ class DoctrineFilterConfigurerSubscriber implements EventSubscriberInterface
 
         if ($user = $this->security->getUser()) {
             assert($user instanceof User);
-
-            if ($user->isAdmin()) {
-                $this->entityManager->getFilters()->disable('course_doctrine_filter');
-                $this->entityManager->getFilters()->disable('exercise_doctrine_filter');
-                $this->entityManager->getFilters()->disable('video_doctrine_filter');
-            }
-
             $exerciseFilter->setParameter('userId', $user->getId());
+            $exerciseFilter->setParameter('userRoles', json_encode($user->getRoles()));
             $courseFilter->setParameter('userId', $user->getId());
+            $courseFilter->setParameter('userRoles', json_encode($user->getRoles()));
             $videoFilter->setParameter('userId', $user->getId());
+            $videoFilter->setParameter('userRoles', json_encode($user->getRoles()));
         }
     }
 }
