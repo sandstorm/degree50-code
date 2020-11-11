@@ -6,7 +6,6 @@ namespace App\Security\DoctrineFilter;
 
 use App\Entity\Video\Video;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Query\Filter\SQLFilter;
 
 /**
  *
@@ -15,7 +14,7 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
  * - userId: the User ID of the user.
  *
  */
-class VideoDoctrineFilter extends SQLFilter
+class VideoDoctrineFilter extends AbstractDoctrineFilter
 {
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
@@ -23,7 +22,10 @@ class VideoDoctrineFilter extends SQLFilter
             return '';
         }
         $userId = $this->getParameter('userId');
-
+        // we disable the filter if the current user is an ADMIN
+        if (parent::userIsAdmin()) {
+            return '';
+        }
         // users can only see videos that are assigned to the course they have access to
         return sprintf('%s.id IN (
             SELECT video_course.video_id 

@@ -63,9 +63,7 @@ class VideoUploadController extends AbstractController
 
         // we need to disable the video-filter here, cause the uploaded video has already created an video db entry
         // but without courses set. With the filter active we could not find the existing db entry at this point.
-        if ($this->getDoctrine()->getManager()->getFilters()->isEnabled('video_doctrine_filter')) {
-            $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
-        }
+        $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($videoUuid);
         $this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
         if (!$video) {
