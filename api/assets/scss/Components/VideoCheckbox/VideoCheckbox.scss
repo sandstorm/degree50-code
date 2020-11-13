@@ -1,53 +1,58 @@
 $tileHeight: 200px;
 
 .video-checkbox {
-  position: relative;
-  margin-right: 20px;
-  margin-bottom: 20px;
+    position: relative;
+    margin-right: 20px;
+    margin-bottom: 20px;
 
-  input[type='checkbox'] {
-    display: none;
+    input[type='checkbox'] {
+        display: none;
 
-    &:checked ~ .video-checkbox__label {
-      background-color: $theme__color__green;
-      border-color: $theme__color__green;
+        &:checked ~ .video-checkbox__label {
+            background-color: $theme__color__green;
+            border-color: $theme__color__green;
 
-      color: $theme__color__white;
+            color: $theme__color__white;
+        }
+
+        &:disabled ~ .video-checkbox__label {
+            opacity: 0.5;
+            cursor: default;
+        }
     }
-  }
 
-  &:hover {
-    text-decoration: none;
-  }
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 .video-checkbox__label {
-  height: $tileHeight;
-  width: $tileHeight;
-  display: block;
-  margin: 0;
-  padding: 10px;
+    height: $tileHeight;
+    width: $tileHeight;
+    display: block;
+    margin: 0;
+    padding: 10px;
 
-  text-align: center;
+    text-align: center;
 
-  background-color: $theme__color__grey;
-  border: 1px solid $theme__color__grey;
+    background-color: $theme__color__grey;
+    border: 1px solid $theme__color__grey;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  &:hover {
-    border-color: $theme__color__green;
+    &:hover {
+        border-color: $theme__color__green;
 
-    text-decoration: none;
-  }
+        text-decoration: none;
+    }
 }
 
 .video-checkbox__image {
-  height: $tileHeight * 0.6;
-  width: 100%;
-  margin-bottom: 10px;
+    height: $tileHeight * 0.6;
+    width: 100%;
+    margin-bottom: 10px;
 
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }

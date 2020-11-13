@@ -30,14 +30,13 @@ class VideoType extends AbstractType
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
                 'required' => false,
-                'choice_label' => 'name',
+                'choice_label' => function (Course $choice, $key, $value) {
+                    return $choice->getCreationDateYear() . ' - ' .$choice->getName();
+                },
                 'multiple' => true,
-                'expanded' => false,
+                'expanded' => true,
                 'label' => 'video.labels.courses',
                 'translation_domain' => 'forms',
-                'group_by' => function (Course $choice, $key, $value) {
-                    return $choice->getCreationDateYear();
-                },
                 'help' => 'video.help.courses',
                 'query_builder' => function (CourseRepository $courseRepository) {
                     return $courseRepository->createQueryBuilder('c')
