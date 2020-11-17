@@ -24,4 +24,12 @@ class StandardController extends AbstractController
     {
         return $this->render('Standard/DataPrivacy.html.twig');
     }
+
+    /**
+     * @Route("/video-upload-terms", name="video-upload-terms")
+     */
+    public function videoUploadTerms(): Response
+    {
+        return $this->render('Standard/VideoUploadTerms.html.twig');
+    }
 }

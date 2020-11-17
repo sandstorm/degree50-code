@@ -11,7 +11,7 @@
         </header>
         <div id="collapse{{ loop.index }}" class="collapse show" aria-labelledby="heading{{ loop.index }}" data-parent="#sidebar">
             <div class="sidebar__group-body">
-                <ul>
+                <ul class="list">
                     {% for course in item.courses %}
                         <li class="sidebar-item {{ (currentItem != false and course.id == currentItem.id) ? 'sidebar-item--active' : '' }}">
                             <a class="nav-link" href="{{ path('mediathek--index', {id: course.id}) }}">{{ course.name }}</a>

@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     font-size: $base__fontSize;
     font-family: $theme__default__fontStack;
     font-weight: $theme__default__fontWeight;
@@ -8,12 +9,6 @@ html, body {
 
 i {
     font-style: normal;
-}
-
-ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
 }
 
 h1 {
@@ -66,4 +61,8 @@ h6 {
 
 .text-small {
     font-size: $base__fontSize--smaller;
+}
+
+.text-justified {
+    text-align: justify;
 }
