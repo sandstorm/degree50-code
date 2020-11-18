@@ -120,6 +120,7 @@ The development container contains a self-signed SSL certificate and nginx is se
 is prepared for testing the SAML authentication locally.
 
 ## Creating test users
+
 We created a symfony command to easily create users via CLI: `./symfony-console app:create-user <email> <password>`
 
 ## Prodsystem
@@ -225,7 +226,9 @@ This will forward port `19999` to localhost, so you can open the gui on `localho
 
 ### Deployment via Gitlab CI
 
--
+> Make sure you increase the app version in `/api/templates/Version.html.twig`!
+
+-   When a pipeline on master succeeds you can manually trigger a deployment step.
 
 ### How to remove a Video from Prod
 
