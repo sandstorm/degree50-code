@@ -40,22 +40,21 @@ const TeamMembersListItem: React.FC<TeamMembersListItemProps> = ({
         teamMember.connectionState === ConnectionState.CONNECTED ? '--connected' : '--disconnected'
     }`
 
-    const canBePromotedToCurrentEditor =
-        teamMember.connectionState === ConnectionState.CONNECTED && teamMember.id !== currentEditor
     const isCurrentEditor = userId === currentEditor
+    const memberName = teamMember.name.split('@')[0]
 
     return (
         <li className={className}>
             <span>
-                {renderUserRoleState(currentEditor, teamMember.id)} {teamMember.name}
+                {renderUserRoleState(currentEditor, teamMember.id)} {memberName}
             </span>
-            {isCurrentEditor && canBePromotedToCurrentEditor && (
+            {teamMember.id === userId && !isCurrentEditor && (
                 <button
                     className={'btn btn-outline-primary btn-sm'}
-                    disabled={!canBePromotedToCurrentEditor}
                     onClick={promoteTeamMemberToCurrentEditor}
+                    title="Übernehme die Bearbeitung"
                 >
-                    Promote
+                    <i className="fas fa-crown" />
                 </button>
             )}
             {renderConnectionState(teamMember.connectionState)}

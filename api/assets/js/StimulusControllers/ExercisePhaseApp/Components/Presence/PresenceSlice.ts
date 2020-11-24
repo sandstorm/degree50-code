@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { AppState } from '../../Store/Store'
 
 export enum ConnectionState {
@@ -60,3 +60,7 @@ export const selectTeamMemberIds = (state: AppState) => state.presence.teamMembe
 export const selectTeamMemberById = (id: TeamMemberId, state: AppState) => state.presence.teamMembersById[id]
 export const selectTeamMembersById = (state: AppState) => state.presence.teamMembersById
 export const selectIsConnecting = (state: AppState) => state.presence.isConnecting
+
+export const selectOnlineTeamMemberIds = createSelector([selectTeamMemberIds, selectTeamMembersById], (allIds, byId) =>
+    allIds.filter((memberId) => byId[memberId].connectionState === ConnectionState.CONNECTED)
+)
