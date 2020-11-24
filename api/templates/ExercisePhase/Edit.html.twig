@@ -22,7 +22,7 @@
             <h3>{% trans %}exercisePhase.edit.title{% endtrans %}</h3>
             {% if exercisePhase.hasSolutions %}
             <div class="alert alert-warning">
-                Achtung: Phase wird/wurde schon von Studenten bearbeitet.
+                Achtung: Phase wird/wurde schon von Studierenden bearbeitet.
             </div>
             {% endif %}
         </header>
@@ -97,7 +97,7 @@
             </div>
             <span class="form-text text-muted">Hinweis: Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.</span>
             <p>
-                Bereits hochgelandene Dateien:
+                Bereits hochgeladene Dateien:
             </p>
             <div id="material-list"
                  data-update-endpoint="{{ path('exercise-overview__material--list', {id: exercisePhase.id}) }}">

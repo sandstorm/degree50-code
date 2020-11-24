@@ -54,7 +54,7 @@ exercisePhase:
     help:
         isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
         dependsOnPreviousPhase: 'Wenn aktiv, können die Studierende beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
-        otherSolutionsAreAccessible: 'Wenn aktiv, können die Studierende für diese Phase die Ergebnisse ihrer Mitstudierende einsehen.'
+        otherSolutionsAreAccessible: 'Wenn aktiv, können die Studierenden für diese Phase die Ergebnisse ihrer Mitstudierenden einsehen.'
     types:
         videoAnalysis:
             label: 'Videoanalyse'
@@ -72,7 +72,7 @@ exercisePhase:
         documentUpload:
             label: 'Dokumenten-Upload'
         videoCode:
-            label: 'Videokodierung'
+            label: 'Videocodierung'
         sharedDocument:
             label: 'Geteiltes Dokument'
         videoAnnotation:
@@ -181,7 +181,7 @@ course:
     removeMember:
         title: 'Entfernen'
         messages:
-            notPossible: 'Nicht möglich: Es muss mindestens einen Donzenten pro Kurs geben!'
+            notPossible: 'Nicht möglich: Es muss mindestens einen Dozenten pro Kurs geben!'
     delete:
         title: 'Kurs löschen'
         messages:
