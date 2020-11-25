@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from './Toolbar'
 import { useAppSelector } from '../../Store/Store'
-import { selectTeamMemberIds } from '../Presence/PresenceSlice'
+import { selectOnlineTeamMemberIds } from '../Presence/PresenceSlice'
 
 type ToolbarItemProps = {
     component: Component
@@ -9,7 +9,7 @@ type ToolbarItemProps = {
 }
 
 export function PresenceToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
-    const onlineTeamMembers = useAppSelector(selectTeamMemberIds)
+    const onlineTeamMembers = useAppSelector(selectOnlineTeamMemberIds)
 
     return (
         <button

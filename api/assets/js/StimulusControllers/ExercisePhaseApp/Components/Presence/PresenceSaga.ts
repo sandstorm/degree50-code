@@ -180,24 +180,6 @@ function* fetchSubscriptions() {
 
     // WHY: it's possible that while a team phase session is open, that other members join the team - so we need to update those
     yield put(presenceActions.setTeamMembers(updatedTeamMembers))
-
-    // if the currentEditor leaves the next teamMember automatically becomes the currentEditor
-    const currentEditorId = selectCurrentEditorId(yield select())
-    const userId = selectUserId(yield select())
-
-    if (currentEditorId && updatedTeamMembers[currentEditorId].connectionState !== ConnectionState.CONNECTED) {
-        const newEditorId = getNewEditorId(updatedTeamMembers)
-        // Why: only the new currentEditor needs to send the update request
-        if (userId === newEditorId) {
-            try {
-                Axios.post(selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
-                    currentEditorCandidateId: newEditorId,
-                })
-            } catch (e) {
-                console.warn('>>>>> updateCurrentEditor', e)
-            }
-        }
-    }
 }
 
 function* promoteUserToCurrentEditor(action: ReturnType<typeof promoteUserToCurrentEditorAction>) {
@@ -206,7 +188,7 @@ function* promoteUserToCurrentEditor(action: ReturnType<typeof promoteUserToCurr
 
     const { userId: userIdToPromote } = action.payload
 
-    if (userId === currentEditorId) {
+    if (userId !== currentEditorId) {
         try {
             Axios.post(selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
                 currentEditorCandidateId: userIdToPromote,

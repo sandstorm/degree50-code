@@ -18,7 +18,9 @@ $header__height: 40px;
 }
 
 .presence__team-members {
-
+    ul {
+        @include removeListStyles();
+    }
 }
 
 .presence__team-member {
