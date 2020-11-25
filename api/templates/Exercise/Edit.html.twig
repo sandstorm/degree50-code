@@ -7,7 +7,10 @@
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">Übersicht</a>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                        {{ exercise.course.name }}
+                    </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">{% trans %}exercise.edit.title{% endtrans %}</li>
             </ol>
@@ -70,7 +73,7 @@
                                 <td>{{ phaseTypeTransVar | trans }}</td>
                                 <td>{{ exercisePhase.name }}</td>
                                 <td class="text-right">
-                                    {%if exercisePhase.hasSolutions %}
+                                    {% if exercisePhase.hasSolutions %}
                                         <a class="btn btn-outline-danger disabled btn-sm">
                                             <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
                                         </a>
