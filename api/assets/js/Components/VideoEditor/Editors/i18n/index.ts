@@ -4,7 +4,7 @@ const de = {
     zoom: 'Timeline-Zoom',
     volume: 'Lautstärke',
     [TabsTypesEnum.VIDEO_ANNOTATIONS]: 'Videoannotationen',
-    [TabsTypesEnum.VIDEO_CODES]: 'Videokodierung',
+    [TabsTypesEnum.VIDEO_CODES]: 'Videocodierung',
     [TabsTypesEnum.VIDEO_CUTTING]: 'Videoschnitt',
     [TabsTypesEnum.VIDEO_SUBTITLES]: 'Untertitel',
     [TabsTypesEnum.SOLUTIONS]: 'Lösungen',

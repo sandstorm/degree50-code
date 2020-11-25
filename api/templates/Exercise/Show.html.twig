@@ -18,7 +18,7 @@
     <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong></p>
     {% if exercisePhase.dependsOnPreviousPhase %}
         <p class="text-center">
-            <strong>ACHTUNG:</strong> Diese Phase baut auf der vorherigen auf. Es muss ein Ergenis aus der vorherigen Phase vorliegen.
+            <strong>ACHTUNG:</strong> Diese Phase baut auf der vorherigen auf. Es muss ein Ergebnis aus der vorherigen Phase vorliegen.
         </p>
     {% endif %}
     <p class="text-center text-small">
@@ -85,7 +85,7 @@
                             </div>
                             <div class="tile__extension">
                                 <div class="tile__extension-content">
-                                    <strong>Miglieder:</strong> <br/>
+                                    <strong>Mitglieder:</strong> <br/>
                                     {% for member in team.members %}
                                         {{ member.username }} <br/>
                                     {% endfor %}
