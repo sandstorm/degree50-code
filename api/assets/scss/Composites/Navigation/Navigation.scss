@@ -70,6 +70,8 @@
     @include mq(medium) {
         display: block;
     }
+
+    @include removeListStyles();
 }
 
 .navigation__item {
