@@ -1,5 +1,4 @@
 import React from 'react'
-import ArtPlayer from '../../../../Components/VideoEditor/Editors/components/ArtPlayer'
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 
 type Props = {
@@ -11,14 +10,13 @@ const VideoCutSolutionVideo: React.FC<Props> = (props) => {
         return <p>No solution, yet!</p>
     }
 
-    const artPlayerOptions = {
-        videoUrl: props.videoConfig?.url?.mp4 || '',
-        subtitleUrl: props.videoConfig?.url?.vtt || '',
-        uploadDialog: false,
-        translationLanguage: 'en',
-    }
+    const videoUrl = props.videoConfig?.url?.mp4 || ''
 
-    return <ArtPlayer containerHeight={200} options={artPlayerOptions} />
+    return videoUrl ? (
+        <video controls height={300} src={videoUrl} />
+    ) : (
+        <p>Das geschnittene Video wird noch gespeichert</p>
+    )
 }
 
 export default React.memo(VideoCutSolutionVideo)
