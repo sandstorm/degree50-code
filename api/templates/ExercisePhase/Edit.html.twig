@@ -8,10 +8,15 @@
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">Übersicht</a>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                        {{ exercise.course.name }}
+                    </a>
                 </li>
-                <li class="breadcrumb-item"><a
-                            href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercise.edit.title{% endtrans %}</a>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">
+                        {{ exercise.name }}
+                    </a>
                 </li>
                 <li class="breadcrumb-item active"
                     aria-current="page">{% trans %}exercisePhase.edit.title{% endtrans %}</li>

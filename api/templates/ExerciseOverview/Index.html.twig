@@ -10,7 +10,7 @@
 {% block body %}
     <header class="content-header">
         {% if course %}
-            <h3>Alle Aufgaben für {{ course.name }}</h3>
+            <h3>{{ course.name }} - Alle Aufgaben</h3>
             {% if is_granted('edit', course) or is_granted('newExercise', course) %}
                 <div class="btn-group">
                     {% if is_granted('edit', course) %}
@@ -51,7 +51,7 @@
                 </div>
             {% endif %}
         {% else %}
-            <h3>Alle Aufgaben...</h3>
+            <h3>Alle Kurse - Alle Aufgaben</h3>
         {% endif %}
     </header>
     {% if is_granted('ROLE_DOZENT') %}

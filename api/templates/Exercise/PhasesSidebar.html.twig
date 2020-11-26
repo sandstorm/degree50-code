@@ -5,6 +5,12 @@
     <hr />
 {% endif %}
 <div class="sidebar__group">
+        <p>
+            {{ _self.sidebarLink(exercise.course.name, false, '', path('exercise-overview', {id: exercise.course.id})) }}
+        </p>
+        <p>
+            {{ _self.sidebarLink(exercise.name, false, '', path('exercise-overview__exercise--show', {id: exercise.id})) }}
+        </p>
     <header id="heading-phases">
         <h5>
             Phasen
@@ -13,11 +19,6 @@
     <div id="collapse-phases" class="collapse show" aria-labelledby="heading-phases" data-parent="#sidebar">
         <div class="sidebar__group-body">
             <ul class="list">
-                {% if showSolution == false %}
-                    <li class="sidebar-item {{ (currentItemId) ? '' : 'sidebar-item--active' }}">
-                        {{ _self.sidebarLink('Übersicht', false, '', path('exercise-overview__exercise--show', {id: exercise.id})) }}
-                    </li>
-                {% endif %}
                 {% for item in sidebarItems %}
                     <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }}">
                         {% if showSolution %}

@@ -134,6 +134,7 @@ class ExercisePhaseController extends AbstractController
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
+            'exercise' => $exercisePhase->getBelongsToExercise(),
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'solution' => $solution,
             'currentEditor' => $currentEditor,

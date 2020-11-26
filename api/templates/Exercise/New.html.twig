@@ -5,6 +5,14 @@
 
 {% block body %}
     <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: course.id}) }}">{{ course.name }}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans %}exercise.new.title{% endtrans %}</li>
+            </ol>
+        </nav>
+
         <header class="content-header content-header--center">
             <h3>{% trans %}exercise.new.title{% endtrans %}</h3>
         </header>
