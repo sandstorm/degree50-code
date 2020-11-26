@@ -1,3 +1,5 @@
+// colors taken from corporate identity document
+/*
 $theme__color__white: #fff;
 $theme__color__black: #000;
 $theme__color__grey: #d4d4d4;
@@ -10,10 +12,36 @@ $theme__color__green--light: #a3e41f;
 $theme__color__green--dark: #639a00;
 $theme__color__orange: #d89326;
 $theme__color__orange--dark: #ca7406;
-$theme__color__red: #cc3f2d;
 $theme__color__red--light: #e5887a;
 $theme__color__blue: #2196f3;
 $theme__color__blue--dark: #1f2133;
+*/
+
+$theme__color__red: #cc3f2d;
+
+$theme__color__success: #84b819;
+$theme__color__warning: #d89326;
+$theme__color__error: $theme__color__red;
+
+// colors taken from tu dortmund website
+$theme__color__white: #fff;
+$theme__color__black: #000;
+
+$theme__color__primary: #639a00;
+$theme__color__primary--light: #84b819;
+$theme__color__primary--dark: #4a7400;
+
+$theme__color__secondary: #d89326;
+$theme__color__secondary--dark: #ca7406;
+
+$theme__color__grey: #616161;
+$theme__color__grey--light: #d8d8d8;
+$theme__color__grey--lighter: #f4f4f4;
+$theme__color__grey--dark: #3b3b3b;
+
+$theme__color__text: $theme__color__grey--dark;
+$theme__color__text--light: $theme__color__grey;
+$theme__color__headline: $theme__color__black;
 
 // Add more colors here
 

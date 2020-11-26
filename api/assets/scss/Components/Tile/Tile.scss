@@ -22,14 +22,14 @@ $tileHeight--small: 150px;
 
     &--active {
         .tile__content {
-            background-color: $theme__color__green;
-            border-color: $theme__color__green;
+            background-color: $theme__color__primary;
+            border-color: $theme__color__primary;
 
             color: $theme__color__white;
         }
 
         .tile__extension {
-            border-color: $theme__color__green;
+            border-color: $theme__color__primary;
         }
     }
 
@@ -89,7 +89,7 @@ $tileHeight--small: 150px;
     cursor: pointer;
 
     &:hover {
-        border-color: $theme__color__green;
+        border-color: $theme__color__primary;
 
         text-decoration: none;
     }
@@ -120,7 +120,7 @@ $tileHeight--small: 150px;
     right: 10px;
     bottom: 10px;
 
-    color: $theme__color__green;
+    color: $theme__color__primary;
 }
 
 .tile__status {
@@ -133,11 +133,11 @@ $tileHeight--small: 150px;
     }
 
     &--1 {
-        color: $theme__color__green;
+        color: $theme__color__primary;
     }
 
     &--2 {
-        color: $theme__color__orange;
+        color: $theme__color__secondary;
     }
 }
 
@@ -156,7 +156,7 @@ $tileHeight--small: 150px;
     top: 0;
 
     background-color: $theme__color__white;
-    border: 1px solid $theme__color__green;
+    border: 1px solid $theme__color__primary;
 
     transform: scaleY(0);
     transform-origin: top left;

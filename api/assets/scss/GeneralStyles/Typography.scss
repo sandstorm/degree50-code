@@ -4,11 +4,20 @@ body {
     font-family: $theme__default__fontStack;
     font-weight: $theme__default__fontWeight;
     line-height: $base__lineHeight;
-    color: $theme__color__black;
+    color: $theme__color__text;
 }
 
 i {
     font-style: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: $theme__color__headline;
 }
 
 h1 {
@@ -48,15 +57,15 @@ h6 {
 }
 
 .color-success {
-    color: $theme__color__green;
+    color: $theme__color__success;
 }
 
 .color-warning {
-    color: $theme__color__orange;
+    color: $theme__color__warning;
 }
 
 .color-alert {
-    color: $theme__color__red;
+    color: $theme__color__error;
 }
 
 .text-small {

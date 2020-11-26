@@ -31,9 +31,7 @@
 }
 
 .video-code__content {
-    padding: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 5px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -49,7 +47,7 @@
 .video-code__locked {
     padding: 5px;
 
-    color: $theme__color__green;
+    color: $theme__color__primary;
 }
 
 .video-code__color {
@@ -73,9 +71,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 5px 10px;
 
     input {
         margin-right: 10px;

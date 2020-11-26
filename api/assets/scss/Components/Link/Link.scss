@@ -1,17 +1,34 @@
-a, a.nav-link {
-  color: $theme__color__green;
+a,
+a.nav-link {
+    color: $theme__color__primary;
 
-  &:hover, &:active, &:focus {
-    color: $theme__color__green--dark;
-  }
+    &:hover {
+        color: $theme__color__primary--dark;
+    }
 
-  i {
-    text-decoration: none !important;
-  }
+    &:active {
+        color: $theme__color__grey--dark !important;
+    }
+
+    &:focus {
+        color: $theme__color__secondary--dark;
+    }
+
+    i {
+        text-decoration: none !important;
+    }
 }
 
 a.color-alert {
-  &:hover, &:active, &:focus {
-    color: darken($theme__color__red, 20%);
-  }
+    &:hover {
+        color: darken($theme__color__red, 20%);
+    }
+
+    &:active {
+        color: $theme__color__grey--dark !important;
+    }
+
+    &:focus {
+        color: $theme__color__secondary--dark;
+    }
 }

@@ -1,55 +1,52 @@
 .button-checkbox {
-  position: relative;
-  display: inline-block;
-
-  i.fa-times {
-    margin-right: 10px;
+    position: relative;
     display: inline-block;
-  }
 
-  i.fa-check {
-    margin-right: 10px;
-    display: none
-  }
-
-  label {
-    border-color: $theme__color__red;
-
-    color: $theme__color__red;
-  }
-
-  input[type='checkbox'] {
-    display: none;
-
-    &:disabled ~ label {
-      background-color: $theme__color__red--light !important;
-      border-color: $theme__color__red--light !important;
-
-      color: $theme__color__white !important;
-
-      cursor: default;
-    }
-
-    &:disabled:checked ~ label {
-      background-color: $theme__color__green--light !important;
-      border-color: $theme__color__green--light !important;
-
-      color: $theme__color__white !important;
-    }
-
-    &:checked ~ label {
-      background-color: $theme__color__green !important;
-      border-color: $theme__color__green !important;
-
-      color: $theme__color__white !important;
-
-      i.fa-check {
-        display: inline-block;
-      }
-
-      i.fa-times {
+    input[type='checkbox'] {
         display: none;
-      }
+
+        & ~ label {
+            border-color: $theme__color__red;
+
+            color: $theme__color__red;
+
+            i.fa-times {
+                margin-right: 10px;
+                display: inline-block;
+            }
+
+            i.fa-check {
+                margin-right: 10px;
+                display: none;
+            }
+        }
+
+        &:checked ~ label {
+            background-color: $theme__color__primary;
+            border-color: $theme__color__primary;
+
+            color: $theme__color__white;
+
+            i.fa-check {
+                display: inline-block;
+            }
+
+            i.fa-times {
+                display: none;
+            }
+        }
+
+        &:disabled ~ label {
+            background-color: $theme__color__white !important;
+            border-color: $theme__color__grey--light !important;
+
+            color: $theme__color__grey !important;
+
+            cursor: default;
+        }
+
+        &:disabled:checked ~ label {
+            background-color: $theme__color__grey--light !important;
+        }
     }
-  }
 }
