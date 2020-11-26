@@ -12,7 +12,7 @@ $header__height: 40px;
     height: $header__height;
     margin-bottom: 20px;
 
-    border-bottom: 1px solid $theme__color__green;
+    border-bottom: 1px solid $theme__color__primary;
 
     font-weight: bold;
 }
@@ -30,7 +30,7 @@ $header__height: 40px;
 
     &--connected {
         i.presence__connection-state {
-            color: $theme__color__green;
+            color: $theme__color__primary;
         }
     }
 

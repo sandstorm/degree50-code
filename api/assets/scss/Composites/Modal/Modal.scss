@@ -1,68 +1,67 @@
 $modalHeaderHeight: 50px;
 
 .modal {
-  position: fixed;
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
+    position: fixed;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
 
-  background-color: transparentize($theme__color__black, 0.5);
+    background-color: transparentize($theme__color__black, 0.5);
 
-  z-index: 9999;
+    z-index: 9999;
 }
 
 .modal__inner {
-  position: relative;
-  width: 500px;
-  min-height: 400px;
-  max-height: 90vh;
+    position: relative;
+    width: 500px;
+    min-height: 400px;
+    max-height: 90vh;
 
-  background-color: $theme__color__white;
-  border: 1px solid $theme__color__grey--darker;
+    background-color: $theme__color__white;
+    border: 1px solid $theme__color__grey;
 }
 
+.modal__footer,
+.modal__header {
+    position: absolute;
+    height: $modalHeaderHeight;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
 
-.modal__footer, .modal__header {
-  position: absolute;
-  height: $modalHeaderHeight;
-  width: 100%;
-  padding-left: 10px;
-  padding-right: 10px;
-  display: flex;
-  align-items: center;
-
-  > * {
-    margin: 0;
-  }
+    > * {
+        margin: 0;
+    }
 }
 
 .modal__header {
-  border-bottom: 1px solid $theme__color__grey--darker;
+    border-bottom: 1px solid $theme__color__grey--light;
 }
 
 .modal__footer {
-  bottom: 0;
-  justify-content: space-between;
+    bottom: 0;
+    justify-content: space-between;
 
-  background-color: $theme__color__grey;
+    background-color: $theme__color__grey--lighter;
 }
 
 .modal__content-wrapper {
-  position: absolute;
-  padding-top: $modalHeaderHeight;
-  padding-bottom: $modalHeaderHeight;
-  height: 100%;
-  width: 100%;
+    position: absolute;
+    padding-top: $modalHeaderHeight;
+    padding-bottom: $modalHeaderHeight;
+    height: 100%;
+    width: 100%;
 }
 
 .modal__content {
-  height: 100%;
-  width: 100%;
-  padding: 10px;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
 
-  overflow: hidden;
-  overflow-y: scroll;
+    overflow: hidden;
+    overflow-y: scroll;
 }
-

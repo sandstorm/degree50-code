@@ -8,16 +8,39 @@ $tileHeight--small: 150px;
 
     input[type='checkbox'] {
         display: none;
+    }
 
-        &:checked ~ .tile__actions {
-            display: block;
+    &:focus-within {
+        .tile__actions {
+            display: block !important;
 
-            transform: scaleY(1);
+            transform: scaleY(1) !important;
+        }
+
+        .tile__content {
+            color: $theme__color__secondary--dark;
+            border-color: $theme__color__secondary--dark;
         }
     }
 
     &:hover {
         text-decoration: none;
+    }
+
+    &:hover .tile__content {
+        border-color: $theme__color__primary--dark;
+
+        text-decoration: none;
+    }
+
+    &:active .tile__content {
+        color: $theme__color__grey--dark !important;
+        border-color: $theme__color__grey--dark !important;
+    }
+
+    &:focus .tile__content {
+        color: $theme__color__secondary--dark;
+        border-color: $theme__color__secondary--dark;
     }
 
     &--active {
@@ -40,7 +63,7 @@ $tileHeight--small: 150px;
             cursor: default;
 
             &:hover {
-                border-color: $theme__color__grey;
+                border-color: $theme__color__grey--light;
             }
         }
     }
@@ -84,15 +107,9 @@ $tileHeight--small: 150px;
 
     text-align: center;
 
-    border: 1px solid $theme__color__grey;
+    border: 1px solid $theme__color__primary;
 
     cursor: pointer;
-
-    &:hover {
-        border-color: $theme__color__primary;
-
-        text-decoration: none;
-    }
 }
 
 .tile__title {

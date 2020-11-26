@@ -1,45 +1,46 @@
 .exercise-form {
-  margin-bottom: 70px;
+    margin-bottom: 70px;
 
-  textarea#exercise_description, textarea#video_analysis_task {
-    min-height: 200px;
-  }
+    textarea#exercise_description,
+    textarea#video_analysis_task {
+        min-height: 200px;
+    }
 }
 
 .exercise-form__columns {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 
-  @include mq(medium) {
-    flex-direction: column;
-  }
+    @include mq(medium) {
+        flex-direction: column;
+    }
 }
 
 .exercise-form__left {
-  padding-right: 20px;
-  width: 40%;
+    padding-right: 20px;
+    width: 40%;
 
-  border-right: 1px solid $theme__color__grey;
+    border-right: 1px solid $theme__color__grey--light;
 
-  @include mq(medium) {
-    width: 100%;
-    padding-right: 0;
-    margin-bottom: 40px;
+    @include mq(medium) {
+        width: 100%;
+        padding-right: 0;
+        margin-bottom: 40px;
 
-    border-right: none;
-  }
+        border-right: none;
+    }
 }
 
 .exercise-form__right {
-  padding-left: 20px;
-  width: 60%;
+    padding-left: 20px;
+    width: 60%;
 
-  @include mq(medium) {
-    width: 100%;
-    padding-left: 0;
-  }
+    @include mq(medium) {
+        width: 100%;
+        padding-left: 0;
+    }
 }
 
 label.required:before {
-  content: "*";
+    content: '*';
 }

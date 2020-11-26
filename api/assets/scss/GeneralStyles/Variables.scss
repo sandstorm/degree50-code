@@ -44,9 +44,16 @@ $theme__color__text--light: $theme__color__grey;
 $theme__color__headline: $theme__color__black;
 
 // Add more colors here
-
 $theme__content__boxShadow: 0 5px 5px 0 transparentize($theme__color__black, 0.8);
 
+// spacing
+$theme__spacing--base: 10px;
+$theme__spacing--small: 5px;
+$theme__spacing--tiny: 2px;
+$theme__spacing--large: 20px;
+$theme__spacing--huge: 40px;
+
+// fonts
 $theme__heading__fontWeight: 400;
 $theme__default__fontWeight: 400;
 

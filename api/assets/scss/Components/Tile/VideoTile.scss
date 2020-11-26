@@ -8,11 +8,18 @@ $tileHeight--small: 150px;
 
     input[type='checkbox'] {
         display: none;
+    }
 
-        &:checked ~ .tile__actions {
-            display: block;
+    &:focus-within {
+        .tile__actions {
+            display: block !important;
 
-            transform: scaleY(1);
+            transform: scaleY(1) !important;
+        }
+
+        .video-tile__content {
+            color: $theme__color__secondary--dark;
+            border-color: $theme__color__secondary--dark;
         }
     }
 
@@ -35,12 +42,24 @@ $tileHeight--small: 150px;
 
     text-align: center;
 
-    border: 1px solid $theme__color__grey--dark;
+    color: $theme__color__primary;
+    border: 1px solid $theme__color__primary;
 
     cursor: pointer;
 
     &:hover {
-        border-color: $theme__color__primary;
+        color: $theme__color__primary--dark;
+        border-color: $theme__color__primary--dark;
+    }
+
+    &:focus {
+        color: $theme__color__secondary--dark;
+        border-color: $theme__color__secondary--dark;
+    }
+
+    &:active {
+        color: $theme__color__grey--dark;
+        border-color: $theme__color__grey--dark;
     }
 
     .tile__date,

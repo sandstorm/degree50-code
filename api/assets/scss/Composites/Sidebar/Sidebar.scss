@@ -5,7 +5,7 @@
     height: 100%;
     padding-right: 20px;
 
-    background-color: $theme__color__grey--light;
+    background-color: $theme__color__grey--lighter;
 
     @include transition(left 250ms ease);
 
@@ -75,14 +75,14 @@
         height: 100%;
         padding: 5px;
 
-        color: $theme__color__green;
+        color: $theme__color__primary;
 
         border-right: 1px solid $theme__color__white;
 
         @include transition(all 250ms ease);
 
         &:hover {
-            background-color: $theme__color__green;
+            background-color: $theme__color__primary;
 
             color: $theme__color__white;
         }
@@ -96,12 +96,21 @@
     width: 100%;
     padding: 0;
 
-    color: $theme__color__green;
+    color: $theme__color__primary;
 
-    &:hover,
-    &:focus,
+    &:hover {
+        color: $theme__color__white;
+        background-color: $theme__color__primary--dark;
+    }
+
+    &:focus {
+        color: $theme__color__white;
+        background-color: $theme__color__secondary--dark;
+    }
+
     &:active {
-        color: $theme__color__green--dark;
+        color: $theme__color__white;
+        background-color: $theme__color__grey--dark;
     }
 
     .fa-chevron-down {
@@ -127,7 +136,7 @@
 
     background-color: $theme__color__white;
     background-clip: border-box;
-    border: 1px solid $theme__color__grey;
+    border: 1px solid $theme__color__grey--light;
 
     word-wrap: break-word;
 
@@ -136,14 +145,31 @@
         margin-bottom: 0;
 
         background-color: rgba(0, 0, 0, 0.03);
-        border-bottom: 1px solid $theme__color__grey;
+        border-bottom: 1px solid $theme__color__grey--light;
 
-        color: $theme__color__green;
+        color: $theme__color__primary;
 
         h5 {
             margin-bottom: 0;
 
             font-size: $base__fontSize !important;
+            font-weight: bold;
+        }
+
+        &:hover {
+            color: $theme__color__white;
+            background-color: $theme__color__primary--dark;
+        }
+
+        &:focus-within,
+        &:focus {
+            color: $theme__color__white;
+            background-color: $theme__color__secondary--dark;
+        }
+
+        &:active {
+            color: $theme__color__white;
+            background-color: $theme__color__grey--dark;
         }
     }
 }
@@ -151,5 +177,4 @@
 .sidebar__group-body {
     flex: 1 1 auto;
     min-height: 1px;
-    padding: 1.25rem;
 }

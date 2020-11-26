@@ -1,84 +1,84 @@
 .form-control {
-  border-radius: 0;
+    border-radius: 0;
 }
 
 .form-group {
-  .tiles {
-    max-height: 440px;
-    overflow-y: scroll;
-  }
+    .tiles {
+        max-height: 440px;
+        overflow-y: scroll;
+    }
 }
 
 .form-collection {
-  > fieldset > .col-form-label {
-    display: none;
-  }
-
-  > fieldset > div {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-    .form-group {
-      width: 45%;
-      flex-basis: 45%;
+    > fieldset > .col-form-label {
+        display: none;
     }
-  }
 
-  .col-form-label {
-    padding: 0;
-    margin-bottom: 0.5rem;
-  }
+    > fieldset > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
 
-  > .form-group {
-    padding: 10px;
+        .form-group {
+            width: 45%;
+            flex-basis: 45%;
+        }
+    }
 
-    background-color: $theme__color__grey;
-    border: 1px solid $theme__color__grey--darker;
-  }
+    .col-form-label {
+        padding: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    > .form-group {
+        padding: 10px;
+
+        background-color: $theme__color__grey;
+        border: 1px solid $theme__color__grey--dark;
+    }
 }
 
 select[multiple] {
-  min-height: 200px;
+    min-height: 200px;
 }
 
 .form__data-privacy {
-  display: inline-block;
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 0.375rem 0.75rem;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 0.375rem 0.75rem;
 
-  border: 1px solid $theme__color__grey--darker;
-  border-radius: 4px;
+    border: 1px solid $theme__color__grey--light;
+    border-radius: 4px;
 }
 
 label {
-  margin: 0;
+    margin: 0;
 }
 
 .input-group-text {
-  border-radius: 0;
+    border-radius: 0;
 }
 
-input[type=color] {
-  width: 40px !important;
-  padding: 0;
+input[type='color'] {
+    width: 40px !important;
+    padding: 0;
 }
 
 .video-code-form {
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  margin-bottom: 20px;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    margin-bottom: 20px;
 
-  .btn {
-    white-space: nowrap;
-  }
+    .btn {
+        white-space: nowrap;
+    }
 
-  input {
-    margin-right: 10px;
-  }
+    input {
+        margin-right: 10px;
+    }
 
-  input[type=text] {
-    flex: 1;
-  }
+    input[type='text'] {
+        flex: 1;
+    }
 }
