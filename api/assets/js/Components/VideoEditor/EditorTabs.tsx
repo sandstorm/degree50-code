@@ -6,9 +6,9 @@ import { Translate } from 'react-i18nify'
 const renderTabs = (tabs: Array<Tab>, activeTabId: TabsTypesEnum, setActiveTabId: (tab: TabsTypesEnum) => void) =>
     tabs.map((tab) => (
         <li role="presentation" key={tab.id}>
-            <a className={tab.id === activeTabId ? 'active' : ''} role="tab" onClick={() => setActiveTabId(tab.id)}>
+            <div role="tab" className={tab.id === activeTabId ? 'active' : ''} onClick={() => setActiveTabId(tab.id)}>
                 <Translate value={tab.id} />
-            </a>
+            </div>
         </li>
     ))
 
