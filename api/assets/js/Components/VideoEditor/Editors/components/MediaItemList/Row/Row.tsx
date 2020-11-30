@@ -18,7 +18,7 @@ type OwnProps = {
     rowData: MediaItem<MediaItemType>
     removeMediaItem: (item: MediaItem<MediaItemType>) => void
     addMediaItem?: (index: number, item?: MediaItem<MediaItemType>) => void
-    updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Record<string, unknown>) => void
+    updateMediaItem: (item: MediaItem<MediaItemType>, updatedValues: Partial<MediaItem<MediaItemType>>) => void
     moveItemUp?: () => void
     moveItemDown?: () => void
 }
@@ -44,6 +44,10 @@ const Row = ({
     moveItemUp,
     moveItemDown,
 }: Props) => {
+    const handleTextUpdate = (text: string) => {
+        updateMediaItem(rowData, { text })
+    }
+
     return (
         <li
             key={id}
@@ -70,10 +74,7 @@ const Row = ({
                 <Start start={rowData.start} />
                 <End end={rowData.end} />
             </div>
-            <TextField
-                text={rowData.text}
-                updateText={(event) => updateMediaItem(rowData, { text: event.target.value })}
-            />
+            <TextField text={rowData.text} updateText={handleTextUpdate} />
         </li>
     )
 }
