@@ -1,13 +1,21 @@
-@import "GeneralStyles/Variables";
-@import "GeneralStyles/Functions";
-@import "GeneralStyles/Mixins";
-@import "GeneralStyles/Layout";
-@import "GeneralStyles/Typography";
+@import 'GeneralStyles/Variables';
+@import 'GeneralStyles/Functions';
+@import 'GeneralStyles/Mixins';
+@import 'GeneralStyles/Layout';
+@import 'GeneralStyles/Typography';
 
-@import "Composites/Header/Header";
-@import "Composites/Navigation/Navigation";
+@import 'Components/Link/Link';
+
+@import 'Composites/Header/Header';
+@import 'Composites/Navigation/Navigation';
 
 .main-header {
-  position: relative;
-  border-bottom: none;
+    position: relative;
+    border-bottom: none;
+}
+
+.wrapper {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
 }

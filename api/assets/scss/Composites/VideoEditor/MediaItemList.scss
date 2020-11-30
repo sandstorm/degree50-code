@@ -19,7 +19,7 @@
 }
 
 .video-editor__media-item-list__row + .video-editor__media-item-list__row {
-    border-top: 1px solid $theme__color__grey--dark;
+    border-top: 1px solid $theme__color__grey;
 }
 
 .video-editor__media-item-list__row {
@@ -37,11 +37,15 @@
     }
 
     &--highlight {
-        background-color: $theme__color__green;
+        background-color: $theme__color__primary;
     }
 
     &--illegal {
         background-color: $theme__color__red;
+    }
+
+    &:focus-within {
+        background-color: $theme__color__secondary;
     }
 }
 
@@ -63,7 +67,7 @@
         font-size: $base__fontSize--smaller;
 
         background-color: $theme__color__white;
-        border: 1px solid $theme__color__grey--darker;
+        border: 1px solid $theme__color__grey--dark;
     }
 
     .textarea {

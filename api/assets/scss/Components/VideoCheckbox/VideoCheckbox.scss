@@ -9,8 +9,8 @@ $tileHeight: 200px;
         display: none;
 
         &:checked ~ .video-checkbox__label {
-            background-color: $theme__color__green;
-            border-color: $theme__color__green;
+            background-color: $theme__color__primary;
+            border-color: $theme__color__primary;
 
             color: $theme__color__white;
         }
@@ -35,13 +35,13 @@ $tileHeight: 200px;
 
     text-align: center;
 
-    background-color: $theme__color__grey;
-    border: 1px solid $theme__color__grey;
+    background-color: $theme__color__grey--light;
+    border: 1px solid $theme__color__grey--light;
 
     cursor: pointer;
 
     &:hover {
-        border-color: $theme__color__green;
+        border-color: $theme__color__primary;
 
         text-decoration: none;
     }

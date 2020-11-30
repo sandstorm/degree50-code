@@ -8,11 +8,18 @@ $tileHeight--small: 150px;
 
     input[type='checkbox'] {
         display: none;
+    }
 
-        &:checked ~ .tile__actions {
-            display: block;
+    &:focus-within {
+        .tile__actions {
+            display: block !important;
 
-            transform: scaleY(1);
+            transform: scaleY(1) !important;
+        }
+
+        .tile__content {
+            color: $theme__color__secondary--dark;
+            border-color: $theme__color__secondary--dark;
         }
     }
 
@@ -20,16 +27,32 @@ $tileHeight--small: 150px;
         text-decoration: none;
     }
 
+    &:hover .tile__content {
+        border-color: $theme__color__primary--dark;
+
+        text-decoration: none;
+    }
+
+    &:active .tile__content {
+        color: $theme__color__grey--dark !important;
+        border-color: $theme__color__grey--dark !important;
+    }
+
+    &:focus .tile__content {
+        color: $theme__color__secondary--dark;
+        border-color: $theme__color__secondary--dark;
+    }
+
     &--active {
         .tile__content {
-            background-color: $theme__color__green;
-            border-color: $theme__color__green;
+            background-color: $theme__color__primary;
+            border-color: $theme__color__primary;
 
             color: $theme__color__white;
         }
 
         .tile__extension {
-            border-color: $theme__color__green;
+            border-color: $theme__color__primary;
         }
     }
 
@@ -40,7 +63,7 @@ $tileHeight--small: 150px;
             cursor: default;
 
             &:hover {
-                border-color: $theme__color__grey;
+                border-color: $theme__color__grey--light;
             }
         }
     }
@@ -84,15 +107,9 @@ $tileHeight--small: 150px;
 
     text-align: center;
 
-    border: 1px solid $theme__color__grey;
+    border: 1px solid $theme__color__primary;
 
     cursor: pointer;
-
-    &:hover {
-        border-color: $theme__color__green;
-
-        text-decoration: none;
-    }
 }
 
 .tile__title {
@@ -120,7 +137,7 @@ $tileHeight--small: 150px;
     right: 10px;
     bottom: 10px;
 
-    color: $theme__color__green;
+    color: $theme__color__primary;
 }
 
 .tile__status {
@@ -133,11 +150,11 @@ $tileHeight--small: 150px;
     }
 
     &--1 {
-        color: $theme__color__green;
+        color: $theme__color__primary;
     }
 
     &--2 {
-        color: $theme__color__orange;
+        color: $theme__color__secondary;
     }
 }
 
@@ -156,7 +173,7 @@ $tileHeight--small: 150px;
     top: 0;
 
     background-color: $theme__color__white;
-    border: 1px solid $theme__color__green;
+    border: 1px solid $theme__color__primary;
 
     transform: scaleY(0);
     transform-origin: top left;

@@ -1,19 +1,19 @@
 .dropzone {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  border: 1px dashed $theme__color__grey--dark;
+    border: 1px dashed $theme__color__grey--dark;
 
-  &:hover {
-    border-style: solid;
-    border-color: $theme__color__green;
-  }
-
-  &.dz-clickable {
-    i {
-      display: none;
+    &:hover {
+        border-style: solid;
+        border-color: $theme__color__primary;
     }
-  }
+
+    &.dz-clickable {
+        i {
+            display: none;
+        }
+    }
 }

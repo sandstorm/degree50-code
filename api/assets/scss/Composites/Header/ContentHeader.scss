@@ -1,17 +1,17 @@
 .content-header {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
 
-  border-bottom: 1px solid $theme__color__grey--dark;
+    border-bottom: 1px solid $theme__color__grey;
 
-  &--center {
-    text-align: center;
-  }
+    &--center {
+        text-align: center;
+    }
 
-  > * {
-    margin-bottom: 0;
-  }
+    > * {
+        margin-bottom: 0;
+    }
 }

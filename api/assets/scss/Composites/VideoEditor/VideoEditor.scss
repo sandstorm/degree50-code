@@ -40,6 +40,7 @@
     display: grid;
     grid-template-rows: auto 1fr;
     border-right: 1px solid $theme__color__grey--dark;
+    background-color: $theme__color__black;
 
     .video-editor__section-header {
         position: relative;

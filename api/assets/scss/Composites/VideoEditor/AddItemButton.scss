@@ -2,17 +2,4 @@
     margin: 10px 5px;
     padding: 5px 10px;
     width: calc(100% - 10px);
-
-    background-color: $theme__color__white;
-
-    &:focus {
-        background-color: $theme__color__green;
-    }
-
-    &:hover {
-        background-color: $theme__color__green;
-        border-color: $theme__color__green--dark;
-
-        color: $theme__color__white;
-    }
 }
