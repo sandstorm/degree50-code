@@ -49,4 +49,8 @@
     select {
         outline: none;
     }
+
+    &:focus-within {
+        background-color: $theme__color__secondary--dark;
+    }
 }

@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 type Props = {
     text: string
-    updateText: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
+    updateText: (text: string) => void
 }
 
 const TextField = ({ text, updateText }: Props) => {
+    const handleChange = useCallback(
+        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+            updateText(event.target.value)
+        },
+        [updateText]
+    )
+
     return (
         <div className="video-editor__media-item-list__column video-editor__media-item-list__column--text">
             <textarea
@@ -14,7 +21,7 @@ const TextField = ({ text, updateText }: Props) => {
                 spellCheck={false}
                 className="textarea"
                 value={unescape(text)}
-                onChange={updateText}
+                onChange={handleChange}
             />
         </div>
     )
