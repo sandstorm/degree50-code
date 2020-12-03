@@ -16,11 +16,32 @@
         <div class="sidebar__group-body">
             <ul class="list">
                 {% for item in sidebarItems %}
-                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }}">
+                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item) ? "" : "sidebar-item--disabled" }}">
                         {% if showSolution %}
-                            {{ _self.sidebarLink(item.name, item.dependsOnPreviousPhase, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise-phase--show-solutions', {id: exercise.id, phase_id: item.id})) }}
+                            {{
+                                _self.sidebarLink(
+                                    item.name,
+                                    item.dependsOnPreviousPhase,
+                                    item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
+                                    path(
+                                        'exercise-overview__exercise-phase--show-solutions',
+                                        {id: exercise.id, phase_id: item.id}
+                                    )
+                                )
+                            }}
                         {% else %}
-                            {{ _self.sidebarLink(item.name, item.dependsOnPreviousPhase, item.isGroupPhase ? 'fas fa-users' : 'fas fa-user', path('exercise-overview__exercise--show', {id: exercise.id, phaseId: item.id})) }}
+                            {{
+                                _self.sidebarLink(
+                                    item.name,
+                                    item.dependsOnPreviousPhase,
+                                    item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
+                                    path(
+                                        'exercise-overview__exercise--show',
+                                        {id: exercise.id, phaseId: item.id}
+                                    ),
+                                    is_granted('viewExercisePhase', item)
+                                )
+                            }}
                         {% endif %}
                     </li>
                 {% endfor %}
@@ -31,8 +52,11 @@
 
 
 
-{% macro sidebarLink(name, dependsOnPreviousPhase, iconClass, href) %}
-    <a class="nav-link" href="{{ href }}">
+{% macro sidebarLink(name, dependsOnPreviousPhase, iconClass, href, canView = true)  %}
+    <a
+        class="nav-link"
+        {% if canView %} href="{{ href }}" {% endif %}
+    >
         <i class="{{ iconClass }}"></i>
         {% if dependsOnPreviousPhase %}
             <i class="fas fa-arrow-up"

@@ -40,7 +40,6 @@ class ExercisePhaseTeamVoter extends Voter
         }
 
         if ($subject instanceof ExercisePhaseTeam) {
-            /** @var ExercisePhaseTeam $exercisePhaseTeam */
             $exercisePhaseTeam = $subject;
         } else {
             return false;

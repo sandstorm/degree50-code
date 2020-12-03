@@ -17,10 +17,12 @@ class ExercisePhaseVoter extends Voter
     const DELETE = 'delete';
     const SHOW_SOLUTIONS = 'showSolutions';
     const CREATE_TEAM = 'createTeam';
+    const VIEW_OTHER_SOLUTIONS = 'viewOtherSolutions';
+    const VIEW = 'viewExercisePhase';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::SHOW_SOLUTIONS, self::CREATE_TEAM])) {
+        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::SHOW_SOLUTIONS, self::CREATE_TEAM, self::VIEW_OTHER_SOLUTIONS, self::VIEW])) {
             return false;
         }
 
@@ -57,6 +59,10 @@ class ExercisePhaseVoter extends Voter
                 return $this->canShowSolutions($exercisePhase, $user);
             case self::CREATE_TEAM:
                 return $this->canCreateTeam($exercisePhase, $user);
+            case self::VIEW_OTHER_SOLUTIONS:
+                return $this->canViewOtherSolutions($exercisePhase, $user);
+            case self::VIEW:
+                return $this->canViewExercisePhase($exercisePhase, $user);
 
         }
 
@@ -68,12 +74,59 @@ class ExercisePhaseVoter extends Voter
         return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->getMembers()->contains($user));
     }
 
+    /**
+     * User can view this ExercisePhase.
+     * He can if it's the first or the user has a Solution for the previous ExercisePhase.
+     *
+     * @param ExercisePhase $exercisePhase
+     * @param User $user
+     * @return bool
+     */
+    private function canViewExercisePhase(ExercisePhase $exercisePhase, User $user)
+    {
+        if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
+            return true;
+        }
+
+        // check if previous ExercisePhase exists or has solution
+        $sortingPosition = $exercisePhase->getSorting();
+
+        // is first ExercisePhase
+        if ($sortingPosition === 0) {
+            return true;
+        }
+
+        $previousExercisePhaseHasSolution = $exercisePhase
+            ->getBelongsToExercise()
+            ->getPhaseAtSortingPosition($sortingPosition - 1)
+            ->getHasSolutionForUser($user);
+
+        if ($previousExercisePhaseHasSolution) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function canViewOtherSolutions(ExercisePhase $exercisePhase, User $user): bool
+    {
+        // FIXME
+        // As there is a bug that crashes the app if the user himself (even the admin) has not
+        // yet has startet the phase once (and thus created a Team -> which causes the crash)
+        if ($exercisePhase->getHasSolutionForUser($user)) {
+            return $exercisePhase->getOtherSolutionsAreAccessible() || $exercisePhase->getBelongsToExercise()->getCreator() === $user;
+        }
+
+        return false;
+    }
+
     private function canGetToNextPhase(ExercisePhase $exercisePhase, User $user)
     {
         if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
             return true;
         }
-        return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user));
+
+        return $exercisePhase->getHasSolutionForUser($user);
     }
 
     // TODO can only delete exercisePhases which have no results/teams

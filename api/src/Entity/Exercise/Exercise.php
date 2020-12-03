@@ -229,4 +229,22 @@ class Exercise implements ExerciseInterface
     {
         return $this->userExerciseInteractions;
     }
+
+    /**
+     * @param int $position
+     *
+     * @return ExercisePhase | null
+     */
+    public function getPhaseAtSortingPosition(int $position)
+    {
+        return $this
+            ->getPhases()
+            ->filter(
+                function (ExercisePhase $exercisePhase) use ($position)
+                {
+                    return $exercisePhase->getSorting() === $position;
+                }
+            )
+            ->first();
+    }
 }

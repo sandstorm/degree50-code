@@ -111,7 +111,7 @@
                                            href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}"><i class="fas fa-play"></i> Phase
                                             starten</a>
                                     {% else %}
-                                        {% if exercisePhase.otherSolutionsAreAccessible %}
+                                        {% if is_granted('viewOtherSolutions', exercisePhase) %}
                                             <a class="btn btn-outline-primary btn-sm"
                                                href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis
                                                 ansehen</a>
@@ -159,7 +159,7 @@
                     <tr>
                         <td>{{ team.creator.username }}</td>
                         <td>
-                            {% if exercisePhase.otherSolutionsAreAccessible %}
+                            {% if is_granted('viewOtherSolutions', exercisePhase) %}
                                 <a
                                         href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
                                     Ergebnis anzeigen
