@@ -10,7 +10,7 @@
     <span>Phase {{ currentPhaseIndex + 1 }} / {{ amountOfPhases + 1 }}</span>
 
     {% if nextExercisePhase %}
-        {% if is_granted('next', exercisePhase) %}
+        {% if is_granted('viewExercisePhase', nextExercisePhase) %}
             <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Nächste Phase</a>
         {% else %}
             <button type="button" class="btn btn-primary disabled" disabled="disabled">Nächste Phase</button>

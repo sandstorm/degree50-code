@@ -389,4 +389,22 @@ class ExercisePhase implements ExerciseInterface
 
         return $hasSolutionsWithoutTestSolution;
     }
+
+    /**
+     * Check if a Solution exists on a Team that the user is a member of.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function getHasSolutionForUser(User $user)
+    {
+        return $this
+            ->getTeams()
+            ->exists(
+                function ($i, ExercisePhaseTeam $exercisePhaseTeam) use ($user)
+                {
+                    return $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user);
+                }
+            );
+    }
 }

@@ -47,4 +47,16 @@
             color: $theme__color__white !important;
         }
     }
+
+    &--disabled {
+        background-color: $theme__color__grey--lighter !important;
+
+        a {
+            color: $theme__color__grey--dark !important;
+        }
+
+        &:hover a {
+            color: $theme__color__grey--dark !important;
+        }
+    }
 }
