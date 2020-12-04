@@ -266,6 +266,10 @@ This will forward port `19999` to localhost, so you can open the gui on `localho
 ### Additional Notes
 
 -   The app partition is mounted to `/data` and is 100 GB size. the system partition is 20 GB big.
+    - This is done via the following `/etc/fstab` entry (required for automatic mounting on boot):
+      ```
+      /dev/sda3 /data/         auto     defaults 0 2
+      ```
 -   In `/data`, there exist all the docker files; and the persistent volumes from the Degree project.
 -   The `home/deployment/data` directory has been symlinked to `/data/degree-data`
 -   The docker image location has been changed to `/data/docker` by adding the following `docker/daemon/json` to `/etc/` :
