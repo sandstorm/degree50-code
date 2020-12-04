@@ -190,6 +190,26 @@ Ansible takes care of:
 -   hardening the server (SSH config; TODO firewall)
 -   installing `docker`
 
+### Automatic Updates
+
+Automatic updates are configured without ansible by doing the following:
+
+```
+sudo apt-get install unattended-upgrades 
+# if the configuration dialog does not open, run:
+dpkg-reconfigure -plow unattended-upgrades
+# now, select YES when asked the question whether you want to do automatic updates.
+```
+
+**Automatic updates only take care of security fixes.** For "general updates" of all packages,
+it is useful to run the following commands every once in a while:
+
+```
+apt-get update
+apt-get upgrade
+apt autoremove
+```
+
 ### Monitoring
 
 #### Uptime-robot
