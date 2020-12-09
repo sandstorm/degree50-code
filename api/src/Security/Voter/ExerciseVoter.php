@@ -41,20 +41,27 @@ class ExerciseVoter extends Voter
             return false;
         }
 
-        if ($subject instanceof Exercise) {
-            /** @var Exercise $exercise */
-            $exercise = $subject;
+        // admin has access to everything
+        if ($user->isAdmin()) {
+            return true;
         }
 
-        switch ($attribute) {
-            case self::IS_FINISHED:
-                return $this->exercisesIsFinished($exercise, $user);
-            case self::IS_OPENED:
-                return $this->exercisesIsOpened($exercise, $user);
-            case self::VIEW:
-                return $this->canView($exercise, $user);
-            case self::EDIT or self::DELETE or self::SHOW_SOLUTION:
-                return $this->canEditOrDelete($exercise, $user);
+        if ($subject instanceof Exercise) {
+            $exercise = $subject;
+
+
+            switch ($attribute) {
+                case self::IS_FINISHED:
+                    return $this->exercisesIsFinished($exercise, $user);
+                case self::IS_OPENED:
+                    return $this->exercisesIsOpened($exercise, $user);
+                case self::VIEW:
+                    return $this->canView($exercise, $user);
+                case self::EDIT or self::DELETE or self::SHOW_SOLUTION:
+                    return $this->canEditOrDelete($exercise, $user);
+            }
+        } else {
+            return false;
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -72,25 +79,58 @@ class ExerciseVoter extends Voter
 
     private function canView(Exercise $exercise, User $user)
     {
-        if ($user->isAdmin()) {
+        // creator has access
+        if ($exercise->getCreator() === $user) {
             return true;
         }
+
         $course = $exercise->getCourse();
-        $exerciseIsNotPublished = $exercise->getStatus() == Exercise::EXERCISE_CREATED;
-        if ($exerciseIsNotPublished && $exercise->getCreator() !== $user) {
-            return false;
+        $hasAccessToCourse = $user->getCourseRoles()->exists(
+            fn($i, CourseRole $courseRole) =>
+                $courseRole->getCourse() === $course &&
+                $courseRole->getUser() === $user
+        );
+
+        if ($hasAccessToCourse) {
+            // Dozent has access
+            if ($user->isDozent()) {
+                return true;
+            }
+
+            // everyone else needs to wait for publication
+            $exercisePublished =
+                $exercise->getStatus() == Exercise::EXERCISE_PUBLISHED ||
+                $exercise->getStatus() == Exercise::EXERCISE_FINISHED;
+            $exerciseNotEmpty = count($exercise->getPhases()) > 0;
+
+            if ($exercisePublished && $exerciseNotEmpty) {
+                return true;
+            }
         }
-        if (count($exercise->getPhases()) === 0) {
-            return false;
-        }
-        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user);
+
+        return false;
     }
 
     private function canEditOrDelete(Exercise $exercise, User $user)
     {
-        if ($user->isAdmin()) {
+        // creator has access
+        if($user === $exercise->getCreator()) {
             return true;
         }
-        return $user === $exercise->getCreator();
+
+        $course = $exercise->getCourse();
+        $isCourseDozent = $user->getCourseRoles()->exists(
+            fn($i, CourseRole $courseRole) =>
+                $courseRole->getCourse() === $course &&
+                $courseRole->getUser() === $user &&
+                $courseRole->getName() === CourseRole::DOZENT
+        );
+
+        // Dozent && KursDozent has access
+        if ($isCourseDozent && $user->isDozent()) {
+            return true;
+        }
+
+        return false;
     }
 }
