@@ -11,7 +11,7 @@
     -   [Running Behat Tests](#running-behat-tests)
     -   [Running Frontend Tests](#running-frontend-tests)
     -   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
--   [Creating test users](#creating-test-users)
+-   [Creating test users on the prod system](#creating-test-users-on-the-prod-system)
 -   [Prodsystem](#prodsystem)
     -   [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
         -   [Prerequisites](#prerequisites-1)
@@ -19,6 +19,7 @@
         -   [Connect](#connect)
         -   [Connect to the Production Database](#connect-to-the-production-database)
     -   [Ansible Setup](#ansible-setup)
+    -   [Automatic Updates](#automatic-updates)
     -   [Monitoring](#monitoring)
         -   [Uptime-robot](#uptime-robot)
         -   [Netdata](#netdata)
@@ -119,9 +120,20 @@ After testing, **remember to remove the `/etc/hosts` entry again** - as you stil
 The development container contains a self-signed SSL certificate and nginx is serving via SSL on port 8443 - so everything
 is prepared for testing the SAML authentication locally.
 
-## Creating test users
+## Creating test users on the prod system
 
-We created a symfony command to easily create users via CLI: `./symfony-console app:create-user <email> <password>`
+1. Connect via ssh to the server `ssh <username>@degree40.tu-dortmund.de`
+2. Become the **deployment** user by typing `sudo su - deployment` (keep your server-user password ready)
+3. Enter the docker container: `docker-compose exec api bash`
+4. Make sure you are inside the `app/` directory and otherwise type `cd /app`
+5. Run our CLI command for user creation:
+   `./bin/console app:create-user <email> <password>`
+6. Login as admin at https://degree40.tu-dortmund.de (credentials in bitwarden)
+7. Navigate to the **administration** page
+8. Search for your newly created user and click **edit**
+9. Give the user its respective role (e.g. _student_)
+
+You should now be able to add the user to courses etc.
 
 ## Prodsystem
 
@@ -195,7 +207,7 @@ Ansible takes care of:
 Automatic updates are configured without ansible by doing the following:
 
 ```
-sudo apt-get install unattended-upgrades 
+sudo apt-get install unattended-upgrades
 # if the configuration dialog does not open, run:
 dpkg-reconfigure -plow unattended-upgrades
 # now, select YES when asked the question whether you want to do automatic updates.
@@ -266,10 +278,10 @@ This will forward port `19999` to localhost, so you can open the gui on `localho
 ### Additional Notes
 
 -   The app partition is mounted to `/data` and is 100 GB size. the system partition is 20 GB big.
-    - This is done via the following `/etc/fstab` entry (required for automatic mounting on boot):
-      ```
-      /dev/sda3 /data/         auto     defaults 0 2
-      ```
+    -   This is done via the following `/etc/fstab` entry (required for automatic mounting on boot):
+        ```
+        /dev/sda3 /data/         auto     defaults 0 2
+        ```
 -   In `/data`, there exist all the docker files; and the persistent volumes from the Degree project.
 -   The `home/deployment/data` directory has been symlinked to `/data/degree-data`
 -   The docker image location has been changed to `/data/docker` by adding the following `docker/daemon/json` to `/etc/` :
