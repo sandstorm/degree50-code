@@ -1,4 +1,4 @@
-import VideoPlayer from 'Components/VideoPlayer/VideoPlayer'
+import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 
 export default {
     VideoPlayer: VideoPlayer,

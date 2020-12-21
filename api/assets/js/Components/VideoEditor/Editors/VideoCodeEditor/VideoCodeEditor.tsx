@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import ArtPlayer from '../components/ArtPlayer'
 import MediaLane from '../components/MediaLane'
 import { MediaItem } from '../components/types'
 import { solveConflicts } from '../helpers'
@@ -13,6 +12,7 @@ import { VideoCodePrototype } from './types'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
+import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 
 type OwnProps = {
     height: number
@@ -72,7 +72,6 @@ const VideoCodeEditor = (props: Props) => {
     )
 
     const {
-        setCurrentTimeForMediaItems,
         updateMediaItems,
         updateMediaItem,
         copyMediaItems,
@@ -90,13 +89,6 @@ const VideoCodeEditor = (props: Props) => {
     // All options
     const firstVideo = props.videos[0]
     const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
-
-    const artPlayerOptions = {
-        videoUrl: firstVideo?.url?.hls || '',
-        subtitleUrl: firstVideo?.url?.vtt || '',
-        uploadDialog: false,
-        translationLanguage: 'en',
-    }
 
     const addVideoCode = useCallback(
         (videoCode: VideoCodePrototype) => {
@@ -166,10 +158,17 @@ const VideoCodeEditor = (props: Props) => {
         <React.Fragment>
             <div className="video-editor__main" style={{ height: height }}>
                 <div className="video-editor__section video-editor__left">
-                    <ArtPlayer
-                        containerHeight={height - 40}
-                        options={artPlayerOptions}
-                        currentTimeCallback={setCurrentTimeForMediaItems}
+                    <VideoPlayer
+                        videoJsOptions={{
+                            autoplay: false,
+                            controls: true,
+                            sources: [
+                                {
+                                    src: firstVideo?.url?.hls || '',
+                                },
+                            ],
+                        }}
+                        videoMap={firstVideo}
                     />
                 </div>
                 <div className="video-editor__section video-editor__right">
