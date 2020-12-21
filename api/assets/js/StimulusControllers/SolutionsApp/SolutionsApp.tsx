@@ -8,7 +8,6 @@ import { watchModals } from '@react-aria/aria-modal-polyfill'
 import Toolbar from '../../Components/VideoEditor/Editors/components/MediaLane/Toolbar'
 import { useMediaLane } from '../../Components/VideoEditor/Editors/components/MediaLane/useMediaLane'
 import { actions, selectors, VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
-import ArtPlayer from '../../Components/VideoEditor/Editors/components/ArtPlayer'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
 import EditorTabs from '../../Components/VideoEditor/EditorTabs'
 import { solutionTabs } from '../../Components/VideoEditor/Tabs'
@@ -19,6 +18,7 @@ import { ComponentId } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
 import { RenderConfig } from '../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
 import { initialRenderConfig } from '../../Components/VideoEditor/MediaLaneRenderConfigSlice'
 import { translate } from 'react-i18nify'
+import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 
 export type SolutionByTeam = {
     teamCreator: string
@@ -117,13 +117,6 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
 
     const updateCurrentTime = handleLaneClick
 
-    const artPlayerOptions = {
-        videoUrl: firstVideo?.url?.hls || '',
-        subtitleUrl: firstVideo?.url?.vtt || '',
-        uploadDialog: false,
-        translationLanguage: 'en',
-    }
-
     // Run only once
     useEffect(() => {
         setVisibleSolutions(
@@ -154,7 +147,18 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
             <div className={'exercise-phase__content'} ref={$container}>
                 <div className={'video-editor__main'} style={{ height: heightOrDefault * 0.4 }}>
                     <div className={'video-editor__section video-editor__left'}>
-                        <ArtPlayer containerHeight={heightOrDefault * 0.4 - 40} options={artPlayerOptions} />
+                        <VideoPlayer
+                            videoJsOptions={{
+                                autoplay: false,
+                                controls: true,
+                                sources: [
+                                    {
+                                        src: firstVideo?.url?.hls || '',
+                                    },
+                                ],
+                            }}
+                            videoMap={firstVideo}
+                        />
                     </div>
                     <div className={'video-editor__section video-editor__right'}>
                         <header className={'video-editor__section-header'}>

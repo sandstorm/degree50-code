@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import VideoPlayer from './VideoPlayer'
+import VideoPlayer from './ConnectedVideoJSPlayer'
 import { VideoJsPlayerOptions } from 'video.js'
 
 export type Video = {

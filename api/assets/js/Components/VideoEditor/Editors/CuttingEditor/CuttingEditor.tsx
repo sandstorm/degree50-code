@@ -22,6 +22,7 @@ import { TabsTypesEnum } from '../../../../types'
 import AddItemButton from '../components/MediaItemList/AddItemButton'
 import ReadonlyMediaLaneWithToolbar from '../components/MediaLane/ReadonlyMediaLaneWithToolbar'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
+import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 
 type OwnProps = {
     height: number
@@ -223,11 +224,26 @@ const CuttingEditor = ({
                 <div className="video-editor__section video-editor__left">
                     <header className="video-editor__section-header" />
                     <div className="video-editor__section-content">
-                        <VideoContextPlayer
-                            cutList={videoContextCutList}
-                            currentTimeCallback={setCurrentTimeForMediaItems}
-                            volume={volume}
-                        />
+                        {activeContext === TabsTypesEnum.ORIGINAL_VIDEO ? (
+                            <VideoPlayer
+                                videoJsOptions={{
+                                    autoplay: false,
+                                    controls: true,
+                                    sources: [
+                                        {
+                                            src: originalVideo?.url?.hls || '',
+                                        },
+                                    ],
+                                }}
+                                videoMap={originalVideo}
+                            />
+                        ) : (
+                            <VideoContextPlayer
+                                cutList={videoContextCutList}
+                                currentTimeCallback={setCurrentTimeForMediaItems}
+                                volume={volume}
+                            />
+                        )}
                     </div>
                 </div>
                 <div className="video-editor__section video-editor__right">

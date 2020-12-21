@@ -1,3 +1,4 @@
+import VideoJSPlayer from 'Components/VideoPlayer/VideoJSPlayer'
 import React from 'react'
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 
@@ -13,7 +14,17 @@ const VideoCutSolutionVideo: React.FC<Props> = (props) => {
     const videoUrl = props.videoConfig?.url?.mp4 || ''
 
     return videoUrl ? (
-        <video controls height={300} src={videoUrl} />
+        <VideoJSPlayer
+            videoJsOptions={{
+                autoplay: false,
+                controls: true,
+                sources: [
+                    {
+                        src: videoUrl || '',
+                    },
+                ],
+            }}
+        />
     ) : (
         <p>Das geschnittene Video wird noch gespeichert</p>
     )

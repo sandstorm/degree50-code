@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
 import MediaLane from '../components/MediaLane'
-import ArtPlayer from '../components/ArtPlayer'
 import MediaItemList from '../components/MediaItemList/MediaItemList'
 
 import { useMediaItemHandling } from '../utils/useMediaItemHandling'
@@ -14,6 +13,7 @@ import { vttToUrlUseWorker } from '../utils/subtitleUtils'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import AddItemButton from '../components/MediaItemList/AddItemButton'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
+import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 
 const worker = new Worker(vttToUrlUseWorker())
 
@@ -72,17 +72,9 @@ const SubtitleEditor = ({
     const firstVideo = videos[0]
     const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
 
-    const artPlayerOptions = {
-        videoUrl: firstVideo?.url?.hls || '',
-        subtitleUrl: firstVideo?.url?.vtt || '',
-        uploadDialog: false,
-        translationLanguage: 'en',
-    }
-
     const {
         currentIndex,
 
-        setCurrentTimeForMediaItems,
         appendMediaItem,
         removeMediaItem,
         updateMediaItem,
@@ -103,11 +95,18 @@ const SubtitleEditor = ({
         <React.Fragment>
             <div className="video-editor__main" style={{ height: containerHeight }}>
                 <div className="video-editor__section video-editor__left">
-                    <ArtPlayer
+                    <VideoPlayer
                         worker={worker}
-                        containerHeight={containerHeight - 40}
-                        options={artPlayerOptions}
-                        currentTimeCallback={setCurrentTimeForMediaItems}
+                        videoJsOptions={{
+                            autoplay: false,
+                            controls: true,
+                            sources: [
+                                {
+                                    src: firstVideo?.url?.hls || '',
+                                },
+                            ],
+                        }}
+                        videoMap={firstVideo}
                     />
                 </div>
                 <div className="video-editor__section video-editor__right">
