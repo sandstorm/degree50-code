@@ -150,13 +150,13 @@ You need the following entries in `~/.ssh/config`:
 (replace YOUR-USERNAME-ON-GITLAB-WORKER with the right username)
 
 ```
-Host gitlab-worker.sandstorm.de
+Host gitlab-runner.sandstorm.de
   Port 29418
   User YOUR-USERNAME-ON-GITLAB-WORKER
   ForwardAgent yes
 
 Host degree40.tu-dortmund.de
-  ProxyJump gitlab-worker.sandstorm.de
+  ProxyJump gitlab-runner.sandstorm.de
   # MariaDB
   LocalForward 23306 127.0.0.1:3306
   # Netdata Monitoring
@@ -201,6 +201,11 @@ Ansible takes care of:
 -   adding/configuring users
 -   hardening the server (SSH config; TODO firewall)
 -   installing `docker`
+
+### Firewall rules
+
+- Docker is BEFORE the firewall; so that means we do not need FW rules for the docker ports like 80/443
+- To allow access from the gitlab-runner.sandstorm.de, we used: `ufw allow proto tcp from 88.198.132.154 to any port 22`
 
 ### Automatic Updates
 
