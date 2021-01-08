@@ -135,27 +135,37 @@ is prepared for testing the SAML authentication locally.
 
 You should now be able to add the user to courses etc.
 
-## Prodsystem
+## Prodsystem and Testsystem
 
+The Prod System is `degree40.tu-dortmund.de`. The Test system is `degree40-test.tu-dortmund.de`.
+
+- If you connect via SSH (and the config below), you can go to `http://localhost:19999` to access Netdata monitoring.
 ### Connecting via SSH to the production server
 
 #### Prerequisites
 
-You need an account on gitlab-worker.sandstorm.de - try connecting via `ssh -p 29418 gitlab-worker.sandstorm.de` (TOUCH YUBIKEY!)
+You need an account on gitlab-runner.sandstorm.de - try connecting via `ssh -p 29418 gitlab-runner.sandstorm.de` (TOUCH YUBIKEY!)
 
 #### Setup
 
 You need the following entries in `~/.ssh/config`:
 
-(replace YOUR-USERNAME-ON-GITLAB-WORKER with the right username)
+(replace YOUR-USERNAME-ON-GITLAB-RUNNER with the right username)
 
 ```
 Host gitlab-runner.sandstorm.de
   Port 29418
-  User YOUR-USERNAME-ON-GITLAB-WORKER
+  User YOUR-USERNAME-ON-GITLAB-RUNNER
   ForwardAgent yes
 
 Host degree40.tu-dortmund.de
+  ProxyJump gitlab-runner.sandstorm.de
+  # MariaDB
+  LocalForward 23306 127.0.0.1:3306
+  # Netdata Monitoring
+  LocalForward 19999 127.0.0.1:19999
+
+Host degree40-test.tu-dortmund.de
   ProxyJump gitlab-runner.sandstorm.de
   # MariaDB
   LocalForward 23306 127.0.0.1:3306
@@ -259,7 +269,7 @@ apt autoremove
 ##### Access the GUI
 
 Connect to the degree server via ssh using the config above.
-This will forward port `19999` to localhost, so you can open the gui on `localhost:19999`.
+This will forward port `19999` to localhost, so you can open the gui on `http://localhost:19999`.
 
 ### Deployment via Gitlab CI
 
