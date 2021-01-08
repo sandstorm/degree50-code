@@ -38,7 +38,7 @@ services:
     container_name: traefik
 
   api:
-    image: docker-hub.sandstorm.de/degree-4.0/code:master
+    image: docker-hub.sandstorm.de/degree-4.0/code:test-stage
     restart: always
     labels:
       # set the host to degree40.tu-dortmund.de
