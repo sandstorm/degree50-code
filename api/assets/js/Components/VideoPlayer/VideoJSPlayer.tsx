@@ -24,7 +24,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
     const playerId = useMemo(() => generate(), [])
 
     useEffect(() => {
-        setPlayer(videojs(videoRef.current, props.videoJsOptions))
+        setPlayer(videojs(videoRef.current, { ...props.videoJsOptions, fluid: true }))
 
         return () => {
             player?.dispose()
@@ -34,7 +34,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
     useEffect(() => {
         // FIXME switching/adding new subtitles on the fly does currently not work
         // This is only relevant for the SubtitleEditor, because as soon as the .vtt file
-        // has been transmitted to the server it will be available to all player occurences!
+        // has been transmitted to the server it will be available to all player occurrences!
         if (player && props.worker && !props.worker.onmessage) {
             // eslint-disable-next-line
             props.worker.onmessage = (event) => {

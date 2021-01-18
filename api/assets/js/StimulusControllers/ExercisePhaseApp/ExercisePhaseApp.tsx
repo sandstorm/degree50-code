@@ -6,6 +6,7 @@ import Overlay from './Components/Overlay/Overlay'
 import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
+import VideoEditor from 'Components/VideoEditor'
 
 const renderExercisePhase = (phase: ExercisePhaseTypesEnum, height: number) => {
     if (!height) {
@@ -36,6 +37,8 @@ export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = ({ type, readOnly 
     // react-aria-modal watches a container element for aria-modal nodes and
     // hides the rest of the dom from screen readers with aria-hidden when one is open.
     watchModals()
+
+    return <VideoEditor />
 
     const ref: React.RefObject<HTMLDivElement> = useRef(null)
 
