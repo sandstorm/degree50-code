@@ -70,7 +70,7 @@ const SubtitleEditor = ({
 
     // All options
     const firstVideo = videos[0]
-    const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
+    const firstVideoDuration = firstVideo ? firstVideo.duration : 5 // duration in seconds
 
     const {
         currentIndex,

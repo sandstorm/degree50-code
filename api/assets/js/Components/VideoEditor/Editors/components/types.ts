@@ -1,5 +1,4 @@
-import clamp from 'lodash/clamp'
-import { timeToSecond, secondToTime } from '../utils'
+import { timeToSecond } from '../utils'
 
 export class MediaItem<T> {
     start: string

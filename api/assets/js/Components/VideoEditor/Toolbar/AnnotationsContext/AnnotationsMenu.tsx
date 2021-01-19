@@ -1,7 +1,6 @@
-import { actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import MenuButton from '../MenuButton'
 import MenuItem from '../MenuItem'
 
@@ -9,22 +8,45 @@ export const AnnotationOverlayIds = {
     active: 'active',
     create: 'create',
     all: 'all',
+    edit: 'edit',
+    remove: 'remove',
 }
 
-const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    setOverlay: (id: string) => dispatch(actions.overlay.setOverlay(id)),
-})
+const mapStateToProps = (state: VideoEditorState) => {
+    return {
+        activeAnnotationCount: selectors.selectActiveAnnotationIds(state).length,
+    }
+}
 
-type Props = ReturnType<typeof mapDispatchToProps>
+const mapDispatchToProps = {
+    setOverlay: actions.overlay.setOverlay,
+    setCurrentlyEditedElementIndex: actions.overlay.setCurrentlyEditedElementId,
+}
+
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const AnnotationsMenu: FC<Props> = (props) => {
     return (
-        <MenuButton label="Annotationen">
-            <MenuItem label="Aktive Einträge" onClick={() => props.setOverlay(AnnotationOverlayIds.active)} />
-            <MenuItem label="Erstelle Eintrag" onClick={() => props.setOverlay(AnnotationOverlayIds.create)} />
-            <MenuItem label="Alle Einträge" onClick={() => props.setOverlay(AnnotationOverlayIds.all)} />
-        </MenuButton>
+        <div className="video-editor__annotation-menu">
+            {props.activeAnnotationCount > 0 && (
+                <div className="video-editor__annotation-menu__count-badge">{props.activeAnnotationCount}</div>
+            )}
+            <MenuButton label="Annotationen">
+                <MenuItem
+                    label="Aktive Einträge"
+                    onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.active, closeOthers: true })}
+                />
+                <MenuItem
+                    label="Erstelle Eintrag"
+                    onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.create, closeOthers: true })}
+                />
+                <MenuItem
+                    label="Alle Einträge"
+                    onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.all, closeOthers: true })}
+                />
+            </MenuButton>
+        </div>
     )
 }
 
-export default connect(undefined, mapDispatchToProps)(memo(AnnotationsMenu))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(AnnotationsMenu))

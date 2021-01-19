@@ -1,0 +1,23 @@
+.video-editor__annotation-menu {
+    position: relative;
+}
+
+.video-editor__annotation-menu__count-badge {
+    position: absolute;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    right: -10px;
+    top: -10px;
+    width: 20px;
+    height: 20px;
+
+    background-color: $theme__color__red;
+    border: none;
+    border-radius: 50%;
+
+    color: $theme__color__white;
+
+    z-index: 10;
+}

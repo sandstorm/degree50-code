@@ -7,7 +7,7 @@ export type Video = {
     name: string
     description: string
     url: { hls?: string; mp4?: string; vtt?: string }
-    duration: string
+    duration: number
 }
 
 type Props = {

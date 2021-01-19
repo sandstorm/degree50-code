@@ -11,6 +11,9 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { AnnotationFromAPI } from 'Components/VideoEditor/VideoListsSlice'
+import { AnnotationsState } from 'Components/VideoEditor/AnnotationsSlice'
+import { normalizeData } from './normalizeData'
 
 export default class extends Controller {
     connect() {
@@ -24,6 +27,11 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(actions.lists.setVideoEditor(solution))
+
+        const annotations: AnnotationFromAPI[] = solution?.annotations ?? []
+        const normalizedAnnotations: AnnotationsState = normalizeData(annotations)
+        store.dispatch(actions.data.annotations.init(normalizedAnnotations))
+
         store.dispatch(setCurrentEditorId(currentEditor))
 
         if (config.isGroupPhase && !config.readOnly) {
@@ -44,7 +52,7 @@ export default class extends Controller {
         ReactDOM.render(
             <React.StrictMode>
                 <Provider store={store}>
-                    <ExercisePhaseApp type={config.type} readOnly={config.readOnly} />
+                    <ExercisePhaseApp />
                 </Provider>
             </React.StrictMode>,
             this.element

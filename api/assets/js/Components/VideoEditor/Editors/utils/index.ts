@@ -61,3 +61,46 @@ export function getKeyCode(event: KeyboardEvent): number | undefined {
         return Number(event.keyCode)
     }
 }
+
+export const getSecondsFromTimeSeconds = (seconds: number) => (seconds % 60) % 60
+export const getMinutesFromTimeSeconds = (seconds: number) => Math.floor(seconds / 60) % 60
+export const getHoursFromTimeSeconds = (seconds: number) => Math.floor(seconds / 60 / 60)
+
+/**
+ * Formatter for number of hours to string representation.
+ *
+ * Example:
+ *  HoursStringFormatter.format(5) -> "05"
+ */
+export const HoursStringFormatter = Intl.NumberFormat('en', {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+})
+
+/**
+ * Formatter for number of minutes to string representation.
+ *
+ * Example:
+ *  MinutesStringFormatter.format(2) -> "02"
+ */
+export const MinutesStringFormatter = Intl.NumberFormat('en', {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+})
+
+/**
+ * Formatter for number of seconds to string representation.
+ * This representation is including the milliseconds as fraction digits.
+ *
+ * Example:
+ *  SecondsStringFormatter.format(23) -> "23.000"
+ *  SecondsStringFormatter.format(5.23) -> "05.230"
+ */
+export const SecondsStringFormatter = Intl.NumberFormat('en', {
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+})
+
+export const clamp = (value: number, min: number, max: number) => Math.min(Math.max(min, value), max)

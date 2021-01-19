@@ -1,21 +1,27 @@
-import { OverlayContainer } from '@react-aria/overlays'
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
-import React, { memo, useEffect } from 'react'
-import { connect } from 'react-redux'
-import { selectConfig } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
-import Overlay from './Toolbar/Overlay/Overlay'
+import React, { FC, memo, useState } from 'react'
+import { TabsTypesEnum } from 'types'
+import AnnotationMedialane from './AnnotationMedialane'
+import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
+import OverlayContainer from './Toolbar/OverlayContainer/OverlayContainer'
 import Toolbar from './Toolbar/Toolbar'
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        videos: selectConfig(state).videos,
-    }
+type Props = {
+    videos: Array<Video>
+    components: Array<TabsTypesEnum>
+    height: number
+    itemUpdateCondition: boolean
+    videoCodesPool: VideoCodePrototype[]
 }
 
-const VideoEditor = ({ videos }: { videos: Array<Video> }) => {
-    const firstVideo = videos[0]
+const VideoEditor: FC<Props> = (props) => {
+    const [showMediaLane, toggleShowMediaLane] = useState(false)
+
+    const firstVideo = props.videos[0]
+    const firstVideoDuration = firstVideo ? firstVideo.duration : 5 // duration in seconds
+
+    const handleMediaLaneToggle = () => toggleShowMediaLane(!showMediaLane)
 
     return (
         <div className="video-editor">
@@ -34,9 +40,17 @@ const VideoEditor = ({ videos }: { videos: Array<Video> }) => {
                 />
             </div>
             <Toolbar />
-            <Overlay />
+            <OverlayContainer />
+
+            <button onClick={handleMediaLaneToggle}>Toggle Medialane</button>
+
+            {showMediaLane && (
+                <>
+                    <AnnotationMedialane videoDuration={firstVideoDuration} />
+                </>
+            )}
         </div>
     )
 }
 
-export default connect(mapStateToProps)(memo(VideoEditor))
+export default memo(VideoEditor)

@@ -50,7 +50,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & Ow
 const getCutForCompleteVideo = (video: Video) => ({
     url: video.url.mp4 ?? '',
     start: '00:00:00.000',
-    end: d2t(parseFloat(video.duration).toFixed(3)),
+    end: d2t(video.duration.toFixed(3)),
     offset: 0,
     playbackRate: 1,
     text: video.name,
@@ -96,7 +96,7 @@ const CuttingEditor = ({
     // WHY: hard code source videos to the first video
     const originalVideo = videos[0]
     const [originalVideoCutList] = useState([getCutForCompleteVideo(originalVideo)])
-    const originalVideoDuration = parseFloat(originalVideo.duration)
+    const originalVideoDuration = originalVideo.duration
 
     // WHY:
     // Depending on which context is selected, multile things happen:
