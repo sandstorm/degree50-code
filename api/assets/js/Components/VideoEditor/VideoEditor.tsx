@@ -11,7 +11,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import './Editors/fontello/css/fontello.css'
 import { tabs } from './Tabs'
 import EditorTabs from './EditorTabs'
-import AnnotationsEditor from './Editors/AnnotationsEditor/AnnotationsEditor'
 import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
 import SubtitleEditor from './Editors/SubtitleEditor/SubtitleEditor'
@@ -49,20 +48,6 @@ const VideoEditor: React.FC<Props> = ({
     )
 
     switch (activeTabId) {
-        case TabsTypesEnum.VIDEO_ANNOTATIONS: {
-            return (
-                <AnnotationsEditor
-                    height={height}
-                    videos={videos}
-                    headerContent={
-                        <EditorTabs tabs={availableTabs} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
-                    }
-                    itemUpdateCallback={itemUpdateCallback}
-                    itemUpdateCondition={itemUpdateCondition}
-                />
-            )
-        }
-
         case TabsTypesEnum.VIDEO_CODES: {
             return (
                 <CodeEditor

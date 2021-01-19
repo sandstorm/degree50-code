@@ -6,8 +6,10 @@ import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 import { selectConfig } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
-import { VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
+import { AnnotationFromAPI, VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { normalizeData } from 'StimulusControllers/normalizeData'
+import { AnnotationsState } from 'Components/VideoEditor/AnnotationsSlice'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -66,7 +68,11 @@ function* handleMessages(channel: EventChannel<unknown>) {
 
             // set solution
             const solution: VideoListsState = eventData.solution
+
+            const annotations: AnnotationFromAPI[] = eventData.solution?.annotations ?? []
+            const normalizedAnnotations: AnnotationsState = normalizeData(annotations)
             yield put(actions.lists.setVideoEditor(solution))
+            yield put(actions.data.annotations.init(normalizedAnnotations))
         }
     } finally {
         channel.close()
@@ -80,7 +86,7 @@ function* syncSolution() {
     const config = selectConfig(yield select())
 
     if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
-        const solution = selectors.lists.selectVideoEditorLists(yield select())
+        const solution = selectors.selectSolution(yield select())
         const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution
 
         try {

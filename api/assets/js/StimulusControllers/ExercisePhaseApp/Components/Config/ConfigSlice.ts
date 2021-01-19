@@ -65,11 +65,13 @@ export const { actions } = configSlice
 export const selectConfig = (state: { config: ConfigState }) => state.config
 export const selectUserId = (state: { config: ConfigState }) => state.config.userId
 export const selectReadOnly = (state: { config: ConfigState }) => state.config.readOnly
+export const selectVideos = (state: { config: ConfigState }) => state.config.videos
 
 export const selectors = {
     selectConfig,
     selectUserId,
     selectReadOnly,
+    selectVideos,
 }
 
 export default configSlice.reducer

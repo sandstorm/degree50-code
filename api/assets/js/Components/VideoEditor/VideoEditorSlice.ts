@@ -4,7 +4,7 @@ import VideoListsSlice, {
     actions as videoListsActions,
     selectors as videoListsSelectors,
 } from './VideoListsSlice'
-import { combineReducers } from '@reduxjs/toolkit'
+import { combineReducers, createSelector } from '@reduxjs/toolkit'
 import ConfigSlice, {
     ConfigState,
     selectors as configSelectors,
@@ -16,15 +16,19 @@ import MediaLaneRenderConfigSlice, {
     selectors as mediaLaneRenderConfigSelectors,
 } from './MediaLaneRenderConfigSlice'
 import { RenderConfig } from './Editors/components/MediaLane/MediaTrack'
+import DataSlice, { actions as dataActions, selectors as dataSelectors } from './DataSlice'
 
 import OverlaySlice, {
     actions as overlayActions,
     OverlayState,
     selectors as overlaySelectors,
-} from './Toolbar/Overlay/OverlaySlice'
+} from './Toolbar/OverlayContainer/OverlaySlice'
+import { DataState } from './DataSlice'
+import { timeToSecond } from './Editors/utils'
 
 export default combineReducers({
     lists: VideoListsSlice,
+    data: DataSlice,
     player: PlayerSlice,
     config: ConfigSlice,
     mediaLaneRenderConfig: MediaLaneRenderConfigSlice,
@@ -34,6 +38,7 @@ export default combineReducers({
 export type VideoEditorState = {
     videoEditor: {
         lists: VideoListsState
+        data: DataState
         player: PlayerState
         config: ConfigState
         mediaLaneRenderConfig: RenderConfig
@@ -43,16 +48,45 @@ export type VideoEditorState = {
 
 export const actions = {
     lists: videoListsActions,
+    data: dataActions,
     player: playerActions,
     config: configActions,
     mediaLaneRenderConfig: mediaLaneRenderConfigActions,
     overlay: overlayActions,
 }
 
+const selectActiveAnnotationIds = createSelector(
+    [dataSelectors.annotations.selectAnnotationsByStartTime, playerSelectors.selectSyncPlayPosition],
+    (annotations, currentPlayPosition) => {
+        return annotations
+            .filter(
+                (annotation) =>
+                    timeToSecond(annotation.start) <= currentPlayPosition &&
+                    timeToSecond(annotation.end) >= currentPlayPosition
+            )
+            .map((annotation) => annotation.id)
+    }
+)
+
+const selectSolution = createSelector(
+    [videoListsSelectors.selectVideoEditorLists, dataSelectors.annotations.selectDenormalizedAnnotations],
+    // TODO continue refactoring for videocodes + cuts
+    // NOTE: we are currently in the middle of refactoring lists into separate slices, which is why we merge our
+    // "old" solution state with those, that have already been refactored
+    (otherVideoLists, annotations): VideoListsState => ({
+        ...otherVideoLists,
+        annotations,
+    })
+)
+
 export const selectors = {
     lists: videoListsSelectors,
+    data: dataSelectors,
     player: playerSelectors,
     config: configSelectors,
     mediaLaneRenderConfig: mediaLaneRenderConfigSelectors,
     overlay: overlaySelectors,
+
+    selectActiveAnnotationIds,
+    selectSolution,
 }

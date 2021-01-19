@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import { selectConfig, selectUserId, selectReadOnly } from '../../Components/Config/ConfigSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { TabsTypesEnum } from '../../../../types'
-import VideoEditor from 'Components/VideoEditor/VideoEditor'
-import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
+import VideoEditor from 'Components/VideoEditor'
 import { selectCurrentEditorId } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 
 type OwnProps = {
@@ -22,11 +21,7 @@ const mapStateToProps = (state: AppState) => {
     }
 }
 
-const mapDispatchToProps = {
-    syncSolution: syncSolutionAction,
-}
-
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type Props = ReturnType<typeof mapStateToProps> & OwnProps
 
 const VideoAnalysis: React.FC<Props> = (props) => {
     const videoComponents = Object.values(TabsTypesEnum).filter((tabType) => props.components.includes(tabType))
@@ -38,11 +33,10 @@ const VideoAnalysis: React.FC<Props> = (props) => {
             videos={props.videos}
             components={videoComponents}
             height={props.height}
-            itemUpdateCallback={props.syncSolution}
             itemUpdateCondition={itemUpdateCondition}
             videoCodesPool={props.videoCodesPool}
         />
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VideoAnalysis)
+export default connect(mapStateToProps)(VideoAnalysis)

@@ -4,7 +4,6 @@ import { MediaItem as MediaItemClass } from '../../types'
 import { RenderConfig } from '../MediaTrack'
 import { actions } from '../../../../PlayerSlice'
 import MediaItemContextMenu from './MediaItemContextMenu'
-import MediaItemMemoForm from './MediaItemMemoForm'
 import { useModalHook } from 'Components/Modal/useModalHook'
 import Button from 'Components/Button/Button'
 import { MediaItemType } from 'Components/VideoEditor/VideoListsSlice'
@@ -83,11 +82,6 @@ const MediaItem = ({
     const [contextMenuPosX, setContextMenuPosX] = useState(0)
     const [contextMenuPosY, setContextMenuPosY] = useState(0)
 
-    const submitMemo = (memo: string) => {
-        updateMediaItem(item, { memo: memo }, item.startTime)
-        closeMemoEditModal()
-    }
-
     const updateContextMenuIsVisible = useCallback(
         (isVisible: boolean) => {
             setContextMenuIsVisible(isVisible)
@@ -100,11 +94,6 @@ const MediaItem = ({
         (item.startTime - renderConfig.timelineStartTime) * renderConfig.gridGap * 10
 
     const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModalHook()
-    const {
-        showModal: showMemoEditModal,
-        hideModal: closeMemoEditModal,
-        RenderModal: RenderMemoEditModal,
-    } = useModalHook()
 
     const contentMenuItemHeight = 30
 
@@ -202,7 +191,7 @@ const MediaItem = ({
                     removeMediaItem(item)
                 }}
                 addMemoToMediaItem={() => {
-                    showMemoEditModal()
+                    // TODO
                 }}
                 contextMenuIsVisible={contextMenuIsVisible}
                 posX={contextMenuPosX}
@@ -212,9 +201,6 @@ const MediaItem = ({
                 }}
             />
             <RenderMemoModal title={'Memo'}>{item.memo}</RenderMemoModal>
-            <RenderMemoEditModal title={'Memo bearbeiten'}>
-                <MediaItemMemoForm currentMemo={item.memo} submitMemo={submitMemo} />
-            </RenderMemoEditModal>
         </div>
     )
 }

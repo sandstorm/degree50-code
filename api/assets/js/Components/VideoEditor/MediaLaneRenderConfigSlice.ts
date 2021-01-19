@@ -17,7 +17,7 @@ const MediaLaneRenderConfigSlice = createSlice({
     name: 'MediaLaneRenderConfig',
     initialState: initialRenderConfig,
     reducers: {
-        setRenderConfig: (state: RenderConfig, action: PayloadAction<RenderConfig>): RenderConfig => action.payload,
+        setRenderConfig: (_: RenderConfig, action: PayloadAction<RenderConfig>): RenderConfig => action.payload,
     },
 })
 
@@ -25,7 +25,9 @@ export const { actions } = MediaLaneRenderConfigSlice
 
 export default MediaLaneRenderConfigSlice.reducer
 
-const selectRenderConfig = (state: { mediaLaneRenderConfig: RenderConfig }) => state.mediaLaneRenderConfig
+export type MediaLaneRenderConfigState = { mediaLaneRenderConfig: RenderConfig }
+
+const selectRenderConfig = (state: MediaLaneRenderConfigState) => state.mediaLaneRenderConfig
 
 export const selectors = {
     selectRenderConfig,

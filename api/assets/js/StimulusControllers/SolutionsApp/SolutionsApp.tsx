@@ -96,7 +96,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     const [activeTabId, setActiveTabId] = useState<TabsTypesEnum>(availableTabs[0].id)
 
     const firstVideo = props.videos[0]
-    const videoDuration: number = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
+    const videoDuration: number = firstVideo ? firstVideo.duration : 5 // duration in seconds
     const currentTime = props.playerSyncPlayPosition
 
     const videoComponents = Object.values(TabsTypesEnum).filter((tabType) =>

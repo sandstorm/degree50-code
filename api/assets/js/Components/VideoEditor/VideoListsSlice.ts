@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { CutList } from 'Components/VideoEditor/Editors/CuttingEditor/types'
 import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
 import { timeToSecond } from './Editors/utils'
+import { remove, set } from 'immutable'
 
 // Media item type without methods, so that it is serializable
 export type MediaItemType = {
@@ -13,36 +14,34 @@ export type MediaItemType = {
     idFromPrototype: null | string
 }
 
-export type Annotation = MediaItemType
+export type AnnotationFromAPI = MediaItemType & { id?: string }
+export type Annotation = Omit<AnnotationFromAPI, 'id'> & { id: string }
+
 export type VideoCode = MediaItemType
 export type Subtitle = MediaItemType
 
 export type VideoListsState = {
-    annotations: Array<Annotation>
     videoCodes: Array<VideoCode>
+    annotations: Array<AnnotationFromAPI>
     customVideoCodesPool: Array<VideoCodePrototype>
     cutList: CutList
     subtitles: Subtitle[]
 }
 
 const initialState: VideoListsState = {
-    annotations: [],
     videoCodes: [],
+    annotations: [],
     customVideoCodesPool: [],
     cutList: [],
     subtitles: [],
 }
 
+// TODO remove annotations after refactoring!
+
 export const videoListsSlice = createSlice({
     name: 'lists',
     initialState,
     reducers: {
-        setAnnotations: (state, action: PayloadAction<Array<Annotation>>) => {
-            return {
-                ...state,
-                annotations: action.payload,
-            }
-        },
         setVideoCodes: (state, action: PayloadAction<Array<VideoCode>>) => {
             return {
                 ...state,
@@ -86,8 +85,8 @@ export const videoListsSlice = createSlice({
         },
         setVideoEditor: (_, action: PayloadAction<VideoListsState>) => {
             return {
-                annotations: action.payload?.annotations || [],
                 videoCodes: action.payload?.videoCodes || [],
+                annotations: action.payload?.annotations || [],
                 customVideoCodesPool: action.payload?.customVideoCodesPool || [],
                 subtitles: action.payload?.subtitles || [],
                 cutList: action.payload?.cutList || [],

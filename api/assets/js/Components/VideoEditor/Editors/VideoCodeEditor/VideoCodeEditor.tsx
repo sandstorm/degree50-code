@@ -88,7 +88,7 @@ const VideoCodeEditor = (props: Props) => {
 
     // All options
     const firstVideo = props.videos[0]
-    const firstVideoDuration = firstVideo ? parseFloat(firstVideo.duration) : 5 // duration in seconds
+    const firstVideoDuration = firstVideo ? firstVideo.duration : 5 // duration in seconds
 
     const addVideoCode = useCallback(
         (videoCode: VideoCodePrototype) => {
