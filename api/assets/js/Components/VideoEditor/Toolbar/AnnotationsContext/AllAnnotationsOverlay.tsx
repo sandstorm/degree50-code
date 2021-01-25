@@ -29,8 +29,8 @@ const AllAnnotationsOverlay: FC<Props> = (props) => {
         <Overlay closeCallback={close}>
             <h3>Alle Annotationen</h3>
             <ol className="video-editor__media-item-list-new">
-                {props.annotationIdsByStartTime.map((id) => (
-                    <AnnotationListItem key={id} annotationId={id} />
+                {props.annotationIdsByStartTime.map((id, index) => (
+                    <AnnotationListItem key={id} annotationId={id} index={index} />
                 ))}
             </ol>
         </Overlay>

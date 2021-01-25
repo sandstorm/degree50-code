@@ -46,12 +46,11 @@ const OverlayContainer: FC<Props> = (props) => {
     return (
         <AriaOverlayContainer
             style={{
+                display: isOpen ? 'block' : 'none',
                 position: 'absolute',
                 top: 0,
                 height: '100vh',
                 width: '100vw',
-                display: isOpen ? 'grid' : 'none',
-                placeItems: 'center',
             }}
         >
             {isOpen &&

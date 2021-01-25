@@ -1,14 +1,15 @@
 import React, { useCallback } from 'react'
 
 type Props = {
+    id?: string
     text: string
     updateText: (text: string) => void
 }
 
-const TextField = ({ text, updateText }: Props) => {
+const TextField = ({ id, text, updateText }: Props) => {
     const handleChange = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-            updateText(event.target.value)
+            updateText(unescape(event.target.value))
         },
         [updateText]
     )
@@ -16,6 +17,7 @@ const TextField = ({ text, updateText }: Props) => {
     return (
         <div className="video-editor__media-item-list__column video-editor__media-item-list__column--text">
             <textarea
+                id={id}
                 placeholder={'Text einfügen'}
                 maxLength={200}
                 spellCheck={false}

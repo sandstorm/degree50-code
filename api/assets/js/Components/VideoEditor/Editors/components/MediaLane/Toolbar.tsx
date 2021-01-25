@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Translate, translate } from 'react-i18nify'
+import { Translate } from 'react-i18nify'
 import { RenderConfig } from './MediaTrack'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
@@ -94,22 +94,7 @@ const Toolbar = ({
                     </button>
                 </div>
             </div>
-            <div className="video-editor-toolbar__item-group">
-                <div className="video-editor-toolbar__item">
-                    <button tabIndex={1} className={'btn btn-primary btn-sm'} onClick={onPlayPauseClick}>
-                        {playerIsPaused ? (
-                            <span>
-                                <i className="fas fa-play" /> {translate('play')}
-                            </span>
-                        ) : (
-                            <span>
-                                <i className="fas fa-pause" /> {translate('pause')}
-                            </span>
-                        )}
-                    </button>
-                </div>
-            </div>
-            {children}
+            {children && <div className="video-editor-toolbar__item-group">{children}</div>}
         </div>
     )
 }

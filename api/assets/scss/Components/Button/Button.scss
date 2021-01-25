@@ -57,6 +57,40 @@
     }
 }
 
+.btn-grey {
+    color: $theme__color__white !important;
+    background-color: $theme__color__grey--dark !important;
+    border-color: $theme__color__grey--dark !important;
+
+    &:hover {
+        background-color: $theme__color__primary--dark !important;
+        border-color: $theme__color__primary--dark !important;
+    }
+
+    &:focus {
+        color: $theme__color__white !important;
+        background-color: $theme__color__secondary--dark !important;
+        border-color: $theme__color__secondary--dark !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    &:active {
+        color: $theme__color__white !important;
+        background-color: $theme__color__grey--dark !important;
+        border-color: $theme__color__grey--dark !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    &.disabled,
+    &:disabled {
+        color: $theme__color__white !important;
+        background-color: $theme__color__grey--light !important;
+        border-color: $theme__color__grey--light !important;
+    }
+}
+
 .btn-outline-primary {
     color: $theme__color__primary;
     background-color: $theme__color__white;

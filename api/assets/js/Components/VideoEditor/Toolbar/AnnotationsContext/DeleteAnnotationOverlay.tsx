@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from './AnnotationsMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import Overlay from '../OverlayContainer/Overlay'
+import Button from 'Components/Button/Button'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     currentlyEditedElementId: selectors.overlay.currentlyEditedElementId(state),
@@ -33,8 +34,12 @@ const DeleteAnnotationOverlay: FC<Props> = (props) => {
     return (
         <Overlay closeCallback={close}>
             <h3>Annotation wirklich löschen?</h3>
-            <button onClick={close}>Abbrechen</button>
-            <button onClick={handleRemove}>Löschen</button>
+            <Button className="btn btn-secondary" onPress={close}>
+                Abbrechen
+            </Button>
+            <Button className="btn btn-primary" onPress={handleRemove}>
+                Löschen
+            </Button>
         </Overlay>
     )
 }

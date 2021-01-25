@@ -1,12 +1,13 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
-import React, { ChangeEvent, FC, memo, useMemo, useState } from 'react'
+import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from './AnnotationsMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
 import { useAnnotationEdit } from './useAnnotationEdit'
 import Overlay from '../OverlayContainer/Overlay'
+import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
+import Button from 'Components/Button/Button'
 
 const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
@@ -32,8 +33,8 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
         transientAnnotation,
         handleStartTimeChange,
         handleEndTimeChange,
-        handleTextChange,
-        handleMemoChange,
+        updateText,
+        updateMemo,
     } = useAnnotationEdit(props.annotation)
 
     const close = () => {
@@ -56,10 +57,19 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
             <h3>Annotation Bearbeiten</h3>
             <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
-            <textarea value={transientAnnotation.text} onChange={handleTextChange} />
-            <textarea value={transientAnnotation.memo} onChange={handleMemoChange} />
-            <button onClick={close}>Verwerfen</button>
-            <button onClick={handleSave}>Speichern</button>
+            <hr />
+            <label htmlFor="text">Text</label>
+            <TextField id="text" text={transientAnnotation.text} updateText={updateText} />
+            <br />
+            <label htmlFor="memo">Memo</label>
+            <TextField id="memo" text={transientAnnotation.memo} updateText={updateMemo} />
+            <hr />
+            <Button className="btn btn-secondary" onPress={close}>
+                Verwerfen
+            </Button>
+            <Button className="btn btn-primary" onPress={handleSave}>
+                Speichern
+            </Button>
         </Overlay>
     )
 }
