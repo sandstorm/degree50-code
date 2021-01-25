@@ -15,6 +15,10 @@ type Props = {
     playPosition?: number
 }
 
+const defaultVideoJsOptions: VideoJsPlayerOptions = {
+    fluid: true,
+}
+
 const VideoJSPlayer: React.FC<Props> = (props) => {
     const [player, setPlayer] = useState<VideoJsPlayer | undefined>(undefined)
     const videoRef: React.RefObject<HTMLVideoElement> = useRef(null)
@@ -24,7 +28,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
     const playerId = useMemo(() => generate(), [])
 
     useEffect(() => {
-        setPlayer(videojs(videoRef.current, { ...props.videoJsOptions, fluid: true }))
+        setPlayer(videojs(videoRef.current, { ...defaultVideoJsOptions, ...props.videoJsOptions }))
 
         return () => {
             player?.dispose()

@@ -28,20 +28,20 @@ export const useAnnotationEdit = (initialAnnotation?: Annotation) => {
         }
     }
 
-    const handleTextChange = (ev: ChangeEvent<HTMLTextAreaElement>) => {
+    const updateText = (text: string) => {
         if (transientAnnotation) {
             setTransientAnnotation({
                 ...transientAnnotation,
-                text: ev.target.value,
+                text,
             })
         }
     }
 
-    const handleMemoChange = (ev: ChangeEvent<HTMLTextAreaElement>) => {
+    const updateMemo = (memo: string) => {
         if (transientAnnotation) {
             setTransientAnnotation({
                 ...transientAnnotation,
-                memo: ev.target.value,
+                memo,
             })
         }
     }
@@ -50,7 +50,7 @@ export const useAnnotationEdit = (initialAnnotation?: Annotation) => {
         transientAnnotation,
         handleStartTimeChange,
         handleEndTimeChange,
-        handleTextChange,
-        handleMemoChange,
+        updateText,
+        updateMemo,
     }
 }

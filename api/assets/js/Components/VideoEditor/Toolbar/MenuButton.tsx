@@ -1,4 +1,5 @@
 import { FocusScope } from '@react-aria/focus'
+import Button from 'Components/Button/Button'
 import React, { memo, ReactNode, useCallback, useState } from 'react'
 
 const MenuButton = ({ label, children }: { label: string; children: ReactNode }) => {
@@ -26,7 +27,10 @@ const MenuButton = ({ label, children }: { label: string; children: ReactNode })
 
     return (
         <div className="menu-wrapper">
-            <button onClick={toggleMenu}>{label}</button>
+            <Button className="btn btn-grey menu-button" onPress={toggleMenu}>
+                <i className="fas fa-pen" />
+            </Button>
+            {isOpen && <div className="menu-backdrop" onClick={close} />}
             {isOpen && (
                 <FocusScope autoFocus contain restoreFocus>
                     <div className="menu" onKeyDown={handleKeyDown}>

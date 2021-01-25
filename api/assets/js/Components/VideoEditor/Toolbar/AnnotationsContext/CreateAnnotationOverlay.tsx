@@ -1,3 +1,5 @@
+import Button from 'Components/Button/Button'
+import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
 import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
 import { secondToTime } from 'Components/VideoEditor/Editors/utils'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
@@ -44,8 +46,8 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
         transientAnnotation,
         handleStartTimeChange,
         handleEndTimeChange,
-        handleTextChange,
-        handleMemoChange,
+        updateText,
+        updateMemo,
     } = useAnnotationEdit(initialAnnotation)
 
     const close = () => {
@@ -68,10 +70,19 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
             <h3>Neue Annotation</h3>
             <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
-            <textarea value={transientAnnotation.text} onChange={handleTextChange} />
-            <textarea value={transientAnnotation.memo} onChange={handleMemoChange} />
-            <button onClick={close}>Verwerfen</button>
-            <button onClick={handleSave}>Speichern</button>
+            <hr />
+            <label htmlFor="text">Text</label>
+            <TextField id="text" text={transientAnnotation.text} updateText={updateText} />
+            <br />
+            <label htmlFor="memo">Memo</label>
+            <TextField id="memo" text={transientAnnotation.memo} updateText={updateMemo} />
+            <hr />
+            <Button className="btn btn-secondary" onPress={close}>
+                Verwerfen
+            </Button>
+            <Button className="btn btn-primary" onPress={handleSave}>
+                Speichern
+            </Button>
         </Overlay>
     )
 }

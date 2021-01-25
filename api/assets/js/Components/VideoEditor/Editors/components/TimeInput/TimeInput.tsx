@@ -42,7 +42,7 @@ const TimeInput: FC<Props> = (props) => {
                 step={1}
                 min={0}
             />
-            h
+            hh
             <input
                 type="number"
                 aria-label={`${props.label} Minuten`}
@@ -52,7 +52,7 @@ const TimeInput: FC<Props> = (props) => {
                 min={0}
                 max={59}
             />
-            m
+            mm
             <input
                 type="number"
                 aria-label={`${props.label} Sekunden`}
@@ -62,7 +62,7 @@ const TimeInput: FC<Props> = (props) => {
                 min={0}
                 max={59}
             />
-            s
+            ss
         </div>
     )
 }

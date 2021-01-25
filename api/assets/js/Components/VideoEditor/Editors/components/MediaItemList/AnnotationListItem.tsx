@@ -1,13 +1,16 @@
+import Button from 'Components/Button/Button'
 import { AnnotationId } from 'Components/VideoEditor/AnnotationsSlice'
 import { AnnotationOverlayIds } from 'Components/VideoEditor/Toolbar/AnnotationsContext/AnnotationsMenu'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
+import { translate } from 'react-i18nify'
 import { connect } from 'react-redux'
 import End from './Row/End'
 import Start from './Row/Start'
 
 type OwnProps = {
     annotationId: AnnotationId
+    index: number
 }
 
 const mapStateToProps = (state: VideoEditorState, ownProps: OwnProps) => ({
@@ -21,7 +24,7 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const AnnotationListItem: FC<Props> = ({ item, setCurrentlyEditedElementId, setOverlay }) => {
+const AnnotationListItem: FC<Props> = ({ item, index, setCurrentlyEditedElementId, setOverlay }) => {
     const handleRemove = () => {
         setCurrentlyEditedElementId(item.id)
         setOverlay({ overlayId: AnnotationOverlayIds.remove, closeOthers: false })
@@ -33,6 +36,7 @@ const AnnotationListItem: FC<Props> = ({ item, setCurrentlyEditedElementId, setO
     }
 
     const ariaLabel = `
+        ${index + 1}. Element
         Von: ${item.start}
         Bis: ${item.end}
 
@@ -46,8 +50,12 @@ const AnnotationListItem: FC<Props> = ({ item, setCurrentlyEditedElementId, setO
             <End end={item.end} />
             <p>{item.text}</p>
             <p>{item.memo}</p>
-            <button onClick={handleRemove}>Löschen</button>
-            <button onClick={handleEdit}>Bearbeiten</button>
+            <Button className="btn btn-secondary" onPress={handleRemove}>
+                Löschen
+            </Button>
+            <Button className="btn btn-primary" onPress={handleEdit}>
+                Bearbeiten
+            </Button>
         </li>
     )
 }
