@@ -50,18 +50,15 @@ const OverlayContainer: FC<Props> = (props) => {
                 top: 0,
                 height: '100vh',
                 width: '100vw',
-                background: 'rgba(0,0,0,0.23)',
                 display: isOpen ? 'grid' : 'none',
                 placeItems: 'center',
             }}
         >
             {isOpen &&
-                props.overlayIds.map((overlayId, index) => (
-                    <div key={index} style={{ background: 'white', padding: '8px' }}>
-                        <FocusScope autoFocus contain restoreFocus>
-                            {mapOverlayIdToOverlayContent(overlayId)}
-                        </FocusScope>
-                    </div>
+                props.overlayIds.map((overlayId) => (
+                    <FocusScope autoFocus contain restoreFocus key={overlayId}>
+                        {mapOverlayIdToOverlayContent(overlayId)}
+                    </FocusScope>
                 ))}
         </AriaOverlayContainer>
     )
