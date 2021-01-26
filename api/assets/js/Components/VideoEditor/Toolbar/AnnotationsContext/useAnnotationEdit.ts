@@ -1,6 +1,6 @@
 import { secondToTime, timeToSecond } from 'Components/VideoEditor/Editors/utils'
 import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 
 export const useAnnotationEdit = (initialAnnotation?: Annotation) => {
     const [transientAnnotation, setTransientAnnotation] = useState<Annotation | undefined>(initialAnnotation)

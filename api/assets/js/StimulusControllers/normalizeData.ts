@@ -1,4 +1,6 @@
+import { AnnotationFromAPI, VideoCodeFromAPI, VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
 import { generate } from 'shortid'
+import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 
 /**
  * Normalizes a list of entities into an object with a 'byId'-lookup property of the entities,
@@ -6,24 +8,57 @@ import { generate } from 'shortid'
  *
  * If an entity does not have an id we generate a new unique id with shortid.
  */
-export const normalizeData = <E extends { id?: string }>(entities: Array<E>) =>
-    // Note: the omit is currently necessary, because we did not have ids in our data types before.
-    // Therefore we do not know if our input entites already contain an id and the type has to be defined as optional.
-    // However our normalized output always will contain a proper id, so we intersect the accumulator type with a required id.
+export const normalizeData = <E extends { id: string }>(entities: Array<E>) =>
     entities.reduce(
-        (acc: { byId: { [id: string]: Omit<E, 'id'> & { id: string } }; ids: string[] }, entity: E) => {
-            const id = entity?.id ?? generate()
-
+        (acc: { byId: { [id: string]: E }; ids: string[] }, entity: E) => {
             return {
                 byId: {
                     ...acc.byId,
-                    [id]: {
-                        id,
+                    [entity.id]: {
                         ...entity,
                     },
                 },
-                ids: [...acc.ids, id],
+                ids: [...acc.ids, entity.id],
             }
         },
         { byId: {}, ids: [] }
     )
+
+const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
+    entities.map((e) => ({ ...e, id: e?.id ?? generate() }))
+
+export const prepareAnnotationsFromSolution = (solution: any) => {
+    const annotations: AnnotationFromAPI[] = solution?.annotations ?? []
+    return normalizeData(addIdsToEntities(annotations))
+}
+
+export const prepareVideoCodesFromSolution = (solution: any) => {
+    const videoCodes: VideoCodeFromAPI[] = solution?.videoCodes ?? []
+    return normalizeData(addIdsToEntities(videoCodes))
+}
+
+export const prepareVideoCodePoolFromSolution = (solution: any, config?: ConfigState) => {
+    const customVideoCodePool: VideoCodePrototype[] = (() => {
+        if (solution.customVideoCodesPool && solution.customVideoCodesPool.length > 0) {
+            return solution.customVideoCodesPool
+        } else if (config?.videoCodesPool) {
+            return config.videoCodesPool
+        } else {
+            return []
+        }
+    })()
+
+    const flattenedVideoCodePool: VideoCodePrototype[] = customVideoCodePool.reduce(
+        (acc: VideoCodePrototype[], code) => {
+            const children = code.videoCodes
+            const childrenWithParentId = children.map((c) => ({
+                ...c,
+                parentId: c.parentId ?? code.id,
+            }))
+
+            return [...acc, code, ...childrenWithParentId]
+        },
+        []
+    )
+    return normalizeData(addIdsToEntities(flattenedVideoCodePool))
+}

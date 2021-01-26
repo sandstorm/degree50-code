@@ -1,12 +1,12 @@
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { AnnotationOverlayIds } from './AnnotationsMenu'
-import AnnotationListItem from 'Components/VideoEditor/Toolbar/AnnotationsContext/AnnotationListItem'
+import { VideoCodeOverlayIds } from './VideoCodesMenu'
+import VideoCodeListItem from 'Components/VideoEditor/Toolbar/VideoCodesContext/VideoCodeListItem'
 import Overlay from '../OverlayContainer/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    activeAnnotationIds: selectors.selectActiveAnnotationIds(state),
+    activeVideoCodeIds: selectors.selectActiveVideoCodeIds(state),
 })
 
 const mapDispatchToProps = {
@@ -20,24 +20,24 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const ActiveAnnotationsOverlay: FC<Props> = (props) => {
+const ActiveVideoCodesOverlay: FC<Props> = (props) => {
     const close = () => {
-        props.closeOverlay(AnnotationOverlayIds.active)
+        props.closeOverlay(VideoCodeOverlayIds.active)
     }
 
     return (
-        <Overlay closeCallback={close} title="Aktive Annotationen">
-            {props.activeAnnotationIds.length > 0 ? (
+        <Overlay closeCallback={close} title="Aktive VideoCodes">
+            {props.activeVideoCodeIds.length > 0 ? (
                 <ol className="video-editor__media-item-list-new">
-                    {props.activeAnnotationIds.map((id, index) => (
-                        <AnnotationListItem key={id} annotationId={id} index={index} />
+                    {props.activeVideoCodeIds.map((id) => (
+                        <VideoCodeListItem key={id} videoCodeId={id} />
                     ))}
                 </ol>
             ) : (
-                <p>Keine Annotationen aktiv</p>
+                <p tabIndex={0}>Keine VideoCodes aktiv</p>
             )}
         </Overlay>
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(ActiveAnnotationsOverlay))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(ActiveVideoCodesOverlay))

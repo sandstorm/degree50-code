@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import VideoCodesList from './VideoCodesList'
 import AddVideoCodesForm from './AddVideoCodesForm'
-import { VideoCodePrototype } from './types'
+import { VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
 
 export type Props = {
     videoCode: VideoCodePrototype

@@ -61,8 +61,7 @@ const DeleteAnnotationOverlay: FC<Props> = (props) => {
     }
 
     return (
-        <Overlay closeCallback={close}>
-            <h3>Annotation wirklich löschen?</h3>
+        <Overlay closeCallback={close} title="Annotation wirklich löschen?">
             <Button className="btn btn-secondary" onPress={close}>
                 Abbrechen
             </Button>

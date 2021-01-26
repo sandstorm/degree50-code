@@ -15,8 +15,8 @@ import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
 import SubtitleEditor from './Editors/SubtitleEditor/SubtitleEditor'
 import { TabsTypesEnum } from 'types'
-import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
+import { VideoCodePrototype } from './VideoListsSlice'
 
 setTranslations(i18n)
 setLocale('de')

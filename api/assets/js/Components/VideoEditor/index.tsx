@@ -2,10 +2,10 @@ import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlaye
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import React, { FC, memo } from 'react'
 import { TabsTypesEnum } from 'types'
-import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
 import MediaLaneContainer from './MediaLaneContainer'
 import OverlayContainer from './Toolbar/OverlayContainer/OverlayContainer'
 import Toolbar from './Toolbar/Toolbar'
+import { VideoCodePrototype } from './VideoListsSlice'
 
 type Props = {
     videos: Array<Video>

@@ -4,12 +4,14 @@ import { connect } from 'react-redux'
 import MenuButton from '../MenuButton'
 import MenuItem from '../MenuItem'
 
+const prefix = 'ANNOTATION'
+
 export const AnnotationOverlayIds = {
-    active: 'active',
-    create: 'create',
-    all: 'all',
-    edit: 'edit',
-    remove: 'remove',
+    active: `${prefix}/active`,
+    create: `${prefix}/create`,
+    all: `${prefix}/all`,
+    edit: `${prefix}/edit`,
+    remove: `${prefix}/remove`,
 }
 
 const mapStateToProps = (state: VideoEditorState) => {
@@ -27,11 +29,11 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const AnnotationsMenu: FC<Props> = (props) => {
     return (
-        <div className="video-editor__annotation-menu">
+        <div className="video-editor__menu">
             {props.activeAnnotationCount > 0 && (
-                <div className="video-editor__annotation-menu__count-badge">{props.activeAnnotationCount}</div>
+                <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
             )}
-            <MenuButton label="Annotationen">
+            <MenuButton icon={<i className="fas fa-pen" />}>
                 <MenuItem
                     label="Aktive Einträge"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.active, closeOthers: true })}

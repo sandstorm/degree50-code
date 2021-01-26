@@ -1,8 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { CutList } from 'Components/VideoEditor/Editors/CuttingEditor/types'
-import { VideoCodePrototype } from './Editors/VideoCodeEditor/types'
 import { timeToSecond } from './Editors/utils'
-import { remove, set } from 'immutable'
+
+export type VideoCodePrototype = {
+    id: string
+    name: string
+    description: string
+    color: string
+    userCreated: boolean
+    videoCodes: Array<VideoCodePrototype>
+    parentId?: string
+}
 
 // Media item type without methods, so that it is serializable
 export type MediaItemType = {
@@ -11,17 +19,19 @@ export type MediaItemType = {
     text: string
     memo: string
     color: null | string
-    idFromPrototype: null | string
+    idFromPrototype: null | string // FIXME move this out of the general type into VideoCodes
 }
 
 export type AnnotationFromAPI = MediaItemType & { id?: string }
 export type Annotation = Omit<AnnotationFromAPI, 'id'> & { id: string }
 
-export type VideoCode = MediaItemType
+export type VideoCodeFromAPI = MediaItemType & { id?: string }
+export type VideoCode = Omit<VideoCodeFromAPI, 'id'> & { id: string }
+
 export type Subtitle = MediaItemType
 
 export type VideoListsState = {
-    videoCodes: Array<VideoCode>
+    videoCodes: Array<VideoCodeFromAPI>
     annotations: Array<AnnotationFromAPI>
     customVideoCodesPool: Array<VideoCodePrototype>
     cutList: CutList
@@ -42,7 +52,8 @@ export const videoListsSlice = createSlice({
     name: 'lists',
     initialState,
     reducers: {
-        setVideoCodes: (state, action: PayloadAction<Array<VideoCode>>) => {
+        // TODO remove
+        setVideoCodes: (state, action: PayloadAction<Array<VideoCodeFromAPI>>) => {
             return {
                 ...state,
                 videoCodes: action.payload,

@@ -7,8 +7,7 @@ import { solveConflicts } from '../helpers'
 import { timeToSecond } from '../utils'
 import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
 import VideoCodes from './VideoCodes'
-import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
-import { VideoCodePrototype } from './types'
+import { VideoCodeFromAPI, VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
@@ -66,7 +65,7 @@ const VideoCodeEditor = (props: Props) => {
     // TODO we have multiple duplicates of this function -> extract into helper
     const amountOfLanes = Math.max(
         0,
-        ...mediaItems.map((item: MediaItem<VideoCode>) => {
+        ...mediaItems.map((item: MediaItem<VideoCodeFromAPI>) => {
             return item.lane
         })
     )
@@ -77,7 +76,7 @@ const VideoCodeEditor = (props: Props) => {
         copyMediaItems,
         checkMediaItem,
         removeMediaItem,
-    } = useMediaItemHandling<VideoCode>({
+    } = useMediaItemHandling<VideoCodeFromAPI>({
         currentTime: props.mediaLaneRenderConfig.currentTime,
         updateCondition: props.itemUpdateCondition,
         mediaItems,
@@ -107,7 +106,7 @@ const VideoCodeEditor = (props: Props) => {
                 color: videoCode.color,
                 idFromPrototype: videoCode.id,
             }
-            const code: MediaItem<VideoCode> = new MediaItem({
+            const code: MediaItem<VideoCodeFromAPI> = new MediaItem({
                 ...mediaItem,
                 originalData: mediaItem,
                 lane: 0,

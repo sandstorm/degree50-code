@@ -11,9 +11,11 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { AnnotationFromAPI } from 'Components/VideoEditor/VideoListsSlice'
-import { AnnotationsState } from 'Components/VideoEditor/AnnotationsSlice'
-import { normalizeData } from './normalizeData'
+import {
+    prepareAnnotationsFromSolution,
+    prepareVideoCodePoolFromSolution,
+    prepareVideoCodesFromSolution,
+} from './normalizeData'
 
 export default class extends Controller {
     connect() {
@@ -23,14 +25,21 @@ export default class extends Controller {
         const { liveSyncConfig, solution, currentEditor } = props
         const config = props.config as ConfigState
 
+        // TODO refactor
+
         // set initial Redux state
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
         store.dispatch(actions.lists.setVideoEditor(solution))
 
-        const annotations: AnnotationFromAPI[] = solution?.annotations ?? []
-        const normalizedAnnotations: AnnotationsState = normalizeData(annotations)
+        const normalizedAnnotations = prepareAnnotationsFromSolution(solution)
         store.dispatch(actions.data.annotations.init(normalizedAnnotations))
+
+        const normalizedVideoCodes = prepareVideoCodesFromSolution(solution)
+        store.dispatch(actions.data.videoCodes.init(normalizedVideoCodes))
+
+        const normalizedCodePool = prepareVideoCodePoolFromSolution(solution, config)
+        store.dispatch(actions.data.videoCodePool.init(normalizedCodePool))
 
         store.dispatch(setCurrentEditorId(currentEditor))
 

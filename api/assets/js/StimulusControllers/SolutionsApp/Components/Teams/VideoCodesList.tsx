@@ -1,18 +1,19 @@
 import React from 'react'
-import { VideoCodePrototype } from '../../../../Components/VideoEditor/Editors/VideoCodeEditor/types'
-import { VideoCode } from '../../../../Components/VideoEditor/VideoListsSlice'
+import { VideoCodeFromAPI, VideoCodePrototype } from '../../../../Components/VideoEditor/VideoListsSlice'
 
 type Props = {
     videoCodesPool: Array<VideoCodePrototype>
-    usedVideoCodes: Array<VideoCode>
+    usedVideoCodes: Array<VideoCodeFromAPI>
 }
 
-const getAmountOfUsedVideoCodes = (videoCode: VideoCodePrototype, usedVideoCodes: Array<VideoCode>) => {
-    const amountOfUsedVideoCodes = usedVideoCodes.filter((item: VideoCode) => item.idFromPrototype === videoCode.id)
+const getAmountOfUsedVideoCodes = (videoCode: VideoCodePrototype, usedVideoCodes: Array<VideoCodeFromAPI>) => {
+    const amountOfUsedVideoCodes = usedVideoCodes.filter(
+        (item: VideoCodeFromAPI) => item.idFromPrototype === videoCode.id
+    )
     return amountOfUsedVideoCodes.length
 }
 
-const getVideoCodes = (videoCodes: Array<VideoCodePrototype>, usedVideoCodes: Array<VideoCode>) => {
+const getVideoCodes = (videoCodes: Array<VideoCodePrototype>, usedVideoCodes: Array<VideoCodeFromAPI>) => {
     return (
         <ul className={'video-editor__video-codes'}>
             {videoCodes
