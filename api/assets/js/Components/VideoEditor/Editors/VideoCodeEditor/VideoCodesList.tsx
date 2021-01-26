@@ -1,7 +1,7 @@
+import { VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
 import React from 'react'
 import AddVideoCodesForm from './AddVideoCodesForm'
 import VideoCodeEntry from './VideoCodeEntry'
-import { VideoCodePrototype } from './types'
 
 export type Props = {
     videoCodesPool: VideoCodePrototype[]

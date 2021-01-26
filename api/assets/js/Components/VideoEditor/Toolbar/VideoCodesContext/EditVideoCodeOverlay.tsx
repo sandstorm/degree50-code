@@ -1,68 +1,73 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { AnnotationOverlayIds } from './AnnotationsMenu'
+import { VideoCodeOverlayIds } from './VideoCodesMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
-import { useAnnotationEdit } from './useAnnotationEdit'
+import { useVideoCodeEdit } from './useVideoCodeEdit'
 import Overlay from '../OverlayContainer/Overlay'
 import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
 import Button from 'Components/Button/Button'
+import VideoCodeSelection from './VideoCodeSelection'
 
 const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
-    const annotationsById = selectors.data.annotations.selectAnnotationsById(state)
-    const annotation = currentlyEditedElementId ? annotationsById[currentlyEditedElementId] : undefined
+    const videoCodesById = selectors.data.videoCodes.selectVideoCodesById(state)
+    const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
 
     return {
-        annotation,
+        videoCode,
     }
 }
 
 const mapDispatchToProps = {
-    updateAnnotation: actions.data.annotations.update,
+    updateVideoCode: actions.data.videoCodes.update,
     closeOverlay: actions.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-// TODO this should probably be consolidated into a single component with the CreateAnnotationOverlay
-const EditAnnotationOverlay: FC<Props> = (props) => {
+// TODO this should probably be consolidated into a single component with the CreateVideoCodeOverlay
+const EditVideoCodeOverlay: FC<Props> = (props) => {
     const {
-        transientAnnotation,
+        transientVideoCode,
         handleStartTimeChange,
         handleEndTimeChange,
-        updateText,
-        updateMemo,
-    } = useAnnotationEdit(props.annotation)
+        handleMemoChange,
+        updateSelectedCode,
+    } = useVideoCodeEdit(props.videoCode)
 
     const close = () => {
-        props.closeOverlay(AnnotationOverlayIds.edit)
+        props.closeOverlay(VideoCodeOverlayIds.edit)
     }
 
-    if (!transientAnnotation) {
+    if (!transientVideoCode) {
         close()
         return null
     }
 
     const handleSave = () => {
-        props.updateAnnotation({ transientAnnotation })
+        props.updateVideoCode({ transientVideoCode })
         props.syncSolution()
         close()
     }
 
     return (
-        <Overlay closeCallback={close} title="Annotation bearbeiten">
-            <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
-            <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
+        <Overlay closeCallback={close} title="VideoCode bearbeiten">
+            <TimeInput label="Start" value={transientVideoCode.start} onChange={handleStartTimeChange} />
+            <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
             <hr />
-            <label htmlFor="text">Text</label>
-            <TextField id="text" text={transientAnnotation.text} updateText={updateText} />
+            <VideoCodeSelection
+                onSelect={updateSelectedCode}
+                selectedPrototypeId={transientVideoCode.idFromPrototype}
+            />
             <br />
+
             <label htmlFor="memo">Memo</label>
-            <TextField id="memo" text={transientAnnotation.memo} updateText={updateMemo} />
+            <TextField id="memo" text={transientVideoCode.memo} updateText={handleMemoChange} />
             <hr />
+
             <Button className="btn btn-secondary" onPress={close}>
                 Verwerfen
             </Button>
@@ -73,4 +78,4 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(EditAnnotationOverlay))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(EditVideoCodeOverlay))

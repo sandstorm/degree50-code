@@ -1,17 +1,17 @@
-import Button from 'Components/Button/Button'
-import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
 import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
 import { secondToTime } from 'Components/VideoEditor/Editors/utils'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
+import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { generate } from 'shortid'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import CloseButton from '../OverlayContainer/CloseButton'
 import Overlay from '../OverlayContainer/Overlay'
-import { AnnotationOverlayIds } from './AnnotationsMenu'
-import { useAnnotationEdit } from './useAnnotationEdit'
+import { VideoCodeOverlayIds } from './VideoCodesMenu'
+import { useVideoCodeEdit } from './useVideoCodeEdit'
+import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
+import Button from 'Components/Button/Button'
+import VideoCodeSelection from './VideoCodeSelection'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     currentTime: selectors.player.selectSyncPlayPosition(state),
@@ -19,21 +19,21 @@ const mapStateToProps = (state: VideoEditorState) => ({
 })
 
 const mapDispatchToProps = {
-    appendAnnotation: actions.data.annotations.append,
+    appendVideoCode: actions.data.videoCodes.append,
     closeOverlay: actions.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const CreateAnnotationOverlay: FC<Props> = (props) => {
+const CreateVideoCodeOverlay: FC<Props> = (props) => {
     const { currentTime, videos } = props
     const duration = videos[0].duration
 
-    // transient annotation
+    // transient videoCode
     // current as start
     // some default delta for end
-    const initialAnnotation: Annotation = {
+    const initialVideoCode: VideoCode = {
         id: generate(),
         start: secondToTime(currentTime),
         end: secondToTime(Math.min(currentTime + duration / 10, duration)),
@@ -43,40 +43,45 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
         idFromPrototype: null,
     }
 
+    // TODO handle code selection
     const {
-        transientAnnotation,
+        transientVideoCode,
         handleStartTimeChange,
         handleEndTimeChange,
-        updateText,
-        updateMemo,
-    } = useAnnotationEdit(initialAnnotation)
+        handleMemoChange,
+        updateSelectedCode,
+    } = useVideoCodeEdit(initialVideoCode)
 
     const close = () => {
-        props.closeOverlay(AnnotationOverlayIds.create)
+        props.closeOverlay(VideoCodeOverlayIds.create)
     }
 
-    if (!transientAnnotation) {
+    if (!transientVideoCode) {
         close()
         return null
     }
 
     const handleSave = () => {
-        props.appendAnnotation(transientAnnotation)
+        props.appendVideoCode(transientVideoCode)
         props.syncSolution()
         close()
     }
 
     return (
-        <Overlay closeCallback={close} title="Neue Annotation">
-            <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
-            <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
+        <Overlay closeCallback={close} title="Neuer VideoCode">
+            <TimeInput label="Start" value={transientVideoCode.start} onChange={handleStartTimeChange} />
+            <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
             <hr />
-            <label htmlFor="text">Text</label>
-            <TextField id="text" text={transientAnnotation.text} updateText={updateText} />
+            <VideoCodeSelection
+                onSelect={updateSelectedCode}
+                selectedPrototypeId={transientVideoCode.idFromPrototype}
+            />
             <br />
+
             <label htmlFor="memo">Memo</label>
-            <TextField id="memo" text={transientAnnotation.memo} updateText={updateMemo} />
+            <TextField id="memo" text={transientVideoCode.memo} updateText={handleMemoChange} />
             <hr />
+
             <Button className="btn btn-secondary" onPress={close}>
                 Verwerfen
             </Button>
@@ -87,4 +92,4 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(CreateAnnotationOverlay))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(CreateVideoCodeOverlay))

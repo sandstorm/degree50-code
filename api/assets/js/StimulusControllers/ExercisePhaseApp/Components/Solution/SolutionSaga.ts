@@ -1,4 +1,4 @@
-import { call, cancel, cancelled, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import { eventChannel, EventChannel } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
@@ -6,10 +6,13 @@ import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 import { selectConfig } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
-import { AnnotationFromAPI, VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
+import { VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { normalizeData } from 'StimulusControllers/normalizeData'
-import { AnnotationsState } from 'Components/VideoEditor/AnnotationsSlice'
+import {
+    prepareAnnotationsFromSolution,
+    prepareVideoCodePoolFromSolution,
+    prepareVideoCodesFromSolution,
+} from 'StimulusControllers/normalizeData'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -69,10 +72,14 @@ function* handleMessages(channel: EventChannel<unknown>) {
             // set solution
             const solution: VideoListsState = eventData.solution
 
-            const annotations: AnnotationFromAPI[] = eventData.solution?.annotations ?? []
-            const normalizedAnnotations: AnnotationsState = normalizeData(annotations)
+            const normalizedAnnotations = prepareAnnotationsFromSolution(solution)
+            const normalizedVideoCodes = prepareVideoCodesFromSolution(solution)
+            const normalizedCodePool = prepareVideoCodePoolFromSolution(solution)
+
             yield put(actions.lists.setVideoEditor(solution))
             yield put(actions.data.annotations.init(normalizedAnnotations))
+            yield put(actions.data.videoCodes.init(normalizedVideoCodes))
+            yield put(actions.data.videoCodePool.init(normalizedCodePool))
         }
     } finally {
         channel.close()

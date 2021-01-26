@@ -12,6 +12,7 @@
     .video-editor__toolbar {
         display: flex;
         align-items: center;
+        justify-content: flex-start;
         padding: $theme__spacing--small $theme__spacing--base;
 
         background-color: lightgray;

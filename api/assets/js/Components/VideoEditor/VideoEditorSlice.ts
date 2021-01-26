@@ -68,14 +68,34 @@ const selectActiveAnnotationIds = createSelector(
     }
 )
 
+const selectActiveVideoCodeIds = createSelector(
+    [dataSelectors.videoCodes.selectVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
+    (videoCodes, currentPlayPosition) => {
+        return videoCodes
+            .filter(
+                (videoCode) =>
+                    timeToSecond(videoCode.start) <= currentPlayPosition &&
+                    timeToSecond(videoCode.end) >= currentPlayPosition
+            )
+            .map((videoCode) => videoCode.id)
+    }
+)
+
 const selectSolution = createSelector(
-    [videoListsSelectors.selectVideoEditorLists, dataSelectors.annotations.selectDenormalizedAnnotations],
-    // TODO continue refactoring for videocodes + cuts
+    [
+        videoListsSelectors.selectVideoEditorLists,
+        dataSelectors.annotations.selectDenormalizedAnnotations,
+        dataSelectors.videoCodes.selectDenormalizedVideoCodes,
+        dataSelectors.videoCodePool.selectVideoCodePoolList,
+    ],
+    // TODO continue refactoring for cuts
     // NOTE: we are currently in the middle of refactoring lists into separate slices, which is why we merge our
     // "old" solution state with those, that have already been refactored
-    (otherVideoLists, annotations): VideoListsState => ({
+    (otherVideoLists, annotations, videoCodes, videoCodePool): VideoListsState => ({
         ...otherVideoLists,
         annotations,
+        videoCodes,
+        customVideoCodesPool: videoCodePool,
     })
 )
 
@@ -88,5 +108,6 @@ export const selectors = {
     overlay: overlaySelectors,
 
     selectActiveAnnotationIds,
+    selectActiveVideoCodeIds,
     selectSolution,
 }

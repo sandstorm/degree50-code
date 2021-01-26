@@ -4,7 +4,7 @@ import { MediaItem } from '../types'
 import ReadOnlyMediaTrack from '../MediaLane/MediaTrack/index'
 import { RenderConfig } from '../MediaLane/MediaTrack'
 import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
-import { MediaItemType, VideoCode } from 'Components/VideoEditor/VideoListsSlice'
+import { MediaItemType, VideoCodeFromAPI } from 'Components/VideoEditor/VideoListsSlice'
 import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
 import { defaultMediaTrackConfig } from '../MediaLane/MediaTrack/helpers'
 
@@ -28,7 +28,7 @@ const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems
 
     const amountOfLanes = Math.max(
         0,
-        ...mediaItems.map((item: MediaItem<VideoCode>) => {
+        ...mediaItems.map((item: MediaItem<VideoCodeFromAPI>) => {
             return item.lane
         })
     )

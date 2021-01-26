@@ -5,8 +5,9 @@ import React, { memo, ReactNode, useCallback, useState } from 'react'
 import { actions } from '../PlayerSlice'
 
 type OwnProps = {
-    label: string
+    label?: string
     children: ReactNode
+    icon: ReactNode
 }
 
 const mapDispatchToProps = {
@@ -15,7 +16,7 @@ const mapDispatchToProps = {
 
 type Props = typeof mapDispatchToProps & OwnProps
 
-const MenuButton = ({ label, children, pauseVideo }: Props) => {
+const MenuButton = ({ label, children, pauseVideo, icon }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const open = () => setIsOpen(true)
@@ -43,7 +44,7 @@ const MenuButton = ({ label, children, pauseVideo }: Props) => {
     return (
         <div className="menu-wrapper">
             <Button className="btn btn-grey menu-button video-editor__toolbar__button" onPress={toggleMenu}>
-                <i className="fas fa-pen" />
+                {icon} {label}
             </Button>
             {isOpen && <div className="menu-backdrop" onClick={close} />}
             {isOpen && (

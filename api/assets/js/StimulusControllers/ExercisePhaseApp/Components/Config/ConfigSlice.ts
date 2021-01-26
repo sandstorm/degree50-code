@@ -3,8 +3,7 @@ import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
 import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
-import { VideoCodePrototype } from 'Components/VideoEditor/Editors/VideoCodeEditor/types'
-import { VideoListsState } from '../../../../Components/VideoEditor/VideoListsSlice'
+import { VideoListsState, VideoCodePrototype } from '../../../../Components/VideoEditor/VideoListsSlice'
 
 export type ComponentId = ComponentTypesEnum | TabsTypesEnum
 
@@ -62,16 +61,20 @@ export const configSlice = createSlice({
 export const { hydrateConfig } = configSlice.actions
 export const { actions } = configSlice
 
-export const selectConfig = (state: { config: ConfigState }) => state.config
-export const selectUserId = (state: { config: ConfigState }) => state.config.userId
-export const selectReadOnly = (state: { config: ConfigState }) => state.config.readOnly
-export const selectVideos = (state: { config: ConfigState }) => state.config.videos
+export type ConfigStateSlice = { config: ConfigState }
+
+export const selectConfig = (state: ConfigStateSlice) => state.config
+export const selectUserId = (state: ConfigStateSlice) => state.config.userId
+export const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
+export const selectVideos = (state: ConfigStateSlice) => state.config.videos
+export const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCodesPool
 
 export const selectors = {
     selectConfig,
     selectUserId,
     selectReadOnly,
     selectVideos,
+    selectVideoCodesPool,
 }
 
 export default configSlice.reducer

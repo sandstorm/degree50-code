@@ -70,6 +70,8 @@ export const solveConflicts = (mediaItems: MediaItem<MediaItemType>[]): MediaIte
         return 0
     })
 
+    // FIXME as soon as all items have an id by default, remove the temporary ids and use
+    // the actual ones
     const itemsWithTemporaryIds = sortedMediaItems.map((item, index) => ({ id: index, item }))
 
     const assignmentResult = itemsWithTemporaryIds.reduce(

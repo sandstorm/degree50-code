@@ -7,8 +7,8 @@ import { ConfigState, hydrateConfig } from './ExercisePhaseApp/Components/Config
 import SolutionsApp, { SolutionByTeam } from './SolutionsApp/SolutionsApp'
 import { setTranslations, setLocale } from 'react-i18nify'
 import i18n from 'Components/VideoEditor/Editors/i18n'
-import { VideoCodePrototype } from '../Components/VideoEditor/Editors/VideoCodeEditor/types'
 import { updateIn } from 'immutable'
+import { VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
 
 setTranslations(i18n)
 setLocale('de')

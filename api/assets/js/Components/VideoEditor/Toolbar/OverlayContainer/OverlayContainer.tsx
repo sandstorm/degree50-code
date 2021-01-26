@@ -5,14 +5,22 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { AnnotationOverlayIds } from '../AnnotationsContext/AnnotationsMenu'
+import { VideoCodeOverlayIds } from '../VideoCodesContext/VideoCodesMenu'
 import AllAnnotationsOverlay from '../AnnotationsContext/AllAnnotationsOverlay'
 import CreateAnnotationOverlay from '../AnnotationsContext/CreateAnnotationOverlay'
 import EditAnnotationOverlay from '../AnnotationsContext/EditAnnotationOverlay'
 import DeleteAnnotationOverlay from '../AnnotationsContext/DeleteAnnotationOverlay'
 import ActiveAnnotationsOverlay from '../AnnotationsContext/ActiveAnnotationsOverlay'
+import ActiveVideoCodesOverlay from '../VideoCodesContext/ActiveVideoCodesOverlay'
+import CreateVideoCodeOverlay from '../VideoCodesContext/CreateVideoCodeOverlay'
+import AllVideoCodesOverlay from '../VideoCodesContext/AllVideoCodesOverlay'
+import EditVideoCodeOverlay from '../VideoCodesContext/EditVideoCodeOverlay'
+import DeleteVideoCodeOverlay from '../VideoCodesContext/DeleteVideoCodeOverlay'
+import ListCodesOverlay from '../VideoCodesContext/ListCodesOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
+        // Annotations
         case AnnotationOverlayIds.active: {
             return <ActiveAnnotationsOverlay itemUpdateCondition={true} />
         }
@@ -24,6 +32,22 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
             return <EditAnnotationOverlay />
         case AnnotationOverlayIds.remove:
             return <DeleteAnnotationOverlay />
+
+        // VideoCodes
+        case VideoCodeOverlayIds.list: {
+            return <ListCodesOverlay />
+        }
+        case VideoCodeOverlayIds.active: {
+            return <ActiveVideoCodesOverlay itemUpdateCondition={true} />
+        }
+        case VideoCodeOverlayIds.create:
+            return <CreateVideoCodeOverlay />
+        case VideoCodeOverlayIds.all:
+            return <AllVideoCodesOverlay itemUpdateCondition={true} />
+        case VideoCodeOverlayIds.edit:
+            return <EditVideoCodeOverlay />
+        case VideoCodeOverlayIds.remove:
+            return <DeleteVideoCodeOverlay />
         default:
             return undefined
     }
