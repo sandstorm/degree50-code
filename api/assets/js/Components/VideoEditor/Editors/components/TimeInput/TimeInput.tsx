@@ -32,37 +32,43 @@ const TimeInput: FC<Props> = (props) => {
     }
 
     return (
-        <div>
-            <span>{props.label}</span>
-            <input
-                type="number"
-                aria-label={`${props.label} Stunden`}
-                value={timeSplit[0]}
-                onChange={handleHoursChange}
-                step={1}
-                min={0}
-            />
-            hh
-            <input
-                type="number"
-                aria-label={`${props.label} Minuten`}
-                value={timeSplit[1]}
-                onChange={handleMinutesChange}
-                step={1}
-                min={0}
-                max={59}
-            />
-            mm
-            <input
-                type="number"
-                aria-label={`${props.label} Sekunden`}
-                value={timeSplit[2]}
-                onChange={handleSecondsChange}
-                step={0.5}
-                min={0}
-                max={59}
-            />
-            ss
+        <div className="time-input">
+            <span className="time-input__label">{props.label}</span>
+            <div className="time-input__input time-input__input--hours">
+                <input
+                    type="number"
+                    aria-label={`${props.label} Stunden`}
+                    value={timeSplit[0]}
+                    onChange={handleHoursChange}
+                    step={1}
+                    min={0}
+                />
+                <span>hh</span>
+            </div>
+            <div className="time-input__input time-input__input--minutes">
+                <input
+                    type="number"
+                    aria-label={`${props.label} Minuten`}
+                    value={timeSplit[1]}
+                    onChange={handleMinutesChange}
+                    step={1}
+                    min={0}
+                    max={59}
+                />
+                <span>mm</span>
+            </div>
+            <div className="time-input__input time-input__input--seconds">
+                <input
+                    type="number"
+                    aria-label={`${props.label} Sekunden`}
+                    value={timeSplit[2]}
+                    onChange={handleSecondsChange}
+                    step={0.5}
+                    min={0}
+                    max={59}
+                />
+                <span>ss</span>
+            </div>
         </div>
     )
 }

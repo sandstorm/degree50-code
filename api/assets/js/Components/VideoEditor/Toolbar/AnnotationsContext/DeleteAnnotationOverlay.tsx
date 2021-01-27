@@ -1,5 +1,5 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, RefObject } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from './AnnotationsMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
