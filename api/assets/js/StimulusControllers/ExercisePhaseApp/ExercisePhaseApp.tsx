@@ -4,9 +4,7 @@ import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
 import { OverlayProvider } from '@react-aria/overlays'
 
-type ExercisePhaseProps = {}
-
-export const ExercisePhaseApp: React.FC<ExercisePhaseProps> = () => {
+export const ExercisePhaseApp: React.FC = () => {
     // react-aria-modal watches a container element for aria-modal nodes and
     // hides the rest of the dom from screen readers with aria-hidden when one is open.
     watchModals()
