@@ -7,6 +7,17 @@
     width: 100%;
 
     z-index: $theme__z-index--overlay + 1;
+
+    button + button {
+        margin-left: $theme__spacing--base;
+    }
+}
+
+.video-editor__overlay__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .video-editor__overlay__content {

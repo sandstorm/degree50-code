@@ -12,8 +12,15 @@
     .video-editor__toolbar {
         display: flex;
         align-items: center;
+        padding: $theme__spacing--small $theme__spacing--base;
 
         background-color: lightgray;
+
+        &__button {
+            height: 32px;
+            width: 32px;
+            padding: 0 !important;
+        }
 
         .menu-wrapper {
             position: relative;

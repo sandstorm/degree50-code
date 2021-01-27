@@ -3,7 +3,6 @@ import { AnnotationId } from 'Components/VideoEditor/AnnotationsSlice'
 import { AnnotationOverlayIds } from 'Components/VideoEditor/Toolbar/AnnotationsContext/AnnotationsMenu'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
-import { translate } from 'react-i18nify'
 import { connect } from 'react-redux'
 import End from './Row/End'
 import Start from './Row/Start'
@@ -45,7 +44,7 @@ const AnnotationListItem: FC<Props> = ({ item, index, setCurrentlyEditedElementI
     `
 
     return (
-        <li tabIndex={0} aria-label={ariaLabel}>
+        <li className="annotation-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={item.id}>
             <Start start={item.start} />
             <End end={item.end} />
             <p>{item.text}</p>

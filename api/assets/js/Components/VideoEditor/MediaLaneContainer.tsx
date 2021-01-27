@@ -17,7 +17,7 @@ const MediaLaneContainer: FC<Props> = (props) => {
 
     return (
         <div className="media-lane-container">
-            <button className="media-lane-container__toggle" onClick={handleMediaLaneToggle}>
+            <button className="btn btn-grey btn-sm media-lane-container__toggle" onClick={handleMediaLaneToggle}>
                 <i className={showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'} />
             </button>
 

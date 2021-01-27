@@ -27,7 +27,18 @@ const ActiveAnnotationsOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close}>
-            <h3>Aktive Annotationen</h3>
+            <h3 className="video-editor__overlay__title">
+                <span>Aktive Annotationen</span>
+                <button
+                    tabIndex={1}
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={close}
+                    data-focus-id="close-button"
+                >
+                    <i className="fas fa-times" />
+                </button>
+            </h3>
             {props.activeAnnotationIds.length > 0 ? (
                 <ol className="video-editor__media-item-list-new">
                     {props.activeAnnotationIds.map((id, index) => (
@@ -35,7 +46,7 @@ const ActiveAnnotationsOverlay: FC<Props> = (props) => {
                     ))}
                 </ol>
             ) : (
-                <p tabIndex={0}>Keine Annotationen aktiv</p>
+                <p>Keine Annotationen aktiv</p>
             )}
         </Overlay>
     )

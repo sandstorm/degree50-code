@@ -27,7 +27,7 @@ const MenuButton = ({ label, children }: { label: string; children: ReactNode })
 
     return (
         <div className="menu-wrapper">
-            <Button className="btn btn-grey menu-button" onPress={toggleMenu}>
+            <Button className="btn btn-grey menu-button video-editor__toolbar__button" onPress={toggleMenu}>
                 <i className="fas fa-pen" />
             </Button>
             {isOpen && <div className="menu-backdrop" onClick={close} />}
