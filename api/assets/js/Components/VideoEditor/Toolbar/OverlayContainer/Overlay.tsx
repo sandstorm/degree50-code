@@ -15,7 +15,7 @@ const Overlay = ({ closeCallback, children }: Props) => {
     }
 
     return (
-        <div className="video-editor__overlay" onKeyDown={handleKeyDown}>
+        <div className="video-editor__overlay" onKeyDown={handleKeyDown} aria-labelledby="overlay-title">
             <div className="video-editor__overlay__backdrop" onClick={closeCallback} />
             <div className="video-editor__overlay__content">{children}</div>
         </div>

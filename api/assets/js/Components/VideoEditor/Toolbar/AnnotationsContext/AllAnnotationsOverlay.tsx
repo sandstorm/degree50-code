@@ -27,7 +27,18 @@ const AllAnnotationsOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close}>
-            <h3>Alle Annotationen</h3>
+            <h3 className="video-editor__overlay__title">
+                <span>Alle Annotationen</span>
+                <button
+                    tabIndex={1}
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={close}
+                    data-focus-id="close-button"
+                >
+                    <i className="fas fa-times" />
+                </button>
+            </h3>
             <ol className="video-editor__media-item-list-new">
                 {props.annotationIdsByStartTime.map((id, index) => (
                     <AnnotationListItem key={id} annotationId={id} index={index} />
