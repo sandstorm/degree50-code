@@ -1,13 +1,28 @@
 import { FocusScope } from '@react-aria/focus'
+import { connect } from 'react-redux'
 import Button from 'Components/Button/Button'
 import React, { memo, ReactNode, useCallback, useState } from 'react'
+import { actions } from '../PlayerSlice'
 
-const MenuButton = ({ label, children }: { label: string; children: ReactNode }) => {
+type OwnProps = {
+    label: string
+    children: ReactNode
+}
+
+const mapDispatchToProps = {
+    pauseVideo: actions.setPause,
+}
+
+type Props = typeof mapDispatchToProps & OwnProps
+
+const MenuButton = ({ label, children, pauseVideo }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const open = () => setIsOpen(true)
     const close = () => setIsOpen(false)
     const toggleMenu = useCallback(() => {
+        pauseVideo(true)
+
         if (isOpen) {
             close()
         } else {
@@ -42,4 +57,4 @@ const MenuButton = ({ label, children }: { label: string; children: ReactNode })
     )
 }
 
-export default memo(MenuButton)
+export default connect(undefined, mapDispatchToProps)(memo(MenuButton))
