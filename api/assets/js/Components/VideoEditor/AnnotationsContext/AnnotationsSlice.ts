@@ -5,7 +5,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
 import { normalizeData } from 'StimulusControllers/normalizeData'
-import { Annotation } from './VideoListsSlice'
+import { Annotation } from '../VideoListsSlice'
 
 export type AnnotationId = string
 

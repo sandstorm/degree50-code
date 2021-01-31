@@ -1,3 +1,9 @@
+.video-editor__video-codes {
+    padding-left: 0;
+
+    list-style: none;
+}
+
 .video-code {
     .video-editor__video-codes,
     .new-video-code {
@@ -31,7 +37,7 @@
 }
 
 .video-code__content {
-    padding: 5px 10px;
+    padding: 5px 0 5px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -71,7 +77,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 10px;
+    padding: 5px 0 5px 10px;
 
     input {
         margin-right: 10px;

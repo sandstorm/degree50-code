@@ -1,8 +1,8 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import MenuButton from '../MenuButton'
-import MenuItem from '../MenuItem'
+import MenuButton from '../Toolbar/MenuButton'
+import MenuItem from '../Toolbar/MenuItem'
 
 const prefix = 'ANNOTATION'
 

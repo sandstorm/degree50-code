@@ -1,44 +1,57 @@
+import Button from 'Components/Button/Button'
+import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
+import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
+import { secondToTime } from 'Components/VideoEditor/Editors/utils'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { AnnotationOverlayIds } from './AnnotationsMenu'
+import { generate } from 'shortid'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
+import Overlay from '../../Toolbar/OverlayContainer/Overlay'
+import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import { useAnnotationEdit } from './useAnnotationEdit'
-import Overlay from '../OverlayContainer/Overlay'
-import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
-import Button from 'Components/Button/Button'
 
-const mapStateToProps = (state: VideoEditorState) => {
-    const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
-    const annotationsById = selectors.data.annotations.selectAnnotationsById(state)
-    const annotation = currentlyEditedElementId ? annotationsById[currentlyEditedElementId] : undefined
-
-    return {
-        annotation,
-    }
-}
+const mapStateToProps = (state: VideoEditorState) => ({
+    currentTime: selectors.player.selectSyncPlayPosition(state),
+    videos: selectors.config.selectVideos(state.videoEditor),
+})
 
 const mapDispatchToProps = {
-    updateAnnotation: actions.data.annotations.update,
+    appendAnnotation: actions.data.annotations.append,
     closeOverlay: actions.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-// TODO this should probably be consolidated into a single component with the CreateAnnotationOverlay
-const EditAnnotationOverlay: FC<Props> = (props) => {
+const CreateAnnotationOverlay: FC<Props> = (props) => {
+    const { currentTime, videos } = props
+    const duration = videos[0].duration
+
+    // transient annotation
+    // current as start
+    // some default delta for end
+    const initialAnnotation: Annotation = {
+        id: generate(),
+        start: secondToTime(currentTime),
+        end: secondToTime(Math.min(currentTime + duration / 10, duration)),
+        text: '',
+        memo: '',
+        color: null,
+        idFromPrototype: null,
+    }
+
     const {
         transientAnnotation,
         handleStartTimeChange,
         handleEndTimeChange,
         updateText,
         updateMemo,
-    } = useAnnotationEdit(props.annotation)
+    } = useAnnotationEdit(initialAnnotation)
 
     const close = () => {
-        props.closeOverlay(AnnotationOverlayIds.edit)
+        props.closeOverlay(AnnotationOverlayIds.create)
     }
 
     if (!transientAnnotation) {
@@ -47,13 +60,13 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
     }
 
     const handleSave = () => {
-        props.updateAnnotation({ transientAnnotation })
+        props.appendAnnotation(transientAnnotation)
         props.syncSolution()
         close()
     }
 
     return (
-        <Overlay closeCallback={close} title="Annotation bearbeiten">
+        <Overlay closeCallback={close} title="Neue Annotation">
             <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
             <hr />
@@ -73,4 +86,4 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(EditAnnotationOverlay))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(CreateAnnotationOverlay))

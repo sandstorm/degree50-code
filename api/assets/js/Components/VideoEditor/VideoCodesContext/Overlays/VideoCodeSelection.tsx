@@ -1,6 +1,7 @@
-import { selectors, VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodePoolSlice'
+import { selectors, VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePoolSlice'
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
+import PredefinedCodeLock from './PredefinedCodeLock'
 import Color from './VideoCodesPool/VideoCodeEntry/Color'
 
 type OwnProps = {
@@ -52,14 +53,8 @@ const VideoCodeSelection = React.memo(({ prototoypes, selectedPrototypeId, onSel
                             checked={isSelected}
                             onChange={handleSelect}
                         />
-                        {
-                            !prototype.userCreated ? (
-                                <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
-                            ) : (
-                                <i />
-                            ) // dummy icon for styling purposes
-                        }
                         <Color color={prototype.color} />
+                        <PredefinedCodeLock isUserCreated={prototype.userCreated} />
                         <label htmlFor={prototype.id}>{prototype.name}</label>
                     </li>
                 )

@@ -1,6 +1,6 @@
 import React from 'react'
-import AnnotationsMenu from './AnnotationsContext/AnnotationsMenu'
-import VideoCodesMenu from './VideoCodesContext/VideoCodesMenu'
+import AnnotationsMenu from '../AnnotationsContext/AnnotationsMenu'
+import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
 
 const Toolbar = () => {
     return (

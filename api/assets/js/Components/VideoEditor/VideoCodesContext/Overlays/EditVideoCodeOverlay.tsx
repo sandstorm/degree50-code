@@ -1,59 +1,45 @@
-import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
-import { secondToTime } from 'Components/VideoEditor/Editors/utils'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { generate } from 'shortid'
+import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import Overlay from '../OverlayContainer/Overlay'
-import { VideoCodeOverlayIds } from './VideoCodesMenu'
+import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
 import { useVideoCodeEdit } from './useVideoCodeEdit'
+import Overlay from '../../Toolbar/OverlayContainer/Overlay'
 import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
 
-const mapStateToProps = (state: VideoEditorState) => ({
-    currentTime: selectors.player.selectSyncPlayPosition(state),
-    videos: selectors.config.selectVideos(state.videoEditor),
-})
+const mapStateToProps = (state: VideoEditorState) => {
+    const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
+    const videoCodesById = selectors.data.videoCodes.selectVideoCodesById(state)
+    const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
+
+    return {
+        videoCode,
+    }
+}
 
 const mapDispatchToProps = {
-    appendVideoCode: actions.data.videoCodes.append,
+    updateVideoCode: actions.data.videoCodes.update,
     closeOverlay: actions.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const CreateVideoCodeOverlay: FC<Props> = (props) => {
-    const { currentTime, videos } = props
-    const duration = videos[0].duration
-
-    // transient videoCode
-    // current as start
-    // some default delta for end
-    const initialVideoCode: VideoCode = {
-        id: generate(),
-        start: secondToTime(currentTime),
-        end: secondToTime(Math.min(currentTime + duration / 10, duration)),
-        text: '',
-        memo: '',
-        color: null,
-        idFromPrototype: null,
-    }
-
-    // TODO handle code selection
+// TODO this should probably be consolidated into a single component with the CreateVideoCodeOverlay
+const EditVideoCodeOverlay: FC<Props> = (props) => {
     const {
         transientVideoCode,
         handleStartTimeChange,
         handleEndTimeChange,
         handleMemoChange,
         updateSelectedCode,
-    } = useVideoCodeEdit(initialVideoCode)
+    } = useVideoCodeEdit(props.videoCode)
 
     const close = () => {
-        props.closeOverlay(VideoCodeOverlayIds.create)
+        props.closeOverlay(VideoCodeOverlayIds.edit)
     }
 
     if (!transientVideoCode) {
@@ -62,13 +48,13 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
     }
 
     const handleSave = () => {
-        props.appendVideoCode(transientVideoCode)
+        props.updateVideoCode({ transientVideoCode })
         props.syncSolution()
         close()
     }
 
     return (
-        <Overlay closeCallback={close} title="Neuer VideoCode">
+        <Overlay closeCallback={close} title="VideoCode bearbeiten">
             <TimeInput label="Start" value={transientVideoCode.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
             <hr />
@@ -92,4 +78,4 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(CreateVideoCodeOverlay))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(EditVideoCodeOverlay))

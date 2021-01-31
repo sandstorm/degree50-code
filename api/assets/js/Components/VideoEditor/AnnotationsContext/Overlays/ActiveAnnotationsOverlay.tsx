@@ -1,9 +1,9 @@
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { AnnotationOverlayIds } from './AnnotationsMenu'
-import AnnotationListItem from 'Components/VideoEditor/Toolbar/AnnotationsContext/AnnotationListItem'
-import Overlay from '../OverlayContainer/Overlay'
+import { AnnotationOverlayIds } from '../AnnotationsMenu'
+import AnnotationListItem from 'Components/VideoEditor/AnnotationsContext/Overlays/AnnotationListItem'
+import Overlay from '../../Toolbar/OverlayContainer/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     activeAnnotationIds: selectors.selectActiveAnnotationIds(state),
