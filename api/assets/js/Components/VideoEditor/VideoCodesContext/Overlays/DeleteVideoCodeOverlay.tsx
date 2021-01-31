@@ -1,9 +1,9 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { VideoCodeOverlayIds } from './VideoCodesMenu'
+import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import Overlay from '../OverlayContainer/Overlay'
+import Overlay from '../../Toolbar/OverlayContainer/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     currentlyEditedElementId: selectors.overlay.currentlyEditedElementId(state),

@@ -45,6 +45,7 @@ const VideoCodesList = (props: Props) => {
                 <ul className="video-editor__video-codes">
                     {props.videoCodesPool.map((videoCode) => (
                         <VideoCodeEntry
+                            key={videoCode.id}
                             createVideoCodePrototype={handleCreatePrototype}
                             videoCode={videoCode}
                             removeVideoCodePrototype={handleRemovePrototype}

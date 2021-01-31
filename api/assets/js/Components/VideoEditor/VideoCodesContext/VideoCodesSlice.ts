@@ -5,7 +5,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
 import { normalizeData } from 'StimulusControllers/normalizeData'
-import { VideoCode } from './VideoListsSlice'
+import { VideoCode } from '../VideoListsSlice'
 
 export type VideoCodeId = string
 
@@ -68,7 +68,7 @@ export const VideoCodesSlice = createSlice({
 // SELECTORS //
 ///////////////
 
-type VideoCodesSlice = { videoEditor: { data: { videoCodes: VideoCodesState } } }
+export type VideoCodesSlice = { videoEditor: { data: { videoCodes: VideoCodesState } } }
 
 const selectVideoCodesById = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.byId
 const selectVideoCodeIds = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.ids

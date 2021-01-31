@@ -2,8 +2,8 @@ import VideoCodes from './VideoCodesPool/VideoCodes'
 import React from 'react'
 import { connect } from 'react-redux'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { VideoCodeOverlayIds } from './VideoCodesMenu'
-import Overlay from '../OverlayContainer/Overlay'
+import { VideoCodeOverlayIds } from '../VideoCodesMenu'
+import Overlay from '../../Toolbar/OverlayContainer/Overlay'
 
 const mapStateToProps = () => ({})
 

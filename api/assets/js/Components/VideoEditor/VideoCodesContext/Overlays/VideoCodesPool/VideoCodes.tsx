@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import React from 'react'
 import VideoCodesList from './VideoCodesList'
 import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodePoolSlice'
+import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePoolSlice'
 
 const mapStateToProps = (state: VideoCodePoolStateSlice) => {
     return {

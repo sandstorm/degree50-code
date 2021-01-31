@@ -2,12 +2,12 @@ import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
-import MediaLane from './Editors/components/MediaLane'
-import { MediaItem } from './Editors/components/types'
-import { solveConflicts } from './Editors/helpers'
-import { Annotation } from './VideoListsSlice'
-import { useMediaItemHandling } from './Editors/utils/useMediaItemHandling'
-import { MediaLaneRenderConfigState } from './MediaLaneRenderConfigSlice'
+import MediaLane from '../Editors/components/MediaLane'
+import { MediaItem } from '../Editors/components/types'
+import { solveConflicts } from '../Editors/helpers'
+import { Annotation } from '../VideoListsSlice'
+import { useMediaItemHandling } from '../Editors/utils/useMediaItemHandling'
+import { MediaLaneRenderConfigState } from '../MediaLaneRenderConfigSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 
 type OwnProps = {

@@ -20,17 +20,20 @@
 
         text-align: center;
 
+        // Lock icon
         & > i {
             margin-left: 10px;
             width: 25px;
             height: 25px;
         }
 
+        // Color div
         & > div {
             margin-left: 10px;
             margin-right: 0;
         }
 
+        // Prototype label
         & > label {
             margin-left: 10px;
         }

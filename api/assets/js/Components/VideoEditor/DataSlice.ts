@@ -1,7 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { AnnotationsState, AnnotationsSlice, selectors as annotationSelectors } from './AnnotationsSlice'
-import { VideoCodePoolSlice, VideoCodePoolState, selectors as videoCodePoolSelectors } from './VideoCodePoolSlice'
-import { VideoCodesSlice, VideoCodesState, selectors as videoCodeSelectors } from './VideoCodesSlice'
+import {
+    AnnotationsState,
+    AnnotationsSlice,
+    selectors as annotationSelectors,
+} from './AnnotationsContext/AnnotationsSlice'
+import {
+    VideoCodePoolSlice,
+    VideoCodePoolState,
+    selectors as videoCodePoolSelectors,
+} from './VideoCodesContext/VideoCodePoolSlice'
+import { VideoCodesSlice, VideoCodesState, selectors as videoCodeSelectors } from './VideoCodesContext/VideoCodesSlice'
 
 export type DataState = {
     annotations: AnnotationsState

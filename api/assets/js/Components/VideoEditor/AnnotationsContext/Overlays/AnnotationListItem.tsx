@@ -1,5 +1,6 @@
-import { VideoCodeId } from 'Components/VideoEditor/VideoCodesSlice'
-import { VideoCodeOverlayIds } from 'Components/VideoEditor/Toolbar/VideoCodesContext/VideoCodesMenu'
+import Button from 'Components/Button/Button'
+import { AnnotationId } from 'Components/VideoEditor/AnnotationsContext/AnnotationsSlice'
+import { AnnotationOverlayIds } from 'Components/VideoEditor/AnnotationsContext/AnnotationsMenu'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
@@ -7,11 +8,12 @@ import End from '../../Editors/components/MediaItemList/Row/End'
 import Start from '../../Editors/components/MediaItemList/Row/Start'
 
 type OwnProps = {
-    videoCodeId: VideoCodeId
+    annotationId: AnnotationId
+    index: number
 }
 
 const mapStateToProps = (state: VideoEditorState, ownProps: OwnProps) => ({
-    item: selectors.data.videoCodes.selectVideoCodeById(state, ownProps),
+    item: selectors.data.annotations.selectAnnotationById(state, ownProps),
 })
 
 const mapDispatchToProps = {
@@ -21,18 +23,19 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const VideoCodeListItem: FC<Props> = ({ item, setCurrentlyEditedElementId, setOverlay }) => {
+const AnnotationListItem: FC<Props> = ({ item, index, setCurrentlyEditedElementId, setOverlay }) => {
     const handleRemove = () => {
         setCurrentlyEditedElementId(item.id)
-        setOverlay({ overlayId: VideoCodeOverlayIds.remove, closeOthers: false })
+        setOverlay({ overlayId: AnnotationOverlayIds.remove, closeOthers: false })
     }
 
     const handleEdit = () => {
         setCurrentlyEditedElementId(item.id)
-        setOverlay({ overlayId: VideoCodeOverlayIds.edit, closeOthers: false })
+        setOverlay({ overlayId: AnnotationOverlayIds.edit, closeOthers: false })
     }
 
     const ariaLabel = `
+        ${index + 1}. Element
         Von: ${item.start}
         Bis: ${item.end}
 
@@ -41,15 +44,19 @@ const VideoCodeListItem: FC<Props> = ({ item, setCurrentlyEditedElementId, setOv
     `
 
     return (
-        <li tabIndex={0} aria-label={ariaLabel}>
+        <li className="annotation-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={item.id}>
             <Start start={item.start} />
             <End end={item.end} />
             <p>{item.text}</p>
             <p>{item.memo}</p>
-            <button onClick={handleRemove}>Löschen</button>
-            <button onClick={handleEdit}>Bearbeiten</button>
+            <Button className="btn btn-secondary" onPress={handleRemove}>
+                Löschen
+            </Button>
+            <Button className="btn btn-primary" onPress={handleEdit}>
+                Bearbeiten
+            </Button>
         </li>
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(VideoCodeListItem))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(AnnotationListItem))

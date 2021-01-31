@@ -11,7 +11,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import './Editors/fontello/css/fontello.css'
 import { tabs } from './Tabs'
 import EditorTabs from './EditorTabs'
-import CodeEditor from './Editors/VideoCodeEditor/VideoCodeEditor'
 import CuttingEditor from './Editors/CuttingEditor/CuttingEditor'
 import SubtitleEditor from './Editors/SubtitleEditor/SubtitleEditor'
 import { TabsTypesEnum } from 'types'
@@ -31,14 +30,9 @@ type Props = {
     videoCodesPool: VideoCodePrototype[]
 }
 
-const VideoEditor: React.FC<Props> = ({
-    components,
-    videos,
-    height,
-    itemUpdateCallback,
-    itemUpdateCondition,
-    videoCodesPool,
-}) => {
+// DEPRECATED
+// currently in the means of being refactored
+const VideoEditor: React.FC<Props> = ({ components, videos, height, itemUpdateCallback, itemUpdateCondition }) => {
     const availableTabs = Object.values(tabs).filter((tab) => {
         return components.includes(tab.id)
     })
@@ -48,21 +42,6 @@ const VideoEditor: React.FC<Props> = ({
     )
 
     switch (activeTabId) {
-        case TabsTypesEnum.VIDEO_CODES: {
-            return (
-                <CodeEditor
-                    height={height}
-                    videos={videos}
-                    headerContent={
-                        <EditorTabs tabs={availableTabs} activeTabId={activeTabId} setActiveTabId={setActiveTabId} />
-                    }
-                    itemUpdateCallback={itemUpdateCallback}
-                    itemUpdateCondition={itemUpdateCondition}
-                    videoCodesPool={videoCodesPool}
-                />
-            )
-        }
-
         case TabsTypesEnum.VIDEO_CUTTING: {
             return (
                 <CuttingEditor

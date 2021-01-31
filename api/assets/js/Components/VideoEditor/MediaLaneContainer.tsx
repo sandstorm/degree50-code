@@ -1,6 +1,6 @@
 import React, { FC, memo, useState } from 'react'
 import { connect } from 'react-redux'
-import AnnotationMedialane from './AnnotationMedialane'
+import AnnotationMedialane from './AnnotationsContext/AnnotationMedialane'
 import { selectors, VideoEditorState } from './VideoEditorSlice'
 
 const mapStateToProps = (state: VideoEditorState) => ({

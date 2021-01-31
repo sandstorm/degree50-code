@@ -1,10 +1,10 @@
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { AnnotationOverlayIds } from './AnnotationsMenu'
-import AnnotationListItem from 'Components/VideoEditor/Toolbar/AnnotationsContext/AnnotationListItem'
-import Overlay from '../OverlayContainer/Overlay'
-import CloseButton from '../OverlayContainer/CloseButton'
+import { AnnotationOverlayIds } from '../AnnotationsMenu'
+import AnnotationListItem from 'Components/VideoEditor/AnnotationsContext/Overlays/AnnotationListItem'
+import Overlay from '../../Toolbar/OverlayContainer/Overlay'
+import CloseButton from '../../Toolbar/OverlayContainer/CloseButton'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     annotationIdsByStartTime: selectors.data.annotations.selectIdsSortedByStartTime(state),
