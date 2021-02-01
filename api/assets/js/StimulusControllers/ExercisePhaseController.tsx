@@ -29,7 +29,6 @@ export default class extends Controller {
         // set initial Redux state
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
-        store.dispatch(actions.lists.setVideoEditor(solution))
 
         const normalizedAnnotations = prepareAnnotationsFromSolution(solution)
         store.dispatch(actions.data.annotations.init(normalizedAnnotations))

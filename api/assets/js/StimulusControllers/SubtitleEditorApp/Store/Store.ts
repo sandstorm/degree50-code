@@ -1,18 +1,24 @@
-import { configureStore, ThunkAction, Action, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, getDefaultMiddleware, combineReducers } from '@reduxjs/toolkit'
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux'
 import createSagaMiddleware from 'redux-saga'
 import { select } from 'redux-saga/effects'
 import { all, spawn, call } from 'redux-saga/effects'
-import VideoEditorSlice from 'Components/VideoEditor/VideoEditorSlice'
-import SubtitlesSlice from '../SubtitlesSlice'
+import { subtitlesAppSlice } from '../SubtitlesAppSlice'
 import subtitleEditSaga from '../SubtitlesSaga'
+import { SubtitlesSlice } from 'Components/SubtitleEditor/SubtitlesSlice'
+import MediaLaneRenderConfigSlice from 'Components/VideoEditor/MediaLaneRenderConfigSlice'
+import PlayerSlice from 'Components/VideoEditor/PlayerSlice'
 
 const sagaMiddleWare = createSagaMiddleware()
 
 export const store = configureStore({
     reducer: {
-        videoEditor: VideoEditorSlice,
-        subtitlesApp: SubtitlesSlice,
+        videoEditor: combineReducers({
+            player: PlayerSlice,
+            mediaLaneRenderConfig: MediaLaneRenderConfigSlice,
+        }),
+        subtitles: SubtitlesSlice.reducer,
+        subtitlesApp: subtitlesAppSlice.reducer,
     },
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
     devTools: {

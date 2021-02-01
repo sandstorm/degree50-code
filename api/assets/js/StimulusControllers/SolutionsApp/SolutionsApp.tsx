@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
-import { VideoListsState } from '../../Components/VideoEditor/VideoListsSlice'
 import { Teams } from './Components/Teams/Teams'
 import { TabsTypesEnum } from '../../types'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -19,6 +18,7 @@ import { RenderConfig } from '../../Components/VideoEditor/components/MediaLane/
 import { initialRenderConfig } from '../../Components/VideoEditor/MediaLaneRenderConfigSlice'
 import { translate } from 'react-i18nify'
 import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
+import { VideoListsState } from 'Components/VideoEditor/types'
 
 export type SolutionByTeam = {
     teamCreator: string

@@ -1,3 +1,4 @@
+import { SubtitleFromAPI } from 'Components/SubtitleEditor/SubtitlesSlice'
 import { AnnotationFromAPI, VideoCodeFromAPI, CutFromAPI, VideoCodePrototype } from 'Components/VideoEditor/types'
 import { generate } from 'shortid'
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
@@ -26,6 +27,11 @@ export const normalizeData = <E extends { id: string }>(entities: Array<E>) =>
 
 const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
     entities.map((e) => ({ ...e, id: e?.id ?? generate() }))
+
+export const prepareSubtitlesFromSolution = (solution: any) => {
+    const subtitles: SubtitleFromAPI[] = solution?.subtitles ?? []
+    return normalizeData(addIdsToEntities(subtitles))
+}
 
 export const prepareAnnotationsFromSolution = (solution: any) => {
     const annotations: AnnotationFromAPI[] = solution?.annotations ?? []

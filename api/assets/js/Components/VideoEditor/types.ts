@@ -1,3 +1,4 @@
+import { Subtitle } from 'Components/SubtitleEditor/SubtitlesSlice'
 import { timeToSecond } from './utils'
 
 export type VideoCodePrototype = {
@@ -26,8 +27,6 @@ export type Annotation = Omit<AnnotationFromAPI, 'id'> & { id: string }
 export type VideoCodeFromAPI = MediaItemType & { id?: string }
 export type VideoCode = Omit<VideoCodeFromAPI, 'id'> & { id: string }
 
-export type Subtitle = MediaItemType
-
 export type CutFromAPI = MediaItemType & { id?: string } & {
     url: string
     offset: number
@@ -42,7 +41,6 @@ export type VideoListsState = {
     annotations: Array<AnnotationFromAPI>
     customVideoCodesPool: Array<VideoCodePrototype>
     cutList: CutList
-    subtitles: Subtitle[]
 }
 
 export class MediaItem<T> {
