@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { CutOverlayIds } from '../CuttingMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import Overlay from '../../Toolbar/OverlayContainer/Overlay'
+import Overlay from '../../components/Overlay'
 import Button from 'Components/Button/Button'
 import { remove } from 'immutable'
 

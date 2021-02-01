@@ -3,12 +3,12 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { CutOverlayIds } from '../CuttingMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
-import { useCutEdit } from './useCutEdit'
-import Overlay from '../../Toolbar/OverlayContainer/Overlay'
-import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
+import TimeInput from 'Components/VideoEditor/components/TimeInput'
+import Overlay from '../../components/Overlay'
+import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
-import { secondToTime } from 'Components/VideoEditor/Editors/utils'
+import { secondToTime } from 'Components/VideoEditor/utils'
+import { useCutEdit } from './useCutEdit'
 
 const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)

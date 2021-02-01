@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RenderConfig } from './Editors/components/MediaLane/MediaTrack'
-import { INITIAL_ZOOM } from './Editors/components/MediaLane/useMediaLane'
+import { RenderConfig } from './components/MediaLane/MediaTrack'
+import { INITIAL_ZOOM } from './components/MediaLane/useMediaLane'
 
 export const initialRenderConfig: RenderConfig = {
     padding: 0,

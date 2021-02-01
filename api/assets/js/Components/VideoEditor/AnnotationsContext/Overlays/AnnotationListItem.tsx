@@ -4,8 +4,8 @@ import { AnnotationOverlayIds } from 'Components/VideoEditor/AnnotationsContext/
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import End from '../../Editors/components/MediaItemList/Row/End'
-import Start from '../../Editors/components/MediaItemList/Row/Start'
+import End from '../../components/End'
+import Start from '../../components/Start'
 
 type OwnProps = {
     annotationId: AnnotationId

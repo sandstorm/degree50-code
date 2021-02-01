@@ -1,5 +1,5 @@
-import { secondToTime, timeToSecond } from 'Components/VideoEditor/Editors/utils'
-import { Cut } from 'Components/VideoEditor/VideoListsSlice'
+import { Cut } from 'Components/VideoEditor/types'
+import { secondToTime, timeToSecond } from 'Components/VideoEditor/utils'
 import { useState } from 'react'
 
 export const useCutEdit = (initialCut?: Cut) => {

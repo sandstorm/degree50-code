@@ -2,8 +2,8 @@ import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/Vid
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import MenuButton from '../Toolbar/MenuButton'
-import MenuItem from '../Toolbar/MenuItem'
+import MenuButton from '../components/MenuButton'
+import MenuItem from '../components/MenuItem'
 
 const prefix = 'ANNOTATION'
 

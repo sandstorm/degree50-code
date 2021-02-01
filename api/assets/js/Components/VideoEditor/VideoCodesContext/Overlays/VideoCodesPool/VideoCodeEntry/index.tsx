@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react'
 import VideoCodesList from '../VideoCodesList'
 import AddVideoCodePrototypeForm from './AddVideoCodePrototypeForm'
-import { VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
 import ToggleChildrenButton from './ToggleChildrenButton'
 import VideoCodeName from './VideoCodeName'
 import Color from './Color'
 import RemoveButton from './RemoveButton'
+import { VideoCodePrototype } from 'Components/VideoEditor/types'
 
 export type Props = {
     videoCode: VideoCodePrototype

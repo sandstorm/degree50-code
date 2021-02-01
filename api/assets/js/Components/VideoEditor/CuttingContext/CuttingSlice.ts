@@ -5,7 +5,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
 import { normalizeData } from 'StimulusControllers/normalizeData'
-import { Cut } from '../VideoListsSlice'
+import { Cut } from '../types'
 
 export type CutId = string
 

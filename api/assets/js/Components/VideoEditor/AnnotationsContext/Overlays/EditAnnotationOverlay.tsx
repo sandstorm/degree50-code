@@ -3,10 +3,10 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
+import TimeInput from 'Components/VideoEditor/components/TimeInput'
 import { useAnnotationEdit } from './useAnnotationEdit'
-import Overlay from '../../Toolbar/OverlayContainer/Overlay'
-import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
+import Overlay from '../../components/Overlay'
+import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 
 const mapStateToProps = (state: VideoEditorState) => {

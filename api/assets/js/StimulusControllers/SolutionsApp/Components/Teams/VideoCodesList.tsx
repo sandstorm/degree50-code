@@ -1,5 +1,5 @@
+import { VideoCodePrototype, VideoCodeFromAPI } from 'Components/VideoEditor/types'
 import React from 'react'
-import { VideoCodeFromAPI, VideoCodePrototype } from '../../../../Components/VideoEditor/VideoListsSlice'
 
 type Props = {
     videoCodesPool: Array<VideoCodePrototype>

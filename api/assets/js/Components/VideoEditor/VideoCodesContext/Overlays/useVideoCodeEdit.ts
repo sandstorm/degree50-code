@@ -1,5 +1,5 @@
-import { secondToTime, timeToSecond } from 'Components/VideoEditor/Editors/utils'
-import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
+import { VideoCode } from 'Components/VideoEditor/types'
+import { secondToTime, timeToSecond } from 'Components/VideoEditor/utils'
 import { ChangeEvent, useState } from 'react'
 
 export const useVideoCodeEdit = (initialVideoCode?: VideoCode) => {

@@ -1,9 +1,9 @@
 import React from 'react'
 import { SolutionFilterType } from '../../SolutionsApp'
-import { MediaItem } from '../../../../Components/VideoEditor/Editors/components/types'
-import ReadOnlyMediaLane from '../../../../Components/VideoEditor/Editors/components/ReadOnlyMediaLane'
+import { MediaItem } from '../../../../Components/VideoEditor/types'
 import { TabsTypesEnum } from '../../../../types'
-import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
+import { RenderConfig } from '../../../../Components/VideoEditor/components/MediaLane/MediaTrack'
+import ReadOnlyMediaLane from 'Components/VideoEditor/components/ReadOnlyMediaLane'
 
 type Props = {
     solutionFilter: SolutionFilterType

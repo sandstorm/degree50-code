@@ -1,17 +1,17 @@
-import TimeInput from 'Components/VideoEditor/Editors/components/TimeInput/TimeInput'
-import { secondToTime } from 'Components/VideoEditor/Editors/utils'
+import TimeInput from 'Components/VideoEditor/components/TimeInput'
+import { secondToTime } from 'Components/VideoEditor/utils'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import { VideoCode } from 'Components/VideoEditor/VideoListsSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { generate } from 'shortid'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import Overlay from '../../Toolbar/OverlayContainer/Overlay'
+import Overlay from '../../components/Overlay'
 import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { useVideoCodeEdit } from './useVideoCodeEdit'
-import TextField from 'Components/VideoEditor/Editors/components/MediaItemList/Row/TextField'
+import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
+import { VideoCode } from 'Components/VideoEditor/types'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     currentTime: selectors.player.selectSyncPlayPosition(state),

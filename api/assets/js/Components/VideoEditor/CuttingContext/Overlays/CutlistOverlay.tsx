@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { CutOverlayIds } from '../CuttingMenu'
 import CutListItem from 'Components/VideoEditor/CuttingContext/Overlays/CutListItem'
-import Overlay from '../../Toolbar/OverlayContainer/Overlay'
+import Overlay from '../../components/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     cutList: selectors.data.cuts.selectCutIds(state),

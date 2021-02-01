@@ -1,9 +1,4 @@
-import {
-    AnnotationFromAPI,
-    CutFromAPI,
-    VideoCodeFromAPI,
-    VideoCodePrototype,
-} from 'Components/VideoEditor/VideoListsSlice'
+import { AnnotationFromAPI, VideoCodeFromAPI, CutFromAPI, VideoCodePrototype } from 'Components/VideoEditor/types'
 import { generate } from 'shortid'
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 

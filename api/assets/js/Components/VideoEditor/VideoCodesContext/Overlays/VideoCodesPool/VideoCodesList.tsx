@@ -1,10 +1,10 @@
-import { VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import VideoCodeEntry from './VideoCodeEntry'
 import AddVideoCodePrototypeForm from './VideoCodeEntry/AddVideoCodePrototypeForm'
+import { VideoCodePrototype } from 'Components/VideoEditor/types'
 
 type OwnProps = {
     videoCodesPool: VideoCodePrototype[]

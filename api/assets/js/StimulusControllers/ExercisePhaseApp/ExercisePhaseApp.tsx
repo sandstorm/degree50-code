@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
-import { useDebouncedResizeObserver } from '../../Components/VideoEditor/Editors/utils/useDebouncedResizeObserver'
+import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 import { OverlayProvider } from '@react-aria/overlays'
 
 export const ExercisePhaseApp: React.FC = () => {

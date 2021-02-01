@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import AnnotationListItem from 'Components/VideoEditor/AnnotationsContext/Overlays/AnnotationListItem'
-import Overlay from '../../Toolbar/OverlayContainer/Overlay'
+import Overlay from '../../components/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     activeAnnotationIds: selectors.selectActiveAnnotationIds(state),

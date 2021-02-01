@@ -1,42 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { timeToSecond } from './Editors/utils'
-
-export type VideoCodePrototype = {
-    id: string
-    name: string
-    description: string
-    color: string
-    userCreated: boolean
-    videoCodes: Array<VideoCodePrototype>
-    parentId?: string
-}
-
-// Media item type without methods, so that it is serializable
-export type MediaItemType = {
-    start: string
-    end: string
-    text: string
-    memo: string
-    color: null | string
-    idFromPrototype: null | string // FIXME move this out of the general type into VideoCodes
-}
-
-export type AnnotationFromAPI = MediaItemType & { id?: string }
-export type Annotation = Omit<AnnotationFromAPI, 'id'> & { id: string }
-
-export type VideoCodeFromAPI = MediaItemType & { id?: string }
-export type VideoCode = Omit<VideoCodeFromAPI, 'id'> & { id: string }
-
-export type Subtitle = MediaItemType
-
-export type CutFromAPI = MediaItemType & { id?: string } & {
-    url: string
-    offset: number
-    playbackRate: number
-}
-
-export type Cut = Omit<CutFromAPI, 'id'> & { id: string }
-export type CutList = Array<Cut>
+import { VideoCodeFromAPI, AnnotationFromAPI, VideoCodePrototype, CutList, Subtitle } from './types'
+import { timeToSecond } from './utils'
 
 export type VideoListsState = {
     videoCodes: Array<VideoCodeFromAPI>
