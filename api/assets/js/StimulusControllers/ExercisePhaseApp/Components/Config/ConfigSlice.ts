@@ -3,7 +3,8 @@ import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
 import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
-import { VideoListsState, VideoCodePrototype } from '../../../../Components/VideoEditor/VideoListsSlice'
+import { VideoListsState } from '../../../../Components/VideoEditor/VideoListsSlice'
+import { VideoCodePrototype } from 'Components/VideoEditor/types'
 
 export type ComponentId = ComponentTypesEnum | TabsTypesEnum
 

@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import VideoCodeListItem from 'Components/VideoEditor/VideoCodesContext/Overlays/VideoCodeListItem'
-import Overlay from '../../Toolbar/OverlayContainer/Overlay'
+import Overlay from '../../components/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     activeVideoCodeIds: selectors.selectActiveVideoCodeIds(state),

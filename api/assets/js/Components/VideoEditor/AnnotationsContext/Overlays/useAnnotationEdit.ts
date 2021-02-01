@@ -1,5 +1,5 @@
-import { secondToTime, timeToSecond } from 'Components/VideoEditor/Editors/utils'
-import { Annotation } from 'Components/VideoEditor/VideoListsSlice'
+import { Annotation } from 'Components/VideoEditor/types'
+import { secondToTime, timeToSecond } from 'Components/VideoEditor/utils'
 import { useState } from 'react'
 
 export const useAnnotationEdit = (initialAnnotation?: Annotation) => {

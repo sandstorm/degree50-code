@@ -1,4 +1,4 @@
-import { VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
+import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import React from 'react'
 import PredefinedCodeLock from '../PredefinedCodeLock'
 import Color from '../VideoCodesPool/VideoCodeEntry/Color'

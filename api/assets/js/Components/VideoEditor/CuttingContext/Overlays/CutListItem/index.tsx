@@ -4,9 +4,9 @@ import { CutOverlayIds } from 'Components/VideoEditor/CuttingContext/CuttingMenu
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import End from '../../../Editors/components/MediaItemList/Row/End'
-import Start from '../../../Editors/components/MediaItemList/Row/Start'
-import { secondToTime } from 'Components/VideoEditor/Editors/utils'
+import End from '../../../components/End'
+import Start from '../../../components/Start'
+import { secondToTime } from 'Components/VideoEditor/utils'
 import PositionControls from './PositionControls'
 
 type OwnProps = {

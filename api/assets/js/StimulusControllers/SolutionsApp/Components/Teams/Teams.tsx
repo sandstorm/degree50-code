@@ -1,7 +1,7 @@
 import React from 'react'
 import { SolutionByTeam, SolutionFilterType } from '../../SolutionsApp'
 import Team from './Team'
-import { RenderConfig } from '../../../../Components/VideoEditor/Editors/components/MediaLane/MediaTrack'
+import { RenderConfig } from '../../../../Components/VideoEditor/components/MediaLane/MediaTrack'
 
 type TeamMembersListProps = {
     solutions: Array<SolutionByTeam>

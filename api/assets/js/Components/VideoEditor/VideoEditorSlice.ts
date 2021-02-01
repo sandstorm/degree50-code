@@ -15,16 +15,16 @@ import MediaLaneRenderConfigSlice, {
     actions as mediaLaneRenderConfigActions,
     selectors as mediaLaneRenderConfigSelectors,
 } from './MediaLaneRenderConfigSlice'
-import { RenderConfig } from './Editors/components/MediaLane/MediaTrack'
+import { RenderConfig } from './components/MediaLane/MediaTrack'
 import DataSlice, { actions as dataActions, selectors as dataSelectors } from './DataSlice'
 
 import OverlaySlice, {
     actions as overlayActions,
     OverlayState,
     selectors as overlaySelectors,
-} from './Toolbar/OverlayContainer/OverlaySlice'
+} from './components/OverlayContainer/OverlaySlice'
 import { DataState } from './DataSlice'
-import { timeToSecond } from './Editors/utils'
+import { timeToSecond } from './utils'
 
 export default combineReducers({
     lists: VideoListsSlice,

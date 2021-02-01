@@ -1,4 +1,4 @@
-import { VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
+import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import React, { useState, useCallback } from 'react'
 import { generate } from 'shortid'
 
