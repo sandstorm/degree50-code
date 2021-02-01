@@ -17,6 +17,13 @@ import AllVideoCodesOverlay from '../../VideoCodesContext/Overlays/AllVideoCodes
 import EditVideoCodeOverlay from '../../VideoCodesContext/Overlays/EditVideoCodeOverlay'
 import DeleteVideoCodeOverlay from '../../VideoCodesContext/Overlays/DeleteVideoCodeOverlay'
 import ListCodesOverlay from '../../VideoCodesContext/Overlays/ListCodesOverlay'
+import { CutOverlayIds } from 'Components/VideoEditor/CuttingContext/CuttingMenu'
+import ActiveCutsOverlay from 'Components/VideoEditor/CuttingContext/Overlays/ActiveCutsOverlay'
+import AllCutsOverlay from 'Components/VideoEditor/CuttingContext/Overlays/AllCutsOverlay'
+import CreateCutOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CreateCutOverlay'
+import EditCutOverlay from 'Components/VideoEditor/CuttingContext/Overlays/EditCutOverlay'
+import DeleteCutOverlay from 'Components/VideoEditor/CuttingContext/Overlays/DeleteCutOverlay'
+import CutlistOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CutlistOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
@@ -48,6 +55,27 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
             return <EditVideoCodeOverlay />
         case VideoCodeOverlayIds.remove:
             return <DeleteVideoCodeOverlay />
+
+        // Cuts
+        case CutOverlayIds.active: {
+            return <ActiveCutsOverlay itemUpdateCondition={true} />
+        }
+        case CutOverlayIds.create: {
+            return <CreateCutOverlay />
+        }
+        case CutOverlayIds.all: {
+            return <AllCutsOverlay itemUpdateCondition={true} />
+        }
+        case CutOverlayIds.allByCutOrder: {
+            return <CutlistOverlay itemUpdateCondition={true} />
+        }
+        case CutOverlayIds.edit: {
+            return <EditCutOverlay />
+        }
+        case CutOverlayIds.remove: {
+            return <DeleteCutOverlay />
+        }
+
         default:
             return undefined
     }

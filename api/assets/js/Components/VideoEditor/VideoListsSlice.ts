@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { CutList } from 'Components/VideoEditor/Editors/CuttingEditor/types'
 import { timeToSecond } from './Editors/utils'
 
 export type VideoCodePrototype = {
@@ -29,6 +28,15 @@ export type VideoCodeFromAPI = MediaItemType & { id?: string }
 export type VideoCode = Omit<VideoCodeFromAPI, 'id'> & { id: string }
 
 export type Subtitle = MediaItemType
+
+export type CutFromAPI = MediaItemType & { id?: string } & {
+    url: string
+    offset: number
+    playbackRate: number
+}
+
+export type Cut = Omit<CutFromAPI, 'id'> & { id: string }
+export type CutList = Array<Cut>
 
 export type VideoListsState = {
     videoCodes: Array<VideoCodeFromAPI>

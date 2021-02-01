@@ -8,6 +8,7 @@ type OwnProps = {
     label?: string
     children: ReactNode
     icon: ReactNode
+    disabled?: boolean
 }
 
 const mapDispatchToProps = {
@@ -16,7 +17,7 @@ const mapDispatchToProps = {
 
 type Props = typeof mapDispatchToProps & OwnProps
 
-const MenuButton = ({ label, children, pauseVideo, icon }: Props) => {
+const MenuButton = ({ label, children, pauseVideo, icon, disabled }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const open = () => setIsOpen(true)
@@ -39,6 +40,16 @@ const MenuButton = ({ label, children, pauseVideo, icon }: Props) => {
                 return false
             }
         }
+    }
+
+    if (disabled) {
+        return (
+            <div className="menu-wrapper">
+                <Button className="btn btn-grey disabled menu-button video-editor__toolbar__button" disabled>
+                    {icon} {label}
+                </Button>
+            </div>
+        )
     }
 
     return (

@@ -23,6 +23,7 @@ import AddItemButton from '../components/MediaItemList/AddItemButton'
 import ReadonlyMediaLaneWithToolbar from '../components/MediaLane/ReadonlyMediaLaneWithToolbar'
 import { MEDIA_LANE_HEIGHT } from '../components/MediaLane/useMediaLane'
 import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
+import { generate } from 'shortid'
 
 type OwnProps = {
     height: number
@@ -48,6 +49,7 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const getCutForCompleteVideo = (video: Video) => ({
+    id: generate(),
     url: video.url.mp4 ?? '',
     start: '00:00:00.000',
     end: d2t(video.duration.toFixed(3)),

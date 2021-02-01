@@ -4,6 +4,7 @@ import {
     AnnotationsSlice,
     selectors as annotationSelectors,
 } from './AnnotationsContext/AnnotationsSlice'
+import { CutsSlice, CutsState, selectors as cutsSelectors } from './CuttingContext/CuttingSlice'
 import {
     VideoCodePoolSlice,
     VideoCodePoolState,
@@ -15,22 +16,26 @@ export type DataState = {
     annotations: AnnotationsState
     videoCodes: VideoCodesState
     customVideoCodePool: VideoCodePoolState
+    cuts: CutsState
 }
 
 export default combineReducers({
     annotations: AnnotationsSlice.reducer,
     videoCodes: VideoCodesSlice.reducer,
     videoCodePool: VideoCodePoolSlice.reducer,
+    cuts: CutsSlice.reducer,
 })
 
 export const actions = {
     annotations: AnnotationsSlice.actions,
     videoCodes: VideoCodesSlice.actions,
     videoCodePool: VideoCodePoolSlice.actions,
+    cuts: CutsSlice.actions,
 }
 
 export const selectors = {
     annotations: annotationSelectors,
     videoCodes: videoCodeSelectors,
     videoCodePool: videoCodePoolSelectors,
+    cuts: cutsSelectors,
 }
