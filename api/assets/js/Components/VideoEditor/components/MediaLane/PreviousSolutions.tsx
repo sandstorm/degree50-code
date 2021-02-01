@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { VideoListsState } from '../../VideoListsSlice'
 import { solveConflicts } from '../../utils/solveItemConflicts'
-import { MediaItem } from '../../types'
+import { MediaItem, VideoListsState } from '../../types'
 import { RenderConfig } from './MediaTrack'
 import ReadOnlyMediaLane from '../ReadOnlyMediaLane'
 

@@ -52,11 +52,11 @@ export const playerSlice = createSlice({
 export const { actions } = playerSlice
 
 // Selectors
+export type PlayerStateSlice = { videoEditor: { player: PlayerState } }
 
-const selectPlayPosition = (state: { videoEditor: { player: PlayerState } }) => state.videoEditor.player.playPosition
-const selectSyncPlayPosition = (state: { videoEditor: { player: PlayerState } }) =>
-    state.videoEditor.player.syncPlayPosition
-const selectIsPaused = (state: { videoEditor: { player: PlayerState } }) => state.videoEditor.player.isPaused
+const selectPlayPosition = (state: PlayerStateSlice) => state.videoEditor.player.playPosition
+const selectSyncPlayPosition = (state: PlayerStateSlice) => state.videoEditor.player.syncPlayPosition
+const selectIsPaused = (state: PlayerStateSlice) => state.videoEditor.player.isPaused
 
 export const selectors = {
     selectSyncPlayPosition,

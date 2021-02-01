@@ -6,13 +6,23 @@ import MediaLane from '../VideoEditor/components/MediaLane'
 import MediaItemList from './MediaItemList/MediaItemList'
 
 import { useMediaItemHandling } from '../VideoEditor/utils/useMediaItemHandling'
-import { MediaItem, Subtitle } from '../VideoEditor/types'
-import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { MediaItem } from '../VideoEditor/types'
 import { vttToUrlUseWorker } from '../VideoEditor/utils/subtitleUtils'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import AddItemButton from './MediaItemList/AddItemButton'
 import { MEDIA_LANE_HEIGHT } from '../VideoEditor/components/MediaLane/useMediaLane'
 import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
+import {
+    Subtitle,
+    SubtitlesStateSlice,
+    selectors as subtitleSelectors,
+    actions as subtitleActions,
+} from './SubtitlesSlice'
+import { actions, PlayerStateSlice, selectors as playerSelectors } from 'Components/VideoEditor/PlayerSlice'
+import {
+    MediaLaneRenderConfigState,
+    selectors as mediaLaneRenderConfigSelectors,
+} from 'Components/VideoEditor/MediaLaneRenderConfigSlice'
 
 const worker = new Worker(vttToUrlUseWorker())
 
@@ -24,17 +34,19 @@ type OwnProps = {
     itemUpdateCondition: boolean
 }
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (
+    state: SubtitlesStateSlice & PlayerStateSlice & { videoEditor: MediaLaneRenderConfigState }
+) => {
     return {
-        subtitles: selectors.lists.selectVideoEditorLists(state).subtitles,
-        playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
-        mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+        subtitles: subtitleSelectors.selectDenormalizedSubtitles(state),
+        playerSyncPlayPosition: playerSelectors.selectSyncPlayPosition(state),
+        mediaLaneRenderConfig: mediaLaneRenderConfigSelectors.selectRenderConfig(state.videoEditor),
     }
 }
 
 const mapDispatchToProps = {
-    setSubtitles: actions.lists.setSubtitles,
-    setPlayPosition: actions.player.setPlayPosition,
+    setSubtitles: subtitleActions.set,
+    setPlayPosition: actions.setPlayPosition,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps

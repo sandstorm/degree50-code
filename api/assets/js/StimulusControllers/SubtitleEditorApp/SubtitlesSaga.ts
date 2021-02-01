@@ -1,8 +1,8 @@
-import { call, cancel, cancelled, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import { debounce, select } from 'redux-saga/effects'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
-import { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { selectors as subtitleAppSelectors } from './SubtitlesSlice'
+import { selectors as subtitleSelectors } from 'Components/SubtitleEditor/SubtitlesSlice'
+import { selectors as subtitleAppSelectors } from './SubtitlesAppSlice'
 
 export const updateSubtitlesAction = createAction('SubtitleApp/Saga/updateSubtitles')
 
@@ -11,8 +11,7 @@ export default function* subtitleEditSaga() {
 }
 
 function* updateSubtitles() {
-    const lists = videoEditorSelectors.lists.selectVideoEditorLists(yield select())
-    const subtitles = lists.subtitles
+    const subtitles = subtitleSelectors.selectDenormalizedSubtitles(yield select())
     const video = subtitleAppSelectors.selectVideo(yield select())
     const url = subtitleAppSelectors.selectUpdateUrl(yield select())
 

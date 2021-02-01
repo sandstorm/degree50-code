@@ -1,9 +1,4 @@
 import PlayerSlice, { PlayerState, actions as playerActions, selectors as playerSelectors } from './PlayerSlice'
-import VideoListsSlice, {
-    VideoListsState,
-    actions as videoListsActions,
-    selectors as videoListsSelectors,
-} from './VideoListsSlice'
 import { combineReducers, createSelector } from '@reduxjs/toolkit'
 import ConfigSlice, {
     ConfigState,
@@ -27,7 +22,6 @@ import { DataState } from './DataSlice'
 import { timeToSecond } from './utils'
 
 export default combineReducers({
-    lists: VideoListsSlice,
     data: DataSlice,
     player: PlayerSlice,
     config: ConfigSlice,
@@ -37,7 +31,6 @@ export default combineReducers({
 
 export type VideoEditorState = {
     videoEditor: {
-        lists: VideoListsState
         data: DataState
         player: PlayerState
         config: ConfigState
@@ -47,7 +40,6 @@ export type VideoEditorState = {
 }
 
 export const actions = {
-    lists: videoListsActions,
     data: dataActions,
     player: playerActions,
     config: configActions,
@@ -94,17 +86,12 @@ const selectActiveCutIds = createSelector(
 
 const selectSolution = createSelector(
     [
-        videoListsSelectors.selectVideoEditorLists,
         dataSelectors.annotations.selectDenormalizedAnnotations,
         dataSelectors.videoCodes.selectDenormalizedVideoCodes,
         dataSelectors.videoCodePool.selectVideoCodePoolList,
         dataSelectors.cuts.selectDenormalizedCuts,
     ],
-    // TODO continue refactoring for subtitles
-    // NOTE: we are currently in the middle of refactoring lists into separate slices, which is why we merge our
-    // "old" solution state with those, that have already been refactored
-    (otherVideoLists, annotations, videoCodes, videoCodePool, cuts): VideoListsState => ({
-        ...otherVideoLists,
+    (annotations, videoCodes, videoCodePool, cuts) => ({
         annotations,
         videoCodes,
         customVideoCodesPool: videoCodePool,
@@ -113,7 +100,6 @@ const selectSolution = createSelector(
 )
 
 export const selectors = {
-    lists: videoListsSelectors,
     data: dataSelectors,
     player: playerSelectors,
     config: configSelectors,

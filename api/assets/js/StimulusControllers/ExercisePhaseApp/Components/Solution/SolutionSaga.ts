@@ -6,7 +6,6 @@ import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 import { selectConfig } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
-import { VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import {
     prepareAnnotationsFromSolution,
@@ -14,6 +13,7 @@ import {
     prepareVideoCodePoolFromSolution,
     prepareVideoCodesFromSolution,
 } from 'StimulusControllers/normalizeData'
+import { VideoListsState } from 'Components/VideoEditor/types'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -78,7 +78,6 @@ function* handleMessages(channel: EventChannel<unknown>) {
             const normalizedCodePool = prepareVideoCodePoolFromSolution(solution)
             const normalizedCuts = prepareCutsFromSolution(solution)
 
-            yield put(actions.lists.setVideoEditor(solution))
             yield put(actions.data.annotations.init(normalizedAnnotations))
             yield put(actions.data.videoCodes.init(normalizedVideoCodes))
             yield put(actions.data.videoCodePool.init(normalizedCodePool))

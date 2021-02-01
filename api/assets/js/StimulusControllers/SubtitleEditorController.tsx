@@ -4,17 +4,20 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import SubtitleEditorApp from './SubtitleEditorApp/SubtitleEditorApp'
 import { store } from './SubtitleEditorApp/Store/Store'
-import { actions as subtitleActions } from './SubtitleEditorApp/SubtitlesSlice'
-import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions as subtitleAppActions } from './SubtitleEditorApp/SubtitlesAppSlice'
+import { SubtitlesSlice } from 'Components/SubtitleEditor/SubtitlesSlice'
+import { prepareSubtitlesFromSolution } from './normalizeData'
 
 export default class extends Controller {
     connect() {
         const propsAsString = this.data.get('props')
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-        store.dispatch(videoEditorActions.lists.setSubtitles(props.video.subtitles))
-        store.dispatch(subtitleActions.setVideo(props.video))
-        store.dispatch(subtitleActions.setUpdateUrl(props.updateUrl))
+        const normalizedSubtitles = prepareSubtitlesFromSolution({ subtitles: props.video.subtitles })
+        store.dispatch(SubtitlesSlice.actions.init(normalizedSubtitles))
+
+        store.dispatch(subtitleAppActions.setVideo(props.video))
+        store.dispatch(subtitleAppActions.setUpdateUrl(props.updateUrl))
 
         ReactDOM.render(
             <React.StrictMode>

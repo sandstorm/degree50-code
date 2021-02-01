@@ -12,7 +12,7 @@ const initialState: SubtitlesState = {
     updateUrl: undefined,
 }
 
-export const subtitlesSlice = createSlice({
+export const subtitlesAppSlice = createSlice({
     name: 'subtitlesApp',
     initialState,
     reducers: {
@@ -31,7 +31,7 @@ export const subtitlesSlice = createSlice({
     },
 })
 
-export const { actions } = subtitlesSlice
+export const { actions } = subtitlesAppSlice
 
 const selectVideo = (state: AppState) => state.subtitlesApp.video
 const selectUpdateUrl = (state: AppState) => state.subtitlesApp.updateUrl
@@ -40,5 +40,3 @@ export const selectors = {
     selectVideo,
     selectUpdateUrl,
 }
-
-export default subtitlesSlice.reducer
