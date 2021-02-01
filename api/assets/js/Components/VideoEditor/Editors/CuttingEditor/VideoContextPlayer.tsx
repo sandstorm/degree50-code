@@ -4,9 +4,9 @@ import VideoContext from 'videocontext'
 
 import { actions, selectors } from '../../PlayerSlice'
 import { initVideoContext, addVideoContextPlaylistElement, transformCutListToVideoContextPlaylist } from './util'
-import { CutList } from './types'
 import { VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import { useDebouncedResizeObserver } from '../utils/useDebouncedResizeObserver'
+import { CutList } from 'Components/VideoEditor/VideoListsSlice'
 
 type OwnProps = {
     cutList: CutList

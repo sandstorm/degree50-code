@@ -1,6 +1,7 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
+import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../Toolbar/MenuButton'
 import MenuItem from '../Toolbar/MenuItem'
 
@@ -14,9 +15,10 @@ export const AnnotationOverlayIds = {
     remove: `${prefix}/remove`,
 }
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
         activeAnnotationCount: selectors.selectActiveAnnotationIds(state).length,
+        annotationsAreActive: selectors.config.selectAnnotationsAreActive(state),
     }
 }
 
@@ -30,20 +32,20 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const AnnotationsMenu: FC<Props> = (props) => {
     return (
         <div className="video-editor__menu">
-            {props.activeAnnotationCount > 0 && (
+            {props.annotationsAreActive && props.activeAnnotationCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
             )}
-            <MenuButton icon={<i className="fas fa-pen" />}>
+            <MenuButton icon={<i className="fas fa-pen" />} disabled={!props.annotationsAreActive}>
                 <MenuItem
-                    label="Aktive Einträge"
+                    label="Aktive Annotationen"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.active, closeOthers: true })}
                 />
                 <MenuItem
-                    label="Erstelle Eintrag"
+                    label="Erstelle Annotation"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.create, closeOthers: true })}
                 />
                 <MenuItem
-                    label="Alle Einträge"
+                    label="Alle Annotationen"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.all, closeOthers: true })}
                 />
             </MenuButton>

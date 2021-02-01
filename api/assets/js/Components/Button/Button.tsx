@@ -2,8 +2,9 @@ import React, { useRef } from 'react'
 import { useButton } from '@react-aria/button'
 
 type ButtonProps = {
-    onPress: () => void
+    onPress?: () => void
     children: React.ReactNode
+    disabled?: boolean
     className: string
     id?: string
 }

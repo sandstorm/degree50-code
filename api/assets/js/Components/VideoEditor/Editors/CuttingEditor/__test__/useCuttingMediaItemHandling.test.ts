@@ -36,6 +36,7 @@ describe('useCuttingMediaItemHandling()', () => {
         memo: 'Some test memo...',
         color: null,
         originalData: {
+            id: 'testItemA',
             start: '00:00:00.000',
             end: '00:00:05.000',
             color: null,
@@ -58,6 +59,7 @@ describe('useCuttingMediaItemHandling()', () => {
         memo: 'Some test memo...',
         color: null,
         originalData: {
+            id: 'testItemB',
             start: '00:00:03.000',
             end: '00:00:05.000',
             color: null,
@@ -80,6 +82,7 @@ describe('useCuttingMediaItemHandling()', () => {
         memo: 'Some test memo...',
         color: null,
         originalData: {
+            id: 'testItemC',
             start: '00:00:05.010',
             end: '00:00:07.010',
             color: null,

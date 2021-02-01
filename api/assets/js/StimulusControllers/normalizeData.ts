@@ -1,4 +1,9 @@
-import { AnnotationFromAPI, VideoCodeFromAPI, VideoCodePrototype } from 'Components/VideoEditor/VideoListsSlice'
+import {
+    AnnotationFromAPI,
+    CutFromAPI,
+    VideoCodeFromAPI,
+    VideoCodePrototype,
+} from 'Components/VideoEditor/VideoListsSlice'
 import { generate } from 'shortid'
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 
@@ -35,6 +40,11 @@ export const prepareAnnotationsFromSolution = (solution: any) => {
 export const prepareVideoCodesFromSolution = (solution: any) => {
     const videoCodes: VideoCodeFromAPI[] = solution?.videoCodes ?? []
     return normalizeData(addIdsToEntities(videoCodes))
+}
+
+export const prepareCutsFromSolution = (solution: any) => {
+    const cuts: CutFromAPI[] = solution?.cutList ?? []
+    return normalizeData(addIdsToEntities(cuts))
 }
 
 export const prepareVideoCodePoolFromSolution = (solution: any, config?: ConfigState) => {

@@ -13,6 +13,7 @@ import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/Curre
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import {
     prepareAnnotationsFromSolution,
+    prepareCutsFromSolution,
     prepareVideoCodePoolFromSolution,
     prepareVideoCodesFromSolution,
 } from './normalizeData'
@@ -24,8 +25,6 @@ export default class extends Controller {
 
         const { liveSyncConfig, solution, currentEditor } = props
         const config = props.config as ConfigState
-
-        // TODO refactor
 
         // set initial Redux state
         store.dispatch(hydrateConfig(config))
@@ -40,6 +39,9 @@ export default class extends Controller {
 
         const normalizedCodePool = prepareVideoCodePoolFromSolution(solution, config)
         store.dispatch(actions.data.videoCodePool.init(normalizedCodePool))
+
+        const normalizedCuts = prepareCutsFromSolution(solution)
+        store.dispatch(actions.data.cuts.init(normalizedCuts))
 
         store.dispatch(setCurrentEditorId(currentEditor))
 

@@ -69,12 +69,22 @@ export const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 export const selectVideos = (state: ConfigStateSlice) => state.config.videos
 export const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCodesPool
 
+export const selectAnnotationsAreActive = (state: ConfigStateSlice) =>
+    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_ANNOTATIONS) > -1
+export const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
+    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CODES) > -1
+export const selectCutsAreActive = (state: ConfigStateSlice) =>
+    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CUTTING) > -1
+
 export const selectors = {
     selectConfig,
     selectUserId,
     selectReadOnly,
     selectVideos,
     selectVideoCodesPool,
+    selectAnnotationsAreActive,
+    selectVideoCodesAreActive,
+    selectCutsAreActive,
 }
 
 export default configSlice.reducer

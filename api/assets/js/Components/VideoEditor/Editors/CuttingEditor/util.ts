@@ -3,12 +3,13 @@ import VideoContext from 'videocontext'
 import { t } from 'react-i18nify'
 import { d2t, t2d } from 'duration-time-conversion'
 
-import { Cut, CutList } from './types'
 import { MediaItem } from '../components/types'
 import { notify } from '../utils'
 import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
 import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
+import { Cut, CutList } from 'Components/VideoEditor/VideoListsSlice'
+import { generate } from 'shortid'
 
 // TODO refactor this file and split into multiple self contained files, e.g. 'useCuttingMediaItemHandling.ts'
 
@@ -179,6 +180,7 @@ export const useCuttingMediaItemHandling = ({
         const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
 
         const cut: Cut = {
+            id: generate(),
             url: originalVideoUrl,
             start,
             end,

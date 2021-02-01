@@ -10,6 +10,7 @@ import { VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import {
     prepareAnnotationsFromSolution,
+    prepareCutsFromSolution,
     prepareVideoCodePoolFromSolution,
     prepareVideoCodesFromSolution,
 } from 'StimulusControllers/normalizeData'
@@ -75,11 +76,13 @@ function* handleMessages(channel: EventChannel<unknown>) {
             const normalizedAnnotations = prepareAnnotationsFromSolution(solution)
             const normalizedVideoCodes = prepareVideoCodesFromSolution(solution)
             const normalizedCodePool = prepareVideoCodePoolFromSolution(solution)
+            const normalizedCuts = prepareCutsFromSolution(solution)
 
             yield put(actions.lists.setVideoEditor(solution))
             yield put(actions.data.annotations.init(normalizedAnnotations))
             yield put(actions.data.videoCodes.init(normalizedVideoCodes))
             yield put(actions.data.videoCodePool.init(normalizedCodePool))
+            yield put(actions.data.cuts.init(normalizedCuts))
         }
     } finally {
         channel.close()

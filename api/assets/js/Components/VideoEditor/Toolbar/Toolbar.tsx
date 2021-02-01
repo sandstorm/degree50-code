@@ -1,5 +1,6 @@
 import React from 'react'
 import AnnotationsMenu from '../AnnotationsContext/AnnotationsMenu'
+import CuttingMenu from '../CuttingContext/CuttingMenu'
 import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
 
 const Toolbar = () => {
@@ -7,6 +8,7 @@ const Toolbar = () => {
         <div className="video-editor__toolbar">
             <AnnotationsMenu />
             <VideoCodesMenu />
+            <CuttingMenu />
         </div>
     )
 }
