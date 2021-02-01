@@ -6,7 +6,7 @@ import { store } from './ExercisePhaseApp/Store/Store'
 import { ConfigState, hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import SolutionsApp, { SolutionByTeam } from './SolutionsApp/SolutionsApp'
 import { setTranslations, setLocale } from 'react-i18nify'
-import i18n from 'Components/VideoEditor/i18n'
+import i18n from 'StimulusControllers/i18n'
 import { updateIn } from 'immutable'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
 
