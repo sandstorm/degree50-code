@@ -156,6 +156,7 @@ export const useCuttingMediaItemHandling = ({
                 start: d2t((leftNode.endTime + 0.01).toFixed(3)),
                 originalData: {
                     ...item.originalData,
+                    id: generate(),
                     offset: item.originalData.offset + (leftNode.endTime - leftNode.startTime),
                 },
             })

@@ -145,6 +145,7 @@ describe('useCuttingMediaItemHandling()', () => {
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
+                            id: 'testItemA',
                             start: '00:00:00.000',
                             end: '00:00:05.000',
                             offset: 3,
@@ -184,6 +185,7 @@ describe('useCuttingMediaItemHandling()', () => {
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
+                            id: 'testItemA',
                             start: '00:00:00.000',
                             end: '00:00:05.000',
                             offset: 0,
@@ -223,6 +225,7 @@ describe('useCuttingMediaItemHandling()', () => {
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
+                            id: 'testItemA',
                             start: '00:00:00.000',
                             end: '00:00:05.000',
                             offset: 0,
@@ -256,6 +259,7 @@ describe('useCuttingMediaItemHandling()', () => {
                         memo: 'Some test memo...',
                         color: null,
                         originalData: {
+                            id: 'testItemA',
                             start: '00:00:00.000',
                             end: '00:00:05.000',
                             offset: 0,
@@ -301,6 +305,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     memo: 'Some test memo...',
                     color: null,
                     originalData: {
+                        id: 'testItemA',
                         start: '00:00:00.000',
                         end: '00:00:05.000',
                         offset: 0,
@@ -322,6 +327,7 @@ describe('useCuttingMediaItemHandling()', () => {
                     memo: 'Some test memo...',
                     color: null,
                     originalData: {
+                        id: expect.any(String),
                         start: '00:00:00.000',
                         end: '00:00:05.000',
                         offset: 2,
