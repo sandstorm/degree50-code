@@ -6,6 +6,7 @@ import { actions } from '../PlayerSlice'
 
 type OwnProps = {
     label?: string
+    ariaLabel: string
     children: ReactNode
     icon: ReactNode
     disabled?: boolean
@@ -17,7 +18,7 @@ const mapDispatchToProps = {
 
 type Props = typeof mapDispatchToProps & OwnProps
 
-const MenuButton = ({ label, children, pauseVideo, icon, disabled }: Props) => {
+const MenuButton = ({ label, children, pauseVideo, icon, disabled, ariaLabel }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const open = () => setIsOpen(true)
@@ -54,7 +55,11 @@ const MenuButton = ({ label, children, pauseVideo, icon, disabled }: Props) => {
 
     return (
         <div className="menu-wrapper">
-            <Button className="btn btn-grey menu-button video-editor__toolbar__button" onPress={toggleMenu}>
+            <Button
+                className="btn btn-grey menu-button video-editor__toolbar__button"
+                onPress={toggleMenu}
+                aria-label={ariaLabel}
+            >
                 {icon} {label}
             </Button>
             {isOpen && <div className="menu-backdrop" onClick={close} />}
