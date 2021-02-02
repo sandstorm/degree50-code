@@ -35,7 +35,11 @@ const AnnotationsMenu: FC<Props> = (props) => {
             {props.annotationsAreActive && props.activeAnnotationCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
             )}
-            <MenuButton icon={<i className="fas fa-pen" />} disabled={!props.annotationsAreActive}>
+            <MenuButton
+                icon={<i className="fas fa-pen" />}
+                disabled={!props.annotationsAreActive}
+                ariaLabel="Annotationen"
+            >
                 <MenuItem
                     label="Aktive Annotationen"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.active, closeOthers: true })}

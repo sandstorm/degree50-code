@@ -39,11 +39,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
             {props.codesAreActive && props.activeVideoCodeCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
             )}
-            <MenuButton icon={<i className="fa fa-tag" />} disabled={!props.codesAreActive}>
-                <MenuItem
-                    label="Code-Liste"
-                    onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
-                />
+            <MenuButton icon={<i className="fa fa-tag" />} disabled={!props.codesAreActive} ariaLabel="Codierungen">
                 <MenuItem
                     label="Aktive Codierungen"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.active, closeOthers: true })}
@@ -55,6 +51,10 @@ const VideoCodesMenu: FC<Props> = (props) => {
                 <MenuItem
                     label="Alle Codierungen"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.all, closeOthers: true })}
+                />
+                <MenuItem
+                    label="Code-Liste"
+                    onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
                 />
             </MenuButton>
         </div>
