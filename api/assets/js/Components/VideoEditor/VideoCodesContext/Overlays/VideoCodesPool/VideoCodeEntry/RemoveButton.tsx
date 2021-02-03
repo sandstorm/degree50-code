@@ -1,3 +1,4 @@
+import Button from 'Components/Button/Button'
 import React from 'react'
 
 type Props = {
@@ -6,14 +7,9 @@ type Props = {
 
 const RemoveButton = ({ onClick }: Props) => {
     return (
-        <button
-            type="button"
-            className={'btn btn-outline-danger btn-sm'}
-            title={'Video-Code löschen'}
-            onClick={onClick}
-        >
+        <Button className={'btn btn-outline-danger btn-sm'} title={'Video-Code löschen'} onPress={onClick}>
             <i className={'fas fa-trash'} />
-        </button>
+        </Button>
     )
 }
 
