@@ -6,6 +6,7 @@ import VideoCodeName from './VideoCodeName'
 import Color from './Color'
 import RemoveButton from './RemoveButton'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
+import ChildCodeCount from './ChildCodeCount'
 
 export type Props = {
     videoCode: VideoCodePrototype
@@ -39,6 +40,8 @@ const VideoCodeEntry = ({
                 <Color color={videoCode.color} />
 
                 <VideoCodeName name={videoCode.name} />
+
+                {showCreateVideoCodeForm && <ChildCodeCount count={videoCode.videoCodes.length} />}
 
                 {videoCode.userCreated ? (
                     <RemoveButton onClick={() => removeVideoCodePrototype(videoCode.id)} />

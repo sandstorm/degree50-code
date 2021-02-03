@@ -10,7 +10,7 @@ const mapStateToProps = (state: VideoEditorState) => ({
 })
 
 const mapDispatchToProps = {
-    removeVideoCode: actions.data.annotations.remove,
+    removeVideoCode: actions.data.videoCodes.remove,
     closeOverlay: actions.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }

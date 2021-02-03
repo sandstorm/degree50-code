@@ -9,14 +9,16 @@ import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
+import { VideoCodePoolStateSlice } from '../VideoCodePoolSlice'
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
     const videoCodesById = selectors.data.videoCodes.selectVideoCodesById(state)
     const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
 
     return {
         videoCode,
+        prototoypes: selectors.data.videoCodePool.selectDenormalizedVideoCodes(state),
     }
 }
 
@@ -30,6 +32,8 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 // TODO this should probably be consolidated into a single component with the CreateVideoCodeOverlay
 const EditVideoCodeOverlay: FC<Props> = (props) => {
+    const defaultPrototypeId = props.prototoypes[0].id
+
     const {
         transientVideoCode,
         handleStartTimeChange,
@@ -59,6 +63,7 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
             <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
             <hr />
             <VideoCodeSelection
+                defaultPrototypeId={defaultPrototypeId}
                 onSelect={updateSelectedCode}
                 selectedPrototypeId={transientVideoCode.idFromPrototype}
             />

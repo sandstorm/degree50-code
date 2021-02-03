@@ -1,25 +1,24 @@
 import { selectors, VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePoolSlice'
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
-import PredefinedCodeLock from '../PredefinedCodeLock'
-import Color from '../VideoCodesPool/VideoCodeEntry/Color'
 import Radio from './Radio'
 import RadioGroup from './RadioGroup'
 
 type OwnProps = {
+    defaultPrototypeId: string
     onSelect: (prototypeId: string) => void
     selectedPrototypeId?: string | null
 }
 
 const mapStateToProps = (state: VideoCodePoolStateSlice) => ({
-    prototoypes: selectors.selectVideoCodePoolList(state),
+    prototoypes: selectors.selectDenormalizedVideoCodes(state),
 })
 
 const mapDispatchToProps = {}
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const VideoCodeSelection = React.memo(({ prototoypes, selectedPrototypeId, onSelect }: Props) => {
+const VideoCodeSelection = React.memo(({ prototoypes, selectedPrototypeId, onSelect, defaultPrototypeId }: Props) => {
     // 2. Render color panel
     // 3. Render lock
 
@@ -38,7 +37,7 @@ const VideoCodeSelection = React.memo(({ prototoypes, selectedPrototypeId, onSel
         <RadioGroup
             className="video-code-select"
             onChange={handleSelect}
-            defaultValue={prototoypes[0].id}
+            defaultValue={defaultPrototypeId}
             value={selectedPrototypeId ?? undefined}
             label="Codeauswahl"
         >

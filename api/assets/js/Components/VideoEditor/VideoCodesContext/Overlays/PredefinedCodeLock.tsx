@@ -1,11 +1,11 @@
 import React from 'react'
 
 type Props = {
-    isUserCreated: boolean
+    isPredefined: boolean
 }
 
-const PredefinedCodeLock = ({ isUserCreated }: Props) => {
-    if (isUserCreated) {
+const PredefinedCodeLock = ({ isPredefined }: Props) => {
+    if (isPredefined) {
         return <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
     }
 

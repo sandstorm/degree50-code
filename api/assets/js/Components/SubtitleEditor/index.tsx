@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
-import MediaLane from '../VideoEditor/components/MediaLane'
+import MediaLane from '../VideoEditor/components/MediaLaneWithToolbar'
 import MediaItemList from './MediaItemList/MediaItemList'
 
 import { useMediaItemHandling } from '../VideoEditor/utils/useMediaItemHandling'
@@ -28,7 +28,6 @@ const worker = new Worker(vttToUrlUseWorker())
 
 type OwnProps = {
     height: number
-    headerContent: React.ReactNode
     videos: Array<Video>
     itemUpdateCallback: () => void
     itemUpdateCondition: boolean
@@ -52,7 +51,6 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const SubtitleEditor = ({
-    headerContent,
     height,
     itemUpdateCallback,
     itemUpdateCondition,
@@ -121,8 +119,6 @@ const SubtitleEditor = ({
                     />
                 </div>
                 <div className="video-editor__section video-editor__right">
-                    <header className="video-editor__section-header">{headerContent}</header>
-
                     <div className="video-editor__section-content">
                         <MediaItemList
                             mediaItems={mediaItems}

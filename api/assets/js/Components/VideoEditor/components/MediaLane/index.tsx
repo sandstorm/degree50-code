@@ -1,35 +1,36 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback } from 'react'
 import MediaItems from './MediaItems'
 import { MediaItem, VideoListsState } from '../../types'
 import MediaTrack from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
-import Toolbar from './Toolbar'
-import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
+import { MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
 import { defaultMediaTrackConfig } from './MediaTrack/helpers'
 import PreviousSolutions from './PreviousSolutions'
 import { actions, selectors, VideoEditorState } from '../../VideoEditorSlice'
 import { connect } from 'react-redux'
 
 type OwnProps = {
-    currentTime: number
     mediaItems: MediaItem<any>[]
     updateMediaItem: (item: MediaItem<any>, updatedValues: Record<string, unknown>) => void // FIXME refine key
     removeMediaItem: (item: MediaItem<any>) => void
-    setPlayPosition: typeof actions.player.setPlayPosition
     checkMediaItem: (item: MediaItem<any>) => boolean
-    videoDuration: number
     showTextInMediaItems?: boolean
     amountOfLanes?: number
     ToolbarActions?: React.ReactNode
     previousSolutions?: Array<{ userId: string; userName: string; solution: VideoListsState }>
+    $containerRef: React.RefObject<HTMLDivElement>
+    containerHeight: number
+    containerWidth: number
+    onClickLane: (time: number) => void
 }
 
 const mapStateToProps = (state: VideoEditorState) => ({
     mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+    currentTime: selectors.player.selectSyncPlayPosition(state),
 })
 
 const mapDispatchToProps = {
-    setRenderConfig: actions.mediaLaneRenderConfig.setRenderConfig,
+    setPlayPosition: actions.player.setPlayPosition,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -42,24 +43,14 @@ const MediaLane = ({
     previousSolutions,
     setPlayPosition,
     checkMediaItem,
-    videoDuration,
     showTextInMediaItems = true,
     amountOfLanes,
-    ToolbarActions,
     mediaLaneRenderConfig,
-    setRenderConfig,
+    $containerRef,
+    containerHeight,
+    containerWidth,
+    onClickLane,
 }: Props) => {
-    const $container: React.RefObject<HTMLDivElement> = useRef(null)
-
-    const { containerWidth, containerHeight, handleZoom, handleLaneClick } = useMediaLane({
-        $container,
-        currentTime,
-        videoDuration,
-        laneClickCallback: setPlayPosition,
-        renderConfig: mediaLaneRenderConfig,
-        setRenderConfig,
-    })
-
     const handleMediaItemUpdate = useCallback(
         (
             item: MediaItem<any>,
@@ -83,48 +74,34 @@ const MediaLane = ({
             : MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT
 
     return (
-        <div className="video-editor-timeline" style={{ height: MEDIA_LANE_HEIGHT }}>
-            <Toolbar
-                zoomHandler={handleZoom}
-                videoDuration={videoDuration}
-                renderConfig={mediaLaneRenderConfig}
-                handleTimeLineAction={handleLaneClick}
-            >
-                {ToolbarActions}
-            </Toolbar>
-
-            <div
-                className={'video-editor-timeline__entries'}
-                style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
-            >
-                <div className="video-editor-timeline__entry" style={{ height: mediaEntryHeight }}>
-                    <div ref={$container} className="media-track">
-                        <MediaTrack
-                            mediaTrackConfig={mediaTrackConfig}
-                            containerHeight={containerHeight}
-                            containerWidth={containerWidth}
-                        />
-                    </div>
-                    <MediaTrackInteractionArea renderConfig={mediaLaneRenderConfig} clickCallback={handleLaneClick} />
-                    <MediaItems
-                        currentTime={currentTime}
-                        renderConfig={mediaLaneRenderConfig}
-                        mediaItems={mediaItems}
-                        updateMediaItem={handleMediaItemUpdate}
-                        removeMediaItem={removeMediaItem}
-                        checkMediaItem={checkMediaItem}
-                        amountOfLanes={amountOfLanes}
-                        showTextInMediaItems={showTextInMediaItems}
-                        height={mediaEntryHeight - mediaTrackConfig.rulerHeight}
+        <>
+            <div className="video-editor-timeline__entry" style={{ height: mediaEntryHeight }}>
+                <div ref={$containerRef} className="media-track">
+                    <MediaTrack
+                        mediaTrackConfig={mediaTrackConfig}
+                        containerHeight={containerHeight}
+                        containerWidth={containerWidth}
                     />
                 </div>
-                <PreviousSolutions
-                    previousSolutions={previousSolutions}
-                    handleLaneClick={handleLaneClick}
+                <MediaTrackInteractionArea renderConfig={mediaLaneRenderConfig} clickCallback={onClickLane} />
+                <MediaItems
+                    currentTime={currentTime}
                     renderConfig={mediaLaneRenderConfig}
+                    mediaItems={mediaItems}
+                    updateMediaItem={handleMediaItemUpdate}
+                    removeMediaItem={removeMediaItem}
+                    checkMediaItem={checkMediaItem}
+                    amountOfLanes={amountOfLanes}
+                    showTextInMediaItems={showTextInMediaItems}
+                    height={mediaEntryHeight - mediaTrackConfig.rulerHeight}
                 />
             </div>
-        </div>
+            <PreviousSolutions
+                previousSolutions={previousSolutions}
+                handleLaneClick={onClickLane}
+                renderConfig={mediaLaneRenderConfig}
+            />
+        </>
     )
 }
 

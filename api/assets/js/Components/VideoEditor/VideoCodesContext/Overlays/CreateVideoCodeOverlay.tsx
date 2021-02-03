@@ -12,10 +12,12 @@ import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
 import { VideoCode } from 'Components/VideoEditor/types'
+import { VideoCodePoolStateSlice } from '../VideoCodePoolSlice'
 
-const mapStateToProps = (state: VideoEditorState) => ({
+const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice) => ({
     currentTime: selectors.player.selectSyncPlayPosition(state),
     videos: selectors.config.selectVideos(state.videoEditor),
+    prototoypes: selectors.data.videoCodePool.selectDenormalizedVideoCodes(state),
 })
 
 const mapDispatchToProps = {
@@ -30,6 +32,8 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
     const { currentTime, videos } = props
     const duration = videos[0].duration
 
+    const initialPrototypeId = props.prototoypes[0].id
+
     // transient videoCode
     // current as start
     // some default delta for end
@@ -40,7 +44,7 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         text: '',
         memo: '',
         color: null,
-        idFromPrototype: null,
+        idFromPrototype: initialPrototypeId,
     }
 
     // TODO handle code selection
@@ -73,6 +77,7 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
             <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
             <hr />
             <VideoCodeSelection
+                defaultPrototypeId={initialPrototypeId}
                 onSelect={updateSelectedCode}
                 selectedPrototypeId={transientVideoCode.idFromPrototype}
             />
