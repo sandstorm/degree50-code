@@ -1,19 +1,9 @@
-import React, { FC, memo, useState } from 'react'
-import { connect } from 'react-redux'
-import AnnotationMedialane from '../AnnotationsContext/AnnotationMedialane'
-import { selectors, VideoEditorState } from '../VideoEditorSlice'
+import React, { memo, useState } from 'react'
+import MultiLane from './MultiLane'
 
-const mapStateToProps = (state: VideoEditorState) => ({
-    videos: selectors.config.selectVideos(state.videoEditor),
-})
-
-type Props = ReturnType<typeof mapStateToProps>
-
-const MediaLaneContainer: FC<Props> = (props) => {
+const MediaLaneContainer = () => {
     const [showMediaLane, toggleShowMediaLane] = useState(false)
     const handleMediaLaneToggle = () => toggleShowMediaLane(!showMediaLane)
-
-    const firstVideoDuration = props.videos[0].duration
 
     return (
         <div className="media-lane-container">
@@ -21,13 +11,9 @@ const MediaLaneContainer: FC<Props> = (props) => {
                 <i className={showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'} />
             </button>
 
-            {showMediaLane && (
-                <>
-                    <AnnotationMedialane videoDuration={firstVideoDuration} />
-                </>
-            )}
+            {showMediaLane && <MultiLane />}
         </div>
     )
 }
 
-export default connect(mapStateToProps)(memo(MediaLaneContainer))
+export default memo(MediaLaneContainer)

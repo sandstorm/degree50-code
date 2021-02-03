@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-i18nify'
-import { RenderConfig } from './MediaTrack'
+import { RenderConfig } from './MediaLane/MediaTrack'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
+import { MEDIA_LANE_TOOLBAR_HEIGHT } from './MediaLane/useMediaLane'
 
 type OwnProps = {
     zoomHandler: (event: React.ChangeEvent<HTMLInputElement>) => void

@@ -15,7 +15,7 @@ const PrototypeInformation = ({ videoCodePrototype }: Props) => {
     return (
         <div className="video-code-prototype-information">
             <Color color={videoCodePrototype.color} />
-            <PredefinedCodeLock isUserCreated={videoCodePrototype.userCreated} />
+            <PredefinedCodeLock isPredefined={!videoCodePrototype.userCreated} />
             <label>{videoCodePrototype.name}</label>
         </div>
     )

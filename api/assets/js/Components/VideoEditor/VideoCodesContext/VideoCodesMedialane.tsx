@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import MediaLane from '../components/MediaLane/index'
-import { Annotation, MediaItem } from '../types'
+import { VideoCode, MediaItem } from '../types'
 import { solveConflicts } from '../utils/solveItemConflicts'
 import { useMediaItemHandling } from '../utils/useMediaItemHandling'
 import { MediaLaneRenderConfigState } from '../MediaLaneRenderConfigSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
+import { VideoCodePoolStateSlice } from './VideoCodePoolSlice'
 
 type OwnProps = {
     videoDuration: number
@@ -17,39 +18,45 @@ type OwnProps = {
     onClickLane: (time: number) => void
 }
 
-const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState) => ({
-    annotations: selectors.data.annotations.selectAnnotationsByStartTime(state),
-    mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
-})
+const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState & VideoCodePoolStateSlice) => {
+    const videoCodes = selectors.data.videoCodes.selectVideoCodesByStartTime(state)
+    const prototypes = selectors.data.videoCodePool.selectVideoCodesById(state)
+
+    const items = videoCodes.map(
+        (videoCode) =>
+            new MediaItem({
+                start: videoCode.start,
+                end: videoCode.end,
+                text: videoCode.idFromPrototype ? prototypes[videoCode.idFromPrototype].name : '',
+                memo: videoCode.memo,
+                originalData: videoCode,
+                lane: 0,
+                idFromPrototype: videoCode.idFromPrototype,
+                color: videoCode.idFromPrototype ? prototypes[videoCode.idFromPrototype].color : null,
+            })
+    )
+
+    return {
+        mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+        items,
+    }
+}
 
 const mapDispatchToProps = {
     syncSolution: syncSolutionAction,
-    setAnnotations: actions.data.annotations.set,
+    setVideoCodes: actions.data.videoCodes.set,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const AnnotationMedialane = (props: Props) => {
-    const itemsFromAnnotations = props.annotations.map(
-        (sub) =>
-            new MediaItem({
-                start: sub.start,
-                end: sub.end,
-                text: sub.text,
-                memo: sub.memo,
-                originalData: sub,
-                lane: 0,
-                idFromPrototype: null,
-            })
-    )
-
+const VideoCodeMedialane = (props: Props) => {
     // FIXME typing
-    const mediaItems: MediaItem<Annotation>[] = solveConflicts(itemsFromAnnotations) as MediaItem<Annotation>[]
+    const mediaItems: MediaItem<VideoCode>[] = solveConflicts(props.items) as MediaItem<VideoCode>[]
 
-    const { removeMediaItem, updateMediaItem } = useMediaItemHandling<Annotation>({
+    const { removeMediaItem, updateMediaItem } = useMediaItemHandling<VideoCode>({
         currentTime: props.mediaLaneRenderConfig.currentTime,
         mediaItems,
-        setMediaItems: props.setAnnotations,
+        setMediaItems: props.setVideoCodes,
         timelineDuration: props.mediaLaneRenderConfig.duration,
         updateCallback: props.syncSolution,
         updateCondition: true, // TODO
@@ -60,7 +67,7 @@ const AnnotationMedialane = (props: Props) => {
         // true means conflict => item is illegal
         //
         // WHY: this hard coded check?
-        // We currently do not yet have defined conditions under which annotations
+        // We currently do not yet have defined conditions under which videoCodes
         // are considered to be illegal.
         // Because they may also overlap etc., we do not use the checkMediaItem() function
         // provided by useMediaItemHandling().
@@ -90,4 +97,4 @@ const AnnotationMedialane = (props: Props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(AnnotationMedialane))
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(VideoCodeMedialane))

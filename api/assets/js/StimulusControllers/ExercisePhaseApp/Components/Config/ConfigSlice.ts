@@ -68,6 +68,7 @@ export const selectUserId = (state: ConfigStateSlice) => state.config.userId
 export const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 export const selectVideos = (state: ConfigStateSlice) => state.config.videos
 export const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCodesPool
+export const selectComponents = (state: ConfigStateSlice) => state.config.components
 
 export const selectAnnotationsAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_ANNOTATIONS) > -1
@@ -85,6 +86,7 @@ export const selectors = {
     selectAnnotationsAreActive,
     selectVideoCodesAreActive,
     selectCutsAreActive,
+    selectComponents,
 }
 
 export default configSlice.reducer
