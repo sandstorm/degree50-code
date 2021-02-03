@@ -42,7 +42,12 @@ const AddVideoCodePrototypeForm = ({ createVideoCodePrototype: createVideoCode, 
     }
 
     return (
-        <div key={'new-video-code' + parentVideoCode?.id} className={'new-video-code'}>
+        <div
+            tabIndex={0}
+            aria-label="Neuen Code Erstellen"
+            key={'new-video-code' + parentVideoCode?.id}
+            className={'new-video-code'}
+        >
             {parentVideoCode ? (
                 <div className={'video-code__color'} style={{ backgroundColor: newPrototypeColor }} />
             ) : (

@@ -26,11 +26,15 @@ const VideoCodeEntry = ({
         setShowChildren(!showChildren)
     }, [setShowChildren, showChildren])
 
+    const description = `
+        ${videoCode.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}
+        name: ${videoCode.name}
+        ${videoCode.description && `description: ${videoCode.description}`}
+        ${videoCode.videoCodes.length > 0 ? 'Hat' : 'Hat keine'} Untercodes
+    `
+
     return (
-        <li
-            className={showChildren ? 'video-code video-code--show-children' : 'video-code'}
-            title={videoCode.description}
-        >
+        <li tabIndex={0} aria-label={description} className="video-code" title={videoCode.description}>
             <div className={'video-code__content'}>
                 <Color color={videoCode.color} />
 
@@ -47,20 +51,20 @@ const VideoCodeEntry = ({
                 ) : null}
             </div>
 
-            <VideoCodesList
-                videoCodesPool={videoCode.videoCodes}
-                showCreateVideoCodeForm={false}
-                parentVideoCode={videoCode}
-            />
+            {showChildren ? (
+                <VideoCodesList
+                    videoCodesPool={videoCode.videoCodes}
+                    showCreateVideoCodeForm={false}
+                    parentVideoCode={videoCode}
+                />
+            ) : null}
 
-            {showCreateVideoCodeForm ? (
+            {showChildren && showCreateVideoCodeForm ? (
                 <AddVideoCodePrototypeForm
                     createVideoCodePrototype={createVideoCodePrototype}
                     parentVideoCode={videoCode}
                 />
-            ) : (
-                ''
-            )}
+            ) : null}
         </li>
     )
 }
