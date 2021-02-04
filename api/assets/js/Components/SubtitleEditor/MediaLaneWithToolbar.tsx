@@ -1,13 +1,17 @@
 import React, { useCallback, useRef } from 'react'
-import MediaItems from './MediaLane/MediaItems'
-import { MediaItem, VideoListsState } from '../types'
-import MediaTrack from './MediaLane/MediaTrack'
-import MediaTrackInteractionArea from './MediaLane/MediaTrackInteractionArea'
-import Toolbar from './MediaLaneToolbar'
-import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from './MediaLane/useMediaLane'
-import { defaultMediaTrackConfig } from './MediaLane/MediaTrack/helpers'
-import PreviousSolutions from './MediaLane/PreviousSolutions'
-import { actions, selectors, VideoEditorState } from '../VideoEditorSlice'
+import MediaItems from '../VideoEditor/components/MediaLane/MediaItems'
+import { MediaItem, VideoListsState } from '../VideoEditor/types'
+import MediaTrack from '../VideoEditor/components/MediaLane/MediaTrack'
+import MediaTrackInteractionArea from '../VideoEditor/components/MediaLane/MediaTrackInteractionArea'
+import Toolbar from '../VideoEditor/components/MediaLaneToolbar'
+import {
+    useMediaLane,
+    MEDIA_LANE_HEIGHT,
+    MEDIA_LANE_TOOLBAR_HEIGHT,
+} from '../VideoEditor/components/MediaLane/useMediaLane'
+import { defaultMediaTrackConfig } from '../VideoEditor/components/MediaLane/MediaTrack/helpers'
+import PreviousSolutions from './PreviousSolutions'
+import { actions, selectors, VideoEditorState } from '../VideoEditor/VideoEditorSlice'
 import { connect } from 'react-redux'
 
 type OwnProps = {
@@ -52,7 +56,7 @@ const MediaLane = ({
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
     const { containerWidth, containerHeight, handleZoom, handleLaneClick } = useMediaLane({
-        $container,
+        $mediaTrackRef: $container,
         currentTime,
         videoDuration,
         laneClickCallback: setPlayPosition,

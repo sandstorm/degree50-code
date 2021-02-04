@@ -8,7 +8,7 @@ import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Stor
 import VideoPlayerWrapper, { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import Presence from '../Presence/Presence'
 import ExerciseDescription from '../ExerciseDescription/ExerciseDescription'
-import { selectConfig } from '../Config/ConfigSlice'
+import { selectors } from '../Config/ConfigSlice'
 
 export const overlaySizesEnum = {
     DEFAULT: 'default',
@@ -38,7 +38,7 @@ const mapStateToProps = (state: AppState) => ({
     isVisible: selectIsVisible(state),
     component: selectComponent(state),
     size: selectSize(state),
-    videos: selectConfig(state).videos,
+    videos: selectors.selectConfig(state).videos,
 })
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

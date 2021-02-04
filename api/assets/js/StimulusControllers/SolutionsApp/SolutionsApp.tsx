@@ -107,7 +107,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     const heightOrDefault = height === 0 ? 400 : height
 
     const { handleZoom, handleLaneClick } = useMediaLane({
-        $container,
+        $mediaTrackRef: $container,
         currentTime,
         videoDuration,
         laneClickCallback: props.setPlayPosition,

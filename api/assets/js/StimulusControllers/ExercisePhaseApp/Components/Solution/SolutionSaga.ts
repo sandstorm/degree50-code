@@ -3,7 +3,7 @@ import { eventChannel, EventChannel } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
-import { selectConfig } from '../Config/ConfigSlice'
+import { selectors as configSelectors } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
@@ -92,11 +92,11 @@ function* handleMessages(channel: EventChannel<unknown>) {
  * Upload solution if user is currentEditor
  */
 function* syncSolution() {
-    const config = selectConfig(yield select())
+    const config = configSelectors.selectConfig(yield select())
 
     if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
         const solution = selectors.selectSolution(yield select())
-        const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution
+        const updateSolutionEndpoint = configSelectors.selectConfig(yield select()).apiEndpoints.updateSolution
 
         try {
             yield Axios.post(updateSolutionEndpoint, {

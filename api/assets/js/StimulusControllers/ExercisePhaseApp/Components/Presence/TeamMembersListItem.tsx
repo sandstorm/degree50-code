@@ -4,7 +4,7 @@ import { AppDispatch, AppState } from 'StimulusControllers/ExercisePhaseApp/Stor
 import { ConnectionState, selectTeamMemberById, TeamMemberId } from './PresenceSlice'
 import { selectCurrentEditorId } from './CurrentEditorSlice'
 import { promoteUserToCurrentEditorAction } from './PresenceSaga'
-import { selectUserId } from '../Config/ConfigSlice'
+import { selectors } from '../Config/ConfigSlice'
 
 type TeamMembersListItemOwnProps = {
     teamMemberId: TeamMemberId
@@ -65,7 +65,7 @@ const TeamMembersListItem: React.FC<TeamMembersListItemProps> = ({
 const mapStateToProps = (state: AppState, ownProps: TeamMembersListItemOwnProps) => ({
     teamMember: selectTeamMemberById(ownProps.teamMemberId, state),
     currentEditor: selectCurrentEditorId(state),
-    userId: selectUserId(state),
+    userId: selectors.selectUserId(state),
 })
 
 const mapDispatchToProps = (dispatch: AppDispatch, ownProps: TeamMembersListItemOwnProps) => ({

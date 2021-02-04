@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import AnnotationMedialane from 'Components/VideoEditor/AnnotationsContext/AnnotationMedialane'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
@@ -55,6 +55,7 @@ const mapStateToProps = (state: VideoEditorState) => ({
     playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
     mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
     components: selectors.config.selectComponents(state.videoEditor),
+    availableComponentIds: selectors.config.selectAvailableComponentIds(state.videoEditor),
 })
 
 const mapDispatchToProps = {
@@ -67,12 +68,11 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const MultiLane = React.memo((props: Props) => {
     const firstVideoDuration = props.videos[0].duration
 
-    const [activeComponents, setActiveComponents] = useState(props.components.map((id) => ({ id, visible: true })))
+    const [activeComponents, setActiveComponents] = useState(
+        props.availableComponentIds.map((id) => ({ id, visible: true }))
+    )
 
-    const $container: React.RefObject<HTMLDivElement> = useRef(null)
-
-    const { containerWidth, containerHeight, handleLaneClick, handleZoom } = useMediaLane({
-        $container,
+    const { containerWidth, containerHeight, handleLaneClick, handleZoom, ref: $mediaTrackRef } = useMediaLane({
         currentTime: props.playerSyncPlayPosition,
         videoDuration: firstVideoDuration,
         laneClickCallback: props.setPlayPosition,
@@ -106,17 +106,17 @@ const MultiLane = React.memo((props: Props) => {
                         }
 
                         return (
-                            <>
+                            <div>
                                 <div className="multilane__medialane-description">{getComponentName(component.id)}</div>
                                 <MediaLane
                                     key={`current-user-${component.id}`}
                                     videoDuration={firstVideoDuration}
                                     containerHeight={containerHeight}
                                     containerWidth={containerWidth}
-                                    $containerRef={$container}
+                                    $mediaTrackRef={$mediaTrackRef}
                                     onClickLane={handleLaneClick}
                                 />
-                            </>
+                            </div>
                         )
                     })}
                 </div>

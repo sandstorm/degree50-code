@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { selectConfig, selectUserId, selectReadOnly } from '../../Components/Config/ConfigSlice'
+import { selectors } from '../../Components/Config/ConfigSlice'
 import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { TabsTypesEnum } from '../../../../types'
 import VideoEditor from 'Components/VideoEditor'
@@ -12,12 +12,12 @@ type OwnProps = {
 
 const mapStateToProps = (state: AppState) => {
     return {
-        userId: selectUserId(state),
-        readOnly: selectReadOnly(state),
+        userId: selectors.selectUserId(state),
+        readOnly: selectors.selectReadOnly(state),
         currentEditorId: selectCurrentEditorId(state),
-        videoCodesPool: selectConfig(state).videoCodesPool,
-        videos: selectConfig(state).videos,
-        components: selectConfig(state).components,
+        videoCodesPool: selectors.selectVideoCodesPool(state),
+        videos: selectors.selectVideos(state),
+        components: selectors.selectComponents(state),
     }
 }
 

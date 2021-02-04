@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react'
 import MediaItems from './MediaItems'
-import { MediaItem, VideoListsState } from '../../types'
+import { MediaItem } from '../../types'
 import MediaTrack from './MediaTrack'
 import MediaTrackInteractionArea from './MediaTrackInteractionArea'
-import { MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from './useMediaLane'
+import { MEDIA_LANE_HEIGHT } from './useMediaLane'
 import { defaultMediaTrackConfig } from './MediaTrack/helpers'
-import PreviousSolutions from './PreviousSolutions'
 import { actions, selectors, VideoEditorState } from '../../VideoEditorSlice'
 import { connect } from 'react-redux'
 
@@ -17,8 +16,7 @@ type OwnProps = {
     showTextInMediaItems?: boolean
     amountOfLanes?: number
     ToolbarActions?: React.ReactNode
-    previousSolutions?: Array<{ userId: string; userName: string; solution: VideoListsState }>
-    $containerRef: React.RefObject<HTMLDivElement>
+    $mediaTrackRef: React.RefObject<HTMLDivElement> | React.RefCallback<HTMLDivElement> | null
     containerHeight: number
     containerWidth: number
     onClickLane: (time: number) => void
@@ -40,13 +38,12 @@ const MediaLane = ({
     updateMediaItem,
     removeMediaItem,
     mediaItems,
-    previousSolutions,
     setPlayPosition,
     checkMediaItem,
     showTextInMediaItems = true,
     amountOfLanes,
     mediaLaneRenderConfig,
-    $containerRef,
+    $mediaTrackRef: $mediaTrackRef,
     containerHeight,
     containerWidth,
     onClickLane,
@@ -68,15 +65,10 @@ const MediaLane = ({
         render: mediaLaneRenderConfig,
     }
 
-    const mediaEntryHeight =
-        previousSolutions && previousSolutions.length > 0
-            ? MEDIA_LANE_HEIGHT - 100 - MEDIA_LANE_TOOLBAR_HEIGHT
-            : MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT
-
     return (
         <>
-            <div className="video-editor-timeline__entry" style={{ height: mediaEntryHeight }}>
-                <div ref={$containerRef} className="media-track">
+            <div className="video-editor-timeline__entry">
+                <div ref={$mediaTrackRef} className="media-track">
                     <MediaTrack
                         mediaTrackConfig={mediaTrackConfig}
                         containerHeight={containerHeight}
@@ -93,14 +85,9 @@ const MediaLane = ({
                     checkMediaItem={checkMediaItem}
                     amountOfLanes={amountOfLanes}
                     showTextInMediaItems={showTextInMediaItems}
-                    height={mediaEntryHeight - mediaTrackConfig.rulerHeight}
+                    height={MEDIA_LANE_HEIGHT - mediaTrackConfig.rulerHeight}
                 />
             </div>
-            <PreviousSolutions
-                previousSolutions={previousSolutions}
-                handleLaneClick={onClickLane}
-                renderConfig={mediaLaneRenderConfig}
-            />
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { call, cancel, cancelled, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import { eventChannel, EventChannel } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
@@ -11,7 +11,7 @@ import {
 } from './PresenceSlice'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 import { selectCurrentEditorId } from './CurrentEditorSlice'
-import { selectConfig, selectUserId } from '../Config/ConfigSlice'
+import { selectors } from '../Config/ConfigSlice'
 
 export const initPresenceAction = createAction('Presence/Saga/init')
 export const disconnectPresenceAction = createAction('Presence/Saga/disconnect')
@@ -67,7 +67,7 @@ function* presenceListener() {
 function connect(eventSource: EventSource) {
     return eventChannel((emit) => {
         // eslint-disable-next-line
-        eventSource.onmessage = (ev) => {
+        eventSource.onmessage = () => {
             emit(eventStreamMessageAction()) // the payload is irrelevant because we call the subscription api anyways
         }
 
@@ -183,14 +183,14 @@ function* fetchSubscriptions() {
 }
 
 function* promoteUserToCurrentEditor(action: ReturnType<typeof promoteUserToCurrentEditorAction>) {
-    const userId = selectUserId(yield select())
+    const userId = selectors.selectUserId(yield select())
     const currentEditorId = selectCurrentEditorId(yield select())
 
     const { userId: userIdToPromote } = action.payload
 
     if (userId !== currentEditorId) {
         try {
-            Axios.post(selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
+            Axios.post(selectors.selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
                 currentEditorCandidateId: userIdToPromote,
             })
         } catch (e) {
