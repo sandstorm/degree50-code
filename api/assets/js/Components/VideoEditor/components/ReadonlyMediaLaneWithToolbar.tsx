@@ -43,7 +43,7 @@ const ReadonlyMediaLaneWithToolbar = ({
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
     const { containerWidth, containerHeight, handleZoom, handleLaneClick } = useMediaLane({
-        $container,
+        $mediaTrackRef: $container,
         currentTime,
         videoDuration,
         laneClickCallback: setPlayPosition,

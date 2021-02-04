@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
@@ -63,19 +63,42 @@ export const { actions } = configSlice
 
 export type ConfigStateSlice = { config: ConfigState }
 
-export const selectConfig = (state: ConfigStateSlice) => state.config
-export const selectUserId = (state: ConfigStateSlice) => state.config.userId
-export const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
-export const selectVideos = (state: ConfigStateSlice) => state.config.videos
-export const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCodesPool
-export const selectComponents = (state: ConfigStateSlice) => state.config.components
+const selectConfig = (state: ConfigStateSlice) => state.config
+const selectUserId = (state: ConfigStateSlice) => state.config.userId
+const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
+const selectVideos = (state: ConfigStateSlice) => state.config.videos
+const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCodesPool
+const selectComponents = (state: ConfigStateSlice) => state.config.components
+const selectPreviousSolutions = (state: ConfigStateSlice) => state.config.previousSolutions
 
-export const selectAnnotationsAreActive = (state: ConfigStateSlice) =>
+const selectAnnotationsAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_ANNOTATIONS) > -1
-export const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
+const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CODES) > -1
-export const selectCutsAreActive = (state: ConfigStateSlice) =>
+const selectCutsAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CUTTING) > -1
+
+export const selectAvailableComponentIds = createSelector(
+    [selectComponents, selectPreviousSolutions],
+    (componentIds, previousSolutions) => {
+        const idsFromPreviousSolutions = previousSolutions.reduce((acc: TabsTypesEnum[], solution) => {
+            const hasCodes = solution.solution.videoCodes.length > 0
+            const hasAnnotations = solution.solution.annotations.length > 0
+            const hasCuts = solution.solution.cutList.length > 0
+
+            return [
+                ...acc,
+                ...(hasCodes ? [TabsTypesEnum.VIDEO_CODES] : []),
+                ...(hasAnnotations ? [TabsTypesEnum.VIDEO_ANNOTATIONS] : []),
+                ...(hasCuts ? [TabsTypesEnum.VIDEO_CUTTING] : []),
+            ]
+        }, [])
+
+        const uniqueIds = new Set([...componentIds, ...idsFromPreviousSolutions])
+
+        return [...uniqueIds]
+    }
+)
 
 export const selectors = {
     selectConfig,
@@ -87,6 +110,7 @@ export const selectors = {
     selectVideoCodesAreActive,
     selectCutsAreActive,
     selectComponents,
+    selectAvailableComponentIds,
 }
 
 export default configSlice.reducer

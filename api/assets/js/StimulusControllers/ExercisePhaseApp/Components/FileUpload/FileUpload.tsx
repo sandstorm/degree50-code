@@ -1,27 +1,9 @@
 import React, { useCallback } from 'react'
-import { connect } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
-import { selectConfig } from '../Config/ConfigSlice'
 import 'dropzone/dist/dropzone.css'
-import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 
-const mapStateToProps = (state: AppState) => ({
-    config: selectConfig(state),
-})
-
-const mapDispatchToProps = (dispatch: AppDispatch) => ({})
-
-type AdditionalProps = {
-    // currently none
-}
-
-type FileUploadProbs = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
-
-const FileUpload: React.FC<FileUploadProbs> = (props) => {
-    const endpoint = 'endpoint' // TODO get from config
-    const id = 'id'
-
-    const onDrop = useCallback((acceptedFiles) => {
+const FileUpload = () => {
+    const onDrop = useCallback(() => {
         // TODO: implement!
         // send files to server
     }, [])
@@ -41,4 +23,4 @@ const FileUpload: React.FC<FileUploadProbs> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FileUpload)
+export default FileUpload

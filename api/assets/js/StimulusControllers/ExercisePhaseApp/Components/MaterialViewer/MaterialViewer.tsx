@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { selectConfig } from '../Config/ConfigSlice'
+import { selectors } from '../Config/ConfigSlice'
 import PDFViewer from 'pdf-viewer-reactjs'
 import { selectActiveMaterial, setActiveMaterial } from './MaterialViewerSlice'
 import { setOverlaySize } from '../Overlay/OverlaySlice'
@@ -8,7 +8,7 @@ import { overlaySizesEnum } from '../Overlay/Overlay'
 import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
 
 const mapStateToProps = (state: AppState) => ({
-    config: selectConfig(state),
+    config: selectors.selectConfig(state),
     activeMaterial: selectActiveMaterial(state),
 })
 

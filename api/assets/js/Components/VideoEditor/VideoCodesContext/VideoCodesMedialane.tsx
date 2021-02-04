@@ -12,7 +12,7 @@ import { VideoCodePoolStateSlice } from './VideoCodePoolSlice'
 
 type OwnProps = {
     videoDuration: number
-    $containerRef: React.RefObject<HTMLDivElement>
+    $mediaTrackRef: React.RefObject<HTMLDivElement> | React.RefCallback<HTMLDivElement> | null
     containerHeight: number
     containerWidth: number
     onClickLane: (time: number) => void
@@ -83,7 +83,7 @@ const VideoCodeMedialane = (props: Props) => {
 
     return (
         <MediaLane
-            $containerRef={props.$containerRef}
+            $mediaTrackRef={props.$mediaTrackRef}
             containerHeight={props.containerHeight}
             containerWidth={props.containerWidth}
             onClickLane={props.onClickLane}

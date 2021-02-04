@@ -16,21 +16,21 @@ const getDurationForRenderConfig = (durationInPercentage: number, videoDuration:
 
 // TODO comment and refactor
 export const useMediaLane = ({
-    $container,
+    $mediaTrackRef,
     currentTime,
     videoDuration,
     laneClickCallback,
     renderConfig,
     setRenderConfig,
 }: {
-    $container: React.RefObject<HTMLDivElement>
+    $mediaTrackRef?: React.RefObject<HTMLDivElement>
     currentTime: number
     videoDuration: number
     laneClickCallback: (newCurrentTime: number) => void
     renderConfig: RenderConfig
     setRenderConfig: (newRenderConfig: RenderConfig) => void
 }) => {
-    const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver($container, 500)
+    const { width: containerWidth, height: containerHeight, ref } = useDebouncedResizeObserver($mediaTrackRef, 500)
 
     const updateRenderConfigOnResize = (containerWidth: number) => {
         const newGridGap = containerWidth / renderConfig.gridNum
@@ -108,5 +108,13 @@ export const useMediaLane = ({
         setRenderConfigForZoom(renderConfig.zoom)
     }, [containerWidth, videoDuration, renderConfig.zoom])
 
-    return { containerWidth, containerHeight, renderConfig, setRender: setRenderConfig, handleZoom, handleLaneClick }
+    return {
+        containerWidth,
+        containerHeight,
+        renderConfig,
+        setRender: setRenderConfig,
+        handleZoom,
+        handleLaneClick,
+        ref,
+    }
 }

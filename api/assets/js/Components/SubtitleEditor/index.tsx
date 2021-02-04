@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
-import MediaLane from '../VideoEditor/components/MediaLaneWithToolbar'
+import MediaLane from './MediaLaneWithToolbar'
 import MediaItemList from './MediaItemList/MediaItemList'
 
 import { useMediaItemHandling } from '../VideoEditor/utils/useMediaItemHandling'

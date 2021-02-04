@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { solveConflicts } from '../../utils/solveItemConflicts'
-import { MediaItem, VideoListsState } from '../../types'
-import { RenderConfig } from './MediaTrack'
-import ReadOnlyMediaLane from '../ReadOnlyMediaLane'
+import { solveConflicts } from '../VideoEditor/utils/solveItemConflicts'
+import { MediaItem, VideoListsState } from '../VideoEditor/types'
+import { RenderConfig } from '../VideoEditor/components/MediaLane/MediaTrack'
+import ReadOnlyMediaLane from '../VideoEditor/components/ReadOnlyMediaLane'
 
 type Props = {
     handleLaneClick: (clickTime: number) => void
