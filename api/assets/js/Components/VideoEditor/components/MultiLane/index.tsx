@@ -8,6 +8,7 @@ import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from '../M
 import { TabsTypesEnum } from 'types'
 import { ComponentId } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import VideoCodesMedialane from 'Components/VideoEditor/VideoCodesContext/VideoCodesMedialane'
+import VideoCutMedialane from 'Components/VideoEditor/CuttingContext/VideoCutMedialane'
 
 export const getComponentName = (componentId: ComponentId) => {
     switch (componentId) {
@@ -37,6 +38,10 @@ const getMediaLaneComponentById = (componentId: ComponentId) => {
 
         case TabsTypesEnum.VIDEO_CODES: {
             return VideoCodesMedialane
+        }
+
+        case TabsTypesEnum.VIDEO_CUTTING: {
+            return VideoCutMedialane
         }
 
         default: {
