@@ -6,7 +6,6 @@ import { d2t, t2d } from 'duration-time-conversion'
 import { Cut, CutList, MediaItem } from '../types'
 import { notify } from '../utils'
 import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
-import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import { Handle } from '../components/MediaLane/MediaItems/types'
 import { generate } from 'shortid'
 
@@ -37,7 +36,6 @@ export const useCuttingMediaItemHandling = ({
     currentTime,
     mediaItems,
     originalVideoUrl,
-    playerSyncPlayPosition,
     setCutList,
     timelineDuration,
     updateCallback,
@@ -46,7 +44,6 @@ export const useCuttingMediaItemHandling = ({
     currentTime: number
     mediaItems: Array<MediaItem<Cut>>
     originalVideoUrl?: string
-    playerSyncPlayPosition: ReturnType<typeof selectors.player.selectSyncPlayPosition>
     setCutList: (mediaItems: Array<Cut>) => void
     timelineDuration: number
     updateCallback: () => void
@@ -131,45 +128,6 @@ export const useCuttingMediaItemHandling = ({
         [hasMediaItem, copyMediaItems, updateMediaItems]
     )
 
-    /**
-     * Splits the item below the cursor, setting a new end time for the original item
-     * as well as setting the corresponding start and offset values on the newly created cut.
-     */
-    const handleSplitAtCursor = () => {
-        const activeItemIndex = mediaItems.findIndex(
-            (item) => item.startTime <= playerSyncPlayPosition && item.endTime > playerSyncPlayPosition
-        )
-
-        if (activeItemIndex > -1) {
-            const item = mediaItems[activeItemIndex]
-
-            const leftNode = new MediaItem<Cut>({
-                ...item,
-                end: d2t(playerSyncPlayPosition.toFixed(3)),
-                originalData: {
-                    ...item.originalData,
-                },
-            })
-
-            const rightNode = new MediaItem<Cut>({
-                ...item,
-                start: d2t((leftNode.endTime + 0.01).toFixed(3)),
-                originalData: {
-                    ...item.originalData,
-                    id: generate(),
-                    offset: item.originalData.offset + (leftNode.endTime - leftNode.startTime),
-                },
-            })
-
-            updateMediaItems([
-                ...mediaItems.slice(0, activeItemIndex),
-                leftNode,
-                rightNode,
-                ...mediaItems.slice(activeItemIndex + 1),
-            ])
-        }
-    }
-
     // Add a mediaItem
     const appendCut = useCallback(() => {
         if (originalVideoUrl === undefined) {
@@ -209,7 +167,6 @@ export const useCuttingMediaItemHandling = ({
         setCurrentIndex,
         checkMediaItem,
         copyMediaItems,
-        handleSplitAtCursor,
         hasMediaItem,
         removeMediaItem,
         setCurrentTimeForMediaItems,
