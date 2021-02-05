@@ -21,7 +21,6 @@ export type OwnProps = {
     videoCode: VideoCodePrototype
     removeVideoCodePrototype: (prototypeId: string) => void
     createVideoCodePrototype: (prototype: VideoCodePrototype) => void
-    showCreateVideoCodeForm: boolean
 }
 
 type Props = OwnProps & typeof mapDispatchToProps
@@ -53,7 +52,7 @@ const VideoCodeEntry: FC<Props> = (props) => {
 
                 <VideoCodeName name={props.videoCode.name} />
 
-                {props.showCreateVideoCodeForm && <ChildCodeCount count={props.videoCode.videoCodes.length} />}
+                {props.videoCode.parentId === undefined && <ChildCodeCount count={props.videoCode.videoCodes.length} />}
 
                 {props.videoCode.userCreated ? (
                     <>
@@ -70,17 +69,13 @@ const VideoCodeEntry: FC<Props> = (props) => {
                     <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
                 )}
 
-                {props.showCreateVideoCodeForm ? (
+                {props.videoCode.parentId === undefined ? (
                     <ToggleChildrenButton onClick={toggleChildrenVisibility} showChildren={showChildren} />
                 ) : null}
             </div>
 
             {showChildren ? (
-                <VideoCodesList
-                    videoCodesPool={props.videoCode.videoCodes}
-                    showCreateVideoCodeForm={props.videoCode.parentId === undefined}
-                    parentVideoCode={props.videoCode}
-                />
+                <VideoCodesList videoCodesPool={props.videoCode.videoCodes} parentVideoCode={props.videoCode} />
             ) : null}
         </li>
     )
