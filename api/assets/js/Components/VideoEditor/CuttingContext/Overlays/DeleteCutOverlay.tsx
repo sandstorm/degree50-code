@@ -60,11 +60,13 @@ const DeleteCutOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Schnitt wirklich löschen?">
-            <Button className="btn btn-secondary" onPress={close}>
-                Abbrechen
+            <Button className="btn btn-grey" onPress={close}>
+                <i className="fas fa-times" />
+                <span>Abbrechen</span>
             </Button>
             <Button className="btn btn-primary" onPress={handleRemove}>
-                Löschen
+                <i className="fas fa-check" />
+                <span>Löschen</span>
             </Button>
         </Overlay>
     )

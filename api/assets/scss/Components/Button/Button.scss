@@ -13,6 +13,10 @@
     &--full-width {
         width: 100%;
     }
+
+    * + * {
+        margin-left: $theme__spacing--base;
+    }
 }
 
 .btn-link {

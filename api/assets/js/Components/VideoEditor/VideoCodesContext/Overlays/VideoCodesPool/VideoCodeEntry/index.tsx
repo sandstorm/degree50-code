@@ -19,8 +19,6 @@ const mapDispatchToProps = {
 
 export type OwnProps = {
     videoCode: VideoCodePrototype
-    removeVideoCodePrototype: (prototypeId: string) => void
-    createVideoCodePrototype: (prototype: VideoCodePrototype) => void
 }
 
 type Props = OwnProps & typeof mapDispatchToProps
@@ -42,7 +40,13 @@ const VideoCodeEntry: FC<Props> = (props) => {
     const handleEdit = () => {
         props.setCurrentlyEditedElementId(props.videoCode.id)
         props.setCurrentlyEditedElementParentId(props.videoCode.parentId)
-        props.openOverlay({ overlayId: VideoCodeOverlayIds.editCode, closeOthers: false })
+        props.openOverlay({ overlayId: VideoCodeOverlayIds.editPrototype, closeOthers: false })
+    }
+
+    const handleRemove = () => {
+        props.setCurrentlyEditedElementId(props.videoCode.id)
+        props.setCurrentlyEditedElementParentId(undefined)
+        props.openOverlay({ overlayId: VideoCodeOverlayIds.removePrototype, closeOthers: false })
     }
 
     return (
@@ -63,7 +67,7 @@ const VideoCodeEntry: FC<Props> = (props) => {
                         >
                             <i className={'fas fa-pen'} />
                         </Button>
-                        <RemoveButton onClick={() => props.removeVideoCodePrototype(props.videoCode.id)} />
+                        <RemoveButton onClick={handleRemove} />
                     </>
                 ) : (
                     <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
