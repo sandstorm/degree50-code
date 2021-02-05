@@ -9,7 +9,6 @@ import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 
 type OwnProps = {
     videoCodesPool: VideoCodePrototype[]
-    showCreateVideoCodeForm: boolean
     parentVideoCode?: VideoCodePrototype
 }
 
@@ -57,19 +56,16 @@ const VideoCodesList = (props: Props) => {
                             createVideoCodePrototype={handleCreatePrototype}
                             videoCode={videoCode}
                             removeVideoCodePrototype={handleRemovePrototype}
-                            showCreateVideoCodeForm={props.showCreateVideoCodeForm}
                         />
                     ))}
                 </ul>
             ) : null}
 
-            {props.showCreateVideoCodeForm ? (
-                <div className="video-code">
-                    <Button className={'btn btn-outline-primary btn--full-width btn-sm'} onPress={handleAdd}>
-                        <i className="fas fa-plus" />
-                    </Button>
-                </div>
-            ) : null}
+            <div className="video-code">
+                <Button className={'btn btn-outline-primary btn--full-width btn-sm'} onPress={handleAdd}>
+                    <i className="fas fa-plus" />
+                </Button>
+            </div>
         </>
     )
 }
