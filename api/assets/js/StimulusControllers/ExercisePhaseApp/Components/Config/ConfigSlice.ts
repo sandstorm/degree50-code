@@ -111,6 +111,7 @@ export const selectors = {
     selectCutsAreActive,
     selectComponents,
     selectAvailableComponentIds,
+    selectPreviousSolutions,
 }
 
 export default configSlice.reducer

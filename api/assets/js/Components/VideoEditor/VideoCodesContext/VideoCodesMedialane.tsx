@@ -31,7 +31,6 @@ const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState & 
                 memo: videoCode.memo,
                 originalData: videoCode,
                 lane: 0,
-                idFromPrototype: videoCode.idFromPrototype,
                 color: videoCode.idFromPrototype ? prototypes[videoCode.idFromPrototype].color : null,
             })
     )

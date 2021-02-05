@@ -57,7 +57,6 @@ const PreviousSolutions = ({ previousSolutions, handleLaneClick, renderConfig }:
                                         color: videoCode.color,
                                         originalData: videoCode,
                                         lane: 0,
-                                        idFromPrototype: videoCode.idFromPrototype,
                                     })
                             )
                         )}
@@ -77,7 +76,6 @@ const PreviousSolutions = ({ previousSolutions, handleLaneClick, renderConfig }:
                                         color: annotation.color,
                                         originalData: annotation,
                                         lane: 0,
-                                        idFromPrototype: annotation.idFromPrototype,
                                     })
                             )
                         )}

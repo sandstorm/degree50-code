@@ -99,6 +99,13 @@ const selectSolution = createSelector(
     })
 )
 
+const selectAllSolutions = createSelector(
+    [selectSolution, configSelectors.selectPreviousSolutions],
+    (currentSolution, previousSolutions) => {
+        return [currentSolution, ...previousSolutions.map((s) => s.solution)]
+    }
+)
+
 export const selectors = {
     data: dataSelectors,
     player: playerSelectors,
@@ -110,4 +117,5 @@ export const selectors = {
     selectActiveVideoCodeIds,
     selectActiveCutIds,
     selectSolution,
+    selectAllSolutions,
 }

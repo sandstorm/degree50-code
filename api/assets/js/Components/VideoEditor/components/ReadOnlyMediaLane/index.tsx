@@ -26,7 +26,7 @@ const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems
 
     const amountOfLanes = Math.max(
         0,
-        ...mediaItems.map((item: MediaItem<VideoCodeFromAPI>) => {
+        ...mediaItems.map((item) => {
             return item.lane
         })
     )
