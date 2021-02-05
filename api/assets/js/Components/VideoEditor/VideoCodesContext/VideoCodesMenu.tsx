@@ -12,8 +12,9 @@ export const VideoCodeOverlayIds = {
     create: `${prefix}/create`,
     all: `${prefix}/all`,
     edit: `${prefix}/edit`,
-    editCode: `${prefix}/editCode`,
+    editPrototype: `${prefix}/editPrototype`,
     remove: `${prefix}/remove`,
+    removePrototype: `${prefix}/removePrototype`,
 }
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {

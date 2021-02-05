@@ -1,5 +1,5 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo, RefObject } from 'react'
+import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
@@ -62,11 +62,13 @@ const DeleteAnnotationOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Annotation wirklich löschen?">
-            <Button className="btn btn-secondary" onPress={close}>
-                Abbrechen
+            <Button className="btn btn-grey" onPress={close}>
+                <i className="fas fa-times" />
+                <span>Abbrechen</span>
             </Button>
             <Button className="btn btn-primary" onPress={handleRemove}>
-                Löschen
+                <i className="fas fa-check" />
+                <span>Löschen</span>
             </Button>
         </Overlay>
     )
