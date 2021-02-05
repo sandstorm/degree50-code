@@ -16,7 +16,14 @@ const Button = (props: ButtonProps) => {
     const { children } = props
 
     return (
-        <button {...buttonProps} title={props.title} id={props.id} className={props.className} ref={buttonRef}>
+        <button
+            {...buttonProps}
+            aria-label={props.title}
+            title={props.title}
+            id={props.id}
+            className={props.className}
+            ref={buttonRef}
+        >
             {children}
         </button>
     )

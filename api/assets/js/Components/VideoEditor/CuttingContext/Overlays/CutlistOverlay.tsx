@@ -20,7 +20,7 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const CutlisOverlay: FC<Props> = (props) => {
+const CutlistOverlay: FC<Props> = (props) => {
     const close = () => {
         props.closeOverlay(CutOverlayIds.allByCutOrder)
     }
@@ -36,4 +36,4 @@ const CutlisOverlay: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(CutlisOverlay))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(CutlistOverlay))

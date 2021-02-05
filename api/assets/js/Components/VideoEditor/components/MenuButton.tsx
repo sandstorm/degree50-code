@@ -46,7 +46,11 @@ const MenuButton = ({ label, children, pauseVideo, icon, disabled, ariaLabel }: 
     if (disabled) {
         return (
             <div className="menu-wrapper">
-                <Button className="btn btn-grey disabled menu-button video-editor__toolbar__button" disabled>
+                <Button
+                    title={ariaLabel}
+                    className="btn btn-grey disabled menu-button video-editor__toolbar__button"
+                    disabled
+                >
                     {icon} {label}
                 </Button>
             </div>
@@ -58,7 +62,7 @@ const MenuButton = ({ label, children, pauseVideo, icon, disabled, ariaLabel }: 
             <Button
                 className="btn btn-grey menu-button video-editor__toolbar__button"
                 onPress={toggleMenu}
-                aria-label={ariaLabel}
+                title={ariaLabel}
             >
                 {icon} {label}
             </Button>

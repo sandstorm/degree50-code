@@ -8,6 +8,7 @@ import End from '../../../components/End'
 import Start from '../../../components/Start'
 import { secondToTime } from 'Components/VideoEditor/utils'
 import PositionControls from './PositionControls'
+import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 
 type OwnProps = {
     cutId: CutId
@@ -24,49 +25,50 @@ const mapDispatchToProps = {
     moveDown: actions.data.cuts.moveDown,
     setOverlay: actions.overlay.setOverlay,
     setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
+    syncSolution: syncSolutionAction,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const CutListItem: FC<Props> = ({
-    item,
-    index,
-    setCurrentlyEditedElementId,
-    setOverlay,
-    showPositionControls,
-    moveUp,
-    moveDown,
-}) => {
+const CutListItem: FC<Props> = (props) => {
     const handleRemove = () => {
-        setCurrentlyEditedElementId(item.id)
-        setOverlay({ overlayId: CutOverlayIds.remove, closeOthers: false })
+        props.setCurrentlyEditedElementId(props.item.id)
+        props.setOverlay({ overlayId: CutOverlayIds.remove, closeOthers: false })
     }
 
     const handleEdit = () => {
-        setCurrentlyEditedElementId(item.id)
-        setOverlay({ overlayId: CutOverlayIds.edit, closeOthers: false })
+        props.setCurrentlyEditedElementId(props.item.id)
+        props.setOverlay({ overlayId: CutOverlayIds.edit, closeOthers: false })
+    }
+
+    const handleMoveUp = () => {
+        props.moveUp(props.item.id)
+        props.syncSolution()
+    }
+
+    const handleMoveDown = () => {
+        props.moveDown(props.item.id)
+        props.syncSolution()
     }
 
     const ariaLabel = `
-        ${index + 1}. Element
-        Von: ${item.start}
-        Bis: ${item.end}
+        ${props.index + 1}. Element
+        Von: ${props.item.start}
+        Bis: ${props.item.end}
 
-        Text: ${item.text}
-        Memo: ${item.memo}
+        Text: ${props.item.text}
+        Memo: ${props.item.memo}
     `
 
     return (
-        <li className="cut-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={item.id}>
-            {showPositionControls && (
-                <PositionControls moveUp={() => moveUp(item.id)} moveDown={() => moveDown(item.id)} />
-            )}
-            <Start start={item.start} />
-            <End end={item.end} />
-            <p>Offset: {secondToTime(item.offset)}</p>
+        <li className="cut-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={props.item.id}>
+            <Start start={props.item.start} />
+            <End end={props.item.end} />
+            <p>Offset: {secondToTime(props.item.offset)}</p>
             <br />
-            <p>Text: {item.text}</p>
-            <p>Memo: {item.memo}</p>
+            <p>Text: {props.item.text}</p>
+            <p>Memo: {props.item.memo}</p>
+            {props.showPositionControls && <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />}
             <Button className="btn btn-secondary" onPress={handleRemove}>
                 Löschen
             </Button>
