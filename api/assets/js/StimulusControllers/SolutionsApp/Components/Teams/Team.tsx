@@ -27,7 +27,6 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
                     memo: annotation.memo,
                     originalData: annotation,
                     lane: 0,
-                    idFromPrototype: annotation.idFromPrototype,
                 })
         )
     )
@@ -43,7 +42,6 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
                     color: videoCode.color,
                     originalData: videoCode,
                     lane: 0,
-                    idFromPrototype: videoCode.idFromPrototype,
                 })
         )
     )

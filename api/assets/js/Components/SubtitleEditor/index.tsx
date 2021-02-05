@@ -73,7 +73,6 @@ const SubtitleEditor = ({
                 memo: sub.memo,
                 originalData: sub,
                 lane: 0,
-                idFromPrototype: sub.idFromPrototype,
             })
     )
 

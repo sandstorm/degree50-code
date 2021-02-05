@@ -47,7 +47,6 @@ const CreateCutOverlay: FC<Props> = (props) => {
         text: '',
         memo: '',
         color: null,
-        idFromPrototype: null,
     }
 
     const {

@@ -1,4 +1,3 @@
-import { Subtitle } from 'Components/SubtitleEditor/SubtitlesSlice'
 import { timeToSecond } from './utils'
 
 export type VideoCodePrototype = {
@@ -18,13 +17,12 @@ export type MediaItemType = {
     text: string
     memo: string
     color: null | string
-    idFromPrototype: null | string // FIXME move this out of the general type into VideoCodes
 }
 
 export type AnnotationFromAPI = MediaItemType & { id?: string }
 export type Annotation = Omit<AnnotationFromAPI, 'id'> & { id: string }
 
-export type VideoCodeFromAPI = MediaItemType & { id?: string }
+export type VideoCodeFromAPI = MediaItemType & { id?: string } & { idFromPrototype: string }
 export type VideoCode = Omit<VideoCodeFromAPI, 'id'> & { id: string }
 
 export type CutFromAPI = MediaItemType & { id?: string } & {
@@ -50,7 +48,6 @@ export class MediaItem<T> {
     memo: string
     color: null | string
     lane: number
-    idFromPrototype: null | string
     originalData: T
 
     constructor({
@@ -61,7 +58,6 @@ export class MediaItem<T> {
         color = null,
         originalData,
         lane = 0,
-        idFromPrototype,
     }: {
         start: string
         end: string
@@ -69,7 +65,6 @@ export class MediaItem<T> {
         memo: string
         color?: string | null
         lane: number
-        idFromPrototype: string | null
         originalData: T
     }) {
         this.start = start
@@ -79,7 +74,6 @@ export class MediaItem<T> {
         this.color = color
         this.originalData = originalData
         this.lane = lane
-        this.idFromPrototype = idFromPrototype
     }
 
     public startsBefore(item: MediaItem<any>): boolean {
@@ -99,7 +93,6 @@ export class MediaItem<T> {
             color: this.color,
             originalData: this.originalData,
             lane: this.lane,
-            idFromPrototype: this.idFromPrototype,
         })
     }
 

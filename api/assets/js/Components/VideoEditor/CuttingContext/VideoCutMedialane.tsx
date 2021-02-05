@@ -39,7 +39,6 @@ const CutMedialane = (props: Props) => {
                 memo: cut.memo,
                 originalData: cut,
                 lane: 0,
-                idFromPrototype: null,
             })
     )
 

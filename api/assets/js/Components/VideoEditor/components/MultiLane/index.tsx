@@ -100,15 +100,15 @@ const MultiLane = React.memo((props: Props) => {
                             return null
                         }
 
-                        const MediaLane = getMediaLaneComponentById(component.id)
-                        if (!MediaLane) {
+                        const MediaLaneComponent = getMediaLaneComponentById(component.id)
+                        if (!MediaLaneComponent) {
                             return null
                         }
 
                         return (
                             <div>
                                 <div className="multilane__medialane-description">{getComponentName(component.id)}</div>
-                                <MediaLane
+                                <MediaLaneComponent
                                     key={`current-user-${component.id}`}
                                     videoDuration={firstVideoDuration}
                                     containerHeight={containerHeight}

@@ -103,7 +103,6 @@ export async function getSubFromVttUrl(url: string) {
                         memo: '',
                         originalData: item,
                         lane: 0,
-                        idFromPrototype: null,
                     })
                 })
             )

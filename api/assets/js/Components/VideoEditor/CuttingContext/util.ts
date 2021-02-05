@@ -147,7 +147,6 @@ export const useCuttingMediaItemHandling = ({
             offset: t2d(start),
             memo: '',
             color: null,
-            idFromPrototype: null,
         }
 
         const newItem = getMediaItemFromCut(cut)
@@ -307,7 +306,6 @@ export const getMediaItemFromCut = (cut: Cut) => {
         memo: '',
         originalData: cut,
         lane: 0,
-        idFromPrototype: cut.idFromPrototype,
     })
 }
 

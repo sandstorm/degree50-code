@@ -49,7 +49,6 @@ describe('useCuttingMediaItemHandling()', () => {
             idFromPrototype: null,
         },
         lane: 0,
-        idFromPrototype: null,
     })
 
     const itemB = new MediaItem({
@@ -72,7 +71,6 @@ describe('useCuttingMediaItemHandling()', () => {
             idFromPrototype: null,
         },
         lane: 0,
-        idFromPrototype: null,
     })
 
     const itemC = new MediaItem({
@@ -95,7 +93,6 @@ describe('useCuttingMediaItemHandling()', () => {
             idFromPrototype: null,
         },
         lane: 0,
-        idFromPrototype: null,
     })
 
     const baseConfig = {
@@ -158,7 +155,6 @@ describe('useCuttingMediaItemHandling()', () => {
                             idFromPrototype: null,
                         },
                         lane: 0,
-                        idFromPrototype: null,
                     }),
                 ],
                 true,
@@ -198,7 +194,6 @@ describe('useCuttingMediaItemHandling()', () => {
                             idFromPrototype: null,
                         },
                         lane: 0,
-                        idFromPrototype: null,
                     }),
                 ],
                 true,
@@ -238,7 +233,6 @@ describe('useCuttingMediaItemHandling()', () => {
                             idFromPrototype: null,
                         },
                         lane: 0,
-                        idFromPrototype: null,
                     }),
                 ],
                 true,
@@ -272,7 +266,6 @@ describe('useCuttingMediaItemHandling()', () => {
                             idFromPrototype: null,
                         },
                         lane: 0,
-                        idFromPrototype: null,
                     }),
                 ],
                 true,

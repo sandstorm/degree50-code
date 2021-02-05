@@ -12,7 +12,6 @@ const itemA = new MediaItem({
     memo: 'Some test memo...',
     originalData: {},
     lane: 0,
-    idFromPrototype: null,
 })
 
 const itemB = new MediaItem({
@@ -22,7 +21,6 @@ const itemB = new MediaItem({
     memo: 'Some test memo...',
     originalData: {},
     lane: 0,
-    idFromPrototype: null,
 })
 
 const itemC = new MediaItem({
@@ -32,7 +30,6 @@ const itemC = new MediaItem({
     memo: 'Some test memo...',
     originalData: {},
     lane: 0,
-    idFromPrototype: null,
 })
 
 describe('adjustItemTimelinePositionInList()', () => {

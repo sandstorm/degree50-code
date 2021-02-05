@@ -39,7 +39,6 @@ const AnnotationMedialane = (props: Props) => {
                 memo: sub.memo,
                 originalData: sub,
                 lane: 0,
-                idFromPrototype: null,
             })
     )
 
