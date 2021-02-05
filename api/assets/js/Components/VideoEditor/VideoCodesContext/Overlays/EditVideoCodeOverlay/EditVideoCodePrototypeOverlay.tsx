@@ -38,7 +38,7 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
     )
 
     const close = () => {
-        props.closeOverlay(VideoCodeOverlayIds.editCode)
+        props.closeOverlay(VideoCodeOverlayIds.editPrototype)
     }
 
     const submit = () => {
@@ -47,6 +47,7 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
         } else {
             props.appendVideoCode(transientVideoCodePrototype)
         }
+        props.syncSolution()
         close()
     }
 

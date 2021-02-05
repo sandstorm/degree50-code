@@ -24,26 +24,10 @@ const mapDispatchToProps = {
 type Props = typeof mapDispatchToProps & OwnProps
 
 const VideoCodesList = (props: Props) => {
-    const handleCreatePrototype = useCallback(
-        (newPrototype: VideoCodePrototype) => {
-            props.createVideoCodePrototype(newPrototype)
-            props.syncSolution()
-        },
-        [props.createVideoCodePrototype, props.syncSolution]
-    )
-
-    const handleRemovePrototype = useCallback(
-        (prototypeId) => {
-            props.removeVideoCodePrototype(prototypeId)
-            props.syncSolution()
-        },
-        [props.removeVideoCodePrototype, props.syncSolution]
-    )
-
     const handleAdd = () => {
         props.setCurrentlyEditedElementId(undefined)
         props.setCurrentlyEditedElementParentId(props.parentVideoCode?.id)
-        props.openOverlay({ overlayId: VideoCodeOverlayIds.editCode, closeOthers: false })
+        props.openOverlay({ overlayId: VideoCodeOverlayIds.editPrototype, closeOthers: false })
     }
 
     return (
@@ -51,12 +35,7 @@ const VideoCodesList = (props: Props) => {
             {props.videoCodesPool?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
                 <ul className="video-editor__video-codes">
                     {props.videoCodesPool.map((videoCode) => (
-                        <VideoCodeEntry
-                            key={videoCode.id}
-                            createVideoCodePrototype={handleCreatePrototype}
-                            videoCode={videoCode}
-                            removeVideoCodePrototype={handleRemovePrototype}
-                        />
+                        <VideoCodeEntry key={videoCode.id} videoCode={videoCode} />
                     ))}
                 </ul>
             ) : null}

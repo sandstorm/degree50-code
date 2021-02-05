@@ -1,9 +1,9 @@
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { VideoCodeOverlayIds } from '../VideoCodesMenu'
+import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import Overlay from '../../components/Overlay'
+import Overlay from '../../../components/Overlay'
 import Button from 'Components/Button/Button'
 
 const mapStateToProps = (state: VideoEditorState) => ({
@@ -11,21 +11,21 @@ const mapStateToProps = (state: VideoEditorState) => ({
 })
 
 const mapDispatchToProps = {
-    removeVideoCode: actions.data.videoCodes.remove,
+    removeVideoCodePrototype: actions.data.videoCodePool.remove,
     closeOverlay: actions.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const DeleteVideoCodeOverlay: FC<Props> = (props) => {
+const DeleteVideoCodePrototypeOverlay: FC<Props> = (props) => {
     const close = () => {
-        props.closeOverlay(VideoCodeOverlayIds.remove)
+        props.closeOverlay(VideoCodeOverlayIds.removePrototype)
     }
 
     const handleRemove = () => {
         if (props.currentlyEditedElementId !== undefined) {
-            props.removeVideoCode(props.currentlyEditedElementId)
+            props.removeVideoCodePrototype(props.currentlyEditedElementId)
             props.syncSolution()
         }
         close()
@@ -45,4 +45,4 @@ const DeleteVideoCodeOverlay: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(DeleteVideoCodeOverlay))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(DeleteVideoCodePrototypeOverlay))
