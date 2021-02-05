@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { AnnotationOverlayIds } from '../../AnnotationsContext/AnnotationsMenu'
 import { VideoCodeOverlayIds } from '../../VideoCodesContext/VideoCodesMenu'
+import EditVideoCodePrototypeOverlay from '../../VideoCodesContext/Overlays/EditVideoCodeOverlay/EditVideoCodePrototypeOverlay'
 import AllAnnotationsOverlay from '../../AnnotationsContext/Overlays/AllAnnotationsOverlay'
 import CreateAnnotationOverlay from '../../AnnotationsContext/Overlays/CreateAnnotationOverlay'
 import EditAnnotationOverlay from '../../AnnotationsContext/Overlays/EditAnnotationOverlay'
@@ -43,6 +44,9 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
         // VideoCodes
         case VideoCodeOverlayIds.list: {
             return <ListCodesOverlay />
+        }
+        case VideoCodeOverlayIds.editCode: {
+            return <EditVideoCodePrototypeOverlay />
         }
         case VideoCodeOverlayIds.active: {
             return <ActiveVideoCodesOverlay itemUpdateCondition={true} />

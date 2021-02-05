@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import VideoCodeEntry from './VideoCodeEntry'
-import AddVideoCodePrototypeForm from './VideoCodeEntry/AddVideoCodePrototypeForm'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
+import Button from 'Components/Button/Button'
+import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 
 type OwnProps = {
     videoCodesPool: VideoCodePrototype[]
@@ -12,15 +13,16 @@ type OwnProps = {
     parentVideoCode?: VideoCodePrototype
 }
 
-const mapStateToProps = () => ({})
-
 const mapDispatchToProps = {
     createVideoCodePrototype: actions.data.videoCodePool.append,
     removeVideoCodePrototype: actions.data.videoCodePool.remove,
     syncSolution: syncSolutionAction,
+    openOverlay: actions.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
+    setCurrentlyEditedElementParentId: actions.overlay.setCurrentlyEditedElementParentId,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type Props = typeof mapDispatchToProps & OwnProps
 
 const VideoCodesList = (props: Props) => {
     const handleCreatePrototype = useCallback(
@@ -39,6 +41,12 @@ const VideoCodesList = (props: Props) => {
         [props.removeVideoCodePrototype, props.syncSolution]
     )
 
+    const handleAdd = () => {
+        props.setCurrentlyEditedElementId(undefined)
+        props.setCurrentlyEditedElementParentId(props.parentVideoCode?.id)
+        props.openOverlay({ overlayId: VideoCodeOverlayIds.editCode, closeOthers: false })
+    }
+
     return (
         <>
             {props.videoCodesPool?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
@@ -56,13 +64,14 @@ const VideoCodesList = (props: Props) => {
             ) : null}
 
             {props.showCreateVideoCodeForm ? (
-                <AddVideoCodePrototypeForm
-                    createVideoCodePrototype={handleCreatePrototype}
-                    parentVideoCode={props.parentVideoCode}
-                />
+                <div className="video-code">
+                    <Button className={'btn btn-outline-primary btn--full-width btn-sm'} onPress={handleAdd}>
+                        <i className="fas fa-plus" />
+                    </Button>
+                </div>
             ) : null}
         </>
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(VideoCodesList))
+export default connect(undefined, mapDispatchToProps)(React.memo(VideoCodesList))
