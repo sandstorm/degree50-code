@@ -12,6 +12,7 @@ export const VideoCodeOverlayIds = {
     create: `${prefix}/create`,
     all: `${prefix}/all`,
     edit: `${prefix}/edit`,
+    editCode: `${prefix}/editCode`,
     remove: `${prefix}/remove`,
 }
 

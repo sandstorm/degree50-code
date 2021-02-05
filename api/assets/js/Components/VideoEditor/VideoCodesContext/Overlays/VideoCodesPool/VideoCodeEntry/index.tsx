@@ -1,26 +1,32 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, FC, memo } from 'react'
+import { connect } from 'react-redux'
 import VideoCodesList from '../VideoCodesList'
-import AddVideoCodePrototypeForm from './AddVideoCodePrototypeForm'
 import ToggleChildrenButton from './ToggleChildrenButton'
 import VideoCodeName from './VideoCodeName'
 import Color from './Color'
 import RemoveButton from './RemoveButton'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import ChildCodeCount from './ChildCodeCount'
+import Button from 'Components/Button/Button'
+import { VideoCodeOverlayIds } from 'Components/VideoEditor/VideoCodesContext/VideoCodesMenu'
+import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 
-export type Props = {
+const mapDispatchToProps = {
+    openOverlay: actions.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
+    setCurrentlyEditedElementParentId: actions.overlay.setCurrentlyEditedElementParentId,
+}
+
+export type OwnProps = {
     videoCode: VideoCodePrototype
     removeVideoCodePrototype: (prototypeId: string) => void
     createVideoCodePrototype: (prototype: VideoCodePrototype) => void
     showCreateVideoCodeForm: boolean
 }
 
-const VideoCodeEntry = ({
-    videoCode,
-    removeVideoCodePrototype,
-    createVideoCodePrototype,
-    showCreateVideoCodeForm,
-}: Props) => {
+type Props = OwnProps & typeof mapDispatchToProps
+
+const VideoCodeEntry: FC<Props> = (props) => {
     const [showChildren, setShowChildren] = useState(false)
 
     const toggleChildrenVisibility = useCallback(() => {
@@ -28,48 +34,56 @@ const VideoCodeEntry = ({
     }, [setShowChildren, showChildren])
 
     const description = `
-        ${videoCode.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}
-        name: ${videoCode.name}
-        ${videoCode.description && `description: ${videoCode.description}`}
-        ${videoCode.videoCodes.length > 0 ? 'Hat' : 'Hat keine'} Untercodes
+        ${props.videoCode.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}
+        name: ${props.videoCode.name}
+        ${props.videoCode.description && `description: ${props.videoCode.description}`}
+        ${props.videoCode.videoCodes.length > 0 ? 'Hat' : 'Hat keine'} Untercodes
     `
 
+    const handleEdit = () => {
+        props.setCurrentlyEditedElementId(props.videoCode.id)
+        props.setCurrentlyEditedElementParentId(props.videoCode.parentId)
+        props.openOverlay({ overlayId: VideoCodeOverlayIds.editCode, closeOthers: false })
+    }
+
     return (
-        <li tabIndex={0} aria-label={description} className="video-code" title={videoCode.description}>
+        <li tabIndex={0} aria-label={description} className="video-code" title={props.videoCode.description}>
             <div className={'video-code__content'}>
-                <Color color={videoCode.color} />
+                <Color color={props.videoCode.color} />
 
-                <VideoCodeName name={videoCode.name} />
+                <VideoCodeName name={props.videoCode.name} />
 
-                {showCreateVideoCodeForm && <ChildCodeCount count={videoCode.videoCodes.length} />}
+                {props.showCreateVideoCodeForm && <ChildCodeCount count={props.videoCode.videoCodes.length} />}
 
-                {videoCode.userCreated ? (
-                    <RemoveButton onClick={() => removeVideoCodePrototype(videoCode.id)} />
+                {props.videoCode.userCreated ? (
+                    <>
+                        <Button
+                            className={'btn btn-outline-primary btn-sm'}
+                            aria-label={'Code Editieren'}
+                            onPress={handleEdit}
+                        >
+                            <i className={'fas fa-pen'} />
+                        </Button>
+                        <RemoveButton onClick={() => props.removeVideoCodePrototype(props.videoCode.id)} />
+                    </>
                 ) : (
                     <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
                 )}
 
-                {showCreateVideoCodeForm ? (
+                {props.showCreateVideoCodeForm ? (
                     <ToggleChildrenButton onClick={toggleChildrenVisibility} showChildren={showChildren} />
                 ) : null}
             </div>
 
             {showChildren ? (
                 <VideoCodesList
-                    videoCodesPool={videoCode.videoCodes}
-                    showCreateVideoCodeForm={false}
-                    parentVideoCode={videoCode}
-                />
-            ) : null}
-
-            {showChildren && showCreateVideoCodeForm ? (
-                <AddVideoCodePrototypeForm
-                    createVideoCodePrototype={createVideoCodePrototype}
-                    parentVideoCode={videoCode}
+                    videoCodesPool={props.videoCode.videoCodes}
+                    showCreateVideoCodeForm={props.videoCode.parentId === undefined}
+                    parentVideoCode={props.videoCode}
                 />
             ) : null}
         </li>
     )
 }
 
-export default VideoCodeEntry
+export default connect(undefined, mapDispatchToProps)(memo(VideoCodeEntry))

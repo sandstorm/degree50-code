@@ -15,7 +15,7 @@ import { VideoCodesSlice, VideoCodesState, selectors as videoCodeSelectors } fro
 export type DataState = {
     annotations: AnnotationsState
     videoCodes: VideoCodesState
-    customVideoCodePool: VideoCodePoolState
+    videoCodePool: VideoCodePoolState
     cuts: CutsState
 }
 

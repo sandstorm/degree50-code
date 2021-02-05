@@ -4,6 +4,7 @@ export type OverlayState = {
     isVisible: boolean
     currentOverlayIds: Array<string>
     currentlyEditedElementId?: string
+    currentlyEditedElementParentId?: string
 }
 
 const initialState: OverlayState = {
@@ -57,6 +58,13 @@ const OverlaySlice = createSlice({
             ...state,
             currentlyEditedElementId: action.payload,
         }),
+        setCurrentlyEditedElementParentId: (
+            state: OverlayState,
+            action: PayloadAction<string | undefined>
+        ): OverlayState => ({
+            ...state,
+            currentlyEditedElementParentId: action.payload,
+        }),
     },
 })
 
@@ -67,11 +75,14 @@ const overlayIdSelector = (state: { videoEditor: { overlay: OverlayState } }) =>
     state.videoEditor.overlay.currentOverlayIds
 const currentlyEditedElementIdSelector = (state: { videoEditor: { overlay: OverlayState } }) =>
     state.videoEditor.overlay.currentlyEditedElementId
+const currentlyEditedElementParentIdSelector = (state: { videoEditor: { overlay: OverlayState } }) =>
+    state.videoEditor.overlay.currentlyEditedElementParentId
 
 export const selectors = {
     isVisible: isVisibleSelector,
     overlayIds: overlayIdSelector,
     currentlyEditedElementId: currentlyEditedElementIdSelector,
+    currentlyEditedElementParentId: currentlyEditedElementParentIdSelector,
 }
 
 export default OverlaySlice.reducer

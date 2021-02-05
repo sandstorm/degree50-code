@@ -9,6 +9,10 @@
     &.disabled {
         opacity: 1 !important;
     }
+
+    &--full-width {
+        width: 100%;
+    }
 }
 
 .btn-link {
