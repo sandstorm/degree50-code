@@ -29,7 +29,7 @@ const VideoCodes = ({ videoCodesPool }: Props) => {
         )
     }
 
-    return <VideoCodesList videoCodesPool={videoCodesPool} showCreateVideoCodeForm={true} />
+    return <VideoCodesList videoCodesPool={videoCodesPool} />
 }
 
 export default connect(mapStateToProps, {})(React.memo(VideoCodes))

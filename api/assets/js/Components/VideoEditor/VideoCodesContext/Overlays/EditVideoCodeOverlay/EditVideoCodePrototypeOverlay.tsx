@@ -50,7 +50,7 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
         close()
     }
 
-    const canEditColor = props.videoCodePrototype?.parentId === undefined
+    const canEditColor = props.videoCodePrototypeParent === undefined
 
     const overlayTitle = props.videoCodePrototype ? 'VideoCode bearbeiten' : 'VideoCode erstellen'
 
