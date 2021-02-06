@@ -1,4 +1,4 @@
-import VideoCodes from './VideoCodesPool/VideoCodes'
+import VideoCodePrototypes from './VideoCodePrototypes'
 import React from 'react'
 import { connect } from 'react-redux'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
@@ -20,7 +20,7 @@ const ListCodesOverlay = React.memo((props: Props) => {
 
     return (
         <Overlay closeCallback={close} title="Code-Liste">
-            <VideoCodes />
+            <VideoCodePrototypes />
         </Overlay>
     )
 })

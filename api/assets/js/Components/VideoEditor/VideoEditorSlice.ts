@@ -88,7 +88,7 @@ const selectSolution = createSelector(
     [
         dataSelectors.annotations.selectDenormalizedAnnotations,
         dataSelectors.videoCodes.selectDenormalizedVideoCodes,
-        dataSelectors.videoCodePool.selectVideoCodePoolList,
+        dataSelectors.videoCodePrototypes.selectVideoCodePoolList,
         dataSelectors.cuts.selectDenormalizedCuts,
     ],
     (annotations, videoCodes, videoCodePool, cuts) => ({

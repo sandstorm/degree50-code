@@ -1,7 +1,7 @@
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import React from 'react'
 import PredefinedCodeLock from '../PredefinedCodeLock'
-import Color from '../VideoCodesPool/VideoCodeEntry/Color'
+import Color from '../VideoCodePrototypes/PrototypeEntry/Color'
 
 type Props = {
     videoCodePrototype?: VideoCodePrototype

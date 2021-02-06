@@ -1,7 +1,7 @@
 import { useRadio } from '@react-aria/radio'
 import React, { useRef } from 'react'
 import PredefinedCodeLock from '../PredefinedCodeLock'
-import Color from '../VideoCodesPool/VideoCodeEntry/Color'
+import Color from '../VideoCodePrototypes/PrototypeEntry/Color'
 import { RadioContext } from './RadioGroup'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
 

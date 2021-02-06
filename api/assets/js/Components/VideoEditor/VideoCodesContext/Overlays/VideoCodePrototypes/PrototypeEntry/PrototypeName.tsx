@@ -4,8 +4,8 @@ type Props = {
     name: string
 }
 
-const VideoCodeName = (props: Props) => {
+const PrototypeName = (props: Props) => {
     return <span className={'video-code__name'}>{props.name}</span>
 }
 
-export default React.memo(VideoCodeName)
+export default React.memo(PrototypeName)

@@ -8,7 +8,7 @@ import { solveConflicts } from '../utils/solveItemConflicts'
 import { useMediaItemHandling } from '../utils/useMediaItemHandling'
 import { MediaLaneRenderConfigState } from '../MediaLaneRenderConfigSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import { VideoCodePoolStateSlice } from './VideoCodePoolSlice'
+import { VideoCodePoolStateSlice } from './VideoCodePrototypesSlice'
 
 type OwnProps = {
     videoDuration: number
@@ -20,7 +20,7 @@ type OwnProps = {
 
 const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState & VideoCodePoolStateSlice) => {
     const videoCodes = selectors.data.videoCodes.selectVideoCodesByStartTime(state)
-    const prototypes = selectors.data.videoCodePool.selectVideoCodesById(state)
+    const prototypes = selectors.data.videoCodePrototypes.selectById(state)
 
     const items = videoCodes.map(
         (videoCode) =>

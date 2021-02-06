@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import VideoCodesList from './VideoCodesList'
+import PrototypeList from './PrototypeList'
 import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePoolSlice'
+import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
 
 const mapStateToProps = (state: VideoCodePoolStateSlice) => {
     return {
-        videoCodesPool: selectors.data.videoCodePool.selectVideoCodePoolList(state),
+        videoCodePrototypes: selectors.data.videoCodePrototypes.selectVideoCodePoolList(state),
     }
 }
 
@@ -16,8 +16,8 @@ type Props = ReturnType<typeof mapStateToProps>
 // These are not yet part of the ReadOnlyMediaTrack.
 // Be pressing the add button on these codes, students can add them
 // to the media track, to arrange them.
-const VideoCodes = ({ videoCodesPool }: Props) => {
-    const hasNoVideoCodes = videoCodesPool.length === 0
+const VideoCodePrototypes = (props: Props) => {
+    const hasNoVideoCodes = props.videoCodePrototypes.length === 0
 
     if (hasNoVideoCodes) {
         return (
@@ -29,7 +29,7 @@ const VideoCodes = ({ videoCodesPool }: Props) => {
         )
     }
 
-    return <VideoCodesList videoCodesPool={videoCodesPool} />
+    return <PrototypeList videoCodePrototypes={props.videoCodePrototypes} />
 }
 
-export default connect(mapStateToProps, {})(React.memo(VideoCodes))
+export default connect(mapStateToProps, {})(React.memo(VideoCodePrototypes))

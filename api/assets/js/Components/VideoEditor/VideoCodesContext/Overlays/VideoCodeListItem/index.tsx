@@ -6,7 +6,7 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import End from '../../../components/End'
 import Start from '../../../components/Start'
-import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePoolSlice'
+import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
 import PrototypeInformation from './PrototypeInformation'
 
 type OwnProps = {
@@ -16,7 +16,7 @@ type OwnProps = {
 const mapStateToProps = (state: VideoCodesSlice & VideoCodePoolStateSlice, ownProps: OwnProps) => {
     const item = selectors.data.videoCodes.selectVideoCodeById(state, ownProps)
     const videoCodePrototype = item.idFromPrototype
-        ? selectors.data.videoCodePool.selectVideoCodeById(state, { videoCodeId: item.idFromPrototype })
+        ? selectors.data.videoCodePrototypes.selectPrototypeById(state, { videoCodeId: item.idFromPrototype })
         : undefined
 
     return {
