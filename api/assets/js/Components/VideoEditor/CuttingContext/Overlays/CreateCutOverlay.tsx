@@ -4,7 +4,7 @@ import TimeInput from 'Components/VideoEditor/components/TimeInput'
 import { Cut } from 'Components/VideoEditor/types'
 import { secondToTime } from 'Components/VideoEditor/utils'
 import { getNewMediaItemStartAndEnd } from 'Components/VideoEditor/utils/useMediaItemHandling'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import { t2d } from 'duration-time-conversion'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
@@ -13,10 +13,14 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import Overlay from '../../components/Overlay'
 import { CutOverlayIds } from '../CuttingMenu'
 import { useCutEdit } from './useCutEdit'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState) => ({
-    currentTime: selectors.player.selectSyncPlayPosition(state),
-    videos: selectors.config.selectVideos(state.videoEditor),
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
+    currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
+    videos: configSelectors.selectVideos(state),
 })
 
 const mapDispatchToProps = {

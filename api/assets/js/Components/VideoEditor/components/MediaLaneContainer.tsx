@@ -6,7 +6,7 @@ const MediaLaneContainer = () => {
     const handleMediaLaneToggle = () => toggleShowMediaLane(!showMediaLane)
 
     return (
-        <div className="media-lane-container">
+        <div className="media-lane-container" key="">
             <button className="btn btn-grey btn-sm media-lane-container__toggle" onClick={handleMediaLaneToggle}>
                 <i className={showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'} />
             </button>

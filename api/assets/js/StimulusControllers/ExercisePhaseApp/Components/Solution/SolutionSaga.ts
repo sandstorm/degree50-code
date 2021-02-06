@@ -8,10 +8,10 @@ import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEd
 import { initPresenceAction } from '../Presence/PresenceSaga'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import {
-    prepareAnnotationsFromSolution,
-    prepareCutsFromSolution,
     prepareVideoCodePoolFromSolution,
-    prepareVideoCodesFromSolution,
+    normalizeAnnotations,
+    normalizeVideoCodes,
+    normalizeCuts,
 } from 'StimulusControllers/normalizeData'
 import { VideoListsState } from 'Components/VideoEditor/types'
 
@@ -73,10 +73,10 @@ function* handleMessages(channel: EventChannel<unknown>) {
             // set solution
             const solution: VideoListsState = eventData.solution
 
-            const normalizedAnnotations = prepareAnnotationsFromSolution(solution)
-            const normalizedVideoCodes = prepareVideoCodesFromSolution(solution)
+            const normalizedAnnotations = normalizeAnnotations(solution, {})
+            const normalizedVideoCodes = normalizeVideoCodes(solution, {})
             const normalizedCodePool = prepareVideoCodePoolFromSolution(solution)
-            const normalizedCuts = prepareCutsFromSolution(solution)
+            const normalizedCuts = normalizeCuts(solution, {})
 
             yield put(actions.data.annotations.init(normalizedAnnotations))
             yield put(actions.data.videoCodes.init(normalizedVideoCodes))

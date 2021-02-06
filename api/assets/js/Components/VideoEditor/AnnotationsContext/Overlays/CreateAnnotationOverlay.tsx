@@ -3,7 +3,7 @@ import TextField from 'Components/VideoEditor/components/TextField'
 import TimeInput from 'Components/VideoEditor/components/TimeInput'
 import { Annotation } from 'Components/VideoEditor/types'
 import { secondToTime } from 'Components/VideoEditor/utils'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { generate } from 'shortid'
@@ -11,10 +11,14 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import Overlay from '../../components/Overlay'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import { useAnnotationEdit } from './useAnnotationEdit'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState) => ({
-    currentTime: selectors.player.selectSyncPlayPosition(state),
-    videos: selectors.config.selectVideos(state.videoEditor),
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
+    currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
+    videos: configSelectors.selectVideos(state),
 })
 
 const mapDispatchToProps = {

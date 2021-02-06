@@ -4,19 +4,22 @@
 
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
-import { normalizeData } from 'StimulusControllers/normalizeData'
+import { videoCodesSchema } from 'StimulusControllers/normalizeData'
 import { VideoCode } from '../types'
+import { normalize } from 'normalizr'
 
 export type VideoCodeId = string
 
 export type VideoCodesState = {
     byId: Record<VideoCodeId, VideoCode>
-    allIds: VideoCodeId[]
+    current: VideoCodeId[]
+    previous: VideoCodeId[]
 }
 
 export const initialState: VideoCodesState = {
     byId: {},
-    allIds: [],
+    current: [],
+    previous: [],
 }
 
 /////////////
@@ -29,20 +32,32 @@ export const VideoCodesSlice = createSlice({
     name: 'videoCodes',
     initialState,
     reducers: {
-        init: (_, action: PayloadAction<VideoCodesState>) => {
-            return action.payload
+        init: (state: VideoCodesState, action: PayloadAction<VideoCodesState>) => {
+            return {
+                ...state,
+                ...action.payload,
+            }
         },
-        set: (_, action: PayloadAction<VideoCode[]>) => {
-            return normalizeData(action.payload)
+        set: (state: VideoCodesState, action: PayloadAction<VideoCode[]>) => {
+            const normalized = normalize(action.payload, [videoCodesSchema])
+
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    ...normalized.entities.videoCodes,
+                },
+            }
         },
         append: (state: VideoCodesState, action: PayloadAction<VideoCode>): VideoCodesState => {
             const newVideoCode = action.payload
             return {
+                ...state,
                 byId: {
                     ...state.byId,
                     [newVideoCode.id]: newVideoCode,
                 },
-                allIds: [...state.allIds, newVideoCode.id],
+                current: [...state.current, newVideoCode.id],
             }
         },
         update: (state: VideoCodesState, action: PayloadAction<{ transientVideoCode: VideoCode }>): VideoCodesState => {
@@ -57,8 +72,9 @@ export const VideoCodesSlice = createSlice({
             const elementId = action.payload
 
             return {
+                ...state,
                 byId: remove(state.byId, elementId),
-                allIds: state.allIds.filter((id) => id !== elementId),
+                current: state.current.filter((id) => id !== elementId),
             }
         },
     },
@@ -70,14 +86,14 @@ export const VideoCodesSlice = createSlice({
 
 export type VideoCodesSlice = { videoEditor: { data: { videoCodes: VideoCodesState } } }
 
-const selectVideoCodesById = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.byId
-const selectVideoCodeIds = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.allIds
+const selectById = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.byId
+const selectCurrentIds = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.current
 const selectVideoCodeById = (state: VideoCodesSlice, props: { videoCodeId: VideoCodeId }) =>
     state.videoEditor.data.videoCodes.byId[props.videoCodeId]
-const selectDenormalizedVideoCodes = (state: VideoCodesSlice) =>
-    state.videoEditor.data.videoCodes.allIds.map((id) => state.videoEditor.data.videoCodes.byId[id])
+const selectDenormalizedCurrent = (state: VideoCodesSlice) =>
+    state.videoEditor.data.videoCodes.current.map((id) => state.videoEditor.data.videoCodes.byId[id])
 
-const selectVideoCodesByStartTime = createSelector([selectVideoCodesById, selectVideoCodeIds], (byId, ids) => {
+const selectCurrentVideoCodesByStartTime = createSelector([selectById, selectCurrentIds], (byId, ids) => {
     return ids
         .map((id) => byId[id])
         .sort((a, b) => {
@@ -91,15 +107,16 @@ const selectVideoCodesByStartTime = createSelector([selectVideoCodesById, select
         })
 })
 
-const selectIdsSortedByStartTime = createSelector([selectVideoCodesByStartTime], (videoCodesByStartTime) =>
-    videoCodesByStartTime.map((videoCode) => videoCode.id)
+const selectCurrentIdsSortedByStartTime = createSelector(
+    [selectCurrentVideoCodesByStartTime],
+    (videoCodesByStartTime) => videoCodesByStartTime.map((videoCode) => videoCode.id)
 )
 
 export const selectors = {
-    selectVideoCodesById,
-    selectVideoCodeIds,
+    selectById,
+    selectCurrentIds,
     selectVideoCodeById,
-    selectVideoCodesByStartTime,
-    selectIdsSortedByStartTime,
-    selectDenormalizedVideoCodes,
+    selectCurrentVideoCodesByStartTime,
+    selectCurrentIdsSortedByStartTime,
+    selectDenormalizedCurrent,
 }

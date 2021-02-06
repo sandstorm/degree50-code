@@ -13,7 +13,7 @@ import { VideoCodePoolStateSlice } from '../VideoCodePrototypesSlice'
 
 const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
-    const videoCodesById = selectors.data.videoCodes.selectVideoCodesById(state)
+    const videoCodesById = selectors.data.videoCodes.selectById(state)
     const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
 
     return {
