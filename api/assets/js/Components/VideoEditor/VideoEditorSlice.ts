@@ -1,10 +1,5 @@
 import PlayerSlice, { PlayerState, actions as playerActions, selectors as playerSelectors } from './PlayerSlice'
 import { combineReducers, createSelector } from '@reduxjs/toolkit'
-import ConfigSlice, {
-    ConfigState,
-    selectors as configSelectors,
-    actions as configActions,
-} from '../../StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
 import MediaLaneRenderConfigSlice, {
     actions as mediaLaneRenderConfigActions,
@@ -24,7 +19,6 @@ import { timeToSecond } from './utils'
 export default combineReducers({
     data: DataSlice,
     player: PlayerSlice,
-    config: ConfigSlice,
     mediaLaneRenderConfig: MediaLaneRenderConfigSlice,
     overlay: OverlaySlice,
 })
@@ -33,7 +27,6 @@ export type VideoEditorState = {
     videoEditor: {
         data: DataState
         player: PlayerState
-        config: ConfigState
         mediaLaneRenderConfig: RenderConfig
         overlay: OverlayState
     }
@@ -42,13 +35,12 @@ export type VideoEditorState = {
 export const actions = {
     data: dataActions,
     player: playerActions,
-    config: configActions,
     mediaLaneRenderConfig: mediaLaneRenderConfigActions,
     overlay: overlayActions,
 }
 
 const selectActiveAnnotationIds = createSelector(
-    [dataSelectors.annotations.selectAnnotationsByStartTime, playerSelectors.selectSyncPlayPosition],
+    [dataSelectors.annotations.selectCurrentAnnotationsByStartTime, playerSelectors.selectSyncPlayPosition],
     (annotations, currentPlayPosition) => {
         return annotations
             .filter(
@@ -61,7 +53,7 @@ const selectActiveAnnotationIds = createSelector(
 )
 
 const selectActiveVideoCodeIds = createSelector(
-    [dataSelectors.videoCodes.selectVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
+    [dataSelectors.videoCodes.selectCurrentVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
     (videoCodes, currentPlayPosition) => {
         return videoCodes
             .filter(
@@ -74,7 +66,7 @@ const selectActiveVideoCodeIds = createSelector(
 )
 
 const selectActiveCutIds = createSelector(
-    [dataSelectors.cuts.selectCutsByStartTime, playerSelectors.selectSyncPlayPosition],
+    [dataSelectors.cuts.selectCurrentByStartTime, playerSelectors.selectSyncPlayPosition],
     (cuts, currentPlayPosition) => {
         return cuts
             .filter(
@@ -86,10 +78,10 @@ const selectActiveCutIds = createSelector(
 
 const selectSolution = createSelector(
     [
-        dataSelectors.annotations.selectDenormalizedAnnotations,
-        dataSelectors.videoCodes.selectDenormalizedVideoCodes,
+        dataSelectors.annotations.selectDenormalizedCurrent,
+        dataSelectors.videoCodes.selectDenormalizedCurrent,
         dataSelectors.videoCodePrototypes.selectVideoCodePoolList,
-        dataSelectors.cuts.selectDenormalizedCuts,
+        dataSelectors.cuts.selectDenormalizedCurrent,
     ],
     (annotations, videoCodes, videoCodePool, cuts) => ({
         annotations,
@@ -99,17 +91,14 @@ const selectSolution = createSelector(
     })
 )
 
-const selectAllSolutions = createSelector(
-    [selectSolution, configSelectors.selectPreviousSolutions],
-    (currentSolution, previousSolutions) => {
-        return [currentSolution, ...previousSolutions.map((s) => s.solution)]
-    }
-)
+// FIXME
+const selectAllSolutions = createSelector([selectSolution], (currentSolution) => {
+    return [currentSolution]
+})
 
 export const selectors = {
     data: dataSelectors,
     player: playerSelectors,
-    config: configSelectors,
     mediaLaneRenderConfig: mediaLaneRenderConfigSelectors,
     overlay: overlaySelectors,
 

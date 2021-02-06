@@ -4,19 +4,22 @@
 
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
-import { normalizeData } from 'StimulusControllers/normalizeData'
+import { cutListSchema } from 'StimulusControllers/normalizeData'
 import { Cut } from '../types'
+import { normalize } from 'normalizr'
 
 export type CutId = string
 
 export type CutsState = {
     byId: Record<CutId, Cut>
-    allIds: CutId[]
+    current: CutId[]
+    previous: CutId[]
 }
 
 export const initialState: CutsState = {
     byId: {},
-    allIds: [],
+    current: [],
+    previous: [],
 }
 
 /////////////
@@ -30,17 +33,25 @@ export const CutsSlice = createSlice({
         init: (_, action: PayloadAction<CutsState>) => {
             return action.payload
         },
-        set: (_, action: PayloadAction<Cut[]>) => {
-            return normalizeData(action.payload)
+        set: (state, action: PayloadAction<Cut[]>) => {
+            const normalized = normalize(action.payload, [cutListSchema])
+
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    ...normalized.entities.cutList,
+                },
+            }
         },
         // Cut position inside the cutlist is determined by the index of its id
         moveUp: (state, action: PayloadAction<CutId>) => {
-            const currentIndex = state.allIds.indexOf(action.payload)
+            const currentIndex = state.current.indexOf(action.payload)
             const newIndex = currentIndex - 1
 
             if (newIndex <= 0) return state
 
-            const newIds = state.allIds.map((cut, index, all) => {
+            const newIds = state.current.map((cut, index, all) => {
                 if (index === newIndex) {
                     return all[currentIndex]
                 } else if (index === currentIndex) {
@@ -52,16 +63,16 @@ export const CutsSlice = createSlice({
 
             return {
                 ...state,
-                allIds: newIds,
+                current: newIds,
             }
         },
         moveDown: (state, action: PayloadAction<CutId>) => {
-            const currentIndex = state.allIds.indexOf(action.payload)
+            const currentIndex = state.current.indexOf(action.payload)
             const newIndex = currentIndex + 1
 
-            if (newIndex === state.allIds.length) return state
+            if (newIndex === state.current.length) return state
 
-            const newIds = state.allIds.map((cut, index, all) => {
+            const newIds = state.current.map((cut, index, all) => {
                 if (index === newIndex) {
                     return all[currentIndex]
                 } else if (index === currentIndex) {
@@ -71,26 +82,20 @@ export const CutsSlice = createSlice({
                 }
             })
 
-            console.log({
-                before: state.allIds,
-                after: newIds,
-                currentIndex,
-                id: action.payload,
-            })
-
             return {
                 ...state,
-                allIds: newIds,
+                current: newIds,
             }
         },
         append: (state: CutsState, action: PayloadAction<Cut>): CutsState => {
             const newCut = action.payload
             return {
+                ...state,
                 byId: {
                     ...state.byId,
                     [newCut.id]: newCut,
                 },
-                allIds: [...state.allIds, newCut.id],
+                current: [...state.current, newCut.id],
             }
         },
         update: (state: CutsState, action: PayloadAction<{ transientCut: Cut }>): CutsState => {
@@ -105,8 +110,9 @@ export const CutsSlice = createSlice({
             const elementId = action.payload
 
             return {
+                ...state,
                 byId: remove(state.byId, elementId),
-                allIds: state.allIds.filter((id) => id !== elementId),
+                current: state.current.filter((id) => id !== elementId),
             }
         },
     },
@@ -118,13 +124,13 @@ export const CutsSlice = createSlice({
 
 type CutsSlice = { videoEditor: { data: { cuts: CutsState } } }
 
-const selectCutsById = (state: CutsSlice) => state.videoEditor.data.cuts.byId
-const selectCutIds = (state: CutsSlice) => state.videoEditor.data.cuts.allIds
+const selectById = (state: CutsSlice) => state.videoEditor.data.cuts.byId
+const selectCurrentIds = (state: CutsSlice) => state.videoEditor.data.cuts.current
 const selectCutById = (state: CutsSlice, props: { cutId: CutId }) => state.videoEditor.data.cuts.byId[props.cutId]
-const selectDenormalizedCuts = (state: CutsSlice) =>
-    state.videoEditor.data.cuts.allIds.map((id) => state.videoEditor.data.cuts.byId[id])
+const selectDenormalizedCurrent = (state: CutsSlice) =>
+    state.videoEditor.data.cuts.current.map((id) => state.videoEditor.data.cuts.byId[id])
 
-const selectCutsByStartTime = createSelector([selectCutsById, selectCutIds], (byId, ids) => {
+const selectCurrentByStartTime = createSelector([selectById, selectCurrentIds], (byId, ids) => {
     return ids
         .map((id) => byId[id])
         .sort((a, b) => {
@@ -138,15 +144,15 @@ const selectCutsByStartTime = createSelector([selectCutsById, selectCutIds], (by
         })
 })
 
-const selectIdsSortedByStartTime = createSelector([selectCutsByStartTime], (cutsByStartTime) =>
+const selectCurrentIdsSortedByStartTime = createSelector([selectCurrentByStartTime], (cutsByStartTime) =>
     cutsByStartTime.map((cut) => cut.id)
 )
 
 export const selectors = {
-    selectCutsById,
-    selectCutIds,
+    selectById,
+    selectCurrentIds,
     selectCutById,
-    selectCutsByStartTime,
-    selectIdsSortedByStartTime,
-    selectDenormalizedCuts,
+    selectCurrentByStartTime,
+    selectCurrentIdsSortedByStartTime,
+    selectDenormalizedCurrent,
 }

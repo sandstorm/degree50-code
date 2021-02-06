@@ -1,7 +1,10 @@
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
 
@@ -19,8 +22,8 @@ export const VideoCodeOverlayIds = {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
-        activeVideoCodeCount: selectors.selectActiveVideoCodeIds(state).length,
-        codesAreActive: selectors.config.selectVideoCodesAreActive(state),
+        activeVideoCodeCount: videoEditorSelectors.selectActiveVideoCodeIds(state).length,
+        codesAreActive: configSelectors.selectVideoCodesAreActive(state),
     }
 }
 

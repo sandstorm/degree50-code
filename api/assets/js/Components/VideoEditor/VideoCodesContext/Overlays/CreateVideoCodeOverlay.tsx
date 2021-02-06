@@ -1,6 +1,6 @@
 import TimeInput from 'Components/VideoEditor/components/TimeInput'
 import { secondToTime } from 'Components/VideoEditor/utils'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { generate } from 'shortid'
@@ -13,11 +13,15 @@ import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
 import { VideoCode } from 'Components/VideoEditor/types'
 import { VideoCodePoolStateSlice } from '../VideoCodePrototypesSlice'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice) => ({
-    currentTime: selectors.player.selectSyncPlayPosition(state),
-    videos: selectors.config.selectVideos(state.videoEditor),
-    prototoypes: selectors.data.videoCodePrototypes.selectDenormalizedVideoCodes(state),
+const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice & ConfigStateSlice) => ({
+    currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
+    videos: configSelectors.selectVideos(state),
+    prototoypes: videoEditorSelectors.data.videoCodePrototypes.selectDenormalizedVideoCodes(state),
 })
 
 const mapDispatchToProps = {

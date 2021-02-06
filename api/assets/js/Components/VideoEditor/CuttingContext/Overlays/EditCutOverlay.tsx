@@ -12,7 +12,7 @@ import { useCutEdit } from './useCutEdit'
 
 const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
-    const cutsById = selectors.data.cuts.selectCutsById(state)
+    const cutsById = selectors.data.cuts.selectById(state)
     const cut = currentlyEditedElementId ? cutsById[currentlyEditedElementId] : undefined
 
     return {

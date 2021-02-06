@@ -4,19 +4,22 @@
 
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
-import { normalizeData } from 'StimulusControllers/normalizeData'
+import { annotationSchema } from 'StimulusControllers/normalizeData'
 import { Annotation } from '../types'
+import { normalize } from 'normalizr'
 
 export type AnnotationId = string
 
 export type AnnotationsState = {
     byId: Record<AnnotationId, Annotation>
-    allIds: AnnotationId[]
+    current: AnnotationId[]
+    previous: AnnotationId[]
 }
 
 export const initialState: AnnotationsState = {
     byId: {},
-    allIds: [],
+    current: [],
+    previous: [],
 }
 
 /////////////
@@ -27,20 +30,32 @@ export const AnnotationsSlice = createSlice({
     name: 'annotations',
     initialState,
     reducers: {
-        init: (_, action: PayloadAction<AnnotationsState>) => {
-            return action.payload
+        init: (state, action: PayloadAction<AnnotationsState>) => {
+            return {
+                ...state,
+                ...action.payload,
+            }
         },
-        set: (_, action: PayloadAction<Annotation[]>) => {
-            return normalizeData(action.payload)
+        set: (state, action: PayloadAction<Annotation[]>) => {
+            const normalized = normalize(action.payload, [annotationSchema])
+
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    ...normalized.entities.annotations,
+                },
+            }
         },
         append: (state: AnnotationsState, action: PayloadAction<Annotation>): AnnotationsState => {
             const newAnnotation = action.payload
             return {
+                ...state,
                 byId: {
                     ...state.byId,
                     [newAnnotation.id]: newAnnotation,
                 },
-                allIds: [...state.allIds, newAnnotation.id],
+                current: [...state.current, newAnnotation.id],
             }
         },
         update: (
@@ -58,8 +73,9 @@ export const AnnotationsSlice = createSlice({
             const elementId = action.payload
 
             return {
+                ...state,
                 byId: remove(state.byId, elementId),
-                allIds: state.allIds.filter((id) => id !== elementId),
+                current: state.current.filter((id) => id !== elementId),
             }
         },
     },
@@ -71,16 +87,15 @@ export const AnnotationsSlice = createSlice({
 
 type AnnotationsSlice = { videoEditor: { data: { annotations: AnnotationsState } } }
 
-const selectAnnotationsById = (state: AnnotationsSlice) => state.videoEditor.data.annotations.byId
-const selectAnnotationIds = (state: AnnotationsSlice) => state.videoEditor.data.annotations.allIds
+const selectById = (state: AnnotationsSlice) => state.videoEditor.data.annotations.byId
+const selectCurrentIds = (state: AnnotationsSlice) => state.videoEditor.data.annotations.current
 const selectAnnotationById = (state: AnnotationsSlice, props: { annotationId: AnnotationId }) =>
     state.videoEditor.data.annotations.byId[props.annotationId]
-const selectDenormalizedAnnotations = (state: AnnotationsSlice) =>
-    state.videoEditor.data.annotations.allIds.map((id) => state.videoEditor.data.annotations.byId[id])
 
-// TODO add sorted annoations id list (by start date)
+const selectDenormalizedCurrent = (state: AnnotationsSlice) =>
+    state.videoEditor.data.annotations.current.map((id) => state.videoEditor.data.annotations.byId[id])
 
-const selectAnnotationsByStartTime = createSelector([selectAnnotationsById, selectAnnotationIds], (byId, ids) => {
+const selectCurrentAnnotationsByStartTime = createSelector([selectById, selectCurrentIds], (byId, ids) => {
     return ids
         .map((id) => byId[id])
         .sort((a, b) => {
@@ -94,15 +109,16 @@ const selectAnnotationsByStartTime = createSelector([selectAnnotationsById, sele
         })
 })
 
-const selectIdsSortedByStartTime = createSelector([selectAnnotationsByStartTime], (annotationsByStartTime) =>
-    annotationsByStartTime.map((annotation) => annotation.id)
+const selectCurrentIdsSortedByStartTime = createSelector(
+    [selectCurrentAnnotationsByStartTime],
+    (annotationsByStartTime) => annotationsByStartTime.map((annotation) => annotation.id)
 )
 
 export const selectors = {
-    selectAnnotationsById,
-    selectAnnotationIds,
+    selectById,
+    selectCurrentIds,
     selectAnnotationById,
-    selectAnnotationsByStartTime,
-    selectIdsSortedByStartTime,
-    selectDenormalizedAnnotations,
+    selectCurrentAnnotationsByStartTime,
+    selectCurrentIdsSortedByStartTime,
+    selectDenormalizedCurrent,
 }

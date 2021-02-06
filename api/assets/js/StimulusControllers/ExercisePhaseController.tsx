@@ -12,10 +12,10 @@ import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import {
-    prepareAnnotationsFromSolution,
-    prepareCutsFromSolution,
     prepareVideoCodePoolFromSolution,
-    prepareVideoCodesFromSolution,
+    normalizeAnnotations,
+    normalizeVideoCodes,
+    normalizeCuts,
 } from './normalizeData'
 
 export default class extends Controller {
@@ -30,16 +30,16 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
 
-        const normalizedAnnotations = prepareAnnotationsFromSolution(solution)
+        const normalizedAnnotations = normalizeAnnotations(solution, config)
         store.dispatch(actions.data.annotations.init(normalizedAnnotations))
 
-        const normalizedVideoCodes = prepareVideoCodesFromSolution(solution)
+        const normalizedVideoCodes = normalizeVideoCodes(solution, config)
         store.dispatch(actions.data.videoCodes.init(normalizedVideoCodes))
 
         const normalizedCodePool = prepareVideoCodePoolFromSolution(solution, config)
         store.dispatch(actions.data.videoCodePrototypes.init(normalizedCodePool))
 
-        const normalizedCuts = prepareCutsFromSolution(solution)
+        const normalizedCuts = normalizeCuts(solution, config)
         store.dispatch(actions.data.cuts.init(normalizedCuts))
 
         store.dispatch(setCurrentEditorId(currentEditor))
