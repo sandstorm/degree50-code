@@ -11,12 +11,12 @@ export type AnnotationId = string
 
 export type AnnotationsState = {
     byId: Record<AnnotationId, Annotation>
-    ids: AnnotationId[]
+    allIds: AnnotationId[]
 }
 
 export const initialState: AnnotationsState = {
     byId: {},
-    ids: [],
+    allIds: [],
 }
 
 /////////////
@@ -40,7 +40,7 @@ export const AnnotationsSlice = createSlice({
                     ...state.byId,
                     [newAnnotation.id]: newAnnotation,
                 },
-                ids: [...state.ids, newAnnotation.id],
+                allIds: [...state.allIds, newAnnotation.id],
             }
         },
         update: (
@@ -59,7 +59,7 @@ export const AnnotationsSlice = createSlice({
 
             return {
                 byId: remove(state.byId, elementId),
-                ids: state.ids.filter((id) => id !== elementId),
+                allIds: state.allIds.filter((id) => id !== elementId),
             }
         },
     },
@@ -72,11 +72,11 @@ export const AnnotationsSlice = createSlice({
 type AnnotationsSlice = { videoEditor: { data: { annotations: AnnotationsState } } }
 
 const selectAnnotationsById = (state: AnnotationsSlice) => state.videoEditor.data.annotations.byId
-const selectAnnotationIds = (state: AnnotationsSlice) => state.videoEditor.data.annotations.ids
+const selectAnnotationIds = (state: AnnotationsSlice) => state.videoEditor.data.annotations.allIds
 const selectAnnotationById = (state: AnnotationsSlice, props: { annotationId: AnnotationId }) =>
     state.videoEditor.data.annotations.byId[props.annotationId]
 const selectDenormalizedAnnotations = (state: AnnotationsSlice) =>
-    state.videoEditor.data.annotations.ids.map((id) => state.videoEditor.data.annotations.byId[id])
+    state.videoEditor.data.annotations.allIds.map((id) => state.videoEditor.data.annotations.byId[id])
 
 // TODO add sorted annoations id list (by start date)
 
