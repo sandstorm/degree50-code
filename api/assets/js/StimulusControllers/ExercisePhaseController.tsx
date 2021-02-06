@@ -37,7 +37,7 @@ export default class extends Controller {
         store.dispatch(actions.data.videoCodes.init(normalizedVideoCodes))
 
         const normalizedCodePool = prepareVideoCodePoolFromSolution(solution, config)
-        store.dispatch(actions.data.videoCodePool.init(normalizedCodePool))
+        store.dispatch(actions.data.videoCodePrototypes.init(normalizedCodePool))
 
         const normalizedCuts = prepareCutsFromSolution(solution)
         store.dispatch(actions.data.cuts.init(normalizedCuts))

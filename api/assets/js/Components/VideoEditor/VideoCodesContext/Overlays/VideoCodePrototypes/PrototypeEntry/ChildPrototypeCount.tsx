@@ -4,8 +4,8 @@ type Props = {
     count: number
 }
 
-const ChildCodeCount = ({ count }: Props) => {
+const ChildPrototypeCount = ({ count }: Props) => {
     return <div className="video-code__child-count">{count}</div>
 }
 
-export default React.memo(ChildCodeCount)
+export default React.memo(ChildPrototypeCount)

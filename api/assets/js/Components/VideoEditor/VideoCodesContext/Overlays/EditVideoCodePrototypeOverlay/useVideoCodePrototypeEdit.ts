@@ -3,22 +3,22 @@ import { ChangeEvent, useState } from 'react'
 import { generate } from 'shortid'
 
 const defaultColor = '#cccccc'
-const createDefaultPrototype = (parentVideoCodeParent?: VideoCodePrototype): VideoCodePrototype => ({
+const createDefaultPrototype = (parentPrototypeParent?: VideoCodePrototype): VideoCodePrototype => ({
     id: generate(),
     name: '',
     description: '',
-    color: parentVideoCodeParent?.color ?? defaultColor,
+    color: parentPrototypeParent?.color ?? defaultColor,
     userCreated: true,
-    parentId: parentVideoCodeParent?.id,
+    parentId: parentPrototypeParent?.id,
     videoCodes: [],
 })
 
 export const useVideoCodePrototypeEdit = (
-    initialVideoCode?: VideoCodePrototype,
-    videoCodeParent?: VideoCodePrototype
+    initialPrototype?: VideoCodePrototype,
+    prototypeParent?: VideoCodePrototype
 ) => {
     const [transientVideoCodePrototype, setTransientVideoCodePrototype] = useState<VideoCodePrototype>(
-        initialVideoCode ?? createDefaultPrototype(videoCodeParent)
+        initialPrototype ?? createDefaultPrototype(prototypeParent)
     )
 
     const handleNameChange = (ev: ChangeEvent<HTMLInputElement>) => {

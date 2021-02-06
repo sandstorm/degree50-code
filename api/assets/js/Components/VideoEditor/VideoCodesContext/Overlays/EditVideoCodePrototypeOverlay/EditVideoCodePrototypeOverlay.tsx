@@ -9,7 +9,7 @@ import Overlay from '../../../components/Overlay'
 const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
     const currentlyEditedElementParentId = selectors.overlay.currentlyEditedElementParentId(state)
-    const videoCodesById = selectors.data.videoCodePool.selectVideoCodesById(state)
+    const videoCodesById = selectors.data.videoCodePrototypes.selectById(state)
 
     const videoCodePrototype = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
     const videoCodePrototypeParent = currentlyEditedElementParentId
@@ -23,8 +23,8 @@ const mapStateToProps = (state: VideoEditorState) => {
 }
 
 const mapDispatchToProps = {
-    appendVideoCode: actions.data.videoCodePool.append,
-    updateVideoCode: actions.data.videoCodePool.update,
+    appendPrototype: actions.data.videoCodePrototypes.append,
+    updatePrototype: actions.data.videoCodePrototypes.update,
     closeOverlay: actions.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
@@ -43,9 +43,9 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
 
     const submit = () => {
         if (props.videoCodePrototype) {
-            props.updateVideoCode({ transientVideoCode: transientVideoCodePrototype })
+            props.updatePrototype({ transientVideoCodePrototype })
         } else {
-            props.appendVideoCode(transientVideoCodePrototype)
+            props.appendPrototype(transientVideoCodePrototype)
         }
         props.syncSolution()
         close()

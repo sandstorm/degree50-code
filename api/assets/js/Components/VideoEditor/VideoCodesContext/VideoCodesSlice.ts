@@ -11,12 +11,12 @@ export type VideoCodeId = string
 
 export type VideoCodesState = {
     byId: Record<VideoCodeId, VideoCode>
-    ids: VideoCodeId[]
+    allIds: VideoCodeId[]
 }
 
 export const initialState: VideoCodesState = {
     byId: {},
-    ids: [],
+    allIds: [],
 }
 
 /////////////
@@ -42,7 +42,7 @@ export const VideoCodesSlice = createSlice({
                     ...state.byId,
                     [newVideoCode.id]: newVideoCode,
                 },
-                ids: [...state.ids, newVideoCode.id],
+                allIds: [...state.allIds, newVideoCode.id],
             }
         },
         update: (state: VideoCodesState, action: PayloadAction<{ transientVideoCode: VideoCode }>): VideoCodesState => {
@@ -58,7 +58,7 @@ export const VideoCodesSlice = createSlice({
 
             return {
                 byId: remove(state.byId, elementId),
-                ids: state.ids.filter((id) => id !== elementId),
+                allIds: state.allIds.filter((id) => id !== elementId),
             }
         },
     },
@@ -71,11 +71,11 @@ export const VideoCodesSlice = createSlice({
 export type VideoCodesSlice = { videoEditor: { data: { videoCodes: VideoCodesState } } }
 
 const selectVideoCodesById = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.byId
-const selectVideoCodeIds = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.ids
+const selectVideoCodeIds = (state: VideoCodesSlice) => state.videoEditor.data.videoCodes.allIds
 const selectVideoCodeById = (state: VideoCodesSlice, props: { videoCodeId: VideoCodeId }) =>
     state.videoEditor.data.videoCodes.byId[props.videoCodeId]
 const selectDenormalizedVideoCodes = (state: VideoCodesSlice) =>
-    state.videoEditor.data.videoCodes.ids.map((id) => state.videoEditor.data.videoCodes.byId[id])
+    state.videoEditor.data.videoCodes.allIds.map((id) => state.videoEditor.data.videoCodes.byId[id])
 
 const selectVideoCodesByStartTime = createSelector([selectVideoCodesById, selectVideoCodeIds], (byId, ids) => {
     return ids

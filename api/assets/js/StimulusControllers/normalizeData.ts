@@ -11,7 +11,7 @@ import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
  */
 export const normalizeData = <E extends { id: string }>(entities: Array<E>) =>
     entities.reduce(
-        (acc: { byId: { [id: string]: E }; ids: string[] }, entity: E) => {
+        (acc: { byId: { [id: string]: E }; allIds: string[] }, entity: E) => {
             return {
                 byId: {
                     ...acc.byId,
@@ -19,10 +19,10 @@ export const normalizeData = <E extends { id: string }>(entities: Array<E>) =>
                         ...entity,
                     },
                 },
-                ids: [...acc.ids, entity.id],
+                allIds: [...acc.allIds, entity.id],
             }
         },
-        { byId: {}, ids: [] }
+        { byId: {}, allIds: [] }
     )
 
 const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
