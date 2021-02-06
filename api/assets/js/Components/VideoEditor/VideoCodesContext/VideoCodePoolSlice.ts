@@ -11,12 +11,12 @@ export type VideoCodePrototypeId = string
 
 export type VideoCodePoolState = {
     byId: Record<VideoCodePrototypeId, VideoCodePrototype>
-    ids: VideoCodePrototypeId[]
+    allIds: VideoCodePrototypeId[]
 }
 
 export const initialState: VideoCodePoolState = {
     byId: {},
-    ids: [],
+    allIds: [],
 }
 
 /////////////
@@ -40,7 +40,7 @@ export const VideoCodePoolSlice = createSlice({
                     ...state.byId,
                     [newVideoCode.id]: newVideoCode,
                 },
-                ids: [...state.ids, newVideoCode.id],
+                allIds: [...state.allIds, newVideoCode.id],
             }
         },
         update: (
@@ -56,7 +56,7 @@ export const VideoCodePoolSlice = createSlice({
         },
         remove: (state: VideoCodePoolState, action: PayloadAction<string>): VideoCodePoolState => {
             const elementId = action.payload
-            const allElements = state.ids.map((id) => state.byId[id])
+            const allElements = state.allIds.map((id) => state.byId[id])
 
             const updatedPrototypes = allElements.filter((e) => e.id !== elementId && e.parentId !== elementId)
 
@@ -72,11 +72,11 @@ export const VideoCodePoolSlice = createSlice({
 export type VideoCodePoolStateSlice = { videoEditor: { data: { videoCodePool: VideoCodePoolState } } }
 
 const selectVideoCodesById = (state: VideoCodePoolStateSlice) => state.videoEditor.data.videoCodePool.byId
-const selectVideoCodeIds = (state: VideoCodePoolStateSlice) => state.videoEditor.data.videoCodePool.ids
+const selectVideoCodeIds = (state: VideoCodePoolStateSlice) => state.videoEditor.data.videoCodePool.allIds
 const selectVideoCodeById = (state: VideoCodePoolStateSlice, props: { videoCodeId: VideoCodePrototypeId }) =>
     state.videoEditor.data.videoCodePool.byId[props.videoCodeId]
 const selectDenormalizedVideoCodes = (state: VideoCodePoolStateSlice) =>
-    state.videoEditor.data.videoCodePool.ids.map((id) => state.videoEditor.data.videoCodePool.byId[id])
+    state.videoEditor.data.videoCodePool.allIds.map((id) => state.videoEditor.data.videoCodePool.byId[id])
 
 const selectVideoCodePoolList = createSelector([selectDenormalizedVideoCodes], (codes) => {
     return codes.reduce((acc: VideoCodePrototype[], code) => {

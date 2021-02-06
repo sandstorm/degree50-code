@@ -14,12 +14,12 @@ export type SubtitleId = string
 
 export type SubtitlesState = {
     byId: Record<SubtitleId, Subtitle>
-    ids: SubtitleId[]
+    allIds: SubtitleId[]
 }
 
 export const initialState: SubtitlesState = {
     byId: {},
-    ids: [],
+    allIds: [],
 }
 
 /////////////
@@ -61,7 +61,7 @@ export const SubtitlesSlice = createSlice({
                     ...state.byId,
                     [newSubtitle.id]: newSubtitle,
                 },
-                ids: [...state.ids, newSubtitle.id],
+                allIds: [...state.allIds, newSubtitle.id],
             }
         },
         update: (state: SubtitlesState, action: PayloadAction<{ transientSubtitle: Subtitle }>): SubtitlesState => {
@@ -77,7 +77,7 @@ export const SubtitlesSlice = createSlice({
 
             return {
                 byId: remove(state.byId, elementId),
-                ids: state.ids.filter((id) => id !== elementId),
+                allIds: state.allIds.filter((id) => id !== elementId),
             }
         },
     },
@@ -92,11 +92,11 @@ export const { actions } = SubtitlesSlice
 export type SubtitlesStateSlice = { subtitles: SubtitlesState }
 
 const selectSubtitlesById = (state: SubtitlesStateSlice) => state.subtitles.byId
-const selectSubtitleIds = (state: SubtitlesStateSlice) => state.subtitles.ids
+const selectSubtitleIds = (state: SubtitlesStateSlice) => state.subtitles.allIds
 const selectSubtitleById = (state: SubtitlesStateSlice, props: { subtitleId: SubtitleId }) =>
     state.subtitles.byId[props.subtitleId]
 const selectDenormalizedSubtitles = (state: SubtitlesStateSlice) =>
-    state.subtitles.ids.map((id) => state.subtitles.byId[id])
+    state.subtitles.allIds.map((id) => state.subtitles.byId[id])
 
 // TODO add sorted annoations id list (by start date)
 
