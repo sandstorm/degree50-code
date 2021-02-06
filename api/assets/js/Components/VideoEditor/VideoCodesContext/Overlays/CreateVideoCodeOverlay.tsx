@@ -12,12 +12,12 @@ import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
 import { VideoCode } from 'Components/VideoEditor/types'
-import { VideoCodePoolStateSlice } from '../VideoCodePoolSlice'
+import { VideoCodePoolStateSlice } from '../VideoCodePrototypesSlice'
 
 const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice) => ({
     currentTime: selectors.player.selectSyncPlayPosition(state),
     videos: selectors.config.selectVideos(state.videoEditor),
-    prototoypes: selectors.data.videoCodePool.selectDenormalizedVideoCodes(state),
+    prototoypes: selectors.data.videoCodePrototypes.selectDenormalizedVideoCodes(state),
 })
 
 const mapDispatchToProps = {

@@ -80,7 +80,7 @@ function* handleMessages(channel: EventChannel<unknown>) {
 
             yield put(actions.data.annotations.init(normalizedAnnotations))
             yield put(actions.data.videoCodes.init(normalizedVideoCodes))
-            yield put(actions.data.videoCodePool.init(normalizedCodePool))
+            yield put(actions.data.videoCodePrototypes.init(normalizedCodePool))
             yield put(actions.data.cuts.init(normalizedCuts))
         }
     } finally {

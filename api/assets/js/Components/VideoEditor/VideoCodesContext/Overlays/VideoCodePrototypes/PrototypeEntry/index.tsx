@@ -1,15 +1,19 @@
 import React, { useState, useCallback, FC, memo } from 'react'
 import { connect } from 'react-redux'
-import VideoCodesList from '../VideoCodesList'
+import PrototypeList from '../PrototypeList'
 import ToggleChildrenButton from './ToggleChildrenButton'
-import VideoCodeName from './VideoCodeName'
+import PrototypeName from './PrototypeName'
 import Color from './Color'
 import RemoveButton from './RemoveButton'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
-import ChildCodeCount from './ChildCodeCount'
+import ChildPrototypeCount from './ChildPrototypeCount'
 import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from 'Components/VideoEditor/VideoCodesContext/VideoCodesMenu'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
+
+// FIXME
+// We should probably find a way to remove the circular dependency between
+// the prototypeList and entry, because it's rather confusing to read.
 
 const mapDispatchToProps = {
     openOverlay: actions.overlay.setOverlay,
@@ -18,12 +22,12 @@ const mapDispatchToProps = {
 }
 
 export type OwnProps = {
-    videoCode: VideoCodePrototype
+    videoCodePrototype: VideoCodePrototype
 }
 
 type Props = OwnProps & typeof mapDispatchToProps
 
-const VideoCodeEntry: FC<Props> = (props) => {
+const PrototypeEntry: FC<Props> = (props) => {
     const [showChildren, setShowChildren] = useState(false)
 
     const toggleChildrenVisibility = useCallback(() => {
@@ -31,34 +35,36 @@ const VideoCodeEntry: FC<Props> = (props) => {
     }, [setShowChildren, showChildren])
 
     const description = `
-        ${props.videoCode.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}
-        name: ${props.videoCode.name}
-        ${props.videoCode.description && `description: ${props.videoCode.description}`}
-        ${props.videoCode.videoCodes.length > 0 ? 'Hat' : 'Hat keine'} Untercodes
+        ${props.videoCodePrototype.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}
+        name: ${props.videoCodePrototype.name}
+        ${props.videoCodePrototype.description && `description: ${props.videoCodePrototype.description}`}
+        ${props.videoCodePrototype.videoCodes.length > 0 ? 'Hat' : 'Hat keine'} Untercodes
     `
 
     const handleEdit = () => {
-        props.setCurrentlyEditedElementId(props.videoCode.id)
-        props.setCurrentlyEditedElementParentId(props.videoCode.parentId)
+        props.setCurrentlyEditedElementId(props.videoCodePrototype.id)
+        props.setCurrentlyEditedElementParentId(props.videoCodePrototype.parentId)
         props.openOverlay({ overlayId: VideoCodeOverlayIds.editPrototype, closeOthers: false })
     }
 
     const handleRemove = () => {
-        props.setCurrentlyEditedElementId(props.videoCode.id)
+        props.setCurrentlyEditedElementId(props.videoCodePrototype.id)
         props.setCurrentlyEditedElementParentId(undefined)
         props.openOverlay({ overlayId: VideoCodeOverlayIds.removePrototype, closeOthers: false })
     }
 
     return (
-        <li tabIndex={0} aria-label={description} className="video-code" title={props.videoCode.description}>
+        <li tabIndex={0} aria-label={description} className="video-code" title={props.videoCodePrototype.description}>
             <div className={'video-code__content'}>
-                <Color color={props.videoCode.color} />
+                <Color color={props.videoCodePrototype.color} />
 
-                <VideoCodeName name={props.videoCode.name} />
+                <PrototypeName name={props.videoCodePrototype.name} />
 
-                {props.videoCode.parentId === undefined && <ChildCodeCount count={props.videoCode.videoCodes.length} />}
+                {props.videoCodePrototype.parentId === undefined && (
+                    <ChildPrototypeCount count={props.videoCodePrototype.videoCodes.length} />
+                )}
 
-                {props.videoCode.userCreated ? (
+                {props.videoCodePrototype.userCreated ? (
                     <>
                         <Button
                             className={'btn btn-outline-primary btn-sm'}
@@ -73,16 +79,19 @@ const VideoCodeEntry: FC<Props> = (props) => {
                     <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
                 )}
 
-                {props.videoCode.parentId === undefined ? (
+                {props.videoCodePrototype.parentId === undefined ? (
                     <ToggleChildrenButton onClick={toggleChildrenVisibility} showChildren={showChildren} />
                 ) : null}
             </div>
 
             {showChildren ? (
-                <VideoCodesList videoCodesPool={props.videoCode.videoCodes} parentVideoCode={props.videoCode} />
+                <PrototypeList
+                    videoCodePrototypes={props.videoCodePrototype.videoCodes}
+                    parentPrototype={props.videoCodePrototype}
+                />
             ) : null}
         </li>
     )
 }
 
-export default connect(undefined, mapDispatchToProps)(memo(VideoCodeEntry))
+export default connect(undefined, mapDispatchToProps)(memo(PrototypeEntry))

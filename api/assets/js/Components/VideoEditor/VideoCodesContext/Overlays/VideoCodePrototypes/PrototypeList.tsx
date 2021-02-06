@@ -2,19 +2,19 @@ import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import VideoCodeEntry from './VideoCodeEntry'
+import PrototypeEntry from './PrototypeEntry'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 
 type OwnProps = {
-    videoCodesPool: VideoCodePrototype[]
-    parentVideoCode?: VideoCodePrototype
+    videoCodePrototypes: VideoCodePrototype[]
+    parentPrototype?: VideoCodePrototype
 }
 
 const mapDispatchToProps = {
-    createVideoCodePrototype: actions.data.videoCodePool.append,
-    removeVideoCodePrototype: actions.data.videoCodePool.remove,
+    createVideoCodePrototype: actions.data.videoCodePrototypes.append,
+    removeVideoCodePrototype: actions.data.videoCodePrototypes.remove,
     syncSolution: syncSolutionAction,
     openOverlay: actions.overlay.setOverlay,
     setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
@@ -23,19 +23,19 @@ const mapDispatchToProps = {
 
 type Props = typeof mapDispatchToProps & OwnProps
 
-const VideoCodesList = (props: Props) => {
+const PrototypeList = (props: Props) => {
     const handleAdd = () => {
         props.setCurrentlyEditedElementId(undefined)
-        props.setCurrentlyEditedElementParentId(props.parentVideoCode?.id)
+        props.setCurrentlyEditedElementParentId(props.parentPrototype?.id)
         props.openOverlay({ overlayId: VideoCodeOverlayIds.editPrototype, closeOthers: false })
     }
 
     return (
         <>
-            {props.videoCodesPool?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
+            {props.videoCodePrototypes?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
                 <ul className="video-editor__video-codes">
-                    {props.videoCodesPool.map((videoCode) => (
-                        <VideoCodeEntry key={videoCode.id} videoCode={videoCode} />
+                    {props.videoCodePrototypes.map((prototype) => (
+                        <PrototypeEntry key={prototype.id} videoCodePrototype={prototype} />
                     ))}
                 </ul>
             ) : null}
@@ -49,4 +49,4 @@ const VideoCodesList = (props: Props) => {
     )
 }
 
-export default connect(undefined, mapDispatchToProps)(React.memo(VideoCodesList))
+export default connect(undefined, mapDispatchToProps)(React.memo(PrototypeList))
