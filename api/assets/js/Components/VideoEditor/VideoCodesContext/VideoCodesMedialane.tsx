@@ -19,7 +19,7 @@ type OwnProps = {
 }
 
 const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState & VideoCodePoolStateSlice) => {
-    const videoCodes = selectors.data.videoCodes.selectVideoCodesByStartTime(state)
+    const videoCodes = selectors.data.videoCodes.selectCurrentVideoCodesByStartTime(state)
     const prototypes = selectors.data.videoCodePrototypes.selectById(state)
 
     const items = videoCodes.map(

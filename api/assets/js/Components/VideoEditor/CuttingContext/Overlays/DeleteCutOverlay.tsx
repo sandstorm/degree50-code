@@ -9,7 +9,7 @@ import { remove } from 'immutable'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     currentlyEditedElementId: selectors.overlay.currentlyEditedElementId(state),
-    cutIds: selectors.data.cuts.selectCutIds(state),
+    cutIds: selectors.data.cuts.selectCurrentIds(state),
 })
 
 const mapDispatchToProps = {

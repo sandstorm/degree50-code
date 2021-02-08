@@ -18,7 +18,7 @@ type OwnProps = {
 }
 
 const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState) => ({
-    annotations: selectors.data.annotations.selectAnnotationsByStartTime(state),
+    annotations: selectors.data.annotations.selectCurrentAnnotationsByStartTime(state),
     mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
 })
 

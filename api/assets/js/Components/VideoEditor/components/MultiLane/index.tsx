@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import AnnotationMedialane from 'Components/VideoEditor/AnnotationsContext/AnnotationMedialane'
-import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { VideoEditorState, selectors as videoEditorSelectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import Filter from './Filter'
 import Toolbar from '../MediaLaneToolbar'
 import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLane'
 import { TabsTypesEnum } from 'types'
-import { ComponentId } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import {
+    ComponentId,
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import VideoCodesMedialane from 'Components/VideoEditor/VideoCodesContext/VideoCodesMedialane'
 import VideoCutMedialane from 'Components/VideoEditor/CuttingContext/VideoCutMedialane'
 
@@ -50,12 +54,12 @@ const getMediaLaneComponentById = (componentId: ComponentId) => {
     }
 }
 
-const mapStateToProps = (state: VideoEditorState) => ({
-    videos: selectors.config.selectVideos(state.videoEditor),
-    playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
-    mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
-    components: selectors.config.selectComponents(state.videoEditor),
-    availableComponentIds: selectors.config.selectAvailableComponentIds(state.videoEditor),
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
+    videos: configSelectors.selectVideos(state),
+    playerSyncPlayPosition: videoEditorSelectors.player.selectSyncPlayPosition(state),
+    mediaLaneRenderConfig: videoEditorSelectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+    components: configSelectors.selectComponents(state),
+    availableComponentIds: configSelectors.selectAvailableComponentIds(state),
 })
 
 const mapDispatchToProps = {
@@ -65,7 +69,7 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const MultiLane = React.memo((props: Props) => {
+const MultiLane = (props: Props) => {
     const firstVideoDuration = props.videos[0].duration
 
     const [activeComponents, setActiveComponents] = useState(
@@ -106,10 +110,9 @@ const MultiLane = React.memo((props: Props) => {
                         }
 
                         return (
-                            <div>
+                            <div key={`current-user-${component.id}`}>
                                 <div className="multilane__medialane-description">{getComponentName(component.id)}</div>
                                 <MediaLaneComponent
-                                    key={`current-user-${component.id}`}
                                     videoDuration={firstVideoDuration}
                                     containerHeight={containerHeight}
                                     containerWidth={containerWidth}
@@ -123,6 +126,6 @@ const MultiLane = React.memo((props: Props) => {
             </div>
         </div>
     )
-})
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(MultiLane)
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(MultiLane))

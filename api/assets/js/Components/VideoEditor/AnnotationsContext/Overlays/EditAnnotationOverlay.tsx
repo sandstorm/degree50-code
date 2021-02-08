@@ -11,7 +11,7 @@ import Button from 'Components/Button/Button'
 
 const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
-    const annotationsById = selectors.data.annotations.selectAnnotationsById(state)
+    const annotationsById = selectors.data.annotations.selectById(state)
     const annotation = currentlyEditedElementId ? annotationsById[currentlyEditedElementId] : undefined
 
     return {

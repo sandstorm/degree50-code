@@ -18,7 +18,7 @@ type OwnProps = {
 }
 
 const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState) => ({
-    cuts: selectors.data.cuts.selectCutsByStartTime(state),
+    cuts: selectors.data.cuts.selectCurrentByStartTime(state),
     mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
 })
 
