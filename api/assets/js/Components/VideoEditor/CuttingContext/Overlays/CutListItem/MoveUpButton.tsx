@@ -1,3 +1,4 @@
+import Button from 'Components/Button/Button'
 import React from 'react'
 
 type Props = {
@@ -5,7 +6,11 @@ type Props = {
 }
 
 const MoveUpButton = ({ moveUp }: Props) => {
-    return <i className="fas fa-caret-up" onClick={moveUp} style={{ marginBottom: 5 }} />
+    return (
+        <Button title="Schnitt nach vorn schieben" className="btn btn-primary btn-sm" onPress={moveUp}>
+            <i className="fas fa-caret-up" />
+        </Button>
+    )
 }
 
 export default React.memo(MoveUpButton)

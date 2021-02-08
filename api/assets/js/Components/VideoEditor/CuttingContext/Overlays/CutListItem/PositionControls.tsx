@@ -9,7 +9,7 @@ type Props = {
 
 const PositionControls = ({ moveUp, moveDown }: Props) => {
     return (
-        <div>
+        <div style={{ marginBottom: '10px' }}>
             <MoveUpButton moveUp={moveUp} />
             <MoveDownButton moveDown={moveDown} />
         </div>

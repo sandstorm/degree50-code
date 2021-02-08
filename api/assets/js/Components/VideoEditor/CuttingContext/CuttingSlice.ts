@@ -49,7 +49,7 @@ export const CutsSlice = createSlice({
             const currentIndex = state.current.indexOf(action.payload)
             const newIndex = currentIndex - 1
 
-            if (newIndex <= 0) return state
+            if (newIndex < 0) return state
 
             const newIds = state.current.map((cut, index, all) => {
                 if (index === newIndex) {
