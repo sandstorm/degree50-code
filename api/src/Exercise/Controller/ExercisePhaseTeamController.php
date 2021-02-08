@@ -304,7 +304,13 @@ class ExercisePhaseTeamController extends AbstractController
         $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
 
         // push solution to clients
-        $this->liveSyncService->publish($exercisePhaseTeam, ['solution' => $solution, 'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()]);
+        $this->liveSyncService->publish($exercisePhaseTeam, [
+            'solution' => [
+                'solution' => $solution->getSolution(),
+                'id' => $solution->getId()
+            ],
+            'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
+        ]);
 
         return $response;
     }
@@ -341,7 +347,13 @@ class ExercisePhaseTeamController extends AbstractController
                 $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
 
                 // push new state to clients
-                $this->liveSyncService->publish($exercisePhaseTeam, ['solution' => $solution, 'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()]);
+                $this->liveSyncService->publish(
+                    $exercisePhaseTeam,
+                    [
+                        'solution' => [ 'solution' => $solution->getSolution(), 'id' => $solution->getId()  ],
+                        'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
+                    ]
+                );
                 return Response::create('OK');
             } else {
                 return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);

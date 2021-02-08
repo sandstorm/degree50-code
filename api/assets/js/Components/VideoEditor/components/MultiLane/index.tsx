@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import AnnotationMedialane from 'Components/VideoEditor/AnnotationsContext/AnnotationMedialane'
 import { VideoEditorState, selectors as videoEditorSelectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import Filter from './Filter'
 import Toolbar from '../MediaLaneToolbar'
-import { useMediaLane, MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLane'
+import { MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLaneRendering'
 import { TabsTypesEnum } from 'types'
 import {
     ComponentId,
     ConfigStateSlice,
     selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import VideoCodesMedialane from 'Components/VideoEditor/VideoCodesContext/VideoCodesMedialane'
-import VideoCutMedialane from 'Components/VideoEditor/CuttingContext/VideoCutMedialane'
+import AnnotationLaneContainer from './AnnotationLaneContainer'
+import VideoCodeLaneContainer from './VideoCodeLaneContainer'
+import CutLaneContainer from './CutLaneContainer'
+import { useMediaLaneClick } from '../MediaLane/useMediaLaneClick'
 
 export const getComponentName = (componentId: ComponentId) => {
     switch (componentId) {
@@ -34,18 +35,18 @@ export const getComponentName = (componentId: ComponentId) => {
     }
 }
 
-const getMediaLaneComponentById = (componentId: ComponentId) => {
+const getMediaLaneContainerComponentById = (componentId: ComponentId) => {
     switch (componentId) {
         case TabsTypesEnum.VIDEO_ANNOTATIONS: {
-            return AnnotationMedialane
+            return AnnotationLaneContainer
         }
 
         case TabsTypesEnum.VIDEO_CODES: {
-            return VideoCodesMedialane
+            return VideoCodeLaneContainer
         }
 
         case TabsTypesEnum.VIDEO_CUTTING: {
-            return VideoCutMedialane
+            return CutLaneContainer
         }
 
         default: {
@@ -56,7 +57,6 @@ const getMediaLaneComponentById = (componentId: ComponentId) => {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
     videos: configSelectors.selectVideos(state),
-    playerSyncPlayPosition: videoEditorSelectors.player.selectSyncPlayPosition(state),
     mediaLaneRenderConfig: videoEditorSelectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
     components: configSelectors.selectComponents(state),
     availableComponentIds: configSelectors.selectAvailableComponentIds(state),
@@ -65,6 +65,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
 const mapDispatchToProps = {
     setPlayPosition: actions.player.setPlayPosition,
     setRenderConfig: actions.mediaLaneRenderConfig.setRenderConfig,
+    updateZoom: actions.mediaLaneRenderConfig.updateZoom,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -76,21 +77,19 @@ const MultiLane = (props: Props) => {
         props.availableComponentIds.map((id) => ({ id, visible: true }))
     )
 
-    const { containerWidth, containerHeight, handleLaneClick, handleZoom, ref: $mediaTrackRef } = useMediaLane({
-        currentTime: props.playerSyncPlayPosition,
-        videoDuration: firstVideoDuration,
-        laneClickCallback: props.setPlayPosition,
-        renderConfig: props.mediaLaneRenderConfig,
-        setRenderConfig: props.setRenderConfig,
-    })
+    const { handleMediaLaneClick } = useMediaLaneClick(
+        props.mediaLaneRenderConfig,
+        props.setRenderConfig,
+        props.setPlayPosition
+    )
 
     return (
         <div className="video-editor-timeline" style={{ height: MEDIA_LANE_HEIGHT }}>
             <Toolbar
-                handleTimeLineAction={handleLaneClick}
+                handleTimeLineAction={handleMediaLaneClick}
                 renderConfig={props.mediaLaneRenderConfig}
                 videoDuration={firstVideoDuration}
-                zoomHandler={handleZoom}
+                updateZoom={props.updateZoom}
             />
             <div
                 className="video-editor-timeline__entries multilane"
@@ -104,23 +103,12 @@ const MultiLane = (props: Props) => {
                             return null
                         }
 
-                        const MediaLaneComponent = getMediaLaneComponentById(component.id)
-                        if (!MediaLaneComponent) {
+                        const MediaLaneContainer = getMediaLaneContainerComponentById(component.id)
+                        if (!MediaLaneContainer) {
                             return null
                         }
 
-                        return (
-                            <div key={`current-user-${component.id}`}>
-                                <div className="multilane__medialane-description">{getComponentName(component.id)}</div>
-                                <MediaLaneComponent
-                                    videoDuration={firstVideoDuration}
-                                    containerHeight={containerHeight}
-                                    containerWidth={containerWidth}
-                                    $mediaTrackRef={$mediaTrackRef}
-                                    onClickLane={handleLaneClick}
-                                />
-                            </div>
-                        )
+                        return <MediaLaneContainer key={component.id} />
                     })}
                 </div>
             </div>

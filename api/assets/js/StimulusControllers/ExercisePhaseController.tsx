@@ -11,12 +11,7 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import {
-    prepareVideoCodePoolFromSolution,
-    normalizeAnnotations,
-    normalizeVideoCodes,
-    normalizeCuts,
-} from './normalizeData'
+import { prepareVideoCodePoolFromSolution, normalizeAPIResponse } from './normalizeData'
 
 export default class extends Controller {
     connect() {
@@ -30,17 +25,22 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
 
-        const normalizedAnnotations = normalizeAnnotations(solution, config)
-        store.dispatch(actions.data.annotations.init(normalizedAnnotations))
+        const normalizedAPIResponse = normalizeAPIResponse(solution, config)
 
-        const normalizedVideoCodes = normalizeVideoCodes(solution, config)
-        store.dispatch(actions.data.videoCodes.init(normalizedVideoCodes))
+        store.dispatch(
+            actions.data.solutions.init({
+                byId: normalizedAPIResponse.entities.solutions,
+                current: normalizedAPIResponse.result.currentSolution,
+                previous: normalizedAPIResponse.result.previousSolutions,
+            })
+        )
+
+        store.dispatch(actions.data.annotations.init({ byId: normalizedAPIResponse.entities.annotations }))
+        store.dispatch(actions.data.videoCodes.init({ byId: normalizedAPIResponse.entities.videoCodes }))
+        store.dispatch(actions.data.cuts.init({ byId: normalizedAPIResponse.entities.cutList }))
 
         const normalizedCodePool = prepareVideoCodePoolFromSolution(solution, config)
         store.dispatch(actions.data.videoCodePrototypes.init(normalizedCodePool))
-
-        const normalizedCuts = normalizeCuts(solution, config)
-        store.dispatch(actions.data.cuts.init(normalizedCuts))
 
         store.dispatch(setCurrentEditorId(currentEditor))
 

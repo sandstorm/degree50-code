@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback } from 'react'
 import ReadOnlyMediaItems from './ReadOnyMediaItems'
-import { MediaItem, MediaItemType, VideoCodeFromAPI } from 'Components/VideoEditor/types'
+import { MediaItem, MediaItemType } from 'Components/VideoEditor/types'
 import { useDebouncedResizeObserver } from 'Components/VideoEditor/utils/useDebouncedResizeObserver'
 import MediaTrack, { RenderConfig } from '../MediaLane/MediaTrack'
 import { defaultMediaTrackConfig } from '../MediaLane/MediaTrack/helpers'
@@ -20,9 +20,8 @@ const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems
         rulerHeight: rulerHeight,
         render: renderConfig,
     }
-    const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
-    const { width: containerWidth, height: containerHeight } = useDebouncedResizeObserver($container, 500)
+    const { width: containerWidth, height: containerHeight, ref } = useDebouncedResizeObserver(undefined, 500)
 
     const amountOfLanes = Math.max(
         0,
@@ -45,7 +44,7 @@ const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems
     return (
         <div className="video-editor-timeline" style={{ height: mediaTrackHeight }}>
             <div className="video-editor-timeline__entry">
-                <div ref={$container} className="media-track">
+                <div ref={ref} className="media-track">
                     <MediaTrack
                         mediaTrackConfig={mediaTrackConfig}
                         containerHeight={containerHeight}

@@ -6,7 +6,7 @@ import AnnotationListItem from 'Components/VideoEditor/AnnotationsContext/Overla
 import Overlay from '../../components/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    annotationIdsByStartTime: selectors.data.annotations.selectCurrentIdsSortedByStartTime(state),
+    annotationIdsByStartTime: selectors.data.selectCurrentAnnotationIdsSortedByStartTime(state),
 })
 
 const mapDispatchToProps = {

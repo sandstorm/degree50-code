@@ -21,8 +21,8 @@ const mapStateToProps = (state: VideoEditorState, ownProps: OwnProps) => ({
 })
 
 const mapDispatchToProps = {
-    moveUp: actions.data.cuts.moveUp,
-    moveDown: actions.data.cuts.moveDown,
+    moveUp: actions.data.solutions.moveCutUp,
+    moveDown: actions.data.solutions.moveCutDown,
     setOverlay: actions.overlay.setOverlay,
     setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
     syncSolution: syncSolutionAction,

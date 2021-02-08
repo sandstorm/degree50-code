@@ -17,7 +17,7 @@ const renderItems = (
             side: 'left' | 'right' | 'center'
         ) => void
     },
-    removeMediaItem: (item: MediaItemClass<MediaItemType>) => void,
+    removeMediaItem: (id: string) => void,
     updateMediaItem: (
         item: MediaItemClass<MediaItemType>,
         updatedValues: { start?: string; end?: string; memo?: string },
@@ -34,7 +34,7 @@ const renderItems = (
         return (
             <MediaItem
                 key={index}
-                id={index}
+                id={item.originalData?.id ?? index}
                 item={item}
                 renderConfig={renderConfig}
                 checkMediaItem={checkMediaItem}
@@ -57,7 +57,7 @@ type Props = {
         updatedValues: { start?: string; end?: string; memo?: string },
         newStartTime: number
     ) => void
-    removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
+    removeMediaItem: (id: string) => void
     checkMediaItem: (item: MediaItemClass<MediaItemType>) => boolean
     showTextInMediaItems: boolean
     height: number

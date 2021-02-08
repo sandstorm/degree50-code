@@ -1,8 +1,11 @@
 import { SubtitleFromAPI } from 'Components/SubtitleEditor/SubtitlesSlice'
-import { schema, normalize, Schema } from 'normalizr'
-import { VideoCodePrototype } from 'Components/VideoEditor/types'
+import { schema, normalize, Schema, NormalizedSchema } from 'normalizr'
+import { VideoCodePrototype, Annotation, Cut, SolutionId, Solution, VideoCode } from 'Components/VideoEditor/types'
 import { generate } from 'shortid'
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
+import { AnnotationId } from 'Components/VideoEditor/AnnotationsContext/AnnotationsSlice'
+import { VideoCodeId } from 'Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
+import { CutId } from 'Components/VideoEditor/CuttingContext/CuttingSlice'
 
 const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
     entities.map((e) => ({ ...e, id: e?.id ?? generate() }))
@@ -11,61 +14,66 @@ export const ANNOTATIONS_API_PROPERTY = 'annotations'
 export const VIDEO_CODES_API_PROPERTY = 'videoCodes'
 export const CUTLIST_API_PROPERTY = 'cutList'
 
-export const annotationSchema = new schema.Entity(ANNOTATIONS_API_PROPERTY)
-export const videoCodesSchema = new schema.Entity(VIDEO_CODES_API_PROPERTY)
-export const cutListSchema = new schema.Entity(CUTLIST_API_PROPERTY)
-
-export const preparedAnnotationsSchema = {
-    current: [annotationSchema],
-    previous: [annotationSchema],
+const addMissingIdProcessStrategy = (value: any) => {
+    if (!value.id) {
+        return { ...value, id: generate() }
+    }
+    return { ...value }
 }
 
-export const preparedVideoCodesSchema = {
-    current: [videoCodesSchema],
-    previous: [videoCodesSchema],
+export const annotationSchema = new schema.Entity(
+    ANNOTATIONS_API_PROPERTY,
+    {},
+    { processStrategy: addMissingIdProcessStrategy }
+)
+export const videoCodesSchema = new schema.Entity(
+    VIDEO_CODES_API_PROPERTY,
+    {},
+    { processStrategy: addMissingIdProcessStrategy }
+)
+export const cutListSchema = new schema.Entity(
+    CUTLIST_API_PROPERTY,
+    {},
+    { processStrategy: addMissingIdProcessStrategy }
+)
+
+// TODO probably add prototypes as well
+const solutionSchema = new schema.Entity('solutions', {
+    solution: {
+        annotations: [annotationSchema],
+        videoCodes: [videoCodesSchema],
+        cutList: [cutListSchema],
+    },
+})
+
+export const preparedAPIResponseSchema = {
+    currentSolution: solutionSchema,
+    previousSolutions: [solutionSchema],
 }
 
-export const preparedCutsSchema = {
-    current: [cutListSchema],
-    previous: [cutListSchema],
+type NormalizedEntities = {
+    annotations: Record<AnnotationId, Annotation>
+    videoCodes: Record<VideoCodeId, VideoCode>
+    cutList: Record<CutId, Cut>
+    solutions: Record<SolutionId, Solution>
 }
 
-const getNormalizedDataSlice = (solution: any, config: any, key: string, schema: Schema) => {
-    const entitiesFromSolution = solution[key] ?? []
+type NormalizedResult = {
+    currentSolution: SolutionId | undefined
+    previousSolutions: SolutionId[]
+}
 
-    const hasPreviousSolutions = !!config?.previousSolutions
-    const previousEntities = hasPreviousSolutions
-        ? config.previousSolutions.reduce((acc: unknown[], p: { solution: { [key: string]: unknown[] } }) => {
-              const entities = p?.solution[key] ?? []
-
-              return [...acc, ...entities]
-          }, [])
-        : []
-
-    const current = addIdsToEntities(entitiesFromSolution)
-    const previous = addIdsToEntities(previousEntities)
-
-    const prepared = {
-        current,
-        previous,
+export const normalizeAPIResponse = (
+    solution: any,
+    config: any
+): NormalizedSchema<NormalizedEntities, NormalizedResult> => {
+    const preparedData = {
+        previousSolutions: config.previousSolutions,
+        currentSolution: solution,
     }
 
-    const result = normalize(prepared, schema)
-
-    return {
-        byId: result.entities[key],
-        ...result.result,
-    }
+    return normalize(preparedData, preparedAPIResponseSchema)
 }
-
-export const normalizeAnnotations = (solution: any, config: any) =>
-    getNormalizedDataSlice(solution, config, ANNOTATIONS_API_PROPERTY, preparedAnnotationsSchema)
-
-export const normalizeVideoCodes = (solution: any, config: any) =>
-    getNormalizedDataSlice(solution, config, VIDEO_CODES_API_PROPERTY, preparedVideoCodesSchema)
-
-export const normalizeCuts = (solution: any, config: any) =>
-    getNormalizedDataSlice(solution, config, CUTLIST_API_PROPERTY, preparedCutsSchema)
 
 // TODO
 // Old code using a custom normalize function - might be useful to refactor this
@@ -77,7 +85,7 @@ export const normalizeCuts = (solution: any, config: any) =>
  *
  * If an entity does not have an id we generate a new unique id with shortid.
  */
-export const normalizeData = <E extends { id: string }>(entities: Array<E>) =>
+export const normalizeDataOld = <E extends { id: string }>(entities: Array<E>) =>
     entities.reduce(
         (acc: { byId: { [id: string]: E }; allIds: string[] }, entity: E) => {
             return {
@@ -116,10 +124,10 @@ export const prepareVideoCodePoolFromSolution = (solution: any, config?: ConfigS
         },
         []
     )
-    return normalizeData(addIdsToEntities(flattenedVideoCodePool))
+    return normalizeDataOld(addIdsToEntities(flattenedVideoCodePool))
 }
 
 export const prepareSubtitlesFromSolution = (solution: any) => {
     const subtitles: SubtitleFromAPI[] = solution?.subtitles ?? []
-    return normalizeData(addIdsToEntities(subtitles))
+    return normalizeDataOld(addIdsToEntities(subtitles))
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 
@@ -10,7 +10,7 @@ import { MediaItem } from '../VideoEditor/types'
 import { vttToUrlUseWorker } from '../VideoEditor/utils/subtitleUtils'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import AddItemButton from './MediaItemList/AddItemButton'
-import { MEDIA_LANE_HEIGHT } from '../VideoEditor/components/MediaLane/useMediaLane'
+import { MEDIA_LANE_HEIGHT } from '../VideoEditor/components/MediaLane/useMediaLaneRendering'
 import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import {
     Subtitle,
@@ -84,9 +84,10 @@ const SubtitleEditor = ({
         currentIndex,
 
         appendMediaItem,
-        removeMediaItem,
         updateMediaItem,
+        updateMediaItems,
         checkMediaItem,
+        hasMediaItem,
     } = useMediaItemHandling<Subtitle>({
         currentTime: mediaLaneRenderConfig.currentTime,
         mediaItems,
@@ -96,6 +97,19 @@ const SubtitleEditor = ({
         updateCondition: itemUpdateCondition,
         worker,
     })
+
+    const removeMediaItem = useCallback(
+        (mediaItem) => {
+            const index = hasMediaItem(mediaItem)
+
+            if (index < 0) return mediaItems
+
+            const updatedItems = [...mediaItems.slice(0, index), ...mediaItems.slice(index + 1)]
+
+            updateMediaItems(updatedItems)
+        },
+        [updateMediaItems, hasMediaItem, mediaItems]
+    )
 
     const amountOfLanes = 1
 

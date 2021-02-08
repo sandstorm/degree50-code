@@ -9,25 +9,18 @@ import { MediaLaneRenderConfigState } from '../MediaLaneRenderConfigSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { useCuttingMediaItemHandling } from './util'
 
-type OwnProps = {
-    videoDuration: number
-    $mediaTrackRef: React.RefObject<HTMLDivElement> | React.RefCallback<HTMLDivElement> | null
-    containerHeight: number
-    containerWidth: number
-    onClickLane: (time: number) => void
-}
-
 const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState) => ({
-    cuts: selectors.data.cuts.selectCurrentByStartTime(state),
+    cuts: selectors.data.selectCurrentCutListByStartTime(state),
     mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
 })
 
 const mapDispatchToProps = {
     syncSolution: syncSolutionAction,
     setCuts: actions.data.cuts.set,
+    removeCut: actions.data.cuts.remove,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const CutMedialane = (props: Props) => {
     const itemsFromCuts = props.cuts.map(
@@ -45,7 +38,7 @@ const CutMedialane = (props: Props) => {
     // FIXME typing
     const mediaItems: MediaItem<Cut>[] = solveConflicts(itemsFromCuts) as MediaItem<Cut>[]
 
-    const { removeMediaItem, updateMediaItem } = useCuttingMediaItemHandling({
+    const { updateMediaItem } = useCuttingMediaItemHandling({
         currentTime: props.mediaLaneRenderConfig.currentTime,
         mediaItems,
         setCutList: props.setCuts,
@@ -66,17 +59,20 @@ const CutMedialane = (props: Props) => {
         return false
     }, [])
 
+    const amountOfLanes = Math.max(
+        0,
+        ...mediaItems.map((item: MediaItem<any>) => {
+            return item.lane
+        })
+    )
+
     return (
         <MediaLane
-            $mediaTrackRef={props.$mediaTrackRef}
-            containerHeight={props.containerHeight}
-            containerWidth={props.containerWidth}
-            onClickLane={props.onClickLane}
             mediaItems={mediaItems}
             updateMediaItem={updateMediaItem}
-            removeMediaItem={removeMediaItem}
+            removeMediaItem={props.removeCut}
             checkMediaItem={checkMediaItem}
-            amountOfLanes={0}
+            amountOfLanes={amountOfLanes}
             showTextInMediaItems={false}
         />
     )

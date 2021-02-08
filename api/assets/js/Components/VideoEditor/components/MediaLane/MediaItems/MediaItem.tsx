@@ -12,7 +12,7 @@ import { clamp, getContextYPosition } from './helpers'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>
-    id: number
+    id: number | string
     renderConfig: RenderConfig
     isPlayedBack?: boolean
     checkMediaItem: (item: MediaItemClass<any>) => boolean
@@ -21,7 +21,7 @@ type OwnProps = {
         item: MediaItemClass<MediaItemType>,
         side: Handle
     ) => void
-    removeMediaItem: (item: MediaItemClass<MediaItemType>) => void
+    removeMediaItem: (itemId: string) => void
     updateMediaItem: (
         item: MediaItemClass<MediaItemType>,
         updatedValues: { start?: string; end?: string; memo?: string },
@@ -46,7 +46,6 @@ const MediaItem = ({
     onItemMouseDown,
     isPlayedBack,
     removeMediaItem,
-    updateMediaItem,
     amountOfLanes = 0,
     showTextInMediaItems = true,
     setPause,
@@ -187,10 +186,11 @@ const MediaItem = ({
             />
             <MediaItemContextMenu
                 removeMediaItem={() => {
-                    removeMediaItem(item)
-                }}
-                addMemoToMediaItem={() => {
-                    // TODO
+                    if (item.originalData.id) {
+                        removeMediaItem(item.originalData.id)
+                    } else {
+                        console.error('Could not remove item. Property <id> missing!')
+                    }
                 }}
                 contextMenuIsVisible={contextMenuIsVisible}
                 posX={contextMenuPosX}

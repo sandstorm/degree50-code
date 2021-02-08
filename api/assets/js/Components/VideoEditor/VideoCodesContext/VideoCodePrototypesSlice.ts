@@ -4,7 +4,7 @@
 
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { set } from 'immutable'
-import { normalizeData } from 'StimulusControllers/normalizeData'
+import { normalizeDataOld } from 'StimulusControllers/normalizeData'
 import { VideoCodePrototype } from '../types'
 
 export type VideoCodePrototypeId = string
@@ -31,7 +31,7 @@ export const VideoCodePrototypesSlice = createSlice({
             return action.payload
         },
         set: (_, action: PayloadAction<VideoCodePrototype[]>) => {
-            return normalizeData(action.payload)
+            return normalizeDataOld(action.payload)
         },
         append: (
             state: VideoCodePrototypesState,
@@ -63,7 +63,7 @@ export const VideoCodePrototypesSlice = createSlice({
 
             const updatedPrototypes = allElements.filter((e) => e.id !== elementId && e.parentId !== elementId)
 
-            return normalizeData(updatedPrototypes)
+            return normalizeDataOld(updatedPrototypes)
         },
     },
 })

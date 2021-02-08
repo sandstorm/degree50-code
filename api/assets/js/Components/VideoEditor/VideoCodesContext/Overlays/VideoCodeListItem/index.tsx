@@ -1,4 +1,4 @@
-import { VideoCodeId, VideoCodesSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
+import { VideoCodeId, VideoCodesStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
 import { VideoCodeOverlayIds } from 'Components/VideoEditor/VideoCodesContext/VideoCodesMenu'
 import Button from 'Components/Button/Button'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
@@ -13,7 +13,7 @@ type OwnProps = {
     videoCodeId: VideoCodeId
 }
 
-const mapStateToProps = (state: VideoCodesSlice & VideoCodePoolStateSlice, ownProps: OwnProps) => {
+const mapStateToProps = (state: VideoCodesStateSlice & VideoCodePoolStateSlice, ownProps: OwnProps) => {
     const item = selectors.data.videoCodes.selectVideoCodeById(state, ownProps)
     const videoCodePrototype = item.idFromPrototype
         ? selectors.data.videoCodePrototypes.selectPrototypeById(state, { videoCodeId: item.idFromPrototype })

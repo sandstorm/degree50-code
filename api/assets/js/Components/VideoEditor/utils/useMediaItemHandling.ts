@@ -26,6 +26,15 @@ const checkConflict = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index
     return checkConflictWithPrevItem(mediaItems, item, index) || checkConflictWithNextItem(mediaItems, item, index)
 }
 
+// TODO refactor this and:
+// * Remove crud operations and move the into editor store slices where necessary/possible
+// * Make sure that all editors use store store slices
+// * Remove Slice.actions.set for each slice if possible
+// NOTE: it could be that this is not possible for the subtitle editor, depending on how
+// closely its wired with the worker (or at least the worker update would have to be refactored as well).
+// However it's currently unclear if we are going to keep the subtitle-editor anyway or if the customer
+// is rather going to upload subtitle files themselves.
+
 export const useMediaItemHandling = <T>({
     currentTime,
     history,
@@ -125,7 +134,10 @@ export const useMediaItemHandling = <T>({
         [hasMediaItem, mediaItems]
     )
 
-    // Update a single mediaItem
+    /**
+     * @deprecated
+     * update a single mediaItem
+     */
     const updateMediaItem = useCallback(
         (item: MediaItem<T>, updatedValues: Record<string, unknown>) => {
             const index = hasMediaItem(item)
@@ -146,21 +158,9 @@ export const useMediaItemHandling = <T>({
         [hasMediaItem, copyMediaItems, updateMediaItems]
     )
 
-    // Delete a mediaItem
-    const removeMediaItem = useCallback(
-        (mediaItem) => {
-            const index = hasMediaItem(mediaItem)
-
-            if (index < 0) return mediaItems
-
-            const updatedItems = [...mediaItems.slice(0, index), ...mediaItems.slice(index + 1)]
-
-            updateMediaItems(updatedItems)
-        },
-        [hasMediaItem, copyMediaItems, updateMediaItems]
-    )
-
-    // Add a mediaItem
+    /**
+     * @deprecated
+     */
     const appendMediaItem = useCallback(() => {
         const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
 
@@ -182,7 +182,6 @@ export const useMediaItemHandling = <T>({
         setCurrentIndex,
         setCurrentTimeForMediaItems,
         appendMediaItem,
-        removeMediaItem,
         updateMediaItem,
         hasMediaItem,
         updateMediaItems,
