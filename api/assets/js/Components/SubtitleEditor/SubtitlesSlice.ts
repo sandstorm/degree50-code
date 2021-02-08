@@ -5,7 +5,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { MediaItemType } from 'Components/VideoEditor/types'
 import { remove, set } from 'immutable'
-import { normalizeData } from 'StimulusControllers/normalizeData'
+import { normalizeDataOld } from 'StimulusControllers/normalizeData'
 
 export type SubtitleFromAPI = MediaItemType & { id?: string }
 export type Subtitle = Omit<SubtitleFromAPI, 'id'> & { id: string }
@@ -52,7 +52,7 @@ export const SubtitlesSlice = createSlice({
             // }
             // })
 
-            return normalizeData(action.payload)
+            return normalizeDataOld(action.payload)
         },
         append: (state: SubtitlesState, action: PayloadAction<Subtitle>): SubtitlesState => {
             const newSubtitle = action.payload

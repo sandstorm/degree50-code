@@ -7,18 +7,10 @@ type Props = {
     posX: number
     posY: number
     removeMediaItem: () => void
-    addMemoToMediaItem: () => void
     handleClose: () => void
 }
 
-const MediaItemContextMenu = ({
-    contextMenuIsVisible,
-    posX,
-    posY,
-    removeMediaItem,
-    addMemoToMediaItem,
-    handleClose,
-}: Props) => {
+const MediaItemContextMenu = ({ contextMenuIsVisible, posX, posY, removeMediaItem, handleClose }: Props) => {
     const timeOut = useRef<NodeJS.Timeout | null>(null)
 
     const domEl = document.getElementById('media-item-context-menu')
@@ -48,15 +40,6 @@ const MediaItemContextMenu = ({
             onMouseOut={handleOnMouseOut}
             onMouseOver={handleOnMouseOver}
         >
-            <div
-                className="video-editor__media-items__contextmenu-item"
-                onClick={() => {
-                    addMemoToMediaItem()
-                    handleClose()
-                }}
-            >
-                <i className={'far fa-file-alt'} /> Edit Memo
-            </div>
             <div
                 className="video-editor__media-items__contextmenu-item"
                 onClick={() => {

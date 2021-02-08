@@ -5,8 +5,7 @@ import { TabsTypesEnum } from '../../types'
 import { OverlayProvider } from '@react-aria/overlays'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import Toolbar from '../../Components/VideoEditor/components/MediaLaneToolbar'
-import { useMediaLane } from '../../Components/VideoEditor/components/MediaLane/useMediaLane'
-import { actions, selectors, VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
+import { actions, VideoEditorState } from '../../Components/VideoEditor/VideoEditorSlice'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 import EditorTabs from '../../Components/EditorTabs'
 import { solutionTabs } from '../../Components/Tabs'
@@ -19,6 +18,7 @@ import { initialRenderConfig } from '../../Components/VideoEditor/MediaLaneRende
 import { translate } from 'react-i18nify'
 import VideoPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import { VideoListsState } from 'Components/VideoEditor/types'
+import { useMediaLaneClick } from 'Components/VideoEditor/components/MediaLane/useMediaLaneClick'
 
 export type SolutionByTeam = {
     teamCreator: string
@@ -72,13 +72,12 @@ type OwnProps = {
 }
 
 const mapStateToProps = (state: VideoEditorState) => {
-    return {
-        playerSyncPlayPosition: selectors.player.selectSyncPlayPosition(state),
-    }
+    return {}
 }
 
 const mapDispatchToProps = {
     setPlayPosition: actions.player.setPlayPosition,
+    updateZoom: actions.mediaLaneRenderConfig.updateZoom,
 }
 
 type ReadOnlyExercisePhaseProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
@@ -89,6 +88,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     watchModals()
 
     const [renderConfig, setRenderConfig] = useState<RenderConfig>(initialRenderConfig)
+    const { handleMediaLaneClick } = useMediaLaneClick(renderConfig, setRenderConfig, props.setPlayPosition)
 
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
@@ -97,7 +97,6 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
 
     const firstVideo = props.videos[0]
     const videoDuration: number = firstVideo ? firstVideo.duration : 5 // duration in seconds
-    const currentTime = props.playerSyncPlayPosition
 
     const videoComponents = Object.values(TabsTypesEnum).filter((tabType) =>
         props.availableComponents.includes(tabType)
@@ -106,16 +105,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
     const { height } = useDebouncedResizeObserver($container, 500)
     const heightOrDefault = height === 0 ? 400 : height
 
-    const { handleZoom, handleLaneClick } = useMediaLane({
-        $mediaTrackRef: $container,
-        currentTime,
-        videoDuration,
-        laneClickCallback: props.setPlayPosition,
-        renderConfig,
-        setRenderConfig,
-    })
-
-    const updateCurrentTime = handleLaneClick
+    const updateCurrentTime = handleMediaLaneClick
 
     // Run only once
     useEffect(() => {
@@ -181,7 +171,7 @@ const SolutionsApp: React.FC<ReadOnlyExercisePhaseProps> = (props: ReadOnlyExerc
                 </div>
                 <div className={'solutions'} style={{ height: heightOrDefault * 0.6 }}>
                     <Toolbar
-                        zoomHandler={handleZoom}
+                        updateZoom={props.updateZoom}
                         videoDuration={videoDuration}
                         renderConfig={renderConfig}
                         handleTimeLineAction={updateCurrentTime}

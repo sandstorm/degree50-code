@@ -136,7 +136,7 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'exercise' => $exercisePhase->getBelongsToExercise(),
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'solution' => $solution,
+            'solution' => [ 'solution' => $solution->getSolution(), 'id' => $solution->getId()  ],
             'currentEditor' => $currentEditor,
         ], $response);
     }
@@ -184,10 +184,17 @@ class ExercisePhaseController extends AbstractController
             if ($previousPhase) {
                 $previousSolutions = array_map(function (User $teamMember) use ($previousPhase) {
                     $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $previousPhase);
+                    $solution = $teamOfPreviousPhase ? $teamOfPreviousPhase->getSolution() : null;
+
+                    if (empty($solution)) {
+                        return [];
+                    }
+
                     return [
                         'userId' => $teamMember->getId(),
                         'userName' => $teamMember->getEmail(),
-                        'solution' => $teamOfPreviousPhase ? $teamOfPreviousPhase->getSolution()->getSolution() : [],
+                        'solution' => $solution->getSolution(),
+                        'id' => $solution->getId(),
                     ];
                 }, $exercisePhaseTeam->getMembers()->toArray());
             }

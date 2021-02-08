@@ -1,4 +1,8 @@
 import { timeToSecond } from './utils'
+import { AnnotationId } from './AnnotationsContext/AnnotationsSlice'
+import { VideoCodeId } from './VideoCodesContext/VideoCodesSlice'
+import { CutId } from './CuttingContext/CuttingSlice'
+import { VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
 
 export type VideoCodePrototype = {
     id: string
@@ -34,6 +38,20 @@ export type CutFromAPI = MediaItemType & { id?: string } & {
 export type Cut = Omit<CutFromAPI, 'id'> & { id: string }
 export type CutList = Array<Cut>
 
+export type SolutionId = string
+
+export type Solution = {
+    id: SolutionId
+    userId?: string
+    userName?: string
+    solution: {
+        annotations: AnnotationId[]
+        videoCodes: VideoCodeId[]
+        cutList: CutId[]
+        customVideoCodesPool: VideoCodePrototypeId[]
+    }
+}
+
 export type VideoListsState = {
     videoCodes: Array<VideoCodeFromAPI>
     annotations: Array<AnnotationFromAPI>
@@ -48,7 +66,7 @@ export class MediaItem<T> {
     memo: string
     color: null | string
     lane: number
-    originalData: T
+    originalData: T & { id?: string }
 
     constructor({
         start,

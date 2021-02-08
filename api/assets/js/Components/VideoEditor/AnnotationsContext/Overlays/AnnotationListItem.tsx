@@ -47,8 +47,8 @@ const AnnotationListItem: FC<Props> = ({ item, index, setCurrentlyEditedElementI
         <li className="annotation-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={item.id}>
             <Start start={item.start} />
             <End end={item.end} />
-            <p>{item.text}</p>
-            <p>{item.memo}</p>
+            <p>Text: {item.text}</p>
+            <p>Memo: {item.memo}</p>
             <Button className="btn btn-secondary" onPress={handleRemove}>
                 Löschen
             </Button>

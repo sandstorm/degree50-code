@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useCallback } from 'react'
+import { useLayoutEffect, useEffect } from 'react'
 import { RenderConfig } from './MediaTrack'
 import { useDebouncedResizeObserver } from '../../utils/useDebouncedResizeObserver'
 import { calculateTimelineStartTime } from './helpers'
@@ -14,19 +14,16 @@ const getDurationForRenderConfig = (durationInPercentage: number, videoDuration:
     return Math.max(5, Math.round((videoDuration / 100) * (100 - durationInPercentage)))
 }
 
-// TODO comment and refactor
-export const useMediaLane = ({
+export const useMediaLaneRendering = ({
     $mediaTrackRef,
     currentTime,
     videoDuration,
-    laneClickCallback,
     renderConfig,
     setRenderConfig,
 }: {
     $mediaTrackRef?: React.RefObject<HTMLDivElement>
     currentTime: number
     videoDuration: number
-    laneClickCallback: (newCurrentTime: number) => void
     renderConfig: RenderConfig
     setRenderConfig: (newRenderConfig: RenderConfig) => void
 }) => {
@@ -57,30 +54,6 @@ export const useMediaLane = ({
             zoom: zoomInPercent,
         })
     }
-
-    const handleLaneClick = useCallback(
-        (clickTime: number) => {
-            const newCurrentTime = clickTime >= 0 ? clickTime : 0
-
-            laneClickCallback(newCurrentTime)
-
-            const newTimelineStartTime = Math.floor(newCurrentTime / renderConfig.duration) * renderConfig.duration
-
-            setRenderConfig({
-                ...renderConfig,
-                currentTime: newCurrentTime,
-                timelineStartTime: newTimelineStartTime,
-            })
-        },
-        [renderConfig]
-    )
-
-    const handleZoom = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            setRenderConfigForZoom(parseInt(event.currentTarget.value))
-        },
-        [setRenderConfigForZoom]
-    )
 
     // Update after initial rendering
     useLayoutEffect(() => {
@@ -113,8 +86,6 @@ export const useMediaLane = ({
         containerHeight,
         renderConfig,
         setRender: setRenderConfig,
-        handleZoom,
-        handleLaneClick,
         ref,
     }
 }
