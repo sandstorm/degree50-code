@@ -12,21 +12,17 @@ export type AnnotationId = string
 
 export type AnnotationsState = {
     byId: Record<AnnotationId, Annotation>
-    current: AnnotationId[]
-    previous: AnnotationId[]
 }
 
 export const initialState: AnnotationsState = {
     byId: {},
-    current: [],
-    previous: [],
 }
 
 /////////////
 // REDUCER //
 /////////////
 
-export const AnnotationsSlice = createSlice({
+export const annotationsSlice = createSlice({
     name: 'annotations',
     initialState,
     reducers: {
@@ -50,12 +46,10 @@ export const AnnotationsSlice = createSlice({
         append: (state: AnnotationsState, action: PayloadAction<Annotation>): AnnotationsState => {
             const newAnnotation = action.payload
             return {
-                ...state,
                 byId: {
                     ...state.byId,
                     [newAnnotation.id]: newAnnotation,
                 },
-                current: [...state.current, newAnnotation.id],
             }
         },
         update: (
@@ -75,7 +69,6 @@ export const AnnotationsSlice = createSlice({
             return {
                 ...state,
                 byId: remove(state.byId, elementId),
-                current: state.current.filter((id) => id !== elementId),
             }
         },
     },
@@ -88,37 +81,10 @@ export const AnnotationsSlice = createSlice({
 type AnnotationsSlice = { videoEditor: { data: { annotations: AnnotationsState } } }
 
 const selectById = (state: AnnotationsSlice) => state.videoEditor.data.annotations.byId
-const selectCurrentIds = (state: AnnotationsSlice) => state.videoEditor.data.annotations.current
 const selectAnnotationById = (state: AnnotationsSlice, props: { annotationId: AnnotationId }) =>
     state.videoEditor.data.annotations.byId[props.annotationId]
 
-const selectDenormalizedCurrent = (state: AnnotationsSlice) =>
-    state.videoEditor.data.annotations.current.map((id) => state.videoEditor.data.annotations.byId[id])
-
-const selectCurrentAnnotationsByStartTime = createSelector([selectById, selectCurrentIds], (byId, ids) => {
-    return ids
-        .map((id) => byId[id])
-        .sort((a, b) => {
-            if (a.start < b.start) {
-                return -1
-            } else if (a.start > b.start) {
-                return 1
-            } else {
-                return 0
-            }
-        })
-})
-
-const selectCurrentIdsSortedByStartTime = createSelector(
-    [selectCurrentAnnotationsByStartTime],
-    (annotationsByStartTime) => annotationsByStartTime.map((annotation) => annotation.id)
-)
-
 export const selectors = {
     selectById,
-    selectCurrentIds,
     selectAnnotationById,
-    selectCurrentAnnotationsByStartTime,
-    selectCurrentIdsSortedByStartTime,
-    selectDenormalizedCurrent,
 }

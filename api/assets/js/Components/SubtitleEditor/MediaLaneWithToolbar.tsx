@@ -5,14 +5,15 @@ import MediaTrack from '../VideoEditor/components/MediaLane/MediaTrack'
 import MediaTrackInteractionArea from '../VideoEditor/components/MediaLane/MediaTrackInteractionArea'
 import Toolbar from '../VideoEditor/components/MediaLaneToolbar'
 import {
-    useMediaLane,
+    useMediaLaneRendering,
     MEDIA_LANE_HEIGHT,
     MEDIA_LANE_TOOLBAR_HEIGHT,
-} from '../VideoEditor/components/MediaLane/useMediaLane'
+} from '../VideoEditor/components/MediaLane/useMediaLaneRendering'
 import { defaultMediaTrackConfig } from '../VideoEditor/components/MediaLane/MediaTrack/helpers'
-import PreviousSolutions from './PreviousSolutions'
 import { actions, selectors, VideoEditorState } from '../VideoEditor/VideoEditorSlice'
 import { connect } from 'react-redux'
+import { useMediaLaneClick } from 'Components/VideoEditor/components/MediaLane/useMediaLaneClick'
+import { SubtitlesSlice } from './SubtitlesSlice'
 
 type OwnProps = {
     currentTime: number
@@ -34,35 +35,40 @@ const mapStateToProps = (state: VideoEditorState) => ({
 
 const mapDispatchToProps = {
     setRenderConfig: actions.mediaLaneRenderConfig.setRenderConfig,
+    updateZoom: actions.mediaLaneRenderConfig.updateZoom,
+    removeSubtitle: SubtitlesSlice.actions.remove,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const MediaLane = ({
-    currentTime,
-    updateMediaItem,
-    removeMediaItem,
-    mediaItems,
-    previousSolutions,
-    setPlayPosition,
-    checkMediaItem,
-    videoDuration,
-    showTextInMediaItems = true,
-    amountOfLanes,
-    ToolbarActions,
-    mediaLaneRenderConfig,
-    setRenderConfig,
-}: Props) => {
+const MediaLane = (props: Props) => {
+    const {
+        currentTime,
+        updateMediaItem,
+        mediaItems,
+        previousSolutions,
+        setPlayPosition,
+        checkMediaItem,
+        videoDuration,
+        showTextInMediaItems = true,
+        amountOfLanes,
+        ToolbarActions,
+        mediaLaneRenderConfig,
+        setRenderConfig,
+        updateZoom,
+    } = props
+
     const $container: React.RefObject<HTMLDivElement> = useRef(null)
 
-    const { containerWidth, containerHeight, handleZoom, handleLaneClick } = useMediaLane({
+    const { containerWidth, containerHeight } = useMediaLaneRendering({
         $mediaTrackRef: $container,
         currentTime,
         videoDuration,
-        laneClickCallback: setPlayPosition,
         renderConfig: mediaLaneRenderConfig,
         setRenderConfig,
     })
+
+    const { handleMediaLaneClick } = useMediaLaneClick(mediaLaneRenderConfig, setRenderConfig, setPlayPosition)
 
     const handleMediaItemUpdate = useCallback(
         (
@@ -89,10 +95,10 @@ const MediaLane = ({
     return (
         <div className="video-editor-timeline" style={{ height: MEDIA_LANE_HEIGHT }}>
             <Toolbar
-                zoomHandler={handleZoom}
+                updateZoom={updateZoom}
                 videoDuration={videoDuration}
                 renderConfig={mediaLaneRenderConfig}
-                handleTimeLineAction={handleLaneClick}
+                handleTimeLineAction={handleMediaLaneClick}
             >
                 {ToolbarActions}
             </Toolbar>
@@ -109,24 +115,22 @@ const MediaLane = ({
                             containerWidth={containerWidth}
                         />
                     </div>
-                    <MediaTrackInteractionArea renderConfig={mediaLaneRenderConfig} clickCallback={handleLaneClick} />
+                    <MediaTrackInteractionArea
+                        renderConfig={mediaLaneRenderConfig}
+                        clickCallback={handleMediaLaneClick}
+                    />
                     <MediaItems
                         currentTime={currentTime}
                         renderConfig={mediaLaneRenderConfig}
                         mediaItems={mediaItems}
                         updateMediaItem={handleMediaItemUpdate}
-                        removeMediaItem={removeMediaItem}
+                        removeMediaItem={props.removeSubtitle}
                         checkMediaItem={checkMediaItem}
                         amountOfLanes={amountOfLanes}
                         showTextInMediaItems={showTextInMediaItems}
                         height={mediaEntryHeight - mediaTrackConfig.rulerHeight}
                     />
                 </div>
-                <PreviousSolutions
-                    previousSolutions={previousSolutions}
-                    handleLaneClick={handleLaneClick}
-                    renderConfig={mediaLaneRenderConfig}
-                />
             </div>
         </div>
     )

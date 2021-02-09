@@ -54,7 +54,6 @@ export const useCuttingMediaItemHandling = ({
 
         setCurrentIndex,
         setCurrentTimeForMediaItems,
-        removeMediaItem,
         updateMediaItems,
         checkMediaItem,
         hasMediaItem,
@@ -128,32 +127,6 @@ export const useCuttingMediaItemHandling = ({
         [hasMediaItem, copyMediaItems, updateMediaItems]
     )
 
-    // Add a mediaItem
-    const appendCut = useCallback(() => {
-        if (originalVideoUrl === undefined) {
-            // TODO show toast
-            return
-        }
-
-        const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
-
-        const cut: Cut = {
-            id: generate(),
-            url: originalVideoUrl,
-            start,
-            end,
-            text: `Schnitt ${mediaItems.length + 1}`,
-            playbackRate: 1,
-            offset: t2d(start),
-            memo: '',
-            color: null,
-        }
-
-        const newItem = getMediaItemFromCut(cut)
-
-        updateMediaItems([...mediaItems, newItem])
-    }, [updateMediaItems, mediaItems])
-
     // Run only once
     useEffect(() => {
         // Hydrate store on initial render
@@ -167,11 +140,9 @@ export const useCuttingMediaItemHandling = ({
         checkMediaItem,
         copyMediaItems,
         hasMediaItem,
-        removeMediaItem,
         setCurrentTimeForMediaItems,
         updateMediaItem,
         updateMediaItems,
-        appendCut,
     }
 }
 

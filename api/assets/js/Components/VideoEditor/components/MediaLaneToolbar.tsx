@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-i18nify'
 import { RenderConfig } from './MediaLane/MediaTrack'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { MEDIA_LANE_TOOLBAR_HEIGHT } from './MediaLane/useMediaLane'
+import { MEDIA_LANE_TOOLBAR_HEIGHT } from './MediaLane/useMediaLaneRendering'
 
 type OwnProps = {
-    zoomHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
+    updateZoom: (value: number) => void
     videoDuration: number
     renderConfig: RenderConfig
     handleTimeLineAction: (clickTime: number) => void
@@ -25,15 +25,7 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
-const Toolbar = ({
-    zoomHandler,
-    videoDuration,
-    renderConfig,
-    handleTimeLineAction,
-    children,
-    playerIsPaused,
-    togglePlay,
-}: Props) => {
+const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction, children }: Props) => {
     const leftInteractionAreaIsDisabled = renderConfig.timelineStartTime === 0
     const rightInteractionAreaIsDisabled = renderConfig.timelineStartTime + renderConfig.duration >= videoDuration
 
@@ -45,9 +37,12 @@ const Toolbar = ({
         }
     }
 
-    const onPlayPauseClick = () => {
-        togglePlay()
-    }
+    const zoomHandler = useCallback(
+        (ev: React.ChangeEvent<HTMLInputElement>) => {
+            updateZoom(parseInt(ev.currentTarget.value))
+        },
+        [updateZoom]
+    )
 
     return (
         <div className="video-editor-toolbar" style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}>

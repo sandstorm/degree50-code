@@ -40,7 +40,7 @@ export const actions = {
 }
 
 const selectActiveAnnotationIds = createSelector(
-    [dataSelectors.annotations.selectCurrentAnnotationsByStartTime, playerSelectors.selectSyncPlayPosition],
+    [dataSelectors.selectCurrentAnnotationsByStartTime, playerSelectors.selectSyncPlayPosition],
     (annotations, currentPlayPosition) => {
         return annotations
             .filter(
@@ -53,7 +53,7 @@ const selectActiveAnnotationIds = createSelector(
 )
 
 const selectActiveVideoCodeIds = createSelector(
-    [dataSelectors.videoCodes.selectCurrentVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
+    [dataSelectors.selectCurrentVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
     (videoCodes, currentPlayPosition) => {
         return videoCodes
             .filter(
@@ -66,7 +66,7 @@ const selectActiveVideoCodeIds = createSelector(
 )
 
 const selectActiveCutIds = createSelector(
-    [dataSelectors.cuts.selectCurrentByStartTime, playerSelectors.selectSyncPlayPosition],
+    [dataSelectors.selectCurrentCutListByStartTime, playerSelectors.selectSyncPlayPosition],
     (cuts, currentPlayPosition) => {
         return cuts
             .filter(
@@ -78,12 +78,12 @@ const selectActiveCutIds = createSelector(
 
 const selectSolution = createSelector(
     [
-        dataSelectors.annotations.selectDenormalizedCurrent,
-        dataSelectors.videoCodes.selectDenormalizedCurrent,
+        dataSelectors.selectDenormalizedCurrentAnnotations,
+        dataSelectors.selectDenormalizedCurrentVideoCodes,
+        dataSelectors.selectDenormalizedCurrentCutList,
         dataSelectors.videoCodePrototypes.selectVideoCodePoolList,
-        dataSelectors.cuts.selectDenormalizedCurrent,
     ],
-    (annotations, videoCodes, videoCodePool, cuts) => ({
+    (annotations, videoCodes, cuts, videoCodePool) => ({
         annotations,
         videoCodes,
         customVideoCodesPool: videoCodePool,

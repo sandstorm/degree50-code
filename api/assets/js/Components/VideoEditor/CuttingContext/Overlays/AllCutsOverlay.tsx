@@ -6,7 +6,7 @@ import CutListItem from 'Components/VideoEditor/CuttingContext/Overlays/CutListI
 import Overlay from '../../components/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    cutIdsByStartTime: selectors.data.cuts.selectCurrentIdsSortedByStartTime(state),
+    cutIdsByStartTime: selectors.data.selectCurrentCutIdsByStartTime(state),
 })
 
 const mapDispatchToProps = {

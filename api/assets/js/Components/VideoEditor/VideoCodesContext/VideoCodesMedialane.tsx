@@ -10,16 +10,8 @@ import { MediaLaneRenderConfigState } from '../MediaLaneRenderConfigSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { VideoCodePoolStateSlice } from './VideoCodePrototypesSlice'
 
-type OwnProps = {
-    videoDuration: number
-    $mediaTrackRef: React.RefObject<HTMLDivElement> | React.RefCallback<HTMLDivElement> | null
-    containerHeight: number
-    containerWidth: number
-    onClickLane: (time: number) => void
-}
-
 const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState & VideoCodePoolStateSlice) => {
-    const videoCodes = selectors.data.videoCodes.selectCurrentVideoCodesByStartTime(state)
+    const videoCodes = selectors.data.selectCurrentVideoCodesByStartTime(state)
     const prototypes = selectors.data.videoCodePrototypes.selectById(state)
 
     const items = videoCodes.map(
@@ -44,15 +36,16 @@ const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState & 
 const mapDispatchToProps = {
     syncSolution: syncSolutionAction,
     setVideoCodes: actions.data.videoCodes.set,
+    removeVideoCode: actions.data.videoCodes.remove,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const VideoCodeMedialane = (props: Props) => {
     // FIXME typing
     const mediaItems: MediaItem<VideoCode>[] = solveConflicts(props.items) as MediaItem<VideoCode>[]
 
-    const { removeMediaItem, updateMediaItem } = useMediaItemHandling<VideoCode>({
+    const { updateMediaItem } = useMediaItemHandling<VideoCode>({
         currentTime: props.mediaLaneRenderConfig.currentTime,
         mediaItems,
         setMediaItems: props.setVideoCodes,
@@ -82,13 +75,9 @@ const VideoCodeMedialane = (props: Props) => {
 
     return (
         <MediaLane
-            $mediaTrackRef={props.$mediaTrackRef}
-            containerHeight={props.containerHeight}
-            containerWidth={props.containerWidth}
-            onClickLane={props.onClickLane}
             mediaItems={mediaItems}
             updateMediaItem={updateMediaItem}
-            removeMediaItem={removeMediaItem}
+            removeMediaItem={props.removeVideoCode}
             checkMediaItem={checkMediaItem}
             amountOfLanes={amountOfLanes}
             showTextInMediaItems={false}
