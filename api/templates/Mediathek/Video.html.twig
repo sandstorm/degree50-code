@@ -21,9 +21,6 @@
             <a href="{{ path('mediathek__video--edit', {id: video.id}) }}">
                 <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
             </a>
-            <a href="{{ path('mediathek__subtitle-editor--show', {id: video.id}) }}">
-                <i class="fas fa-pencil-alt"></i> {% trans %}video.subtitle.title{% endtrans %}
-            </a>
             <a href="{{ path('mediathek__video--delete', {id: video.id}) }}" class="color-alert">
                 <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
             </a>

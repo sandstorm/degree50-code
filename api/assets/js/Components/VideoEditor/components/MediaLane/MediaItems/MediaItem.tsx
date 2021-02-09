@@ -1,14 +1,13 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+import React, { useCallback, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { MediaItem as MediaItemClass, MediaItemType } from '../../../types'
 import { RenderConfig } from '../MediaTrack'
 import { actions } from '../../../PlayerSlice'
-import MediaItemContextMenu from './MediaItemContextMenu'
 import { useModalHook } from 'Components/Modal/useModalHook'
 import Button from 'Components/Button/Button'
 import { Handle } from './types'
 import MediaItemLabel from './MediaItemLabel'
-import { clamp, getContextYPosition } from './helpers'
+import { clamp } from './helpers'
 
 type OwnProps = {
     item: MediaItemClass<MediaItemType>
@@ -21,7 +20,6 @@ type OwnProps = {
         item: MediaItemClass<MediaItemType>,
         side: Handle
     ) => void
-    removeMediaItem: (itemId: string) => void
     updateMediaItem: (
         item: MediaItemClass<MediaItemType>,
         updatedValues: { start?: string; end?: string; memo?: string },
@@ -45,7 +43,6 @@ const MediaItem = ({
     checkMediaItem,
     onItemMouseDown,
     isPlayedBack,
-    removeMediaItem,
     amountOfLanes = 0,
     showTextInMediaItems = true,
     setPause,
@@ -76,24 +73,11 @@ const MediaItem = ({
 
     const mediaItemHeight = 100 / (amountOfLanes + 1)
 
-    const [contextMenuIsVisible, setContextMenuIsVisible] = useState(false)
-    const [contextMenuPosX, setContextMenuPosX] = useState(0)
-    const [contextMenuPosY, setContextMenuPosY] = useState(0)
-
-    const updateContextMenuIsVisible = useCallback(
-        (isVisible: boolean) => {
-            setContextMenuIsVisible(isVisible)
-        },
-        [setContextMenuIsVisible]
-    )
-
     const positionLeft =
         renderConfig.padding * renderConfig.gridGap +
         (item.startTime - renderConfig.timelineStartTime) * renderConfig.gridGap * 10
 
     const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModalHook()
-
-    const contentMenuItemHeight = 30
 
     const width = (item.endTime - item.startTime) * renderConfig.gridGap * 10
 
@@ -138,25 +122,6 @@ const MediaItem = ({
                 setPause(true)
                 setPlayPosition(item.startTime + 0.001)
             }}
-            onContextMenu={(event) => {
-                event.preventDefault()
-                setPause(true)
-                setPlayPosition(item.startTime + 0.001)
-
-                updateContextMenuIsVisible(true)
-                setContextMenuPosX(event.pageX)
-                const mediaItemsHeight = document.getElementsByClassName('video-editor__media-items')[0].clientHeight
-                const phaseHeight = document.getElementsByClassName('exercise-phase__inner')[0].clientHeight
-
-                const posY = getContextYPosition({
-                    mediaItemsHeight,
-                    phaseHeight,
-                    pageY: event.pageY,
-                    contentMenuItemHeight,
-                })
-
-                setContextMenuPosY(posY)
-            }}
         >
             {item.memo ? (
                 <Button onPress={showMemoModal} className={'video-editor__media-items__memo-toggle'}>
@@ -183,21 +148,6 @@ const MediaItem = ({
                     width: laneItemHandleWidth,
                 }}
                 onMouseDown={handleRightHandleMouseDown}
-            />
-            <MediaItemContextMenu
-                removeMediaItem={() => {
-                    if (item.originalData.id) {
-                        removeMediaItem(item.originalData.id)
-                    } else {
-                        console.error('Could not remove item. Property <id> missing!')
-                    }
-                }}
-                contextMenuIsVisible={contextMenuIsVisible}
-                posX={contextMenuPosX}
-                posY={contextMenuPosY}
-                handleClose={() => {
-                    updateContextMenuIsVisible(false)
-                }}
             />
             <RenderMemoModal title={'Memo'}>{item.memo}</RenderMemoModal>
         </div>

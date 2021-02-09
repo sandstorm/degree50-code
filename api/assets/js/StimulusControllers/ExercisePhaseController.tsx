@@ -11,7 +11,7 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { prepareVideoCodePoolFromSolution, normalizeAPIResponse } from './normalizeData'
+import { normalizeAPIResponse } from './normalizeData'
 
 export default class extends Controller {
     connect() {
@@ -38,9 +38,9 @@ export default class extends Controller {
         store.dispatch(actions.data.annotations.init({ byId: normalizedAPIResponse.entities.annotations }))
         store.dispatch(actions.data.videoCodes.init({ byId: normalizedAPIResponse.entities.videoCodes }))
         store.dispatch(actions.data.cuts.init({ byId: normalizedAPIResponse.entities.cutList }))
-
-        const normalizedCodePool = prepareVideoCodePoolFromSolution(solution, config)
-        store.dispatch(actions.data.videoCodePrototypes.init(normalizedCodePool))
+        store.dispatch(
+            actions.data.videoCodePrototypes.init({ byId: normalizedAPIResponse.entities.customVideoCodesPool })
+        )
 
         store.dispatch(setCurrentEditorId(currentEditor))
 

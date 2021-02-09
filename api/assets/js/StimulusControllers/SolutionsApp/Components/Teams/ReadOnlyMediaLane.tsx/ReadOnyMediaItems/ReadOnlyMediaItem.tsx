@@ -2,8 +2,8 @@ import React from 'react'
 import Button from 'Components/Button/Button'
 import { useModalHook } from 'Components/Modal/useModalHook'
 import { MediaItem, MediaItemType } from 'Components/VideoEditor/types'
-import { RenderConfig } from '../../MediaLane/MediaTrack'
-import MediaItemLabel from '../../MediaLane/MediaItems/MediaItemLabel'
+import { RenderConfig } from '../../../../../../Components/VideoEditor/components/MediaLane/MediaTrack'
+import MediaItemLabel from '../../../../../../Components/VideoEditor/components/MediaLane/MediaItems/MediaItemLabel'
 
 type Props = {
     item: MediaItem<MediaItemType>

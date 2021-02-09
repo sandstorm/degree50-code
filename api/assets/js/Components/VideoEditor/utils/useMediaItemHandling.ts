@@ -12,20 +12,6 @@ export const getNewMediaItemStartAndEnd = (currentTime: number, duration: number
     return { start, end }
 }
 
-const checkConflictWithPrevItem = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
-    const previous = mediaItems[index - 1]
-    return (previous && item.startTime < previous.endTime) || !item.check
-}
-
-const checkConflictWithNextItem = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
-    const next = mediaItems[index + 1]
-    return (next && item.endTime > next.startTime) || !item.check
-}
-
-const checkConflict = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index: number) => {
-    return checkConflictWithPrevItem(mediaItems, item, index) || checkConflictWithNextItem(mediaItems, item, index)
-}
-
 // TODO refactor this and:
 // * Remove crud operations and move the into editor store slices where necessary/possible
 // * Make sure that all editors use store store slices
@@ -36,20 +22,14 @@ const checkConflict = (mediaItems: MediaItem<any>[], item: MediaItem<any>, index
 // is rather going to upload subtitle files themselves.
 
 export const useMediaItemHandling = <T>({
-    currentTime,
-    history,
     mediaItems,
     setMediaItems,
     updateCallback,
     updateCondition,
-    timelineDuration,
     worker,
 }: {
-    currentTime: number
-    history?: Array<MediaItem<T>[]>
     mediaItems: Array<MediaItem<T>>
     setMediaItems: (mediaItems: Array<T>) => void
-    timelineDuration: number
     updateCallback: () => void
     updateCondition: boolean
     worker?: Worker
@@ -61,7 +41,7 @@ export const useMediaItemHandling = <T>({
     const [currentTimeForMediaItems, setCurrentTimeForMediaItems] = useState(0)
 
     // Only way to update all mediaItems
-    const updateMediaItems = (items: Array<MediaItem<T>>, saveToHistory = true, force = false) => {
+    const updateMediaItems = (items: Array<MediaItem<T>>, force = false) => {
         const notEqualToPreviousItems = !isEqual(items, mediaItems)
 
         if (force || (updateCondition && notEqualToPreviousItems)) {
@@ -69,28 +49,22 @@ export const useMediaItemHandling = <T>({
 
             // This makes sure that all properties from the original item will be written back to the store
             // E.g. the 'url' property of a cut
-            const convertedToOriginalStructure = updatedItems.map((item: MediaItem<T>) => {
-                const { originalData, ...rest } = item
+            const convertedToOriginalStructure = updatedItems.map(
+                (item: MediaItem<T>): T => {
+                    const { originalData, ...rest } = item
 
-                return {
-                    ...originalData,
-                    ...rest,
+                    return {
+                        ...originalData,
+                        ...rest,
+                    }
                 }
-            })
+            )
 
             setMediaItems(convertedToOriginalStructure)
             updateCallback()
 
             if (worker) {
                 worker.postMessage(items)
-            }
-
-            // Save 100 mediaItems to history
-            if (history && saveToHistory) {
-                if (history.length >= 100) {
-                    history.shift()
-                }
-                history.push(items.map((item) => item.clone))
             }
         }
     }
@@ -123,17 +97,6 @@ export const useMediaItemHandling = <T>({
     // Copy all mediaItems
     const copyMediaItems = useCallback(() => mediaItems.map((item) => item.clone), [mediaItems])
 
-    // Check if mediaItem is legal
-    // true == illegal, false == legal
-    const checkMediaItem = useCallback(
-        (item: MediaItem<T>): boolean => {
-            const index = hasMediaItem(item)
-            if (index < 0) return false
-            return checkConflict(mediaItems, item, index)
-        },
-        [hasMediaItem, mediaItems]
-    )
-
     /**
      * @deprecated
      * update a single mediaItem
@@ -158,34 +121,14 @@ export const useMediaItemHandling = <T>({
         [hasMediaItem, copyMediaItems, updateMediaItems]
     )
 
-    /**
-     * @deprecated
-     */
-    const appendMediaItem = useCallback(() => {
-        const { start, end } = getNewMediaItemStartAndEnd(currentTime, timelineDuration)
-
-        const newItem = new MediaItem({
-            start,
-            end,
-            text: t(''),
-            memo: '',
-            originalData: {} as T,
-            lane: 0,
-        })
-
-        updateMediaItems([...mediaItems, newItem])
-    }, [updateMediaItems, mediaItems])
-
     return {
         currentIndex,
         currentTimeForMediaItems,
         setCurrentIndex,
         setCurrentTimeForMediaItems,
-        appendMediaItem,
         updateMediaItem,
         hasMediaItem,
         updateMediaItems,
-        checkMediaItem,
         copyMediaItems,
     }
 }

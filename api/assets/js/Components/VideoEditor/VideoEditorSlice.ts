@@ -81,20 +81,15 @@ const selectSolution = createSelector(
         dataSelectors.selectDenormalizedCurrentAnnotations,
         dataSelectors.selectDenormalizedCurrentVideoCodes,
         dataSelectors.selectDenormalizedCurrentCutList,
-        dataSelectors.videoCodePrototypes.selectVideoCodePoolList,
+        dataSelectors.selectPrototypesList,
     ],
     (annotations, videoCodes, cuts, videoCodePool) => ({
         annotations,
         videoCodes,
-        customVideoCodesPool: videoCodePool,
         cutList: cuts,
+        customVideoCodesPool: videoCodePool,
     })
 )
-
-// FIXME
-const selectAllSolutions = createSelector([selectSolution], (currentSolution) => {
-    return [currentSolution]
-})
 
 export const selectors = {
     data: dataSelectors,
@@ -106,5 +101,4 @@ export const selectors = {
     selectActiveVideoCodeIds,
     selectActiveCutIds,
     selectSolution,
-    selectAllSolutions,
 }

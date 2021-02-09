@@ -1,18 +1,19 @@
-import { SubtitleFromAPI } from 'Components/SubtitleEditor/SubtitlesSlice'
-import { schema, normalize, Schema, NormalizedSchema } from 'normalizr'
+import { schema, normalize, NormalizedSchema } from 'normalizr'
 import { VideoCodePrototype, Annotation, Cut, SolutionId, Solution, VideoCode } from 'Components/VideoEditor/types'
 import { generate } from 'shortid'
-import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { AnnotationId } from 'Components/VideoEditor/AnnotationsContext/AnnotationsSlice'
 import { VideoCodeId } from 'Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
 import { CutId } from 'Components/VideoEditor/CuttingContext/CuttingSlice'
+import { VideoCodePrototypeId } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
+import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
+export const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
     entities.map((e) => ({ ...e, id: e?.id ?? generate() }))
 
 export const ANNOTATIONS_API_PROPERTY = 'annotations'
 export const VIDEO_CODES_API_PROPERTY = 'videoCodes'
 export const CUTLIST_API_PROPERTY = 'cutList'
+export const VIDEO_CODE_PROTOTYPE_API_PROPERTY = 'customVideoCodesPool'
 
 const addMissingIdProcessStrategy = (value: any) => {
     if (!value.id) {
@@ -37,12 +38,19 @@ export const cutListSchema = new schema.Entity(
     { processStrategy: addMissingIdProcessStrategy }
 )
 
-// TODO probably add prototypes as well
+const videoCodePrototypeChildren = new schema.Entity(VIDEO_CODE_PROTOTYPE_API_PROPERTY, {
+    processStrategy: addMissingIdProcessStrategy,
+})
+export const videoCodePrototypeSchema = new schema.Entity(VIDEO_CODE_PROTOTYPE_API_PROPERTY, {
+    videoCodes: [videoCodePrototypeChildren],
+})
+
 const solutionSchema = new schema.Entity('solutions', {
     solution: {
         annotations: [annotationSchema],
         videoCodes: [videoCodesSchema],
         cutList: [cutListSchema],
+        customVideoCodesPool: [videoCodePrototypeSchema],
     },
 })
 
@@ -56,6 +64,7 @@ type NormalizedEntities = {
     videoCodes: Record<VideoCodeId, VideoCode>
     cutList: Record<CutId, Cut>
     solutions: Record<SolutionId, Solution>
+    customVideoCodesPool: Record<VideoCodePrototypeId, VideoCodePrototype>
 }
 
 type NormalizedResult = {
@@ -63,56 +72,18 @@ type NormalizedResult = {
     previousSolutions: SolutionId[]
 }
 
+// TODO add solution typing
 export const normalizeAPIResponse = (
     solution: any,
-    config: any
+    config: ConfigState
 ): NormalizedSchema<NormalizedEntities, NormalizedResult> => {
-    const preparedData = {
-        previousSolutions: config.previousSolutions,
-        currentSolution: solution,
-    }
+    const videoCodePrototypesFromConfig = config.videoCodesPool
 
-    return normalize(preparedData, preparedAPIResponseSchema)
-}
+    const customVideoCodesPool: VideoCodePrototype[] =
+        solution.solution.customVideoCodesPool ?? videoCodePrototypesFromConfig
 
-// TODO
-// Old code using a custom normalize function - might be useful to refactor this
-// in the future to also use the normalizr variant. (however it is currently not super important)
-
-/**
- * Normalizes a list of entities into an object with a 'byId'-lookup property of the entities,
- * and an 'ids' property with all string ids of the entities.
- *
- * If an entity does not have an id we generate a new unique id with shortid.
- */
-export const normalizeDataOld = <E extends { id: string }>(entities: Array<E>) =>
-    entities.reduce(
-        (acc: { byId: { [id: string]: E }; allIds: string[] }, entity: E) => {
-            return {
-                byId: {
-                    ...acc.byId,
-                    [entity.id]: {
-                        ...entity,
-                    },
-                },
-                allIds: [...acc.allIds, entity.id],
-            }
-        },
-        { byId: {}, allIds: [] }
-    )
-
-export const prepareVideoCodePoolFromSolution = (solution: any, config?: ConfigState) => {
-    const customVideoCodePool: VideoCodePrototype[] = (() => {
-        if (solution.customVideoCodesPool && solution.customVideoCodesPool.length > 0) {
-            return solution.customVideoCodesPool
-        } else if (config?.videoCodesPool) {
-            return config.videoCodesPool
-        } else {
-            return []
-        }
-    })()
-
-    const flattenedVideoCodePool: VideoCodePrototype[] = customVideoCodePool.reduce(
+    // Flatten so that children are also listed
+    const flattenedVideoCodePool: VideoCodePrototype[] = customVideoCodesPool.reduce(
         (acc: VideoCodePrototype[], code) => {
             const children = code.videoCodes
             const childrenWithParentId = children.map((c) => ({
@@ -124,10 +95,17 @@ export const prepareVideoCodePoolFromSolution = (solution: any, config?: ConfigS
         },
         []
     )
-    return normalizeDataOld(addIdsToEntities(flattenedVideoCodePool))
-}
 
-export const prepareSubtitlesFromSolution = (solution: any) => {
-    const subtitles: SubtitleFromAPI[] = solution?.subtitles ?? []
-    return normalizeDataOld(addIdsToEntities(subtitles))
+    const preparedData = {
+        previousSolutions: config.previousSolutions,
+        currentSolution: {
+            ...solution,
+            solution: {
+                ...solution.solution,
+                customVideoCodesPool: flattenedVideoCodePool,
+            },
+        },
+    }
+
+    return normalize(preparedData, preparedAPIResponseSchema)
 }

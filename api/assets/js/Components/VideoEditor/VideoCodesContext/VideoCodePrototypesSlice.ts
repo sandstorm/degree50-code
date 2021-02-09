@@ -2,36 +2,46 @@
 // STATE //
 ///////////
 
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { set } from 'immutable'
-import { normalizeDataOld } from 'StimulusControllers/normalizeData'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { set, removeIn } from 'immutable'
+import { videoCodePrototypeSchema } from 'StimulusControllers/normalizeData'
 import { VideoCodePrototype } from '../types'
+import { normalize } from 'normalizr'
 
 export type VideoCodePrototypeId = string
 
 export type VideoCodePrototypesState = {
     byId: Record<VideoCodePrototypeId, VideoCodePrototype>
-    allIds: VideoCodePrototypeId[]
 }
 
 export const initialState: VideoCodePrototypesState = {
     byId: {},
-    allIds: [],
 }
 
 /////////////
 // REDUCER //
 /////////////
 
-export const VideoCodePrototypesSlice = createSlice({
+export const videoCodePrototypesSlice = createSlice({
     name: 'videoCodePrototypes',
     initialState,
     reducers: {
-        init: (_, action: PayloadAction<VideoCodePrototypesState>) => {
-            return action.payload
+        init: (state, action: PayloadAction<VideoCodePrototypesState>) => {
+            return {
+                ...state,
+                ...action.payload,
+            }
         },
-        set: (_, action: PayloadAction<VideoCodePrototype[]>) => {
-            return normalizeDataOld(action.payload)
+        set: (state, action: PayloadAction<VideoCodePrototype[]>) => {
+            const normalized = normalize(action.payload, [videoCodePrototypeSchema])
+
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    ...normalized.entities.customVideoCodesPool,
+                },
+            }
         },
         append: (
             state: VideoCodePrototypesState,
@@ -43,7 +53,6 @@ export const VideoCodePrototypesSlice = createSlice({
                     ...state.byId,
                     [newPrototype.id]: newPrototype,
                 },
-                allIds: [...state.allIds, newPrototype.id],
             }
         },
         update: (
@@ -57,13 +66,21 @@ export const VideoCodePrototypesSlice = createSlice({
                 byId: set(state.byId, transientVideoCodePrototype.id, transientVideoCodePrototype),
             }
         },
-        remove: (state: VideoCodePrototypesState, action: PayloadAction<string>): VideoCodePrototypesState => {
-            const elementId = action.payload
-            const allElements = state.allIds.map((id) => state.byId[id])
+        remove: (
+            state: VideoCodePrototypesState,
+            action: PayloadAction<{
+                prototypeId: VideoCodePrototypeId
+                prototypeState: Record<VideoCodePrototypeId, VideoCodePrototype> // (needed inside SolutionSlice extraReducer! - therefore we keep it in here to keep the action type identical)
+            }>
+        ): VideoCodePrototypesState => {
+            const { prototypeId } = action.payload
+            const childIds = state.byId[prototypeId].videoCodes
 
-            const updatedPrototypes = allElements.filter((e) => e.id !== elementId && e.parentId !== elementId)
+            const newById = [prototypeId, ...childIds].reduce((acc, id) => {
+                return removeIn(acc, [id])
+            }, state.byId)
 
-            return normalizeDataOld(updatedPrototypes)
+            return { byId: newById }
         },
     },
 })
@@ -75,28 +92,10 @@ export const VideoCodePrototypesSlice = createSlice({
 export type VideoCodePoolStateSlice = { videoEditor: { data: { videoCodePrototypes: VideoCodePrototypesState } } }
 
 const selectById = (state: VideoCodePoolStateSlice) => state.videoEditor.data.videoCodePrototypes.byId
-const selectAllIds = (state: VideoCodePoolStateSlice) => state.videoEditor.data.videoCodePrototypes.allIds
 const selectPrototypeById = (state: VideoCodePoolStateSlice, props: { videoCodeId: VideoCodePrototypeId }) =>
     state.videoEditor.data.videoCodePrototypes.byId[props.videoCodeId]
-const selectDenormalizedPrototypes = (state: VideoCodePoolStateSlice) =>
-    state.videoEditor.data.videoCodePrototypes.allIds.map((id) => state.videoEditor.data.videoCodePrototypes.byId[id])
-
-const selectPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
-    return codes.reduce((acc: VideoCodePrototype[], code) => {
-        if (code.parentId) {
-            return acc
-        }
-
-        const childCodes = codes.filter((c) => c.parentId === code.id)
-
-        return [...acc, { ...code, videoCodes: childCodes }]
-    }, [])
-})
 
 export const selectors = {
     selectById,
-    selectAllIds,
     selectPrototypeById,
-    selectDenormalizedVideoCodes: selectDenormalizedPrototypes,
-    selectVideoCodePoolList: selectPrototypesList,
 }

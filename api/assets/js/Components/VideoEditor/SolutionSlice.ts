@@ -3,7 +3,7 @@
 ///////////
 
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
-import { SolutionId, Solution, Annotation, VideoCode, Cut } from './types'
+import { SolutionId, Solution, Annotation, VideoCode, Cut, VideoCodePrototype } from './types'
 import { annotationsSlice, AnnotationId } from './AnnotationsContext/AnnotationsSlice'
 import { setIn } from 'immutable'
 import { videoCodesSlice, VideoCodeId } from './VideoCodesContext/VideoCodesSlice'
@@ -11,8 +11,10 @@ import {
     ANNOTATIONS_API_PROPERTY,
     VIDEO_CODES_API_PROPERTY,
     CUTLIST_API_PROPERTY,
+    VIDEO_CODE_PROTOTYPE_API_PROPERTY,
 } from 'StimulusControllers/normalizeData'
 import { CutId, cuttingSlice } from './CuttingContext/CuttingSlice'
+import { videoCodePrototypesSlice, VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
 
 export type SolutionState = {
     byId: Record<SolutionId, Solution>
@@ -129,6 +131,7 @@ export const SolutionSlice = createSlice({
 
             return setIn(state, ['byId', state.current, 'solution', VIDEO_CODES_API_PROPERTY], updatedVideoCodes)
         },
+        // TODO see prototypes
         [cuttingSlice.actions.append.type]: (state, action: PayloadAction<Cut>) => {
             if (!state.current) {
                 return state
@@ -149,6 +152,40 @@ export const SolutionSlice = createSlice({
 
             return setIn(state, ['byId', state.current, 'solution', CUTLIST_API_PROPERTY], updatedCuts)
         },
+        [videoCodePrototypesSlice.actions.append.type]: (state, action: PayloadAction<VideoCodePrototype>) => {
+            if (!state.current) {
+                return state
+            }
+
+            const currentIds = state.byId[state.current].solution.customVideoCodesPool
+            const updatedPrototypes = [...currentIds, action.payload.id]
+
+            return setIn(
+                state,
+                ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY],
+                updatedPrototypes
+            )
+        },
+        [videoCodePrototypesSlice.actions.remove.type]: (
+            state,
+            action: PayloadAction<{
+                prototypeId: VideoCodePrototypeId
+                prototypeState: Record<VideoCodePrototypeId, VideoCodePrototype>
+            }>
+        ) => {
+            if (!state.current) {
+                return state
+            }
+
+            const { prototypeId, prototypeState } = action.payload
+            const childIds = prototypeState[prototypeId].videoCodes
+            const allIdsToRemove = [prototypeId, ...childIds]
+
+            const currentIds = state.byId[state.current].solution.customVideoCodesPool
+            const updated = currentIds.filter((id) => !allIdsToRemove.includes(id))
+
+            return setIn(state, ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY], updated)
+        },
     },
 })
 
@@ -162,6 +199,10 @@ const selectById = (state: SolutionStateSlice) => state.videoEditor.data.solutio
 const selectCurrentId = (state: SolutionStateSlice) => state.videoEditor.data.solutions.current
 const selectPreviousIds = (state: SolutionStateSlice) => state.videoEditor.data.solutions.previous
 
+const selectPreviousSolutions = createSelector([selectById, selectPreviousIds], (byId, ids) =>
+    ids.map((id) => byId[id])
+)
+
 const selectCurrentAnnotationIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
     currentId ? byId[currentId].solution.annotations : []
 )
@@ -174,11 +215,17 @@ const selectCurrentCutIds = createSelector([selectById, selectCurrentId], (byId,
     currentId ? byId[currentId].solution.cutList : []
 )
 
+const selectCurrentPrototypeIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
+    currentId ? byId[currentId].solution.customVideoCodesPool : []
+)
+
 export const selectors = {
     selectById,
     selectCurrentIds: selectCurrentId,
     selectPreviousIds,
+    selectPreviousSolutions,
     selectCurrentAnnotationIds,
     selectCurrentVideoCodeIds,
     selectCurrentCutIds,
+    selectCurrentPrototypeIds,
 }

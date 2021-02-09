@@ -88,7 +88,7 @@ describe('useMediaItemHandling()', () => {
             it('should not be called when new items are equal to previous items', () => {
                 const { result } = renderHook(() => useMediaItemHandling(baseConfig))
 
-                act(() => result.current.updateMediaItems(baseConfig.mediaItems, true, false))
+                act(() => result.current.updateMediaItems(baseConfig.mediaItems, false))
                 expect(baseConfig.setMediaItems).not.toHaveBeenCalled()
                 expect(baseConfig.updateCallback).not.toHaveBeenCalled()
             })
@@ -116,7 +116,6 @@ describe('useMediaItemHandling()', () => {
                                 lane: 0,
                             }),
                         ],
-                        true,
                         true
                     )
                 )
@@ -148,7 +147,6 @@ describe('useMediaItemHandling()', () => {
                                 lane: 0,
                             }),
                         ],
-                        true,
                         false
                     )
                 )
@@ -181,7 +179,6 @@ describe('useMediaItemHandling()', () => {
                                 lane: 0,
                             }),
                         ],
-                        true,
                         false
                     )
                 )
@@ -212,10 +209,6 @@ describe('useMediaItemHandling()', () => {
 
         describe('worker', () => {
             // TODO test worker.postMessage()
-        })
-
-        describe('history', () => {
-            // TODO test history.push etc.
         })
     })
 
@@ -258,141 +251,6 @@ describe('useMediaItemHandling()', () => {
 
             // Check for different references
             expect(copies[0]).not.toBe(baseConfig.mediaItems[0])
-        })
-    })
-
-    describe('checkMediaItem()', () => {
-        it('should return false (legal) if item is not part of mediaItems', () => {
-            const { result } = renderHook(() => useMediaItemHandling(baseConfig))
-
-            expect(
-                result.current.checkMediaItem(
-                    new MediaItem({
-                        start: '00:00:00.000',
-                        end: '00:00:05.000',
-                        text: 'Test',
-                        memo: 'Some test memo...',
-                        originalData: {
-                            start: '00:00:00.000',
-                            end: '00:00:05.000',
-                            text: 'Test',
-                            memo: 'Some test memo...',
-                            lane: 0,
-                            otherProperty: 'something else',
-                        },
-                        lane: 0,
-                    })
-                )
-            ).toBe(false)
-        })
-
-        it('should return false (legal) if item constraints are met and it does not overlap with previous/next item', () => {
-            const { result } = renderHook(() =>
-                useMediaItemHandling({
-                    ...baseConfig,
-                    mediaItems: [
-                        itemA,
-                        new MediaItem({
-                            start: '00:00:06.000',
-                            end: '00:00:10.000',
-                            text: 'Test',
-                            memo: 'Some test memo...',
-                            originalData: {
-                                start: '00:00:06.000',
-                                end: '00:00:10.000',
-                                text: 'Test',
-                                memo: 'Some test memo...',
-                                lane: 0,
-                                otherProperty: 'something else',
-                            },
-                            lane: 0,
-                        }),
-                    ],
-                })
-            )
-
-            expect(result.current.checkMediaItem(itemA)).toBe(false)
-        })
-
-        it('should return true (illegal) if item constraints are not met', () => {
-            const itemB = new MediaItem({
-                start: '00:00:10.000', // end time before start time => illegal
-                end: '00:00:08.000',
-                text: 'Test',
-                memo: 'Some test memo...',
-                originalData: {
-                    start: '00:00:02.000',
-                    end: '00:00:10.000',
-                    text: 'Test',
-                    memo: 'Some test memo...',
-                    lane: 0,
-                    otherProperty: 'something else',
-                },
-                lane: 0,
-            })
-
-            const { result } = renderHook(() =>
-                useMediaItemHandling({
-                    ...baseConfig,
-                    mediaItems: [itemA, itemB],
-                })
-            )
-
-            expect(result.current.checkMediaItem(itemB)).toBe(true)
-        })
-
-        it('should return true (illegal) if item overlaps with previous item', () => {
-            const itemB = new MediaItem({
-                start: '00:00:02.000', // end time before start time => illegal
-                end: '00:00:08.000',
-                text: 'Test',
-                memo: 'Some test memo...',
-                originalData: {
-                    start: '00:00:02.000',
-                    end: '00:00:10.000',
-                    text: 'Test',
-                    memo: 'Some test memo...',
-                    lane: 0,
-                    otherProperty: 'something else',
-                },
-                lane: 0,
-            })
-
-            const { result } = renderHook(() =>
-                useMediaItemHandling({
-                    ...baseConfig,
-                    mediaItems: [itemA, itemB],
-                })
-            )
-
-            expect(result.current.checkMediaItem(itemB)).toBe(true)
-        })
-
-        it('should return true (illegal) if item overlaps with following item', () => {
-            const itemB = new MediaItem({
-                start: '00:00:02.000', // end time before start time => illegal
-                end: '00:00:08.000',
-                text: 'Test',
-                memo: 'Some test memo...',
-                originalData: {
-                    start: '00:00:02.000',
-                    end: '00:00:10.000',
-                    text: 'Test',
-                    memo: 'Some test memo...',
-                    lane: 0,
-                    otherProperty: 'something else',
-                },
-                lane: 0,
-            })
-
-            const { result } = renderHook(() =>
-                useMediaItemHandling({
-                    ...baseConfig,
-                    mediaItems: [itemA, itemB],
-                })
-            )
-
-            expect(result.current.checkMediaItem(itemA)).toBe(true)
         })
     })
 
@@ -447,35 +305,5 @@ describe('useMediaItemHandling()', () => {
         })
 
         it.todo('it should call notify() if cloned item is somehow illegal')
-    })
-
-    describe('addMediaItem()', () => {
-        it('should place item at cursor', () => {
-            const { result } = renderHook(() => useMediaItemHandling(baseConfig))
-
-            act(() => {
-                result.current.appendMediaItem()
-            })
-
-            expect(setMediaItemsSpy).toHaveBeenCalledWith([
-                {
-                    start: '00:00:00.000',
-                    end: '00:00:05.000',
-                    text: 'Test',
-                    memo: 'Some test memo...',
-                    lane: 0,
-                    otherProperty: 'something else',
-                    color: null,
-                },
-                {
-                    start: '00:00:00.000',
-                    end: '00:00:01.000',
-                    text: '',
-                    memo: '',
-                    lane: 0,
-                    color: null,
-                },
-            ])
-        })
     })
 })
