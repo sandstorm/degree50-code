@@ -1,8 +1,9 @@
-import { selectors, VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
+import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import Radio from './Radio'
 import RadioGroup from './RadioGroup'
+import { selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 
 type OwnProps = {
     defaultPrototypeId: string
@@ -10,8 +11,8 @@ type OwnProps = {
     selectedPrototypeId?: string | null
 }
 
-const mapStateToProps = (state: VideoCodePoolStateSlice) => ({
-    prototoypes: selectors.selectDenormalizedVideoCodes(state),
+const mapStateToProps = (state: VideoEditorState) => ({
+    prototoypes: selectors.data.selectDenormalizedPrototypes(state),
 })
 
 const mapDispatchToProps = {}

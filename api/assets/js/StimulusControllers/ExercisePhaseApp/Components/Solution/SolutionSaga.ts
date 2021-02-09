@@ -7,8 +7,7 @@ import { selectors as configSelectors } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { prepareVideoCodePoolFromSolution, normalizeAPIResponse } from 'StimulusControllers/normalizeData'
-import { VideoListsState } from 'Components/VideoEditor/types'
+import { normalizeAPIResponse } from 'StimulusControllers/normalizeData'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -66,15 +65,17 @@ function* handleMessages(channel: EventChannel<unknown>) {
             yield put(setCurrentEditorId(currentEditor))
 
             // set solution
-            const solution: VideoListsState = eventData.solution
+            const solution = eventData.solution
 
-            const normalizedAPIResponse = normalizeAPIResponse(solution, {})
+            const currentConfig = configSelectors.selectConfig(yield select())
 
-            const normalizedCodePool = prepareVideoCodePoolFromSolution(solution)
+            const normalizedAPIResponse = normalizeAPIResponse(solution, currentConfig)
 
             yield put(actions.data.annotations.init({ byId: normalizedAPIResponse.entities.annotations }))
             yield put(actions.data.videoCodes.init({ byId: normalizedAPIResponse.entities.videoCodes }))
-            yield put(actions.data.videoCodePrototypes.init(normalizedCodePool))
+            yield put(
+                actions.data.videoCodePrototypes.init({ byId: normalizedAPIResponse.entities.customVideoCodesPool })
+            )
             yield put(actions.data.cuts.init({ byId: normalizedAPIResponse.entities.cutList }))
         }
     } finally {

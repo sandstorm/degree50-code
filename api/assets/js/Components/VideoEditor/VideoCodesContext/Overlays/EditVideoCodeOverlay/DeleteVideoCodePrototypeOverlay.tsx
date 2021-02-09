@@ -8,6 +8,7 @@ import Button from 'Components/Button/Button'
 
 const mapStateToProps = (state: VideoEditorState) => ({
     currentlyEditedElementId: selectors.overlay.currentlyEditedElementId(state),
+    videoCodePrototypesById: selectors.data.videoCodePrototypes.selectById(state),
 })
 
 const mapDispatchToProps = {
@@ -25,7 +26,10 @@ const DeleteVideoCodePrototypeOverlay: FC<Props> = (props) => {
 
     const handleRemove = () => {
         if (props.currentlyEditedElementId !== undefined) {
-            props.removeVideoCodePrototype(props.currentlyEditedElementId)
+            props.removeVideoCodePrototype({
+                prototypeId: props.currentlyEditedElementId,
+                prototypeState: props.videoCodePrototypesById,
+            })
             props.syncSolution()
         }
         close()

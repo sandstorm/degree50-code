@@ -66,7 +66,6 @@
 @import 'Composites/VideoEditor/AddItemButton';
 @import 'Composites/VideoEditor/Menu';
 @import 'Composites/VideoEditor/InteractionArea';
-@import 'Composites/VideoEditor/MediaItems';
 @import 'Composites/VideoEditor/MediaItemList';
 @import 'Composites/VideoEditor/MediaLane';
 @import 'Composites/VideoEditor/MediaLaneContainer';
@@ -80,3 +79,4 @@
 @import 'Composites/VideoEditor/VideoEditorToolbar';
 
 @import '../js/Components/VideoEditor/components/MultiLane/MultiLane';
+@import '../js/Components/VideoEditor/components/MediaLane/MediaItems/MediaItems.scss';

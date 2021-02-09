@@ -64,6 +64,7 @@ export const { actions } = configSlice
 export type ConfigStateSlice = { config: ConfigState }
 
 const selectConfig = (state: ConfigStateSlice) => state.config
+const selectPhaseType = (state: ConfigStateSlice) => state.config.type
 const selectUserId = (state: ConfigStateSlice) => state.config.userId
 const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 const selectVideos = (state: ConfigStateSlice) => state.config.videos
@@ -102,6 +103,7 @@ export const selectAvailableComponentIds = createSelector(
 
 export const selectors = {
     selectConfig,
+    selectPhaseType,
     selectUserId,
     selectReadOnly,
     selectVideos,

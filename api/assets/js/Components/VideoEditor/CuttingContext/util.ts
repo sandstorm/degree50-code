@@ -5,11 +5,8 @@ import { d2t, t2d } from 'duration-time-conversion'
 
 import { Cut, CutList, MediaItem } from '../types'
 import { notify } from '../utils'
-import { useMediaItemHandling, getNewMediaItemStartAndEnd } from '../utils/useMediaItemHandling'
+import { useMediaItemHandling } from '../utils/useMediaItemHandling'
 import { Handle } from '../components/MediaLane/MediaItems/types'
-import { generate } from 'shortid'
-
-// TODO refactor this file and split into multiple self contained files, e.g. 'useCuttingMediaItemHandling.ts'
 
 /**
  * Default volume value (100 is max)
@@ -33,19 +30,14 @@ export const useVolume = () => {
  * Specialized media item handling for cuts.
  */
 export const useCuttingMediaItemHandling = ({
-    currentTime,
     mediaItems,
-    originalVideoUrl,
     setCutList,
-    timelineDuration,
     updateCallback,
     updateCondition,
 }: {
-    currentTime: number
     mediaItems: Array<MediaItem<Cut>>
     originalVideoUrl?: string
     setCutList: (mediaItems: Array<Cut>) => void
-    timelineDuration: number
     updateCallback: () => void
     updateCondition: boolean
 }) => {
@@ -55,14 +47,11 @@ export const useCuttingMediaItemHandling = ({
         setCurrentIndex,
         setCurrentTimeForMediaItems,
         updateMediaItems,
-        checkMediaItem,
         hasMediaItem,
         copyMediaItems,
     } = useMediaItemHandling<Cut>({
-        currentTime,
         mediaItems,
         setMediaItems: setCutList,
-        timelineDuration,
         updateCallback,
         updateCondition,
     })
@@ -119,7 +108,7 @@ export const useCuttingMediaItemHandling = ({
             Object.assign(clone, newValues)
 
             if (clone.check) {
-                updateMediaItems([...copiedItems.slice(0, index), clone, ...copiedItems.slice(index + 1)], true, false)
+                updateMediaItems([...copiedItems.slice(0, index), clone, ...copiedItems.slice(index + 1)], false)
             } else {
                 notify(t('parameter-error'), 'error')
             }
@@ -130,14 +119,13 @@ export const useCuttingMediaItemHandling = ({
     // Run only once
     useEffect(() => {
         // Hydrate store on initial render
-        updateMediaItems(mediaItems, true, true)
+        updateMediaItems(mediaItems, true)
     }, [])
 
     return {
         currentIndex,
 
         setCurrentIndex,
-        checkMediaItem,
         copyMediaItems,
         hasMediaItem,
         setCurrentTimeForMediaItems,

@@ -9,16 +9,15 @@ import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
-import { VideoCodePoolStateSlice } from '../VideoCodePrototypesSlice'
 
-const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice) => {
+const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
     const videoCodesById = selectors.data.videoCodes.selectById(state)
     const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
 
     return {
         videoCode,
-        prototoypes: selectors.data.videoCodePrototypes.selectDenormalizedVideoCodes(state),
+        prototoypes: selectors.data.selectDenormalizedPrototypes(state),
     }
 }
 

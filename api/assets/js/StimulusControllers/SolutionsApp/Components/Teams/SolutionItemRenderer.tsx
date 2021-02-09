@@ -1,13 +1,13 @@
 import React from 'react'
 import { SolutionFilterType } from '../../SolutionsApp'
-import { MediaItem } from '../../../../Components/VideoEditor/types'
+import { Annotation, VideoCode, Cut } from '../../../../Components/VideoEditor/types'
 import { TabsTypesEnum } from '../../../../types'
 import { RenderConfig } from '../../../../Components/VideoEditor/components/MediaLane/MediaTrack'
-import ReadOnlyMediaLane from 'Components/VideoEditor/components/ReadOnlyMediaLane'
+import ReadOnlyMediaLane from 'StimulusControllers/SolutionsApp/Components/Teams/ReadOnlyMediaLane.tsx'
 
 type Props = {
     solutionFilter: SolutionFilterType
-    mediaItems: Array<MediaItem<any>>
+    entities: Array<Annotation | VideoCode | Cut>
     updateCurrentTime: (time: number) => void
     renderConfig: RenderConfig
     showVideoCodesModal?: () => void
@@ -15,7 +15,7 @@ type Props = {
 
 const SolutionItemRenderer: React.FC<Props> = ({
     solutionFilter,
-    mediaItems,
+    entities,
     updateCurrentTime,
     renderConfig,
     showVideoCodesModal,
@@ -24,7 +24,7 @@ const SolutionItemRenderer: React.FC<Props> = ({
         <div className={'team__solution'}>
             <div className={'team__solution-headline'}>
                 <h5>
-                    {solutionFilter.label} (Anzahl: {mediaItems.length})
+                    {solutionFilter.label} (Anzahl: {entities.length})
                 </h5>
                 {showVideoCodesModal ? (
                     <button onClick={showVideoCodesModal} className={'btn btn-primary btn-sm'}>
@@ -32,10 +32,10 @@ const SolutionItemRenderer: React.FC<Props> = ({
                     </button>
                 ) : null}
             </div>
-            {mediaItems.length > 0 ? (
+            {entities.length > 0 ? (
                 <ReadOnlyMediaLane
                     updateCurrentTime={updateCurrentTime}
-                    mediaItems={mediaItems}
+                    entities={entities}
                     showTextInMediaItems={solutionFilter.id === TabsTypesEnum.VIDEO_ANNOTATIONS}
                     renderConfig={renderConfig}
                 />

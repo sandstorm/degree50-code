@@ -12,16 +12,15 @@ import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
 import { VideoCode } from 'Components/VideoEditor/types'
-import { VideoCodePoolStateSlice } from '../VideoCodePrototypesSlice'
 import {
     ConfigStateSlice,
     selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState & VideoCodePoolStateSlice & ConfigStateSlice) => ({
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
     currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
     videos: configSelectors.selectVideos(state),
-    prototoypes: videoEditorSelectors.data.videoCodePrototypes.selectDenormalizedVideoCodes(state),
+    prototoypes: videoEditorSelectors.data.selectDenormalizedPrototypes(state),
 })
 
 const mapDispatchToProps = {

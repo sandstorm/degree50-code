@@ -2,7 +2,7 @@
 // STATE //
 ///////////
 
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
 import { annotationSchema } from 'StimulusControllers/normalizeData'
 import { Annotation } from '../types'

@@ -1,19 +1,34 @@
 import React, { useCallback } from 'react'
 import ReadOnlyMediaItems from './ReadOnyMediaItems'
-import { MediaItem, MediaItemType } from 'Components/VideoEditor/types'
+import { MediaItem, Annotation, VideoCode, Cut } from 'Components/VideoEditor/types'
 import { useDebouncedResizeObserver } from 'Components/VideoEditor/utils/useDebouncedResizeObserver'
-import MediaTrack, { RenderConfig } from '../MediaLane/MediaTrack'
-import { defaultMediaTrackConfig } from '../MediaLane/MediaTrack/helpers'
-import MediaTrackInteractionArea from '../MediaLane/MediaTrackInteractionArea'
+import MediaTrack, { RenderConfig } from '../../../../../Components/VideoEditor/components/MediaLane/MediaTrack'
+import { defaultMediaTrackConfig } from '../../../../../Components/VideoEditor/components/MediaLane/MediaTrack/helpers'
+import MediaTrackInteractionArea from '../../../../../Components/VideoEditor/components/MediaLane/MediaTrackInteractionArea'
+import { solveConflicts } from 'Components/VideoEditor/utils/solveItemConflicts'
 
 type Props = {
     updateCurrentTime: (time: number) => void
-    mediaItems: MediaItem<MediaItemType>[]
+    entities: Array<Annotation | VideoCode | Cut>
     showTextInMediaItems: boolean
     renderConfig: RenderConfig
 }
 
-const ReadOnlyMediaLane = ({ updateCurrentTime, mediaItems, showTextInMediaItems, renderConfig }: Props) => {
+const ReadOnlyMediaLane = ({ updateCurrentTime, entities, showTextInMediaItems, renderConfig }: Props) => {
+    const itemsFromAnnotations = entities.map(
+        (annotation) =>
+            new MediaItem({
+                start: annotation.start,
+                end: annotation.end,
+                text: annotation.text,
+                memo: annotation.memo,
+                originalData: annotation,
+                lane: 0,
+            })
+    )
+
+    const mediaItems = solveConflicts(itemsFromAnnotations)
+
     const rulerHeight = renderConfig.drawRuler ? defaultMediaTrackConfig.rulerHeight : 10
     const mediaTrackConfig = {
         ...defaultMediaTrackConfig,
