@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import PrototypeList from './PrototypeList'
-import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
+import { selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 
-const mapStateToProps = (state: VideoCodePoolStateSlice) => {
+const mapStateToProps = (state: VideoEditorState) => {
     return {
-        videoCodePrototypes: selectors.data.videoCodePrototypes.selectVideoCodePoolList(state),
+        videoCodePrototypes: selectors.data.selectPrototypesList(state),
     }
 }
 

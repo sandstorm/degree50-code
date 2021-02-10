@@ -157,7 +157,6 @@ describe('useCuttingMediaItemHandling()', () => {
                         lane: 0,
                     }),
                 ],
-                true,
                 false
             )
         })
@@ -196,7 +195,6 @@ describe('useCuttingMediaItemHandling()', () => {
                         lane: 0,
                     }),
                 ],
-                true,
                 false
             )
         })
@@ -235,7 +233,6 @@ describe('useCuttingMediaItemHandling()', () => {
                         lane: 0,
                     }),
                 ],
-                true,
                 false
             )
 
@@ -268,7 +265,6 @@ describe('useCuttingMediaItemHandling()', () => {
                         lane: 0,
                     }),
                 ],
-                true,
                 false
             )
         })

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReadOnlyMediaItem from './ReadOnlyMediaItem'
-import { MediaItem, MediaItemType } from '../../../types'
-import { RenderConfig } from '../../MediaLane/MediaTrack'
+import { MediaItem, MediaItemType } from '../../../../../../Components/VideoEditor/types'
+import { RenderConfig } from '../../../../../../Components/VideoEditor/components/MediaLane/MediaTrack'
 
 const renderItems = (
     mediaItems: MediaItem<MediaItemType>[],

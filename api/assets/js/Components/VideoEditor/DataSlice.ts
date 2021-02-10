@@ -6,13 +6,13 @@ import {
 } from './AnnotationsContext/AnnotationsSlice'
 import { cuttingSlice, CutsState, selectors as cutsSelectors } from './CuttingContext/CuttingSlice'
 import {
-    VideoCodePrototypesSlice,
+    videoCodePrototypesSlice,
     VideoCodePrototypesState,
-    selectors as videoCodePoolSelectors,
+    selectors as videoCodePrototypeSelectors,
 } from './VideoCodesContext/VideoCodePrototypesSlice'
 import { videoCodesSlice, VideoCodesState, selectors as videoCodeSelectors } from './VideoCodesContext/VideoCodesSlice'
 import { SolutionSlice, selectors as solutionSelectors, SolutionState } from './SolutionSlice'
-import { VideoCode, Annotation, Cut } from './types'
+import { VideoCodePrototype } from './types'
 
 export type DataState = {
     solutions: SolutionState
@@ -26,7 +26,7 @@ export default combineReducers({
     solutions: SolutionSlice.reducer,
     annotations: annotationsSlice.reducer,
     videoCodes: videoCodesSlice.reducer,
-    videoCodePrototypes: VideoCodePrototypesSlice.reducer,
+    videoCodePrototypes: videoCodePrototypesSlice.reducer,
     cuts: cuttingSlice.reducer,
 })
 
@@ -34,23 +34,28 @@ export const actions = {
     solutions: SolutionSlice.actions,
     annotations: annotationsSlice.actions,
     videoCodes: videoCodesSlice.actions,
-    videoCodePrototypes: VideoCodePrototypesSlice.actions,
+    videoCodePrototypes: videoCodePrototypesSlice.actions,
     cuts: cuttingSlice.actions,
 }
 
 const selectDenormalizedCurrentAnnotations = createSelector(
     [solutionSelectors.selectCurrentAnnotationIds, annotationSelectors.selectById],
-    (currentAnnotionIds, annotationsById) => currentAnnotionIds.map((id) => annotationsById[id])
+    (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
 const selectDenormalizedCurrentVideoCodes = createSelector(
     [solutionSelectors.selectCurrentVideoCodeIds, videoCodeSelectors.selectById],
-    (currentVideoCodeIds, videoCodesById) => currentVideoCodeIds.map((id) => videoCodesById[id])
+    (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
 const selectDenormalizedCurrentCutList = createSelector(
     [solutionSelectors.selectCurrentCutIds, cutsSelectors.selectById],
-    (currentCutIds, cutsById) => currentCutIds.map((id) => cutsById[id])
+    (currentIds, byId) => currentIds.map((id) => byId[id])
+)
+
+const selectDenormalizedPrototypes = createSelector(
+    [solutionSelectors.selectCurrentPrototypeIds, videoCodePrototypeSelectors.selectById],
+    (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
 const getEntitiesByStartTime = <T extends { id: string; start: string }>(
@@ -99,22 +104,59 @@ const selectCurrentCutIdsByStartTime = createSelector([selectCurrentCutListBySta
     cutList.map((cut) => cut.id)
 )
 
+const selectPreviousSolutionsWithAnnotations = createSelector(
+    [solutionSelectors.selectPreviousSolutions, annotationSelectors.selectById],
+    (previousSolutions, annotationsById) => {
+        return previousSolutions.map((solution) => ({
+            ...solution,
+            annotations: solution.solution.annotations.map((id) => annotationsById[id]),
+        }))
+    }
+)
+
+const selectPreviousSolutionsWithVideoCodes = createSelector(
+    [solutionSelectors.selectPreviousSolutions, videoCodeSelectors.selectById],
+    (previousSolutions, byId) => {
+        return previousSolutions.map((solution) => ({
+            ...solution,
+            videoCodes: solution.solution.annotations.map((id) => byId[id]),
+        }))
+    }
+)
+
+const selectPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
+    return codes.reduce((acc: VideoCodePrototype[], code) => {
+        if (code.parentId) {
+            return acc
+        }
+
+        const childCodes = codes.filter((c) => c.parentId === code.id)
+
+        return [...acc, { ...code, videoCodes: childCodes }]
+    }, [])
+})
+
 export const selectors = {
     solutions: solutionSelectors,
     annotations: annotationSelectors,
     videoCodes: videoCodeSelectors,
-    videoCodePrototypes: videoCodePoolSelectors,
+    videoCodePrototypes: videoCodePrototypeSelectors,
     cuts: cutsSelectors,
 
     selectDenormalizedCurrentAnnotations,
     selectCurrentAnnotationsByStartTime,
     selectCurrentAnnotationIdsSortedByStartTime,
+    selectPreviousSolutionsWithAnnotations,
 
     selectDenormalizedCurrentVideoCodes,
     selectCurrentVideoCodesByStartTime,
     selectCurrentVideoCodeIdsSortedByStartTime,
+    selectPreviousSolutionsWithVideoCodes,
 
     selectDenormalizedCurrentCutList,
     selectCurrentCutListByStartTime,
     selectCurrentCutIdsByStartTime,
+
+    selectDenormalizedPrototypes,
+    selectPrototypesList,
 }

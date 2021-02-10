@@ -16,10 +16,8 @@ import {
 type OwnProps = {
     mediaItems: MediaItem<any>[]
     updateMediaItem: (item: MediaItem<any>, updatedValues: Record<string, unknown>) => void // FIXME refine key
-    removeMediaItem: (id: string) => void
-    checkMediaItem: (item: MediaItem<any>) => boolean
     showTextInMediaItems?: boolean
-    amountOfLanes?: number
+    readOnly?: boolean
 }
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
@@ -38,18 +36,35 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 
 const MediaLane = (props: Props) => {
     const {
+        mediaItems,
         currentTime,
         updateMediaItem,
-        removeMediaItem,
-        mediaItems,
         setPlayPosition,
-        checkMediaItem,
         showTextInMediaItems = true,
-        amountOfLanes,
         mediaLaneRenderConfig,
         setRenderConfig,
     } = props
+
     const firstVideoDuration = props.videos[0].duration
+
+    const checkMediaItem = useCallback(() => {
+        // false means no conflict => item is legal
+        // true means conflict => item is illegal
+        //
+        // WHY: this hard coded check?
+        // We currently do not yet have defined conditions under which annotations
+        // are considered to be illegal.
+        // Because they may also overlap etc., we do not use the checkMediaItem() function
+        // provided by useMediaItemHandling().
+        return false
+    }, [])
+
+    const amountOfLanes = Math.max(
+        0,
+        ...mediaItems.map((item: MediaItem<any>) => {
+            return item.lane
+        })
+    )
 
     const { handleMediaLaneClick } = useMediaLaneClick(mediaLaneRenderConfig, setRenderConfig, setPlayPosition)
 
@@ -93,11 +108,11 @@ const MediaLane = (props: Props) => {
                     renderConfig={mediaLaneRenderConfig}
                     mediaItems={mediaItems}
                     updateMediaItem={handleMediaItemUpdate}
-                    removeMediaItem={removeMediaItem}
                     checkMediaItem={checkMediaItem}
                     amountOfLanes={amountOfLanes}
                     showTextInMediaItems={showTextInMediaItems}
                     height={MEDIA_LANE_HEIGHT - mediaTrackConfig.rulerHeight}
+                    readOnly={props.readOnly}
                 />
             </div>
         </>

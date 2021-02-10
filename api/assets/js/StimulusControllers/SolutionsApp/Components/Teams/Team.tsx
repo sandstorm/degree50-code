@@ -1,13 +1,12 @@
 import React from 'react'
 import { SolutionByTeam, SolutionFilterType } from '../../SolutionsApp'
 import { TabsTypesEnum } from '../../../../types'
-import { MediaItem } from 'Components/VideoEditor/types'
-import { solveConflicts } from 'Components/VideoEditor/utils/solveItemConflicts'
 import { useModalHook } from '../../../../Components/Modal/useModalHook'
 import VideoCodesList from './VideoCodesList'
 import { RenderConfig } from '../../../../Components/VideoEditor/components/MediaLane/MediaTrack'
 import SolutionItemRenderer from './SolutionItemRenderer'
 import VideoCutSolutionVideo from './VideoCutSolutionVideo'
+import { addIdsToEntities } from 'StimulusControllers/normalizeData'
 
 type TeamProps = {
     solution: SolutionByTeam
@@ -17,36 +16,10 @@ type TeamProps = {
 }
 
 const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTime }: TeamProps) => {
-    const itemsFromAnnotations = solveConflicts(
-        solution.solution.annotations.map(
-            (annotation) =>
-                new MediaItem({
-                    start: annotation.start,
-                    end: annotation.end,
-                    text: annotation.text,
-                    memo: annotation.memo,
-                    originalData: annotation,
-                    lane: 0,
-                })
-        )
-    )
-
-    const itemsFromVideoCodes = solveConflicts(
-        solution.solution.videoCodes.map(
-            (videoCode) =>
-                new MediaItem({
-                    start: videoCode.start,
-                    end: videoCode.end,
-                    text: videoCode.text,
-                    memo: videoCode.memo,
-                    color: videoCode.color,
-                    originalData: videoCode,
-                    lane: 0,
-                })
-        )
-    )
-
     const { showModal: showVideoCodesModal, RenderModal: RenderVideoCodesModal } = useModalHook()
+
+    const annotations = addIdsToEntities(solution.solution.annotations)
+    const videoCodes = addIdsToEntities(solution.solution.videoCodes)
 
     return (
         <div className={'team'}>
@@ -68,7 +41,7 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
                                 renderConfig={renderConfig}
                                 updateCurrentTime={updateCurrentTime}
                                 solutionFilter={solutionFilter}
-                                mediaItems={itemsFromAnnotations}
+                                entities={annotations}
                             />
                         )
                     case TabsTypesEnum.VIDEO_CODES:
@@ -78,7 +51,7 @@ const Team = ({ solution, visibleSolutionFilters, renderConfig, updateCurrentTim
                                 renderConfig={renderConfig}
                                 updateCurrentTime={updateCurrentTime}
                                 solutionFilter={solutionFilter}
-                                mediaItems={itemsFromVideoCodes}
+                                entities={videoCodes}
                                 showVideoCodesModal={showVideoCodesModal}
                             />
                         )

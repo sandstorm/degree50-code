@@ -19,6 +19,12 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+// NOTE: the frontend for this has currently been removed
+// because the editor is broken due to large refactorings and is currently
+// unclear if it will be used again.
+//
+// If it won't be needed any longer make sure to also remove this code!
+
 /**
  * @IsGranted("ROLE_USER")
  * @IsGranted("data-privacy-accepted")

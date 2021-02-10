@@ -16,7 +16,6 @@ import MaterialUploadController from './StimulusControllers/MaterialUploadContro
 import ReactController from './StimulusControllers/ReactController'
 import ExercisePhaseController from './StimulusControllers/ExercisePhaseController'
 import SolutionsController from './StimulusControllers/SolutionsController'
-import SubtitleEditorController from 'StimulusControllers/SubtitleEditorController'
 import VideoCodeFormController from 'StimulusControllers/VideoCodeFormController'
 import VideosFormController from 'StimulusControllers/VideosFormController'
 import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
@@ -28,7 +27,6 @@ application.register('videoUpload', VideoUploadController)
 application.register('materialUpload', MaterialUploadController)
 application.register('react', ReactController)
 application.register('exercisePhase', ExercisePhaseController)
-application.register('subtitleEditor', SubtitleEditorController)
 application.register('solutions', SolutionsController)
 application.register('videoCodeForm', VideoCodeFormController)
 application.register('videosForm', VideosFormController)
