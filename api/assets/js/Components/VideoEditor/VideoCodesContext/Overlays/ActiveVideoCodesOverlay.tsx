@@ -6,7 +6,7 @@ import VideoCodeListItem from 'Components/VideoEditor/VideoCodesContext/Overlays
 import Overlay from '../../components/Overlay'
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    activeVideoCodeIds: selectors.selectActiveVideoCodeIds(state),
+    activeVideoCodeIds: selectors.selectVideoCodeIdsAtCursor(state),
 })
 
 const mapDispatchToProps = {

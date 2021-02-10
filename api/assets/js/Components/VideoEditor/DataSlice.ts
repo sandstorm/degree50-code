@@ -104,26 +104,6 @@ const selectCurrentCutIdsByStartTime = createSelector([selectCurrentCutListBySta
     cutList.map((cut) => cut.id)
 )
 
-const selectPreviousSolutionsWithAnnotations = createSelector(
-    [solutionSelectors.selectPreviousSolutions, annotationSelectors.selectById],
-    (previousSolutions, annotationsById) => {
-        return previousSolutions.map((solution) => ({
-            ...solution,
-            annotations: solution.solution.annotations.map((id) => annotationsById[id]),
-        }))
-    }
-)
-
-const selectPreviousSolutionsWithVideoCodes = createSelector(
-    [solutionSelectors.selectPreviousSolutions, videoCodeSelectors.selectById],
-    (previousSolutions, byId) => {
-        return previousSolutions.map((solution) => ({
-            ...solution,
-            videoCodes: solution.solution.annotations.map((id) => byId[id]),
-        }))
-    }
-)
-
 const selectPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
     return codes.reduce((acc: VideoCodePrototype[], code) => {
         if (code.parentId) {
@@ -146,12 +126,10 @@ export const selectors = {
     selectDenormalizedCurrentAnnotations,
     selectCurrentAnnotationsByStartTime,
     selectCurrentAnnotationIdsSortedByStartTime,
-    selectPreviousSolutionsWithAnnotations,
 
     selectDenormalizedCurrentVideoCodes,
     selectCurrentVideoCodesByStartTime,
     selectCurrentVideoCodeIdsSortedByStartTime,
-    selectPreviousSolutionsWithVideoCodes,
 
     selectDenormalizedCurrentCutList,
     selectCurrentCutListByStartTime,
