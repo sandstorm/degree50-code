@@ -15,8 +15,10 @@ import OverlaySlice, {
 } from './components/OverlayContainer/OverlaySlice'
 import { DataState } from './DataSlice'
 import { timeToSecond } from './utils'
+import { filterSlice, FilterState, selectors as filterSelectors } from './components/MultiLane/Filter/FilterSlice'
 
 export default combineReducers({
+    filter: filterSlice.reducer,
     data: DataSlice,
     player: PlayerSlice,
     mediaLaneRenderConfig: MediaLaneRenderConfigSlice,
@@ -25,6 +27,7 @@ export default combineReducers({
 
 export type VideoEditorState = {
     videoEditor: {
+        filter: FilterState
         data: DataState
         player: PlayerState
         mediaLaneRenderConfig: RenderConfig
@@ -33,13 +36,14 @@ export type VideoEditorState = {
 }
 
 export const actions = {
+    filter: filterSlice.actions,
     data: dataActions,
     player: playerActions,
     mediaLaneRenderConfig: mediaLaneRenderConfigActions,
     overlay: overlayActions,
 }
 
-const selectActiveAnnotationIds = createSelector(
+const selectAnnotationIdsAtCursor = createSelector(
     [dataSelectors.selectCurrentAnnotationsByStartTime, playerSelectors.selectSyncPlayPosition],
     (annotations, currentPlayPosition) => {
         return annotations
@@ -52,7 +56,7 @@ const selectActiveAnnotationIds = createSelector(
     }
 )
 
-const selectActiveVideoCodeIds = createSelector(
+const selectVideoCodeIdsAtCursor = createSelector(
     [dataSelectors.selectCurrentVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
     (videoCodes, currentPlayPosition) => {
         return videoCodes
@@ -65,7 +69,7 @@ const selectActiveVideoCodeIds = createSelector(
     }
 )
 
-const selectActiveCutIds = createSelector(
+const selectCutIdsAtCursor = createSelector(
     [dataSelectors.selectCurrentCutListByStartTime, playerSelectors.selectSyncPlayPosition],
     (cuts, currentPlayPosition) => {
         return cuts
@@ -91,14 +95,56 @@ const selectSolution = createSelector(
     })
 )
 
+const selectActiveSolutionsWithAnnotations = createSelector(
+    [
+        filterSelectors.selectVisiblePreviousSolutions,
+        dataSelectors.solutions.selectById,
+        dataSelectors.annotations.selectById,
+    ],
+    (visibleSolutions, solutionsById, annotationsById) => {
+        return visibleSolutions.map((visibleSolution) => {
+            const solution = solutionsById[visibleSolution.id]
+            const annotations = solution.solution.annotations.map((id) => annotationsById[id])
+
+            return {
+                ...solution,
+                annotations,
+            }
+        })
+    }
+)
+
+const selectActiveSolutionsWithVideoCodes = createSelector(
+    [
+        filterSelectors.selectVisiblePreviousSolutions,
+        dataSelectors.solutions.selectById,
+        dataSelectors.videoCodes.selectById,
+    ],
+    (visibleSolutions, solutionsById, videoCodesById) => {
+        return visibleSolutions.map((visibleSolution) => {
+            const solution = solutionsById[visibleSolution.id]
+            const videoCodes = solution.solution.videoCodes.map((id) => videoCodesById[id])
+
+            return {
+                ...solution,
+                videoCodes,
+            }
+        })
+    }
+)
+
 export const selectors = {
+    filter: filterSelectors,
     data: dataSelectors,
     player: playerSelectors,
     mediaLaneRenderConfig: mediaLaneRenderConfigSelectors,
     overlay: overlaySelectors,
 
-    selectActiveAnnotationIds,
-    selectActiveVideoCodeIds,
-    selectActiveCutIds,
+    selectAnnotationIdsAtCursor,
+    selectVideoCodeIdsAtCursor,
+    selectCutIdsAtCursor,
     selectSolution,
+
+    selectActiveSolutionsWithAnnotations,
+    selectActiveSolutionsWithVideoCodes,
 }

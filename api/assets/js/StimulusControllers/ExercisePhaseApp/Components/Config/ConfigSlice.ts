@@ -19,7 +19,7 @@ export interface ConfigState {
     userId: string
     isGroupPhase: boolean
     dependsOnPreviousPhase: boolean
-    previousSolutions: Array<{ userId: string; userName: string; solution: VideoListsState }>
+    previousSolutions: Array<{ id: string; userId: string; userName: string; solution: VideoListsState }>
     readOnly: boolean
     components: Array<ComponentId>
     material: Array<Material>
@@ -79,28 +79,6 @@ const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
 const selectCutsAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CUTTING) > -1
 
-export const selectAvailableComponentIds = createSelector(
-    [selectComponents, selectPreviousSolutions],
-    (componentIds, previousSolutions) => {
-        const idsFromPreviousSolutions = previousSolutions.reduce((acc: TabsTypesEnum[], solution) => {
-            const hasCodes = solution.solution.videoCodes.length > 0
-            const hasAnnotations = solution.solution.annotations.length > 0
-            const hasCuts = solution.solution.cutList.length > 0
-
-            return [
-                ...acc,
-                ...(hasCodes ? [TabsTypesEnum.VIDEO_CODES] : []),
-                ...(hasAnnotations ? [TabsTypesEnum.VIDEO_ANNOTATIONS] : []),
-                ...(hasCuts ? [TabsTypesEnum.VIDEO_CUTTING] : []),
-            ]
-        }, [])
-
-        const uniqueIds = new Set([...componentIds, ...idsFromPreviousSolutions])
-
-        return [...uniqueIds]
-    }
-)
-
 export const selectors = {
     selectConfig,
     selectPhaseType,
@@ -112,7 +90,6 @@ export const selectors = {
     selectVideoCodesAreActive,
     selectCutsAreActive,
     selectComponents,
-    selectAvailableComponentIds,
     selectPreviousSolutions,
 }
 

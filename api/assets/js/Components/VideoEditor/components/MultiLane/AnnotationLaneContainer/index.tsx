@@ -13,7 +13,7 @@ import AnnotationLane from './AnnotationLane'
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
         annotations: videoEditorSelectors.data.selectCurrentAnnotationsByStartTime(state),
-        previousSolutions: videoEditorSelectors.data.selectPreviousSolutionsWithAnnotations(state),
+        previousSolutions: videoEditorSelectors.selectActiveSolutionsWithAnnotations(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
     }
 }

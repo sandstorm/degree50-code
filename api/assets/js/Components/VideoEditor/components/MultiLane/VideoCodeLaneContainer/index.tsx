@@ -32,7 +32,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
         videoCodesById: videoEditorSelectors.data.videoCodes.selectById(state),
         videoCodes: videoEditorSelectors.data.selectCurrentVideoCodesByStartTime(state),
         prototypes: videoEditorSelectors.data.videoCodePrototypes.selectById(state),
-        previousSolutions: videoEditorSelectors.data.selectPreviousSolutionsWithVideoCodes(state),
+        previousSolutions: videoEditorSelectors.selectActiveSolutionsWithVideoCodes(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
     }
 }

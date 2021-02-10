@@ -21,7 +21,7 @@ export const CutOverlayIds = {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
-        activeCutCount: videoEditorSelectors.selectActiveCutIds(state).length,
+        activeCutCount: videoEditorSelectors.selectCutIdsAtCursor(state).length,
         cutsAreActive: configSelectors.selectCutsAreActive(state),
     }
 }
@@ -39,18 +39,22 @@ const CutsMenu: FC<Props> = (props) => {
             {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
             <MenuButton icon={<i className="fas fa-cut" />} disabled={!props.cutsAreActive} ariaLabel="Schnitte">
                 <MenuItem
+                    ariaLabel="Aktive Schnitte"
                     label="Aktive Schnitte"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.active, closeOthers: true })}
                 />
                 <MenuItem
+                    ariaLabel="Erstelle Schnitt"
                     label="Erstelle Schnitt"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.create, closeOthers: true })}
                 />
                 <MenuItem
+                    ariaLabel="Alle Schnitte"
                     label="Alle Schnitte"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.all, closeOthers: true })}
                 />
                 <MenuItem
+                    ariaLabel="Schnittreihenfolge"
                     label="Schnittreihenfolge"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.allByCutOrder, closeOthers: true })}
                 />
