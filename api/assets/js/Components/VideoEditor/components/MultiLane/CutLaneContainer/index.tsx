@@ -7,6 +7,7 @@ import { VideoEditorState, selectors } from 'Components/VideoEditor/VideoEditorS
 
 const mapStateToProps = (state: VideoEditorState) => ({
     cuts: selectors.data.selectCurrentCutListByStartTime(state),
+    currentSolutionOwner: selectors.data.solutions.selectCurrentSolutionOwner(state),
 })
 
 const mapDispatchToProps = {}
@@ -14,10 +15,14 @@ const mapDispatchToProps = {}
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const CutLaneContainer = (props: Props) => {
+    const ownerName = props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
     return (
         <>
             <div>
-                <div className="multilane__medialane-description">{getComponentName(TabsTypesEnum.VIDEO_CUTTING)}</div>
+                <div className="multilane__medialane-description">
+                    {getComponentName(TabsTypesEnum.VIDEO_CUTTING)} ({props.cuts.length}) - {ownerName} [Aktuelle
+                    Lösung]
+                </div>
                 <VideoCutMedialane cuts={props.cuts} />
             </div>
         </>

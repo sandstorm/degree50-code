@@ -29,6 +29,7 @@ const mergeCodesAndPrototypesToItems = (videoCodes: VideoCode[], prototypes: Rec
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
+        currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
         videoCodesById: videoEditorSelectors.data.videoCodes.selectById(state),
         videoCodes: videoEditorSelectors.data.selectCurrentVideoCodesByStartTime(state),
         prototypes: videoEditorSelectors.data.videoCodePrototypes.selectById(state),
@@ -46,10 +47,13 @@ const VideoCodeLaneContainer = (props: Props) => {
 
     if (props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
         const mediaItems = mergeCodesAndPrototypesToItems(props.videoCodes, props.prototypes)
+        const ownerName = props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
 
         return (
             <div>
-                <div className="multilane__medialane-description">{getComponentName(TabsTypesEnum.VIDEO_CODES)}</div>
+                <div className="multilane__medialane-description">
+                    {getComponentName(TabsTypesEnum.VIDEO_CODES)} ({mediaItems.length}) - {ownerName} [Aktuelle Lösung]
+                </div>
                 <VideoCodesMedialane mediaItems={mediaItems} />
             </div>
         )
@@ -64,7 +68,7 @@ const VideoCodeLaneContainer = (props: Props) => {
                 return (
                     <div key={solution.id}>
                         <div className="multilane__medialane-description">
-                            {componentName} ({solution.userName})
+                            {componentName} ({mediaItems.length}) - {solution.userName}
                         </div>
                         <VideoCodesMedialane mediaItems={mediaItems} readOnly />
                     </div>

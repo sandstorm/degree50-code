@@ -1,8 +1,30 @@
 import React, { memo } from 'react'
 
-const MenuItem = (props: { label: string; onClick: () => void; ariaLabel: string }) => {
+type Props = {
+    label: string
+    onClick: () => void
+    ariaLabel: string
+    disabled?: boolean
+}
+
+const MenuItem = (props: Props) => {
+    const className = ['btn btn-grey menu-item', ...(props.disabled ? ['disabled'] : [])].join(' ')
+
+    if (props.disabled) {
+        // WHY:
+        // For accessibility reasons we do want to keep the order of menus always the same.
+        // To prevent the button from being skipped when tabbing, we don't actually disable it,
+        // but just give it the correct styles and remove its click handler, when its disabled.
+        // That way all menut items will always be reachable with the same amount of tab presses.
+        return (
+            <button className={className} aria-label={`${props.ariaLabel}-deaktiviert`}>
+                {props.label}
+            </button>
+        )
+    }
+
     return (
-        <button className="btn btn-grey menu-item" onClick={props.onClick} aria-label={props.ariaLabel}>
+        <button className={className} onClick={props.onClick} aria-label={props.ariaLabel} disabled={props.disabled}>
             {props.label}
         </button>
     )
