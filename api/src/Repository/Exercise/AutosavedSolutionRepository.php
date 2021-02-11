@@ -6,6 +6,7 @@ use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
 /**
  * @method AutosavedSolution|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,9 +16,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AutosavedSolutionRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private LoggerInterface $logger;
+
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
     {
         parent::__construct($registry, AutosavedSolution::class);
+        $this->logger = $logger;
     }
 
     public function getLatestSolutionOfExerciseTeam(ExercisePhaseTeam $exercisePhaseTeam) {

@@ -7,6 +7,7 @@ import {
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
+import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ExercisePhaseTypesEnum'
 
 const prefix = 'VIDEO_CODE'
 export const VideoCodeOverlayIds = {
@@ -22,8 +23,8 @@ export const VideoCodeOverlayIds = {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
-        activeVideoCodeCount: videoEditorSelectors.selectVideoCodeIdsAtCursor(state).length,
-        codesAreActive: configSelectors.selectVideoCodesAreActive(state),
+        activeVideoCodeCount: videoEditorSelectors.selectAllActiveVideoCodeIdsAtCursor(state).length,
+        activePhase: configSelectors.selectPhaseType(state),
     }
 }
 
@@ -41,10 +42,10 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const VideoCodesMenu: FC<Props> = (props) => {
     return (
         <div className="video-editor__menu">
-            {props.codesAreActive && props.activeVideoCodeCount > 0 && (
+            {props.activeVideoCodeCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
             )}
-            <MenuButton icon={<i className="fa fa-tag" />} disabled={!props.codesAreActive} ariaLabel="Codierungen">
+            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen">
                 <MenuItem
                     ariaLabel="Aktive Codierungen"
                     label="Aktive Codierungen"
@@ -54,6 +55,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     ariaLabel="Erstelle Codierung"
                     label="Erstelle Codierung"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.create, closeOthers: true })}
+                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
                 />
                 <MenuItem
                     ariaLabel="Alle Codierungen"
@@ -64,6 +66,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     ariaLabel="Code-Liste"
                     label="Code-Liste"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
+                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
                 />
             </MenuButton>
         </div>

@@ -3,6 +3,7 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
@@ -22,6 +23,7 @@ use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\VideoCodeRepository;
 use App\Twig\AppRuntime;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -48,6 +50,7 @@ class ExercisePhaseController extends AbstractController
     private VideoCodeRepository $videoCodeRepository;
     private ExercisePhaseRepository $exercisePhaseRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
+    private LoggerInterface $logger;
 
     /**
      * @param TranslatorInterface $translator
@@ -61,9 +64,11 @@ class ExercisePhaseController extends AbstractController
         AutosavedSolutionRepository $autosavedSolutionRepository,
         VideoCodeRepository $videoCodeRepository,
         ExercisePhaseRepository $exercisePhaseRepository,
-        ExercisePhaseTeamRepository $exercisePhaseTeamRepository
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        LoggerInterface $logger
     )
     {
+        $this->logger = $logger;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->appRuntime = $appRuntime;
@@ -82,9 +87,12 @@ class ExercisePhaseController extends AbstractController
      */
     public function show(Request $request, ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
+        // TODO refactor this method!
+
         /* @var User $user */
         $user = $this->getUser();
 
+        // FIXME what does 'showSolution' mean? Why do we need this?
         $showSolution = !!$request->get('showSolution');
 
         // config for the ui to render the react components
@@ -101,6 +109,8 @@ class ExercisePhaseController extends AbstractController
         $currentEditor = null;
 
         if (!$showSolution) {
+            // FIXME add why comment please
+
             if ($exercisePhaseTeam->getCurrentEditor()) {
                 $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
             } else {
@@ -121,8 +131,12 @@ class ExercisePhaseController extends AbstractController
             $entityManager->flush();
         }
 
+        // TODO whats the difference between an autosaved solution and a regular one?
+        // Why do they use separate models?
         $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
 
+        // TODO maybe we should use separate endpoints here instead?
+        // to me it feels like this controller method does too much...
         $template = 'ExercisePhase/Show.html.twig';
         if ($showSolution) {
             $template = 'ExercisePhase/ShowSolution.html.twig';
@@ -130,13 +144,21 @@ class ExercisePhaseController extends AbstractController
 
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
+
+        $solutionCreator = $exercisePhaseTeam->getCreator();
+
         return $this->render($template, [
             'config' => $config,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
             'exercise' => $exercisePhase->getBelongsToExercise(),
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'solution' => [ 'solution' => $solution->getSolution(), 'id' => $solution->getId()  ],
+            'solution' => [
+                'solution' => $solution->getSolution(),
+                'id' => $solution->getId(),
+                'userName' => $solutionCreator->getEmail(),
+                'userId' => $solutionCreator->getId(),
+            ],
             'currentEditor' => $currentEditor,
         ], $response);
     }
@@ -206,6 +228,7 @@ class ExercisePhaseController extends AbstractController
             'type' => $exercisePhase->getType(),
             'components' => $components,
             'userId' => $user->getId(),
+            'userName' => $user->getEmail(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
             'previousSolutions' => $previousSolutions,

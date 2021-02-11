@@ -2,7 +2,7 @@ import Button from 'Components/Button/Button'
 import { AnnotationId } from 'Components/VideoEditor/AnnotationsContext/AnnotationsSlice'
 import { AnnotationOverlayIds } from 'Components/VideoEditor/AnnotationsContext/AnnotationsMenu'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo } from 'react'
+import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import End from '../../components/End'
 import Start from '../../components/Start'
@@ -14,6 +14,8 @@ type OwnProps = {
 
 const mapStateToProps = (state: VideoEditorState, ownProps: OwnProps) => ({
     item: selectors.data.annotations.selectAnnotationById(state, ownProps),
+    isFromCurrentSolution: selectors.data.selectAnnotationIsFromCurrentSolution(state, ownProps),
+    creatorName: selectors.data.selectCreatorNameForAnnotation(state, ownProps),
 })
 
 const mapDispatchToProps = {
@@ -23,7 +25,9 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const AnnotationListItem: FC<Props> = ({ item, index, setCurrentlyEditedElementId, setOverlay }) => {
+const AnnotationListItem = (props: Props) => {
+    const { item, index, setCurrentlyEditedElementId, setOverlay } = props
+
     const handleRemove = () => {
         setCurrentlyEditedElementId(item.id)
         setOverlay({ overlayId: AnnotationOverlayIds.remove, closeOthers: false })
@@ -34,8 +38,13 @@ const AnnotationListItem: FC<Props> = ({ item, index, setCurrentlyEditedElementI
         setOverlay({ overlayId: AnnotationOverlayIds.edit, closeOthers: false })
     }
 
+    const creatorDescription = `Annotation von: ${props.creatorName}`
+
     const ariaLabel = `
         ${index + 1}. Element
+
+        ${creatorDescription}
+
         Von: ${item.start}
         Bis: ${item.end}
 
@@ -45,16 +54,22 @@ const AnnotationListItem: FC<Props> = ({ item, index, setCurrentlyEditedElementI
 
     return (
         <li className="annotation-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={item.id}>
+            <p>{creatorDescription}</p>
             <Start start={item.start} />
             <End end={item.end} />
+            <br />
             <p>Text: {item.text}</p>
             <p>Memo: {item.memo}</p>
-            <Button className="btn btn-secondary" onPress={handleRemove}>
-                Löschen
-            </Button>
-            <Button className="btn btn-primary" onPress={handleEdit}>
-                Bearbeiten
-            </Button>
+            {props.isFromCurrentSolution && (
+                <>
+                    <Button className="btn btn-secondary" onPress={handleRemove}>
+                        Löschen
+                    </Button>
+                    <Button className="btn btn-primary" onPress={handleEdit}>
+                        Bearbeiten
+                    </Button>
+                </>
+            )}
         </li>
     )
 }
