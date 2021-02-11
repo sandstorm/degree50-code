@@ -35,6 +35,10 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
     const { currentTime, videos } = props
     const duration = videos[0].duration
 
+    const close = () => {
+        props.closeOverlay(VideoCodeOverlayIds.create)
+    }
+
     const initialPrototypeId = props.prototoypes[0].id
 
     // transient videoCode
@@ -59,8 +63,12 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         updateSelectedCode,
     } = useVideoCodeEdit(initialVideoCode)
 
-    const close = () => {
-        props.closeOverlay(VideoCodeOverlayIds.create)
+    if (props.prototoypes.length < 1) {
+        return (
+            <Overlay closeCallback={close} title="Neuer VideoCode">
+                <p tabIndex={0}>Keine Codes vorhanden!</p>
+            </Overlay>
+        )
     }
 
     if (!transientVideoCode) {

@@ -1,11 +1,9 @@
 import React, { memo } from 'react'
 
-const MenuItem = ({ label, onClick }: { label: string; onClick: () => void }) => {
-    const handleClick = (ev: React.MouseEvent<HTMLButtonElement>) => onClick()
-
+const MenuItem = (props: { label: string; onClick: () => void; ariaLabel: string }) => {
     return (
-        <button className="btn btn-grey menu-item" onClick={handleClick}>
-            {label}
+        <button className="btn btn-grey menu-item" onClick={props.onClick} aria-label={props.ariaLabel}>
+            {props.label}
         </button>
     )
 }

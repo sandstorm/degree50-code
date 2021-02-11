@@ -20,7 +20,7 @@ export const AnnotationOverlayIds = {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
-        activeAnnotationCount: videoEditorSelectors.selectActiveAnnotationIds(state).length,
+        activeAnnotationCount: videoEditorSelectors.selectAnnotationIdsAtCursor(state).length,
         annotationsAreActive: configSelectors.selectAnnotationsAreActive(state),
     }
 }
@@ -44,14 +44,17 @@ const AnnotationsMenu: FC<Props> = (props) => {
                 ariaLabel="Annotationen"
             >
                 <MenuItem
+                    ariaLabel="Aktive Annotationen"
                     label="Aktive Annotationen"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.active, closeOthers: true })}
                 />
                 <MenuItem
+                    ariaLabel="Erstelle Annotation"
                     label="Erstelle Annotation"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.create, closeOthers: true })}
                 />
                 <MenuItem
+                    ariaLabel="Alle Annotationen"
                     label="Alle Annotationen"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.all, closeOthers: true })}
                 />

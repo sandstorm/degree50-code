@@ -1,15 +1,8 @@
 import React, { useState } from 'react'
-import { ComponentId } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import ActiveComponents from './ActiveComponents'
+import ActivePreviousSolutions from './ActivePreviousSolutions'
 
-export type Component = { id: ComponentId; visible: boolean }
-
-type Props = {
-    components: Component[]
-    setActiveComponents: (components: Component[]) => void
-}
-
-const Filter = (props: Props) => {
+const Filter = () => {
     const [showFilter, setShowFilter] = useState(false)
     const toggleShowFilter = () => setShowFilter(!showFilter)
 
@@ -17,7 +10,8 @@ const Filter = (props: Props) => {
         <div className="multilane-filter-container">
             {showFilter && (
                 <div className="multilane-filter__content">
-                    <ActiveComponents components={props.components} setActiveComponents={props.setActiveComponents} />
+                    <ActiveComponents />
+                    <ActivePreviousSolutions />
                 </div>
             )}
 

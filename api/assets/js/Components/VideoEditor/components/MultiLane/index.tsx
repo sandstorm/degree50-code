@@ -58,8 +58,7 @@ const getMediaLaneContainerComponentById = (componentId: ComponentId) => {
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
     videos: configSelectors.selectVideos(state),
     mediaLaneRenderConfig: videoEditorSelectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
-    components: configSelectors.selectComponents(state),
-    availableComponentIds: configSelectors.selectAvailableComponentIds(state),
+    components: videoEditorSelectors.filter.selectComponents(state),
 })
 
 const mapDispatchToProps = {
@@ -72,10 +71,6 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const MultiLane = (props: Props) => {
     const firstVideoDuration = props.videos[0].duration
-
-    const [activeComponents, setActiveComponents] = useState(
-        props.availableComponentIds.map((id) => ({ id, visible: true }))
-    )
 
     const { handleMediaLaneClick } = useMediaLaneClick(
         props.mediaLaneRenderConfig,
@@ -95,11 +90,11 @@ const MultiLane = (props: Props) => {
                 className="video-editor-timeline__entries multilane"
                 style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
             >
-                <Filter components={activeComponents} setActiveComponents={setActiveComponents} />
+                <Filter />
 
                 <div className="multilane__content">
-                    {activeComponents.map((component) => {
-                        if (!component.visible) {
+                    {props.components.map((component) => {
+                        if (!component.isVisible) {
                             return null
                         }
 

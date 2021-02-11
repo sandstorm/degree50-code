@@ -11,7 +11,8 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { normalizeAPIResponse } from './normalizeData'
+import { normalizeAPIResponse, initializeComponentFilter, initializePreviousSolutionsFilter } from './normalizeData'
+import { ActiveComponent, videoComponents } from 'Components/VideoEditor/components/MultiLane/Filter/FilterSlice'
 
 export default class extends Controller {
     connect() {
@@ -40,6 +41,13 @@ export default class extends Controller {
         store.dispatch(actions.data.cuts.init({ byId: normalizedAPIResponse.entities.cutList }))
         store.dispatch(
             actions.data.videoCodePrototypes.init({ byId: normalizedAPIResponse.entities.customVideoCodesPool })
+        )
+
+        store.dispatch(
+            actions.filter.init({
+                ...initializeComponentFilter(config),
+                ...initializePreviousSolutionsFilter(config.previousSolutions),
+            })
         )
 
         store.dispatch(setCurrentEditorId(currentEditor))

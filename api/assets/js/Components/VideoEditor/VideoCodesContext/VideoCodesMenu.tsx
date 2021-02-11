@@ -22,7 +22,7 @@ export const VideoCodeOverlayIds = {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
-        activeVideoCodeCount: videoEditorSelectors.selectActiveVideoCodeIds(state).length,
+        activeVideoCodeCount: videoEditorSelectors.selectVideoCodeIdsAtCursor(state).length,
         codesAreActive: configSelectors.selectVideoCodesAreActive(state),
     }
 }
@@ -46,18 +46,22 @@ const VideoCodesMenu: FC<Props> = (props) => {
             )}
             <MenuButton icon={<i className="fa fa-tag" />} disabled={!props.codesAreActive} ariaLabel="Codierungen">
                 <MenuItem
+                    ariaLabel="Aktive Codierungen"
                     label="Aktive Codierungen"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.active, closeOthers: true })}
                 />
                 <MenuItem
-                    label="Erstelle Eintrag"
+                    ariaLabel="Erstelle Codierung"
+                    label="Erstelle Codierung"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.create, closeOthers: true })}
                 />
                 <MenuItem
+                    ariaLabel="Alle Codierungen"
                     label="Alle Codierungen"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.all, closeOthers: true })}
                 />
                 <MenuItem
+                    ariaLabel="Code-Liste"
                     label="Code-Liste"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
                 />

@@ -6,6 +6,14 @@ import { VideoCodeId } from 'Components/VideoEditor/VideoCodesContext/VideoCodes
 import { CutId } from 'Components/VideoEditor/CuttingContext/CuttingSlice'
 import { VideoCodePrototypeId } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
+import {
+    videoComponents,
+    ActiveComponent,
+    FilterState,
+    VideoComponentId,
+    ActivePreviousSolution,
+} from 'Components/VideoEditor/components/MultiLane/Filter/FilterSlice'
+import { TabsTypesEnum } from 'types'
 
 export const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
     entities.map((e) => ({ ...e, id: e?.id ?? generate() }))
@@ -79,8 +87,13 @@ export const normalizeAPIResponse = (
 ): NormalizedSchema<NormalizedEntities, NormalizedResult> => {
     const videoCodePrototypesFromConfig = config.videoCodesPool
 
-    const customVideoCodesPool: VideoCodePrototype[] =
-        solution.solution.customVideoCodesPool ?? videoCodePrototypesFromConfig
+    const hasProperCustomCodes =
+        solution.solution.customVideoCodesPool &&
+        solution.solution.customVideoCodesPool.length >= videoCodePrototypesFromConfig.length
+
+    const customVideoCodesPool: VideoCodePrototype[] = hasProperCustomCodes
+        ? solution.solution.customVideoCodesPool
+        : videoCodePrototypesFromConfig
 
     // Flatten so that children are also listed
     const flattenedVideoCodePool: VideoCodePrototype[] = customVideoCodesPool.reduce(
@@ -108,4 +121,56 @@ export const normalizeAPIResponse = (
     }
 
     return normalize(preparedData, preparedAPIResponseSchema)
+}
+
+/**
+ * Determines which videoComponents (cuts, codes, annotations) should be available
+ * by checking the config components as well as components from previous solutions.
+ */
+export const initializeComponentFilter = (config: ConfigState): Pick<FilterState, 'components' | 'componentIds'> => {
+    const idsFromPreviousSolutions = config.previousSolutions.reduce((acc: TabsTypesEnum[], solution) => {
+        const hasCodes = solution.solution.videoCodes.length > 0
+        const hasAnnotations = solution.solution.annotations.length > 0
+        const hasCuts = solution.solution.cutList.length > 0
+
+        return [
+            ...acc,
+            ...(hasCodes ? [TabsTypesEnum.VIDEO_CODES] : []),
+            ...(hasAnnotations ? [TabsTypesEnum.VIDEO_ANNOTATIONS] : []),
+            ...(hasCuts ? [TabsTypesEnum.VIDEO_CUTTING] : []),
+        ]
+    }, [])
+
+    const uniqueIds = new Set([...config.components, ...idsFromPreviousSolutions])
+
+    const allComponentIds = videoComponents.filter((c) => [...uniqueIds].includes(c))
+    const components = allComponentIds.reduce((acc: Record<VideoComponentId, ActiveComponent>, id) => {
+        return {
+            ...acc,
+            [id]: { id, isVisible: true },
+        }
+    }, {} as Record<VideoComponentId, ActiveComponent>)
+
+    return {
+        componentIds: allComponentIds,
+        components,
+    }
+}
+
+export const initializePreviousSolutionsFilter = (
+    previousSolutions: { id: string }[]
+): Pick<FilterState, 'previousSolutions' | 'previousSolutionIds'> => {
+    const activePreviousSolutions = previousSolutions.reduce((acc: Record<string, ActivePreviousSolution>, s) => {
+        return {
+            ...acc,
+            [s.id]: { id: s.id, isVisible: true },
+        }
+    }, {} as Record<string, ActivePreviousSolution>)
+
+    const previousSolutionIds = previousSolutions.map((s) => s.id)
+
+    return {
+        previousSolutions: activePreviousSolutions,
+        previousSolutionIds,
+    }
 }
