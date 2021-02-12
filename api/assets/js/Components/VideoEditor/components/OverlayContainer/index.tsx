@@ -26,6 +26,7 @@ import EditCutOverlay from 'Components/VideoEditor/CuttingContext/Overlays/EditC
 import DeleteCutOverlay from 'Components/VideoEditor/CuttingContext/Overlays/DeleteCutOverlay'
 import CutlistOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CutlistOverlay'
 import DeleteVideoCodePrototypeOverlay from 'Components/VideoEditor/VideoCodesContext/Overlays/EditVideoCodeOverlay/DeleteVideoCodePrototypeOverlay'
+import CutPreviewOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CutPreviewOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
@@ -82,6 +83,9 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
         }
         case CutOverlayIds.remove: {
             return <DeleteCutOverlay />
+        }
+        case CutOverlayIds.cutPreview: {
+            return <CutPreviewOverlay />
         }
 
         default:

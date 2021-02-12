@@ -74,6 +74,7 @@ export const getHoursFromTimeSeconds = (seconds: number) => Math.floor(seconds /
  */
 export const HoursStringFormatter = Intl.NumberFormat('en', {
     minimumIntegerDigits: 2,
+    maximumFractionDigits: 0,
     useGrouping: false,
 })
 
@@ -85,6 +86,19 @@ export const HoursStringFormatter = Intl.NumberFormat('en', {
  */
 export const MinutesStringFormatter = Intl.NumberFormat('en', {
     minimumIntegerDigits: 2,
+    maximumFractionDigits: 0,
+    useGrouping: false,
+})
+
+/**
+ * Formatter for number of seconds to string representation.
+ *
+ * Example:
+ *  SecondsStringFormatter.format(1) -> "01"
+ */
+export const SecondsStringFormatter = Intl.NumberFormat('en', {
+    minimumIntegerDigits: 2,
+    maximumFractionDigits: 0,
     useGrouping: false,
 })
 
@@ -96,7 +110,7 @@ export const MinutesStringFormatter = Intl.NumberFormat('en', {
  *  SecondsStringFormatter.format(23) -> "23.000"
  *  SecondsStringFormatter.format(5.23) -> "05.230"
  */
-export const SecondsStringFormatter = Intl.NumberFormat('en', {
+export const SecondsWithMillisecondsStringFormatter = Intl.NumberFormat('en', {
     minimumFractionDigits: 3,
     maximumFractionDigits: 3,
     minimumIntegerDigits: 2,

@@ -1,5 +1,5 @@
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import {
     ConfigStateSlice,
@@ -37,13 +37,11 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const AnnotationsMenu: FC<Props> = (props) => {
     const activeAnnotationsLabel = `Aktive Annotationen (${props.activeAnnotationCount})`
     const allAnnotationsLabel = `Alle Annotationen (${props.allAnnotationsCount})`
+    const isReadOnly = useMemo(() => props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING, [props.activePhase])
 
-    return (
-        <div className="video-editor__menu">
-            {props.activeAnnotationCount > 0 && (
-                <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
-            )}
-            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen">
+    const renderMenuItems = useCallback(
+        () => (
+            <>
                 <MenuItem
                     ariaLabel={activeAnnotationsLabel}
                     label={activeAnnotationsLabel}
@@ -53,13 +51,25 @@ const AnnotationsMenu: FC<Props> = (props) => {
                     ariaLabel="Erstelle Annotation"
                     label="Erstelle Annotation"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.create, closeOthers: true })}
-                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
+                    disabled={isReadOnly}
                 />
                 <MenuItem
                     ariaLabel={allAnnotationsLabel}
                     label={allAnnotationsLabel}
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.all, closeOthers: true })}
                 />
+            </>
+        ),
+        [props.setOverlay, isReadOnly, activeAnnotationsLabel, allAnnotationsLabel]
+    )
+
+    return (
+        <div className="video-editor__menu">
+            {props.activeAnnotationCount > 0 && (
+                <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
+            )}
+            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen" pauseVideo>
+                {renderMenuItems}
             </MenuButton>
         </div>
     )

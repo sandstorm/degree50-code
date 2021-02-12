@@ -1,5 +1,5 @@
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useCallback } from 'react'
 import { connect } from 'react-redux'
 import {
     ConfigStateSlice,
@@ -17,6 +17,7 @@ export const CutOverlayIds = {
     allByCutOrder: `${prefix}/allByCutOrder`,
     edit: `${prefix}/edit`,
     remove: `${prefix}/remove`,
+    cutPreview: `${prefix}/cutPreview`,
 }
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
@@ -38,10 +39,9 @@ const CutsMenu: FC<Props> = (props) => {
     const allCutsLabel = `Alle Schnitte (${props.allCutsCount})`
     const activeCutsLabel = `Aktive Schnitte (${props.activeCutCount})`
 
-    return (
-        <div className="video-editor__menu">
-            {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
-            <MenuButton icon={<i className="fas fa-cut" />} disabled={!props.cutsAreActive} ariaLabel="Schnitte">
+    const renderMenuItems = useCallback(
+        () => (
+            <>
                 <MenuItem
                     ariaLabel={activeCutsLabel}
                     label={activeCutsLabel}
@@ -62,6 +62,26 @@ const CutsMenu: FC<Props> = (props) => {
                     label="Schnittreihenfolge"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.allByCutOrder, closeOthers: true })}
                 />
+                <MenuItem
+                    ariaLabel="Schnitt Vorschau"
+                    label="Schnitt Vorschau"
+                    onClick={() => props.setOverlay({ overlayId: CutOverlayIds.cutPreview, closeOthers: true })}
+                />
+            </>
+        ),
+        [props.setOverlay, activeCutsLabel, allCutsLabel]
+    )
+
+    return (
+        <div className="video-editor__menu">
+            {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
+            <MenuButton
+                icon={<i className="fas fa-cut" />}
+                disabled={!props.cutsAreActive}
+                ariaLabel="Schnitte"
+                pauseVideo
+            >
+                {renderMenuItems}
             </MenuButton>
         </div>
     )

@@ -13,7 +13,7 @@ import {
     CUTLIST_API_PROPERTY,
     VIDEO_CODE_PROTOTYPE_API_PROPERTY,
 } from 'StimulusControllers/normalizeData'
-import { CutId, cuttingSlice } from './CuttingContext/CuttingSlice'
+import { CutId, cuttingSlice, selectors as cuttingSelectors } from './CuttingContext/CuttingSlice'
 import { videoCodePrototypesSlice, VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
 
 export type SolutionState = {
@@ -217,6 +217,10 @@ const selectCurrentCutIds = createSelector([selectById, selectCurrentId], (byId,
     currentId ? byId[currentId].solution.cutList : []
 )
 
+const selectCurrentCutList = createSelector([selectCurrentCutIds, cuttingSelectors.selectById], (cutIds, cutsById) =>
+    cutIds.map((cutId) => cutsById[cutId])
+)
+
 const selectCurrentPrototypeIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
     currentId ? byId[currentId].solution.customVideoCodesPool : []
 )
@@ -240,6 +244,7 @@ export const selectors = {
     selectCurrentAnnotationIds,
     selectCurrentVideoCodeIds,
     selectCurrentCutIds,
+    selectCurrentCutList,
     selectCurrentPrototypeIds,
     selectCurrentSolutionOwner,
 }
