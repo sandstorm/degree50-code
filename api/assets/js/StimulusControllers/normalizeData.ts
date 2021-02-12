@@ -14,6 +14,7 @@ import {
     ActivePreviousSolution,
 } from 'Components/VideoEditor/components/MultiLane/Filter/FilterSlice'
 import { TabsTypesEnum } from 'types'
+import { setIn } from 'immutable'
 
 export const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
     entities.map((e) => ({ ...e, id: e?.id ?? generate() }))
@@ -30,21 +31,28 @@ const addMissingIdProcessStrategy = (value: any) => {
     return { ...value }
 }
 
+const addParentSolutionIdStrategy = (value: any, parent: any) => {
+    return { ...value, solutionId: parent.id }
+}
+
+const mediaItemProcessStrategy = (value: any, parent: any) => {
+    const withId = addMissingIdProcessStrategy(value)
+    const withParentSolutioId = addParentSolutionIdStrategy(withId, parent)
+
+    return withParentSolutioId
+}
+
 export const annotationSchema = new schema.Entity(
     ANNOTATIONS_API_PROPERTY,
     {},
-    { processStrategy: addMissingIdProcessStrategy }
+    { processStrategy: mediaItemProcessStrategy }
 )
 export const videoCodesSchema = new schema.Entity(
     VIDEO_CODES_API_PROPERTY,
     {},
-    { processStrategy: addMissingIdProcessStrategy }
+    { processStrategy: mediaItemProcessStrategy }
 )
-export const cutListSchema = new schema.Entity(
-    CUTLIST_API_PROPERTY,
-    {},
-    { processStrategy: addMissingIdProcessStrategy }
-)
+export const cutListSchema = new schema.Entity(CUTLIST_API_PROPERTY, {}, { processStrategy: mediaItemProcessStrategy })
 
 const videoCodePrototypeChildren = new schema.Entity(VIDEO_CODE_PROTOTYPE_API_PROPERTY, {
     processStrategy: addMissingIdProcessStrategy,
@@ -53,14 +61,21 @@ export const videoCodePrototypeSchema = new schema.Entity(VIDEO_CODE_PROTOTYPE_A
     videoCodes: [videoCodePrototypeChildren],
 })
 
-const solutionSchema = new schema.Entity('solutions', {
-    solution: {
-        annotations: [annotationSchema],
-        videoCodes: [videoCodesSchema],
-        cutList: [cutListSchema],
-        customVideoCodesPool: [videoCodePrototypeSchema],
+const solutionSchema = new schema.Entity(
+    'solutions',
+    {
+        solution: {
+            annotations: [annotationSchema],
+            videoCodes: [videoCodesSchema],
+            cutList: [cutListSchema],
+            customVideoCodesPool: [videoCodePrototypeSchema],
+        },
     },
-})
+    // WHY:
+    // We need the solution id inside the 'subSolution' to further process it
+    // with our mediaItemProcessStrategy
+    { processStrategy: (value) => setIn(value, ['solution', 'id'], value.id) }
+)
 
 export const preparedAPIResponseSchema = {
     currentSolution: solutionSchema,

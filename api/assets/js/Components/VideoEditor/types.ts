@@ -21,6 +21,7 @@ export type MediaItemType = {
     text: string
     memo: string
     color: null | string
+    solutionId?: string
 }
 
 export type AnnotationFromAPI = MediaItemType & { id?: string }

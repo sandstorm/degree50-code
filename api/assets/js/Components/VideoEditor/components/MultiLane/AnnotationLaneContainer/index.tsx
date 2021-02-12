@@ -12,6 +12,7 @@ import AnnotationLane from './AnnotationLane'
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
+        currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
         annotations: videoEditorSelectors.data.selectCurrentAnnotationsByStartTime(state),
         previousSolutions: videoEditorSelectors.selectActiveSolutionsWithAnnotations(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
@@ -26,9 +27,13 @@ const AnnotationLaneContainer = (props: Props) => {
     const componentName = getComponentName(TabsTypesEnum.VIDEO_ANNOTATIONS)
 
     if (props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
+        const ownerName = props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
+
         return (
             <div>
-                <div className="multilane__medialane-description">{componentName}</div>
+                <div className="multilane__medialane-description">
+                    {componentName} ({props.annotations.length}) - {ownerName} [Aktuelle Lösung]
+                </div>
                 <AnnotationLane annotations={props.annotations} />
             </div>
         )
@@ -39,7 +44,7 @@ const AnnotationLaneContainer = (props: Props) => {
             {props.previousSolutions.map((solution) => (
                 <div key={solution.id}>
                     <div className="multilane__medialane-description">
-                        {componentName} ({solution.userName})
+                        {componentName} ({solution.annotations.length}) - {solution.userName}
                     </div>
                     <AnnotationLane annotations={solution.annotations} readOnly />
                 </div>

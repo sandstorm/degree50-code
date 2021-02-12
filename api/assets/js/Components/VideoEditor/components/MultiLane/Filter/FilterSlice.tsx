@@ -74,7 +74,20 @@ const selectPreviousSolutionsById = (state: FilterStateSlice) => state.videoEdit
 const selectPreviousSolutionIds = (state: FilterStateSlice) => state.videoEditor.filter.previousSolutionIds
 
 const selectComponents = createSelector([selectComponentsById, selectComponentIds], (byId, ids) =>
-    ids.map((id) => byId[id])
+    ids
+        .map((id) => byId[id])
+        .sort((component) => {
+            // WHY:
+            // currently cutting should alway come first, because we only show previous
+            // components inside the cutting phase to reference while cutting.
+            // If we at some point plan to change this to the component for the current phase coming first
+            // this would need to be implemented.
+            if (component.id === TabsTypesEnum.VIDEO_CUTTING) {
+                return -1
+            } else {
+                return 1
+            }
+        })
 )
 
 const selectPreviousSolutions = createSelector([selectPreviousSolutionsById, selectPreviousSolutionIds], (byId, ids) =>

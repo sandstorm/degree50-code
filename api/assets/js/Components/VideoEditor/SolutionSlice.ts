@@ -193,9 +193,11 @@ export const SolutionSlice = createSlice({
 // SELECTORS //
 ///////////////
 
-type SolutionStateSlice = { videoEditor: { data: { solutions: SolutionState } } }
+export type SolutionStateSlice = { videoEditor: { data: { solutions: SolutionState } } }
 
 const selectById = (state: SolutionStateSlice) => state.videoEditor.data.solutions.byId
+const selectSolutionById = (state: SolutionStateSlice, props: { solutionId: string }) =>
+    state.videoEditor.data.solutions.byId[props.solutionId]
 const selectCurrentId = (state: SolutionStateSlice) => state.videoEditor.data.solutions.current
 const selectPreviousIds = (state: SolutionStateSlice) => state.videoEditor.data.solutions.previous
 
@@ -219,13 +221,25 @@ const selectCurrentPrototypeIds = createSelector([selectById, selectCurrentId], 
     currentId ? byId[currentId].solution.customVideoCodesPool : []
 )
 
+const selectCurrentSolutionOwner = createSelector([selectById, selectCurrentId], (byId, currentId) => {
+    if (!currentId) return {}
+
+    const solution = byId[currentId]
+    return {
+        userId: solution.userId,
+        userName: solution.userName,
+    }
+})
+
 export const selectors = {
     selectById,
-    selectCurrentIds: selectCurrentId,
+    selectSolutionById,
+    selectCurrentId,
     selectPreviousIds,
     selectPreviousSolutions,
     selectCurrentAnnotationIds,
     selectCurrentVideoCodeIds,
     selectCurrentCutIds,
     selectCurrentPrototypeIds,
+    selectCurrentSolutionOwner,
 }

@@ -13,6 +13,7 @@ import {
 import { videoCodesSlice, VideoCodesState, selectors as videoCodeSelectors } from './VideoCodesContext/VideoCodesSlice'
 import { SolutionSlice, selectors as solutionSelectors, SolutionState } from './SolutionSlice'
 import { VideoCodePrototype } from './types'
+import { sortByStartTime } from './utils'
 
 export type DataState = {
     solutions: SolutionState
@@ -58,37 +59,26 @@ const selectDenormalizedPrototypes = createSelector(
     (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
-const getEntitiesByStartTime = <T extends { id: string; start: string }>(
-    currentIds: string[],
-    entitiesById: Record<string, T>
-): T[] => {
-    return currentIds
-        .map((id) => entitiesById[id])
-        .sort((a, b) => {
-            if (a.start < b.start) {
-                return -1
-            } else if (a.start > b.start) {
-                return 1
-            } else {
-                return 0
-            }
-        })
-}
-
-const selectCurrentAnnotationsByStartTime = createSelector(
+const selectCurrentAnnotations = createSelector(
     [solutionSelectors.selectCurrentAnnotationIds, annotationSelectors.selectById],
-    getEntitiesByStartTime
+    (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
-const selectCurrentVideoCodesByStartTime = createSelector(
+const selectCurrentAnnotationsByStartTime = createSelector([selectCurrentAnnotations], sortByStartTime)
+
+const selectCurrentVideoCodes = createSelector(
     [solutionSelectors.selectCurrentVideoCodeIds, videoCodeSelectors.selectById],
-    getEntitiesByStartTime
+    (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
-const selectCurrentCutListByStartTime = createSelector(
+const selectCurrentVideoCodesByStartTime = createSelector([selectCurrentVideoCodes], sortByStartTime)
+
+const selectCurrentCuts = createSelector(
     [solutionSelectors.selectCurrentCutIds, cutsSelectors.selectById],
-    getEntitiesByStartTime
+    (currentIds, byId) => currentIds.map((id) => byId[id])
 )
+
+const selectCurrentCutListByStartTime = createSelector([selectCurrentCuts], sortByStartTime)
 
 const selectCurrentAnnotationIdsSortedByStartTime = createSelector(
     [selectCurrentAnnotationsByStartTime],
@@ -116,6 +106,34 @@ const selectPrototypesList = createSelector([selectDenormalizedPrototypes], (cod
     }, [])
 })
 
+const selectAnnotationIsFromCurrentSolution = createSelector(
+    [solutionSelectors.selectCurrentId, annotationSelectors.selectAnnotationById],
+    (currentSolutionId, annotation) => currentSolutionId && annotation && currentSolutionId === annotation.solutionId
+)
+
+const selectVideoCodeIsFromCurrentSolution = createSelector(
+    [solutionSelectors.selectCurrentId, videoCodeSelectors.selectVideoCodeById],
+    (currentSolutionId, videoCode) => currentSolutionId && videoCode && currentSolutionId === videoCode.solutionId
+)
+
+const selectCreatorNameForAnnotation = createSelector(
+    [solutionSelectors.selectById, annotationSelectors.selectAnnotationById],
+    (solutionsById, annotation) => {
+        const solution = annotation.solutionId ? solutionsById[annotation.solutionId] : undefined
+
+        return solution?.userName ?? '<Unbekannter Ersteller>'
+    }
+)
+
+const selectCreatorNameForVideoCode = createSelector(
+    [solutionSelectors.selectById, videoCodeSelectors.selectVideoCodeById],
+    (solutionsById, videoCode) => {
+        const solution = videoCode.solutionId ? solutionsById[videoCode.solutionId] : undefined
+
+        return solution?.userName ?? '<Unbekannter Ersteller>'
+    }
+)
+
 export const selectors = {
     solutions: solutionSelectors,
     annotations: annotationSelectors,
@@ -126,14 +144,21 @@ export const selectors = {
     selectDenormalizedCurrentAnnotations,
     selectCurrentAnnotationsByStartTime,
     selectCurrentAnnotationIdsSortedByStartTime,
+    selectCurrentAnnotations,
+    selectAnnotationIsFromCurrentSolution,
+    selectCreatorNameForAnnotation,
 
     selectDenormalizedCurrentVideoCodes,
     selectCurrentVideoCodesByStartTime,
     selectCurrentVideoCodeIdsSortedByStartTime,
+    selectCurrentVideoCodes,
+    selectVideoCodeIsFromCurrentSolution,
+    selectCreatorNameForVideoCode,
 
     selectDenormalizedCurrentCutList,
     selectCurrentCutListByStartTime,
     selectCurrentCutIdsByStartTime,
+    selectCurrentCuts,
 
     selectDenormalizedPrototypes,
     selectPrototypesList,

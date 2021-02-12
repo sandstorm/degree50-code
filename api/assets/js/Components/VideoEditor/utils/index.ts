@@ -104,3 +104,14 @@ export const SecondsStringFormatter = Intl.NumberFormat('en', {
 })
 
 export const clamp = (value: number, min: number, max: number) => Math.min(Math.max(min, value), max)
+
+export const sortByStartTime = <T extends { id: string; start: string }>(entities: T[]): T[] =>
+    [...entities].sort((a, b) => {
+        if (a.start < b.start) {
+            return -1
+        } else if (a.start > b.start) {
+            return 1
+        } else {
+            return 0
+        }
+    })

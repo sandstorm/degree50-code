@@ -17,6 +17,7 @@ export interface ConfigState {
     description: string
     type: ExercisePhaseTypesEnum
     userId: string
+    userName: string
     isGroupPhase: boolean
     dependsOnPreviousPhase: boolean
     previousSolutions: Array<{ id: string; userId: string; userName: string; solution: VideoListsState }>
@@ -33,6 +34,7 @@ const initialState: ConfigState = {
     description: '',
     type: ExercisePhaseTypesEnum.VIDEO_ANALYSIS,
     userId: '',
+    userName: '',
     isGroupPhase: false,
     dependsOnPreviousPhase: false,
     previousSolutions: [],
@@ -66,14 +68,13 @@ export type ConfigStateSlice = { config: ConfigState }
 const selectConfig = (state: ConfigStateSlice) => state.config
 const selectPhaseType = (state: ConfigStateSlice) => state.config.type
 const selectUserId = (state: ConfigStateSlice) => state.config.userId
+const selectUserName = (state: ConfigStateSlice) => state.config.userName
 const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 const selectVideos = (state: ConfigStateSlice) => state.config.videos
 const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCodesPool
 const selectComponents = (state: ConfigStateSlice) => state.config.components
 const selectPreviousSolutions = (state: ConfigStateSlice) => state.config.previousSolutions
 
-const selectAnnotationsAreActive = (state: ConfigStateSlice) =>
-    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_ANNOTATIONS) > -1
 const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CODES) > -1
 const selectCutsAreActive = (state: ConfigStateSlice) =>
@@ -83,10 +84,10 @@ export const selectors = {
     selectConfig,
     selectPhaseType,
     selectUserId,
+    selectUserName,
     selectReadOnly,
     selectVideos,
     selectVideoCodesPool,
-    selectAnnotationsAreActive,
     selectVideoCodesAreActive,
     selectCutsAreActive,
     selectComponents,
