@@ -1,56 +1,86 @@
 import { FocusScope } from '@react-aria/focus'
 import { connect } from 'react-redux'
 import Button from 'Components/Button/Button'
-import React, { memo, ReactNode, useCallback, useState } from 'react'
+import React, { FC, memo, ReactNode, useCallback, useMemo, useState } from 'react'
 import { actions } from '../PlayerSlice'
+import { generate } from 'shortid'
+
+export type MenuItemRenderProps = {
+    close: () => void
+}
 
 type OwnProps = {
     label?: string
     ariaLabel: string
-    children: ReactNode
-    icon: ReactNode
+    children: (props: MenuItemRenderProps) => ReactNode
+    icon?: ReactNode
+    key?: string
     disabled?: boolean
+    pauseVideo?: boolean
+    small?: boolean
 }
 
 const mapDispatchToProps = {
-    pauseVideo: actions.setPause,
+    setPauseVideo: actions.setPause,
 }
 
 type Props = typeof mapDispatchToProps & OwnProps
 
-const MenuButton = ({ label, children, pauseVideo, icon, disabled, ariaLabel }: Props) => {
+const MenuButton: FC<Props> = ({
+    children,
+    label,
+    ariaLabel,
+    icon,
+    key,
+    disabled = false,
+    pauseVideo = false,
+    small = false,
+    setPauseVideo,
+}) => {
     const [isOpen, setIsOpen] = useState(false)
 
-    const open = () => setIsOpen(true)
-    const close = () => setIsOpen(false)
+    const open = useCallback(() => setIsOpen(true), [])
+    const close = useCallback(() => setIsOpen(false), [])
     const toggleMenu = useCallback(() => {
-        pauseVideo(true)
+        if (pauseVideo) {
+            setPauseVideo(true)
+        }
 
         if (isOpen) {
             close()
         } else {
             open()
         }
-    }, [isOpen])
+    }, [isOpen, close, open, pauseVideo, setPauseVideo])
 
-    const handleKeyDown = (ev: React.KeyboardEvent<HTMLElement>) => {
-        switch (ev.key) {
-            case 'Escape': {
-                ev.preventDefault()
-                close()
-                return false
+    const handleKeyDown = useCallback(
+        (ev: React.KeyboardEvent<HTMLElement>) => {
+            switch (ev.key) {
+                case 'Escape': {
+                    ev.preventDefault()
+                    ev.stopPropagation()
+                    close()
+                    return false
+                }
             }
-        }
-    }
+        },
+        [close]
+    )
+
+    const className = useMemo(
+        () =>
+            `btn btn-grey ${disabled ? 'disabled' : ``} menu-button video-editor__toolbar__button ${
+                small ? 'btn-sm' : ''
+            }`,
+        [disabled, small]
+    )
+
+    const focusScopeKey = useMemo(() => key ?? generate(), [key])
 
     if (disabled) {
         return (
             <div className="menu-wrapper">
-                <Button
-                    title={ariaLabel}
-                    className="btn btn-grey disabled menu-button video-editor__toolbar__button"
-                    disabled
-                >
+                <Button title={ariaLabel} className={className} disabled>
                     {icon} {label}
                 </Button>
             </div>
@@ -59,18 +89,14 @@ const MenuButton = ({ label, children, pauseVideo, icon, disabled, ariaLabel }: 
 
     return (
         <div className="menu-wrapper">
-            <Button
-                className="btn btn-grey menu-button video-editor__toolbar__button"
-                onPress={toggleMenu}
-                title={ariaLabel}
-            >
+            <Button className={className} onPress={toggleMenu} title={ariaLabel}>
                 {icon} {label}
             </Button>
             {isOpen && <div className="menu-backdrop" onClick={close} />}
             {isOpen && (
-                <FocusScope autoFocus contain restoreFocus>
+                <FocusScope autoFocus contain restoreFocus key={focusScopeKey}>
                     <div className="menu" onKeyDown={handleKeyDown}>
-                        {children}
+                        {children({ close })}
                     </div>
                 </FocusScope>
             )}

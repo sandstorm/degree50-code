@@ -1,5 +1,5 @@
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import {
     ConfigStateSlice,
@@ -43,13 +43,11 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const VideoCodesMenu: FC<Props> = (props) => {
     const activeCodesLabel = `Aktive Codierungen (${props.activeVideoCodeCount})`
     const allCodesLabel = `Alle Codierungen (${props.allVideoCodesCount})`
+    const isReadOnly = useMemo(() => props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING, [props.activePhase])
 
-    return (
-        <div className="video-editor__menu">
-            {props.activeVideoCodeCount > 0 && (
-                <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
-            )}
-            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen">
+    const renderMenuItems = useCallback(
+        () => (
+            <>
                 <MenuItem
                     ariaLabel={activeCodesLabel}
                     label={activeCodesLabel}
@@ -59,7 +57,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     ariaLabel="Erstelle Codierung"
                     label="Erstelle Codierung"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.create, closeOthers: true })}
-                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
+                    disabled={isReadOnly}
                 />
                 <MenuItem
                     ariaLabel={allCodesLabel}
@@ -70,8 +68,20 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     ariaLabel="Code-Liste"
                     label="Code-Liste"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
-                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
+                    disabled={isReadOnly}
                 />
+            </>
+        ),
+        [props.setOverlay, isReadOnly, activeCodesLabel, allCodesLabel]
+    )
+
+    return (
+        <div className="video-editor__menu">
+            {props.activeVideoCodeCount > 0 && (
+                <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
+            )}
+            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen" pauseVideo>
+                {renderMenuItems}
             </MenuButton>
         </div>
     )

@@ -188,7 +188,7 @@ export const initVideoContext = (canvasRef: RefObject<HTMLCanvasElement>) => {
     return { videoCtx, combineEffect }
 }
 
-export type VideoContextPlaylistElement = {
+export type VideoContextPlayListElement = {
     url: string
     offset: number
     playbackRate: number
@@ -202,10 +202,10 @@ const CUT_PADDING_SECS = 0.001
  * Transforms a list of MediaItemType<Cut> into elements which are playable by the video context player.
  * All items are snapped back to back to their predecessor, so that there remains no empty space between cuts.
  */
-export const transformCutListToVideoContextPlaylist = (cuts: CutList): Array<VideoContextPlaylistElement> =>
+export const transformCutListToVideoContextPlayList = (cuts: CutList): Array<VideoContextPlayListElement> =>
     cuts.reduce(
-        (acc: { nextStart: number; videoContextElements: Array<VideoContextPlaylistElement> }, cut) => {
-            const newElement: VideoContextPlaylistElement = {
+        (acc: { nextStart: number; videoContextElements: Array<VideoContextPlayListElement> }, cut) => {
+            const newElement: VideoContextPlayListElement = {
                 url: cut.url,
                 offset: cut.offset,
                 playbackRate: cut.playbackRate,
@@ -227,30 +227,30 @@ export const transformCutListToVideoContextPlaylist = (cuts: CutList): Array<Vid
 /**
  * Given a VideoContext and a Cut this directly adds a new videoNode to the context
  */
-export const addVideoContextPlaylistElement = (
-    videoContextPlaylistElement: VideoContextPlaylistElement,
+export const addVideoContextPlayListElement = (
+    videoContextPlayListElement: VideoContextPlayListElement,
     videoCtx: VideoContext
 ) => {
     // We create the video node ourselves, because we need it asap, to retrieve
     // the aspect ratio of the first video node to determine the dimensions of
     // the canvas it is rendered to.
     const newVideoElement = document.createElement('video')
-    newVideoElement.setAttribute('src', videoContextPlaylistElement.url)
+    newVideoElement.setAttribute('src', videoContextPlayListElement.url)
     newVideoElement.setAttribute('crossorigin', 'anonymous')
     newVideoElement.setAttribute('webkit-playsinline', '')
     newVideoElement.setAttribute('playsinline', '')
     newVideoElement.setAttribute('data-video', '')
 
-    const videoNode = videoCtx.video(newVideoElement, videoContextPlaylistElement.offset, 4, {
+    const videoNode = videoCtx.video(newVideoElement, videoContextPlayListElement.offset, 4, {
         // TODO: Why set volume here?
         volume: 0.6,
         loop: false,
     })
 
     // eslint-disable-next-line
-    videoNode._playbackRate = videoContextPlaylistElement.playbackRate
-    videoNode.start(videoContextPlaylistElement.start)
-    videoNode.stop(videoContextPlaylistElement.start + videoContextPlaylistElement.duration)
+    videoNode._playbackRate = videoContextPlayListElement.playbackRate
+    videoNode.start(videoContextPlayListElement.start)
+    videoNode.stop(videoContextPlayListElement.start + videoContextPlayListElement.duration)
 
     videoNode.connect(videoCtx.destination)
 
