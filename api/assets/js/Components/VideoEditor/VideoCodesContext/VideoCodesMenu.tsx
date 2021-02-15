@@ -23,6 +23,7 @@ export const VideoCodeOverlayIds = {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
+        allVideoCodesCount: videoEditorSelectors.selectAllVideoCodeIdsByStartTime(state).length,
         activeVideoCodeCount: videoEditorSelectors.selectAllActiveVideoCodeIdsAtCursor(state).length,
         activePhase: configSelectors.selectPhaseType(state),
     }
@@ -40,6 +41,9 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 // 2. Create/Edit-UI --> no text, instead choose from available codes (still has memo) display code color
 
 const VideoCodesMenu: FC<Props> = (props) => {
+    const activeCodesLabel = `Aktive Codierungen (${props.activeVideoCodeCount})`
+    const allCodesLabel = `Alle Codierungen (${props.allVideoCodesCount})`
+
     return (
         <div className="video-editor__menu">
             {props.activeVideoCodeCount > 0 && (
@@ -47,8 +51,8 @@ const VideoCodesMenu: FC<Props> = (props) => {
             )}
             <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen">
                 <MenuItem
-                    ariaLabel="Aktive Codierungen"
-                    label="Aktive Codierungen"
+                    ariaLabel={activeCodesLabel}
+                    label={activeCodesLabel}
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.active, closeOthers: true })}
                 />
                 <MenuItem
@@ -58,8 +62,8 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
                 />
                 <MenuItem
-                    ariaLabel="Alle Codierungen"
-                    label="Alle Codierungen"
+                    ariaLabel={allCodesLabel}
+                    label={allCodesLabel}
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.all, closeOthers: true })}
                 />
                 <MenuItem

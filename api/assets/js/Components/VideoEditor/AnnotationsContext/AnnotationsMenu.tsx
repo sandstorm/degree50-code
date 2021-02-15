@@ -21,6 +21,7 @@ export const AnnotationOverlayIds = {
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     return {
+        allAnnotationsCount: videoEditorSelectors.selectAllAnnotationIdsByStartTime(state).length,
         activeAnnotationCount: videoEditorSelectors.selectAllActiveAnnotationIdsAtCursor(state).length,
         activePhase: configSelectors.selectPhaseType(state),
     }
@@ -34,6 +35,9 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const AnnotationsMenu: FC<Props> = (props) => {
+    const activeAnnotationsLabel = `Aktive Annotationen (${props.activeAnnotationCount})`
+    const allAnnotationsLabel = `Alle Annotationen (${props.allAnnotationsCount})`
+
     return (
         <div className="video-editor__menu">
             {props.activeAnnotationCount > 0 && (
@@ -41,8 +45,8 @@ const AnnotationsMenu: FC<Props> = (props) => {
             )}
             <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen">
                 <MenuItem
-                    ariaLabel="Aktive Annotationen"
-                    label="Aktive Annotationen"
+                    ariaLabel={activeAnnotationsLabel}
+                    label={activeAnnotationsLabel}
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.active, closeOthers: true })}
                 />
                 <MenuItem
@@ -52,8 +56,8 @@ const AnnotationsMenu: FC<Props> = (props) => {
                     disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
                 />
                 <MenuItem
-                    ariaLabel="Alle Annotationen"
-                    label="Alle Annotationen"
+                    ariaLabel={allAnnotationsLabel}
+                    label={allAnnotationsLabel}
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.all, closeOthers: true })}
                 />
             </MenuButton>
