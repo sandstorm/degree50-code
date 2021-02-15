@@ -1,19 +1,16 @@
 import React, { FC, memo, RefObject } from 'react'
 
 type Props = {
-    canvasRef: RefObject<HTMLCanvasElement>
+    $canvasRef: RefObject<HTMLCanvasElement>
     canvasWidth: number
     canvasHeight: number
 }
 
 const VideoContextCanvas: FC<Props> = (props) => {
     return (
-        <canvas
-            ref={props.canvasRef}
-            className={'video-context-player__canvas'}
-            width={props.canvasWidth}
-            height={props.canvasHeight}
-        />
+        <div className={'video-context-player__canvas'}>
+            <canvas ref={props.$canvasRef} width={props.canvasWidth} height={props.canvasHeight} />
+        </div>
     )
 }
 
