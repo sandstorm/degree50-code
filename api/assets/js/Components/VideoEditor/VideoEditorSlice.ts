@@ -16,7 +16,7 @@ import OverlaySlice, {
 import { DataState } from './DataSlice'
 import { timeToSecond, sortByStartTime } from './utils'
 import { filterSlice, FilterState, selectors as filterSelectors } from './components/MultiLane/Filter/FilterSlice'
-import { Annotation, VideoCode } from './types'
+import { Annotation, VideoCode, Cut } from './types'
 
 export default combineReducers({
     filter: filterSlice.reducer,
@@ -56,7 +56,7 @@ const selectCurrentAnnotationIdsAtCursor = createSelector(
     }
 )
 
-const selectVideoCodeIdsAtCursor = createSelector(
+const selectCurrentVideoCodeIdsAtCursor = createSelector(
     [dataSelectors.selectCurrentVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
     (videoCodes, currentPlayPosition) => {
         return videoCodes
@@ -65,7 +65,7 @@ const selectVideoCodeIdsAtCursor = createSelector(
     }
 )
 
-const selectCutIdsAtCursor = createSelector(
+const selectCurrentCutIdsAtCursor = createSelector(
     [dataSelectors.selectCurrentCutListByStartTime, playerSelectors.selectSyncPlayPosition],
     (cuts, currentPlayPosition) => {
         return cuts.filter((videoCode) => isAtCursor(videoCode, currentPlayPosition)).map((cut) => cut.id)
@@ -125,6 +125,21 @@ const selectActiveSolutionsWithVideoCodes = createSelector(
     }
 )
 
+const selectActiveSolutionsWithCuts = createSelector(
+    [filterSelectors.selectVisiblePreviousSolutions, dataSelectors.solutions.selectById, dataSelectors.cuts.selectById],
+    (visibleSolutions, solutionsById, cutsById) => {
+        return visibleSolutions.map((visibleSolution) => {
+            const solution = solutionsById[visibleSolution.id]
+            const cutList = solution.solution.cutList.map((id) => cutsById[id])
+
+            return {
+                ...solution,
+                cutList,
+            }
+        })
+    }
+)
+
 const selectActiveAnnotationsFromPreviousSolutions = createSelector(
     [selectActiveSolutionsWithAnnotations],
     (solutions) =>
@@ -139,6 +154,12 @@ const selectActiveVideoCodesFromPreviousSolutions = createSelector([selectActive
     }, [])
 )
 
+const selectActiveCutListFromPreviousSolutions = createSelector([selectActiveSolutionsWithCuts], (solutions) =>
+    solutions.reduce((acc: Cut[], s) => {
+        return [...acc, ...s.cutList]
+    }, [])
+)
+
 const selectAllAnnotations = createSelector(
     [selectActiveAnnotationsFromPreviousSolutions, dataSelectors.selectCurrentAnnotations],
     (previousAnnotations, currentAnnotations) => [...previousAnnotations, ...currentAnnotations]
@@ -149,8 +170,14 @@ const selectAllVideoCodes = createSelector(
     (previousVideoCodes, currentVideoCodes) => [...previousVideoCodes, ...currentVideoCodes]
 )
 
+const selectAllCuts = createSelector(
+    [selectActiveCutListFromPreviousSolutions, dataSelectors.selectCurrentCuts],
+    (previousCuts, currentCuts) => [...previousCuts, ...currentCuts]
+)
+
 const selectAllAnnotationsByStartTime = createSelector([selectAllAnnotations], sortByStartTime)
 const selectAllVideoCodesByStartTime = createSelector([selectAllVideoCodes], sortByStartTime)
+const selectAllCutsByStartTime = createSelector([selectAllCuts], sortByStartTime)
 
 const selectAllAnnotationIdsByStartTime = createSelector([selectAllAnnotationsByStartTime], (annotations) =>
     annotations.map((a) => a.id)
@@ -159,6 +186,8 @@ const selectAllAnnotationIdsByStartTime = createSelector([selectAllAnnotationsBy
 const selectAllVideoCodeIdsByStartTime = createSelector([selectAllVideoCodesByStartTime], (videoCodes) =>
     videoCodes.map((vc) => vc.id)
 )
+
+const selectAllCutIdsByStartTime = createSelector([selectAllCutsByStartTime], (cuts) => cuts.map((c) => c.id))
 
 const selectAllActiveAnnotationIdsAtCursor = createSelector(
     [selectAllAnnotationsByStartTime, playerSelectors.selectSyncPlayPosition],
@@ -171,10 +200,15 @@ const selectAllActiveAnnotationIdsAtCursor = createSelector(
 
 const selectAllActiveVideoCodeIdsAtCursor = createSelector(
     [selectAllVideoCodesByStartTime, playerSelectors.selectSyncPlayPosition],
-    (annotations, currentPlayPosition) => {
-        return annotations
-            .filter((annotation) => isAtCursor(annotation, currentPlayPosition))
-            .map((annotation) => annotation.id)
+    (videoCodes, currentPlayPosition) => {
+        return videoCodes.filter((vc) => isAtCursor(vc, currentPlayPosition)).map((vc) => vc.id)
+    }
+)
+
+const selectAllActiveCutIdsAtCursor = createSelector(
+    [selectAllCutsByStartTime, playerSelectors.selectSyncPlayPosition],
+    (cuts, currentPlayPosition) => {
+        return cuts.filter((cut) => isAtCursor(cut, currentPlayPosition)).map((cut) => cut.id)
     }
 )
 
@@ -187,7 +221,7 @@ export const selectors = {
 
     selectSolution,
 
-    selectVideoCodeIdsAtCursor,
+    selectVideoCodeIdsAtCursor: selectCurrentVideoCodeIdsAtCursor,
     selectAllVideoCodesByStartTime,
     selectAllVideoCodeIdsByStartTime,
     selectAllActiveVideoCodeIdsAtCursor,
@@ -199,5 +233,9 @@ export const selectors = {
     selectAllActiveAnnotationIdsAtCursor,
     selectActiveSolutionsWithAnnotations,
 
-    selectCutIdsAtCursor,
+    selectCurrentCutIdsAtCursor,
+    selectAllCutsByStartTime,
+    selectAllCutIdsByStartTime,
+    selectAllActiveCutIdsAtCursor,
+    selectActiveSolutionsWithCuts,
 }
