@@ -21,17 +21,27 @@
 }
 
 .video-editor__overlay__content {
-    position: relative;
-    z-index: $theme__z-index--overlay;
-
-    width: 540px;
-    max-width: 80%;
-    max-height: 70%;
-
     overflow: auto;
+}
+
+.video-editor__overlay__wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    overflow: hidden;
+
+    padding: $theme__spacing--large;
+    min-width: 500px;
+    max-width: 95%;
+    max-height: 80%;
 
     background-color: $theme__color__white;
-    padding: $theme__spacing--large;
+
+    z-index: $theme__z-index--overlay;
+
+    &--fullWidth {
+        width: 95%;
+    }
 }
 
 .video-editor__overlay__backdrop {

@@ -8,12 +8,12 @@ import VideoContextCanvas from './VideoContextCanvas'
 import useVideoContextVolume from './hooks/useVideoContextVolume'
 import useVideoContextPlayback from './hooks/useVideoContextPlayback'
 import useVideoContextCurrentTime from './hooks/useVideoContextCurrentTime'
-import useVideoContextPlaybackRate from './hooks/useVideoContextPlaybackRate'
 import VolumeControl from './Controls/VolumeControl'
 import PlayBackControl from './Controls/PlayBackControl'
 import MuteControl from './Controls/MuteControl'
 import ProgressControl from './Controls/ProgressControl'
 import TimeInfo from './TimeInfo'
+import { getAspectRatioHeight, getAspectRatioWidth } from '../../utils'
 
 type Props = {
     cutList: CutList
@@ -22,7 +22,8 @@ type Props = {
 const VideoContextPlayer: FC<Props> = (props) => {
     const [videoContext, setVideoContext] = useState<VideoContext | undefined>(undefined)
     const videoContextPlayList = useMemo(() => transformCutListToVideoContextPlayList(props.cutList), [props.cutList])
-    const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null)
+    const $videoContextPlayerRef = useRef<HTMLDivElement>(null)
+    const $canvasWrapperRef = useRef<HTMLCanvasElement>(null)
     const [canvasWidth, setCanvasWidth] = useState(0)
     const [canvasHeight, setCanvasHeight] = useState(0)
     const [videoSrcAttributes, setVideoSourceAttributes] = useState<{ videoHeight: number; videoWidth: number }>({
@@ -30,7 +31,10 @@ const VideoContextPlayer: FC<Props> = (props) => {
         videoWidth: 0,
     })
 
-    const { width: containerWidth } = useDebouncedResizeObserver(canvasRef, 500)
+    const { width: videoContextPlayerWidth, height: videoContextPlayerHeight } = useDebouncedResizeObserver(
+        $videoContextPlayerRef,
+        100
+    )
 
     // controls
     const { volume, setVolume, isMuted, toggleIsMuted } = useVideoContextVolume(videoContext, 1)
@@ -39,7 +43,6 @@ const VideoContextPlayer: FC<Props> = (props) => {
         videoContextPlayList,
     ])
     const { currentTime, setCurrentTime } = useVideoContextCurrentTime(videoContext)
-    const { playbackRate, setPlaybackRate } = useVideoContextPlaybackRate(videoContext)
 
     // handleKeyDown to catch play/pause toggle via short cut
     const handleKeyDown = (ev: React.KeyboardEvent<HTMLElement>) => {
@@ -52,26 +55,38 @@ const VideoContextPlayer: FC<Props> = (props) => {
         }
     }
 
-    // Determine canvas dimensions (important to also preserve a certain resolution)
+    // Determine canvas dimensions preserving the aspect ratio of the original video
+    // TODO: This is still a little bit buggy - there are times, when the
     useEffect(() => {
-        const canvas = canvasRef.current
+        const canvas = $canvasWrapperRef.current
+        const { videoWidth, videoHeight } = videoSrcAttributes
 
-        if (canvas && canvas.parentElement) {
+        if (canvas && canvas.parentElement && videoWidth > 0 && videoHeight > 0) {
             const parentElement = canvas.parentElement
-            const parentHeight = parentElement.clientHeight
-            const parentWidth = parentElement.clientWidth
-            const { videoWidth, videoHeight } = videoSrcAttributes
-            const aspectRatio = Math.min(parentWidth / videoWidth, parentHeight / videoHeight)
+            const containerHeight = parentElement.clientHeight
+            const containerWidth = parentElement.clientWidth
 
-            if (aspectRatio !== Infinity && !isNaN(aspectRatio)) {
-                setCanvasWidth(videoWidth * aspectRatio)
-                setCanvasHeight(videoHeight * aspectRatio)
+            // set width to videoWidth capping at containerWidth
+            const maxWidth = Math.min(containerWidth, videoWidth)
+            const aspectRatioHeight = getAspectRatioHeight(videoWidth, videoHeight, maxWidth)
+
+            setCanvasWidth(maxWidth)
+            setCanvasHeight(aspectRatioHeight)
+
+            // tune back to fit the canvas into the container if width is not the limiting factor
+            if (canvasHeight > containerHeight) {
+                // set height to videoHeight capping at containerHeight
+                const maxHeight = Math.min(containerHeight, videoHeight)
+                const aspectRatioWidth = getAspectRatioWidth(videoWidth, videoHeight, maxHeight)
+
+                setCanvasHeight(maxHeight)
+                setCanvasWidth(aspectRatioWidth)
             }
         }
-    }, [canvasRef, videoSrcAttributes, containerWidth])
+    }, [$canvasWrapperRef, videoSrcAttributes, videoContextPlayerWidth, videoContextPlayerHeight])
 
     const resetVideoContext = () => {
-        const { videoCtx } = initVideoContext(canvasRef)
+        const { videoCtx } = initVideoContext($canvasWrapperRef)
         setVideoContext(videoCtx)
 
         return { videoCtx }
@@ -86,7 +101,7 @@ const VideoContextPlayer: FC<Props> = (props) => {
     useEffect(() => {
         const { videoCtx } = resetVideoContext()
 
-        if (videoCtx && props.cutList.length > 0) {
+        if (videoCtx && videoContextPlayList.length > 0) {
             const nodesAndElements = videoContextPlayList.map((cut) => addVideoContextPlayListElement(cut, videoCtx))
             const firstVideoElement = nodesAndElements[0].videoElement
 
@@ -100,11 +115,11 @@ const VideoContextPlayer: FC<Props> = (props) => {
                 })
             })
         }
-    }, [props.cutList])
+    }, [videoContextPlayList])
 
     return (
-        <div className="video-context-player" onKeyDown={handleKeyDown}>
-            <VideoContextCanvas canvasRef={canvasRef} canvasWidth={canvasWidth} canvasHeight={canvasHeight} />
+        <div className="video-context-player" onKeyDown={handleKeyDown} ref={$videoContextPlayerRef}>
+            <VideoContextCanvas $canvasRef={$canvasWrapperRef} canvasWidth={canvasWidth} canvasHeight={canvasHeight} />
             <div className="video-context-player__controls">
                 <PlayBackControl isPaused={isPaused} toggleIsPaused={toggleIsPaused} />
 
