@@ -1,12 +1,15 @@
-@import "Mixins";
+@import 'Mixins';
 
-html, body {
+html,
+body {
     margin: 0;
     height: 100%;
     width: 100%;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -58,6 +61,10 @@ html, body {
 }
 
 .content-with-sidebar {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
     width: 100%;
     height: 100%;
     padding: 20px;

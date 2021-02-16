@@ -12,9 +12,10 @@ import {
     FilterState,
     VideoComponentId,
     ActivePreviousSolution,
-} from 'Components/VideoEditor/components/MultiLane/Filter/FilterSlice'
+} from 'Components/VideoEditor/FilterContext/FilterSlice'
 import { TabsTypesEnum } from 'types'
 import { setIn } from 'immutable'
+import { SolutionByTeam } from './SolutionsController'
 
 export const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
     entities.map((e) => ({ ...e, id: e?.id ?? generate() }))
@@ -61,7 +62,7 @@ export const videoCodePrototypeSchema = new schema.Entity(VIDEO_CODE_PROTOTYPE_A
     videoCodes: [videoCodePrototypeChildren],
 })
 
-const solutionSchema = new schema.Entity(
+const exerciseAppSolutionSchema = new schema.Entity(
     'solutions',
     {
         solution: {
@@ -78,8 +79,8 @@ const solutionSchema = new schema.Entity(
 )
 
 export const preparedAPIResponseSchema = {
-    currentSolution: solutionSchema,
-    previousSolutions: [solutionSchema],
+    currentSolution: exerciseAppSolutionSchema,
+    previousSolutions: [exerciseAppSolutionSchema],
 }
 
 type NormalizedEntities = {
@@ -96,7 +97,7 @@ type NormalizedResult = {
 }
 
 // TODO add solution typing
-export const normalizeAPIResponse = (
+export const normalizeAPIResponseForExercisePhaseApp = (
     solution: any,
     config: ConfigState
 ): NormalizedSchema<NormalizedEntities, NormalizedResult> => {
@@ -133,6 +134,17 @@ export const normalizeAPIResponse = (
                 customVideoCodesPool: flattenedVideoCodePool,
             },
         },
+    }
+
+    return normalize(preparedData, preparedAPIResponseSchema)
+}
+
+export const normalizeAPIResponseForSolutionsApp = (
+    solutions: SolutionByTeam[]
+): NormalizedSchema<NormalizedEntities, NormalizedResult> => {
+    const preparedData = {
+        previousSolutions: solutions,
+        currentSolution: {},
     }
 
     return normalize(preparedData, preparedAPIResponseSchema)

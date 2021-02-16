@@ -266,12 +266,18 @@ class ExercisePhaseController extends AbstractController
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
 
         $solutions = array_map(function (ExercisePhaseTeam $team) use ($exercise) {
+            $solution = $team->getSolution();
+            $solutionCreator = $team->getCreator();
+
             return [
                 'teamCreator' => $team->getCreator()->getUsername(),
                 'teamMembers' => array_map(function (User $member) {
                     return $member->getUsername();
                 }, $team->getMembers()->toArray()),
-                'solution' => $team->getSolution()->getSolution(),
+                'solution' => $solution->getSolution(),
+                'id' => $solution->getId(),
+                'userName' => $solutionCreator->getUsername(),
+                'userId' => $solutionCreator->getId(),
                 'cutVideo' => $team->getSolution()->getCutVideo() ? $team->getSolution()->getCutVideo()->getAsArray($this->appRuntime) : null
             ];
         }, $teams);

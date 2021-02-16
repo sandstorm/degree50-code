@@ -7,7 +7,7 @@ import { selectors as configSelectors } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { normalizeAPIResponse } from 'StimulusControllers/normalizeData'
+import { normalizeAPIResponseForExercisePhaseApp } from 'StimulusControllers/normalizeData'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -69,7 +69,7 @@ function* handleMessages(channel: EventChannel<unknown>) {
 
             const currentConfig = configSelectors.selectConfig(yield select())
 
-            const normalizedAPIResponse = normalizeAPIResponse(solution, currentConfig)
+            const normalizedAPIResponse = normalizeAPIResponseForExercisePhaseApp(solution, currentConfig)
 
             yield put(actions.data.annotations.init({ byId: normalizedAPIResponse.entities.annotations }))
             yield put(actions.data.videoCodes.init({ byId: normalizedAPIResponse.entities.videoCodes }))

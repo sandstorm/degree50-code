@@ -20,10 +20,17 @@ export const AnnotationOverlayIds = {
 }
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
+    const activePhaseType = configSelectors.selectPhaseType(state)
+    const isSolutionView = configSelectors.selectIsSolutionView(state)
+
+    const disableCreate = isSolutionView || activePhaseType === ExercisePhaseTypesEnum.VIDEO_CUTTING
+    const disabled = isSolutionView && activePhaseType === ExercisePhaseTypesEnum.VIDEO_CUTTING
+
     return {
         allAnnotationsCount: videoEditorSelectors.selectAllAnnotationIdsByStartTime(state).length,
         activeAnnotationCount: videoEditorSelectors.selectAllActiveAnnotationIdsAtCursor(state).length,
-        activePhase: configSelectors.selectPhaseType(state),
+        disableCreate,
+        disabled,
     }
 }
 
@@ -37,14 +44,13 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const AnnotationsMenu: FC<Props> = (props) => {
     const activeAnnotationsLabel = `Aktive Annotationen (${props.activeAnnotationCount})`
     const allAnnotationsLabel = `Alle Annotationen (${props.allAnnotationsCount})`
-    const isReadOnly = props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING
 
     return (
         <div className="video-editor__menu">
             {props.activeAnnotationCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
             )}
-            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen" pauseVideo>
+            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen" disabled={props.disabled} pauseVideo>
                 <MenuItem
                     ariaLabel={activeAnnotationsLabel}
                     label={activeAnnotationsLabel}
@@ -54,7 +60,7 @@ const AnnotationsMenu: FC<Props> = (props) => {
                     ariaLabel="Erstelle Annotation"
                     label="Erstelle Annotation"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.create, closeOthers: true })}
-                    disabled={isReadOnly}
+                    disabled={props.disableCreate}
                 />
                 <MenuItem
                     ariaLabel={allAnnotationsLabel}

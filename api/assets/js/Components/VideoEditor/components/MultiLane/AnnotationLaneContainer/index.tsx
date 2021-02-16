@@ -16,6 +16,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
         annotations: videoEditorSelectors.data.selectCurrentAnnotationsByStartTime(state),
         previousSolutions: videoEditorSelectors.selectActiveSolutionsWithAnnotations(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
+        isSolutionView: configSelectors.selectIsSolutionView(state),
     }
 }
 
@@ -26,7 +27,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const AnnotationLaneContainer = (props: Props) => {
     const componentName = getComponentName(TabsTypesEnum.VIDEO_ANNOTATIONS)
 
-    if (props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
+    if (!props.isSolutionView && props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
         const ownerName = props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
 
         return (
