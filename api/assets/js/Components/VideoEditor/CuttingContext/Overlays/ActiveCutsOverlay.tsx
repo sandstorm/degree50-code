@@ -34,7 +34,7 @@ const ActiveCutsOverlay: FC<Props> = (props) => {
                     ))}
                 </ol>
             ) : (
-                <p>Keine Cuten aktiv</p>
+                <p>Keine Schnitte aktiv</p>
             )}
         </Overlay>
     )

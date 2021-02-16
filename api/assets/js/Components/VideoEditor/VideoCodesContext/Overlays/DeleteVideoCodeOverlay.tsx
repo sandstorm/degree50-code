@@ -32,7 +32,7 @@ const DeleteVideoCodeOverlay: FC<Props> = (props) => {
     }
 
     return (
-        <Overlay closeCallback={close} title="VideoCode wirklich löschen?">
+        <Overlay closeCallback={close} title="Codierung wirklich löschen?">
             <Button className="btn btn-grey" onPress={close}>
                 <i className="fas fa-times" />
                 <span>Abbrechen</span>
