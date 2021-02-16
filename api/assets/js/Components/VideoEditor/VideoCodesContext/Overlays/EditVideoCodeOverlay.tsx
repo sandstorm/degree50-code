@@ -57,7 +57,7 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
     }
 
     return (
-        <Overlay closeCallback={close} title="VideoCode bearbeiten">
+        <Overlay closeCallback={close} title="Codierung bearbeiten">
             <TimeInput label="Start" value={transientVideoCode.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
             <hr />
