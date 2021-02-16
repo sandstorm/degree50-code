@@ -5,6 +5,7 @@ import CuttingMenu from '../CuttingContext/CuttingMenu'
 import TeamMenu from '../Team/TeamMenu'
 import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
 import ZusatzMaterialMenu from '../ZusatzMaterial/ZusatzMaterialMenu'
+import FilterMenu from '../FilterContext/FilterMenu'
 
 const Toolbar = () => {
     return (
@@ -15,6 +16,7 @@ const Toolbar = () => {
             <AufgabeMenu />
             <ZusatzMaterialMenu />
             <TeamMenu />
+            <FilterMenu />
         </div>
     )
 }

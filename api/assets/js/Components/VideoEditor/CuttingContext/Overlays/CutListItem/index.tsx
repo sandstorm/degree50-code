@@ -18,6 +18,7 @@ type OwnProps = {
 
 const mapStateToProps = (state: VideoEditorState, ownProps: OwnProps) => ({
     item: selectors.data.cuts.selectCutById(state, ownProps),
+    isFromCurrentSolution: selectors.data.selectCutIsFromCurrentSolution(state, ownProps),
 })
 
 const mapDispatchToProps = {
@@ -69,12 +70,16 @@ const CutListItem: FC<Props> = (props) => {
             <p>Text: {props.item.text}</p>
             <p>Memo: {props.item.memo}</p>
             {props.showPositionControls && <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />}
-            <Button className="btn btn-secondary" onPress={handleRemove}>
-                Löschen
-            </Button>
-            <Button className="btn btn-primary" onPress={handleEdit}>
-                Bearbeiten
-            </Button>
+            {props.isFromCurrentSolution && (
+                <>
+                    <Button className="btn btn-secondary" onPress={handleRemove}>
+                        Löschen
+                    </Button>
+                    <Button className="btn btn-primary" onPress={handleEdit}>
+                        Bearbeiten
+                    </Button>
+                </>
+            )}
         </li>
     )
 }

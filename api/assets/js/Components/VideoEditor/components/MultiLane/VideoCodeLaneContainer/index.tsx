@@ -35,6 +35,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
         prototypes: videoEditorSelectors.data.videoCodePrototypes.selectById(state),
         previousSolutions: videoEditorSelectors.selectActiveSolutionsWithVideoCodes(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
+        isSolutionView: configSelectors.selectIsSolutionView(state),
     }
 }
 
@@ -45,7 +46,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const VideoCodeLaneContainer = (props: Props) => {
     const componentName = getComponentName(TabsTypesEnum.VIDEO_CODES)
 
-    if (props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
+    if (!props.isSolutionView && props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
         const mediaItems = mergeCodesAndPrototypesToItems(props.videoCodes, props.prototypes)
         const ownerName = props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
 

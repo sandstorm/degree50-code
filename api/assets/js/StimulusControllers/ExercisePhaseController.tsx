@@ -11,8 +11,11 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { normalizeAPIResponse, initializeComponentFilter, initializePreviousSolutionsFilter } from './normalizeData'
-import { ActiveComponent, videoComponents } from 'Components/VideoEditor/components/MultiLane/Filter/FilterSlice'
+import {
+    normalizeAPIResponseForExercisePhaseApp,
+    initializeComponentFilter,
+    initializePreviousSolutionsFilter,
+} from './normalizeData'
 
 export default class extends Controller {
     connect() {
@@ -26,7 +29,7 @@ export default class extends Controller {
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
 
-        const normalizedAPIResponse = normalizeAPIResponse(solution, config)
+        const normalizedAPIResponse = normalizeAPIResponseForExercisePhaseApp(solution, config)
 
         store.dispatch(
             actions.data.solutions.init({

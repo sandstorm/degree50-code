@@ -31,24 +31,28 @@ const ActivePreviousSolutions = (props: Props) => {
 
     return (
         <div className="multilane-filter__components">
-            <h2>Lösungen:</h2>
-            <ul>
-                {props.previousSolutions.map((s) => (
-                    <li key={s.id}>
-                        <label htmlFor={s.id}>
-                            <input
-                                id={s.id}
-                                type="checkbox"
-                                key={s.id}
-                                checked={s.isVisible}
-                                onChange={handleToggle}
-                                value={s.id}
-                            />
-                            {s.userName}
-                        </label>
-                    </li>
-                ))}
-            </ul>
+            {props.previousSolutions.length > 0 && (
+                <>
+                    <h2>Lösungen:</h2>
+                    <ul>
+                        {props.previousSolutions.map((s) => (
+                            <li key={s.id}>
+                                <label htmlFor={s.id}>
+                                    <input
+                                        id={s.id}
+                                        type="checkbox"
+                                        key={s.id}
+                                        checked={s.isVisible}
+                                        onChange={handleToggle}
+                                        value={s.id}
+                                    />
+                                    {s.userName}
+                                </label>
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
         </div>
     )
 }

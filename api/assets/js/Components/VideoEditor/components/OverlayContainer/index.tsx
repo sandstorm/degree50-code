@@ -32,6 +32,8 @@ import AufgabeOverlay, { AUFGABE_OVERLAY_ID } from 'Components/VideoEditor/Aufga
 import ZusatzMaterialOverlay, {
     ZUSATZ_MATERIAL_OVERLAY_ID,
 } from 'Components/VideoEditor/ZusatzMaterial/ZusatzMaterialOverlay'
+import { SolutionFilterOverlayIds } from 'Components/VideoEditor/FilterContext/FilterMenu'
+import SolutionFilterOverlay from 'Components/VideoEditor/FilterContext/Overlays/SolutionFilterOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
@@ -102,6 +104,11 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
         }
         case ZUSATZ_MATERIAL_OVERLAY_ID: {
             return <ZusatzMaterialOverlay />
+        }
+
+        // Filter
+        case SolutionFilterOverlayIds.filterSolutions: {
+            return <SolutionFilterOverlay />
         }
 
         default:

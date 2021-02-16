@@ -7,6 +7,7 @@ import {
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
+import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ExercisePhaseTypesEnum'
 
 const prefix = 'CUT'
 
@@ -21,10 +22,16 @@ export const CutOverlayIds = {
 }
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
+    const activePhaseType = configSelectors.selectPhaseType(state)
+    const isSolutionView = configSelectors.selectIsSolutionView(state)
+
+    const disableCreate = isSolutionView || activePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS
+
     return {
         allCutsCount: videoEditorSelectors.selectAllCutIdsByStartTime(state).length,
         activeCutCount: videoEditorSelectors.selectCurrentCutIdsAtCursor(state).length,
         cutsAreActive: configSelectors.selectCutsAreActive(state),
+        disableCreate,
     }
 }
 
@@ -57,6 +64,7 @@ const CutsMenu: FC<Props> = (props) => {
                     ariaLabel="Erstelle Schnitt"
                     label="Erstelle Schnitt"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.create, closeOthers: true })}
+                    disabled={props.disableCreate}
                 />
                 <MenuItem
                     ariaLabel={allCutsLabel}
@@ -67,6 +75,7 @@ const CutsMenu: FC<Props> = (props) => {
                     ariaLabel="Schnittreihenfolge"
                     label="Schnittreihenfolge"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.allByCutOrder, closeOthers: true })}
+                    disabled={props.disableCreate}
                 />
                 <MenuItem
                     ariaLabel="Schnitt Vorschau"
