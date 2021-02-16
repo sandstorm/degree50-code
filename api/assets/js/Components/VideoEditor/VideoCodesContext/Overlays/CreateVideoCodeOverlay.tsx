@@ -65,7 +65,7 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
 
     if (props.prototoypes.length < 1) {
         return (
-            <Overlay closeCallback={close} title="Neuer VideoCode">
+            <Overlay closeCallback={close} title="Neue Codierung">
                 <p tabIndex={0}>Keine Codes vorhanden!</p>
             </Overlay>
         )

@@ -26,7 +26,7 @@ const AllVideoCodesOverlay: FC<Props> = (props) => {
     }
 
     return (
-        <Overlay closeCallback={close} title="Alle VideoCodes">
+        <Overlay closeCallback={close} title="Alle Codierungen">
             {props.videoCodeIdsByStartTime.length > 0 ? (
                 <ol className="video-editor__media-item-list-new">
                     {props.videoCodeIdsByStartTime.map((id) => (
