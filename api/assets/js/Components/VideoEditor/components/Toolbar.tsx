@@ -1,6 +1,7 @@
 import React from 'react'
 import AnnotationsMenu from '../AnnotationsContext/AnnotationsMenu'
 import CuttingMenu from '../CuttingContext/CuttingMenu'
+import TeamMenu from '../Team/TeamMenu'
 import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
 
 const Toolbar = () => {
@@ -9,6 +10,7 @@ const Toolbar = () => {
             <AnnotationsMenu />
             <VideoCodesMenu />
             <CuttingMenu />
+            <TeamMenu />
         </div>
     )
 }
