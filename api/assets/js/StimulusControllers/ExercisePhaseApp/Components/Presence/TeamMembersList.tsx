@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
-import { selectIsConnecting, selectTeamMemberIds } from './PresenceSlice'
+import { PresenceStateSlice, selectIsConnecting, selectTeamMemberIds } from './PresenceSlice'
 import TeamMembersListItem from './TeamMembersListItem'
 
 type TeamMembersListProps = ReturnType<typeof mapStateToProps>
@@ -24,7 +23,7 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({ isConnecting, teamMem
     )
 }
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: PresenceStateSlice) => ({
     teamMemberIds: selectTeamMemberIds(state),
     isConnecting: selectIsConnecting(state),
 })
