@@ -1,5 +1,5 @@
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo, useCallback, useMemo } from 'react'
+import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import {
     ConfigStateSlice,
@@ -37,11 +37,14 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const AnnotationsMenu: FC<Props> = (props) => {
     const activeAnnotationsLabel = `Aktive Annotationen (${props.activeAnnotationCount})`
     const allAnnotationsLabel = `Alle Annotationen (${props.allAnnotationsCount})`
-    const isReadOnly = useMemo(() => props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING, [props.activePhase])
+    const isReadOnly = props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING
 
-    const renderMenuItems = useCallback(
-        () => (
-            <>
+    return (
+        <div className="video-editor__menu">
+            {props.activeAnnotationCount > 0 && (
+                <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
+            )}
+            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen" pauseVideo>
                 <MenuItem
                     ariaLabel={activeAnnotationsLabel}
                     label={activeAnnotationsLabel}
@@ -58,18 +61,6 @@ const AnnotationsMenu: FC<Props> = (props) => {
                     label={allAnnotationsLabel}
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.all, closeOthers: true })}
                 />
-            </>
-        ),
-        [props.setOverlay, isReadOnly, activeAnnotationsLabel, allAnnotationsLabel]
-    )
-
-    return (
-        <div className="video-editor__menu">
-            {props.activeAnnotationCount > 0 && (
-                <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
-            )}
-            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen" pauseVideo>
-                {renderMenuItems}
             </MenuButton>
         </div>
     )

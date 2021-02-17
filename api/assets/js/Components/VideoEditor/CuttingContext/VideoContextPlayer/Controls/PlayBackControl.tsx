@@ -1,5 +1,5 @@
 import Button from 'Components/Button/Button'
-import React, { FC, memo, useCallback, useMemo } from 'react'
+import React, { FC, memo, useCallback } from 'react'
 
 type Props = {
     isPaused: boolean
@@ -7,8 +7,8 @@ type Props = {
 }
 
 const PlaybackControl: FC<Props> = (props) => {
-    const playbackButtonLabel = useMemo(() => (props.isPaused ? 'Play' : 'Pause'), [props.isPaused])
-    const playbackButtonIcon = useMemo(() => `fas fa-${props.isPaused ? 'play' : 'pause'}`, [props.isPaused])
+    const playbackButtonLabel = props.isPaused ? 'Play' : 'Pause'
+    const playbackButtonIcon = `fas fa-${props.isPaused ? 'play' : 'pause'}`
     const handleClick = useCallback(() => props.toggleIsPaused(), [props.toggleIsPaused])
 
     return (

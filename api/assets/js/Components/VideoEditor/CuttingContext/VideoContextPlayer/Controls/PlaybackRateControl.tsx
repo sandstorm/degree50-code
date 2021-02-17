@@ -1,6 +1,6 @@
-import MenuButton, { MenuItemRenderProps } from 'Components/VideoEditor/components/MenuButton'
+import MenuButton from 'Components/VideoEditor/components/MenuButton'
 import MenuItem from 'Components/VideoEditor/components/MenuItem'
-import React, { FC, memo, useCallback, useMemo } from 'react'
+import React, { FC, memo } from 'react'
 
 type Props = {
     playbackRate: number
@@ -8,26 +8,7 @@ type Props = {
 }
 
 const PlaybackRateControl: FC<Props> = (props) => {
-    const renderMenuItems = useCallback(
-        (menuItemRenderProps: MenuItemRenderProps) => {
-            const createClickHandler = (rate: number) => () => {
-                props.setPlaybackRate(rate)
-                menuItemRenderProps.close()
-            }
-            return (
-                <>
-                    <MenuItem ariaLabel="0.5x" label="0.5x" onClick={createClickHandler(0.5)} />
-                    <MenuItem ariaLabel="1x" label="1x" onClick={createClickHandler(1)} />
-                    <MenuItem ariaLabel="1.5x" label="1.5x" onClick={createClickHandler(1.5)} />
-                    <MenuItem ariaLabel="2x" label="2x" onClick={createClickHandler(2)} />
-                    <MenuItem ariaLabel="3x" label="3x" onClick={createClickHandler(3)} />
-                </>
-            )
-        },
-        [props.setPlaybackRate]
-    )
-
-    const label = useMemo(() => `${props.playbackRate}x`, [props.playbackRate])
+    const label = `${props.playbackRate}x`
 
     return (
         <MenuButton
@@ -36,7 +17,11 @@ const PlaybackRateControl: FC<Props> = (props) => {
             label={label}
             small
         >
-            {renderMenuItems}
+            <MenuItem ariaLabel="0.5x" label="0.5x" onClick={() => props.setPlaybackRate(0.5)} />
+            <MenuItem ariaLabel="1x" label="1x" onClick={() => props.setPlaybackRate(1)} />
+            <MenuItem ariaLabel="1.5x" label="1.5x" onClick={() => props.setPlaybackRate(1.5)} />
+            <MenuItem ariaLabel="2x" label="2x" onClick={() => props.setPlaybackRate(2)} />
+            <MenuItem ariaLabel="3x" label="3x" onClick={() => props.setPlaybackRate(3)} />
         </MenuButton>
     )
 }

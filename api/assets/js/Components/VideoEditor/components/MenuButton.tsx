@@ -5,14 +5,10 @@ import React, { FC, memo, ReactNode, useCallback, useMemo, useState } from 'reac
 import { actions } from '../PlayerSlice'
 import { generate } from 'shortid'
 
-export type MenuItemRenderProps = {
-    close: () => void
-}
-
 type OwnProps = {
     label?: string
     ariaLabel: string
-    children: (props: MenuItemRenderProps) => ReactNode
+    children: ReactNode
     icon?: ReactNode
     key?: string
     disabled?: boolean
@@ -67,13 +63,9 @@ const MenuButton: FC<Props> = ({
         [close]
     )
 
-    const className = useMemo(
-        () =>
-            `btn btn-grey ${disabled ? 'disabled' : ``} menu-button video-editor__toolbar__button ${
-                small ? 'btn-sm' : ''
-            }`,
-        [disabled, small]
-    )
+    const className = `btn btn-grey ${disabled ? 'disabled' : ``} menu-button video-editor__toolbar__button ${
+        small ? 'btn-sm' : ''
+    }`
 
     const focusScopeKey = useMemo(() => key ?? generate(), [key])
 
@@ -96,7 +88,7 @@ const MenuButton: FC<Props> = ({
             {isOpen && (
                 <FocusScope autoFocus contain restoreFocus key={focusScopeKey}>
                     <div className="menu" onKeyDown={handleKeyDown}>
-                        {children({ close })}
+                        {children}
                     </div>
                 </FocusScope>
             )}

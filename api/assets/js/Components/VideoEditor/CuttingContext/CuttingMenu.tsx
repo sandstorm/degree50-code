@@ -1,5 +1,5 @@
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo, useCallback } from 'react'
+import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import {
     ConfigStateSlice,
@@ -39,9 +39,15 @@ const CutsMenu: FC<Props> = (props) => {
     const allCutsLabel = `Alle Schnitte (${props.allCutsCount})`
     const activeCutsLabel = `Aktive Schnitte (${props.activeCutCount})`
 
-    const renderMenuItems = useCallback(
-        () => (
-            <>
+    return (
+        <div className="video-editor__menu">
+            {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
+            <MenuButton
+                icon={<i className="fas fa-cut" />}
+                disabled={!props.cutsAreActive}
+                ariaLabel="Schnitte"
+                pauseVideo
+            >
                 <MenuItem
                     ariaLabel={activeCutsLabel}
                     label={activeCutsLabel}
@@ -67,21 +73,6 @@ const CutsMenu: FC<Props> = (props) => {
                     label="Schnitt Vorschau"
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.cutPreview, closeOthers: true })}
                 />
-            </>
-        ),
-        [props.setOverlay, activeCutsLabel, allCutsLabel]
-    )
-
-    return (
-        <div className="video-editor__menu">
-            {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
-            <MenuButton
-                icon={<i className="fas fa-cut" />}
-                disabled={!props.cutsAreActive}
-                ariaLabel="Schnitte"
-                pauseVideo
-            >
-                {renderMenuItems}
             </MenuButton>
         </div>
     )
