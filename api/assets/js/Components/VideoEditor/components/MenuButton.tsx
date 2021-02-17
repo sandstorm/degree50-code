@@ -72,7 +72,7 @@ const MenuButton: FC<Props> = ({
     if (disabled) {
         return (
             <div className="menu-wrapper">
-                <Button title={ariaLabel} className={className} disabled>
+                <Button title={ariaLabel} className={className} isDisabled>
                     {icon} {label}
                 </Button>
             </div>
