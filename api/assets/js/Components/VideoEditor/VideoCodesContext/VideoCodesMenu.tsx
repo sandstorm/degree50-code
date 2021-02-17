@@ -1,5 +1,5 @@
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo, useCallback, useMemo } from 'react'
+import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import {
     ConfigStateSlice,
@@ -43,11 +43,14 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const VideoCodesMenu: FC<Props> = (props) => {
     const activeCodesLabel = `Aktive Codierungen (${props.activeVideoCodeCount})`
     const allCodesLabel = `Alle Codierungen (${props.allVideoCodesCount})`
-    const isReadOnly = useMemo(() => props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING, [props.activePhase])
+    const isReadOnly = props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING
 
-    const renderMenuItems = useCallback(
-        () => (
-            <>
+    return (
+        <div className="video-editor__menu">
+            {props.activeVideoCodeCount > 0 && (
+                <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
+            )}
+            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen" pauseVideo>
                 <MenuItem
                     ariaLabel={activeCodesLabel}
                     label={activeCodesLabel}
@@ -70,18 +73,6 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
                     disabled={isReadOnly}
                 />
-            </>
-        ),
-        [props.setOverlay, isReadOnly, activeCodesLabel, allCodesLabel]
-    )
-
-    return (
-        <div className="video-editor__menu">
-            {props.activeVideoCodeCount > 0 && (
-                <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
-            )}
-            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen" pauseVideo>
-                {renderMenuItems}
             </MenuButton>
         </div>
     )
