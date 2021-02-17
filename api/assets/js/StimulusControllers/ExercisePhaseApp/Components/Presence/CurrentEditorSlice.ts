@@ -23,5 +23,6 @@ const CurrentEditorSlice = createSlice({
 export const { setCurrentEditorId } = CurrentEditorSlice.actions
 export default CurrentEditorSlice.reducer
 
-export const selectCurrentEditorId = (state: { currentEditor: CurrentEditorState }) =>
-    state.currentEditor.currentEditorId
+export type CurrentEditorStateSlice = { currentEditor: CurrentEditorState }
+
+export const selectCurrentEditorId = (state: CurrentEditorStateSlice) => state.currentEditor.currentEditorId

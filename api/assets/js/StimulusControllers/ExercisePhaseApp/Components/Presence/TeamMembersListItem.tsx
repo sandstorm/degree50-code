@@ -1,16 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { AppDispatch, AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
-import { ConnectionState, selectTeamMemberById, TeamMemberId } from './PresenceSlice'
-import { selectCurrentEditorId } from './CurrentEditorSlice'
+import { ConnectionState, PresenceStateSlice, selectTeamMemberById, TeamMemberId } from './PresenceSlice'
+import { CurrentEditorStateSlice, selectCurrentEditorId } from './CurrentEditorSlice'
 import { promoteUserToCurrentEditorAction } from './PresenceSaga'
-import { selectors } from '../Config/ConfigSlice'
+import { ConfigStateSlice, selectors } from '../Config/ConfigSlice'
 
-type TeamMembersListItemOwnProps = {
+type OwnProps = {
     teamMemberId: TeamMemberId
 }
 
-type TeamMembersListItemProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const renderConnectionState = (connectionState: ConnectionState) => {
     switch (connectionState) {
@@ -30,48 +29,48 @@ const renderUserRoleState = (currentEditor: TeamMemberId | undefined, teamMember
     )
 }
 
-const TeamMembersListItem: React.FC<TeamMembersListItemProps> = ({
-    teamMember,
-    currentEditor,
-    userId,
-    promoteTeamMemberToCurrentEditor,
-}) => {
+const TeamMembersListItem: React.FC<Props> = (props) => {
     const className = `presence__team-member presence__team-member${
-        teamMember.connectionState === ConnectionState.CONNECTED ? '--connected' : '--disconnected'
+        props.teamMember.connectionState === ConnectionState.CONNECTED ? '--connected' : '--disconnected'
     }`
 
-    const isCurrentEditor = userId === currentEditor
-    const memberName = teamMember.name.split('@')[0]
+    const isCurrentEditor = props.userId === props.currentEditor
+    const memberName = props.teamMember.name.split('@')[0]
+
+    const handleClick = () => {
+        props.promoteTeamMemberToCurrentEditor(props.teamMemberId)
+    }
 
     return (
         <li className={className}>
             <span>
-                {renderUserRoleState(currentEditor, teamMember.id)} {memberName}
+                {renderUserRoleState(props.currentEditor, props.teamMemberId)} {memberName}
             </span>
-            {teamMember.id === userId && !isCurrentEditor && (
+            {props.teamMemberId === props.userId && !isCurrentEditor && (
                 <button
                     className={'btn btn-outline-primary btn-sm'}
-                    onClick={promoteTeamMemberToCurrentEditor}
+                    onClick={handleClick}
                     title="Übernehme die Bearbeitung"
                 >
                     <i className="fas fa-crown" />
                 </button>
             )}
-            {renderConnectionState(teamMember.connectionState)}
+            {renderConnectionState(props.teamMember.connectionState)}
         </li>
     )
 }
 
-const mapStateToProps = (state: AppState, ownProps: TeamMembersListItemOwnProps) => ({
+const mapStateToProps = (
+    state: PresenceStateSlice & CurrentEditorStateSlice & ConfigStateSlice,
+    ownProps: OwnProps
+) => ({
     teamMember: selectTeamMemberById(ownProps.teamMemberId, state),
     currentEditor: selectCurrentEditorId(state),
     userId: selectors.selectUserId(state),
 })
 
-const mapDispatchToProps = (dispatch: AppDispatch, ownProps: TeamMembersListItemOwnProps) => ({
-    promoteTeamMemberToCurrentEditor: () => {
-        dispatch(promoteUserToCurrentEditorAction(ownProps.teamMemberId))
-    },
-})
+const mapDispatchToProps = {
+    promoteTeamMemberToCurrentEditor: promoteUserToCurrentEditorAction,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeamMembersListItem)
