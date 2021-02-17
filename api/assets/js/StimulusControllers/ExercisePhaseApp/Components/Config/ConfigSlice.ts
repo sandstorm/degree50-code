@@ -75,6 +75,8 @@ const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCode
 const selectComponents = (state: ConfigStateSlice) => state.config.components
 const selectPreviousSolutions = (state: ConfigStateSlice) => state.config.previousSolutions
 const selectIsGroupPhase = (state: ConfigStateSlice) => state.config.isGroupPhase
+const selectTitle = (state: ConfigStateSlice) => state.config.title
+const selectDescription = (state: ConfigStateSlice) => state.config.description
 
 const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CODES) > -1
@@ -94,6 +96,8 @@ export const selectors = {
     selectComponents,
     selectPreviousSolutions,
     selectIsGroupPhase,
+    selectTitle,
+    selectDescription,
 }
 
 export default configSlice.reducer

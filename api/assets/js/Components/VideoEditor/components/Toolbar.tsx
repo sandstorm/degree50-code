@@ -1,5 +1,6 @@
 import React from 'react'
 import AnnotationsMenu from '../AnnotationsContext/AnnotationsMenu'
+import AufgabeMenu from '../Aufgabe/AufgabeMenu'
 import CuttingMenu from '../CuttingContext/CuttingMenu'
 import TeamMenu from '../Team/TeamMenu'
 import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
@@ -10,6 +11,7 @@ const Toolbar = () => {
             <AnnotationsMenu />
             <VideoCodesMenu />
             <CuttingMenu />
+            <AufgabeMenu />
             <TeamMenu />
         </div>
     )
