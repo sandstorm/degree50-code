@@ -4,7 +4,7 @@ import { useButton } from '@react-aria/button'
 type ButtonProps = {
     onPress?: () => void
     children: React.ReactNode
-    disabled?: boolean
+    isDisabled?: boolean
     className: string
     id?: string
     title?: string
@@ -22,6 +22,7 @@ const Button = (props: ButtonProps) => {
             title={props.title}
             id={props.id}
             className={props.className}
+            disabled={props.isDisabled}
             ref={buttonRef}
         >
             {children}
