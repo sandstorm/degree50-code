@@ -43,13 +43,14 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const VideoCodesMenu: FC<Props> = (props) => {
     const activeCodesLabel = `Aktive Codierungen (${props.activeVideoCodeCount})`
     const allCodesLabel = `Alle Codierungen (${props.allVideoCodesCount})`
+    const isReadOnly = props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING
 
     return (
         <div className="video-editor__menu">
             {props.activeVideoCodeCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
             )}
-            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen">
+            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen" pauseVideo>
                 <MenuItem
                     ariaLabel={activeCodesLabel}
                     label={activeCodesLabel}
@@ -59,7 +60,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     ariaLabel="Erstelle Codierung"
                     label="Erstelle Codierung"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.create, closeOthers: true })}
-                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
+                    disabled={isReadOnly}
                 />
                 <MenuItem
                     ariaLabel={allCodesLabel}
@@ -70,7 +71,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     ariaLabel="Code-Liste"
                     label="Code-Liste"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
-                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
+                    disabled={isReadOnly}
                 />
             </MenuButton>
         </div>

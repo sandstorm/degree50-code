@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FC, memo } from 'react'
-import { clamp, HoursStringFormatter, MinutesStringFormatter, SecondsStringFormatter } from '../utils'
+import { clamp, HoursStringFormatter, MinutesStringFormatter, SecondsWithMillisecondsStringFormatter } from '../utils'
 
 type Props = {
     label: string
@@ -27,7 +27,7 @@ const TimeInput: FC<Props> = (props) => {
     }
 
     const handleSecondsChange = (ev: ChangeEvent<HTMLInputElement>) => {
-        const newSeconds = SecondsStringFormatter.format(clamp(parseFloat(ev.target.value), 0, 59))
+        const newSeconds = SecondsWithMillisecondsStringFormatter.format(clamp(parseFloat(ev.target.value), 0, 59))
         props.onChange([timeSplit[0], timeSplit[1], newSeconds].join(':'))
     }
 

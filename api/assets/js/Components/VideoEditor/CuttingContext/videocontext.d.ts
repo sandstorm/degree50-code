@@ -25,6 +25,7 @@ declare module 'videocontext' {
         state: number
         volume: number
         duration: number
+        playbackRate: number
         play: () => void
         pause: () => void
         video: (el: HTMLVideoElement, offset: number, preloadTime: number, config: Record<string, unknown>) => any // FIXME

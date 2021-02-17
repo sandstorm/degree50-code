@@ -1,30 +1,35 @@
-import React from 'react'
+import React, { FC } from 'react'
 import CloseButton from './OverlayContainer/CloseButton'
 
 type Props = {
     closeCallback: () => void
     children: React.ReactNode
     title: string
+    fullWidth?: boolean
 }
 
-const Overlay = ({ closeCallback, children, title }: Props) => {
+const Overlay: FC<Props> = (props) => {
     const handleKeyDown = (ev: React.KeyboardEvent<HTMLElement>) => {
         if (ev.key === 'Escape') {
             ev.preventDefault()
-            closeCallback()
+            props.closeCallback()
             return false
         }
     }
 
     return (
         <div className="video-editor__overlay" onKeyDown={handleKeyDown} aria-labelledby="overlay-title">
-            <div className="video-editor__overlay__backdrop" onClick={closeCallback} />
-            <div className="video-editor__overlay__content">
+            <div className="video-editor__overlay__backdrop" onClick={props.closeCallback} />
+            <div
+                className={`video-editor__overlay__wrapper ${
+                    props.fullWidth ? 'video-editor__overlay__wrapper--fullWidth' : ''
+                }`}
+            >
                 <h3 className="video-editor__overlay__title">
-                    <span>{title}</span>
-                    <CloseButton onClick={closeCallback} />
+                    <span>{props.title}</span>
+                    <CloseButton onClick={props.closeCallback} />
                 </h3>
-                {children}
+                <div className="video-editor__overlay__content">{props.children}</div>
             </div>
         </div>
     )

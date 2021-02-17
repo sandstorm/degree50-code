@@ -37,13 +37,14 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const AnnotationsMenu: FC<Props> = (props) => {
     const activeAnnotationsLabel = `Aktive Annotationen (${props.activeAnnotationCount})`
     const allAnnotationsLabel = `Alle Annotationen (${props.allAnnotationsCount})`
+    const isReadOnly = props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING
 
     return (
         <div className="video-editor__menu">
             {props.activeAnnotationCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
             )}
-            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen">
+            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen" pauseVideo>
                 <MenuItem
                     ariaLabel={activeAnnotationsLabel}
                     label={activeAnnotationsLabel}
@@ -53,7 +54,7 @@ const AnnotationsMenu: FC<Props> = (props) => {
                     ariaLabel="Erstelle Annotation"
                     label="Erstelle Annotation"
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.create, closeOthers: true })}
-                    disabled={props.activePhase === ExercisePhaseTypesEnum.VIDEO_CUTTING}
+                    disabled={isReadOnly}
                 />
                 <MenuItem
                     ariaLabel={allAnnotationsLabel}
