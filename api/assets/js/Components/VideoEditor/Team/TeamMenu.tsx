@@ -29,6 +29,7 @@ const TeamMenu: FC<Props> = (props) => {
 
     return (
         <Button
+            title="Team"
             isDisabled={isDisabled}
             className="btn btn-grey btn-sm video-editor__toolbar__button"
             onPress={handleClick}

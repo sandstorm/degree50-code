@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppState } from '../../Store/Store'
 import { Material } from './MaterialViewer'
 
 interface MaterialViewerState {
@@ -25,6 +24,8 @@ export const materialViewerSlice = createSlice({
 
 export const { setActiveMaterial } = materialViewerSlice.actions
 
-export const selectActiveMaterial = (state: AppState) => state.materialViewer.activeMaterial
+export type MaterialViewerStateSlice = { materialViewer: MaterialViewerState }
+
+export const selectActiveMaterial = (state: MaterialViewerStateSlice) => state.materialViewer.activeMaterial
 
 export default materialViewerSlice.reducer

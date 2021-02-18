@@ -29,6 +29,9 @@ import DeleteVideoCodePrototypeOverlay from 'Components/VideoEditor/VideoCodesCo
 import CutPreviewOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CutPreviewOverlay'
 import TeamOverlay, { TEAM_OVERLAY_ID } from 'Components/VideoEditor/Team/TeamOverlay'
 import AufgabeOverlay, { AUFGABE_OVERLAY_ID } from 'Components/VideoEditor/Aufgabe/AufgabeOverlay'
+import ZusatzMaterialOverlay, {
+    ZUSATZ_MATERIAL_OVERLAY_ID,
+} from 'Components/VideoEditor/ZusatzMaterial/ZusatzMaterialOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
@@ -96,6 +99,9 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
         }
         case AUFGABE_OVERLAY_ID: {
             return <AufgabeOverlay />
+        }
+        case ZUSATZ_MATERIAL_OVERLAY_ID: {
+            return <ZusatzMaterialOverlay />
         }
 
         default:
