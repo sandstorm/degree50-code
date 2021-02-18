@@ -108,7 +108,11 @@ class User implements UserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = self::ROLE_USER;
 
-        return array_unique($roles);
+        // WHY the array_values:
+        // The way doctrine saves these roles inside the database sometimes differs (no idea why.).
+        // Sometimes doctrine will save them as array list and sometimes it saves them as associative array.
+        // However we expect the structure to always be a list, which is why we make sure here, that we actually get one ;)
+        return array_values(array_unique($roles));
     }
 
     public function setRoles(array $roles): self
