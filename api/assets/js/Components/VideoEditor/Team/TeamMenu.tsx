@@ -10,6 +10,7 @@ import { actions } from '../VideoEditorSlice'
 import { TEAM_OVERLAY_ID } from './TeamOverlay'
 
 const mapStateToProps = (state: ConfigStateSlice & PresenceStateSlice) => ({
+    isSolutionView: selectors.selectIsSolutionView(state),
     isGroupPhase: selectors.selectIsGroupPhase(state),
     onlineTeamMemberIds: selectOnlineTeamMemberIds(state),
 })
@@ -25,20 +26,22 @@ const TeamMenu: FC<Props> = (props) => {
         props.setOverlay({ overlayId: TEAM_OVERLAY_ID, closeOthers: true })
     }
 
-    const isDisabled = !props.isGroupPhase
+    const isDisabled = !props.isGroupPhase || props.isSolutionView
 
     return (
-        <Button
-            title="Team"
-            isDisabled={isDisabled}
-            className="btn btn-grey btn-sm video-editor__toolbar__button"
-            onPress={handleClick}
-        >
-            {props.isGroupPhase && (
-                <div className="video-editor__menu__count-badge">{props.onlineTeamMemberIds.length}</div>
-            )}
-            <i className="fas fa-users" />
-        </Button>
+        <div className="video-editor__menu">
+            <Button
+                title="Team"
+                isDisabled={isDisabled}
+                className="btn btn-grey btn-sm video-editor__toolbar__button"
+                onPress={handleClick}
+            >
+                {!isDisabled && (
+                    <div className="video-editor__menu__count-badge">{props.onlineTeamMemberIds.length}</div>
+                )}
+                <i className="fas fa-users" />
+            </Button>
+        </div>
     )
 }
 

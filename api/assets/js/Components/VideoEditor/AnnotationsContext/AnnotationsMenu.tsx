@@ -50,7 +50,12 @@ const AnnotationsMenu: FC<Props> = (props) => {
             {props.activeAnnotationCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeAnnotationCount}</div>
             )}
-            <MenuButton icon={<i className="fas fa-pen" />} ariaLabel="Annotationen" disabled={props.disabled} pauseVideo>
+            <MenuButton
+                icon={<i className="fas fa-pen" />}
+                ariaLabel="Annotationen"
+                disabled={props.disabled}
+                pauseVideo
+            >
                 <MenuItem
                     ariaLabel={activeAnnotationsLabel}
                     label={activeAnnotationsLabel}

@@ -12,7 +12,8 @@
     .video-editor__toolbar {
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
+        flex-flow: row wrap;
+        justify-content: flex-start;
         padding: $theme__spacing--small $theme__spacing--base;
 
         background-color: $theme__color__grey;
@@ -43,9 +44,10 @@
             z-index: $theme__z-index--menu;
             position: absolute;
             bottom: 32px;
+            width: 210px;
+
             background-color: $theme__color__grey--dark;
             color: $theme__color__white;
-            width: 210px;
 
             .menu-item {
                 padding: 8px;
