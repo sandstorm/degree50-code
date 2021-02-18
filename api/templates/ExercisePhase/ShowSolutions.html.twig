@@ -9,12 +9,14 @@
 {% endblock %}
 
 {% block body %}
-    <header class="content-header--center">
-        <h3>{{ exercise.name }} - Lösungen</h3>
-    </header>
-    <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {solutions: solutions, config: config} |json_encode|e('html_attr') }}">
-        <div class="loading-screen">
-            <i class="fas fa-spinner fa-spin"></i>
+    <div class="solution-app">
+        <header class="content-header--center">
+            <h3>{{ exercise.name }} - Lösungen</h3>
+        </header>
+        <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {solutions: solutions, config: config} |json_encode|e('html_attr') }}">
+            <div class="loading-screen">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
         </div>
     </div>
 {% endblock %}

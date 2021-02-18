@@ -15,7 +15,7 @@ import OverlaySlice, {
 } from './components/OverlayContainer/OverlaySlice'
 import { DataState } from './DataSlice'
 import { timeToSecond, sortByStartTime } from './utils'
-import { filterSlice, FilterState, selectors as filterSelectors } from './components/MultiLane/Filter/FilterSlice'
+import { filterSlice, FilterState, selectors as filterSelectors } from './FilterContext/FilterSlice'
 import { Annotation, VideoCode, Cut } from './types'
 
 export default combineReducers({

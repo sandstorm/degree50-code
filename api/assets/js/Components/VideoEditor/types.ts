@@ -3,6 +3,7 @@ import { AnnotationId } from './AnnotationsContext/AnnotationsSlice'
 import { VideoCodeId } from './VideoCodesContext/VideoCodesSlice'
 import { CutId } from './CuttingContext/CuttingSlice'
 import { VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
+import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 
 export type VideoCodePrototype = {
     id: string
@@ -41,16 +42,19 @@ export type CutList = Array<Cut>
 
 export type SolutionId = string
 
+export type SolutionLists = {
+    annotations: AnnotationId[]
+    videoCodes: VideoCodeId[]
+    cutList: CutId[]
+    customVideoCodesPool: VideoCodePrototypeId[]
+}
+
 export type Solution = {
     id: SolutionId
     userId?: string
     userName?: string
-    solution: {
-        annotations: AnnotationId[]
-        videoCodes: VideoCodeId[]
-        cutList: CutId[]
-        customVideoCodesPool: VideoCodePrototypeId[]
-    }
+    solution: SolutionLists
+    cutVideo?: Video
 }
 
 export type VideoListsState = {

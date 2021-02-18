@@ -19,13 +19,15 @@ const ZusatzMaterialMenu: FC<Props> = (props) => {
     }
 
     return (
-        <Button
-            title="Zusatzmaterialien"
-            className="btn btn-grey btn-sm video-editor__toolbar__button"
-            onPress={handleClick}
-        >
-            <i className="fas fa-folder-open" />
-        </Button>
+        <div className="video-editor__menu">
+            <Button
+                title="Zusatzmaterialien"
+                className="btn btn-grey btn-sm video-editor__toolbar__button"
+                onPress={handleClick}
+            >
+                <i className="fas fa-folder-open" />
+            </Button>
+        </div>
     )
 }
 

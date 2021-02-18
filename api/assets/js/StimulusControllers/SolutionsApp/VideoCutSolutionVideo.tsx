@@ -1,6 +1,6 @@
 import VideoJSPlayer from 'Components/VideoPlayer/VideoJSPlayer'
 import React from 'react'
-import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
+import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 
 type Props = {
     videoConfig?: Video

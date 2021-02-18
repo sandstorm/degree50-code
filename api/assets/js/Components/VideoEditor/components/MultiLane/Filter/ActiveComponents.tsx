@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { getComponentName } from '../index'
-import { FilterStateSlice } from './FilterSlice'
+import { FilterStateSlice } from '../../../FilterContext/FilterSlice'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { connect } from 'react-redux'
 

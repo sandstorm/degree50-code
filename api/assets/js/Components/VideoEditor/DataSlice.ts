@@ -116,6 +116,11 @@ const selectVideoCodeIsFromCurrentSolution = createSelector(
     (currentSolutionId, videoCode) => currentSolutionId && videoCode && currentSolutionId === videoCode.solutionId
 )
 
+const selectCutIsFromCurrentSolution = createSelector(
+    [solutionSelectors.selectCurrentId, cutsSelectors.selectCutById],
+    (currentSolutionId, cut) => currentSolutionId && cut && currentSolutionId === cut.solutionId
+)
+
 const selectCreatorNameForAnnotation = createSelector(
     [solutionSelectors.selectById, annotationSelectors.selectAnnotationById],
     (solutionsById, annotation) => {
@@ -158,6 +163,7 @@ export const selectors = {
     selectDenormalizedCurrentCutList,
     selectCurrentCutListByStartTime,
     selectCurrentCutIdsByStartTime,
+    selectCutIsFromCurrentSolution,
     selectCurrentCuts,
 
     selectDenormalizedPrototypes,
