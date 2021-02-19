@@ -14,6 +14,7 @@ use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use App\Repository\Exercise\UserExerciseInteractionRepository;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,6 +36,8 @@ class ExerciseController extends AbstractController
     private DoctrineIntegratedEventStore $eventStore;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
+    private LoggerInterface $logger;
+
     /**
      * @param CourseRepository $courseRepository
      * @param ExerciseRepository $exerciseRepository
@@ -47,7 +50,8 @@ class ExerciseController extends AbstractController
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
         UserExerciseInteractionRepository $userExerciseInteractionRepository,
-        ExercisePhaseTeamRepository $exercisePhaseTeamRepository
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        LoggerInterface $logger
     )
     {
         $this->courseRepository = $courseRepository;
@@ -57,6 +61,7 @@ class ExerciseController extends AbstractController
         $this->eventStore = $eventStore;
         $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -160,6 +165,7 @@ class ExerciseController extends AbstractController
         $form = $this->createForm(ExerciseType::class, $exercise);
 
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$exercise` variable has also been updated

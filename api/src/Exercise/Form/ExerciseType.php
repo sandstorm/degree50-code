@@ -16,6 +16,8 @@ class ExerciseType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['label' =>"exercise.labels.name", 'translation_domain' => 'forms'])
+            // NOTE: there seems to be a bug inside CKEditor where the editor does not respect the 'required' attribute
+            // We currently work around this by falling back to symfonys own validation via Annotations on the Exercise.php entity.
             ->add('description', CKEditorType::class, ['label' =>"exercise.labels.description", 'translation_domain' => 'forms'])
             ->add('save', SubmitType::class, ['label' => 'exercise.labels.submit', 'translation_domain' => 'forms'])
         ;
