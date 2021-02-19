@@ -38,6 +38,7 @@ class Exercise implements ExerciseInterface
      * @var string
      *
      * @ORM\Column(type="text")
+     * @Assert\NotBlank
      */
     public $description = '';
 
@@ -173,10 +174,16 @@ class Exercise implements ExerciseInterface
 
     /**
      * @param string $description
+     *
+     * Note that the parameter has to be optional, so that null can be passed to
+     * it, whenever we use this entity in symphony forms, because validation
+     * happesn AFTER the form has been processed.
      */
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
     }
 
     /**
