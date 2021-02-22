@@ -42,15 +42,25 @@
         }
 
         &__volume {
-            width: 70px;
             display: grid;
             place-items: center;
+            width: 70px;
+            height: 100%;
+
+            &:focus-within {
+                background-color: $theme__color__secondary--dark;
+            }
         }
 
         &__progress {
             flex-grow: 1;
             display: grid;
             place-items: center;
+            height: 100%;
+
+            &:focus-within {
+                background-color: $theme__color__secondary--dark;
+            }
         }
     }
 

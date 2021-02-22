@@ -1,3 +1,9 @@
+import {
+    clamp,
+    getHoursFromTimeSeconds,
+    getMinutesFromTimeSeconds,
+    getSecondsFromTimeSeconds,
+} from 'Components/VideoEditor/utils'
 import React, { ChangeEvent, FC, memo } from 'react'
 
 type Props = {
@@ -21,17 +27,33 @@ const ProgressControl: FC<Props> = (props) => {
 
         switch (true) {
             case forwardsKeyCombination:
-                props.setCurrentTime(props.currentTime + step)
+                props.setCurrentTime(clamp(props.currentTime + step, 0, props.duration))
                 ev.preventDefault()
                 break
             case backwardsKeyCombination:
-                props.setCurrentTime(props.currentTime - step)
+                props.setCurrentTime(clamp(props.currentTime - step, 0, props.duration))
                 ev.preventDefault()
                 break
             default:
             // ignore other keys
         }
     }
+
+    const currentHours = getHoursFromTimeSeconds(props.currentTime)
+    const currentMinutes = getMinutesFromTimeSeconds(props.currentTime)
+    const currentSeconds = Math.floor(getSecondsFromTimeSeconds(props.currentTime))
+    const durationHours = getHoursFromTimeSeconds(props.duration)
+    const durationMinutes = getMinutesFromTimeSeconds(props.duration)
+    const durationSeconds = Math.floor(getSecondsFromTimeSeconds(props.duration))
+    const valueText = `
+        ${currentHours > 0 ? currentHours + ' Stunden' : ''}
+        ${currentMinutes > 0 ? currentMinutes + ' Minuten' : ''}
+        ${currentSeconds + ' Sekunden'}
+        von
+        ${durationHours > 0 ? durationHours + ' Stunden' : ''}
+        ${durationMinutes > 0 ? durationMinutes + ' Minuten' : ''}
+        ${durationSeconds + ' Sekunden'}
+    `
 
     return (
         <div className="video-context-player__control video-context-player__control__progress">
@@ -43,6 +65,9 @@ const ProgressControl: FC<Props> = (props) => {
                 max={props.duration}
                 value={props.currentTime}
                 aria-label="Progress"
+                aria-valuemin={0}
+                aria-valuemax={props.duration}
+                aria-valuetext={valueText}
                 onChange={handleProgressInputChange}
                 onKeyDown={handleProgressKeyDown}
             />
