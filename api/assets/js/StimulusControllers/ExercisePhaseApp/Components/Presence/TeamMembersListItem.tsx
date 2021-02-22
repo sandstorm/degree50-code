@@ -21,8 +21,8 @@ const renderConnectionState = (connectionState: ConnectionState) => {
     }
 }
 
-const renderUserRoleState = (currentEditor: TeamMemberId | undefined, teamMemberId: TeamMemberId) => {
-    return currentEditor === teamMemberId ? (
+const renderUserRoleState = (currentEditorId: TeamMemberId | undefined, teamMemberId: TeamMemberId) => {
+    return currentEditorId === teamMemberId ? (
         <i className="fas fa-crown presence__team-member-role" />
     ) : (
         <i className="fas fa-user presence__team-member-role" />
@@ -34,23 +34,32 @@ const TeamMembersListItem: React.FC<Props> = (props) => {
         props.teamMember.connectionState === ConnectionState.CONNECTED ? '--connected' : '--disconnected'
     }`
 
-    const isCurrentEditor = props.userId === props.currentEditor
+    const isCurrentEditor = props.teamMemberId === props.currentEditor
     const memberName = props.teamMember.name.split('@')[0]
 
     const handleClick = () => {
         props.promoteTeamMemberToCurrentEditor(props.teamMemberId)
     }
 
+    const label = `
+        ${isCurrentEditor ? 'Bearbeitender' : 'Teilnehmer'}
+        ${memberName}
+        ${props.teamMember.connectionState === ConnectionState.CONNECTED ? 'online' : 'offline'}
+    `
+
+    const buttonLabel = `Bearbeitender werden`
+
     return (
         <li className={className}>
-            <span>
+            <span tabIndex={0} aria-label={label}>
                 {renderUserRoleState(props.currentEditor, props.teamMemberId)} {memberName}
             </span>
             {props.teamMemberId === props.userId && !isCurrentEditor && (
                 <button
                     className={'btn btn-outline-primary btn-sm'}
                     onClick={handleClick}
-                    title="Übernehme die Bearbeitung"
+                    title={buttonLabel}
+                    aria-label={buttonLabel}
                 >
                     <i className="fas fa-crown" />
                 </button>
