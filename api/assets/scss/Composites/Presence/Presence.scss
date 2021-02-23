@@ -27,6 +27,7 @@ $header__height: 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: $theme__spacing--base;
 
     &--connected {
         i.presence__connection-state {
@@ -38,6 +39,11 @@ $header__height: 40px;
         i.presence__connection-state {
             color: $theme__color__red;
         }
+    }
+
+    &:focus-within {
+        color: $theme__color__white;
+        background-color: $theme__color__secondary--dark;
     }
 }
 
