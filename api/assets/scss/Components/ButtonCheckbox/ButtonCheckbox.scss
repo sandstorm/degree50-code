@@ -1,9 +1,15 @@
 .button-checkbox {
     position: relative;
     display: inline-block;
+    overflow: hidden;
 
     input[type='checkbox'] {
-        display: none;
+        position: absolute;
+        left: -20px;
+        width: 0;
+        height: 0;
+        outline: none;
+        border: none;
 
         & ~ label {
             border-color: $theme__color__red;
@@ -11,14 +17,23 @@
             color: $theme__color__red;
 
             i.fa-times {
+                margin: 0;
                 margin-right: 10px;
                 display: inline-block;
             }
 
             i.fa-check {
+                margin: 0;
                 margin-right: 10px;
                 display: none;
             }
+        }
+
+        &:focus ~ label {
+            background-color: $theme__color__secondary--dark !important;
+            border-color: $theme__color__secondary--dark !important;
+
+            color: $theme__color__white;
         }
 
         &:checked ~ label {
