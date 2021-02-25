@@ -2,11 +2,10 @@
 // STATE //
 ///////////
 
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
-import { videoCodesSchema } from 'StimulusControllers/normalizeData'
 import { VideoCode } from '../types'
-import { normalize } from 'normalizr'
+import { initData } from '../initData'
 
 export type VideoCodeId = string
 
@@ -26,20 +25,19 @@ export const videoCodesSlice = createSlice({
     name: 'videoCodes',
     initialState,
     reducers: {
-        init: (state: VideoCodesState, action: PayloadAction<VideoCodesState>) => {
-            return {
-                ...state,
-                ...action.payload,
-            }
-        },
         set: (state: VideoCodesState, action: PayloadAction<VideoCode[]>) => {
-            const normalized = normalize(action.payload, [videoCodesSchema])
+            const normalized = action.payload.reduce((acc, videoCode) => {
+                return {
+                    ...acc,
+                    [videoCode.id]: videoCode,
+                }
+            }, {})
 
             return {
                 ...state,
                 byId: {
                     ...state.byId,
-                    ...normalized.entities.videoCodes,
+                    ...normalized,
                 },
             }
         },
@@ -69,6 +67,11 @@ export const videoCodesSlice = createSlice({
                 byId: remove(state.byId, elementId),
             }
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(initData, (_, action) => {
+            return action.payload.videoCodes
+        })
     },
 })
 

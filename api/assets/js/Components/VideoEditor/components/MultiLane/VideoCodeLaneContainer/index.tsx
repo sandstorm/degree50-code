@@ -10,6 +10,8 @@ import {
     selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ExercisePhaseTypesEnum'
+import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { selectUserCanEditSolution } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 
 const mergeCodesAndPrototypesToItems = (videoCodes: VideoCode[], prototypes: Record<string, VideoCodePrototype>) => {
     return videoCodes.map((videoCode) => {
@@ -27,7 +29,10 @@ const mergeCodesAndPrototypesToItems = (videoCodes: VideoCode[], prototypes: Rec
     })
 }
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
+    const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)
+    const isReadonly = !selectUserCanEditSolution(state, { solutionId: currentSolutionId })
+
     return {
         currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
         videoCodesById: videoEditorSelectors.data.videoCodes.selectById(state),
@@ -36,6 +41,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
         previousSolutions: videoEditorSelectors.selectActiveSolutionsWithVideoCodes(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
         isSolutionView: configSelectors.selectIsSolutionView(state),
+        isReadonly,
     }
 }
 
@@ -55,7 +61,7 @@ const VideoCodeLaneContainer = (props: Props) => {
                 <div className="multilane__medialane-description">
                     {getComponentName(TabsTypesEnum.VIDEO_CODES)} ({mediaItems.length}) - {ownerName} [Aktuelle Lösung]
                 </div>
-                <VideoCodesMedialane mediaItems={mediaItems} />
+                <VideoCodesMedialane mediaItems={mediaItems} readOnly={props.isReadonly} />
             </div>
         )
     }

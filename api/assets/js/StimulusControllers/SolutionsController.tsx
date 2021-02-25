@@ -15,6 +15,7 @@ import { Solution } from 'Components/VideoEditor/types'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEditorSlice'
 import SolutionsApp from './SolutionsApp'
+import { initData } from 'Components/VideoEditor/initData'
 
 export type SolutionByTeam = Solution & {
     teamCreator: string
@@ -34,26 +35,23 @@ export default class extends Controller {
         const solutions = props.solutions as Array<SolutionByTeam>
         const config = props.config as ConfigState
 
-        const normalizedAPIResponse = normalizeAPIResponseForSolutionsApp(solutions)
-
         // set initial Redux state
         store.dispatch(configActions.hydrateConfig(config))
         store.dispatch(configActions.setIsSolutionView())
 
-        store.dispatch(
-            videoEditorActions.data.solutions.init({
-                byId: normalizedAPIResponse.entities.solutions,
-                current: normalizedAPIResponse.result.currentSolution,
-                previous: normalizedAPIResponse.result.previousSolutions,
-            })
-        )
+        const normalizedAPIResponse = normalizeAPIResponseForSolutionsApp(solutions)
 
-        store.dispatch(videoEditorActions.data.annotations.init({ byId: normalizedAPIResponse.entities.annotations }))
-        store.dispatch(videoEditorActions.data.videoCodes.init({ byId: normalizedAPIResponse.entities.videoCodes }))
-        store.dispatch(videoEditorActions.data.cuts.init({ byId: normalizedAPIResponse.entities.cutList }))
         store.dispatch(
-            videoEditorActions.data.videoCodePrototypes.init({
-                byId: normalizedAPIResponse.entities.customVideoCodesPool,
+            initData({
+                solutions: {
+                    byId: normalizedAPIResponse.entities.solutions,
+                    current: normalizedAPIResponse.result.currentSolution,
+                    previous: normalizedAPIResponse.result.previousSolutions,
+                },
+                annotations: { byId: normalizedAPIResponse.entities.annotations },
+                videoCodes: { byId: normalizedAPIResponse.entities.videoCodes },
+                videoCodePrototypes: { byId: normalizedAPIResponse.entities.customVideoCodesPool },
+                cuts: { byId: normalizedAPIResponse.entities.cutList },
             })
         )
 

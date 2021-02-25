@@ -8,6 +8,8 @@ import {
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ExercisePhaseTypesEnum'
+import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { selectUserIsCurrentEditor } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 
 const prefix = 'CUT'
 
@@ -21,17 +23,21 @@ export const CutOverlayIds = {
     cutPreview: `${prefix}/cutPreview`,
 }
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
     const activePhaseType = configSelectors.selectPhaseType(state)
     const isSolutionView = configSelectors.selectIsSolutionView(state)
+    const userIsCurrentEditor = selectUserIsCurrentEditor(state)
+    const cutsAreActive = configSelectors.selectCutsAreActive(state)
 
-    const disableCreate = isSolutionView || activePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS
+    const disableCreate =
+        isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_CUTTING || !userIsCurrentEditor
+    const disabled = !cutsAreActive
 
     return {
         allCutsCount: videoEditorSelectors.selectAllCutIdsByStartTime(state).length,
         activeCutCount: videoEditorSelectors.selectCurrentCutIdsAtCursor(state).length,
-        cutsAreActive: configSelectors.selectCutsAreActive(state),
         disableCreate,
+        disabled,
     }
 }
 
@@ -49,12 +55,7 @@ const CutsMenu: FC<Props> = (props) => {
     return (
         <div className="video-editor__menu">
             {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
-            <MenuButton
-                icon={<i className="fas fa-cut" />}
-                disabled={!props.cutsAreActive}
-                ariaLabel="Schnitte"
-                pauseVideo
-            >
+            <MenuButton icon={<i className="fas fa-cut" />} ariaLabel="Schnitte" pauseVideo disabled={props.disabled}>
                 <MenuItem
                     ariaLabel={activeCutsLabel}
                     label={activeCutsLabel}

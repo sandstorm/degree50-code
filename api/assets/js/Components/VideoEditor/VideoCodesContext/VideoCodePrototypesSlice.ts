@@ -7,6 +7,7 @@ import { set, removeIn } from 'immutable'
 import { videoCodePrototypeSchema } from 'StimulusControllers/normalizeData'
 import { VideoCodePrototype } from '../types'
 import { normalize } from 'normalizr'
+import { initData } from '../initData'
 
 export type VideoCodePrototypeId = string
 
@@ -26,12 +27,6 @@ export const videoCodePrototypesSlice = createSlice({
     name: 'videoCodePrototypes',
     initialState,
     reducers: {
-        init: (state, action: PayloadAction<VideoCodePrototypesState>) => {
-            return {
-                ...state,
-                ...action.payload,
-            }
-        },
         set: (state, action: PayloadAction<VideoCodePrototype[]>) => {
             const normalized = normalize(action.payload, [videoCodePrototypeSchema])
 
@@ -82,6 +77,11 @@ export const videoCodePrototypesSlice = createSlice({
 
             return { byId: newById }
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(initData, (_, action) => {
+            return action.payload.videoCodePrototypes
+        })
     },
 })
 

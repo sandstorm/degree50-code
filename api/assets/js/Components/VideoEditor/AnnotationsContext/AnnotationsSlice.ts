@@ -4,9 +4,8 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
-import { annotationSchema } from 'StimulusControllers/normalizeData'
 import { Annotation } from '../types'
-import { normalize } from 'normalizr'
+import { initData } from '../initData'
 
 export type AnnotationId = string
 
@@ -26,20 +25,19 @@ export const annotationsSlice = createSlice({
     name: 'annotations',
     initialState,
     reducers: {
-        init: (state, action: PayloadAction<AnnotationsState>) => {
-            return {
-                ...state,
-                ...action.payload,
-            }
-        },
         set: (state, action: PayloadAction<Annotation[]>) => {
-            const normalized = normalize(action.payload, [annotationSchema])
+            const normalized = action.payload.reduce((acc, annotation) => {
+                return {
+                    ...acc,
+                    [annotation.id]: annotation,
+                }
+            }, {})
 
             return {
                 ...state,
                 byId: {
                     ...state.byId,
-                    ...normalized.entities.annotations,
+                    ...normalized,
                 },
             }
         },
@@ -71,6 +69,11 @@ export const annotationsSlice = createSlice({
                 byId: remove(state.byId, elementId),
             }
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(initData, (_, action) => {
+            return action.payload.annotations
+        })
     },
 })
 

@@ -16,11 +16,13 @@ import {
     ConfigStateSlice,
     selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
     currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
     videos: configSelectors.selectVideos(state),
     prototoypes: videoEditorSelectors.data.selectDenormalizedPrototypes(state),
+    currentSolutionId: videoEditorSelectors.data.solutions.selectCurrentId(state),
 })
 
 const mapDispatchToProps = {
@@ -52,6 +54,7 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         memo: '',
         color: null,
         idFromPrototype: initialPrototypeId,
+        solutionId: props.currentSolutionId,
     }
 
     // TODO handle code selection

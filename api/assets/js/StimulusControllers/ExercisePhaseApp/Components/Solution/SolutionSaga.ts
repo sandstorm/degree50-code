@@ -8,6 +8,7 @@ import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEd
 import { initPresenceAction } from '../Presence/PresenceSaga'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import { normalizeAPIResponseForExercisePhaseApp } from 'StimulusControllers/normalizeData'
+import { initData } from 'Components/VideoEditor/initData'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -71,12 +72,19 @@ function* handleMessages(channel: EventChannel<unknown>) {
 
             const normalizedAPIResponse = normalizeAPIResponseForExercisePhaseApp(solution, currentConfig)
 
-            yield put(actions.data.annotations.init({ byId: normalizedAPIResponse.entities.annotations }))
-            yield put(actions.data.videoCodes.init({ byId: normalizedAPIResponse.entities.videoCodes }))
             yield put(
-                actions.data.videoCodePrototypes.init({ byId: normalizedAPIResponse.entities.customVideoCodesPool })
+                initData({
+                    solutions: {
+                        byId: normalizedAPIResponse.entities.solutions,
+                        current: normalizedAPIResponse.result.currentSolution,
+                        previous: normalizedAPIResponse.result.previousSolutions,
+                    },
+                    annotations: { byId: normalizedAPIResponse.entities.annotations },
+                    videoCodes: { byId: normalizedAPIResponse.entities.videoCodes },
+                    videoCodePrototypes: { byId: normalizedAPIResponse.entities.customVideoCodesPool },
+                    cuts: { byId: normalizedAPIResponse.entities.cutList },
+                })
             )
-            yield put(actions.data.cuts.init({ byId: normalizedAPIResponse.entities.cutList }))
         }
     } finally {
         channel.close()
