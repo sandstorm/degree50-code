@@ -35,6 +35,7 @@ class ExercisePhaseTeamController extends AbstractController
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private LiveSyncService $liveSyncService;
     private MessageBusInterface $messageBus;
+    private SolutionService $solutionService;
 
     /**
      * ExercisePhaseTeamController constructor.
@@ -43,13 +44,14 @@ class ExercisePhaseTeamController extends AbstractController
      * @param AutosavedSolutionRepository $autosavedSolutionRepository
      * @param LiveSyncService $liveSyncService
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService, MessageBusInterface $messageBus)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService, MessageBusInterface $messageBus, SolutionService $solutionService)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->liveSyncService = $liveSyncService;
         $this->messageBus = $messageBus;
+        $this->solutionService = $solutionService;
     }
 
     /**
@@ -301,14 +303,11 @@ class ExercisePhaseTeamController extends AbstractController
         // Why: send solution even if the user was not allowed to
         // This will reset the state in the client to the actual state
 
-        $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
+        $solution = $this->solutionService->getSolutionFromExercisePhaseTeam($exercisePhaseTeam);
 
         // push solution to clients
         $this->liveSyncService->publish($exercisePhaseTeam, [
-            'solution' => [
-                'solution' => $solution->getSolution(),
-                'id' => $solution->getId()
-            ],
+            'solution' => $solution,
             'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
         ]);
 
@@ -344,13 +343,13 @@ class ExercisePhaseTeamController extends AbstractController
                 $entityManager->persist($exercisePhaseTeam);
                 $entityManager->flush();
 
-                $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
+                $solution = $this->solutionService->getSolutionFromExercisePhaseTeam($exercisePhaseTeam);
 
                 // push new state to clients
                 $this->liveSyncService->publish(
                     $exercisePhaseTeam,
                     [
-                        'solution' => [ 'solution' => $solution->getSolution(), 'id' => $solution->getId()  ],
+                        'solution' => $solution,
                         'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
                     ]
                 );

@@ -4,9 +4,8 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
-import { cutListSchema } from 'StimulusControllers/normalizeData'
 import { Cut } from '../types'
-import { normalize } from 'normalizr'
+import { initData } from '../initData'
 
 export type CutId = string
 
@@ -26,20 +25,19 @@ export const cuttingSlice = createSlice({
     name: 'cuts',
     initialState,
     reducers: {
-        init: (state, action: PayloadAction<CutsState>) => {
-            return {
-                ...state,
-                ...action.payload,
-            }
-        },
         set: (state, action: PayloadAction<Cut[]>) => {
-            const normalized = normalize(action.payload, [cutListSchema])
+            const normalized = action.payload.reduce((acc, cut) => {
+                return {
+                    ...acc,
+                    [cut.id]: cut,
+                }
+            }, {})
 
             return {
                 ...state,
                 byId: {
                     ...state.byId,
-                    ...normalized.entities.cutList,
+                    ...normalized,
                 },
             }
         },
@@ -69,6 +67,11 @@ export const cuttingSlice = createSlice({
                 byId: remove(state.byId, elementId),
             }
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(initData, (_, action) => {
+            return action.payload.cuts
+        })
     },
 })
 

@@ -6,7 +6,7 @@ import Overlay from '../../components/Overlay'
 import VideoContextPlayer from '../VideoContextPlayer/VideoContextPlayer'
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    cutList: selectors.data.solutions.selectCurrentCutList(state),
+    cutList: selectors.data.selectCurrentCuts(state),
 })
 
 const mapDispatchToProps = {
