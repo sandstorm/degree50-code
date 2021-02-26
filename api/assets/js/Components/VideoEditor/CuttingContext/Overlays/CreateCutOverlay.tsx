@@ -2,7 +2,6 @@ import Button from 'Components/Button/Button'
 import TextField from 'Components/VideoEditor/components/TextField'
 import TimeInput from 'Components/VideoEditor/components/TimeInput'
 import { Cut } from 'Components/VideoEditor/types'
-import { secondToTime } from 'Components/VideoEditor/utils'
 import { getNewMediaItemStartAndEnd } from 'Components/VideoEditor/utils/useMediaItemHandling'
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import { t2d } from 'duration-time-conversion'
@@ -56,14 +55,7 @@ const CreateCutOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    const {
-        transientCut,
-        handleStartTimeChange,
-        handleEndTimeChange,
-        handleOffsetChange,
-        updateText,
-        updateMemo,
-    } = useCutEdit(initialCut)
+    const { transientCut, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } = useCutEdit(initialCut)
 
     const close = () => {
         props.closeOverlay(CutOverlayIds.create)
@@ -84,7 +76,6 @@ const CreateCutOverlay: FC<Props> = (props) => {
         <Overlay closeCallback={close} title="Neuer Schnitt">
             <TimeInput label="Start" value={transientCut.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientCut.end} onChange={handleEndTimeChange} />
-            <TimeInput label="Offset" value={secondToTime(transientCut.offset)} onChange={handleOffsetChange} />
             <hr />
             <label htmlFor="text">Text</label>
             <TextField id="text" text={transientCut.text} updateText={updateText} />
