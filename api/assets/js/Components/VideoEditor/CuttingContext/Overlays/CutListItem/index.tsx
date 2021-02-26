@@ -11,6 +11,7 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { t2d } from 'duration-time-conversion'
 
 type OwnProps = {
     cutId: CutId
@@ -34,6 +35,7 @@ const mapDispatchToProps = {
     setOverlay: actions.overlay.setOverlay,
     setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
     syncSolution: syncSolutionAction,
+    setPlayPosition: actions.player.setPlayPosition,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -59,6 +61,10 @@ const CutListItem: FC<Props> = (props) => {
         props.syncSolution()
     }
 
+    const handleJumpToPosition = () => {
+        props.setPlayPosition(t2d(props.item.start))
+    }
+
     const ariaLabel = `
         ${props.index + 1}. Element
         Von: ${props.item.start}
@@ -75,6 +81,9 @@ const CutListItem: FC<Props> = (props) => {
             <br />
             <p>Text: {props.item.text}</p>
             <p>Memo: {props.item.memo}</p>
+            <Button className="btn btn-primary" onPress={handleJumpToPosition} title="Springe zu Position im Video">
+                Springe zu Position
+            </Button>
             {props.showPositionControls && <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />}
             {props.canEdit && (
                 <>

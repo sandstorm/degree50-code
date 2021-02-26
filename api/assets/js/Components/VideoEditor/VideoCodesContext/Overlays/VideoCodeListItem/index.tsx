@@ -12,6 +12,7 @@ import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { t2d } from 'duration-time-conversion'
 
 type OwnProps = {
     videoCodeId: VideoCodeId
@@ -43,6 +44,7 @@ const mapStateToProps = (
 const mapDispatchToProps = {
     setOverlay: actions.overlay.setOverlay,
     setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
+    setPlayPosition: actions.player.setPlayPosition,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -58,6 +60,10 @@ const VideoCodeListItem = (props: Props) => {
     const handleEdit = () => {
         setCurrentlyEditedElementId(item.id)
         setOverlay({ overlayId: VideoCodeOverlayIds.edit, closeOthers: false })
+    }
+
+    const handleJumpToPosition = () => {
+        props.setPlayPosition(t2d(item.start))
     }
 
     const creatorDescription = `Codierung von: ${props.creatorName}`
@@ -79,6 +85,9 @@ const VideoCodeListItem = (props: Props) => {
             <End end={item.end} />
             <PrototypeInformation videoCodePrototype={videoCodePrototype} />
             <p>Memo: {item.memo}</p>
+            <Button className="btn btn-primary" onPress={handleJumpToPosition} title="Springe zu Position im Video">
+                Springe zu Position
+            </Button>
             {props.isFromCurrentSolution && (
                 <>
                     <Button className="btn btn-secondary" onPress={handleRemove}>
