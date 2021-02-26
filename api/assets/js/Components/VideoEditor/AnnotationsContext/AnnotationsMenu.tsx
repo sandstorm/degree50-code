@@ -7,9 +7,9 @@ import {
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
-import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ExercisePhaseTypesEnum'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserIsCurrentEditor } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
+import { selectUserIsCurrentEditor } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 
 const prefix = 'ANNOTATION'
 

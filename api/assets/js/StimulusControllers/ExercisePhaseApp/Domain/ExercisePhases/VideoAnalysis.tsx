@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { selectors } from '../../Components/Config/ConfigSlice'
-import { AppState } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { TabsTypesEnum } from '../../../../types'
 import VideoEditor from 'Components/VideoEditor'
 import { selectCurrentEditorId } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     height: number

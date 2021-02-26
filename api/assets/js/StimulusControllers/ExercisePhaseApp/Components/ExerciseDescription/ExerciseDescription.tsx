@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { selectors } from '../Config/ConfigSlice'
-import { AppState, AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
+import { AppState, AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mapStateToProps = (state: AppState) => ({
     config: selectors.selectConfig(state),

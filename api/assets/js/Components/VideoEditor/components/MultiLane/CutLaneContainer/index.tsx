@@ -6,7 +6,7 @@ import VideoCutMedialane from 'Components/VideoEditor/components/MultiLane/CutLa
 import { VideoEditorState, selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserCanEditSolution } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
+import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
     const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)

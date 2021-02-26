@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
-import { AppState } from '../../Store/Store'
+import { AppState } from '../../../ExerciseAndSolutionStore/Store'
 
 export enum ConnectionState {
     CONNECTED = 'CONNECTED',
