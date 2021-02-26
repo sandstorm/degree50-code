@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import TeamMembersList from './TeamMembersList'
-import { AppState } from '../../Store/Store'
+import { AppState } from '../../../ExerciseAndSolutionStore/Store'
 import { selectOnlineTeamMemberIds } from './PresenceSlice'
 
 type PresenceProps = ReturnType<typeof mapStateToProps>

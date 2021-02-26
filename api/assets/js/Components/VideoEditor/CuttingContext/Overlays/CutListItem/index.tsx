@@ -11,7 +11,7 @@ import PositionControls from './PositionControls'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserCanEditSolution } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
+import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     cutId: CutId

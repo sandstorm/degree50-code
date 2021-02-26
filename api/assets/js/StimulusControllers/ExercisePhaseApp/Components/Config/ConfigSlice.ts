@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createSelector, Action } from '@reduxjs/too
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
-import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
+import { ExercisePhaseTypesEnum } from '../../../ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import { VideoCodePrototype, VideoListsState } from 'Components/VideoEditor/types'
 
 export type ComponentId = ComponentTypesEnum | TabsTypesEnum

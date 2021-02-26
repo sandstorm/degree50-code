@@ -3,7 +3,6 @@ import { OverlayContainer as AriaOverlayContainer } from '@react-aria/overlays'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { AppDispatch } from 'StimulusControllers/ExercisePhaseApp/Store/Store'
 import { AnnotationOverlayIds } from '../../AnnotationsContext/AnnotationsMenu'
 import { VideoCodeOverlayIds } from '../../VideoCodesContext/VideoCodesMenu'
 import EditVideoCodePrototypeOverlay from '../../VideoCodesContext/Overlays/EditVideoCodePrototypeOverlay/EditVideoCodePrototypeOverlay'
@@ -34,6 +33,7 @@ import ZusatzMaterialOverlay, {
 } from 'Components/VideoEditor/ZusatzMaterial/ZusatzMaterialOverlay'
 import { SolutionFilterOverlayIds } from 'Components/VideoEditor/FilterContext/FilterMenu'
 import SolutionFilterOverlay from 'Components/VideoEditor/FilterContext/Overlays/SolutionFilterOverlay'
+import { AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
