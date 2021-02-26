@@ -36,12 +36,11 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const CreateVideoCodeOverlay: FC<Props> = (props) => {
     const { currentTime, videos } = props
     const duration = videos[0].duration
+    const initialPrototypeId = props.prototoypes[0]?.id
 
     const close = () => {
         props.closeOverlay(VideoCodeOverlayIds.create)
     }
-
-    const initialPrototypeId = props.prototoypes[0].id
 
     // transient videoCode
     // current as start

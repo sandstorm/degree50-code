@@ -9,6 +9,7 @@ import Start from '../../components/Start'
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { t2d } from 'duration-time-conversion'
 
 type OwnProps = {
     annotationId: AnnotationId
@@ -30,6 +31,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
 const mapDispatchToProps = {
     setOverlay: actions.overlay.setOverlay,
     setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
+    setPlayPosition: actions.player.setPlayPosition,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -45,6 +47,10 @@ const AnnotationListItem = (props: Props) => {
     const handleEdit = () => {
         setCurrentlyEditedElementId(item.id)
         setOverlay({ overlayId: AnnotationOverlayIds.edit, closeOthers: false })
+    }
+
+    const handleJumpToPosition = () => {
+        props.setPlayPosition(t2d(item.start))
     }
 
     const creatorDescription = `Annotation von: ${props.creatorName}`
@@ -69,6 +75,9 @@ const AnnotationListItem = (props: Props) => {
             <br />
             <p>Text: {item.text}</p>
             <p>Memo: {item.memo}</p>
+            <Button className="btn btn-primary" onPress={handleJumpToPosition} title="Springe zu Position im Video">
+                Springe zu Position
+            </Button>
             {props.isFromCurrentSolution && (
                 <>
                     <Button className="btn btn-secondary" onPress={handleRemove}>
