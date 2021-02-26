@@ -7,7 +7,6 @@ import TimeInput from 'Components/VideoEditor/components/TimeInput'
 import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
-import { secondToTime } from 'Components/VideoEditor/utils'
 import { useCutEdit } from './useCutEdit'
 
 const mapStateToProps = (state: VideoEditorState) => {
@@ -30,14 +29,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 // TODO this should probably be consolidated into a single component with the CreateCutOverlay
 const EditCutOverlay: FC<Props> = (props) => {
-    const {
-        transientCut,
-        handleStartTimeChange,
-        handleEndTimeChange,
-        handleOffsetChange,
-        updateText,
-        updateMemo,
-    } = useCutEdit(props.cut)
+    const { transientCut, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } = useCutEdit(props.cut)
 
     const close = () => {
         props.closeOverlay(CutOverlayIds.edit)
@@ -58,7 +50,6 @@ const EditCutOverlay: FC<Props> = (props) => {
         <Overlay closeCallback={close} title="Schnitt bearbeiten">
             <TimeInput label="Start" value={transientCut.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientCut.end} onChange={handleEndTimeChange} />
-            <TimeInput label="Offset" value={secondToTime(transientCut.offset)} onChange={handleOffsetChange} />
             <hr />
             <label htmlFor="text">Text</label>
             <TextField id="text" text={transientCut.text} updateText={updateText} />

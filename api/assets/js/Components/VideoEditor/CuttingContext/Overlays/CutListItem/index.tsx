@@ -6,7 +6,6 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import End from '../../../components/End'
 import Start from '../../../components/Start'
-import { secondToTime } from 'Components/VideoEditor/utils'
 import PositionControls from './PositionControls'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
@@ -73,7 +72,6 @@ const CutListItem: FC<Props> = (props) => {
         <li className="cut-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={props.item.id}>
             <Start start={props.item.start} />
             <End end={props.item.end} />
-            <p>Offset: {secondToTime(props.item.offset)}</p>
             <br />
             <p>Text: {props.item.text}</p>
             <p>Memo: {props.item.memo}</p>
