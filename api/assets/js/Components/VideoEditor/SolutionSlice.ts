@@ -13,8 +13,9 @@ import {
     CUTLIST_API_PROPERTY,
     VIDEO_CODE_PROTOTYPE_API_PROPERTY,
 } from 'StimulusControllers/normalizeData'
-import { CutId, cuttingSlice, selectors as cuttingSelectors } from './CuttingContext/CuttingSlice'
+import { CutId, cuttingSlice } from './CuttingContext/CuttingSlice'
 import { videoCodePrototypesSlice, VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
+import { initData } from './initData'
 
 export type SolutionState = {
     byId: Record<SolutionId, Solution>
@@ -36,12 +37,6 @@ export const SolutionSlice = createSlice({
     name: 'solutions',
     initialState,
     reducers: {
-        init: (state, action: PayloadAction<SolutionState>) => {
-            return {
-                ...state,
-                ...action.payload,
-            }
-        },
         // Cut position inside the cutlist is determined by the index of its id
         moveCutUp: (state, action: PayloadAction<CutId>) => {
             if (!state.current) {
@@ -90,102 +85,108 @@ export const SolutionSlice = createSlice({
             return setIn(state, ['byId', state.current, 'solution', 'cutList'], newIds)
         },
     },
-    extraReducers: {
-        [annotationsSlice.actions.append.type]: (state, action: PayloadAction<Annotation>) => {
-            if (!state.current) {
-                return state
-            }
+    extraReducers: (builder) => {
+        builder
+            .addCase(initData, (_, action) => {
+                return action.payload.solutions
+            })
+            .addCase(annotationsSlice.actions.append, (state, action: PayloadAction<Annotation>) => {
+                if (!state.current) {
+                    return state
+                }
 
-            const currentAnnotationIds = state.byId[state.current].solution.annotations
-            const updatedAnnotations = [...currentAnnotationIds, action.payload.id]
+                const currentAnnotationIds = state.byId[state.current].solution.annotations
+                const updatedAnnotations = [...currentAnnotationIds, action.payload.id]
 
-            return setIn(state, ['byId', state.current, 'solution', ANNOTATIONS_API_PROPERTY], updatedAnnotations)
-        },
-        [annotationsSlice.actions.remove.type]: (state, action: PayloadAction<AnnotationId>) => {
-            if (!state.current) {
-                return state
-            }
+                return setIn(state, ['byId', state.current, 'solution', ANNOTATIONS_API_PROPERTY], updatedAnnotations)
+            })
+            .addCase(annotationsSlice.actions.remove, (state, action: PayloadAction<AnnotationId>) => {
+                if (!state.current) {
+                    return state
+                }
 
-            const currentAnnotationIds = state.byId[state.current].solution.annotations
-            const updatedAnnotations = currentAnnotationIds.filter((id) => id !== action.payload)
+                const currentAnnotationIds = state.byId[state.current].solution.annotations
+                const updatedAnnotations = currentAnnotationIds.filter((id) => id !== action.payload)
 
-            return setIn(state, ['byId', state.current, 'solution', ANNOTATIONS_API_PROPERTY], updatedAnnotations)
-        },
-        [videoCodesSlice.actions.append.type]: (state, action: PayloadAction<VideoCode>) => {
-            if (!state.current) {
-                return state
-            }
+                return setIn(state, ['byId', state.current, 'solution', ANNOTATIONS_API_PROPERTY], updatedAnnotations)
+            })
+            .addCase(videoCodesSlice.actions.append, (state, action: PayloadAction<VideoCode>) => {
+                if (!state.current) {
+                    return state
+                }
 
-            const currentVideoCodeIds = state.byId[state.current].solution.videoCodes
-            const updatedVideoCodes = [...currentVideoCodeIds, action.payload.id]
+                const currentVideoCodeIds = state.byId[state.current].solution.videoCodes
+                const updatedVideoCodes = [...currentVideoCodeIds, action.payload.id]
 
-            return setIn(state, ['byId', state.current, 'solution', VIDEO_CODES_API_PROPERTY], updatedVideoCodes)
-        },
-        [videoCodesSlice.actions.remove.type]: (state, action: PayloadAction<VideoCodeId>) => {
-            if (!state.current) {
-                return state
-            }
+                return setIn(state, ['byId', state.current, 'solution', VIDEO_CODES_API_PROPERTY], updatedVideoCodes)
+            })
+            .addCase(videoCodesSlice.actions.remove, (state, action: PayloadAction<VideoCodeId>) => {
+                if (!state.current) {
+                    return state
+                }
 
-            const currentVideoCodeIds = state.byId[state.current].solution.videoCodes
-            const updatedVideoCodes = currentVideoCodeIds.filter((id) => id !== action.payload)
+                const currentVideoCodeIds = state.byId[state.current].solution.videoCodes
+                const updatedVideoCodes = currentVideoCodeIds.filter((id) => id !== action.payload)
 
-            return setIn(state, ['byId', state.current, 'solution', VIDEO_CODES_API_PROPERTY], updatedVideoCodes)
-        },
-        // TODO see prototypes
-        [cuttingSlice.actions.append.type]: (state, action: PayloadAction<Cut>) => {
-            if (!state.current) {
-                return state
-            }
+                return setIn(state, ['byId', state.current, 'solution', VIDEO_CODES_API_PROPERTY], updatedVideoCodes)
+            })
+            .addCase(cuttingSlice.actions.append, (state, action: PayloadAction<Cut>) => {
+                if (!state.current) {
+                    return state
+                }
 
-            const currentCutIds = state.byId[state.current].solution.cutList
-            const updatedCuts = [...currentCutIds, action.payload.id]
+                const currentCutIds = state.byId[state.current].solution.cutList
+                const updatedCuts = [...currentCutIds, action.payload.id]
 
-            return setIn(state, ['byId', state.current, 'solution', CUTLIST_API_PROPERTY], updatedCuts)
-        },
-        [cuttingSlice.actions.remove.type]: (state, action: PayloadAction<CutId>) => {
-            if (!state.current) {
-                return state
-            }
+                return setIn(state, ['byId', state.current, 'solution', CUTLIST_API_PROPERTY], updatedCuts)
+            })
+            .addCase(cuttingSlice.actions.remove, (state, action: PayloadAction<CutId>) => {
+                if (!state.current) {
+                    return state
+                }
 
-            const currentCutIds = state.byId[state.current].solution.cutList
-            const updatedCuts = currentCutIds.filter((id) => id !== action.payload)
+                const currentCutIds = state.byId[state.current].solution.cutList
+                const updatedCuts = currentCutIds.filter((id) => id !== action.payload)
 
-            return setIn(state, ['byId', state.current, 'solution', CUTLIST_API_PROPERTY], updatedCuts)
-        },
-        [videoCodePrototypesSlice.actions.append.type]: (state, action: PayloadAction<VideoCodePrototype>) => {
-            if (!state.current) {
-                return state
-            }
+                return setIn(state, ['byId', state.current, 'solution', CUTLIST_API_PROPERTY], updatedCuts)
+            })
+            .addCase(videoCodePrototypesSlice.actions.append, (state, action: PayloadAction<VideoCodePrototype>) => {
+                if (!state.current) {
+                    return state
+                }
 
-            const currentIds = state.byId[state.current].solution.customVideoCodesPool
-            const updatedPrototypes = [...currentIds, action.payload.id]
+                const currentIds = state.byId[state.current].solution.customVideoCodesPool
+                const updatedPrototypes = [...currentIds, action.payload.id]
 
-            return setIn(
-                state,
-                ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY],
-                updatedPrototypes
+                return setIn(
+                    state,
+                    ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY],
+                    updatedPrototypes
+                )
+            })
+            .addCase(
+                videoCodePrototypesSlice.actions.remove,
+                (
+                    state,
+                    action: PayloadAction<{
+                        prototypeId: VideoCodePrototypeId
+                        prototypeState: Record<VideoCodePrototypeId, VideoCodePrototype>
+                    }>
+                ) => {
+                    if (!state.current) {
+                        return state
+                    }
+
+                    const { prototypeId, prototypeState } = action.payload
+                    const childIds = prototypeState[prototypeId].videoCodes
+                    const allIdsToRemove = [prototypeId, ...childIds]
+
+                    const currentIds = state.byId[state.current].solution.customVideoCodesPool
+                    const updated = currentIds.filter((id) => !allIdsToRemove.includes(id))
+
+                    return setIn(state, ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY], updated)
+                }
             )
-        },
-        [videoCodePrototypesSlice.actions.remove.type]: (
-            state,
-            action: PayloadAction<{
-                prototypeId: VideoCodePrototypeId
-                prototypeState: Record<VideoCodePrototypeId, VideoCodePrototype>
-            }>
-        ) => {
-            if (!state.current) {
-                return state
-            }
-
-            const { prototypeId, prototypeState } = action.payload
-            const childIds = prototypeState[prototypeId].videoCodes
-            const allIdsToRemove = [prototypeId, ...childIds]
-
-            const currentIds = state.byId[state.current].solution.customVideoCodesPool
-            const updated = currentIds.filter((id) => !allIdsToRemove.includes(id))
-
-            return setIn(state, ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY], updated)
-        },
     },
 })
 
@@ -201,6 +202,9 @@ const selectSolutionById = (state: SolutionStateSlice, props: { solutionId: stri
 const selectCurrentId = (state: SolutionStateSlice) => state.videoEditor.data.solutions.current
 const selectPreviousIds = (state: SolutionStateSlice) => state.videoEditor.data.solutions.previous
 
+const selectIsCurrentSolution = (state: SolutionStateSlice, props: { solutionId?: string }) =>
+    !!(props.solutionId && state.videoEditor.data.solutions.current === props.solutionId)
+
 const selectPreviousSolutions = createSelector([selectById, selectPreviousIds], (byId, ids) =>
     ids.map((id) => byId[id])
 )
@@ -215,10 +219,6 @@ const selectCurrentVideoCodeIds = createSelector([selectById, selectCurrentId], 
 
 const selectCurrentCutIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
     currentId ? byId[currentId].solution.cutList : []
-)
-
-const selectCurrentCutList = createSelector([selectCurrentCutIds, cuttingSelectors.selectById], (cutIds, cutsById) =>
-    cutIds.map((cutId) => cutsById[cutId])
 )
 
 const selectCurrentPrototypeIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
@@ -240,11 +240,11 @@ export const selectors = {
     selectSolutionById,
     selectCurrentId,
     selectPreviousIds,
+    selectIsCurrentSolution,
     selectPreviousSolutions,
     selectCurrentAnnotationIds,
     selectCurrentVideoCodeIds,
     selectCurrentCutIds,
-    selectCurrentCutList,
     selectCurrentPrototypeIds,
     selectCurrentSolutionOwner,
 }

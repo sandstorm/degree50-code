@@ -6,17 +6,26 @@ import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import End from '../../components/End'
 import Start from '../../components/Start'
+import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     annotationId: AnnotationId
     index: number
 }
 
-const mapStateToProps = (state: VideoEditorState, ownProps: OwnProps) => ({
-    item: selectors.data.annotations.selectAnnotationById(state, ownProps),
-    isFromCurrentSolution: selectors.data.selectAnnotationIsFromCurrentSolution(state, ownProps),
-    creatorName: selectors.data.selectCreatorNameForAnnotation(state, ownProps),
-})
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice, ownProps: OwnProps) => {
+    const item = selectors.data.annotations.selectAnnotationById(state, ownProps)
+    const canEdit = selectUserCanEditSolution(state, { solutionId: item.solutionId })
+
+    return {
+        item,
+        canEdit,
+        isFromCurrentSolution: selectors.data.selectAnnotationIsFromCurrentSolution(state, ownProps),
+        creatorName: selectors.data.selectCreatorNameForAnnotation(state, ownProps),
+    }
+}
 
 const mapDispatchToProps = {
     setOverlay: actions.overlay.setOverlay,

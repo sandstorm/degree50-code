@@ -26,11 +26,12 @@ class AutosavedSolutionRepository extends ServiceEntityRepository
 
     public function getLatestSolutionOfExerciseTeam(ExercisePhaseTeam $exercisePhaseTeam) {
         $latestAutosavedSolution = $this->findOneBy(['team' => $exercisePhaseTeam], ['update_timestamp' => 'desc']);
+
         $solution = $exercisePhaseTeam->getSolution();
-        $latestSolutionUpdate = $exercisePhaseTeam->getSolution()->getUpdateTimestamp();
+        $latestSolutionUpdate = $solution->getUpdateTimestamp();
 
         if ($latestAutosavedSolution && $latestAutosavedSolution->getUpdateTimestamp() > $latestSolutionUpdate) {
-            $solution = $latestAutosavedSolution;
+            return $latestAutosavedSolution;
         }
 
         return $solution;

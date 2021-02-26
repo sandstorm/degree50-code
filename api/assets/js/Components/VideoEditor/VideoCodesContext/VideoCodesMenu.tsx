@@ -7,7 +7,9 @@ import {
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
-import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ExercisePhaseTypesEnum'
+import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { selectUserIsCurrentEditor } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 
 const prefix = 'VIDEO_CODE'
 export const VideoCodeOverlayIds = {
@@ -21,12 +23,16 @@ export const VideoCodeOverlayIds = {
     removePrototype: `${prefix}/removePrototype`,
 }
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
     const activePhaseType = configSelectors.selectPhaseType(state)
     const isSolutionView = configSelectors.selectIsSolutionView(state)
+    const userIsCurrentEditor = selectUserIsCurrentEditor(state)
+    const videoCodesAreActive = configSelectors.selectVideoCodesAreActive(state)
 
-    const disableCreate = isSolutionView || activePhaseType === ExercisePhaseTypesEnum.VIDEO_CUTTING
-    const disabled = isSolutionView && activePhaseType === ExercisePhaseTypesEnum.VIDEO_CUTTING
+    const disableCreate =
+        isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS || !userIsCurrentEditor
+    const disabled =
+        !videoCodesAreActive || (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
 
     return {
         allVideoCodesCount: videoEditorSelectors.selectAllVideoCodeIdsByStartTime(state).length,

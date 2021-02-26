@@ -2,7 +2,7 @@ import { Controller } from 'stimulus'
 import ReactDOM from 'react-dom'
 import React from 'react'
 import { Provider } from 'react-redux'
-import { store } from './ExercisePhaseApp/Store/Store'
+import { store } from './ExerciseAndSolutionStore/Store'
 import { ExercisePhaseApp } from './ExercisePhaseApp/ExercisePhaseApp'
 import { hydrateConfig } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { hydrateLiveSyncConfig } from './ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
@@ -16,6 +16,7 @@ import {
     initializeComponentFilter,
     initializePreviousSolutionsFilter,
 } from './normalizeData'
+import { initData } from 'Components/VideoEditor/initData'
 
 export default class extends Controller {
     connect() {
@@ -32,18 +33,17 @@ export default class extends Controller {
         const normalizedAPIResponse = normalizeAPIResponseForExercisePhaseApp(solution, config)
 
         store.dispatch(
-            actions.data.solutions.init({
-                byId: normalizedAPIResponse.entities.solutions,
-                current: normalizedAPIResponse.result.currentSolution,
-                previous: normalizedAPIResponse.result.previousSolutions,
+            initData({
+                solutions: {
+                    byId: normalizedAPIResponse.entities.solutions,
+                    current: normalizedAPIResponse.result.currentSolution,
+                    previous: normalizedAPIResponse.result.previousSolutions,
+                },
+                annotations: { byId: normalizedAPIResponse.entities.annotations },
+                videoCodes: { byId: normalizedAPIResponse.entities.videoCodes },
+                videoCodePrototypes: { byId: normalizedAPIResponse.entities.customVideoCodesPool },
+                cuts: { byId: normalizedAPIResponse.entities.cutList },
             })
-        )
-
-        store.dispatch(actions.data.annotations.init({ byId: normalizedAPIResponse.entities.annotations }))
-        store.dispatch(actions.data.videoCodes.init({ byId: normalizedAPIResponse.entities.videoCodes }))
-        store.dispatch(actions.data.cuts.init({ byId: normalizedAPIResponse.entities.cutList }))
-        store.dispatch(
-            actions.data.videoCodePrototypes.init({ byId: normalizedAPIResponse.entities.customVideoCodesPool })
         )
 
         store.dispatch(

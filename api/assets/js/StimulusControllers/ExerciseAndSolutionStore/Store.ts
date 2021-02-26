@@ -1,18 +1,25 @@
-import { configureStore, ThunkAction, Action, getDefaultMiddleware, combineReducers } from '@reduxjs/toolkit'
-import toolbarReducer from '../Components/Toolbar/ToolbarSlice'
-import configReducer from '../Components/Config/ConfigSlice'
-import liveSyncConfigReducer from '../Components/LiveSyncConfig/LiveSyncConfigSlice'
-import overlayReducer from '../Components/Overlay/OverlaySlice'
-import materialViewerReducer from '../Components/MaterialViewer/MaterialViewerSlice'
-import presenceReducer from '../Components/Presence/PresenceSlice'
+import {
+    configureStore,
+    ThunkAction,
+    Action,
+    getDefaultMiddleware,
+    combineReducers,
+    createSelector,
+} from '@reduxjs/toolkit'
+import toolbarReducer from '../ExercisePhaseApp/Components/Toolbar/ToolbarSlice'
+import configReducer, { selectors as configSelectors } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
+import liveSyncConfigReducer from '../ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
+import overlayReducer from '../ExercisePhaseApp/Components/Overlay/OverlaySlice'
+import materialViewerReducer from '../ExercisePhaseApp/Components/MaterialViewer/MaterialViewerSlice'
+import presenceReducer from '../ExercisePhaseApp/Components/Presence/PresenceSlice'
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux'
 import createSagaMiddleware from 'redux-saga'
 import { select } from 'redux-saga/effects'
 import { all, spawn, call } from 'redux-saga/effects'
-import presenceSaga from '../Components/Presence/PresenceSaga'
-import solutionSaga from '../Components/Solution/SolutionSaga'
-import currentEditorReducer from '../Components/Presence/CurrentEditorSlice'
-import VideoEditorSlice from 'Components/VideoEditor/VideoEditorSlice'
+import presenceSaga from '../ExercisePhaseApp/Components/Presence/PresenceSaga'
+import solutionSaga from '../ExercisePhaseApp/Components/Solution/SolutionSaga'
+import currentEditorReducer, { selectCurrentEditorId } from '../ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import VideoEditorSlice, { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -72,3 +79,23 @@ export function* selectState() {
     const state: AppState = yield select()
     return state
 }
+
+export const selectUserIsCurrentEditor = createSelector(
+    [configSelectors.selectUserId, selectCurrentEditorId],
+    (userId, editorId) => editorId && userId === editorId
+)
+
+export const selectUserCanEditSolution = createSelector(
+    [
+        configSelectors.selectReadOnly,
+        selectUserIsCurrentEditor,
+        videoEditorSelectors.data.solutions.selectIsCurrentSolution,
+    ],
+    (isReadonly, userIsCurrentEditor, isCurrentSolution) => {
+        if (isReadonly) {
+            return false
+        }
+
+        return userIsCurrentEditor && isCurrentSolution
+    }
+)

@@ -1,19 +1,17 @@
 import PlayerSlice, { PlayerState, actions as playerActions, selectors as playerSelectors } from './PlayerSlice'
 import { combineReducers, createSelector } from '@reduxjs/toolkit'
-
 import MediaLaneRenderConfigSlice, {
     actions as mediaLaneRenderConfigActions,
     selectors as mediaLaneRenderConfigSelectors,
 } from './MediaLaneRenderConfigSlice'
 import { RenderConfig } from './components/MediaLane/MediaTrack'
-import DataSlice, { actions as dataActions, selectors as dataSelectors } from './DataSlice'
-
+import DataSlice from './DataSlice'
+import { actions as dataActions, selectors as dataSelectors, DataState } from './DataSlice'
 import OverlaySlice, {
     actions as overlayActions,
     OverlayState,
     selectors as overlaySelectors,
 } from './components/OverlayContainer/OverlaySlice'
-import { DataState } from './DataSlice'
 import { timeToSecond, sortByStartTime } from './utils'
 import { filterSlice, FilterState, selectors as filterSelectors } from './FilterContext/FilterSlice'
 import { Annotation, VideoCode, Cut } from './types'

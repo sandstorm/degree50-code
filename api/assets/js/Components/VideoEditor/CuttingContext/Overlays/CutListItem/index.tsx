@@ -9,6 +9,9 @@ import Start from '../../../components/Start'
 import { secondToTime } from 'Components/VideoEditor/utils'
 import PositionControls from './PositionControls'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
+import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     cutId: CutId
@@ -16,10 +19,15 @@ type OwnProps = {
     showPositionControls?: boolean
 }
 
-const mapStateToProps = (state: VideoEditorState, ownProps: OwnProps) => ({
-    item: selectors.data.cuts.selectCutById(state, ownProps),
-    isFromCurrentSolution: selectors.data.selectCutIsFromCurrentSolution(state, ownProps),
-})
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice, ownProps: OwnProps) => {
+    const item = selectors.data.cuts.selectCutById(state, ownProps)
+    const canEdit = selectUserCanEditSolution(state, { solutionId: item.solutionId })
+
+    return {
+        item,
+        canEdit,
+    }
+}
 
 const mapDispatchToProps = {
     moveUp: actions.data.solutions.moveCutUp,
@@ -70,7 +78,7 @@ const CutListItem: FC<Props> = (props) => {
             <p>Text: {props.item.text}</p>
             <p>Memo: {props.item.memo}</p>
             {props.showPositionControls && <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />}
-            {props.isFromCurrentSolution && (
+            {props.canEdit && (
                 <>
                     <Button className="btn btn-secondary" onPress={handleRemove}>
                         Löschen

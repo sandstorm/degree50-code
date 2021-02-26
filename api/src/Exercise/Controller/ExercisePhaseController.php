@@ -14,6 +14,7 @@ use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Exercise\Controller\SolutionService;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
 use App\Exercise\Form\VideoCutType;
@@ -51,6 +52,7 @@ class ExercisePhaseController extends AbstractController
     private ExercisePhaseRepository $exercisePhaseRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private LoggerInterface $logger;
+    private SolutionService $solutionService;
 
     /**
      * @param TranslatorInterface $translator
@@ -65,7 +67,8 @@ class ExercisePhaseController extends AbstractController
         VideoCodeRepository $videoCodeRepository,
         ExercisePhaseRepository $exercisePhaseRepository,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        SolutionService $solutionService
     )
     {
         $this->logger = $logger;
@@ -78,6 +81,7 @@ class ExercisePhaseController extends AbstractController
         $this->videoCodeRepository = $videoCodeRepository;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
+        $this->solutionService = $solutionService;
     }
 
     /**
@@ -122,18 +126,14 @@ class ExercisePhaseController extends AbstractController
             $this->eventStore->disableEventPublishingForNextFlush();
 
             if (!$exercisePhaseTeam->getSolution()) {
-                $solution = new Solution();
-                $exercisePhaseTeam->setSolution($solution);
-                $entityManager->persist($solution);
+                $newSolution = new Solution();
+                $exercisePhaseTeam->setSolution($newSolution);
+                $entityManager->persist($newSolution);
             }
 
             $entityManager->persist($exercisePhaseTeam);
             $entityManager->flush();
         }
-
-        // TODO whats the difference between an autosaved solution and a regular one?
-        // Why do they use separate models?
-        $solution = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
 
         // TODO maybe we should use separate endpoints here instead?
         // to me it feels like this controller method does too much...
@@ -145,7 +145,7 @@ class ExercisePhaseController extends AbstractController
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
 
-        $solutionCreator = $exercisePhaseTeam->getCreator();
+        $solution = $this->solutionService->getSolutionFromExercisePhaseTeam($exercisePhaseTeam);
 
         return $this->render($template, [
             'config' => $config,
@@ -153,12 +153,7 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'exercise' => $exercisePhase->getBelongsToExercise(),
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'solution' => [
-                'solution' => $solution->getSolution(),
-                'id' => $solution->getId(),
-                'userName' => $solutionCreator->getEmail(),
-                'userId' => $solutionCreator->getId(),
-            ],
+            'solution' => $solution,
             'currentEditor' => $currentEditor,
         ], $response);
     }

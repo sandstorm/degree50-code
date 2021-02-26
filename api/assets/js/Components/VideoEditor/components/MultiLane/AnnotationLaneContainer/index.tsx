@@ -7,16 +7,22 @@ import {
     ConfigStateSlice,
     selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExercisePhaseApp/Store/ExercisePhaseTypesEnum'
 import AnnotationLane from './AnnotationLane'
+import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
+    const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)
+    const isReadonly = !selectUserCanEditSolution(state, { solutionId: currentSolutionId })
+
     return {
         currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
         annotations: videoEditorSelectors.data.selectCurrentAnnotationsByStartTime(state),
         previousSolutions: videoEditorSelectors.selectActiveSolutionsWithAnnotations(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
         isSolutionView: configSelectors.selectIsSolutionView(state),
+        isReadonly,
     }
 }
 
@@ -35,7 +41,7 @@ const AnnotationLaneContainer = (props: Props) => {
                 <div className="multilane__medialane-description">
                     {componentName} ({props.annotations.length}) - {ownerName} [Aktuelle Lösung]
                 </div>
-                <AnnotationLane annotations={props.annotations} />
+                <AnnotationLane annotations={props.annotations} readOnly={props.isReadonly} />
             </div>
         )
     }

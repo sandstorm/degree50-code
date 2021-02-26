@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createSelector, Action } from '@reduxjs/too
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
-import { ExercisePhaseTypesEnum } from '../../Store/ExercisePhaseTypesEnum'
+import { ExercisePhaseTypesEnum } from '../../../ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import { VideoCodePrototype, VideoListsState } from 'Components/VideoEditor/types'
 
 export type ComponentId = ComponentTypesEnum | TabsTypesEnum
@@ -85,6 +85,8 @@ const selectTitle = (state: ConfigStateSlice) => state.config.title
 const selectDescription = (state: ConfigStateSlice) => state.config.description
 const selectIsSolutionView = (state: ConfigStateSlice) => state.config.isSolutionView
 
+const selectAnnotationsAreActive = (state: ConfigStateSlice) =>
+    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_ANNOTATIONS) > -1
 const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
     state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CODES) > -1
 const selectCutsAreActive = (state: ConfigStateSlice) =>
@@ -99,6 +101,7 @@ export const selectors = {
     selectIsSolutionView,
     selectVideos,
     selectVideoCodesPool,
+    selectAnnotationsAreActive,
     selectVideoCodesAreActive,
     selectCutsAreActive,
     selectComponents,

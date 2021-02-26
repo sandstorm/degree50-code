@@ -39,6 +39,9 @@ class AutosavedSolution
      */
     private $team;
 
+    // TODO: get id of original Solution (via Team)
+    // TODO: fake the id of AutosavedSolution to be the original Solution->id when sent to frontend
+
     public function getSolution(): ?array
     {
         return $this->solution;

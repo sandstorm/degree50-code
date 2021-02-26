@@ -2,29 +2,38 @@ import { VideoCodeId, VideoCodesStateSlice } from 'Components/VideoEditor/VideoC
 import { VideoCodeOverlayIds } from 'Components/VideoEditor/VideoCodesContext/VideoCodesMenu'
 import Button from 'Components/Button/Button'
 import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import React, { FC, memo } from 'react'
+import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import End from '../../../components/End'
 import Start from '../../../components/Start'
 import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
 import PrototypeInformation from './PrototypeInformation'
 import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
+import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
+import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     videoCodeId: VideoCodeId
 }
 
 const mapStateToProps = (
-    state: VideoCodesStateSlice & SolutionStateSlice & VideoCodePoolStateSlice,
+    state: VideoCodesStateSlice &
+        SolutionStateSlice &
+        VideoCodePoolStateSlice &
+        CurrentEditorStateSlice &
+        ConfigStateSlice,
     ownProps: OwnProps
 ) => {
     const item = selectors.data.videoCodes.selectVideoCodeById(state, ownProps)
+    const canEdit = selectUserCanEditSolution(state, { solutionId: item.solutionId })
     const videoCodePrototype = item.idFromPrototype
         ? selectors.data.videoCodePrototypes.selectPrototypeById(state, { videoCodeId: item.idFromPrototype })
         : undefined
 
     return {
         item,
+        canEdit,
         videoCodePrototype,
         isFromCurrentSolution: selectors.data.selectVideoCodeIsFromCurrentSolution(state, ownProps),
         creatorName: selectors.data.selectCreatorNameForVideoCode(state, ownProps),
