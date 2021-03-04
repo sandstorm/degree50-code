@@ -28,11 +28,13 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
     const isSolutionView = configSelectors.selectIsSolutionView(state)
     const userIsCurrentEditor = selectUserIsCurrentEditor(state)
     const videoCodesAreActive = configSelectors.selectVideoCodesAreActive(state)
+    const dependsOnPreviousPhase = configSelectors.selectDependsOnPreviousPhase(state)
 
     const disableCreate =
         isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS || !userIsCurrentEditor
     const disabled =
-        !videoCodesAreActive || (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
+        (!videoCodesAreActive && !dependsOnPreviousPhase) ||
+        (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
 
     return {
         allVideoCodesCount: videoEditorSelectors.selectAllVideoCodeIdsByStartTime(state).length,
