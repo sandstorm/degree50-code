@@ -26,11 +26,13 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
     const isSolutionView = configSelectors.selectIsSolutionView(state)
     const userIsCurrentEditor = selectUserIsCurrentEditor(state)
     const annotationsAreActive = configSelectors.selectAnnotationsAreActive(state)
+    const dependsOnPreviousPhase = configSelectors.selectDependsOnPreviousPhase(state)
 
     const disableCreate =
         isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS || !userIsCurrentEditor
     const disabled =
-        !annotationsAreActive || (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
+        (!annotationsAreActive && !dependsOnPreviousPhase) ||
+        (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
 
     return {
         allAnnotationsCount: videoEditorSelectors.selectAllAnnotationIdsByStartTime(state).length,
