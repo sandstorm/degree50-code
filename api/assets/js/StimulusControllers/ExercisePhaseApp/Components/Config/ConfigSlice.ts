@@ -84,13 +84,13 @@ const selectIsGroupPhase = (state: ConfigStateSlice) => state.config.isGroupPhas
 const selectTitle = (state: ConfigStateSlice) => state.config.title
 const selectDescription = (state: ConfigStateSlice) => state.config.description
 const selectIsSolutionView = (state: ConfigStateSlice) => state.config.isSolutionView
+const selectDependsOnPreviousPhase = (state: ConfigStateSlice) => state.config.dependsOnPreviousPhase
 
 const selectAnnotationsAreActive = (state: ConfigStateSlice) =>
-    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_ANNOTATIONS) > -1
+    state.config.components.includes(TabsTypesEnum.VIDEO_ANNOTATIONS)
 const selectVideoCodesAreActive = (state: ConfigStateSlice) =>
-    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CODES) > -1
-const selectCutsAreActive = (state: ConfigStateSlice) =>
-    state.config.components.findIndex((c) => c === TabsTypesEnum.VIDEO_CUTTING) > -1
+    state.config.components.includes(TabsTypesEnum.VIDEO_CODES)
+const selectCutsAreActive = (state: ConfigStateSlice) => state.config.components.includes(TabsTypesEnum.VIDEO_CUTTING)
 
 export const selectors = {
     selectConfig,
@@ -109,6 +109,7 @@ export const selectors = {
     selectIsGroupPhase,
     selectTitle,
     selectDescription,
+    selectDependsOnPreviousPhase,
 }
 
 export default configSlice.reducer
