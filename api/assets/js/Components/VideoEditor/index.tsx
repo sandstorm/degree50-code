@@ -1,18 +1,12 @@
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import React, { FC, memo } from 'react'
-import { TabsTypesEnum } from 'types'
 import MediaLaneContainer from './components/MediaLaneContainer'
 import OverlayContainer from './components/OverlayContainer'
 import Toolbar from './components/Toolbar'
-import { VideoCodePrototype } from './types'
 
 type Props = {
     videos: Array<Video>
-    components: Array<TabsTypesEnum>
-    height: number
-    itemUpdateCondition: boolean
-    videoCodesPool: VideoCodePrototype[]
 }
 
 const VideoEditor: FC<Props> = (props) => {

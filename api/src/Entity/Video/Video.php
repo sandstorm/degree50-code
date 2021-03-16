@@ -10,6 +10,8 @@ use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\VirtualizedFile;
+use App\Exercise\Controller\ClientSideSolutionData\ClientSideCutVideo;
+use App\Exercise\Controller\ClientSideSolutionData\ClientSideVideoUrl;
 use App\Twig\AppRuntime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -346,7 +348,7 @@ class Video
         return $this->createdAt;
     }
 
-    public function getAsArray(AppRuntime $appRuntime): array {
+    public function getAsArray(AppRuntime $appRuntime): ClientSideCutVideo {
         $videoUrl = $appRuntime->virtualizedFileUrl($this->getEncodedVideoDirectory());
 
         if (empty($this->getSubtitles())) {
@@ -354,18 +356,10 @@ class Video
             $this->setSubtitles(new VideoSubtitles());
         }
 
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getTitle(),
-            'description' => $this->getDescription(),
-            'duration' => $this->getVideoDuration(),
-            'subtitles' => $this->getSubtitles()->getSubtitles(),
-            'url' => [
-                'hls' => $videoUrl . '/hls.m3u8',
-                'mp4' => $videoUrl . '/x264.mp4',
-                'vtt' => $videoUrl . '/subtitles.vtt',
-            ]
-        ];
+        return ClientSideCutVideo::fromVideoEntity(
+            $this,
+            ClientSideVideoUrl::fromBaseUrl($videoUrl)
+        );
     }
 
     public function getVisiblePersons(): ?string

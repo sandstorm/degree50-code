@@ -70,18 +70,18 @@ const selectCurrentCutIdsAtCursor = createSelector(
     }
 )
 
-const selectSolution = createSelector(
+const selectSolutionLists = createSelector(
     [
         dataSelectors.selectDenormalizedCurrentAnnotations,
         dataSelectors.selectDenormalizedCurrentVideoCodes,
         dataSelectors.selectDenormalizedCurrentCutList,
         dataSelectors.selectPrototypesList,
     ],
-    (annotations, videoCodes, cuts, videoCodePool) => ({
+    (annotations, videoCodes, cutList, videoCodePrototypes) => ({
         annotations,
         videoCodes,
-        cutList: cuts,
-        customVideoCodesPool: videoCodePool,
+        cutList,
+        videoCodePrototypes,
     })
 )
 
@@ -94,7 +94,7 @@ const selectActiveSolutionsWithAnnotations = createSelector(
     (visibleSolutions, solutionsById, annotationsById) => {
         return visibleSolutions.map((visibleSolution) => {
             const solution = solutionsById[visibleSolution.id]
-            const annotations = solution.solution.annotations.map((id) => annotationsById[id])
+            const annotations = solution.solutionLists.annotations.map((id) => annotationsById[id])
 
             return {
                 ...solution,
@@ -113,7 +113,7 @@ const selectActiveSolutionsWithVideoCodes = createSelector(
     (visibleSolutions, solutionsById, videoCodesById) => {
         return visibleSolutions.map((visibleSolution) => {
             const solution = solutionsById[visibleSolution.id]
-            const videoCodes = solution.solution.videoCodes.map((id) => videoCodesById[id])
+            const videoCodes = solution.solutionLists.videoCodes.map((id) => videoCodesById[id])
 
             return {
                 ...solution,
@@ -128,7 +128,7 @@ const selectActiveSolutionsWithCuts = createSelector(
     (visibleSolutions, solutionsById, cutsById) => {
         return visibleSolutions.map((visibleSolution) => {
             const solution = solutionsById[visibleSolution.id]
-            const cutList = solution.solution.cutList.map((id) => cutsById[id])
+            const cutList = solution.solutionLists.cutList.map((id) => cutsById[id])
 
             return {
                 ...solution,
@@ -217,7 +217,7 @@ export const selectors = {
     mediaLaneRenderConfig: mediaLaneRenderConfigSelectors,
     overlay: overlaySelectors,
 
-    selectSolution,
+    selectSolutionLists,
 
     selectVideoCodeIdsAtCursor: selectCurrentVideoCodeIdsAtCursor,
     selectAllVideoCodesByStartTime,

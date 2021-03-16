@@ -4,6 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\Entity\Video\Video;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,14 +49,14 @@ class Solution
     }
 
 
-    public function getSolution(): ?array
+    public function getSolution(): ?ServerSideSolutionLists
     {
-        return $this->solution;
+        return ServerSideSolutionLists::fromArray($this->solution);
     }
 
-    public function setSolution(array $solution): self
+    public function setSolution(ServerSideSolutionLists $solutionLists): self
     {
-        $this->solution = $solution;
+        $this->solution = $solutionLists->toArray();
 
         return $this;
     }

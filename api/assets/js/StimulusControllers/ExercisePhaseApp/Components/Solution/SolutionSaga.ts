@@ -6,8 +6,7 @@ import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
 import { selectors as configSelectors } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
-import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { normalizeAPIResponseForExercisePhaseApp } from 'StimulusControllers/normalizeData'
+import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import { initData } from 'Components/VideoEditor/initData'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
@@ -65,26 +64,9 @@ function* handleMessages(channel: EventChannel<unknown>) {
             const currentEditor: string = eventData.currentEditor
             yield put(setCurrentEditorId(currentEditor))
 
-            // set solution
-            const solution = eventData.solution
+            const { data } = eventData
 
-            const currentConfig = configSelectors.selectConfig(yield select())
-
-            const normalizedAPIResponse = normalizeAPIResponseForExercisePhaseApp(solution, currentConfig)
-
-            yield put(
-                initData({
-                    solutions: {
-                        byId: normalizedAPIResponse.entities.solutions,
-                        current: normalizedAPIResponse.result.currentSolution,
-                        previous: normalizedAPIResponse.result.previousSolutions,
-                    },
-                    annotations: { byId: normalizedAPIResponse.entities.annotations },
-                    videoCodes: { byId: normalizedAPIResponse.entities.videoCodes },
-                    videoCodePrototypes: { byId: normalizedAPIResponse.entities.customVideoCodesPool },
-                    cuts: { byId: normalizedAPIResponse.entities.cutList },
-                })
-            )
+            yield put(initData(data))
         }
     } finally {
         channel.close()
@@ -98,13 +80,11 @@ function* syncSolution() {
     const config = configSelectors.selectConfig(yield select())
 
     if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
-        const solution = selectors.selectSolution(yield select())
+        const solutionLists = selectors.selectSolutionLists(yield select())
         const updateSolutionEndpoint = configSelectors.selectConfig(yield select()).apiEndpoints.updateSolution
 
         try {
-            yield Axios.post(updateSolutionEndpoint, {
-                solution,
-            })
+            yield Axios.post(updateSolutionEndpoint, solutionLists)
         } catch (e) {
             console.warn('>>>>> updateSolution', e)
         }
