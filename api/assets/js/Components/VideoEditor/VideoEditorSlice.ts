@@ -12,7 +12,7 @@ import OverlaySlice, {
     OverlayState,
     selectors as overlaySelectors,
 } from './components/OverlayContainer/OverlaySlice'
-import { timeToSecond, sortByStartTime } from './utils'
+import { timeToSecond, sortByStartTime } from './utils/time'
 import { filterSlice, FilterState, selectors as filterSelectors } from './FilterContext/FilterSlice'
 import { Annotation, VideoCode, Cut } from './types'
 

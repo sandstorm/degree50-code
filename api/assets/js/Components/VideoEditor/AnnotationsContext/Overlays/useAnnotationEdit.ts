@@ -1,20 +1,17 @@
 import { Annotation } from 'Components/VideoEditor/types'
-import { secondToTime, timeToSecond } from 'Components/VideoEditor/utils'
+import { clamp } from 'Components/VideoEditor/utils'
+import { secondToTime, timeToSecond, adjustEndTimeByStart } from 'Components/VideoEditor/utils/time'
 import { useState } from 'react'
 
-export const useAnnotationEdit = (initialAnnotation?: Annotation) => {
+export const useAnnotationEdit = (duration: number, initialAnnotation?: Annotation) => {
     const [transientAnnotation, setTransientAnnotation] = useState<Annotation | undefined>(initialAnnotation)
-
-    const adjustEndTimeByStart = (startTime: string, endTime: string) => {
-        return endTime > startTime ? endTime : secondToTime(timeToSecond(startTime) + 1)
-    }
 
     const handleStartTimeChange = (time: string) => {
         if (transientAnnotation) {
             setTransientAnnotation({
                 ...transientAnnotation,
-                start: time,
-                end: adjustEndTimeByStart(time, transientAnnotation.end),
+                start: secondToTime(clamp(timeToSecond(time), 0, duration)),
+                end: adjustEndTimeByStart(time, transientAnnotation.end, duration),
             })
         }
     }
@@ -23,7 +20,7 @@ export const useAnnotationEdit = (initialAnnotation?: Annotation) => {
         if (transientAnnotation) {
             setTransientAnnotation({
                 ...transientAnnotation,
-                end: adjustEndTimeByStart(transientAnnotation.start, time),
+                end: secondToTime(clamp(timeToSecond(time), timeToSecond(transientAnnotation.start), duration)),
             })
         }
     }

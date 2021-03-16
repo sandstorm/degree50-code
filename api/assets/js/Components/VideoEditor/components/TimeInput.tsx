@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FC, memo } from 'react'
-import { clamp, HoursStringFormatter, MinutesStringFormatter, SecondsWithMillisecondsStringFormatter } from '../utils'
+import { clamp } from '../utils'
+import { HoursStringFormatter, MinutesStringFormatter, SecondsWithMillisecondsStringFormatter } from '../utils/time'
 
 type Props = {
     label: string

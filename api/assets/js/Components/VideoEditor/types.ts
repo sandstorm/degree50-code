@@ -1,4 +1,4 @@
-import { timeToSecond } from './utils'
+import { timeToSecond } from './utils/time'
 import { AnnotationId } from './AnnotationsContext/AnnotationsSlice'
 import { VideoCodeId } from './VideoCodesContext/VideoCodesSlice'
 import { CutId } from './CuttingContext/CuttingSlice'

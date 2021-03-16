@@ -1,20 +1,17 @@
 import { VideoCode } from 'Components/VideoEditor/types'
-import { secondToTime, timeToSecond } from 'Components/VideoEditor/utils'
+import { clamp } from 'Components/VideoEditor/utils'
+import { secondToTime, timeToSecond, adjustEndTimeByStart } from 'Components/VideoEditor/utils/time'
 import { ChangeEvent, useState } from 'react'
 
-export const useVideoCodeEdit = (initialVideoCode?: VideoCode) => {
+export const useVideoCodeEdit = (duration: number, initialVideoCode?: VideoCode) => {
     const [transientVideoCode, setTransientVideoCode] = useState<VideoCode | undefined>(initialVideoCode)
-
-    const adjustEndTimeByStart = (startTime: string, endTime: string) => {
-        return endTime > startTime ? endTime : secondToTime(timeToSecond(startTime) + 1)
-    }
 
     const handleStartTimeChange = (time: string) => {
         if (transientVideoCode) {
             setTransientVideoCode({
                 ...transientVideoCode,
-                start: time,
-                end: adjustEndTimeByStart(time, transientVideoCode.end),
+                start: secondToTime(clamp(timeToSecond(time), 0, duration)),
+                end: adjustEndTimeByStart(time, transientVideoCode.end, duration),
             })
         }
     }
@@ -23,7 +20,7 @@ export const useVideoCodeEdit = (initialVideoCode?: VideoCode) => {
         if (transientVideoCode) {
             setTransientVideoCode({
                 ...transientVideoCode,
-                end: adjustEndTimeByStart(transientVideoCode.start, time),
+                end: secondToTime(clamp(timeToSecond(time), timeToSecond(transientVideoCode.start), duration)),
             })
         }
     }

@@ -1,4 +1,5 @@
-import { getExt, secondToTime } from '.'
+import { getExt } from '.'
+import { secondToTime } from './time'
 import { MediaItem } from '../types'
 
 export function checkIsFile(source: unknown): boolean {
