@@ -1,9 +1,8 @@
-import { createSlice, PayloadAction, createSelector, Action } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, Action } from '@reduxjs/toolkit'
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
 import { ExercisePhaseTypesEnum } from '../../../ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
-import { VideoCodePrototype, VideoListsState } from 'Components/VideoEditor/types'
 
 export type ComponentId = ComponentTypesEnum | TabsTypesEnum
 
@@ -20,12 +19,10 @@ export interface ConfigState {
     userName: string
     isGroupPhase: boolean
     dependsOnPreviousPhase: boolean
-    previousSolutions: Array<{ id: string; userId: string; userName: string; solution: VideoListsState }>
     readOnly: boolean
     components: Array<ComponentId>
     material: Array<Material>
     videos: Array<Video>
-    videoCodesPool: Array<VideoCodePrototype>
     apiEndpoints: ApiEndpoints
     isSolutionView: boolean
 }
@@ -38,12 +35,10 @@ const initialState: ConfigState = {
     userName: '',
     isGroupPhase: false,
     dependsOnPreviousPhase: false,
-    previousSolutions: [],
     readOnly: false,
     components: [],
     material: [],
     videos: [],
-    videoCodesPool: [],
     apiEndpoints: {
         updateSolution: '',
         updateCurrentEditor: '',
@@ -77,9 +72,7 @@ const selectUserId = (state: ConfigStateSlice) => state.config.userId
 const selectUserName = (state: ConfigStateSlice) => state.config.userName
 const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 const selectVideos = (state: ConfigStateSlice) => state.config.videos
-const selectVideoCodesPool = (state: ConfigStateSlice) => state.config.videoCodesPool
 const selectComponents = (state: ConfigStateSlice) => state.config.components
-const selectPreviousSolutions = (state: ConfigStateSlice) => state.config.previousSolutions
 const selectIsGroupPhase = (state: ConfigStateSlice) => state.config.isGroupPhase
 const selectTitle = (state: ConfigStateSlice) => state.config.title
 const selectDescription = (state: ConfigStateSlice) => state.config.description
@@ -100,12 +93,10 @@ export const selectors = {
     selectReadOnly,
     selectIsSolutionView,
     selectVideos,
-    selectVideoCodesPool,
     selectAnnotationsAreActive,
     selectVideoCodesAreActive,
     selectCutsAreActive,
     selectComponents,
-    selectPreviousSolutions,
     selectIsGroupPhase,
     selectTitle,
     selectDescription,

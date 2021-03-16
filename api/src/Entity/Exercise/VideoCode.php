@@ -6,6 +6,13 @@ use App\Core\EntityTraits\IdentityTrait;
 use App\Repository\Exercise\VideoCodeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+// NOTE:
+// This actually what we call a 'VideoCodePrototype' not an actual 'videoCode'!!!
+// The naming was very missleading in the past. It might make sense to
+// change the schema in the future. (I am just currently in the middle of
+// a rather big refactoring and don't know how to easily change the schema and
+// migrate existing data)
+
 /**
  * @ORM\Entity(repositoryClass=VideoCodeRepository::class)
  */

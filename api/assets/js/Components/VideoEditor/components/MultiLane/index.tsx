@@ -70,13 +70,19 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const MultiLane = (props: Props) => {
-    const firstVideoDuration = props.videos[0].duration
-
     const { handleMediaLaneClick } = useMediaLaneClick(
         props.mediaLaneRenderConfig,
         props.setRenderConfig,
         props.setPlayPosition
     )
+
+    const firstVideo = props.videos[0]
+
+    if (!firstVideo) {
+        return null
+    }
+
+    const firstVideoDuration = firstVideo.duration
 
     return (
         <div className="video-editor-timeline" style={{ height: MEDIA_LANE_HEIGHT }}>

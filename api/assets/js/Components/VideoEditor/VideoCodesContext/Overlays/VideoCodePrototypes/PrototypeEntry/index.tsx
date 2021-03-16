@@ -79,7 +79,7 @@ const PrototypeEntry: FC<Props> = (props) => {
                     <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
                 )}
 
-                {props.videoCodePrototype.parentId === undefined ? (
+                {!props.videoCodePrototype.parentId ? (
                     <ToggleChildrenButton onClick={toggleChildrenVisibility} showChildren={showChildren} />
                 ) : null}
             </div>

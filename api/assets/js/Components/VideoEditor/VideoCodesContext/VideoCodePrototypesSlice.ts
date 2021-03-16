@@ -4,9 +4,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { set, removeIn } from 'immutable'
-import { videoCodePrototypeSchema } from 'StimulusControllers/normalizeData'
 import { VideoCodePrototype } from '../types'
-import { normalize } from 'normalizr'
 import { initData } from '../initData'
 
 export type VideoCodePrototypeId = string
@@ -27,17 +25,6 @@ export const videoCodePrototypesSlice = createSlice({
     name: 'videoCodePrototypes',
     initialState,
     reducers: {
-        set: (state, action: PayloadAction<VideoCodePrototype[]>) => {
-            const normalized = normalize(action.payload, [videoCodePrototypeSchema])
-
-            return {
-                ...state,
-                byId: {
-                    ...state.byId,
-                    ...normalized.entities.customVideoCodesPool,
-                },
-            }
-        },
         append: (
             state: VideoCodePrototypesState,
             action: PayloadAction<VideoCodePrototype>

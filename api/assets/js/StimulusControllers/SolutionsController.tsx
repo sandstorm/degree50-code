@@ -6,16 +6,13 @@ import { store } from './ExerciseAndSolutionStore/Store'
 import { ConfigState, actions as configActions } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setTranslations, setLocale } from 'react-i18nify'
 import i18n from 'StimulusControllers/i18n'
-import {
-    normalizeAPIResponseForSolutionsApp,
-    initializeComponentFilter,
-    initializePreviousSolutionsFilter,
-} from './normalizeData'
+import { normalizeFilterData } from './normalizeData'
 import { Solution } from 'Components/VideoEditor/types'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEditorSlice'
 import SolutionsApp from './SolutionsApp'
 import { initData } from 'Components/VideoEditor/initData'
+import { DataState } from 'Components/VideoEditor/DataSlice'
 
 export type SolutionByTeam = Solution & {
     teamCreator: string
@@ -32,35 +29,16 @@ export default class extends Controller {
         const propsAsString = this.data.get('props')
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-        const solutions = props.solutions as Array<SolutionByTeam>
+        const data = props.data as DataState
         const config = props.config as ConfigState
 
         // set initial Redux state
         store.dispatch(configActions.hydrateConfig(config))
         store.dispatch(configActions.setIsSolutionView())
 
-        const normalizedAPIResponse = normalizeAPIResponseForSolutionsApp(solutions)
+        store.dispatch(initData(data))
 
-        store.dispatch(
-            initData({
-                solutions: {
-                    byId: normalizedAPIResponse.entities.solutions,
-                    current: normalizedAPIResponse.result.currentSolution,
-                    previous: normalizedAPIResponse.result.previousSolutions,
-                },
-                annotations: { byId: normalizedAPIResponse.entities.annotations },
-                videoCodes: { byId: normalizedAPIResponse.entities.videoCodes },
-                videoCodePrototypes: { byId: normalizedAPIResponse.entities.customVideoCodesPool },
-                cuts: { byId: normalizedAPIResponse.entities.cutList },
-            })
-        )
-
-        store.dispatch(
-            videoEditorActions.filter.init({
-                ...initializeComponentFilter(config),
-                ...initializePreviousSolutionsFilter(solutions),
-            })
-        )
+        store.dispatch(videoEditorActions.filter.init(normalizeFilterData(config, data)))
 
         ReactDOM.render(
             <React.StrictMode>

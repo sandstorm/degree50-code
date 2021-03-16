@@ -4,6 +4,12 @@ import { VideoCodeId } from './VideoCodesContext/VideoCodesSlice'
 import { CutId } from './CuttingContext/CuttingSlice'
 import { VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
+import {
+    ANNOTATIONS_API_PROPERTY,
+    VIDEO_CODES_API_PROPERTY,
+    VIDEO_CODE_PROTOTYPE_API_PROPERTY,
+    CUTLIST_API_PROPERTY,
+} from '../../StimulusControllers/normalizeData'
 
 export type VideoCodePrototype = {
     id: string
@@ -43,17 +49,17 @@ export type CutList = Array<Cut>
 export type SolutionId = string
 
 export type SolutionLists = {
-    annotations: AnnotationId[]
-    videoCodes: VideoCodeId[]
-    cutList: CutId[]
-    customVideoCodesPool: VideoCodePrototypeId[]
+    [ANNOTATIONS_API_PROPERTY]: AnnotationId[]
+    [VIDEO_CODES_API_PROPERTY]: VideoCodeId[]
+    [CUTLIST_API_PROPERTY]: CutId[]
+    [VIDEO_CODE_PROTOTYPE_API_PROPERTY]: VideoCodePrototypeId[]
 }
 
 export type Solution = {
     id: SolutionId
     userId?: string
     userName?: string
-    solution: SolutionLists
+    solutionLists: SolutionLists
     cutVideo?: Video
 }
 

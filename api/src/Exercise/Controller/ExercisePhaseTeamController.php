@@ -8,12 +8,15 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
+use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use App\Entity\Video\Video;
+use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Ramsey\Uuid\Uuid;
@@ -30,6 +33,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class ExercisePhaseTeamController extends AbstractController
 {
+    private LoggerInterface $logger;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private AutosavedSolutionRepository $autosavedSolutionRepository;
@@ -44,7 +48,7 @@ class ExercisePhaseTeamController extends AbstractController
      * @param AutosavedSolutionRepository $autosavedSolutionRepository
      * @param LiveSyncService $liveSyncService
      */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService, MessageBusInterface $messageBus, SolutionService $solutionService)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService, MessageBusInterface $messageBus, SolutionService $solutionService, LoggerInterface $logger)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -52,6 +56,7 @@ class ExercisePhaseTeamController extends AbstractController
         $this->liveSyncService = $liveSyncService;
         $this->messageBus = $messageBus;
         $this->solutionService = $solutionService;
+        $this->logger = $logger;
     }
 
     /**
@@ -236,7 +241,7 @@ class ExercisePhaseTeamController extends AbstractController
         }
 
         $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutList= $solution['cutList'];
+        $cutList= $solution->getCutList();
 
         if (empty($cutList)) {
             return;
@@ -273,13 +278,15 @@ class ExercisePhaseTeamController extends AbstractController
         /* @var User $user */
         $user = $this->getUser();
         $response = null;
-        $solutionFromJson = json_decode($request->getContent(), true);
+        $solutionListsFromJson = json_decode($request->getContent(), true);
+
+        $serverSideSolutionLists = ServerSideSolutionLists::fromArray($solutionListsFromJson);
 
         // If current user is not current editor && there is a solution -> discard
         if ($user === $exercisePhaseTeam->getCurrentEditor()) {
             $autosaveSolution = new AutosavedSolution();
             $autosaveSolution->setTeam($exercisePhaseTeam);
-            $autosaveSolution->setSolution($solutionFromJson['solution']);
+            $autosaveSolution->setSolution($serverSideSolutionLists);
             $autosaveSolution->setOwner($user);
 
             $this->eventStore->disableEventPublishingForNextFlush();
@@ -292,14 +299,17 @@ class ExercisePhaseTeamController extends AbstractController
             $response = Response::create('Not editor!', Response::HTTP_FORBIDDEN);
         }
 
-        // Why: send solution even if the user was not allowed to
-        // This will reset the state in the client to the actual state
-
-        $solution = $this->solutionService->getSolutionFromExercisePhaseTeam($exercisePhaseTeam);
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+            $clientSideSolutionDataBuilder,
+            $exercisePhaseTeam,
+            $exercisePhase
+        );
 
         // push solution to clients
         $this->liveSyncService->publish($exercisePhaseTeam, [
-            'solution' => $solution,
+            'data' => $clientSideSolutionDataBuilder,
             'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
         ]);
 
@@ -335,13 +345,19 @@ class ExercisePhaseTeamController extends AbstractController
                 $entityManager->persist($exercisePhaseTeam);
                 $entityManager->flush();
 
-                $solution = $this->solutionService->getSolutionFromExercisePhaseTeam($exercisePhaseTeam);
+                $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+                $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+                $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+                    $clientSideSolutionDataBuilder,
+                    $exercisePhaseTeam,
+                    $exercisePhase
+                );
 
                 // push new state to clients
                 $this->liveSyncService->publish(
                     $exercisePhaseTeam,
                     [
-                        'solution' => $solution,
+                        'data' => $clientSideSolutionDataBuilder,
                         'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
                     ]
                 );

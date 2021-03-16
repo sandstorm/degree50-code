@@ -6,6 +6,7 @@ namespace App\VideoEncoding\MessageHandler;
 
 use App\Core\FileSystemService;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
+use App\Entity\Exercise\ServerSideSolutionLists\ServerSideCut;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -62,7 +63,7 @@ class CutListEncodingHandler implements MessageHandlerInterface
             return;
         }
 
-        $cutList = $exercisePhaseTeam->getSolution()->getSolution()['cutList'];
+        $cutList = $exercisePhaseTeam->getSolution()->getSolution()->getCutList();
 
         if (empty($cutList)) {
             return;
@@ -199,10 +200,10 @@ class CutListEncodingHandler implements MessageHandlerInterface
         $clipOutputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
         $rootDir = $this->parameterBag->get('kernel.project_dir');
 
-        $clipPaths = array_map(function ($cut) use ($ffmpeg, $clipOutputDirectory, $rootDir) {
+        $clipPaths = array_map(function (ServerSideCut $cut) use ($ffmpeg, $clipOutputDirectory, $rootDir) {
             $this->logger->info('Creating new intermediate clip...');
 
-            $inputVideoFilename = $rootDir . '/public' . $cut['url'];
+            $inputVideoFilename = $rootDir . '/public' . $cut->getUrl();
             $localOutputDirectory = $this->fileSystemService->localPath($clipOutputDirectory);
             $clipUuid = Uuid::uuid4()->toString();
             $outputPath = $localOutputDirectory . '/' . $clipUuid . '_x264.mp4';
@@ -213,10 +214,10 @@ class CutListEncodingHandler implements MessageHandlerInterface
             $this->logger->info('FRAMERATE: ' . $frameRate);
 
             if ($ffmpegVideo instanceof MediaVideo) {
-                $offset = round($cut['offset'], 0, PHP_ROUND_HALF_UP);
+                $offset = round($cut->getOffset(), 0, PHP_ROUND_HALF_UP);
                 $videoStartOffset = TimeCode::fromSeconds($offset);
-                $videoTimelineStart = TimeCode::fromString($cut['start']);
-                $videoTimelineEnd = TimeCode::fromString($cut['end']);
+                $videoTimelineStart = TimeCode::fromString($cut->getStart());
+                $videoTimelineEnd = TimeCode::fromString($cut->getEnd());
 
                 $fps = (int)explode('/', $frameRate)[0];
                 $videoStartSeconds = $this->getSecondsFromTimeCode($videoTimelineStart, $fps);

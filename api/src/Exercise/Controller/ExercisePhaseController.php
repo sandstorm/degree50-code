@@ -3,17 +3,19 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
-use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\Material;
+use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Exercise\Controller\Dto\PreviousSolutionDto;
 use App\Exercise\Controller\SolutionService;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
@@ -47,9 +49,8 @@ class ExercisePhaseController extends AbstractController
     private AppRuntime $appRuntime;
     private LiveSyncService $liveSyncService;
     private RouterInterface $router;
-    private AutosavedSolutionRepository $autosavedSolutionRepository;
-    private VideoCodeRepository $videoCodeRepository;
     private ExercisePhaseRepository $exercisePhaseRepository;
+    private AutosavedSolutionRepository $autosavedSolutionRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private LoggerInterface $logger;
     private SolutionService $solutionService;
@@ -58,27 +59,25 @@ class ExercisePhaseController extends AbstractController
      * @param TranslatorInterface $translator
      */
     public function __construct(
+        AutosavedSolutionRepository $autosavedSolutionRepository,
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
         AppRuntime $appRuntime,
         LiveSyncService $liveSyncService,
         RouterInterface $router,
-        AutosavedSolutionRepository $autosavedSolutionRepository,
-        VideoCodeRepository $videoCodeRepository,
         ExercisePhaseRepository $exercisePhaseRepository,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         LoggerInterface $logger,
         SolutionService $solutionService
     )
     {
+        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->logger = $logger;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->appRuntime = $appRuntime;
         $this->liveSyncService = $liveSyncService;
         $this->router = $router;
-        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
-        $this->videoCodeRepository = $videoCodeRepository;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->solutionService = $solutionService;
@@ -100,7 +99,7 @@ class ExercisePhaseController extends AbstractController
         $showSolution = !!$request->get('showSolution');
 
         // config for the ui to render the react components
-        $config = $this->getConfig($exercisePhase, $exercisePhaseTeam, $showSolution);
+        $config = $this->getConfig($exercisePhase, $showSolution);
         $config['apiEndpoints'] = [
             'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
                 'id' => $exercisePhaseTeam->getId()
@@ -135,6 +134,16 @@ class ExercisePhaseController extends AbstractController
             $entityManager->flush();
         }
 
+        $response = new Response();
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
+
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+            $clientSideSolutionDataBuilder,
+            $exercisePhaseTeam,
+            $exercisePhase
+        );
+
         // TODO maybe we should use separate endpoints here instead?
         // to me it feels like this controller method does too much...
         $template = 'ExercisePhase/Show.html.twig';
@@ -142,29 +151,24 @@ class ExercisePhaseController extends AbstractController
             $template = 'ExercisePhase/ShowSolution.html.twig';
         }
 
-        $response = new Response();
-        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
-
-        $solution = $this->solutionService->getSolutionFromExercisePhaseTeam($exercisePhaseTeam);
-
         return $this->render($template, [
             'config' => $config,
+            'data' => $clientSideSolutionDataBuilder,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
             'exercise' => $exercisePhase->getBelongsToExercise(),
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'solution' => $solution,
             'currentEditor' => $currentEditor,
         ], $response);
     }
 
-    private function getConfig(ExercisePhase $exercisePhase, ExercisePhaseTeam  $exercisePhaseTeam = null, $readOnly = false)
+
+    private function getConfig(ExercisePhase $exercisePhase, $readOnly = false)
     {
         /* @var User $user */
         $user = $this->getUser();
 
         $components = $exercisePhase->getComponents();
-        $videoCodesPool = [];
 
         switch ($exercisePhase->getType()) {
             case ExercisePhase::TYPE_VIDEO_ANALYSE :
@@ -176,46 +180,12 @@ class ExercisePhaseController extends AbstractController
                     array_push($components, ExercisePhase::VIDEO_CODE);
                 }
 
-                $videoCodesPool = array_map(function (VideoCode $videoCode) {
-                    return [
-                        'id' => $videoCode->getId(),
-                        'name' => $videoCode->getName(),
-                        'description' => $videoCode->getDescription(),
-                        'color' => $videoCode->getColor(),
-                        'userCreated' => false,
-                        'videoCodes' => []
-                    ];
-                }, $exercisePhase->getVideoCodes()->toArray());
-
                 break;
             case ExercisePhase::TYPE_VIDEO_CUTTING :
                 array_push($components, ExercisePhase::VIDEO_CUTTING);
                 break;
         }
 
-        $previousSolutions = [];
-        // Get the relevant solutions of the previous phase,
-        // meaning we get the solutions of each of the members of the current team
-        if ($exercisePhase->getDependsOnPreviousPhase() && $exercisePhaseTeam != null) {
-            $previousPhase = $this->exercisePhaseRepository->findOneBy(['sorting' => $exercisePhase->getSorting() - 1, 'belongsToExercise' => $exercisePhase->getBelongsToExercise()]);
-            if ($previousPhase) {
-                $previousSolutions = array_map(function (User $teamMember) use ($previousPhase) {
-                    $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $previousPhase);
-                    $solution = $teamOfPreviousPhase ? $teamOfPreviousPhase->getSolution() : null;
-
-                    if (empty($solution)) {
-                        return [];
-                    }
-
-                    return [
-                        'userId' => $teamMember->getId(),
-                        'userName' => $teamMember->getEmail(),
-                        'solution' => $solution->getSolution(),
-                        'id' => $solution->getId(),
-                    ];
-                }, $exercisePhaseTeam->getMembers()->toArray());
-            }
-        }
 
         return [
             'title' => $exercisePhase->getName(),
@@ -226,9 +196,7 @@ class ExercisePhaseController extends AbstractController
             'userName' => $user->getEmail(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
-            'previousSolutions' => $previousSolutions,
             'readOnly' => $readOnly,
-            'videoCodesPool' => $videoCodesPool,
             'material' => array_map(function (Material $entry) {
                 return [
                     'id' => $entry->getId(),
@@ -260,29 +228,18 @@ class ExercisePhaseController extends AbstractController
 
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
 
-        $solutions = array_map(function (ExercisePhaseTeam $team) use ($exercise) {
-            $solution = $team->getSolution();
-            $solutionCreator = $team->getCreator();
-
-            return [
-                'teamCreator' => $team->getCreator()->getUsername(),
-                'teamMembers' => array_map(function (User $member) {
-                    return $member->getUsername();
-                }, $team->getMembers()->toArray()),
-                'solution' => $solution->getSolution(),
-                'id' => $solution->getId(),
-                'userName' => $solutionCreator->getUsername(),
-                'userId' => $solutionCreator->getId(),
-                'cutVideo' => $team->getSolution()->getCutVideo() ? $team->getSolution()->getCutVideo()->getAsArray($this->appRuntime) : null
-            ];
-        }, $teams);
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
+            $clientSideSolutionDataBuilder,
+            $teams
+        );
 
         // TODO throws Parameter 'userId' does not exist.... why?
         //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
-            'config' => $this->getConfig($exercisePhase, null, true),
-            'solutions' => $solutions,
+            'config' => $this->getConfig($exercisePhase, true),
+            'data' => $clientSideSolutionDataBuilder,
             'exercise' => $exercise,
             'exercisePhase' => $exercisePhase,
         ]);

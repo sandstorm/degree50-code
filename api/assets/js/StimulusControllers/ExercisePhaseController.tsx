@@ -11,47 +11,26 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import {
-    normalizeAPIResponseForExercisePhaseApp,
-    initializeComponentFilter,
-    initializePreviousSolutionsFilter,
-} from './normalizeData'
+import { initializeComponentFilter, initializePreviousSolutionsFilter, normalizeFilterData } from './normalizeData'
 import { initData } from 'Components/VideoEditor/initData'
+import { DataState } from 'Components/VideoEditor/DataSlice'
 
 export default class extends Controller {
     connect() {
         const propsAsString = this.data.get('props')
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-        const { liveSyncConfig, solution, currentEditor } = props
+        const { liveSyncConfig, currentEditor } = props
         const config = props.config as ConfigState
+        const data = props.data as DataState
 
         // set initial Redux state
         store.dispatch(hydrateConfig(config))
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
 
-        const normalizedAPIResponse = normalizeAPIResponseForExercisePhaseApp(solution, config)
+        store.dispatch(initData(data))
 
-        store.dispatch(
-            initData({
-                solutions: {
-                    byId: normalizedAPIResponse.entities.solutions,
-                    current: normalizedAPIResponse.result.currentSolution,
-                    previous: normalizedAPIResponse.result.previousSolutions,
-                },
-                annotations: { byId: normalizedAPIResponse.entities.annotations },
-                videoCodes: { byId: normalizedAPIResponse.entities.videoCodes },
-                videoCodePrototypes: { byId: normalizedAPIResponse.entities.customVideoCodesPool },
-                cuts: { byId: normalizedAPIResponse.entities.cutList },
-            })
-        )
-
-        store.dispatch(
-            actions.filter.init({
-                ...initializeComponentFilter(config),
-                ...initializePreviousSolutionsFilter(config.previousSolutions),
-            })
-        )
+        store.dispatch(actions.filter.init(normalizeFilterData(config, data)))
 
         store.dispatch(setCurrentEditorId(currentEditor))
 
