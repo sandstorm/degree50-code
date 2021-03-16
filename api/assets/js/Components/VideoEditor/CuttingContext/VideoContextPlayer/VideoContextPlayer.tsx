@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useLayoutEffect, useState, FC, memo, useMemo } from 'react'
+import React, { useRef, useEffect, useState, FC, memo, useMemo, useLayoutEffect } from 'react'
 import VideoContext from 'videocontext'
 
 import { initVideoContext, addVideoContextPlayListElement, transformCutListToVideoContextPlayList } from '../util'
@@ -31,6 +31,7 @@ const VideoContextPlayer: FC<Props> = (props) => {
         videoWidth: 0,
     })
 
+    // FIXME: This is actually causing a `setState` even if the VideoContextPlayer is unmounted
     const { width: videoContextPlayerWidth, height: videoContextPlayerHeight } = useDebouncedResizeObserver(
         $videoContextPlayerRef,
         100
@@ -56,12 +57,12 @@ const VideoContextPlayer: FC<Props> = (props) => {
     }
 
     // Determine canvas dimensions preserving the aspect ratio of the original video
-    // TODO: This is still a little bit buggy - there are times, when the
+    // TODO: This is not "perfect" but it covers most cases
     useEffect(() => {
         const canvas = $canvasWrapperRef.current
         const { videoWidth, videoHeight } = videoSrcAttributes
 
-        if (canvas && canvas.parentElement && videoWidth > 0 && videoHeight > 0) {
+        if (videoContext && canvas && canvas.parentElement && videoWidth > 0 && videoHeight > 0) {
             const parentElement = canvas.parentElement
             const containerHeight = parentElement.clientHeight
             const containerWidth = parentElement.clientWidth
@@ -83,37 +84,39 @@ const VideoContextPlayer: FC<Props> = (props) => {
                 setCanvasWidth(aspectRatioWidth)
             }
         }
-    }, [$canvasWrapperRef, videoSrcAttributes, videoContextPlayerWidth, videoContextPlayerHeight])
-
-    const resetVideoContext = () => {
-        const { videoCtx } = initVideoContext($canvasWrapperRef)
-        setVideoContext(videoCtx)
-
-        return { videoCtx }
-    }
-
-    // Initialize video context on first render (runs once)
-    useLayoutEffect(() => {
-        resetVideoContext()
-    }, [])
+    }, [videoContext, $canvasWrapperRef, videoSrcAttributes, videoContextPlayerWidth, videoContextPlayerHeight])
 
     // Update video context with new nodes
-    useEffect(() => {
-        const { videoCtx } = resetVideoContext()
+    useLayoutEffect(() => {
+        // WHY: We're dealing with a mutable Entity here so we have to set and unset it by hand
+        const { videoCtx, cancelRenderLoop } = initVideoContext($canvasWrapperRef)
+        videoCtx.reset()
 
-        if (videoCtx && videoContextPlayList.length > 0) {
-            const nodesAndElements = videoContextPlayList.map((cut) => addVideoContextPlayListElement(cut, videoCtx))
-            const firstVideoElement = nodesAndElements[0].videoElement
-
-            // Determine aspect ratio by the first videoElement we encounter - we do not directly set an aspect ration, but get the videos height/width instead
-            // NOTE: If we have more than one video source at some point, we might need to
-            // change this to accommodate for different aspect ratios
-            firstVideoElement.addEventListener('loadedmetadata', () => {
-                setVideoSourceAttributes({
-                    videoWidth: firstVideoElement.videoWidth,
-                    videoHeight: firstVideoElement.videoHeight,
-                })
+        // Determine aspect ratio by the first videoElement we encounter - we do not directly set an aspect ration, but get the videos height/width instead
+        // NOTE: If we have more than one video source at some point, we might need to
+        // change this to accommodate for different aspect ratios
+        const setAspectRatio = () => {
+            setVideoSourceAttributes({
+                videoWidth: firstVideoElement.videoWidth,
+                videoHeight: firstVideoElement.videoHeight,
             })
+        }
+
+        const nodesAndElements = videoContextPlayList.map((cut) => addVideoContextPlayListElement(cut, videoCtx))
+        const firstVideoElement = nodesAndElements[0]?.videoElement
+
+        if (videoCtx && firstVideoElement) {
+            firstVideoElement.addEventListener('loadedmetadata', setAspectRatio)
+        }
+
+        setVideoContext(videoCtx)
+
+        // clean up
+        return () => {
+            cancelRenderLoop()
+            videoCtx.reset()
+            firstVideoElement.removeEventListener('loadedmetadata', setAspectRatio)
+            setVideoContext(undefined)
         }
     }, [videoContextPlayList])
 
