@@ -1,4 +1,4 @@
-import { combineReducers, createSelector, createAction } from '@reduxjs/toolkit'
+import { combineReducers, createSelector } from '@reduxjs/toolkit'
 import {
     AnnotationsState,
     annotationsSlice,
@@ -13,7 +13,7 @@ import {
 import { videoCodesSlice, VideoCodesState, selectors as videoCodeSelectors } from './VideoCodesContext/VideoCodesSlice'
 import { SolutionSlice, selectors as solutionSelectors, SolutionState } from './SolutionSlice'
 import { VideoCodePrototype } from './types'
-import { sortByStartTime } from './utils'
+import { sortByStartTime } from './utils/time'
 
 export type DataState = {
     solutions: SolutionState

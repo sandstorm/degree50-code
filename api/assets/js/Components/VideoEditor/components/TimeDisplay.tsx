@@ -6,7 +6,7 @@ import {
     HoursStringFormatter,
     MinutesStringFormatter,
     SecondsStringFormatter,
-} from '../utils'
+} from '../utils/time'
 
 type Props = {
     timeInSeconds: number

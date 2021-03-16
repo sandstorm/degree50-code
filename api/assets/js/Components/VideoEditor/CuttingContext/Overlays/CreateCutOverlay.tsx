@@ -55,7 +55,10 @@ const CreateCutOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    const { transientCut, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } = useCutEdit(initialCut)
+    const { transientCut, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } = useCutEdit(
+        duration,
+        initialCut
+    )
 
     const close = () => {
         props.closeOverlay(CutOverlayIds.create)

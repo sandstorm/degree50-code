@@ -1,5 +1,5 @@
 import TimeInput from 'Components/VideoEditor/components/TimeInput'
-import { secondToTime } from 'Components/VideoEditor/utils'
+import { secondToTime } from 'Components/VideoEditor/utils/time'
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
@@ -20,7 +20,7 @@ import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
     currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
-    videos: configSelectors.selectVideos(state),
+    duration: configSelectors.selectVideos(state)[0].duration,
     prototoypes: videoEditorSelectors.data.selectDenormalizedPrototypes(state),
     currentSolutionId: videoEditorSelectors.data.solutions.selectCurrentId(state),
 })
@@ -34,8 +34,7 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const CreateVideoCodeOverlay: FC<Props> = (props) => {
-    const { currentTime, videos } = props
-    const duration = videos[0].duration
+    const { currentTime, duration } = props
     const initialPrototypeId = props.prototoypes[0]?.id
 
     const close = () => {
@@ -63,7 +62,7 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         handleEndTimeChange,
         handleMemoChange,
         updateSelectedCode,
-    } = useVideoCodeEdit(initialVideoCode)
+    } = useVideoCodeEdit(duration, initialVideoCode)
 
     if (props.prototoypes.length < 1) {
         return (

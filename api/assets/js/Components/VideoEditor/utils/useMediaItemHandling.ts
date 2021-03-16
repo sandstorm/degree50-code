@@ -2,7 +2,8 @@ import { useCallback, useState, useEffect, useMemo } from 'react'
 import { t } from 'react-i18nify'
 import isEqual from 'lodash/isEqual'
 
-import { secondToTime, notify } from '.'
+import { notify } from '.'
+import { secondToTime } from './time'
 import { MediaItem } from '../types'
 
 export const getNewMediaItemStartAndEnd = (currentTime: number, duration: number) => {

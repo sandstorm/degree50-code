@@ -1,14 +1,11 @@
 import { Cut } from 'Components/VideoEditor/types'
-import { secondToTime, timeToSecond } from 'Components/VideoEditor/utils'
+import { secondToTime, timeToSecond, adjustEndTimeByStart } from 'Components/VideoEditor/utils/time'
 import { t2d } from 'duration-time-conversion'
 import { useState } from 'react'
+import { clamp } from 'Components/VideoEditor/utils'
 
-export const useCutEdit = (initialCut?: Cut) => {
+export const useCutEdit = (duration: number, initialCut?: Cut) => {
     const [transientCut, setTransientCut] = useState<Cut | undefined>(initialCut)
-
-    const adjustEndTimeByStart = (startTime: string, endTime: string) => {
-        return endTime > startTime ? endTime : secondToTime(timeToSecond(startTime) + 1)
-    }
 
     // WHY also update offset:
     // We do not need to show offset in frontend and
@@ -17,8 +14,8 @@ export const useCutEdit = (initialCut?: Cut) => {
         if (transientCut) {
             setTransientCut({
                 ...transientCut,
-                start: time,
-                end: adjustEndTimeByStart(time, transientCut.end),
+                start: secondToTime(clamp(timeToSecond(time), 0, duration)),
+                end: adjustEndTimeByStart(time, transientCut.end, duration),
                 offset: t2d(time),
             })
         }
@@ -28,7 +25,7 @@ export const useCutEdit = (initialCut?: Cut) => {
         if (transientCut) {
             setTransientCut({
                 ...transientCut,
-                end: adjustEndTimeByStart(transientCut.start, time),
+                end: secondToTime(clamp(timeToSecond(time), timeToSecond(transientCut.start), duration)),
             })
         }
     }
