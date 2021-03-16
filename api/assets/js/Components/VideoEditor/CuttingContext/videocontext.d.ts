@@ -29,6 +29,7 @@ declare module 'videocontext' {
         play: () => void
         pause: () => void
         video: (el: HTMLVideoElement, offset: number, preloadTime: number, config: Record<string, unknown>) => any // FIXME
+        reset: () => void
 
         constructor(canvas: HTMLElement | null)
     }
