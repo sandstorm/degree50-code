@@ -8,14 +8,20 @@ import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import { useCutEdit } from './useCutEdit'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
     const cutsById = selectors.data.cuts.selectById(state)
     const cut = currentlyEditedElementId ? cutsById[currentlyEditedElementId] : undefined
+    const duration = configSelectors.selectVideos(state)[0].duration
 
     return {
         cut,
+        duration,
     }
 }
 
@@ -29,7 +35,10 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 // TODO this should probably be consolidated into a single component with the CreateCutOverlay
 const EditCutOverlay: FC<Props> = (props) => {
-    const { transientCut, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } = useCutEdit(props.cut)
+    const { transientCut, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } = useCutEdit(
+        props.duration,
+        props.cut
+    )
 
     const close = () => {
         props.closeOverlay(CutOverlayIds.edit)

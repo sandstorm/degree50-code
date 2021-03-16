@@ -9,15 +9,21 @@ import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodeSelection'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
     const videoCodesById = selectors.data.videoCodes.selectById(state)
     const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
+    const duration = configSelectors.selectVideos(state)[0].duration
 
     return {
         videoCode,
         prototoypes: selectors.data.selectDenormalizedPrototypes(state),
+        duration,
     }
 }
 
@@ -39,7 +45,7 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
         handleEndTimeChange,
         handleMemoChange,
         updateSelectedCode,
-    } = useVideoCodeEdit(props.videoCode)
+    } = useVideoCodeEdit(props.duration, props.videoCode)
 
     const close = () => {
         props.closeOverlay(VideoCodeOverlayIds.edit)

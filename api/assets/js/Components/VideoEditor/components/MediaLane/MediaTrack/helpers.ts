@@ -1,5 +1,5 @@
 import { MediaTrackConfig } from '.'
-import { secondToTime } from 'Components/VideoEditor/utils'
+import { secondToTime } from 'Components/VideoEditor/utils/time'
 
 export const defaultMediaTrackConfig = {
     backgroundColor: '#454545',

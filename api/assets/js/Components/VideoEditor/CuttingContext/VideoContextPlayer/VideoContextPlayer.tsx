@@ -13,7 +13,7 @@ import PlayBackControl from './Controls/PlayBackControl'
 import MuteControl from './Controls/MuteControl'
 import ProgressControl from './Controls/ProgressControl'
 import TimeInfo from './TimeInfo'
-import { getAspectRatioHeight, getAspectRatioWidth } from '../../utils'
+import { getAspectRatioHeight, getAspectRatioWidth } from '../../utils/aspectRatio'
 
 type Props = {
     cutList: CutList

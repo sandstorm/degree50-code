@@ -1,9 +1,9 @@
+import { clamp } from 'Components/VideoEditor/utils'
 import {
-    clamp,
     getHoursFromTimeSeconds,
     getMinutesFromTimeSeconds,
     getSecondsFromTimeSeconds,
-} from 'Components/VideoEditor/utils'
+} from 'Components/VideoEditor/utils/time'
 import React, { ChangeEvent, FC, memo } from 'react'
 
 type Props = {

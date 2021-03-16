@@ -8,14 +8,20 @@ import { useAnnotationEdit } from './useAnnotationEdit'
 import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
     const annotationsById = selectors.data.annotations.selectById(state)
     const annotation = currentlyEditedElementId ? annotationsById[currentlyEditedElementId] : undefined
+    const duration = configSelectors.selectVideos(state)[0].duration
 
     return {
         annotation,
+        duration,
     }
 }
 
@@ -27,7 +33,7 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-// TODO this should probably be consolidated into a single component with the CreateAnnotationOverlay
+// TODO: this should probably be consolidated into a single component with the CreateAnnotationOverlay
 const EditAnnotationOverlay: FC<Props> = (props) => {
     const {
         transientAnnotation,
@@ -35,7 +41,7 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
         handleEndTimeChange,
         updateText,
         updateMemo,
-    } = useAnnotationEdit(props.annotation)
+    } = useAnnotationEdit(props.duration, props.annotation)
 
     const close = () => {
         props.closeOverlay(AnnotationOverlayIds.edit)
