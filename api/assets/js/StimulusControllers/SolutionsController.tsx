@@ -16,6 +16,7 @@ import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEditorSlice'
 import SolutionsApp from './SolutionsApp'
 import { initData } from 'Components/VideoEditor/initData'
+import { GlobalSolutionFilter } from 'Components/VideoEditor/FilterContext/FilterSlice'
 
 export type SolutionByTeam = Solution & {
     teamCreator: string
@@ -59,6 +60,7 @@ export default class extends Controller {
             videoEditorActions.filter.init({
                 ...initializeComponentFilter(config),
                 ...initializePreviousSolutionsFilter(solutions),
+                globalSolutionFilter: GlobalSolutionFilter.ALL,
             })
         )
 
