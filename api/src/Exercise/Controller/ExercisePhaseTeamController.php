@@ -142,14 +142,6 @@ class ExercisePhaseTeamController extends AbstractController
         /* @var User $user */
         $user = $this->getUser();
 
-        if ($exercisePhaseTeam->getSolution() || count($exercisePhaseTeam->getAutosavedSolutions()) > 0) {
-            $this->addFlash(
-                'danger',
-                $this->translator->trans('exercisePhaseTeam.delete.messages.hasSolution', [], 'forms')
-            );
-            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
-        }
-
         $this->eventStore->addEvent('TeamDeleted', [
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
             'userId' => $user->getId(),
