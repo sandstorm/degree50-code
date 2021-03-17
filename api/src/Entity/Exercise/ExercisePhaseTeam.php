@@ -106,6 +106,11 @@ class ExercisePhaseTeam
     {
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
+
+            // if $member is the creator -> set next member to be creator
+            if ($member === $this->getCreator()) {
+                $this->setCreator($this->members->first());
+            }
         }
 
         return $this;

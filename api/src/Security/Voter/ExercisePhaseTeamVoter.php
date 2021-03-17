@@ -65,16 +65,20 @@ class ExercisePhaseTeamVoter extends Voter
 
     private function canLeave(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
-        // does the owner can leave its own team, yes or no?
-        if ($exercisePhaseTeam->getCreator() === $user) {
-            return false;
-        }
-        return $exercisePhaseTeam->getMembers()->contains($user);
+        $isMember = $exercisePhaseTeam->getMembers()->contains($user);
+        // WHY: The last member can't leave - only delete the Team
+        $isNotTheOnlyMember = $exercisePhaseTeam->getMembers()->count() > 1;
+
+        return $isMember && $isNotTheOnlyMember;
     }
 
     private function canDelete(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
-        return $exercisePhaseTeam->getCreator() === $user;
+        $isMember = $exercisePhaseTeam->getMembers()->contains($user);
+        // WHY: Only the last member can delete the Team
+        $isTheOnlyMember = $exercisePhaseTeam->getMembers()->count() === 1;
+
+        return $isMember && $isTheOnlyMember;
     }
 
     private function canShow(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
