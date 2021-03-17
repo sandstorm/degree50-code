@@ -17,6 +17,7 @@ import {
     initializePreviousSolutionsFilter,
 } from './normalizeData'
 import { initData } from 'Components/VideoEditor/initData'
+import { GlobalSolutionFilter } from 'Components/VideoEditor/FilterContext/FilterSlice'
 
 export default class extends Controller {
     connect() {
@@ -50,6 +51,7 @@ export default class extends Controller {
             actions.filter.init({
                 ...initializeComponentFilter(config),
                 ...initializePreviousSolutionsFilter(config.previousSolutions),
+                globalSolutionFilter: GlobalSolutionFilter.ALL,
             })
         )
 
