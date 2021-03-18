@@ -65,6 +65,7 @@
 @import 'Composites/VideoPlayer/VideoPlayerWrapper';
 
 @import 'Composites/VideoEditor/AddItemButton';
+@import 'Composites/VideoEditor/Filters';
 @import 'Composites/VideoEditor/Menu';
 @import 'Composites/VideoEditor/InteractionArea';
 @import 'Composites/VideoEditor/MediaItemList';
@@ -82,5 +83,4 @@
 
 @import '../js/Components/VideoEditor/components/MultiLane/MultiLane';
 @import '../js/Components/VideoEditor/components/MediaLane/MediaItems/MediaItems';
-@import '../js/Components/VideoEditor/FilterContext/Overlays/SolutionFilters';
 @import '../js/StimulusControllers/SolutionsApp/CuttingSolutions';
