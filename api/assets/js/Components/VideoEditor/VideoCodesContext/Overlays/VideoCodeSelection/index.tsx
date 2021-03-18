@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { FC } from 'react'
 import { connect } from 'react-redux'
 import Radio from './Radio'
 import RadioGroup from './RadioGroup'
@@ -14,20 +14,10 @@ const mapStateToProps = (state: VideoEditorState) => ({
     prototoypes: selectors.data.selectDenormalizedPrototypes(state),
 })
 
-const mapDispatchToProps = {}
+type Props = OwnProps & ReturnType<typeof mapStateToProps>
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
-
-const VideoCodeSelection = React.memo(({ prototoypes, selectedPrototypeId, onSelect, defaultPrototypeId }: Props) => {
-    // 2. Render color panel
-    // 3. Render lock
-
-    const handleSelect = useCallback(
-        (value: string) => {
-            onSelect(value)
-        },
-        [selectedPrototypeId]
-    )
+const VideoCodeSelection: FC<Props> = (props) => {
+    const { onSelect, defaultPrototypeId, selectedPrototypeId, prototoypes } = props
 
     if (prototoypes.length < 1) {
         return <p>Es stehen keine Codes zur Verfügung</p>
@@ -36,7 +26,7 @@ const VideoCodeSelection = React.memo(({ prototoypes, selectedPrototypeId, onSel
     return (
         <RadioGroup
             className="video-code-select"
-            onChange={handleSelect}
+            onChange={onSelect}
             defaultValue={defaultPrototypeId}
             value={selectedPrototypeId ?? undefined}
             label="Codeauswahl"
@@ -50,6 +40,6 @@ const VideoCodeSelection = React.memo(({ prototoypes, selectedPrototypeId, onSel
             })}
         </RadioGroup>
     )
-})
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(VideoCodeSelection)
+export default connect(mapStateToProps)(React.memo(VideoCodeSelection))

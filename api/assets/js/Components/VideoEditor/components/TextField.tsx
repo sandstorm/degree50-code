@@ -7,12 +7,9 @@ type Props = {
 }
 
 const TextField = ({ id, text, updateText }: Props) => {
-    const handleChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-            updateText(unescape(event.target.value))
-        },
-        [updateText]
-    )
+    const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        updateText(unescape(event.target.value))
+    }
 
     return (
         <div className="video-editor__media-item-list__column video-editor__media-item-list__column--text">

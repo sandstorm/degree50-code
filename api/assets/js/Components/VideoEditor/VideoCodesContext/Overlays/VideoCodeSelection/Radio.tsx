@@ -23,10 +23,10 @@ const Radio = (props: Props) => {
     return (
         <li className="video-code-select__option">
             <input {...inputProps} ref={ref} id={props.prototype.id} />
-            <Color color={props.prototype.color} />
-            <PredefinedCodeLock isPredefined={!props.prototype.userCreated} />
-            <label style={{ display: 'block' }} htmlFor={props.prototype.id}>
-                {children}
+            <label htmlFor={props.prototype.id}>
+                <Color color={props.prototype.color} />
+                <PredefinedCodeLock isPredefined={!props.prototype.userCreated} />
+                <span>{children}</span>
             </label>
         </li>
     )

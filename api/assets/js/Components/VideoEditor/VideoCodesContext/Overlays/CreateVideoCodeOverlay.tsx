@@ -55,7 +55,6 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    // TODO handle code selection
     const {
         transientVideoCode,
         handleStartTimeChange,
