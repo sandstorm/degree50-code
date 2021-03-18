@@ -29,17 +29,12 @@
 .multilane-filter__content {
     width: 400px;
     overflow: hidden;
-}
-
-.multilane-filter__components {
-    padding: 10px;
-
-    & > ul {
-        padding: 0;
-        list-style: none;
+    > * {
+        padding-left: $theme__spacing--base;
+        padding-right: $theme__spacing--base;
     }
 
-    & input[type='checkbox'] {
-        margin-right: 5px;
+    > h2 {
+        margin-top: $theme__spacing--base;
     }
 }

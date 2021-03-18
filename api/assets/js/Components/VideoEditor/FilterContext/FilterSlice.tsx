@@ -26,7 +26,6 @@ export type FilterState = {
     componentIds: VideoComponentId[]
     previousSolutions: Record<string, ActivePreviousSolution>
     previousSolutionIds: string[]
-    globalSolutionFilter: GlobalSolutionFilter
 }
 
 export const initialState: FilterState = {
@@ -34,7 +33,6 @@ export const initialState: FilterState = {
     componentIds: [],
     previousSolutions: {},
     previousSolutionIds: [],
-    globalSolutionFilter: GlobalSolutionFilter.ALL,
 }
 
 /////////////
@@ -61,30 +59,16 @@ export const filterSlice = createSlice({
             const id = action.payload
             const previousSolution = state.previousSolutions[id]
 
-            const updatedState = setIn(state, ['previousSolutions', id], {
+            return setIn(state, ['previousSolutions', id], {
                 ...previousSolution,
                 isVisible: !previousSolution.isVisible,
             })
-
-            const updatedSolutions = updatedState.previousSolutionIds.map((id) => updatedState.previousSolutions[id])
-
-            if (updatedSolutions.every((solution) => solution.isVisible)) {
-                // all are visible
-                return set(updatedState, 'globalSolutionFilter', GlobalSolutionFilter.ALL)
-            } else if (updatedSolutions.every((solution) => !solution.isVisible)) {
-                // all are invisible
-                return set(updatedState, 'globalSolutionFilter', GlobalSolutionFilter.NONE)
-            } else {
-                // mixed
-                return set(updatedState, 'globalSolutionFilter', GlobalSolutionFilter.MIXED)
-            }
         },
         setGlobalSolutionFilter: (state: FilterState, action: PayloadAction<GlobalSolutionFilter>) => {
             switch (action.payload) {
                 case GlobalSolutionFilter.ALL:
                     return {
                         ...state,
-                        globalSolutionFilter: GlobalSolutionFilter.ALL,
                         previousSolutions: state.previousSolutionIds.reduce<FilterState['previousSolutions']>(
                             (acc, id) => ({
                                 ...acc,
@@ -96,7 +80,6 @@ export const filterSlice = createSlice({
                 case GlobalSolutionFilter.NONE:
                     return {
                         ...state,
-                        globalSolutionFilter: GlobalSolutionFilter.NONE,
                         previousSolutions: state.previousSolutionIds.reduce<FilterState['previousSolutions']>(
                             (acc, id) => ({
                                 ...acc,
@@ -105,12 +88,9 @@ export const filterSlice = createSlice({
                             {}
                         ),
                     }
-                case GlobalSolutionFilter.MIXED:
-                    return {
-                        ...state,
-                        globalSolutionFilter: GlobalSolutionFilter.MIXED,
-                    }
             }
+            // In case this action is ever called with GlobalSolutionFilter.MIXED
+            return state
         },
     },
 })
@@ -125,7 +105,6 @@ const selectComponentsById = (state: FilterStateSlice) => state.videoEditor.filt
 const selectComponentIds = (state: FilterStateSlice) => state.videoEditor.filter.componentIds
 const selectPreviousSolutionsById = (state: FilterStateSlice) => state.videoEditor.filter.previousSolutions
 const selectPreviousSolutionIds = (state: FilterStateSlice) => state.videoEditor.filter.previousSolutionIds
-const selectGlobalSolutionFilter = (state: FilterStateSlice) => state.videoEditor.filter.globalSolutionFilter
 
 const selectComponents = createSelector([selectComponentsById, selectComponentIds], (byId, ids) =>
     ids
@@ -151,6 +130,19 @@ const selectPreviousSolutions = createSelector([selectPreviousSolutionsById, sel
 const selectVisiblePreviousSolutions = createSelector([selectPreviousSolutions], (solutions) =>
     solutions.filter((s) => s.isVisible)
 )
+
+const selectGlobalSolutionFilter = createSelector([selectPreviousSolutions], (previousSolutions) => {
+    if (previousSolutions.every((solution) => solution.isVisible)) {
+        // all are visible
+        return GlobalSolutionFilter.ALL
+    } else if (previousSolutions.every((solution) => !solution.isVisible)) {
+        // all are invisible
+        return GlobalSolutionFilter.NONE
+    } else {
+        // mixed
+        return GlobalSolutionFilter.MIXED
+    }
+})
 
 export const selectors = {
     selectComponentsById,
