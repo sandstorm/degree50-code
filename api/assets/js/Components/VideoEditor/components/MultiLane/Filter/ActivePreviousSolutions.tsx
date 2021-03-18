@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { VideoEditorState, actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
+import CheckboxWithIndeterminate, { CheckboxValue } from '../../CheckboxWithIndeterminate'
+import { GlobalSolutionFilter } from 'Components/VideoEditor/FilterContext/FilterSlice'
 
 const mapStateToProps = (state: VideoEditorState) => {
     const solutions = selectors.data.solutions.selectById(state)
@@ -9,14 +11,17 @@ const mapStateToProps = (state: VideoEditorState) => {
         ...s,
         ...solutions[s.id],
     }))
+    const globalSolutionFilter = selectors.filter.selectGlobalSolutionFilter(state)
 
     return {
         previousSolutions,
+        globalSolutionFilter,
     }
 }
 
 const mapDispatchToProps = {
     togglePreviousSolution: actions.filter.togglePreviousSolution,
+    setGlobalSolutionFilter: actions.filter.setGlobalSolutionFilter,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -29,12 +34,28 @@ const ActivePreviousSolutions = (props: Props) => {
         [props.togglePreviousSolution]
     )
 
+    const handleGlobalSolutionFilterChange = (value: CheckboxValue) => {
+        props.setGlobalSolutionFilter(mapCheckboxValueToGlobalSolutionFilter(value))
+    }
+
+    const globalSolutionFilterCheckboxAriaLabel = `${
+        props.globalSolutionFilter === GlobalSolutionFilter.ALL ? 'Alle abwählen' : 'Alle auswählen'
+    }`
+
     return (
-        <div className="multilane-filter__components">
-            {props.previousSolutions.length > 0 && (
+        <div>
+            {props.previousSolutions.length > 0 ? (
                 <>
-                    <h2>Lösungen:</h2>
-                    <ul>
+                    <div className="global-filter">
+                        <CheckboxWithIndeterminate
+                            id="globalFilter"
+                            value={mapGlobalSolutionFilterToCheckboxValue(props.globalSolutionFilter)}
+                            handleChange={handleGlobalSolutionFilterChange}
+                            aria-label={globalSolutionFilterCheckboxAriaLabel}
+                        />
+                        <label htmlFor="globalFilter">Alle</label>
+                    </div>
+                    <ul className="filter-list">
                         {props.previousSolutions.map((s) => (
                             <li key={s.id}>
                                 <label htmlFor={s.id}>
@@ -52,9 +73,33 @@ const ActivePreviousSolutions = (props: Props) => {
                         ))}
                     </ul>
                 </>
+            ) : (
+                <p>Keine Lösungen vorhanden.</p>
             )}
         </div>
     )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ActivePreviousSolutions))
+
+function mapCheckboxValueToGlobalSolutionFilter(value: CheckboxValue) {
+    switch (value) {
+        case CheckboxValue.CHECKED:
+            return GlobalSolutionFilter.ALL
+        case CheckboxValue.UNCHECKED:
+            return GlobalSolutionFilter.NONE
+        case CheckboxValue.INDETERMINATE:
+            return GlobalSolutionFilter.MIXED
+    }
+}
+
+function mapGlobalSolutionFilterToCheckboxValue(value: GlobalSolutionFilter) {
+    switch (value) {
+        case GlobalSolutionFilter.ALL:
+            return CheckboxValue.CHECKED
+        case GlobalSolutionFilter.NONE:
+            return CheckboxValue.UNCHECKED
+        case GlobalSolutionFilter.MIXED:
+            return CheckboxValue.INDETERMINATE
+    }
+}

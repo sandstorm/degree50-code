@@ -25,26 +25,23 @@ const ActiveComponents = (props: Props) => {
     )
 
     return (
-        <div className="multilane-filter__components">
-            <h2>Aktive Komponenten:</h2>
-            <ul>
-                {props.components.map((c) => (
-                    <li key={c.id}>
-                        <label htmlFor={c.id}>
-                            <input
-                                id={c.id}
-                                type="checkbox"
-                                key={c.id}
-                                checked={c.isVisible}
-                                onChange={handleToggle}
-                                value={c.id}
-                            />
-                            {getComponentName(c.id)}
-                        </label>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <ul className="filter-list">
+            {props.components.map((c) => (
+                <li key={c.id}>
+                    <label htmlFor={c.id}>
+                        <input
+                            id={c.id}
+                            type="checkbox"
+                            key={c.id}
+                            checked={c.isVisible}
+                            onChange={handleToggle}
+                            value={c.id}
+                        />
+                        {getComponentName(c.id)}
+                    </label>
+                </li>
+            ))}
+        </ul>
     )
 }
 

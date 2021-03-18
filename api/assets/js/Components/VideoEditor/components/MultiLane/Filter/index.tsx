@@ -10,7 +10,9 @@ const Filter = () => {
         <div className="multilane-filter-container">
             {showFilter && (
                 <div className="multilane-filter__content">
+                    <h2>Aktive Komponenten:</h2>
                     <ActiveComponents />
+                    <h2>Lösungen:</h2>
                     <ActivePreviousSolutions />
                 </div>
             )}
