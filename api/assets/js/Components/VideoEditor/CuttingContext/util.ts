@@ -178,14 +178,21 @@ export const initVideoContext = (canvasRef: RefObject<HTMLCanvasElement>) => {
     // connect all sources
     combineEffect.connect(videoCtx.destination)
 
-    // init timeline
+    let requestAnimationFrameId: number = -1 // eslint-disable-line
+    // WHY: This is needed to keep the state updating
+    // TODO: But Why and how is this working?
     function render() {
-        requestAnimationFrame(render)
+        requestAnimationFrameId = requestAnimationFrame(render)
     }
 
-    requestAnimationFrame(render)
+    requestAnimationFrameId = requestAnimationFrame(render)
 
-    return { videoCtx, combineEffect }
+    // WHY: prevent memory leak: remove animationFrame callback and thus stopping the render loop
+    const cancelRenderLoop = () => {
+        cancelAnimationFrame(requestAnimationFrameId)
+    }
+
+    return { videoCtx, combineEffect, cancelRenderLoop }
 }
 
 export type VideoContextPlayListElement = {
