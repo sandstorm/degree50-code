@@ -3,8 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
+use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
+use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -64,15 +67,68 @@ class AppFixtures extends Fixture
                 Szenen Ihrer Filme allgemeine Kennzeichen für gelungene bzw. weniger gelungene Fördermomente ableiten. Halten Sie Ihre Ergebnisse – jeder für sich – in der Tabelle fest (AB 4 Kennzeichen gelungener/ weniger gelungener Fördermomente).
         ';
         $exercise->addPhase($exercise_p3);
-        $manager->persist($exercise);
 
-        $this->createVideoCodes($manager);
+        $this->createVideoCodePrototypes($manager);
+
+        $exercisePhaseTeam = new ExercisePhaseTeam('testTeam');
+        $exercisePhaseTeam->setCreator($this->getReference(AccountFixtures::CREATOR_REFERENCE));
+        $manager->persist($exercisePhaseTeam);
+        $manager->persist($exercise_p1);
+
+        $exercise_p1->addTeam($exercisePhaseTeam);
+        $this->createTestSolution($manager, $exercisePhaseTeam);
+
+        $manager->persist($exercise);
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
     }
 
-    private function createVideoCodes(ObjectManager $manager): void
+    private function createTestSolution(
+        ObjectManager $manager,
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): void {
+        $solution = new Solution();
+        $serverSideSolutionLists = ServerSideSolutionLists::fromArray([
+            'annotations' => [
+                [
+                    "start" => '00:01:02.246',
+                    "end" => '00:08:01.723',
+                    "text" => 'Mathe',
+                    "memo" => '',
+                    "color" => null,
+                ]
+            ],
+            'videoCodes' => [
+                [
+                    "start" => '00:00:00.000',
+                    "end" => '00:01:24.975',
+                    "text" => '',
+                    "memo" => 'Test',
+                    "color" => null,
+                    "idFromPrototype" => 'c9a9978c-773e-44b2-b120-2baa70005be4',
+                ]
+            ],
+            'cutList' => [],
+            'customVideoCodesPool' => [
+                [
+                    "id" => 'c9a9978c-773e-44b2-b120-2baa70005be4',
+                    "name" => 'gelungene Momente der Förderung',
+                    "description" => '',
+                    "color" => '#0ed600',
+                    "userCreated" => false,
+                    "videoCodes" => []
+                ]
+            ]
+        ]);
+        $solution->setSolution($serverSideSolutionLists);
+        $exercisePhaseTeam->setSolution($solution);
+
+        $manager->persist($solution);
+        $manager->persist($exercisePhaseTeam);
+    }
+
+    private function createVideoCodePrototypes(ObjectManager $manager): void
     {
         $videoCode1 = new VideoCode();
         $videoCode1->setName('Gelungene Momente der Förderung');
