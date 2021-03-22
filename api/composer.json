@@ -50,6 +50,7 @@
         "friends-of-behat/mink-browserkit-driver": "^1.4",
         "friends-of-behat/mink-extension": "^2.4",
         "friends-of-behat/symfony-extension": "^2.0",
+        "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "5.0.*",
         "symfony/css-selector": "5.0.*",
         "symfony/maker-bundle": "^1.11",

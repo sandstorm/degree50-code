@@ -33,6 +33,7 @@ Feature: Redirections to the login if unauthenticated
       | exercise-overview__exercise-phase--delete   | {"id": "ex", "phase_id": "ex-p1"} |
       | exercise-overview__material--download       | {"id": "m"}                       |
 
+      # TODO add missing routes!
 
 
 

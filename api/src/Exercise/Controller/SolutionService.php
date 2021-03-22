@@ -43,7 +43,7 @@ class SolutionService {
 
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
-        iterable $teams
+        array $teams
     ) {
         // FIXME
         // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.

@@ -19,4 +19,4 @@ testArchitecture:
 	docker-compose exec api vendor/bin/phpat phpat.yaml
 
 testBehat:
-	docker-compose exec api vendor/bin/behat
+	docker-compose exec api vendor/bin/behat ${flag}
