@@ -52,6 +52,9 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const AnnotationsMenu: FC<Props> = (props) => {
     const activeAnnotationsLabel = `Aktive Annotationen (${props.activeAnnotationCount})`
     const allAnnotationsLabel = `Alle Annotationen (${props.allAnnotationsCount})`
+    const activeAnnotationsAriaLabel = `Aktive Annotationen (${props.activeAnnotationCount} aktive Annotationen)`
+    const allAnnotationsAriaLabel = `Alle Annotationen (${props.allAnnotationsCount} Annotationen)`
+    const menuButtonAriaLabel = `Annotationen (${props.activeAnnotationCount} aktive Annotationen)`
 
     return (
         <div className="video-editor__menu">
@@ -60,12 +63,12 @@ const AnnotationsMenu: FC<Props> = (props) => {
             )}
             <MenuButton
                 icon={<i className="fas fa-pen" />}
-                ariaLabel="Annotationen"
+                ariaLabel={menuButtonAriaLabel}
                 disabled={props.disabled}
                 pauseVideo
             >
                 <MenuItem
-                    ariaLabel={activeAnnotationsLabel}
+                    ariaLabel={activeAnnotationsAriaLabel}
                     label={activeAnnotationsLabel}
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.active, closeOthers: true })}
                 />
@@ -76,7 +79,7 @@ const AnnotationsMenu: FC<Props> = (props) => {
                     disabled={props.disableCreate}
                 />
                 <MenuItem
-                    ariaLabel={allAnnotationsLabel}
+                    ariaLabel={allAnnotationsAriaLabel}
                     label={allAnnotationsLabel}
                     onClick={() => props.setOverlay({ overlayId: AnnotationOverlayIds.all, closeOthers: true })}
                 />
