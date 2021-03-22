@@ -52,17 +52,25 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const VideoCodesMenu: FC<Props> = (props) => {
+    const activeCodesAriaLabel = `Aktive Codierungen (${props.activeVideoCodeCount} aktive Codierungen)`
+    const allCodesAriaLabel = `Alle Codierungen (${props.allVideoCodesCount} Codierungen)`
     const activeCodesLabel = `Aktive Codierungen (${props.activeVideoCodeCount})`
     const allCodesLabel = `Alle Codierungen (${props.allVideoCodesCount})`
+    const menuButtonAriaLabel = `Codierungen (${props.activeVideoCodeCount} aktive Codierungen)`
 
     return (
         <div className="video-editor__menu">
             {props.activeVideoCodeCount > 0 && (
                 <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
             )}
-            <MenuButton icon={<i className="fa fa-tag" />} ariaLabel="Codierungen" disabled={props.disabled} pauseVideo>
+            <MenuButton
+                icon={<i className="fa fa-tag" />}
+                ariaLabel={menuButtonAriaLabel}
+                disabled={props.disabled}
+                pauseVideo
+            >
                 <MenuItem
-                    ariaLabel={activeCodesLabel}
+                    ariaLabel={activeCodesAriaLabel}
                     label={activeCodesLabel}
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.active, closeOthers: true })}
                 />
@@ -73,7 +81,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     disabled={props.disableCreate}
                 />
                 <MenuItem
-                    ariaLabel={allCodesLabel}
+                    ariaLabel={allCodesAriaLabel}
                     label={allCodesLabel}
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.all, closeOthers: true })}
                 />
