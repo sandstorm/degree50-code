@@ -49,15 +49,23 @@ const mapDispatchToProps = {
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const CutsMenu: FC<Props> = (props) => {
+    const allCutsAriaLabel = `Alle Schnitte (${props.allCutsCount} Schnitte)`
+    const activeCutsAriaLabel = `Aktive Schnitte (${props.activeCutCount} aktive Schnitte)`
     const allCutsLabel = `Alle Schnitte (${props.allCutsCount})`
     const activeCutsLabel = `Aktive Schnitte (${props.activeCutCount})`
+    const menuButtonAriaLabel = `Schnitte (${props.activeCutCount} aktive Schnitte)`
 
     return (
         <div className="video-editor__menu">
             {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
-            <MenuButton icon={<i className="fas fa-cut" />} ariaLabel="Schnitte" pauseVideo disabled={props.disabled}>
+            <MenuButton
+                icon={<i className="fas fa-cut" />}
+                ariaLabel={menuButtonAriaLabel}
+                pauseVideo
+                disabled={props.disabled}
+            >
                 <MenuItem
-                    ariaLabel={activeCutsLabel}
+                    ariaLabel={activeCutsAriaLabel}
                     label={activeCutsLabel}
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.active, closeOthers: true })}
                 />
@@ -68,7 +76,7 @@ const CutsMenu: FC<Props> = (props) => {
                     disabled={props.disableCreate}
                 />
                 <MenuItem
-                    ariaLabel={allCutsLabel}
+                    ariaLabel={allCutsAriaLabel}
                     label={allCutsLabel}
                     onClick={() => props.setOverlay({ overlayId: CutOverlayIds.all, closeOthers: true })}
                 />
