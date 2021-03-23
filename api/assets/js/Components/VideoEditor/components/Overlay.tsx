@@ -25,10 +25,10 @@ const Overlay: FC<Props> = (props) => {
                     props.fullWidth ? 'video-editor__overlay__wrapper--fullWidth' : ''
                 }`}
             >
-                <h3 className="video-editor__overlay__title">
-                    <span>{props.title}</span>
+                <div className="video-editor__overlay__header">
+                    <h3>{props.title}</h3>
                     <CloseButton onClick={props.closeCallback} />
-                </h3>
+                </div>
                 <div className="video-editor__overlay__content">{props.children}</div>
             </div>
         </div>

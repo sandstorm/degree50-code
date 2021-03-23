@@ -7,7 +7,7 @@ type Props = {
 
 const RemoveButton = ({ onClick }: Props) => {
     return (
-        <Button className={'btn btn-outline-danger btn-sm'} title={'Video-Code löschen'} onPress={onClick}>
+        <Button className={'btn btn-outline-danger btn-sm'} title={'Code löschen'} onPress={onClick}>
             <i className={'fas fa-trash'} />
         </Button>
     )
