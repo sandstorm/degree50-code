@@ -4,7 +4,7 @@
 
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { setIn, set } from 'immutable'
-import { TabsTypesEnum } from 'types'
+import { TabsTypesEnum } from '../../../types'
 
 export const videoComponents = [
     TabsTypesEnum.VIDEO_CODES,

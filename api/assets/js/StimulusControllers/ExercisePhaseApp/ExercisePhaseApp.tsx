@@ -11,12 +11,16 @@ export const ExercisePhaseApp: React.FC = () => {
 
     const ref: React.RefObject<HTMLDivElement> = useRef(null)
 
+    // FIXME
+    // We are currently unsure if we still need this.
+    // Therefore we should properly test if it works without this observer and if
+    // so remove it.
     const { height } = useDebouncedResizeObserver(ref, 500)
 
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>
             <div className={'exercise-phase__content'} ref={ref}>
-                {height && <VideoAnalysis height={height} />}
+                {height && <VideoAnalysis />}
             </div>
         </OverlayProvider>
     )

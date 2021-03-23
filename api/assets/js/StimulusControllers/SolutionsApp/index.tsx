@@ -35,7 +35,7 @@ const SolutionsApp = (props: Props) => {
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>
             <div className={'exercise-phase__content'} ref={ref}>
-                {props.isCuttingPhase ? <CuttingSolutions /> : height && <VideoAnalysis height={height} />}
+                {props.isCuttingPhase ? <CuttingSolutions /> : height && <VideoAnalysis />}
             </div>
         </OverlayProvider>
     )

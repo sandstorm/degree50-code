@@ -43,7 +43,7 @@ export const SolutionSlice = createSlice({
                 return state
             }
 
-            const currentCutList = state.byId[state.current].solution.cutList
+            const currentCutList = state.byId[state.current].solutionLists.cutList
             const currentIndex = currentCutList.indexOf(action.payload)
             const newIndex = currentIndex - 1
 
@@ -59,14 +59,14 @@ export const SolutionSlice = createSlice({
                 }
             })
 
-            return setIn(state, ['byId', state.current, 'solution', 'cutList'], newIds)
+            return setIn(state, ['byId', state.current, 'solutionLists', 'cutList'], newIds)
         },
         moveCutDown: (state, action: PayloadAction<CutId>) => {
             if (!state.current) {
                 return state
             }
 
-            const currentCutList = state.byId[state.current].solution.cutList
+            const currentCutList = state.byId[state.current].solutionLists.cutList
             const currentIndex = currentCutList.indexOf(action.payload)
             const newIndex = currentIndex + 1
 
@@ -82,7 +82,7 @@ export const SolutionSlice = createSlice({
                 }
             })
 
-            return setIn(state, ['byId', state.current, 'solution', 'cutList'], newIds)
+            return setIn(state, ['byId', state.current, 'solutionLists', 'cutList'], newIds)
         },
     },
     extraReducers: (builder) => {
@@ -95,72 +95,88 @@ export const SolutionSlice = createSlice({
                     return state
                 }
 
-                const currentAnnotationIds = state.byId[state.current].solution.annotations
+                const currentAnnotationIds = state.byId[state.current].solutionLists.annotations
                 const updatedAnnotations = [...currentAnnotationIds, action.payload.id]
 
-                return setIn(state, ['byId', state.current, 'solution', ANNOTATIONS_API_PROPERTY], updatedAnnotations)
+                return setIn(
+                    state,
+                    ['byId', state.current, 'solutionLists', ANNOTATIONS_API_PROPERTY],
+                    updatedAnnotations
+                )
             })
             .addCase(annotationsSlice.actions.remove, (state, action: PayloadAction<AnnotationId>) => {
                 if (!state.current) {
                     return state
                 }
 
-                const currentAnnotationIds = state.byId[state.current].solution.annotations
+                const currentAnnotationIds = state.byId[state.current].solutionLists.annotations
                 const updatedAnnotations = currentAnnotationIds.filter((id) => id !== action.payload)
 
-                return setIn(state, ['byId', state.current, 'solution', ANNOTATIONS_API_PROPERTY], updatedAnnotations)
+                return setIn(
+                    state,
+                    ['byId', state.current, 'solutionLists', ANNOTATIONS_API_PROPERTY],
+                    updatedAnnotations
+                )
             })
             .addCase(videoCodesSlice.actions.append, (state, action: PayloadAction<VideoCode>) => {
                 if (!state.current) {
                     return state
                 }
 
-                const currentVideoCodeIds = state.byId[state.current].solution.videoCodes
+                const currentVideoCodeIds = state.byId[state.current].solutionLists.videoCodes
                 const updatedVideoCodes = [...currentVideoCodeIds, action.payload.id]
 
-                return setIn(state, ['byId', state.current, 'solution', VIDEO_CODES_API_PROPERTY], updatedVideoCodes)
+                return setIn(
+                    state,
+                    ['byId', state.current, 'solutionLists', VIDEO_CODES_API_PROPERTY],
+                    updatedVideoCodes
+                )
             })
             .addCase(videoCodesSlice.actions.remove, (state, action: PayloadAction<VideoCodeId>) => {
                 if (!state.current) {
                     return state
                 }
 
-                const currentVideoCodeIds = state.byId[state.current].solution.videoCodes
+                const currentVideoCodeIds = state.byId[state.current].solutionLists.videoCodes
                 const updatedVideoCodes = currentVideoCodeIds.filter((id) => id !== action.payload)
 
-                return setIn(state, ['byId', state.current, 'solution', VIDEO_CODES_API_PROPERTY], updatedVideoCodes)
+                return setIn(
+                    state,
+                    ['byId', state.current, 'solutionLists', VIDEO_CODES_API_PROPERTY],
+                    updatedVideoCodes
+                )
             })
             .addCase(cuttingSlice.actions.append, (state, action: PayloadAction<Cut>) => {
                 if (!state.current) {
                     return state
                 }
 
-                const currentCutIds = state.byId[state.current].solution.cutList
+                const currentCutIds = state.byId[state.current].solutionLists.cutList
                 const updatedCuts = [...currentCutIds, action.payload.id]
 
-                return setIn(state, ['byId', state.current, 'solution', CUTLIST_API_PROPERTY], updatedCuts)
+                return setIn(state, ['byId', state.current, 'solutionLists', CUTLIST_API_PROPERTY], updatedCuts)
             })
             .addCase(cuttingSlice.actions.remove, (state, action: PayloadAction<CutId>) => {
                 if (!state.current) {
                     return state
                 }
 
-                const currentCutIds = state.byId[state.current].solution.cutList
+                const currentCutIds = state.byId[state.current].solutionLists.cutList
                 const updatedCuts = currentCutIds.filter((id) => id !== action.payload)
 
-                return setIn(state, ['byId', state.current, 'solution', CUTLIST_API_PROPERTY], updatedCuts)
+                return setIn(state, ['byId', state.current, 'solutionLists', CUTLIST_API_PROPERTY], updatedCuts)
             })
             .addCase(videoCodePrototypesSlice.actions.append, (state, action: PayloadAction<VideoCodePrototype>) => {
                 if (!state.current) {
                     return state
                 }
 
-                const currentIds = state.byId[state.current].solution.customVideoCodesPool
+                const currentIds = state.byId[state.current].solutionLists.videoCodePrototypes
                 const updatedPrototypes = [...currentIds, action.payload.id]
 
                 return setIn(
                     state,
-                    ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY],
+                    ['byId', state.current, 'solutionLists', VIDEO_CODE_PROTOTYPE_API_PROPERTY],
                     updatedPrototypes
                 )
             })
@@ -181,10 +197,14 @@ export const SolutionSlice = createSlice({
                     const childIds = prototypeState[prototypeId].videoCodes
                     const allIdsToRemove = [prototypeId, ...childIds]
 
-                    const currentIds = state.byId[state.current].solution.customVideoCodesPool
+                    const currentIds = state.byId[state.current].solutionLists.videoCodePrototypes
                     const updated = currentIds.filter((id) => !allIdsToRemove.includes(id))
 
-                    return setIn(state, ['byId', state.current, 'solution', VIDEO_CODE_PROTOTYPE_API_PROPERTY], updated)
+                    return setIn(
+                        state,
+                        ['byId', state.current, 'solutionLists', VIDEO_CODE_PROTOTYPE_API_PROPERTY],
+                        updated
+                    )
                 }
             )
     },
@@ -210,19 +230,19 @@ const selectPreviousSolutions = createSelector([selectById, selectPreviousIds], 
 )
 
 const selectCurrentAnnotationIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
-    currentId ? byId[currentId].solution.annotations : []
+    currentId ? byId[currentId].solutionLists.annotations : []
 )
 
 const selectCurrentVideoCodeIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
-    currentId ? byId[currentId].solution.videoCodes : []
+    currentId ? byId[currentId].solutionLists.videoCodes : []
 )
 
 const selectCurrentCutIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
-    currentId ? byId[currentId].solution.cutList : []
+    currentId ? byId[currentId].solutionLists.cutList : []
 )
 
 const selectCurrentPrototypeIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
-    currentId ? byId[currentId].solution.customVideoCodesPool : []
+    currentId ? byId[currentId].solutionLists.videoCodePrototypes : []
 )
 
 const selectCurrentSolutionOwner = createSelector([selectById, selectCurrentId], (byId, currentId) => {
