@@ -13,11 +13,16 @@
     }
 }
 
-.video-editor__overlay__title {
+.video-editor__overlay__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    margin-bottom: 1rem;
+
+    h3 {
+        margin: 0;
+    }
 }
 
 .video-editor__overlay__content {

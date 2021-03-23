@@ -68,7 +68,7 @@ const PrototypeEntry: FC<Props> = (props) => {
                     <>
                         <Button
                             className={'btn btn-outline-primary btn-sm'}
-                            aria-label={'Code Editieren'}
+                            title={'Code Bearbeiten'}
                             onPress={handleEdit}
                         >
                             <i className={'fas fa-pen'} />
@@ -76,11 +76,17 @@ const PrototypeEntry: FC<Props> = (props) => {
                         <RemoveButton onClick={handleRemove} />
                     </>
                 ) : (
-                    <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Video-Code'} />
+                    <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Code'} />
                 )}
 
                 {!props.videoCodePrototype.parentId ? (
-                    <ToggleChildrenButton onClick={toggleChildrenVisibility} showChildren={showChildren} />
+                    <ToggleChildrenButton
+                        title={`${showChildren ? 'Schließe' : 'Öffne'} Untercodeliste von ${
+                            props.videoCodePrototype.name
+                        }`}
+                        onClick={toggleChildrenVisibility}
+                        showChildren={showChildren}
+                    />
                 ) : null}
             </div>
 
