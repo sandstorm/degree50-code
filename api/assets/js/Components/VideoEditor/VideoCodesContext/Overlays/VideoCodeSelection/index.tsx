@@ -33,7 +33,12 @@ const VideoCodeSelection: FC<Props> = (props) => {
         >
             {prototoypes.map((prototype) => {
                 return (
-                    <Radio key={prototype.id} value={prototype.id} prototype={prototype}>
+                    <Radio
+                        key={prototype.id}
+                        value={prototype.id}
+                        prototype={prototype}
+                        aria-label={prototype.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
+                    >
                         {prototype.name}
                     </Radio>
                 )

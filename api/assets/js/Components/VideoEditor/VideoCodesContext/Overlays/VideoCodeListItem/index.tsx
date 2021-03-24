@@ -74,6 +74,7 @@ const VideoCodeListItem = (props: Props) => {
         Von: ${item.start}
         Bis: ${item.end}
 
+        ${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
         Code: ${videoCodePrototype?.name ?? 'Kein Code ausgewählt'}
         Memo: ${item.memo}
     `
