@@ -58,12 +58,14 @@ const AnnotationListItem = (props: Props) => {
     const ariaLabel = `
         ${index + 1}. Element
 
+        Beschreibung: ${item.text}
+        Beschreibung zu Ende.
+
         ${creatorDescription}
 
         Von: ${item.start}
         Bis: ${item.end}
 
-        Beschreibung: ${item.text}
         Memo: ${item.memo}
     `
 
@@ -80,10 +82,10 @@ const AnnotationListItem = (props: Props) => {
             </Button>
             {props.isFromCurrentSolution && (
                 <>
-                    <Button className="btn btn-secondary" onPress={handleRemove}>
+                    <Button className="btn btn-secondary" onPress={handleRemove} title="Annotation Löschen">
                         Löschen
                     </Button>
-                    <Button className="btn btn-primary" onPress={handleEdit}>
+                    <Button className="btn btn-primary" onPress={handleEdit} title="Annotation Bearbeiten">
                         Bearbeiten
                     </Button>
                 </>

@@ -81,10 +81,10 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
             <label htmlFor="memo">Memo</label>
             <TextField id="memo" text={transientAnnotation.memo} updateText={updateMemo} />
             <hr />
-            <Button className="btn btn-secondary" onPress={close}>
+            <Button className="btn btn-secondary" onPress={close} title="Annotation Verwerfen">
                 Verwerfen
             </Button>
-            <Button className="btn btn-primary" onPress={handleSave}>
+            <Button className="btn btn-primary" onPress={handleSave} title="Annotation Speichern">
                 Speichern
             </Button>
         </Overlay>

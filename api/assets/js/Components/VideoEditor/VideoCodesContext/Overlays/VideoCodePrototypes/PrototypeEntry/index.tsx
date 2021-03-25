@@ -10,6 +10,7 @@ import ChildPrototypeCount from './ChildPrototypeCount'
 import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from 'Components/VideoEditor/VideoCodesContext/VideoCodesMenu'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
+import PredefinedCodeLock from '../../PredefinedCodeLock'
 
 // FIXME
 // We should probably find a way to remove the circular dependency between
@@ -60,7 +61,7 @@ const PrototypeEntry: FC<Props> = (props) => {
 
                 <PrototypeName name={props.videoCodePrototype.name} />
 
-                {props.videoCodePrototype.parentId === undefined && (
+                {!props.videoCodePrototype.parentId && (
                     <ChildPrototypeCount count={props.videoCodePrototype.videoCodes.length} />
                 )}
 
@@ -76,7 +77,7 @@ const PrototypeEntry: FC<Props> = (props) => {
                         <RemoveButton onClick={handleRemove} />
                     </>
                 ) : (
-                    <i className={'video-code__locked fas fa-lock'} title={'Vorgegebener Code'} />
+                    <PredefinedCodeLock isPredefined />
                 )}
 
                 {!props.videoCodePrototype.parentId ? (

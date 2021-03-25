@@ -91,10 +91,10 @@ const VideoCodeListItem = (props: Props) => {
             </Button>
             {props.isFromCurrentSolution && (
                 <>
-                    <Button className="btn btn-secondary" onPress={handleRemove}>
+                    <Button className="btn btn-secondary" onPress={handleRemove} title="Codierung Löschen">
                         Löschen
                     </Button>
-                    <Button className="btn btn-primary" onPress={handleEdit}>
+                    <Button className="btn btn-primary" onPress={handleEdit} title="Codierung Bearbeiten">
                         Bearbeiten
                     </Button>
                 </>
