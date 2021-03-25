@@ -70,7 +70,7 @@ const CutListItem: FC<Props> = (props) => {
         Von: ${props.item.start}
         Bis: ${props.item.end}
 
-        Text: ${props.item.text}
+        Beschreibung: ${props.item.text}
         Memo: ${props.item.memo}
     `
 
@@ -79,7 +79,7 @@ const CutListItem: FC<Props> = (props) => {
             <Start start={props.item.start} />
             <End end={props.item.end} />
             <br />
-            <p>Text: {props.item.text}</p>
+            <p>Beschreibung: {props.item.text}</p>
             <p>Memo: {props.item.memo}</p>
             <Button className="btn btn-primary" onPress={handleJumpToPosition} title="Springe zu Position im Video">
                 Springe zu Position

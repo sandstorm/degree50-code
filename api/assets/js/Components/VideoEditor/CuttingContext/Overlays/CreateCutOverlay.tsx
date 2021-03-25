@@ -80,7 +80,7 @@ const CreateCutOverlay: FC<Props> = (props) => {
             <TimeInput label="Start" value={transientCut.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientCut.end} onChange={handleEndTimeChange} />
             <hr />
-            <label htmlFor="text">Text</label>
+            <label htmlFor="text">Beschreibung</label>
             <TextField id="text" text={transientCut.text} updateText={updateText} />
             <br />
             <label htmlFor="memo">Memo</label>
