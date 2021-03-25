@@ -63,7 +63,7 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
             <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
             <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
             <hr />
-            <label htmlFor="text">Text</label>
+            <label htmlFor="text">Beschreibung</label>
             <TextField id="text" text={transientAnnotation.text} updateText={updateText} />
             <br />
             <label htmlFor="memo">Memo</label>

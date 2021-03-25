@@ -63,7 +63,7 @@ const AnnotationListItem = (props: Props) => {
         Von: ${item.start}
         Bis: ${item.end}
 
-        Text: ${item.text}
+        Beschreibung: ${item.text}
         Memo: ${item.memo}
     `
 
@@ -73,7 +73,7 @@ const AnnotationListItem = (props: Props) => {
             <Start start={item.start} />
             <End end={item.end} />
             <br />
-            <p>Text: {item.text}</p>
+            <p>Beschreibung: {item.text}</p>
             <p>Memo: {item.memo}</p>
             <Button className="btn btn-primary" onPress={handleJumpToPosition} title="Springe zu Position im Video">
                 Springe zu Position
