@@ -42,7 +42,7 @@ const PrototypeList = (props: Props) => {
 
             <div className="video-code">
                 <Button
-                    title={`${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
+                    title={`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
                     className={'btn btn-outline-primary btn--full-width btn-sm'}
                     onPress={handleAdd}
                 >
