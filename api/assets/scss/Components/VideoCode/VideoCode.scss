@@ -72,7 +72,7 @@
     justify-content: center;
     right: -5px;
     bottom: -5px;
-    width: 25px;
+    min-width: 25px;
     height: 25px;
 
     border-radius: 50%;
@@ -87,10 +87,12 @@
     justify-content: space-between;
     align-items: center;
 
+    > * + * {
+        margin-left: 5px;
+    }
+
     button,
     .btn {
-        margin-left: 5px;
-
         white-space: nowrap;
     }
 }
@@ -104,7 +106,7 @@
 .video-code__color {
     width: 20px;
     height: 20px;
-    margin-right: 10px;
+    margin-right: 5px;
     flex-shrink: 0;
 }
 

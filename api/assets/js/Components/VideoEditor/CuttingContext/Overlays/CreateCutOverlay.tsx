@@ -86,10 +86,10 @@ const CreateCutOverlay: FC<Props> = (props) => {
             <label htmlFor="memo">Memo</label>
             <TextField id="memo" text={transientCut.memo} updateText={updateMemo} />
             <hr />
-            <Button className="btn btn-secondary" onPress={close}>
+            <Button className="btn btn-secondary" onPress={close} title="Schnitt Verwerfen">
                 Verwerfen
             </Button>
-            <Button className="btn btn-primary" onPress={handleSave}>
+            <Button className="btn btn-primary" onPress={handleSave} title="Schnitt Speichern">
                 Speichern
             </Button>
         </Overlay>

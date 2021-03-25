@@ -40,7 +40,11 @@ const VideoCodePrototypes = (props: Props) => {
                 </div>
 
                 <div className="video-code">
-                    <Button className={'btn btn-outline-primary btn--full-width btn-sm'} onPress={handleAdd}>
+                    <Button
+                        className={'btn btn-outline-primary btn--full-width btn-sm'}
+                        onPress={handleAdd}
+                        title="Neuen Code Erstellen"
+                    >
                         <i className="fas fa-plus" />
                     </Button>
                 </div>

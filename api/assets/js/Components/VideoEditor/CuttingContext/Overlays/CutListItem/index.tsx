@@ -67,10 +67,12 @@ const CutListItem: FC<Props> = (props) => {
 
     const ariaLabel = `
         ${props.index + 1}. Element
+
+        Beschreibung: ${props.item.text}
+
         Von: ${props.item.start}
         Bis: ${props.item.end}
 
-        Beschreibung: ${props.item.text}
         Memo: ${props.item.memo}
     `
 
@@ -87,10 +89,10 @@ const CutListItem: FC<Props> = (props) => {
             {props.showPositionControls && <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />}
             {props.canEdit && (
                 <>
-                    <Button className="btn btn-secondary" onPress={handleRemove}>
+                    <Button className="btn btn-secondary" onPress={handleRemove} title="Schnitt Löschen">
                         Löschen
                     </Button>
-                    <Button className="btn btn-primary" onPress={handleEdit}>
+                    <Button className="btn btn-primary" onPress={handleEdit} title="Schnitt Bearbeiten">
                         Bearbeiten
                     </Button>
                 </>

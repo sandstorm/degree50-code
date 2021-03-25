@@ -78,10 +78,10 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
             <TextField id="memo" text={transientVideoCode.memo} updateText={handleMemoChange} />
             <hr />
 
-            <Button className="btn btn-secondary" onPress={close}>
+            <Button className="btn btn-secondary" onPress={close} title="Änderungen Verwerfen">
                 Verwerfen
             </Button>
-            <Button className="btn btn-primary" onPress={handleSave}>
+            <Button className="btn btn-primary" onPress={handleSave} title="Änderungen Speichern">
                 Speichern
             </Button>
         </Overlay>
