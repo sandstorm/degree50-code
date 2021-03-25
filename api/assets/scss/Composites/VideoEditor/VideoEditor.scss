@@ -22,38 +22,38 @@
             position: relative;
             height: 32px;
             width: 32px;
-            padding: 0 !important;
+            padding: 0;
         }
+    }
 
-        .menu-wrapper {
-            position: relative;
-        }
+    .menu {
+        z-index: $theme__z-index--menu;
+        position: absolute;
+        bottom: 32px;
+        width: 210px;
 
-        .menu-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
+        background-color: $theme__color__grey--dark;
+        color: $theme__color__white;
 
-            height: 100%;
+        .menu-item {
+            padding: 8px;
             width: 100%;
-
-            z-index: $theme__z-index--menu - 1;
+            text-align: left;
         }
+    }
 
-        .menu {
-            z-index: $theme__z-index--menu;
-            position: absolute;
-            bottom: 32px;
-            width: 210px;
+    .menu-wrapper {
+        position: relative;
+    }
 
-            background-color: $theme__color__grey--dark;
-            color: $theme__color__white;
+    .menu-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
 
-            .menu-item {
-                padding: 8px;
-                width: 100%;
-                text-align: left;
-            }
-        }
+        height: 100%;
+        width: 100%;
+
+        z-index: $theme__z-index--menu - 1;
     }
 }

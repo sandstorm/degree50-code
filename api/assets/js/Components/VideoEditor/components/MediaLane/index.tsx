@@ -92,9 +92,12 @@ const MediaLane = (props: Props) => {
         render: mediaLaneRenderConfig,
     }
 
+    const baseHeight = 275
+    const entryHeight = mediaLaneRenderConfig.heightModifier * baseHeight
+
     return (
         <>
-            <div className="video-editor-timeline__entry">
+            <div className="video-editor-timeline__entry" style={{ height: entryHeight }}>
                 <div ref={$mediaTrackRef} className="media-track">
                     <MediaTrack
                         mediaTrackConfig={mediaTrackConfig}
@@ -111,7 +114,7 @@ const MediaLane = (props: Props) => {
                     checkMediaItem={checkMediaItem}
                     amountOfLanes={amountOfLanes}
                     showTextInMediaItems={showTextInMediaItems}
-                    height={MEDIA_LANE_HEIGHT - mediaTrackConfig.rulerHeight}
+                    height={entryHeight - mediaTrackConfig.rulerHeight}
                     readOnly={props.readOnly}
                 />
             </div>
