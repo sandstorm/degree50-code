@@ -1,6 +1,8 @@
 import React, { useRef, useLayoutEffect } from 'react'
 import { updateCanvas } from './helpers'
 
+export type MedialaneHeightModifier = 1 | 0.5 | 0.25
+
 export type RenderConfig = Readonly<{
     padding: number
     duration: number
@@ -10,6 +12,7 @@ export type RenderConfig = Readonly<{
     currentTime: number
     drawRuler: boolean
     zoom: number
+    heightModifier: MedialaneHeightModifier
 }>
 
 export type MediaTrackConfig = Readonly<{

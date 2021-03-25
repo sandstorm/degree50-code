@@ -89,6 +89,7 @@ const MediaItems = (props: Props) => {
         checkMediaItem,
         showTextInMediaItems,
         amountOfLanes,
+        height,
     } = props
 
     const $mediaItemsRef: React.RefObject<HTMLDivElement> = useRef(null)
@@ -96,7 +97,7 @@ const MediaItems = (props: Props) => {
     const activeItemIndex = mediaItems.findIndex((item) => item.startTime <= currentTime && item.endTime > currentTime)
 
     return (
-        <div className="video-editor__media-items">
+        <div className="video-editor__media-items" style={{ height }}>
             <div ref={$mediaItemsRef}>
                 {props.readOnly
                     ? renderReadOnlyItems({

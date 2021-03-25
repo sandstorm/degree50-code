@@ -14,6 +14,8 @@ import AnnotationLaneContainer from './AnnotationLaneContainer'
 import VideoCodeLaneContainer from './VideoCodeLaneContainer'
 import CutLaneContainer from './CutLaneContainer'
 import { useMediaLaneClick } from '../MediaLane/useMediaLaneClick'
+import MediaLaneToolbarItem from '../MediaLaneToolbar/MediaLaneToolbarItem'
+import LaneHeightMenu from './LaneHeightMenu'
 
 export const getComponentName = (componentId: ComponentId) => {
     switch (componentId) {
@@ -91,7 +93,11 @@ const MultiLane = (props: Props) => {
                 renderConfig={props.mediaLaneRenderConfig}
                 videoDuration={firstVideoDuration}
                 updateZoom={props.updateZoom}
-            />
+            >
+                <MediaLaneToolbarItem>
+                    <LaneHeightMenu />
+                </MediaLaneToolbarItem>
+            </Toolbar>
             <div
                 className="video-editor-timeline__entries multilane"
                 style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
