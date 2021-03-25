@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-i18nify'
-import { RenderConfig } from './MediaLane/MediaTrack'
+import { RenderConfig } from '../MediaLane/MediaTrack'
 import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { MEDIA_LANE_TOOLBAR_HEIGHT } from './MediaLane/useMediaLaneRendering'
+import { MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLaneRendering'
+import MediaLaneToolbarItem from './MediaLaneToolbarItem'
 
 type OwnProps = {
     updateZoom: (value: number) => void
@@ -47,7 +48,7 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
     return (
         <div className="video-editor-toolbar" style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}>
             <div className="video-editor-toolbar__item-group">
-                <div className="video-editor-toolbar__item">
+                <MediaLaneToolbarItem>
                     <label htmlFor="timeline-zoom-handler">
                         <Translate value="zoom" />
                     </label>
@@ -61,8 +62,8 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
                         step="1"
                         onChange={zoomHandler}
                     />
-                </div>
-                <div className="video-editor-toolbar__item">
+                </MediaLaneToolbarItem>
+                <MediaLaneToolbarItem>
                     <button
                         tabIndex={1}
                         className={'btn btn-primary btn-sm'}
@@ -74,8 +75,8 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
                     >
                         <i className={'fas fa-chevron-left'} />
                     </button>
-                </div>
-                <div className="video-editor-toolbar__item">
+                </MediaLaneToolbarItem>
+                <MediaLaneToolbarItem>
                     <button
                         tabIndex={1}
                         className={'btn btn-primary btn-sm'}
@@ -87,7 +88,7 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
                     >
                         <i className={'fas fa-chevron-right'} />
                     </button>
-                </div>
+                </MediaLaneToolbarItem>
             </div>
             {children && <div className="video-editor-toolbar__item-group">{children}</div>}
         </div>

@@ -8,6 +8,7 @@
     font-size: $base__fontSize--tiny;
     color: $theme__color__white;
 
+    border-top: 1px solid $theme__color__grey;
     border-bottom: 1px solid $theme__color__black;
     background-color: $theme__color__grey--dark;
 }
@@ -53,7 +54,27 @@
         outline: none;
     }
 
-    &:focus-within {
-        background-color: $theme__color__secondary--dark;
+    .video-editor__menu {
+        margin: 0;
+        width: max-content;
+
+        .menu {
+            width: max-content;
+            border: 1px solid $theme__color__grey--light;
+        }
+
+        .menu-wrapper {
+            width: max-content;
+        }
+
+        .video-editor-toolbar__menu-btn {
+            width: 100%;
+            padding: 2px 10px;
+        }
+
+        .menu-item {
+            text-align: center;
+            width: max-content;
+        }
     }
 }
