@@ -1,3 +1,4 @@
+{% trans_default_domain 'forms' %}
 {% extends 'BaseWithSidebar.html.twig' %}
 
 {% block title %}{{ exercise.name }} - Lösungen{% endblock %}
@@ -19,4 +20,12 @@
             </div>
         </div>
     </div>
+    <footer class="footer">
+        <a
+           class="btn btn-outline-primary"
+           href="{{ path('exercise-overview') }}"
+       >
+           {% trans %}exercisePhase.showSolutions.back{% endtrans %}
+       </a>
+    </footer>
 {% endblock %}
