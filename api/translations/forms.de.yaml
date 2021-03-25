@@ -92,6 +92,9 @@ exercisePhase:
         messages:
             success: 'Phase erfolgreich gelöscht!'
 
+    showSolutions:
+        back: 'Zurück zur Übersicht'
+
 video:
     labels:
         title: 'Titel'
