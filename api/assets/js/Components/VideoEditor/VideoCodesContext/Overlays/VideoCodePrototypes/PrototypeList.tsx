@@ -41,7 +41,11 @@ const PrototypeList = (props: Props) => {
             ) : null}
 
             <div className="video-code">
-                <Button className={'btn btn-outline-primary btn--full-width btn-sm'} onPress={handleAdd}>
+                <Button
+                    title={`${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
+                    className={'btn btn-outline-primary btn--full-width btn-sm'}
+                    onPress={handleAdd}
+                >
                     <i className="fas fa-plus" />
                 </Button>
             </div>

@@ -64,6 +64,8 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
                         type={'color'}
                         className={'form-control form-control-sm'}
                         onChange={handleColorChange}
+                        aria-label="Wähle eine Farbe"
+                        title="Wähle eine Farbe"
                     />
                 ) : (
                     <div
@@ -73,6 +75,7 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
                 )}
                 <input
                     type={'text'}
+                    aria-label={'Name für neuen Videocode'}
                     placeholder={'Name für neuen Videocode'}
                     className={'form-control form-control-sm'}
                     onChange={handleNameChange}

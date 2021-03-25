@@ -9,6 +9,7 @@ const CloseButton = ({ onClick, tabIndex = 1 }: Props) => {
     return (
         <button
             aria-label="Schließen"
+            title="Schließen"
             tabIndex={tabIndex}
             type="button"
             className="btn btn-outline-primary"
