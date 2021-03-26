@@ -16,6 +16,7 @@ import { t2d } from 'duration-time-conversion'
 
 type OwnProps = {
     videoCodeId: VideoCodeId
+    index: number
 }
 
 const mapStateToProps = (
@@ -50,7 +51,7 @@ const mapDispatchToProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const VideoCodeListItem = (props: Props) => {
-    const { item, setCurrentlyEditedElementId, setOverlay, videoCodePrototype } = props
+    const { item, setCurrentlyEditedElementId, setOverlay, videoCodePrototype, index } = props
 
     const handleRemove = () => {
         setCurrentlyEditedElementId(item.id)
@@ -69,13 +70,19 @@ const VideoCodeListItem = (props: Props) => {
     const creatorDescription = `Codierung von: ${props.creatorName}`
 
     const ariaLabel = `
+        ${index + 1}. Element
+
+        Code: ${videoCodePrototype?.name ?? 'Kein Code ausgewählt'}
+        Beschreibung: ${videoCodePrototype?.description}
+        Beschreibung zu Ende.
+
         ${creatorDescription}
+
+        ${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
 
         Von: ${item.start}
         Bis: ${item.end}
 
-        ${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
-        Code: ${videoCodePrototype?.name ?? 'Kein Code ausgewählt'}
         Memo: ${item.memo}
     `
 

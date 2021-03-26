@@ -29,8 +29,8 @@ const ActiveVideoCodesOverlay: FC<Props> = (props) => {
         <Overlay closeCallback={close} title="Aktive Codierungen">
             {props.activeVideoCodeIds.length > 0 ? (
                 <ol className="video-editor__media-item-list-new">
-                    {props.activeVideoCodeIds.map((id) => (
-                        <VideoCodeListItem key={id} videoCodeId={id} />
+                    {props.activeVideoCodeIds.map((id, index) => (
+                        <VideoCodeListItem key={id} videoCodeId={id} index={index} />
                     ))}
                 </ol>
             ) : (
