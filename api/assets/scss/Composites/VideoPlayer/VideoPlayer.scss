@@ -1,7 +1,10 @@
 .video-player {
-  min-height: 200px;
+    max-width: 100%;
+    width: auto;
+    max-height: 100%;
+    height: auto;
 
-  .video-js {
-    margin: auto;
-  }
+    .video-js {
+        margin: auto;
+    }
 }

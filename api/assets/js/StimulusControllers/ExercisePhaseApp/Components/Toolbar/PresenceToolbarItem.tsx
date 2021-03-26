@@ -1,6 +1,6 @@
 import React from 'react'
 import { Component } from './Toolbar'
-import { useAppSelector } from '../../Store/Store'
+import { useAppSelector } from '../../../ExerciseAndSolutionStore/Store'
 import { selectOnlineTeamMemberIds } from '../Presence/PresenceSlice'
 
 type ToolbarItemProps = {

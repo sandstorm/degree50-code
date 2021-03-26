@@ -22,6 +22,21 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param ExercisePhase $exercisePhase
+     * @return ExercisePhaseTeam[]|\iterable
+     */
+    public function findByExercisePhase(ExercisePhase $exercisePhase)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.exercisePhase = :exercisePhase')
+            ->setParameter('exercisePhase', $exercisePhase)
+            ->orderBy('e.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
      * @param User $member
      * @param ExercisePhase $exercisePhase
      * @return ExercisePhaseTeam|null

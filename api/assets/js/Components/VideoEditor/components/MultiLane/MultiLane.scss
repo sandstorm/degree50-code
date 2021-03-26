@@ -1,0 +1,40 @@
+.multilane {
+    display: grid;
+    grid-template-columns: auto 1fr;
+
+    padding: 0;
+}
+
+.multilane__medialane-description {
+    padding: 5px;
+}
+
+.multilane__content {
+    overflow: auto;
+}
+
+.multilane-filter-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+
+    width: content;
+}
+
+.multilane-filter-container__toggle {
+    height: 100%;
+    width: content;
+}
+
+.multilane-filter__content {
+    width: 400px;
+    overflow: hidden;
+    > * {
+        padding-left: $theme__spacing--base;
+        padding-right: $theme__spacing--base;
+    }
+
+    > h2 {
+        margin-top: $theme__spacing--base;
+    }
+}

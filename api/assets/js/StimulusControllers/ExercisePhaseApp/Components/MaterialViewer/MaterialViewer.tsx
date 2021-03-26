@@ -1,26 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { selectConfig } from '../Config/ConfigSlice'
+import { ConfigStateSlice, selectors } from '../Config/ConfigSlice'
 import PDFViewer from 'pdf-viewer-reactjs'
-import { selectActiveMaterial, setActiveMaterial } from './MaterialViewerSlice'
-import { setOverlaySize } from '../Overlay/OverlaySlice'
-import { overlaySizesEnum } from '../Overlay/Overlay'
-import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
+import { MaterialViewerStateSlice, selectActiveMaterial, setActiveMaterial } from './MaterialViewerSlice'
+import Button from 'Components/Button/Button'
 
-const mapStateToProps = (state: AppState) => ({
-    config: selectConfig(state),
+const mapStateToProps = (state: ConfigStateSlice & MaterialViewerStateSlice) => ({
+    config: selectors.selectConfig(state),
     activeMaterial: selectActiveMaterial(state),
 })
 
-const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    setActiveMaterial: (material?: Material) => dispatch(setActiveMaterial(material)),
-})
-
-type AdditionalProps = {
-    // currently none
+const mapDispatchToProps = {
+    setActiveMaterial: setActiveMaterial,
 }
 
-type MaterialViewerProps = AdditionalProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 export type Material = {
     id: string
@@ -29,30 +23,48 @@ export type Material = {
     url: string
 }
 
-const MaterialViewer: React.FC<MaterialViewerProps> = (props) => {
-    const dispatch = useAppDispatch()
-    const setActiveMaterialWrapper = (material?: Material) => {
-        props.setActiveMaterial(material)
-        if (material === undefined) {
-            dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
-        } else {
-            dispatch(setOverlaySize(overlaySizesEnum.LARGE))
-        }
+const mapMaterialTypeToIcon = (type: Material['type']) => {
+    if (type.startsWith('audio/')) {
+        return 'file-audio'
     }
 
+    if (type.startsWith('video/')) {
+        return 'file-video'
+    }
+
+    if (type.startsWith('image/')) {
+        return 'file-image'
+    }
+
+    switch (type) {
+        case 'application/pdf':
+            return 'file-pdf'
+        case 'application/msword':
+            return 'file-word'
+        case 'application/msexcel':
+            return 'file-excel'
+        case 'application/mspowerpoint':
+            return 'file-powerpoint'
+        default:
+            return 'file'
+    }
+}
+
+const MaterialViewer: React.FC<Props> = (props) => {
     const materialTiles = props.config.material.map(function (material: Material) {
         return (
-            <div
-                role="button"
+            <button
                 key={material.id}
-                className={'tile tile--small'}
-                onClick={() => setActiveMaterialWrapper(material)}
+                className={'btn tile tile--small'}
+                title={material.name}
+                aria-label={material.name}
+                onClick={() => props.setActiveMaterial(material)}
             >
                 <div className={'tile__content'}>
-                    <i className={'tile__icon fas fa-file-pdf'}></i>
-                    <span>{material.name}</span>
+                    <i className={`tile__icon fas fa-${mapMaterialTypeToIcon(material.type)}`}></i>
+                    <span className="tile__title">{material.name}</span>
                 </div>
-            </div>
+            </button>
         )
     })
 
@@ -65,15 +77,24 @@ const MaterialViewer: React.FC<MaterialViewerProps> = (props) => {
                     </header>
 
                     <div className={'material-viewer__actions'}>
-                        <button
+                        <Button
                             className={'btn btn-sm btn-outline-primary'}
-                            type="button"
-                            onClick={() => setActiveMaterialWrapper(undefined)}
+                            title="Zurück zur Material-Übersicht"
+                            onPress={() => props.setActiveMaterial(undefined)}
                         >
-                            <i className={'fas fa-chevron-left'}></i> Zurück
-                        </button>
-                        <a className={'btn btn-sm btn-primary'} href={props.activeMaterial.url}>
-                            <i className={'fas fa-download'}></i> Download
+                            <i className={'fas fa-chevron-left'}></i>
+                            <span>Zurück</span>
+                        </Button>
+                        <a
+                            className={'btn btn-sm btn-primary'}
+                            href={props.activeMaterial.url}
+                            aria-label="Download"
+                            title="Download"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <i className={'fas fa-download'}></i>
+                            <span>Download</span>
                         </a>
                     </div>
 

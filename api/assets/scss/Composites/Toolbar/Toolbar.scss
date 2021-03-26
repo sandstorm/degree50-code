@@ -17,9 +17,6 @@ $toolbarWidth: 50px;
 
     @include transition(width 250ms ease 0s);
     z-index: 8000;
-
-    &--is-visible {
-    }
 }
 
 .toolbar__toggle {

@@ -1,13 +1,13 @@
-import { call, cancel, cancelled, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import { eventChannel, EventChannel } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
-import { selectConfig } from '../Config/ConfigSlice'
+import { selectors as configSelectors } from '../Config/ConfigSlice'
 import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
-import { VideoListsState } from 'Components/VideoEditor/VideoListsSlice'
-import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { initData } from 'Components/VideoEditor/initData'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -64,9 +64,9 @@ function* handleMessages(channel: EventChannel<unknown>) {
             const currentEditor: string = eventData.currentEditor
             yield put(setCurrentEditorId(currentEditor))
 
-            // set solution
-            const solution: VideoListsState = eventData.solution
-            yield put(actions.lists.setVideoEditor(solution))
+            const { data } = eventData
+
+            yield put(initData(data))
         }
     } finally {
         channel.close()
@@ -77,16 +77,14 @@ function* handleMessages(channel: EventChannel<unknown>) {
  * Upload solution if user is currentEditor
  */
 function* syncSolution() {
-    const config = selectConfig(yield select())
+    const config = configSelectors.selectConfig(yield select())
 
     if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
-        const solution = selectors.lists.selectVideoEditorLists(yield select())
-        const updateSolutionEndpoint = selectConfig(yield select()).apiEndpoints.updateSolution
+        const solutionLists = selectors.selectSolutionLists(yield select())
+        const updateSolutionEndpoint = configSelectors.selectConfig(yield select()).apiEndpoints.updateSolution
 
         try {
-            yield Axios.post(updateSolutionEndpoint, {
-                solution,
-            })
+            yield Axios.post(updateSolutionEndpoint, solutionLists)
         } catch (e) {
             console.warn('>>>>> updateSolution', e)
         }

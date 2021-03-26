@@ -1,3 +1,4 @@
+{% trans_default_domain 'forms' %}
 {% extends 'BaseWithSidebar.html.twig' %}
 
 {% block title %}{{ exercise.name }} - Lösungen{% endblock %}
@@ -9,12 +10,22 @@
 {% endblock %}
 
 {% block body %}
-    <header class="content-header--center">
-        <h3>{{ exercise.name }} - Lösungen</h3>
-    </header>
-    <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {solutions: solutions, config: config} |json_encode|e('html_attr') }}">
-        <div class="loading-screen">
-            <i class="fas fa-spinner fa-spin"></i>
+    <div class="solution-app">
+        <header class="content-header--center">
+            <h3>{{ exercise.name }} - Lösungen</h3>
+        </header>
+        <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {data: data, config: config} |json_encode|e('html_attr') }}">
+            <div class="loading-screen">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
         </div>
     </div>
+    <footer class="footer">
+        <a
+           class="btn btn-outline-primary"
+           href="{{ path('exercise-overview') }}"
+       >
+           {% trans %}exercisePhase.showSolutions.back{% endtrans %}
+       </a>
+    </footer>
 {% endblock %}

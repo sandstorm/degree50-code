@@ -1,0 +1,91 @@
+///////////
+// STATE //
+///////////
+
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { remove, set } from 'immutable'
+import { VideoCode } from '../types'
+import { initData } from '../initData'
+
+export type VideoCodeId = string
+
+export type VideoCodesState = {
+    byId: Record<VideoCodeId, VideoCode>
+}
+
+export const initialState: VideoCodesState = {
+    byId: {},
+}
+
+/////////////
+// REDUCER //
+/////////////
+
+export const videoCodesSlice = createSlice({
+    name: 'videoCodes',
+    initialState,
+    reducers: {
+        set: (state: VideoCodesState, action: PayloadAction<VideoCode[]>) => {
+            const normalized = action.payload.reduce((acc, videoCode) => {
+                return {
+                    ...acc,
+                    [videoCode.id]: videoCode,
+                }
+            }, {})
+
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    ...normalized,
+                },
+            }
+        },
+        append: (state: VideoCodesState, action: PayloadAction<VideoCode>): VideoCodesState => {
+            const newVideoCode = action.payload
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    [newVideoCode.id]: newVideoCode,
+                },
+            }
+        },
+        update: (state: VideoCodesState, action: PayloadAction<{ transientVideoCode: VideoCode }>): VideoCodesState => {
+            const { transientVideoCode } = action.payload
+
+            return {
+                ...state,
+                byId: set(state.byId, transientVideoCode.id, transientVideoCode),
+            }
+        },
+        remove: (state: VideoCodesState, action: PayloadAction<string>): VideoCodesState => {
+            const elementId = action.payload
+
+            return {
+                ...state,
+                byId: remove(state.byId, elementId),
+            }
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(initData, (_, action) => {
+            return action.payload.videoCodes
+        })
+    },
+})
+
+///////////////
+// SELECTORS //
+///////////////
+
+export type VideoCodesStateSlice = { videoEditor: { data: { videoCodes: VideoCodesState } } }
+
+const selectById = (state: VideoCodesStateSlice) => state.videoEditor.data.videoCodes.byId
+const selectVideoCodeById = (state: VideoCodesStateSlice, props: { videoCodeId: VideoCodeId }) =>
+    state.videoEditor.data.videoCodes.byId[props.videoCodeId]
+
+export const selectors = {
+    selectById,
+    selectVideoCodeById,
+}

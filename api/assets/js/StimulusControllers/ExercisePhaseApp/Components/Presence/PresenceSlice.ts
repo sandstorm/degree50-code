@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
-import { AppState } from '../../Store/Store'
+import { AppState } from '../../../ExerciseAndSolutionStore/Store'
 
 export enum ConnectionState {
     CONNECTED = 'CONNECTED',
@@ -56,10 +56,12 @@ export default PresenceSlice.reducer
 
 // Selectors
 
-export const selectTeamMemberIds = (state: AppState) => state.presence.teamMemberIds
-export const selectTeamMemberById = (id: TeamMemberId, state: AppState) => state.presence.teamMembersById[id]
-export const selectTeamMembersById = (state: AppState) => state.presence.teamMembersById
-export const selectIsConnecting = (state: AppState) => state.presence.isConnecting
+export type PresenceStateSlice = { presence: PresenceState }
+
+export const selectTeamMemberIds = (state: PresenceStateSlice) => state.presence.teamMemberIds
+export const selectTeamMemberById = (id: TeamMemberId, state: PresenceStateSlice) => state.presence.teamMembersById[id]
+export const selectTeamMembersById = (state: PresenceStateSlice) => state.presence.teamMembersById
+export const selectIsConnecting = (state: PresenceStateSlice) => state.presence.isConnecting
 
 export const selectOnlineTeamMemberIds = createSelector([selectTeamMemberIds, selectTeamMembersById], (allIds, byId) =>
     allIds.filter((memberId) => byId[memberId].connectionState === ConnectionState.CONNECTED)

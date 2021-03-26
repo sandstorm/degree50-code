@@ -1,0 +1,25 @@
+.video-editor__menu {
+    position: relative;
+    margin-left: 80px;
+}
+
+.video-editor__menu__count-badge {
+    position: absolute;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    right: -5px;
+    bottom: -5px;
+    width: 15px;
+    height: 15px;
+
+    background-color: $theme__color__red;
+    border: none;
+    border-radius: 50%;
+
+    color: $theme__color__white;
+    font-size: calc(0.7 * #{$base__fontSize});
+
+    z-index: 10;
+}

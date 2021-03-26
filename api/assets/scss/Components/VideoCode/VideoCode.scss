@@ -1,45 +1,98 @@
+// FIXME
+// Find out what actually belongs to 'video-code's and what should reside
+// in its own file for videoCodePrototypes.
+// (it may very well be possible that everythin in here is related only to
+// prototypes or both protoypes and videoCodes - i don't know at this point and
+// currently don't have the time to check ;) )
+
+.video-editor__video-codes {
+    padding-left: 0;
+
+    list-style: none;
+}
+
 .video-code {
-    .video-editor__video-codes,
-    .new-video-code {
-        display: none;
+    padding: 5px 10px;
+    color: $theme__color__text;
+    background-color: $theme__color__white;
+
+    &:focus-within {
+        background-color: $theme__color__grey--light !important;
+        border-color: $theme__color__grey--light !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
-    &--show-children {
-        .video-editor__video-codes {
-            display: block;
-        }
-
-        .new-video-code {
-            display: flex;
-        }
+    &:focus {
+        color: $theme__color__white !important;
+        background-color: $theme__color__secondary--dark !important;
+        border-color: $theme__color__secondary--dark !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     .video-editor__video-codes {
-        padding-top: 10px;
-
-        background-color: $theme__color__grey--light;
+        display: flex;
     }
 
     .new-video-code {
-        margin-bottom: 10px;
-    }
+        display: flex;
+        padding: 5px 10px;
+        background-color: $theme__color__white;
 
-    .video-code,
-    .new-video-code {
-        background-color: $theme__color__grey--light;
+        &:focus-within {
+            background-color: $theme__color__grey--light !important;
+            border-color: $theme__color__grey--light !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        &:focus {
+            color: $theme__color__white !important;
+            background-color: $theme__color__secondary--dark !important;
+            border-color: $theme__color__secondary--dark !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        input {
+            background-color: $theme__color__white;
+        }
+    }
+    .video-editor__video-codes {
+        display: block;
+        margin-top: 5px;
     }
 }
 
+.video-code__child-count {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    right: -5px;
+    bottom: -5px;
+    min-width: 25px;
+    height: 25px;
+
+    border-radius: 50%;
+
+    background: $theme__color__grey--light;
+    color: $theme__color__grey;
+    font-size: 0.8rem;
+}
+
 .video-code__content {
-    padding: 5px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
+    > * + * {
+        margin-left: 5px;
+    }
+
     button,
     .btn {
-        margin-left: 5px;
-
         white-space: nowrap;
     }
 }
@@ -53,7 +106,7 @@
 .video-code__color {
     width: 20px;
     height: 20px;
-    margin-right: 10px;
+    margin-right: 5px;
     flex-shrink: 0;
 }
 
@@ -71,7 +124,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 10px;
+    padding: 5px 0 5px 10px;
 
     input {
         margin-right: 10px;

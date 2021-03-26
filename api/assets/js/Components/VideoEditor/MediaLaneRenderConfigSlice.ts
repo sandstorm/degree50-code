@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RenderConfig } from './Editors/components/MediaLane/MediaTrack'
-import { INITIAL_ZOOM } from './Editors/components/MediaLane/useMediaLane'
+import { RenderConfig, MedialaneHeightModifier } from './components/MediaLane/MediaTrack'
+import { INITIAL_ZOOM } from './components/MediaLane/useMediaLaneRendering'
 
 export const initialRenderConfig: RenderConfig = {
     padding: 0,
@@ -11,13 +11,26 @@ export const initialRenderConfig: RenderConfig = {
     timelineStartTime: 0,
     drawRuler: true,
     zoom: INITIAL_ZOOM,
+    heightModifier: 1,
 }
 
 const MediaLaneRenderConfigSlice = createSlice({
     name: 'MediaLaneRenderConfig',
     initialState: initialRenderConfig,
     reducers: {
-        setRenderConfig: (state: RenderConfig, action: PayloadAction<RenderConfig>): RenderConfig => action.payload,
+        setRenderConfig: (_: RenderConfig, action: PayloadAction<RenderConfig>): RenderConfig => action.payload,
+        setHeightModifier: (state, action: PayloadAction<MedialaneHeightModifier>): RenderConfig => {
+            return {
+                ...state,
+                heightModifier: action.payload,
+            }
+        },
+        updateZoom: (state, action: PayloadAction<number>): RenderConfig => {
+            return {
+                ...state,
+                zoom: action.payload,
+            }
+        },
     },
 })
 
@@ -25,8 +38,12 @@ export const { actions } = MediaLaneRenderConfigSlice
 
 export default MediaLaneRenderConfigSlice.reducer
 
-const selectRenderConfig = (state: { mediaLaneRenderConfig: RenderConfig }) => state.mediaLaneRenderConfig
+export type MediaLaneRenderConfigState = { mediaLaneRenderConfig: RenderConfig }
+
+const selectRenderConfig = (state: MediaLaneRenderConfigState) => state.mediaLaneRenderConfig
+const selectHeightModifier = (state: MediaLaneRenderConfigState) => state.mediaLaneRenderConfig.heightModifier
 
 export const selectors = {
     selectRenderConfig,
+    selectHeightModifier,
 }

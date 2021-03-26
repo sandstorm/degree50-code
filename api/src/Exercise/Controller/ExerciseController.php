@@ -97,8 +97,14 @@ class ExerciseController extends AbstractController
             $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
             $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
 
-            $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($user, $exercise->getCreator(), $exercisePhase);
-            $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByCreator($user, $exercisePhase);
+            $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+            $otherTeams = array_filter($this->exercisePhaseTeamRepository->findByExercisePhase($exercisePhase), function ($team) use ($teamOfCurrentUser) {
+                return $team !== $teamOfCurrentUser;
+            });
+
+            // WHY: Make sure the first team that's shown is the team of the current user
+            $allTeams = $teamOfCurrentUser ? array_merge([$teamOfCurrentUser], $otherTeams) : $otherTeams;
+
             return $this->render($template,
                 [
                     'userIsCreator' => $userIsCreator,
@@ -107,7 +113,8 @@ class ExerciseController extends AbstractController
                     'currentPhaseIndex' => $exercisePhase->getSorting(),
                     'previousExercisePhase' => $previousExercisePhase,
                     'nextExercisePhase' => $nextExercisePhase,
-                    'teams' => $teams,
+                    'teams' => $allTeams,
+                    'otherTeams' => $otherTeams,
                     'teamOfCurrentUser' => $teamOfCurrentUser,
                     'amountOfPhases' => count($exercise->getPhases()) - 1,
                 ]);

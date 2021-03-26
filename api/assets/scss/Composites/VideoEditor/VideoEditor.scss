@@ -1,93 +1,59 @@
 .video-editor {
-    display: flex;
-    flex-direction: column;
-
-    color: $theme__color__grey;
-    font-size: $base__fontSize--smaller;
-
-    background-color: $theme__color__white;
-}
-
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #666;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: #ccc;
-}
-
-.video-editor__main {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    flex: 1;
-    height: 100%;
-
-    background-color: $theme__color__grey--light;
-}
-
-.video-editor__section {
-    height: 100%;
-    position: relative;
-}
-
-.video-editor__left {
-    flex: 1;
     display: grid;
-    grid-template-rows: auto 1fr;
-    border-right: 1px solid $theme__color__grey--dark;
-    background-color: $theme__color__black;
+    grid-template-rows: 1fr 40px auto;
 
-    .video-editor__section-header {
+    height: 100%;
+
+    .video-container {
         position: relative;
-
-        z-index: 10;
+        background-color: black;
     }
 
-    .video-editor__section-content {
-        display: grid;
-        place-items: center;
-        overflow: hidden;
+    .video-editor__toolbar {
+        display: flex;
+        align-items: center;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        padding: $theme__spacing--small $theme__spacing--base;
+
+        background-color: $theme__color__grey;
+
+        &__button {
+            position: relative;
+            height: 32px;
+            width: 32px;
+            padding: 0;
+        }
     }
-}
 
-.video-editor__right {
-    flex: 1;
-
-    background-color: $theme__color__white;
-
-    .video-editor__section-header {
-        position: relative;
-
-        z-index: 10;
-    }
-
-    .video-editor__section-content {
+    .menu {
+        z-index: $theme__z-index--menu;
         position: absolute;
+        bottom: 32px;
+        width: 210px;
+
+        background-color: $theme__color__grey--dark;
+        color: $theme__color__white;
+
+        .menu-item {
+            padding: 8px;
+            width: 100%;
+            text-align: left;
+        }
+    }
+
+    .menu-wrapper {
+        position: relative;
+    }
+
+    .menu-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+
         height: 100%;
         width: 100%;
-        padding-top: 44px;
-        top: 0;
 
-        overflow: hidden;
-        overflow-y: scroll;
+        z-index: $theme__z-index--menu - 1;
     }
-}
-
-.video-editor__section-content {
-    height: 100%;
-}
-
-// The videoEditor uses this to determine its height
-.js-video-editor-container {
-    height: 100%;
-    width: 100%;
-}
-
-.video-editor__video-codes {
-    @include removeListStyles();
 }

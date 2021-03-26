@@ -3,16 +3,16 @@ import { ToolbarItem } from './ToolbarItem'
 import { connect } from 'react-redux'
 import { selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible } from './ToolbarSlice'
 import { setOverlayVisibility, setOverlayComponent, setOverlaySize } from '../Overlay/OverlaySlice'
-import { AppState, AppDispatch, useAppDispatch } from '../../Store/Store'
+import { AppState, AppDispatch, useAppDispatch } from '../../../ExerciseAndSolutionStore/Store'
 import { ComponentTypesEnum } from '../../../../types'
-import { ComponentId, ConfigState, selectConfig } from '../Config/ConfigSlice'
+import { ComponentId, ConfigState, selectors } from '../Config/ConfigSlice'
 import { overlaySizesEnum } from '../Overlay/Overlay'
 import { PresenceToolbarItem } from './PresenceToolbarItem'
 
 const mapStateToProps = (state: AppState) => ({
     activeToolbarItem: selectActiveToolbarItem(state),
     isVisible: selectIsVisible(state),
-    config: selectConfig(state),
+    config: selectors.selectConfig(state),
 })
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

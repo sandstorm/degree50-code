@@ -1,0 +1,31 @@
+.time-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    & + & {
+        margin-top: $theme__spacing--base;
+    }
+}
+
+.time-input__label {
+    margin-right: $theme__spacing--base;
+}
+
+.time-input__input {
+    display: inline;
+
+    & + & {
+        margin-left: $theme__spacing--base;
+    }
+
+    input + span {
+        margin-left: $theme__spacing--small;
+    }
+
+    & input {
+        width: 5em;
+    }
+}

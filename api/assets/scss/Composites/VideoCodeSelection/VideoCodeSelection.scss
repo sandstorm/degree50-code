@@ -1,0 +1,49 @@
+.video-code-select {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    margin-bottom: 0;
+    padding-left: 0;
+    height: 150px;
+    max-height: 150px;
+
+    overflow: auto;
+
+    list-style: none;
+
+    .video-code-select__option {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        text-align: center;
+        padding-left: $theme__spacing--small;
+
+        &:focus-within {
+            color: $theme__color__white;
+            background-color: $theme__color__secondary--dark;
+        }
+
+        // Prototype label
+        & > label {
+            display: flex;
+            align-items: center;
+
+            & > * {
+                margin-left: 10px;
+            }
+
+            // Lock icon
+            & > i {
+                width: 25px;
+                height: 25px;
+            }
+
+            // Color div
+            & > div {
+                margin-right: 0;
+            }
+        }
+    }
+}

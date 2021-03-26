@@ -5,7 +5,7 @@
 {% block layoutCssClass %}main--with-footer main--without-scrollbar{% endblock %}
 
 {% block body %}
-    <div class="exercise-phase exercise-phase--with-toolbar" data-controller="exercisePhase" data-exercisePhase-props="{{ {solution: solution, currentEditor: currentEditor, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
+    <div class="exercise-phase" data-controller="exercisePhase" data-exercisePhase-props="{{ { data: data, currentEditor: currentEditor, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
         <div class="loading-screen">
             <i class="fas fa-spinner fa-spin"></i>
         </div>

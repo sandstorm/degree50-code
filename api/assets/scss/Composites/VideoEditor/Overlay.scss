@@ -1,0 +1,63 @@
+.video-editor__overlay {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+
+    z-index: $theme__z-index--overlay + 1;
+
+    button + button {
+        margin-left: $theme__spacing--base;
+    }
+}
+
+.video-editor__overlay__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+
+    h3 {
+        margin: 0;
+    }
+}
+
+.video-editor__overlay__content {
+    overflow: auto;
+}
+
+.video-editor__overlay__wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    overflow: hidden;
+
+    padding: $theme__spacing--large;
+    min-width: 500px;
+    max-width: 95%;
+    max-height: 80%;
+
+    background-color: $theme__color__white;
+
+    z-index: $theme__z-index--overlay;
+
+    &--fullWidth {
+        width: 95%;
+    }
+}
+
+.video-editor__overlay__backdrop {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.42);
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: $theme__z-index--overlay - 1;
+}

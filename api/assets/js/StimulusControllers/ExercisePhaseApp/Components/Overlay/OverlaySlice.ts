@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AppState } from '../../Store/Store'
+import { AppState } from '../../../ExerciseAndSolutionStore/Store'
 import { overlaySizesEnum } from './Overlay'
 import { ComponentTypesEnum } from 'types'
 
