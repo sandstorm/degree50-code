@@ -48,6 +48,7 @@
 -   When the container is running:
     -   import fixtures by running `make import-fixtures` (dummy data)
     -   Run the assets build (locally) using `cd api && nvm use && yarn`
+    -   Run frontend build using `cd api && yarn dev`
     -   Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
     -   After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
     -   The Symfony Console can be executed via `./symfony-console`
@@ -139,7 +140,8 @@ You should now be able to add the user to courses etc.
 
 The Prod System is `degree40.tu-dortmund.de`. The Test system is `degree40-test.tu-dortmund.de`.
 
-- If you connect via SSH (and the config below), you can go to `http://localhost:19999` to access Netdata monitoring.
+-   If you connect via SSH (and the config below), you can go to `http://localhost:19999` to access Netdata monitoring.
+
 ### Connecting via SSH to the production server
 
 #### Prerequisites
@@ -214,8 +216,8 @@ Ansible takes care of:
 
 ### Firewall rules
 
-- Docker is BEFORE the firewall; so that means we do not need FW rules for the docker ports like 80/443
-- To allow access from the gitlab-runner.sandstorm.de, we used: `ufw allow proto tcp from 88.198.132.154 to any port 22`
+-   Docker is BEFORE the firewall; so that means we do not need FW rules for the docker ports like 80/443
+-   To allow access from the gitlab-runner.sandstorm.de, we used: `ufw allow proto tcp from 88.198.132.154 to any port 22`
 
 ### Automatic Updates
 
