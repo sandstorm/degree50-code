@@ -93,6 +93,12 @@ class ExercisePhaseTeamVoter extends Voter
 
     private function canJoin(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
+        // WHY: Admins & Dozenten can only create their own Team
+        // (see issue #261)
+        if ($user->isAdmin() || $user->isDozent()) {
+            return false;
+        }
+
         $existingTeams = $exercisePhaseTeam->getExercisePhase()->getTeams();
         $canJoin = true;
         foreach($existingTeams as $team) {
