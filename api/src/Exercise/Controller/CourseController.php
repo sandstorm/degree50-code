@@ -76,8 +76,11 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
+        $students = $course->getCourseRoles()->filter(function (CourseRole $role) { return $role->getUser()->isStudent(); });
+
         return $this->render('Course/Members.html.twig', [
             'course' => $course,
+            'students' => $students,
             'form' => $form->createView()
         ]);
     }
@@ -268,8 +271,11 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
+        $tutors = $course->getCourseRoles()->filter(function (CourseRole $role) { return $role->getUser()->isDozent(); });
+
         return $this->render('Course/Edit.html.twig', [
             'course' => $course,
+            'tutors' => $tutors,
             'form' => $form->createView()
         ]);
     }

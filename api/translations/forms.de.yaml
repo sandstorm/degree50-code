@@ -167,13 +167,14 @@ course:
             success: 'Kursmitglieder erfolgreich gespeichert!'
     labels:
         members: 'Kursmitglieder'
-        membersStudent: 'Aktuelle Kursmitglieder (Studierende)'
-        membersTutor: 'Aktuelle Kursmitglieder (Dozenten)'
+        currentMembers: 'Aktuelle Kursmitglieder'
         name: 'Name'
         user: 'Nutzer'
         role: 'Rolle'
         submit: 'Kurs speichern'
         addMember: 'Kursmitglieder speichern'
+        students: 'Studierende'
+        tutors: 'Dozenten'
     help:
         students: 'Hier können Studierende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
         tutors: 'Hier können Dozenten ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
