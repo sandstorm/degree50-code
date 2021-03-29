@@ -28,7 +28,7 @@
             {{ form_row(form.name) }}
             {{ form_row(form.users) }}
 
-            <h5>{% trans %}course.labels.membersTutor{% endtrans %}</h5>
+            <h5>{% trans %}course.labels.currentMembers{% endtrans %} ({{ tutors.count }} {% trans %}course.labels.tutors{% endtrans %})</h5>
             <table class="table table-sm">
                 <thead>
                 <tr>
@@ -37,13 +37,13 @@
                     <th></th>
                 </tr>
                 </thead>
-                {% for courseRole in course.courseRoles %}
-                    {% if courseRole.name == 'DOZENT' %}
+                {% for tutor in tutors %}
+                    {% if tutor.name == 'DOZENT' %}
                         <tr>
-                            <td>{{ courseRole.user.userName }}</td>
-                            <td>{{ courseRole.name }}</td>
+                            <td>{{ tutor.user.userName }}</td>
+                            <td>{{ tutor.name }}</td>
                             <td class="text-right">
-                                <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: courseRole.id, redirectToEdit: true}) }}"
+                                <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: tutor.id, redirectToEdit: true}) }}"
                                    class="btn btn-danger btn-sm">{% trans %}course.removeMember.title{% endtrans %}</a>
                             </td>
                         </tr>
