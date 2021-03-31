@@ -8,6 +8,7 @@ use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\CourseMembersType;
 use App\Exercise\Form\CourseType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -76,7 +77,16 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
-        $students = $course->getCourseRoles()->filter(function (CourseRole $role) { return $role->getUser()->isStudent(); });
+        $studentsArray = $course->getCourseRoles()
+            ->filter(function (CourseRole $role) { return $role->getUser()->isStudent(); })
+            ->toArray();
+
+        // MUTATION! Sort by userName
+        usort($studentsArray, function(CourseRole $a, CourseRole $b) {
+            return ($a->getUser()->getUsername() > $b->getUser()->getUsername()) ? -1 : 1;
+        });
+
+        $students = new ArrayCollection($studentsArray);
 
         return $this->render('Course/Members.html.twig', [
             'course' => $course,
@@ -271,7 +281,16 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
-        $tutors = $course->getCourseRoles()->filter(function (CourseRole $role) { return $role->getUser()->isDozent(); });
+        $tutorsArray = $course->getCourseRoles()
+            ->filter(function (CourseRole $role) { return $role->getUser()->isDozent(); })
+            ->toArray();
+
+        // MUTATION! Sort by userName
+        usort($tutorsArray, function(CourseRole $a, CourseRole $b) {
+            return ($a->getUser()->getUsername() > $b->getUser()->getUsername()) ? -1 : 1;
+        });
+
+        $tutors = new ArrayCollection($tutorsArray);
 
         return $this->render('Course/Edit.html.twig', [
             'course' => $course,
