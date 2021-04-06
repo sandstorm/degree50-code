@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthenticationController extends AbstractController
@@ -30,10 +32,16 @@ class AuthenticationController extends AbstractController
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
+        // WHY: We don't want to leak information about registered email addresses.
+        if ($error && $error instanceof CustomUserMessageAuthenticationException) {
+            $maskedError = new BadCredentialsException();
+        }
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('Security/Login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('Security/Login.html.twig', ['last_username' => $lastUsername, 'error' => $maskedError ?? null]);
     }
 
     /**
