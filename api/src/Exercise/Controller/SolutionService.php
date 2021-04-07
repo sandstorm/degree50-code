@@ -70,6 +70,16 @@ class SolutionService {
             );
         }
 
+        // Get configured videoCodePrototypes from ExercisePhase
+        if (!empty($teams)) {
+            $exercisePhase = $teams[0]->getExercisePhase();
+            $configuredVideoCodePrototypes = array_map(function(VideoCode $videoCodePrototypeEntity) {
+                return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
+            }, $exercisePhase->getVideoCodes()->toArray());
+
+            $clientSideSolutionDataBuilder->addVideoCodePrototoypes($configuredVideoCodePrototypes);
+        }
+
         return $clientSideSolutionDataBuilder;
     }
 
