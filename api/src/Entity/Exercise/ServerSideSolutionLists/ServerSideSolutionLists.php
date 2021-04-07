@@ -84,6 +84,34 @@ final class ServerSideSolutionLists {
         );
     }
 
+    public static function fromClientJSON(array $input): self {
+        $serverSideAnnotations = array_map(function ($annotation) {
+            return ServerSideAnnotation::fromArray($annotation);
+        }, $input['annotations']);
+
+        $serverSideVideoCodes = array_map(function ($videoCode) {
+            return ServerSideVideoCode::fromArray($videoCode);
+        }, $input['videoCodes']);
+
+        $serverSideCutList = array_map(function ($cut) {
+            return ServerSideCut::fromArray($cut);
+        }, $input['cutList']);
+
+        $serverSideVideoCodePrototypes = [];
+        if (!empty($input['videoCodePrototypes'])) {
+            $serverSideVideoCodePrototypes = array_map(function ($videoCodePrototype) {
+                return ServerSideVideoCodePrototype::fromArray($videoCodePrototype);
+            }, $input['videoCodePrototypes']);
+        }
+
+        return new self(
+            $serverSideAnnotations,
+            $serverSideVideoCodes,
+            $serverSideCutList,
+            $serverSideVideoCodePrototypes
+        );
+    }
+
     public function toArray(): array {
         $annotations = array_map(function (ServerSideAnnotation $annotation) {
             return $annotation->toArray();
