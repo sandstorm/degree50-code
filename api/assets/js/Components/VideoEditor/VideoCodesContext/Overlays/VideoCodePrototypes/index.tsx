@@ -4,10 +4,21 @@ import PrototypeList from './PrototypeList'
 import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
+    const isSolutionView = configSelectors.selectIsSolutionView(state)
+
+    const videoCodePrototypes = isSolutionView
+        ? selectors.data.selectAllPrototypesList(state)
+        : selectors.data.selectCurrentPrototypesList(state)
+
     return {
-        videoCodePrototypes: selectors.data.selectPrototypesList(state),
+        videoCodePrototypes,
+        isSolutionView,
     }
 }
 
@@ -39,15 +50,17 @@ const VideoCodePrototypes = (props: Props) => {
                     <span>Es stehen keine Video-Codes zur Auswahl für diese Aufgabe</span>
                 </div>
 
-                <div className="video-code">
-                    <Button
-                        className={'btn btn-outline-primary btn--full-width btn-sm'}
-                        onPress={handleAdd}
-                        title="Neuen Code Erstellen"
-                    >
-                        <i className="fas fa-plus" />
-                    </Button>
-                </div>
+                {!props.isSolutionView && (
+                    <div className="video-code">
+                        <Button
+                            className={'btn btn-outline-primary btn--full-width btn-sm'}
+                            onPress={handleAdd}
+                            title="Neuen Code Erstellen"
+                        >
+                            <i className="fas fa-plus" />
+                        </Button>
+                    </div>
+                )}
             </div>
         )
     }
