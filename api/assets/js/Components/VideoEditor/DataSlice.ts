@@ -54,9 +54,13 @@ const selectDenormalizedCurrentCutList = createSelector(
     (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
-const selectDenormalizedPrototypes = createSelector(
+const selectDenormalizedCurrentPrototypes = createSelector(
     [solutionSelectors.selectCurrentPrototypeIds, videoCodePrototypeSelectors.selectById],
     (currentIds, byId) => currentIds.map((id) => byId[id])
+)
+
+const selectDenormalizedPrototypes = createSelector([videoCodePrototypeSelectors.selectById], (byId) =>
+    Object.values(byId).map((prototype) => byId[prototype.id])
 )
 
 const selectCurrentAnnotations = createSelector(
@@ -94,7 +98,19 @@ const selectCurrentCutIdsByStartTime = createSelector([selectCurrentCutListBySta
     cutList.map((cut) => cut.id)
 )
 
-const selectPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
+const selectAllPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
+    return codes.reduce((acc: VideoCodePrototype[], code) => {
+        if (code.parentId) {
+            return acc
+        }
+
+        const childCodes = codes.filter((c) => c.parentId === code.id)
+
+        return [...acc, { ...code, videoCodes: childCodes }]
+    }, [])
+})
+
+const selectCurrentPrototypesList = createSelector([selectDenormalizedCurrentPrototypes], (codes) => {
     return codes.reduce((acc: VideoCodePrototype[], code) => {
         if (code.parentId) {
             return acc
@@ -166,6 +182,8 @@ export const selectors = {
     selectCutIsFromCurrentSolution,
     selectCurrentCuts,
 
+    selectDenormalizedCurrentPrototypes,
     selectDenormalizedPrototypes,
-    selectPrototypesList,
+    selectCurrentPrototypesList,
+    selectAllPrototypesList,
 }

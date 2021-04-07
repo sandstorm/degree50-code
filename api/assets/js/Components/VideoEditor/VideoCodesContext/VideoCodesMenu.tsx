@@ -89,7 +89,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                     ariaLabel="Code-Liste"
                     label="Code-Liste"
                     onClick={() => props.setOverlay({ overlayId: VideoCodeOverlayIds.list, closeOthers: true })}
-                    disabled={props.disableCreate}
+                    disabled={props.disabled}
                 />
             </MenuButton>
         </div>

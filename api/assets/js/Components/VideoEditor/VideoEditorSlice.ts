@@ -75,7 +75,7 @@ const selectSolutionLists = createSelector(
         dataSelectors.selectDenormalizedCurrentAnnotations,
         dataSelectors.selectDenormalizedCurrentVideoCodes,
         dataSelectors.selectDenormalizedCurrentCutList,
-        dataSelectors.selectPrototypesList,
+        dataSelectors.selectCurrentPrototypesList,
     ],
     (annotations, videoCodes, cutList, videoCodePrototypes) => ({
         annotations,

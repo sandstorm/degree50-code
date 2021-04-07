@@ -154,7 +154,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         $clientSideCutIds = $this->addCuts($serverSideCutList, $solutionId);
 
         $serverSideVideoCodePrototypes = $serverSideSolutionLists->getVideoCodePrototypes();
-        $clientSideVideoCodePrototypeIds = $this->addVideoCodePrototypes($serverSideVideoCodePrototypes, $solutionId);
+        $clientSideVideoCodePrototypeIds = $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes, $solutionId);
 
         $this->clientSideSolutions[$solutionId] = ClientSideSolution::create(
             ClientSideSolutionLists::create(
@@ -182,7 +182,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
                 $solution->getClientSideSolutionLists()->getCutIds(),
                 array_unique(array_merge(
                     $solution->getClientSideSolutionLists()->getVideoCodePrototypeIds(),
-                    $this->addVideoCodePrototypes($serverSideVideoCodePrototypes)
+                    $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes)
                 ))
             ),
             $solutionId,
@@ -242,7 +242,22 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         return $clientSideCutIds;
     }
 
-    private function addVideoCodePrototypes(array $serverSideVideoCodePrototypes) {
+    /**
+     * Creates clientSidePrototypes from serverSidePrototypes and adds them to the clientSideVideoCodePrototypesList
+     * Returns the builder itself, so that further methods can be chained.
+     */
+    public function addVideoCodePrototoypes(array $serverSideVideoCodePrototypes) {
+        $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes);
+        return $this;
+    }
+
+    /**
+     * Creates clientSidePrototypes from serverSidePrototypes and adds them to the clientSideVideoCodePrototypesList
+     * Returns the resulting list.
+     *
+     * For internal use only!
+     */
+    private function _addVideoCodePrototypes(array $serverSideVideoCodePrototypes) {
         $clientSideVideoCodePrototypes = array_reduce($serverSideVideoCodePrototypes, function($carry, $videoCodePrototype) {
             $parentPrototype = ClientSideVideoCodePrototype::fromServerSideVideoCodePrototype($videoCodePrototype);
             $childPrototypes = array_map(function($childPrototype) {

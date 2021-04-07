@@ -6,10 +6,22 @@ import PrototypeEntry from './PrototypeEntry'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
+import {
+    ConfigStateSlice,
+    selectors as configSelectors,
+} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
 type OwnProps = {
     videoCodePrototypes: VideoCodePrototype[]
     parentPrototype?: VideoCodePrototype
+}
+
+const mapStateToProps = (state: ConfigStateSlice) => {
+    const isSolutionView = configSelectors.selectIsSolutionView(state)
+
+    return {
+        isSolutionView,
+    }
 }
 
 const mapDispatchToProps = {
@@ -21,7 +33,7 @@ const mapDispatchToProps = {
     setCurrentlyEditedElementParentId: actions.overlay.setCurrentlyEditedElementParentId,
 }
 
-type Props = typeof mapDispatchToProps & OwnProps
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const PrototypeList = (props: Props) => {
     const handleAdd = () => {
@@ -40,17 +52,19 @@ const PrototypeList = (props: Props) => {
                 </ul>
             ) : null}
 
-            <div className="video-code">
-                <Button
-                    title={`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
-                    className={'btn btn-outline-primary btn--full-width btn-sm'}
-                    onPress={handleAdd}
-                >
-                    <i className="fas fa-plus" />
-                </Button>
-            </div>
+            {!props.isSolutionView && (
+                <div className="video-code">
+                    <Button
+                        title={`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
+                        className={'btn btn-outline-primary btn--full-width btn-sm'}
+                        onPress={handleAdd}
+                    >
+                        <i className="fas fa-plus" />
+                    </Button>
+                </div>
+            )}
         </>
     )
 }
 
-export default connect(undefined, mapDispatchToProps)(React.memo(PrototypeList))
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(PrototypeList))
