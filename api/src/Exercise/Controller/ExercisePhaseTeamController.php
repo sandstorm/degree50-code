@@ -280,7 +280,7 @@ class ExercisePhaseTeamController extends AbstractController
         $response = null;
         $solutionListsFromJson = json_decode($request->getContent(), true);
 
-        $serverSideSolutionLists = ServerSideSolutionLists::fromArray($solutionListsFromJson);
+        $serverSideSolutionLists = ServerSideSolutionLists::fromClientJSON($solutionListsFromJson);
 
         // If current user is not current editor && there is a solution -> discard
         if ($user === $exercisePhaseTeam->getCurrentEditor()) {
