@@ -7,7 +7,12 @@ const MediaLaneContainer = () => {
 
     return (
         <div className="media-lane-container" key="">
-            <button className="btn btn-grey btn-sm media-lane-container__toggle" onClick={handleMediaLaneToggle}>
+            <button
+                className="btn btn-grey btn-sm media-lane-container__toggle"
+                title="Zeitleiste anzeigen/verbergen"
+                aria-label={showMediaLane ? 'Zeitleiste verbergen' : 'Zeitleiste anzeigen'}
+                onClick={handleMediaLaneToggle}
+            >
                 <i className={showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'} />
             </button>
 
