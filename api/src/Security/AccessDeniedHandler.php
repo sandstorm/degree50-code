@@ -33,10 +33,12 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
 
     public function handle(Request $request, AccessDeniedException $accessDeniedException)
     {
-        /* @var User $user */
+        /**
+         * @var User $user
+         * */
         $user = $this->security->getUser();
 
-        if (!$user->getDataPrivacyAccepted()) {
+        if (!$user->acceptedCurrentDataPrivacy()) {
             return new RedirectResponse($this->urlGenerator->generate('app_data-privacy'));
         }
 

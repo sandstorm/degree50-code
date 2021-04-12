@@ -4,16 +4,14 @@
 namespace App\Security\Voter;
 
 
-use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
-use App\Entity\Video\Video;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class DataPrivacyVoter extends Voter
 {
-
     const ACCEPTED = 'data-privacy-accepted';
+    const DATA_PRIVACY_VERSION = 2;
 
     public function supports($attribute, $subject)
     {
@@ -28,6 +26,6 @@ class DataPrivacyVoter extends Voter
             return false;
         }
 
-        return $user->getDataPrivacyAccepted();
+        return $user->getDataPrivacyAccepted() && $user->getDataPrivacyVersion() >= DataPrivacyVoter::DATA_PRIVACY_VERSION;
     }
 }

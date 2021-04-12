@@ -6,6 +6,7 @@ use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\UserExerciseInteraction;
 use App\Entity\Video\Video;
+use App\Security\Voter\DataPrivacyVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -67,6 +68,11 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $dataPrivacyAccepted = false;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":1})
+     */
+    private $dataPrivacyVersion = 1;
 
     public function __construct(?string $id = null)
     {
@@ -261,5 +267,19 @@ class User implements UserInterface
     {
         $this->dataPrivacyAccepted = $dataPrivacyAccepted;
         return $this;
+    }
+
+    public function getDataPrivacyVersion(): int
+    {
+        return $this->dataPrivacyVersion;
+    }
+
+    public function setDataPrivacyVersion(int $dataPrivacyVersion)
+    {
+        $this->dataPrivacyVersion = $dataPrivacyVersion;
+    }
+
+    public function acceptedCurrentDataPrivacy(): bool {
+        return $this->dataPrivacyAccepted && $this->dataPrivacyVersion >= DataPrivacyVoter::DATA_PRIVACY_VERSION;
     }
 }
