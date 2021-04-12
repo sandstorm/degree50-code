@@ -4,6 +4,7 @@ namespace App\Account\Controller;
 
 use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Security\Voter\DataPrivacyVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,9 +69,11 @@ class AuthenticationController extends AbstractController
         if ($accepted) {
             $this->eventStore->addEvent('DataPrivacyAccepted', [
                 'userId' => $user->getId(),
+                'data_privacy_version' => DataPrivacyVoter::DATA_PRIVACY_VERSION,
             ]);
 
             $user->setDataPrivacyAccepted(true);
+            $user->setDataPrivacyVersion(DataPrivacyVoter::DATA_PRIVACY_VERSION);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
