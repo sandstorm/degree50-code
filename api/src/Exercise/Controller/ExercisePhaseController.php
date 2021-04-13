@@ -95,7 +95,14 @@ class ExercisePhaseController extends AbstractController
         /* @var User $user */
         $user = $this->getUser();
 
-        // FIXME what does 'showSolution' mean? Why do we need this?
+        // NOTE:
+        // In this context "showSolution" is a flag that determines if the user is currently watching
+        // a single solution of another user (e.g. a student).
+        // This is usually done from the overview screen of the current exercise phase (Exercise/Show.html.twig)
+        //
+        // FIXME
+        // We should probably extract this code into its own controller action and get rid of the flag (see the template
+        // switch further down inside this method)
         $showSolution = !!$request->get('showSolution');
 
         // config for the ui to render the react components
