@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @IsGranted("ROLE_USER")
  * @IsGranted("data-privacy-accepted")
+ * @IsGranted("terms-of-use-accepted")
  */
 class ExerciseOverviewController extends AbstractController
 {

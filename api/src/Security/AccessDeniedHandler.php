@@ -42,6 +42,10 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
             return new RedirectResponse($this->urlGenerator->generate('app_data-privacy'));
         }
 
+        if (!$user->acceptedCurrentTermsOfUse()) {
+            return new RedirectResponse($this->urlGenerator->generate('app_terms-of-use'));
+        }
+
         $content = $this->twig->render('Security/403.html.twig', [
             'message' => $accessDeniedException->getMessage(),
         ]);

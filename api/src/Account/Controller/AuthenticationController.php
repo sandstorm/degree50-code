@@ -5,6 +5,7 @@ namespace App\Account\Controller;
 use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,5 +84,33 @@ class AuthenticationController extends AbstractController
         }
 
         return $this->render('Security/DataPrivacy.html.twig');
+    }
+
+    /**
+     * @Route("/user/terms-of-use", name="app_terms-of-use")
+     */
+    public function termsOfUse(Request $request): Response
+    {
+        $accepted = !!$request->query->get('accepted', false);
+        /* @var User $user */
+        $user = $this->getUser();
+
+        if ($accepted) {
+            $this->eventStore->addEvent('TermsOfUseAccepted', [
+                'userId' => $user->getId(),
+                'terms_of_use_version' => TermsOfUseVoter::TERMS_OF_USE_VERSION,
+            ]);
+
+            $user->setTermsOfUseAccepted(true);
+            $user->setTermsOfUseVersion(TermsOfUseVoter::TERMS_OF_USE_VERSION);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('exercise-overview');
+        }
+
+        return $this->render('Security/TermsOfUse.html.twig');
     }
 }

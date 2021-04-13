@@ -7,6 +7,7 @@ use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\UserExerciseInteraction;
 use App\Entity\Video\Video;
 use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -73,6 +74,16 @@ class User implements UserInterface
      * @ORM\Column(type="smallint", options={"default":1})
      */
     private $dataPrivacyVersion = 1;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $termsOfUseAccepted = false;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":0})
+     */
+    private $termsOfUseVersion = 0;
 
     public function __construct(?string $id = null)
     {
@@ -282,4 +293,31 @@ class User implements UserInterface
     public function acceptedCurrentDataPrivacy(): bool {
         return $this->dataPrivacyAccepted && $this->dataPrivacyVersion >= DataPrivacyVoter::DATA_PRIVACY_VERSION;
     }
+
+
+    public function getTermsOfUseAccepted(): ?bool
+    {
+        return $this->termsOfUseAccepted;
+    }
+
+    public function setTermsOfUseAccepted(bool $termsOfUseAccepted): self
+    {
+        $this->termsOfUseAccepted = $termsOfUseAccepted;
+        return $this;
+    }
+
+    public function getTermsOfUseVersion(): int
+    {
+        return $this->termsOfUseVersion;
+    }
+
+    public function setTermsOfUseVersion(int $termsOfUseVersion)
+    {
+        $this->termsOfUseVersion = $termsOfUseVersion;
+    }
+
+    public function acceptedCurrentTermsOfUse(): bool {
+        return $this->termsOfUseAccepted && $this->termsOfUseVersion >= TermsOfUseVoter::TERMS_OF_USE_VERSION;
+    }
+
 }
