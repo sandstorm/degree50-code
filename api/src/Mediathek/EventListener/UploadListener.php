@@ -103,6 +103,7 @@ class UploadListener
 
         $video->setUploadedVideoFile($uploadedVideoFile);
         $video->setDataPrivacyAccepted(false);
+        $video->setDataPrivacyPermissionsAccepted(false);
 
         $this->eventStore->addEvent('VideoUploaded', [
             'videoId' => $id,
