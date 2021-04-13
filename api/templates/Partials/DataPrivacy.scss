@@ -1,0 +1,19 @@
+.data-privacy .table-container {
+    overflow: auto;
+
+    table,
+    td,
+    th {
+        border: 1px solid $theme__color__grey;
+    }
+
+    table {
+        margin-bottom: 20px;
+        width: 1050px;
+    }
+
+    td,
+    th {
+        padding: 10px;
+    }
+}

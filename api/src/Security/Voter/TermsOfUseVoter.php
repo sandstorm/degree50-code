@@ -8,10 +8,10 @@ use App\Entity\Account\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class DataPrivacyVoter extends Voter
+class TermsOfUseVoter extends Voter
 {
-    const ACCEPTED = 'data-privacy-accepted';
-    const DATA_PRIVACY_VERSION = 2;
+    const ACCEPTED = 'terms-of-use-accepted';
+    const TERMS_OF_USE_VERSION = 1;
 
     public function supports($attribute, $subject)
     {
@@ -26,6 +26,6 @@ class DataPrivacyVoter extends Voter
             return false;
         }
 
-        return $user->getDataPrivacyAccepted() && $user->getDataPrivacyVersion() >= DataPrivacyVoter::DATA_PRIVACY_VERSION;
+        return $user->getTermsOfUseAccepted() && $user->getTermsOfUseVersion() >= TermsOfUseVoter::TERMS_OF_USE_VERSION;
     }
 }

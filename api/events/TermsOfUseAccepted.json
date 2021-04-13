@@ -5,10 +5,10 @@
         "userId": {
             "type": "string"
         },
-        "data_privacy_version": {
+        "terms_of_use_version": {
             "type": "integer"
         }
     },
-    "required": ["userId", "data_privacy_version"],
+    "required": ["userId", "terms_of_use_version"],
     "additionalProperties": false
 }
