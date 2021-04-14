@@ -415,4 +415,9 @@ class ExercisePhase implements ExerciseInterface
                 }
             );
     }
+
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
 }

@@ -16,6 +16,7 @@ class FileSystemService
     private array $mountPrefixesAndFilesystems;
     private MountManager $mountManager;
 
+    // FIXME why is this guaranteed to be locally available?
     // name of file system mount which is guaranteed to be locally available
     const LOCAL_TMP_FILESYSTEM_MOUNT = 'local_tmp';
 

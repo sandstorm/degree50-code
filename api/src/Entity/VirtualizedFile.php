@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+// FIXME
+// add a comment - what exactly is a virtualizedFile and why do we need it?
+
 /**
  * @ORM\Embeddable
  */
