@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
+use App\DataExport\Controller\DegreeDataToCsvService;
+use App\DataExport\Controller\Dto\CSVDto;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
@@ -36,6 +38,7 @@ use Symfony\Component\Security\Core\Security;
 
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
+use function PHPUnit\Framework\assertIsObject;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -55,8 +58,12 @@ final class DegreeContext implements Context
     private DoctrineIntegratedEventStore $eventStore;
     private Security $security;
     private SolutionService $solutionService;
+    private DegreeDataToCsvService $degreeDataToCSVService;
 
     private ?string $clientSideJSON;
+
+    /** @var CSVDto[] $csvDtoList */
+    private ?array $csvDtoList;
 
     /**
      * DegreeContext constructor.
@@ -72,7 +79,8 @@ final class DegreeContext implements Context
         DoctrineIntegratedEventStore $eventStore,
         KernelInterface $kernel,
         Security $security,
-        SolutionService $solutionService
+        SolutionService $solutionService,
+        DegreeDataToCsvService $degreeDataToCsvService
     )
     {
         $this->minkSession = $minkSession;
@@ -82,6 +90,7 @@ final class DegreeContext implements Context
         $this->kernel = $kernel;
         $this->security = $security;
         $this->solutionService = $solutionService;
+        $this->degreeDataToCSVService = $degreeDataToCsvService;
     }
 
 
@@ -196,8 +205,10 @@ final class DegreeContext implements Context
 
         $exercise = new Exercise($exerciseId);
         $exercise->setCourse($course);
+        $course->addExercise($exercise);
 
         $this->entityManager->persist($exercise);
+        $this->entityManager->persist($course);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
@@ -205,7 +216,7 @@ final class DegreeContext implements Context
     /**
      * @Given I have a course with ID :courseId
      */
-    public function iHaveAnCourseWithID($courseId)
+    public function iHaveACourseWithID($courseId)
     {
         $user = $this->entityManager->find(User::class, 'foo@bar.de');
 
@@ -446,5 +457,89 @@ final class DegreeContext implements Context
         );
 
         $this->clientSideJSON = json_encode($clientSideSolutionDataBuilder);
+    }
+
+    /**
+     * @Given I have a cut video :cutVideoId belonging to solution :solutionId
+     */
+    public function iHaveACutVideoBelongingToSolution($cutVideoId, $solutionId)
+    {
+        /** @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage */
+        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
+        $loggedInUser = $tokenStorage->getToken()->getUser();
+
+        // NOTE: we do not save a video file here only the wrapping model,
+        // because we do not test for the file itself!
+        $cutVideo = new Video($cutVideoId);
+        $cutVideo->setCreator($loggedInUser);
+        $cutVideo->setDataPrivacyAccepted(true);
+        $cutVideo->setDataPrivacyPermissionsAccepted(true);
+        $cutVideo->setTitle('TEST: CutVideo');
+        $cutVideo->setEncodingStatus(Video::ENCODING_FINISHED);
+        $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $cutVideo->getId());
+        $cutVideo->setEncodedVideoDirectory($outputDirectory);
+
+        /** @var Solution $solution */
+        $solution = $this->entityManager->find(Solution::class, $solutionId);
+
+        $solution->setCutVideo($cutVideo);
+
+        $this->entityManager->persist($cutVideo);
+        $this->entityManager->persist($solution);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @When I convert all data for :courseId to csv
+     */
+    public function iConvertAllDataForCourseToCsv(string $courseId)
+    {
+        /** @var Course $course */
+        $course = $this->entityManager->find(Course::class, $courseId);
+        $this->csvDtoList = $this->degreeDataToCSVService->getAllAsVirtualCSVs($course);
+    }
+
+    /**
+     * @Then I have a CSVDto-list containing a file :fileName with a CSV content string
+     */
+    public function iHaveACsvDtoListContainingAFileWithACsvContentString(string $fileName, PyStringNode $contentString)
+    {
+        /** @var CSVDto $csvDto */
+        $csvDto = current(array_filter($this->csvDtoList, function(CSVDto $cSVDto) use($fileName) {
+            return $cSVDto->getFileName() === $fileName;
+        }));
+
+        assertIsObject($csvDto);
+        assertEquals($contentString->getRaw(), $csvDto->getContentString());
+    }
+
+    /**
+     * @Given A user :username exists
+     */
+    public function aUserExists(string $username)
+    {
+        $user = $this->entityManager->find(User::class, $username);
+        if (!$user) {
+            $user = new User($username);
+            $user->setEmail($username);
+            $user->setPassword('password');
+            $this->entityManager->persist($user);
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $this->entityManager->flush();
+        }
+    }
+
+    /**
+     * @Given User :username belongs to :teamId
+     */
+    public function userBelongsTo($username, $teamId)
+    {
+        /** @var ExercisePhaseTeam $exercisePhaseTeam */
+        $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
+        /** @var User $user */
+        $user = $this->entityManager->find(User::class, $username);
+
+        $exercisePhaseTeam->addMember($user);
     }
 }
