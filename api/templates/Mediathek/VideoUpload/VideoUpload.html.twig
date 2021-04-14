@@ -30,7 +30,8 @@
         {{ form_row(form.courses) }}
         <div class="form__data-privacy">
             {{ form_row(form.dataPrivacyAccepted) }}
-            <a href="{{ path('video-upload-terms') }}" target="_blank">Nutzungsbedingungen ansehen</a>
+            {{ form_row(form.dataPrivacyPermissionsAccepted) }}
+            <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmungen</a> | <a href="{{ path('terms-of-use') }}" target="_blank">Nutzungsbedingungen</a>
         </div>
     </div>
     <footer class="footer">

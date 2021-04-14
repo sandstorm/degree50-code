@@ -102,7 +102,8 @@ video:
         description: 'Beschreibung'
         visiblePersons: 'Zu sehende Personen im Video'
         courses: 'Kurse mit Berechtigung für dieses Video'
-        dataPrivacyAccepted: 'Datenschutzbestimmung akzeptiert'
+        dataPrivacyAccepted: 'Ich bestätige, dass dieser Upload den Datenschutzbestimmungen und den Nutzungsbedingungen entspricht.'
+        dataPrivacyPermissionsAccepted: 'Ich bestätige, dass die datenschutzrechtliche Einwilligung der betroffenen Personen schriftlich eingeholt wurde, bei minderjährigen Betroffenen von deren gesetzlichen Vertretern, und wirksam vorliegt. Die Betroffenen wurden über ihre Rechte im Rahmen der Datenschutzgrundverordnung informiert. Weiterhin bestätige ich, dass die hochgeladenen Inhalte (insbesondere Videos) mit pseudonymisierten Informationen über die abgebildeten oder zu hörenden Personen versehen wurden.'
         submit: 'Video speichern'
     help:
         courses: 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
