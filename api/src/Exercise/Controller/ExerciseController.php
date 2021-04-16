@@ -100,7 +100,12 @@ class ExerciseController extends AbstractController
 
             $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
             $otherTeams = array_filter($this->exercisePhaseTeamRepository->findByExercisePhase($exercisePhase), function ($team) use ($teamOfCurrentUser) {
-                return $team !== $teamOfCurrentUser;
+                // filter out team of current user
+                if ($team === $teamOfCurrentUser) {
+                    return false;
+                }
+                // only show teams that the user is allowed to see
+                return  $this->isGranted('viewExercisePhaseTeam', $team);
             });
 
             // WHY: Make sure the first team that's shown is the team of the current user
