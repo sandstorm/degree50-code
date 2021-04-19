@@ -1,8 +1,14 @@
 .video-codes-list {
     @include removeListStyles();
 
-    li {
+    li.video-codes-list-item {
         margin-bottom: 10px;
+
+        &:focus-within {
+            color: white;
+            background-color: $theme__color__secondary--dark;
+            border-color: $theme__color__secondary--dark;
+        }
     }
 
     .video-code__content {

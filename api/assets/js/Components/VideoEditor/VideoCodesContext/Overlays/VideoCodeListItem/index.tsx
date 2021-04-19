@@ -13,6 +13,7 @@ import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Co
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { t2d } from 'duration-time-conversion'
+import { getColorName } from 'ntc-ts'
 
 type OwnProps = {
     videoCodeId: VideoCodeId
@@ -33,10 +34,15 @@ const mapStateToProps = (
         ? selectors.data.videoCodePrototypes.selectPrototypeById(state, { videoCodeId: item.idFromPrototype })
         : undefined
 
+    const parentVideoCodePrototype = videoCodePrototype?.parentId
+        ? selectors.data.videoCodePrototypes.selectPrototypeById(state, { videoCodeId: videoCodePrototype.parentId })
+        : undefined
+
     return {
         item,
         canEdit,
         videoCodePrototype,
+        parentVideoCodePrototype,
         isFromCurrentSolution: selectors.data.selectVideoCodeIsFromCurrentSolution(state, ownProps),
         creatorName: selectors.data.selectCreatorNameForVideoCode(state, ownProps),
     }
@@ -51,7 +57,7 @@ const mapDispatchToProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const VideoCodeListItem = (props: Props) => {
-    const { item, setCurrentlyEditedElementId, setOverlay, videoCodePrototype, index } = props
+    const { item, setCurrentlyEditedElementId, setOverlay, videoCodePrototype, index, parentVideoCodePrototype } = props
 
     const handleRemove = () => {
         setCurrentlyEditedElementId(item.id)
@@ -69,16 +75,58 @@ const VideoCodeListItem = (props: Props) => {
 
     const creatorDescription = `Codierung von: ${props.creatorName}`
 
+    // FIXME: Does VideoCodePrototype have a description?
+    /**
+     * WHY:
+     * This will be read by the screen reader when the list element if focused (when tabbing through list).
+     *
+     * Example:
+     * "
+     *   1. Element
+     *
+     *   Code: Gelungener Einsatz von Medien.
+     *   Farbe: Grün.
+     *   Vordefinierter Video Code.
+     *
+     *   Codierung von student@sandstorm.de
+     *
+     *   Von: 00:00:00
+     *   Bis: 00:04:20
+     *
+     *   Memo: Gut gemacht.
+     * "
+     * oder
+     * "
+     *   2. Element
+     *
+     *   Code: Smart Whiteboard.
+     *   Farbe: Grün.
+     *   Selbsterstellter Video Code.
+     *   Unter-Code von Gelungener Einsatz von Medien.
+     *
+     *   Codierung von student2@sandstorm.de
+     *
+     *   Von: 00:01:23
+     *   Bis: 00:02:42
+     *
+     *   Memo: Klasse Einsatz des Smart Whiteboards.
+     * "
+     */
     const ariaLabel = `
         ${index + 1}. Element
 
         Code: ${videoCodePrototype?.name ?? 'Kein Code ausgewählt'}
-        Beschreibung: ${videoCodePrototype?.description}
-        Beschreibung zu Ende.
+        Farbe: ${videoCodePrototype?.color ? getColorName(videoCodePrototype.color).name : ''}
+        ${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
+        ${parentVideoCodePrototype ? `Unter-Code von ${parentVideoCodePrototype.name}` : ''}
+
+        ${
+            videoCodePrototype?.description
+                ? `Beschreibung: ${videoCodePrototype?.description} - Beschreibung zu Ende.`
+                : ''
+        }
 
         ${creatorDescription}
-
-        ${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
 
         Von: ${item.start}
         Bis: ${item.end}

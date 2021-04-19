@@ -101,6 +101,7 @@
         "normalize.css": "^8.0.1",
         "normalizr": "^3.6.1",
         "nprogress": "^0.2.0",
+        "ntc-ts": "^0.0.2",
         "object-hash": "^2.1.1",
         "option-validator": "^2.0.5",
         "pdf-viewer-reactjs": "^2.0.7",

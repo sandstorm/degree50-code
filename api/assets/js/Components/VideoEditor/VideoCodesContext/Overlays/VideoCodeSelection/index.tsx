@@ -11,15 +11,16 @@ type OwnProps = {
 }
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    prototoypes: selectors.data.selectDenormalizedPrototypes(state),
+    prototypes: selectors.data.selectDenormalizedPrototypes(state),
+    prototypesById: selectors.data.videoCodePrototypes.selectById(state),
 })
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>
 
 const VideoCodeSelection: FC<Props> = (props) => {
-    const { onSelect, defaultPrototypeId, selectedPrototypeId, prototoypes } = props
+    const { onSelect, defaultPrototypeId, selectedPrototypeId, prototypes } = props
 
-    if (prototoypes.length < 1) {
+    if (prototypes.length < 1) {
         return <p>Es stehen keine Codes zur Verfügung</p>
     }
 
@@ -31,13 +32,16 @@ const VideoCodeSelection: FC<Props> = (props) => {
             value={selectedPrototypeId ?? undefined}
             label="Codeauswahl"
         >
-            {prototoypes.map((prototype) => {
+            {prototypes.map((prototype) => {
+                const parentPrototype =
+                    prototype.parentId !== undefined ? props.prototypesById[prototype.parentId] : undefined
+
                 return (
                     <Radio
                         key={prototype.id}
                         value={prototype.id}
                         prototype={prototype}
-                        aria-label={prototype.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
+                        parentPrototype={parentPrototype}
                     >
                         {prototype.name}
                     </Radio>

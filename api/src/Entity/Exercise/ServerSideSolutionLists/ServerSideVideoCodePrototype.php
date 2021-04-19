@@ -5,7 +5,7 @@ namespace App\Entity\Exercise\ServerSideSolutionLists;
 use App\Entity\Exercise\VideoCode;
 
 /**
- * Server side represenation of a videoCodePrototype.
+ * Server side representation of a videoCodePrototype.
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
@@ -42,7 +42,11 @@ final class ServerSideVideoCodePrototype {
         $this->userCreated = $userCreated;
     }
 
-    public static function fromVideoCodeEntity(VideoCode $videoCodePrototype) {
+    /**
+     * Create Entity from persisted VideoCode.
+     */
+    public static function fromVideoCodeEntity(VideoCode $videoCodePrototype): ServerSideVideoCodePrototype
+    {
         return new self(
             $videoCodePrototype->getId(),
             $videoCodePrototype->getName(),
@@ -54,11 +58,16 @@ final class ServerSideVideoCodePrototype {
         );
     }
 
-    public static function fromArray(array $input) {
+    /**
+     * Create Entity from array.
+     * This is used to read from persisted and clientSide JSON.
+     */
+    public static function fromArray(array $input): ServerSideVideoCodePrototype
+    {
         // NOTE:
         // Prototypes have been saved under the name 'videoCodes' as JSON before.
         // We need to stay compatible with already persisted solutions.
-        // That's where the naming missmatch is coming from!
+        // That's where the naming mismatch is coming from!
         $childServerSidePrototypes = array_map(function($prototype) {
             return self::fromArray($prototype);
         }, $input['videoCodes']);
@@ -74,7 +83,11 @@ final class ServerSideVideoCodePrototype {
         );
     }
 
-    public function toArray(): array {
+    /**
+     * Prepare to be persisted or sent to client as JSON.
+     */
+    public function toArray(): array
+    {
         $childPrototypes = array_map(function($prototype) {
             return $prototype->toArray();
         }, $this->childServerSidePrototypes);
@@ -117,7 +130,7 @@ final class ServerSideVideoCodePrototype {
      /**
       * Get color.
       */
-     public function getColor()
+     public function getColor(): string
      {
          return $this->color;
      }

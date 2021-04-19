@@ -3,7 +3,7 @@
 namespace App\Entity\Exercise\ServerSideSolutionLists;
 
 /**
- * Server side represenation of solutionLists.
+ * Server side representation of solutionLists.
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
@@ -52,7 +52,13 @@ final class ServerSideSolutionLists {
         $this->serverSideVideoCodePrototypes = $serverSideVideoCodePrototypes;
     }
 
-    public static function fromArray(array $input): ServerSideSolutionLists {
+    /**
+     * Create Entity from array.
+     * This is used to read persisted JSON.
+     *
+     */
+    public static function fromArray(array $input): ServerSideSolutionLists
+    {
         $serverSideAnnotations = array_map(function ($annotation) {
             return ServerSideAnnotation::fromArray($annotation);
         }, $input['annotations']);
@@ -68,7 +74,7 @@ final class ServerSideSolutionLists {
         // NOTE:
         // Prototypes have been saved under the name 'customVideoCodesPool' as JSON before.
         // We need to stay compatible with already persisted solutions.
-        // That's where the naming missmatch is coming from!
+        // That's where the naming mismatch is coming from!
         $serverSideVideoCodePrototypes = [];
         if (!empty($input['customVideoCodesPool'])) {
             $serverSideVideoCodePrototypes = array_map(function ($videoCodePrototype) {
@@ -84,6 +90,10 @@ final class ServerSideSolutionLists {
         );
     }
 
+    /**
+     * Create Entity from clientSide JSON.
+     *
+     */
     public static function fromClientJSON(array $input): self {
         $serverSideAnnotations = array_map(function ($annotation) {
             return ServerSideAnnotation::fromArray($annotation);
@@ -112,7 +122,11 @@ final class ServerSideSolutionLists {
         );
     }
 
-    public function toArray(): array {
+    /**
+     * Prepare solution to be persisted or sent to client as JSON
+     */
+    public function toArray(): array
+    {
         $annotations = array_map(function (ServerSideAnnotation $annotation) {
             return $annotation->toArray();
         }, $this->serverSideAnnotations);
@@ -129,7 +143,7 @@ final class ServerSideSolutionLists {
             return $videoCodePrototype->toArray();
         }, $this->serverSideVideoCodePrototypes);
 
-        // Why 'customVideoCodesPool' instead of 'videoCodeProtoypes'? -> see fromArray()-method for explaination
+        // Why 'customVideoCodesPool' instead of 'videoCodePrototypes'? -> see fromArray()-method for explanation
         return [
             'annotations' => $annotations,
             'videoCodes' => $videoCodes,

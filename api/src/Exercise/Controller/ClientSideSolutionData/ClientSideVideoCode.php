@@ -6,7 +6,7 @@ use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCode;
 use JsonSerializable;
 
 /**
- * Client side represenation of a videoCode.
+ * Client side representation of a videoCode.
  *
  * @see ClientSideSolutionDataBuilder
  **/
@@ -16,6 +16,7 @@ final class ClientSideVideoCode implements JsonSerializable {
     private string $end;
     private string $text;
     private string $memo;
+    // TODO: Why optional?
     private ?string $color;
     private string $idFromPrototype;
     private string $solutionId;

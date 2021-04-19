@@ -6,7 +6,7 @@ use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
 use JsonSerializable;
 
 /**
- * Client side represenation of a videoCodePrototype.
+ * Client side representation of a videoCodePrototype.
  *
  * @see ClientSideSolutionDataBuilder
  **/
@@ -62,7 +62,7 @@ final class ClientSideVideoCodePrototype implements JsonSerializable {
         return new self(
             $input['id'],
             $input['name'],
-            $input['decription'],
+            $input['description'],
             $input['color'],
             $childClientSidePrototypes,
             $input['parentId'],

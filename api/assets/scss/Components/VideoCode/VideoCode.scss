@@ -108,6 +108,11 @@
     height: 20px;
     margin-right: 5px;
     flex-shrink: 0;
+
+    &:focus-within {
+        outline-offset: 2px;
+        outline: $theme__color__secondary--dark solid 3px;
+    }
 }
 
 .video-code__name {

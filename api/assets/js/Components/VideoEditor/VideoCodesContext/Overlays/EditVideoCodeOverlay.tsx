@@ -22,7 +22,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
 
     return {
         videoCode,
-        prototoypes: selectors.data.selectDenormalizedPrototypes(state),
+        prototypes: selectors.data.selectDenormalizedPrototypes(state),
         duration,
     }
 }
@@ -37,7 +37,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 // TODO this should probably be consolidated into a single component with the CreateVideoCodeOverlay
 const EditVideoCodeOverlay: FC<Props> = (props) => {
-    const defaultPrototypeId = props.prototoypes[0].id
+    const defaultPrototypeId = props.prototypes[0].id
 
     const {
         transientVideoCode,
