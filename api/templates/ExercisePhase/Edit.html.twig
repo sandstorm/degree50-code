@@ -91,7 +91,7 @@
             {% endif %}
 
             <h4>{% trans %}exercisePhase.labels.material{% endtrans %}</h4>
-            <p>Material hochladen das zur Lösung der Aufgabe bereit steht:</p>
+            <p>Material hochladen, das zur Lösung der Aufgabe bereit steht <span class="color-alert">(Achten Sie unbedingt darauf, dass die Dokumente barrierefrei sind.)</span> </p>
             <div class="dropzone" data-controller="materialUpload"
                  data-materialUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_material') }}"
                  data-materialUpload-remove-endpoint="{{ path('exercise-overview__material--delete-ajax') }}"
@@ -100,7 +100,7 @@
                  data-materialUpload-update="material-list">
                 <i class="fas fa-spinner fa-spin"></i>
             </div>
-            <span class="form-text text-muted">Hinweis: Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.</span>
+            <span class="form-text text-muted">Hinweis: Kommt es zu Timeout-Fehlern beim Upload, ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.</span>
             <p>
                 Bereits hochgeladene Dateien:
             </p>

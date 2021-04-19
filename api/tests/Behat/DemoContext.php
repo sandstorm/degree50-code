@@ -150,6 +150,7 @@ final class DemoContext implements Context
         $video = new Video($videoId);
         $video->addCourse($course);
         $video->setDataPrivacyAccepted(true);
+        $video->setDataPrivacyPermissionsAccepted(true);
         $video->setCreator($this->security->getUser());
 
         $this->entityManager->persist($video);

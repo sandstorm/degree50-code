@@ -8,6 +8,7 @@ use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\CourseMembersType;
 use App\Exercise\Form\CourseType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -20,6 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @IsGranted("ROLE_USER")
  * @IsGranted("data-privacy-accepted")
+ * @IsGranted("terms-of-use-accepted")
  */
 class CourseController extends AbstractController
 {
@@ -76,8 +78,20 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
+        $studentsArray = $course->getCourseRoles()
+            ->filter(function (CourseRole $role) { return $role->getUser()->isStudent(); })
+            ->toArray();
+
+        // MUTATION! Sort by userName
+        usort($studentsArray, function(CourseRole $a, CourseRole $b) {
+            return ($a->getUser()->getUsername() > $b->getUser()->getUsername()) ? -1 : 1;
+        });
+
+        $students = new ArrayCollection($studentsArray);
+
         return $this->render('Course/Members.html.twig', [
             'course' => $course,
+            'students' => $students,
             'form' => $form->createView()
         ]);
     }
@@ -268,8 +282,20 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
+        $tutorsArray = $course->getCourseRoles()
+            ->filter(function (CourseRole $role) { return $role->getUser()->isDozent(); })
+            ->toArray();
+
+        // MUTATION! Sort by userName
+        usort($tutorsArray, function(CourseRole $a, CourseRole $b) {
+            return ($a->getUser()->getUsername() > $b->getUser()->getUsername()) ? -1 : 1;
+        });
+
+        $tutors = new ArrayCollection($tutorsArray);
+
         return $this->render('Course/Edit.html.twig', [
             'course' => $course,
+            'tutors' => $tutors,
             'form' => $form->createView()
         ]);
     }

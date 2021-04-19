@@ -26,10 +26,10 @@ class StandardController extends AbstractController
     }
 
     /**
-     * @Route("/video-upload-terms", name="video-upload-terms")
+     * @Route("/nutzungsbedingungen", name="terms-of-use")
      */
-    public function videoUploadTerms(): Response
+    public function termsOfUse(): Response
     {
-        return $this->render('Standard/VideoUploadTerms.html.twig');
+        return $this->render('Standard/TermsOfUse.html.twig');
     }
 }

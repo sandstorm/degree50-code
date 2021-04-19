@@ -4,10 +4,14 @@ namespace App\Account\Controller;
 
 use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthenticationController extends AbstractController
@@ -30,10 +34,16 @@ class AuthenticationController extends AbstractController
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
+        // WHY: We don't want to leak information about registered email addresses.
+        if ($error && $error instanceof CustomUserMessageAuthenticationException) {
+            $maskedError = new BadCredentialsException();
+        }
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('Security/Login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('Security/Login.html.twig', ['last_username' => $lastUsername, 'error' => $maskedError ?? null]);
     }
 
     /**
@@ -60,9 +70,11 @@ class AuthenticationController extends AbstractController
         if ($accepted) {
             $this->eventStore->addEvent('DataPrivacyAccepted', [
                 'userId' => $user->getId(),
+                'data_privacy_version' => DataPrivacyVoter::DATA_PRIVACY_VERSION,
             ]);
 
             $user->setDataPrivacyAccepted(true);
+            $user->setDataPrivacyVersion(DataPrivacyVoter::DATA_PRIVACY_VERSION);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -72,5 +84,33 @@ class AuthenticationController extends AbstractController
         }
 
         return $this->render('Security/DataPrivacy.html.twig');
+    }
+
+    /**
+     * @Route("/user/terms-of-use", name="app_terms-of-use")
+     */
+    public function termsOfUse(Request $request): Response
+    {
+        $accepted = !!$request->query->get('accepted', false);
+        /* @var User $user */
+        $user = $this->getUser();
+
+        if ($accepted) {
+            $this->eventStore->addEvent('TermsOfUseAccepted', [
+                'userId' => $user->getId(),
+                'terms_of_use_version' => TermsOfUseVoter::TERMS_OF_USE_VERSION,
+            ]);
+
+            $user->setTermsOfUseAccepted(true);
+            $user->setTermsOfUseVersion(TermsOfUseVoter::TERMS_OF_USE_VERSION);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('exercise-overview');
+        }
+
+        return $this->render('Security/TermsOfUse.html.twig');
     }
 }

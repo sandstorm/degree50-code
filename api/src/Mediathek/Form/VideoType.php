@@ -27,6 +27,7 @@ class VideoType extends AbstractType
                 'translation_domain' => 'forms',
                 'required' => true])
             ->add('dataPrivacyAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyAccepted", 'translation_domain' => 'forms', 'required' => true])
+            ->add('dataPrivacyPermissionsAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyPermissionsAccepted", 'translation_domain' => 'forms', 'required' => true])
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
                 'required' => false,

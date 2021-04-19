@@ -88,6 +88,11 @@ class Video
     private $dataPrivacyAccepted;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $dataPrivacyPermissionsAccepted;
+
+    /**
      * 0 = not started
      * 1 = finished
      * 2 = started
@@ -396,5 +401,15 @@ class Video
         $this->encodingFinished = $encodingFinished;
 
         return $this;
+    }
+
+    public function getDataPrivacyPermissionsAccepted()
+    {
+        return $this->dataPrivacyPermissionsAccepted;
+    }
+
+    public function setDataPrivacyPermissionsAccepted($dataPrivacyPermissionsAccepted)
+    {
+        $this->dataPrivacyPermissionsAccepted = $dataPrivacyPermissionsAccepted;
     }
 }

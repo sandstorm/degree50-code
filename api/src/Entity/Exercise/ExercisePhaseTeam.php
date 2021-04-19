@@ -166,4 +166,14 @@ class ExercisePhaseTeam
 
         return $this;
     }
+
+    public function hasAdminOrDozentMember(): bool
+    {
+        return $this->getMembers()->exists(
+            function ($_key, User $member)
+            {
+                return $member->isDozent() || $member->isAdmin();
+            }
+        );
+    }
 }

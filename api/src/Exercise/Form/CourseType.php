@@ -38,7 +38,7 @@ class CourseType extends AbstractType
             }
             $exists = $courseRoles->exists(fn($i, CourseRole $courseRole) => $courseRole->getUser() === $user);
             return !$exists;
-        });;
+        });
 
         $builder
             ->add('name', TextType::class, ['label' =>"course.labels.name", 'translation_domain' => 'forms'])
