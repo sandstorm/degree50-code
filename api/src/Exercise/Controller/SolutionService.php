@@ -85,7 +85,7 @@ class SolutionService {
                 return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
             }, $exercisePhase->getVideoCodes()->toArray());
 
-            $clientSideSolutionDataBuilder->addVideoCodePrototoypes($configuredVideoCodePrototypes);
+            $clientSideSolutionDataBuilder->addVideoCodePrototypes($configuredVideoCodePrototypes);
         }
 
         return $clientSideSolutionDataBuilder;
@@ -159,6 +159,7 @@ class SolutionService {
                         $teamMember,
                         $solutionEntity->getSolution(),
                         $solutionEntity->getId(),
+                        // TODO: parameter type mismatch
                         $solutionEntity->getCutVideo()
                     )]);
                 }, []);

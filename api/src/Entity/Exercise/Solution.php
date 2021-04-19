@@ -19,7 +19,7 @@ class Solution
     /**
      * @ORM\Column(type="json")
      */
-    private $solution = [];
+    private $solution;
 
     /**
      * @var \DateTimeImmutable|null
