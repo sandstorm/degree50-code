@@ -37,16 +37,18 @@ class VideoUploadController extends AbstractController
     private DoctrineIntegratedEventStore $eventStore;
     private Security $security;
     private VideoRepository $videoRepository;
+    private VideoService $videoService;
     private AppRuntime $appRuntime;
     private KernelInterface  $kernel;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security, VideoRepository $videoRepository, AppRuntime $appRuntime, KernelInterface $kernel)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security, VideoRepository $videoRepository, VideoService $videoService, AppRuntime $appRuntime, KernelInterface $kernel)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->messageBus = $messageBus;
         $this->security = $security;
         $this->videoRepository = $videoRepository;
+        $this->videoService = $videoService;
         $this->appRuntime = $appRuntime;
         $this->kernel = $kernel;
     }
@@ -171,17 +173,7 @@ class VideoUploadController extends AbstractController
                 return $this->redirectToRoute('mediathek--index');
             }
 
-            $folderUrl = $appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
-            $this->removeVideo($folderUrl);
-
-            $this->eventStore->addEvent('VideoDeleted', [
-                'videoId' => $video->getId(),
-                'uploadedFile' => $folderUrl
-            ]);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($video);
-            $entityManager->flush();
+            $this->videoService->deleteVideo($video);
 
             $this->addFlash(
                 'success',
@@ -217,13 +209,5 @@ class VideoUploadController extends AbstractController
         ]);
 
         return Response::create('OK');
-    }
-
-    private function removeVideo(string $fileUrl): void
-    {
-        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
-
-        $filesystem = new Filesystem();
-        $filesystem->remove($publicResourcesFolderPath.$fileUrl);
     }
 }

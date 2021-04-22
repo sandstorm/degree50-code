@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Account\User;
 use App\Entity\VirtualizedFile;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -47,6 +48,7 @@ class Material
     private $uploadAt;
 
     /**
+     * // TODO: inversedBy="createdVideos" -- is this a bug?
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdVideos")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -131,10 +133,7 @@ class Material
         return $this->mimeType;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCreator()
+    public function getCreator() : User
     {
         return $this->creator;
     }
