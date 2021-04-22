@@ -1,6 +1,6 @@
 {% trans_default_domain 'forms' %}
 
-{% if is_granted('ROLE_DOZENT') %}
+{% if is_granted('edit', exercise) %}
     {% set statusTransVar = 'exercise.labels.status' ~ (exercise.status) %}
     {% set statusClassVar = 'tile--status-' ~ (exercise.status) %}
     <div tabindex="0" class="tile {{ statusClassVar }}" title="{{ exercise.description | striptags }}">

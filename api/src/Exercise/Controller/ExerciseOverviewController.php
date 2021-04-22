@@ -87,9 +87,7 @@ class ExerciseOverviewController extends AbstractController
             if ($exercise->getCreator() === $user) {
                 array_push($ownExercises['exercises'], $exercise);
             } else {
-                if ($exercise->getStatus() != Exercise::EXERCISE_CREATED) {
-                    array_push($otherExercises['exercises'], $exercise);
-                }
+                array_push($otherExercises['exercises'], $exercise);
             }
         }
 
