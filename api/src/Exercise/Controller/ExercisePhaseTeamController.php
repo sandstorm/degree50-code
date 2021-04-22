@@ -259,6 +259,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $video->setTitle('Video to be cut <' . $videoUuid . '>');
         $video->setDataPrivacyAccepted(true);
+        $video->setDataPrivacyPermissionsAccepted(true);
         $this->eventStore->disableEventPublishingForNextFlush();
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($video);
