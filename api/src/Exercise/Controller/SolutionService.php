@@ -39,7 +39,7 @@ class SolutionService {
 
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
-        iterable $teams
+        array $teams
     ) {
         /**
          * @var ExercisePhaseTeam $exercisePhaseTeam

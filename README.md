@@ -12,13 +12,14 @@
     -   [Running Frontend Tests](#running-frontend-tests)
     -   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
 -   [Creating test users on the prod system](#creating-test-users-on-the-prod-system)
--   [Prodsystem](#prodsystem)
+-   [Prodsystem and Testsystem](#prodsystem-and-testsystem)
     -   [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
         -   [Prerequisites](#prerequisites-1)
         -   [Setup](#setup)
         -   [Connect](#connect)
         -   [Connect to the Production Database](#connect-to-the-production-database)
     -   [Ansible Setup](#ansible-setup)
+    -   [Firewall rules](#firewall-rules)
     -   [Automatic Updates](#automatic-updates)
     -   [Monitoring](#monitoring)
         -   [Uptime-robot](#uptime-robot)
@@ -83,7 +84,12 @@
 
 ### Running Behat Tests
 
-make test
+1. Start our docker-compose setup
+2. run `make test`
+
+> **NOTE**: We need the api container to create an environemnt to run our tests
+> in. However we currently do not use the actual running application and database.
+> Our test setup creates its own test instance + database inside the running container.
 
 **troubleshooting for Behat Tests**
 
