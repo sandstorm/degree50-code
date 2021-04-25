@@ -96,6 +96,8 @@ class SolutionService {
         ExercisePhaseTeam $exercisePhaseTeam,
         ExercisePhase $exercisePhase
     ) {
+        // Note: This might either be an autosaved solution or an actual solution
+        // FIXME: we should probably find a better way to handle solutions and autosavedSolutions in general.
         $solutionEntity = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
         $configuredVideoCodePrototypes = array_map(function(VideoCode $videoCodePrototypeEntity) {
             return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
@@ -108,7 +110,7 @@ class SolutionService {
         // However it is rather intransparent when and why that happens.
         // Therefore we should probably find a way to fix and document this.
         $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
-        $cutVideo = $solutionEntity->getCutVideo();
+        $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
         $clientSideCutVideo = $cutVideo ? $cutVideo->getAsArray($this->appRuntime) : null;
 
         $clientSideSolutionDataBuilder
