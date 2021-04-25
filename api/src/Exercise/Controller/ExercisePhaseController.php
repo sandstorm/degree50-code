@@ -234,8 +234,6 @@ class ExercisePhaseController extends AbstractController
 
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
 
-        $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
-
         $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
             $clientSideSolutionDataBuilder,

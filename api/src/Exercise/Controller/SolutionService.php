@@ -13,6 +13,7 @@ use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Twig\AppRuntime;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
 class SolutionService {
@@ -20,6 +21,7 @@ class SolutionService {
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private ExercisePhaseRepository $exercisePhaseRepository;
+    private ManagerRegistry $managerRegistry;
     private LoggerInterface $logger;
 
     function __construct(
@@ -27,7 +29,8 @@ class SolutionService {
         LoggerInterface $logger,
         AppRuntime $appRuntime,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        ExercisePhaseRepository $exercisePhaseRepository
+        ExercisePhaseRepository $exercisePhaseRepository,
+        ManagerRegistry $managerRegistry
     )
     {
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
@@ -35,16 +38,21 @@ class SolutionService {
         $this->appRuntime = $appRuntime;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->logger = $logger;
+        $this->managerRegistry = $managerRegistry;
     }
 
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
         array $teams
     ) {
-        /**
-         * @var ExercisePhaseTeam $exercisePhaseTeam
-         */
+        // FIXME
+        // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
+        // However it is rather intransparent when and why that happens.
+        // Therefore we should probably find a way to fix and document this.
+        $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
+
         $previousSolutionDtos = array_map(function($exercisePhaseTeam) {
+            /** @var ExercisePhaseTeam $exercisePhaseTeam */
             $solutionEntity = $exercisePhaseTeam->getSolution();
 
             $cutVideo = $solutionEntity->getCutVideo();
@@ -88,6 +96,8 @@ class SolutionService {
         ExercisePhaseTeam $exercisePhaseTeam,
         ExercisePhase $exercisePhase
     ) {
+        // Note: This might either be an autosaved solution or an actual solution
+        // FIXME: we should probably find a better way to handle solutions and autosavedSolutions in general.
         $solutionEntity = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
         $configuredVideoCodePrototypes = array_map(function(VideoCode $videoCodePrototypeEntity) {
             return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
@@ -95,8 +105,13 @@ class SolutionService {
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
         $previousSolutionDtos = $this->getPreviousSolutionDtosForVideoEditor($exercisePhase, $exercisePhaseTeam);
 
+        // FIXME
+        // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
+        // However it is rather intransparent when and why that happens.
+        // Therefore we should probably find a way to fix and document this.
+        $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
         $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
-        $clientSideCutVideo = $cutVideo ? $cutVideo->getAsArray($this->appRuntime) : $cutVideo;
+        $clientSideCutVideo = $cutVideo ? $cutVideo->getAsArray($this->appRuntime) : null;
 
         $clientSideSolutionDataBuilder
             ->addCurrentSolution($solutionEntity->getSolution(), $exercisePhaseTeam, $clientSideCutVideo)
