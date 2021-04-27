@@ -17,7 +17,8 @@ oneup_flysystem:
         local_tmp:
             adapter: default_adapter
             # we need one file system to be available locally as "scratch space".
-            # this needs to be named "local_tmp" (see FileSystemService::LOCAL_TMP_FILESYSTEM_MOUNT)
+            # this needs to be named "local_tmp" (see FileSystemService::LOCAL_TMP_FILESYSTEM_MOUNT),
+            # because our code relies on this path.
             mount: local_tmp
         default_filesystem:
             adapter: default_adapter
