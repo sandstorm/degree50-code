@@ -109,6 +109,7 @@ class SolutionService {
         // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
         // However it is rather intransparent when and why that happens.
         // Therefore we should probably find a way to fix and document this.
+        // TODO we need to at least test this (@see {server-to-client-solution-conversion.feature}
         $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
         $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
         $clientSideCutVideo = $cutVideo ? $cutVideo->getAsArray($this->appRuntime) : null;

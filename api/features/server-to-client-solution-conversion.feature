@@ -80,6 +80,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               ]
             }
             """
+        Given I have a cut video "cut-video-1" belonging to solution "solution-1"
         When I convert the persisted serverSideSolution for team "team-1" to the clientSideSolution
         Then I get normalized client side data as JSON
         """
@@ -100,7 +101,18 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "solution-1",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": {
+                  "id": "cut-video-1",
+                  "name": "TEST: CutVideo",
+                  "description": "",
+                  "duration": 0,
+                  "subtitles": [],
+                  "url": {
+                    "hls": "/data/encoded_videos/cut-video-1/hls.m3u8",
+                    "mp4": "/data/encoded_videos/cut-video-1/x264.mp4",
+                    "vtt": "/data/encoded_videos/cut-video-1/subtitles.vtt"
+                  }
+                }
               }
             },
             "current": "solution-1",
