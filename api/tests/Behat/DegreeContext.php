@@ -19,6 +19,7 @@ use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
+use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\Controller\SolutionService;
