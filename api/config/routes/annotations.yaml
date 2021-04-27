@@ -5,13 +5,19 @@ controllers_mediathek:
         en: '/en'
         de: '/'
 
+controllers_data_export:
+    resource: ../../src/DataExport/Controller
+    type: annotation
+    prefix:
+        en: '/en'
+        de: '/'
+
 controllers_account:
     resource: ../../src/Account/Controller/
     type: annotation
     prefix:
         en: '/en'
         de: '/'
-
 
 controllers_standard:
     resource: ../../src/Standard/Controller/
@@ -33,7 +39,6 @@ controllers_easy-admin:
     prefix:
         en: '/en'
         de: '/'
-
 
 kernel:
     resource: ../../src/Kernel.php

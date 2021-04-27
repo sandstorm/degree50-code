@@ -15,10 +15,11 @@ class CourseVoter extends Voter
     const EDIT = 'edit';
     const DELETE = 'delete';
     const NEW_EXERCISE = 'newExercise';
+    const EXPORT_CSV = 'exportCSV';
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [ self::EDIT_MEMBERS, self::EDIT, self::DELETE, self::NEW_EXERCISE])) {
+        if (!in_array($attribute, [ self::EDIT_MEMBERS, self::EDIT, self::DELETE, self::NEW_EXERCISE, self::EXPORT_CSV])) {
             return false;
         }
 
@@ -45,7 +46,7 @@ class CourseVoter extends Voter
         switch ($attribute) {
             case self::NEW_EXERCISE:
                 return $this->canCreateNewExercise($user, $course);
-            case self::EDIT || self::DELETE || self::EDIT_MEMBERS:
+            case self::EDIT || self::DELETE || self::EDIT_MEMBERS || self::EXPORT_CSV:
                 return $this->canEdit($user, $course);
         }
 
@@ -57,7 +58,12 @@ class CourseVoter extends Voter
         if ($user->isAdmin()) {
             return true;
         }
-        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user && $courseRole->getName() == CourseRole::DOZENT);
+
+        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) =>
+            $courseRole->getCourse() === $course
+            && $courseRole->getUser() === $user
+            && $courseRole->getName() == CourseRole::DOZENT
+        );
     }
 
     private function canEdit(User $user, Course $course)
@@ -65,7 +71,12 @@ class CourseVoter extends Voter
         if ($user->isAdmin()) {
             return true;
         }
+
         // User which has ROLE_DOZENT and has the courseRole DOZENT
-        return $user->isDozent() && $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->getUser() === $user && $courseRole->getName() == CourseRole::DOZENT);
+        return $user->isDozent() && $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) =>
+            $courseRole->getCourse() === $course
+            && $courseRole->getUser() === $user
+            && $courseRole->getName() == CourseRole::DOZENT
+        );
     }
 }

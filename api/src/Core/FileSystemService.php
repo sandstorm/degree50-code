@@ -16,7 +16,8 @@ class FileSystemService
     private array $mountPrefixesAndFilesystems;
     private MountManager $mountManager;
 
-    // name of file system mount which is guaranteed to be locally available
+    // Name of file system mount which is guaranteed to be locally available,
+    // because it is defined inside oneup_flysystem.yaml.
     const LOCAL_TMP_FILESYSTEM_MOUNT = 'local_tmp';
 
     public function __construct(LoggerInterface $logger, MountManager $mountManager)

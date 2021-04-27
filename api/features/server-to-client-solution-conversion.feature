@@ -1,6 +1,11 @@
 @fixtures @conversionForAPI
 Feature: Solution from Model is converted to normalized APISolution by SolutionService
 
+    # TODO:
+    # we should also test the doctrine filter deactivation inside the SolutionService-methods.
+    # However I currently don't know how to best test this, because I don't understand why we sometimes need
+    # to deactivate the filter, to successfully retrieve certain models, yet.
+
     Background:
         Given I am logged in as "foo@bar.de"
         And I have a course with ID "c"
@@ -75,6 +80,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               ]
             }
             """
+        Given I have a cut video "cut-video-1" belonging to solution "solution-1"
         When I convert the persisted serverSideSolution for team "team-1" to the clientSideSolution
         Then I get normalized client side data as JSON
         """
@@ -95,7 +101,18 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "solution-1",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": {
+                  "id": "cut-video-1",
+                  "name": "TEST: CutVideo",
+                  "description": "",
+                  "duration": 0,
+                  "subtitles": [],
+                  "url": {
+                    "hls": "/data/encoded_videos/cut-video-1/hls.m3u8",
+                    "mp4": "/data/encoded_videos/cut-video-1/x264.mp4",
+                    "vtt": "/data/encoded_videos/cut-video-1/subtitles.vtt"
+                  }
+                }
               }
             },
             "current": "solution-1",
@@ -262,12 +279,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               ]
             }
             """
-        And I have an exercise phase "ex-p2" belonging to exercise "ex"
-        And The exercise phase "ex-p1" depends on the previous phase "ex-p2"
-        And I have a team with ID "team-2" belonging to exercise phase "ex-p2"
-        And I am a member of "team-1"
-        And I am a member of "team-2"
-        And I have a solution with ID "previous-solution-1" belonging to team with ID "team-2" with solutionLists as JSON
+        Given I have an exercise phase "ex-p2" belonging to exercise "ex"
+        Given The exercise phase "ex-p1" depends on the previous phase "ex-p2"
+        Given I have a team with ID "team-2" belonging to exercise phase "ex-p2"
+        Given I am a member of "team-1"
+        Given I am a member of "team-2"
+        Given I have a solution with ID "previous-solution-1" belonging to team with ID "team-2" with solutionLists as JSON
         """
             {
               "annotations": [
@@ -923,5 +940,3 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
           }
         }
         """
-
-    # test cutVideo property correctly

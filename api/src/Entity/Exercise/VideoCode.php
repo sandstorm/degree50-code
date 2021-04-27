@@ -27,6 +27,12 @@ class VideoCode
      */
     private string $name = '';
 
+    // FIXME
+    // Do we actually need the videoCodePrototype description?
+    // As far as I can tell we never make this available inside the frontend anyway.
+    // TODO
+    // (also remove from videoCodePrototypeItem inside the frontend)
+
     /**
      * @var ?string
      *
