@@ -3,7 +3,7 @@
 namespace App\Entity\Exercise\ServerSideSolutionLists;
 
 /**
- * Server side represenation of a videoCode.
+ * Server side representation of a videoCode.
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
@@ -12,6 +12,7 @@ final class ServerSideVideoCode {
     private string $end;
     private string $text;
     private string $memo;
+    // TODO: Why optional?
     private ?string $color;
     private string $idFromPrototype;
 
@@ -25,7 +26,12 @@ final class ServerSideVideoCode {
         $this->idFromPrototype = $idFromPrototype;
     }
 
-    public static function fromArray(array $input) {
+    /**
+     * Create Entity from array.
+     * This is used to read from persisted and clientSide JSON.
+     */
+    public static function fromArray(array $input): ServerSideVideoCode
+    {
         return new self(
             $input['start'],
             $input['end'],
@@ -36,7 +42,11 @@ final class ServerSideVideoCode {
         );
     }
 
-    public function toArray(): array {
+    /**
+     * Prepare to be persisted or sent to client as JSON
+     */
+    public function toArray(): array
+    {
         return [
             'start' => $this->start,
             'end' => $this->end,
@@ -87,7 +97,7 @@ final class ServerSideVideoCode {
       * Get color.
       *
       */
-     public function getColor()
+     public function getColor(): ?string
      {
          return $this->color;
      }

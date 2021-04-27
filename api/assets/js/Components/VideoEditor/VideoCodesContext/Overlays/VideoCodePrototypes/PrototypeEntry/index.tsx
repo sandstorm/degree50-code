@@ -11,6 +11,7 @@ import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from 'Components/VideoEditor/VideoCodesContext/VideoCodesMenu'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import PredefinedCodeLock from '../../PredefinedCodeLock'
+import { getColorName } from 'ntc-ts'
 
 // FIXME
 // We should probably find a way to remove the circular dependency between
@@ -24,6 +25,7 @@ const mapDispatchToProps = {
 
 export type OwnProps = {
     videoCodePrototype: VideoCodePrototype
+    parentPrototype?: VideoCodePrototype
 }
 
 type Props = OwnProps & typeof mapDispatchToProps
@@ -35,11 +37,38 @@ const PrototypeEntry: FC<Props> = (props) => {
         setShowChildren(!showChildren)
     }, [setShowChildren, showChildren])
 
-    const description = `
-        ${props.videoCodePrototype.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}
-        name: ${props.videoCodePrototype.name}
-        ${props.videoCodePrototype.description && `description: ${props.videoCodePrototype.description}`}
-        ${props.videoCodePrototype.videoCodes.length > 0 ? 'Hat' : 'Hat keine'} Untercodes
+    // FIXME: VideoCodePrototype has a description?
+    /**
+     * WHY:
+     * This will be read by the screen reader when the list element if focused (when tabbing through list).
+     *
+     * Example:
+     * "
+     *   Name: Gelungener Einsatz von Medien.
+     *   Farbe: Grün.
+     *   Vordefinierter Video Code.
+     *   Hat 1 Untercodes.
+     * "
+     * oder
+     * "
+     *   Name: Smart Whiteboard.
+     *   Farbe: Grün.
+     *   Selbsterstellter Video Code.
+     *   Unter-Code von Gelungener Einsatz von Medien.
+     *   Hat keine Untercodes.
+     * "
+     */
+    const ariaLabel = `
+        Name: ${props.videoCodePrototype.name}.
+        Farbe: ${getColorName(props.videoCodePrototype.color).name}
+        ${props.videoCodePrototype.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}.
+        ${props.parentPrototype ? `Unter-Code von ${props.parentPrototype.name}.` : ''}
+        ${props.videoCodePrototype.description && `Beschreibung: ${props.videoCodePrototype.description}`}
+        ${
+            props.videoCodePrototype.videoCodes.length > 0
+                ? `Hat ${props.videoCodePrototype.videoCodes.length}`
+                : 'Hat keine'
+        } Untercodes.
     `
 
     const handleEdit = () => {
@@ -55,7 +84,7 @@ const PrototypeEntry: FC<Props> = (props) => {
     }
 
     return (
-        <li tabIndex={0} aria-label={description} className="video-code" title={props.videoCodePrototype.description}>
+        <li tabIndex={0} aria-label={ariaLabel} className="video-code" title={props.videoCodePrototype.description}>
             <div className={'video-code__content'}>
                 <Color color={props.videoCodePrototype.color} />
 

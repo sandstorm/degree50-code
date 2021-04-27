@@ -73,11 +73,22 @@
                 <div class="form-inline video-code-form" id="add-new-video-code-form" data-controller="videoCodeForm"
                      data-videoCodeForm-endpoint="{{ path('exercise-overview__video-codes--add', {id: exercisePhase.id}) }}"
                      data-videoCodeForm-update="video-codes-list">
-                    <label class="sr-only" for="video-code-color">Farbe des Video-Codes</label>
-                    <input class="form-control" id="video-code-color" type="color" placeholder="#ccc"/>
-                    <label class="sr-only" for="video-code-name">Name des Video-Codes</label>
-                    <input class="form-control" id="video-code-name" type="text"
-                           placeholder="Name des Video-Codes"/>
+                    <label id="code-color-label" class="sr-only" for="video-code-color">Farbe des Video-Codes</label>
+                    <input
+                        class="form-control"
+                        id="video-code-color"
+                        type="color"
+                        placeholder="#ccc"
+                        aria-describedby="code-color-label"
+                    />
+                    <label id="code-name-label" class="sr-only" for="video-code-name">Name des Video-Codes</label>
+                    <input
+                        class="form-control"
+                        id="video-code-name"
+                        type="text"
+                        placeholder="Name des Video-Codes"
+                        aria-describedby="code-name-label"
+                    />
                     <button id="add-new-video-code" type="button" class="btn btn-primary"><i class="fas fa-plus"></i>
                         Video-Code hinzufügen
                     </button>

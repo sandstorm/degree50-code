@@ -47,7 +47,11 @@ const PrototypeList = (props: Props) => {
             {props.videoCodePrototypes?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
                 <ul className="video-editor__video-codes">
                     {props.videoCodePrototypes.map((prototype) => (
-                        <PrototypeEntry key={prototype.id} videoCodePrototype={prototype} />
+                        <PrototypeEntry
+                            key={prototype.id}
+                            videoCodePrototype={prototype}
+                            parentPrototype={props.parentPrototype}
+                        />
                     ))}
                 </ul>
             ) : null}

@@ -5,6 +5,7 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 import { useVideoCodePrototypeEdit } from './useVideoCodePrototypeEdit'
 import Overlay from '../../../components/Overlay'
+import { getColorName } from 'ntc-ts'
 
 const mapStateToProps = (state: VideoEditorState) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
@@ -53,7 +54,7 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
 
     const canEditColor = props.videoCodePrototypeParent === undefined
 
-    const overlayTitle = props.videoCodePrototype ? 'VideoCode bearbeiten' : 'VideoCode erstellen'
+    const overlayTitle = props.videoCodePrototype ? 'Video-Code bearbeiten' : 'Video-Code erstellen'
 
     return (
         <Overlay closeCallback={close} title={overlayTitle}>
@@ -64,19 +65,21 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
                         type={'color'}
                         className={'form-control form-control-sm'}
                         onChange={handleColorChange}
-                        aria-label="Wähle eine Farbe"
+                        aria-label={`Ausgewählte Code-Farbe: ${getColorName(transientVideoCodePrototype.color).name}.`}
                         title="Wähle eine Farbe"
                     />
                 ) : (
                     <div
                         className={'video-code__color'}
+                        tabIndex={0}
+                        aria-label={`Vorgegebene Code-Farbe: ${getColorName(transientVideoCodePrototype.color).name}.`}
                         style={{ backgroundColor: transientVideoCodePrototype.color }}
                     />
                 )}
                 <input
                     type={'text'}
-                    aria-label={'Name für neuen Videocode'}
-                    placeholder={'Name für neuen Videocode'}
+                    aria-label={'Name für neuen Video-Code'}
+                    placeholder={'Name für neuen Video-Code'}
                     className={'form-control form-control-sm'}
                     onChange={handleNameChange}
                     value={transientVideoCodePrototype.name}
