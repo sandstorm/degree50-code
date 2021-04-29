@@ -106,7 +106,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                   "name": "TEST: CutVideo",
                   "description": "",
                   "duration": 0,
-                  "subtitles": [],
                   "url": {
                     "hls": "/data/encoded_videos/cut-video-1/hls.m3u8",
                     "mp4": "/data/encoded_videos/cut-video-1/x264.mp4",

@@ -333,7 +333,6 @@ This will forward port `19999` to localhost, so you can open the gui on `http://
     -   `video_course`
     -   `exercise_phase_video`
     -   `video`
-    -   `video_subtitles`
 -   These are all reference _we_ found for now. There might be more in `exercise_phase*` if the video was used in a phase.
 
 ### Additional Notes

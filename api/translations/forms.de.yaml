@@ -111,6 +111,7 @@ video:
     upload:
         title: 'Video hochladen'
         back: 'Zurück zur Übersicht'
+        subtitleUploadTitle: 'Untertitel hochladen (WebVTT)'
         messages:
             success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
     show:
@@ -119,8 +120,6 @@ video:
         title: 'Video bearbeiten'
         messages:
             success: 'Video erfolgreich gespeichert!'
-    subtitle:
-        title: 'Untertitel bearbeiten'
     delete:
         title: 'Video löschen'
         messages:

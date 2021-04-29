@@ -28,9 +28,18 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 /**
  * Handler which is responsible for the encoding of videos from a given cutList
  * Invokes an FFMPEG worker to do the actual encoding
- *  NOTE: empty space between cutList items which might exist inside the
- *  frontend view, is not taken into consideration when creating the video
- *  on the serverside.
+ * NOTE: empty space between cutList items which might exist inside the
+ * frontend view, is not taken into consideration when creating the video
+ * on the serverside.
+ *
+ * NOTE: If you make changes to a handler you need to manually stop the worker and restart it,
+ * to apply and test the changes.
+ *
+ * Stop workers:
+ * ./symfony-console messenger:stop-workers
+ *
+ * Start workers:
+ * ./symfony-console messenger:consume async -vV
  */
 class CutListEncodingHandler implements MessageHandlerInterface
 {

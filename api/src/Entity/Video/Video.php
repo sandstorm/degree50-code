@@ -52,12 +52,12 @@ class Video
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private ?VirtualizedFile $encodedVideoDirectory;
+    private ?VirtualizedFile $uploadedSubtitleFile;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Video\VideoSubtitles", cascade={"persist", "remove"})
+     * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private $subtitles;
+    private ?VirtualizedFile $encodedVideoDirectory;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhase", mappedBy="videos")
@@ -176,7 +176,7 @@ class Video
     /**
      * @param VirtualizedFile $uploadedVideoFile
      */
-    public function setUploadedVideoFile(VirtualizedFile $uploadedVideoFile): void
+    public function setUploadedVideoFile(?VirtualizedFile $uploadedVideoFile): void
     {
         $this->uploadedVideoFile = $uploadedVideoFile;
     }
@@ -195,18 +195,6 @@ class Video
     public function setEncodedVideoDirectory(VirtualizedFile $encodedVideoDirectory): void
     {
         $this->encodedVideoDirectory = $encodedVideoDirectory;
-    }
-
-    public function getSubtitles(): ?VideoSubtitles
-    {
-        return $this->subtitles;
-    }
-
-    public function setSubtitles(?VideoSubtitles $subtitles): self
-    {
-        $this->subtitles = $subtitles;
-
-        return $this;
     }
 
     /**
@@ -356,11 +344,6 @@ class Video
     public function getAsArray(AppRuntime $appRuntime): ClientSideCutVideo {
         $videoUrl = $appRuntime->virtualizedFileUrl($this->getEncodedVideoDirectory());
 
-        if (empty($this->getSubtitles())) {
-            // Initialize subtitles
-            $this->setSubtitles(new VideoSubtitles());
-        }
-
         return ClientSideCutVideo::fromVideoEntity(
             $this,
             ClientSideVideoUrl::fromBaseUrl($videoUrl)
@@ -397,5 +380,15 @@ class Video
     public function setDataPrivacyPermissionsAccepted($dataPrivacyPermissionsAccepted)
     {
         $this->dataPrivacyPermissionsAccepted = $dataPrivacyPermissionsAccepted;
+    }
+
+    public function getUploadedSubtitleFile(): ?VirtualizedFile
+    {
+        return $this->uploadedSubtitleFile;
+    }
+
+    public function setUploadedSubtitleFile(?VirtualizedFile $uploadedSubtitleFile)
+    {
+        $this->uploadedSubtitleFile = $uploadedSubtitleFile;
     }
 }
