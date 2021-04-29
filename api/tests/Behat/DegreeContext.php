@@ -511,8 +511,11 @@ final class DegreeContext implements Context
             return $cSVDto->getFileName() === $fileName;
         }));
 
-        assertIsObject($csvDto);
-        assertEquals($contentString->getRaw(), $csvDto->getContentString());
+        $currentDate = new \DateTimeImmutable();
+        $expected = str_replace('{{CREATED_AT_DATE}}', $currentDate->format("d.m.Y"), $contentString->getRaw());
+
+        assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
+        assertEquals($expected, $csvDto->getContentString());
     }
 
     /**

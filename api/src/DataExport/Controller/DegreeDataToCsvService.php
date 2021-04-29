@@ -26,7 +26,7 @@ class DegreeDataToCsvService {
     private LoggerInterface $logger;
     private ManagerRegistry $managerRegistry;
 
-    private const DEFAULT_DELIMITER = '|';
+    private const DEFAULT_DELIMITER = ';';
     private const DEFAULT_ENCLOSURE = '"';
     private const DEFAULT_ENCODING_CONTEXT = [
         CsvEncoder::DELIMITER_KEY => self::DEFAULT_DELIMITER,
@@ -72,12 +72,12 @@ class DegreeDataToCsvService {
         $cutCSV = $serializer->encode($cutData, 'csv', self::DEFAULT_ENCODING_CONTEXT);
 
         return [
-            new CSVDto('solutions.csv', $solutionCSV),
-            new CSVDto('courseUsers.csv', $courseUserCSV),
-            new CSVDto('teamUsers.csv', $teamUserCSV),
-            new CSVDto('annotations.csv', $annotationCSV),
-            new CSVDto('videoCodes.csv', $videoCodeCSV),
-            new CSVDto('cuts.csv', $cutCSV)
+            new CSVDto('loesungen.csv', $solutionCSV),
+            new CSVDto('kurs-mitglieder.csv', $courseUserCSV),
+            new CSVDto('team-mitglieder.csv', $teamUserCSV),
+            new CSVDto('annotationen.csv', $annotationCSV),
+            new CSVDto('video-kodierungen.csv', $videoCodeCSV),
+            new CSVDto('schnitte.csv', $cutCSV)
         ];
     }
 
@@ -113,10 +113,9 @@ class DegreeDataToCsvService {
                 $prototypeData = $videoCodePrototype
                     ? [
                         $videoCodePrototype->getName(),
-                        DegreeDataToCsvService::removeLineBreaksFromCellContent($videoCodePrototype->getDescription()),
                         $videoCodePrototype->getColor(),
                         $videoCodePrototype->getParentId(),
-                        $videoCodePrototype->getUserCreated() ? 'yes' : 'no'
+                        $videoCodePrototype->getUserCreated() ? 'ja' : 'nein'
                     ]
                     : [];
 
@@ -139,22 +138,21 @@ class DegreeDataToCsvService {
             // CSV headers
             [
                 // Solution
-                "solutionId",
+                "loesungsID",
 
                 // VideoCode
                 "start",
                 "end",
                 "text",
                 "memo",
-                "color",
-                'prototypeId',
+                "farbe",
+                "codeID",
 
                 // VideoCodePrototype
-                'prototypeName',
-                'prototypeDescription',
-                'prototypeColor',
-                'prototypeParentId',
-                'isUserCreatedPrototype',
+                "codeName",
+                "codeFarbe",
+                "elternCodeID",
+                "selbstErstellterCode",
           ],
         ]);
 
@@ -192,12 +190,12 @@ class DegreeDataToCsvService {
         }, [
             // CSV headers
             [
-                "solutionId",
+                "loesungsID",
                 "start",
                 "end",
                 "text",
                 "memo",
-                "color"
+                "farbe"
           ],
         ]);
 
@@ -227,9 +225,6 @@ class DegreeDataToCsvService {
                         DegreeDataToCsvService::removeLineBreaksFromCellContent($serverSideCut->getText()),
                         DegreeDataToCsvService::removeLineBreaksFromCellContent($serverSideCut->getMemo()),
                         $serverSideCut->getColor(),
-                        $serverSideCut->getUrl(),
-                        $serverSideCut->getOffset(),
-                        $serverSideCut->getPlaybackRate()
                     ]
                 );
             }, $cuts);
@@ -238,15 +233,12 @@ class DegreeDataToCsvService {
         }, [
             // CSV headers
             [
-                "solutionId",
+                "loesungsID",
                 "start",
                 "end",
                 "text",
                 "memo",
-                "color",
-                'url',
-                'offset',
-                'playbackRate',
+                "farbe",
           ],
         ]);
 
@@ -280,13 +272,13 @@ class DegreeDataToCsvService {
             // CSV headers
             [
                 // User
-                "userId",
-                "user",
+                "nutzerID",
+                "nutzerName",
 
                 // team
-                "teamId",
-                "creatorId",
-                "solutionId"
+                "teamID",
+                "teamErstellerID",
+                "loesungsID"
           ],
         ]);
 
@@ -321,10 +313,10 @@ class DegreeDataToCsvService {
             // CSV headers
             [
                 // Course
-                "courseId",
-                "courseName",
-                "role",
-                "user",
+                "kursID",
+                "kursName",
+                "kursRolle",
+                "nutzerName",
           ],
         ]);
 
@@ -365,12 +357,11 @@ class DegreeDataToCsvService {
 
                 // ExercisePhase
                 $exercisePhase->getId(),
-                $exercisePhase->isGroupPhase(),
+                $exercisePhase->isGroupPhase() ? 'Ja' : 'Nein',
                 $exercisePhase->getName(),
                 DegreeDataToCsvService::removeLineBreaksFromCellContent($exercisePhase->getTask()),
-                DegreeDataToCsvService::removeLineBreaksFromCellContent($exercisePhase->getDefinition()),
                 $exercisePhase->getType(),
-                $exercisePhase->getDependsOnPreviousPhase(),
+                $exercisePhase->getDependsOnPreviousPhase() ? 'Ja' : 'Nein',
 
                 // Team
                 $team->getId(),
@@ -380,31 +371,30 @@ class DegreeDataToCsvService {
             // CSV headers
             [
                 // Solution
-                "id",
+                "loesungsID",
 
                 // Course
-                "courseId",
-                "courseName",
+                "kursID",
+                "kursName",
 
                 // Exercise
-                "exerciseId",
-                "exerciseName",
-                "exerciseDescription",
-                "exerciseCreatedAt",
-                "exerciseStatus",
+                "aufgabenID",
+                "aufgabenTitel",
+                "aufgabenBeschreibung",
+                "erstellungsDatum",
+                "status",
 
                 // ExercisePhase
-                "phaseId",
-                "isGroupPhase",
-                "phaseName",
-                "phaseTask",
-                "phaseDefinition",
-                "phaseType",
-                "dependsOnPreviousPhase",
+                "phasenID",
+                "istGruppenphase",
+                "phasenTitel",
+                "phasenBeschreibung",
+                "phasenTyp",
+                "bautAufVorherigerPhaseAuf",
 
                 // Team
-                "teamId",
-                "teamCreator",
+                "teamID",
+                "teamErsteller",
           ],
         ]);
 

@@ -72,6 +72,9 @@ class ExercisePhase implements ExerciseInterface
      */
     public $task = '';
 
+    // FIXME
+    // the definition does not seem to be in use
+
     /**
      * @var string
      * @ORM\Column(type="text")
