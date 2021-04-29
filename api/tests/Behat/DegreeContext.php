@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Behat;
 
 use App\DataExport\Controller\DegreeDataToCsvService;
-use App\DataExport\Controller\Dto\CSVDto;
+use App\DataExport\Controller\Dto\TextFileDto;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
@@ -63,7 +63,7 @@ final class DegreeContext implements Context
 
     private ?string $clientSideJSON;
 
-    /** @var CSVDto[] $csvDtoList */
+    /** @var TextFileDto[] $csvDtoList */
     private ?array $csvDtoList;
 
     /**
@@ -506,8 +506,8 @@ final class DegreeContext implements Context
      */
     public function iHaveACsvDtoListContainingAFileWithACsvContentString(string $fileName, PyStringNode $contentString)
     {
-        /** @var CSVDto $csvDto */
-        $csvDto = current(array_filter($this->csvDtoList, function(CSVDto $cSVDto) use($fileName) {
+        /** @var TextFileDto $csvDto */
+        $csvDto = current(array_filter($this->csvDtoList, function(TextFileDto $cSVDto) use($fileName) {
             return $cSVDto->getFileName() === $fileName;
         }));
 
@@ -516,6 +516,18 @@ final class DegreeContext implements Context
 
         assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
         assertEquals($expected, $csvDto->getContentString());
+    }
+
+    /**
+     * @Then I have CSVDto-list containing a file :fileName
+     */
+    public function iHaveCsvdtoListContainingAFile($fileName)
+    {
+        /** @var TextFileDto $csvDto */
+        $csvDto = current(array_filter($this->csvDtoList, function(TextFileDto $cSVDto) use($fileName) {
+            return $cSVDto->getFileName() === $fileName;
+        }));
+        assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
     }
 
     /**

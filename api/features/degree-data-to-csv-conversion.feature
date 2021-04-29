@@ -79,6 +79,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
             """
         Given I have a cut video "cut-video-1" belonging to solution "solution-1"
         When I convert all data for "course-1" to csv
+        Then I have CSVDto-list containing a file "README.md"
         # Note that {{CREATED_AT_DATE}} will be interpolated during the step and be set to the current day.
         # We do this, because the createdAt property of our solution will always be the day the
         # test runs at.
