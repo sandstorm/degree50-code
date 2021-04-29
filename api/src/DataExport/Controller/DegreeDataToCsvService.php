@@ -20,9 +20,11 @@ use App\DataExport\Controller\Dto\CSVDto;
 use App\Entity\Account\Course;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Repository\Exercise\ExercisePhaseRepository;
 
 class DegreeDataToCsvService {
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
+    private ExercisePhaseRepository $exercisePhaseRepository;
     private LoggerInterface $logger;
     private ManagerRegistry $managerRegistry;
 
@@ -37,12 +39,14 @@ class DegreeDataToCsvService {
     function __construct(
         LoggerInterface $logger,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        ExercisePhaseRepository $exercisePhaseRepository,
         SolutionRepository $solutionRepository,
         ManagerRegistry $managerRegistry
     )
     {
         $this->solutionRepository = $solutionRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
+        $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->logger = $logger;
         $this->managerRegistry = $managerRegistry;
     }
@@ -339,6 +343,12 @@ class DegreeDataToCsvService {
             $exercise = $exercisePhase->getBelongsToExercise();
             $course = $exercise->getCourse();
             $solution = $team->getSolution();
+            $previousPhase = $exercisePhase->getDependsOnPreviousPhase()
+               ? $this->exercisePhaseRepository->findOneBy([
+                    'sorting' => $exercisePhase->getSorting() - 1,
+                    'belongsToExercise' => $exercisePhase->getBelongsToExercise()
+               ])
+               : null;
 
             return array_merge($carry, [[
                 // Solution
@@ -362,6 +372,7 @@ class DegreeDataToCsvService {
                 DegreeDataToCsvService::removeLineBreaksFromCellContent($exercisePhase->getTask()),
                 $exercisePhase->getType(),
                 $exercisePhase->getDependsOnPreviousPhase() ? 'Ja' : 'Nein',
+                $previousPhase ? $previousPhase->getId() : '-',
 
                 // Team
                 $team->getId(),
@@ -391,6 +402,7 @@ class DegreeDataToCsvService {
                 "phasenBeschreibung",
                 "phasenTyp",
                 "bautAufVorherigerPhaseAuf",
+                "vorherigePhasenID",
 
                 // Team
                 "teamID",
