@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Behat;
 
 use App\DataExport\Controller\DegreeDataToCsvService;
-use App\DataExport\Controller\Dto\CSVDto;
+use App\DataExport\Controller\Dto\TextFileDto;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
@@ -63,7 +63,7 @@ final class DegreeContext implements Context
 
     private ?string $clientSideJSON;
 
-    /** @var CSVDto[] $csvDtoList */
+    /** @var TextFileDto[] $csvDtoList */
     private ?array $csvDtoList;
 
     /**
@@ -506,13 +506,28 @@ final class DegreeContext implements Context
      */
     public function iHaveACsvDtoListContainingAFileWithACsvContentString(string $fileName, PyStringNode $contentString)
     {
-        /** @var CSVDto $csvDto */
-        $csvDto = current(array_filter($this->csvDtoList, function(CSVDto $cSVDto) use($fileName) {
+        /** @var TextFileDto $csvDto */
+        $csvDto = current(array_filter($this->csvDtoList, function(TextFileDto $cSVDto) use($fileName) {
             return $cSVDto->getFileName() === $fileName;
         }));
 
-        assertIsObject($csvDto);
-        assertEquals($contentString->getRaw(), $csvDto->getContentString());
+        $currentDate = new \DateTimeImmutable();
+        $expected = str_replace('{{CREATED_AT_DATE}}', $currentDate->format("d.m.Y"), $contentString->getRaw());
+
+        assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
+        assertEquals($expected, $csvDto->getContentString());
+    }
+
+    /**
+     * @Then I have CSVDto-list containing a file :fileName
+     */
+    public function iHaveCsvdtoListContainingAFile($fileName)
+    {
+        /** @var TextFileDto $csvDto */
+        $csvDto = current(array_filter($this->csvDtoList, function(TextFileDto $cSVDto) use($fileName) {
+            return $cSVDto->getFileName() === $fileName;
+        }));
+        assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
     }
 
     /**
@@ -542,5 +557,25 @@ final class DegreeContext implements Context
         $user = $this->entityManager->find(User::class, $username);
 
         $exercisePhaseTeam->addMember($user);
+    }
+
+    /**
+     * @Given Exercise phase :currentExercisePhaseID depends on previous phase :previousExercisePhaseID
+     */
+    public function exercisePhaseDependsOnPreviousPhase($currentExercisePhaseID, $previousExercisePhaseID)
+    {
+        /** @var ExercisePhase $currentExercisePhase */
+        $currentExercisePhase = $this->entityManager->find(ExercisePhase::class, $currentExercisePhaseID);
+        /** @var ExercisePhase $previousExercisePhase */
+        $previousExercisePhase = $this->entityManager->find(ExercisePhase::class, $previousExercisePhaseID);
+
+        $previousExercisePhase->setSorting(0);
+        $currentExercisePhase->setSorting(1);
+        $currentExercisePhase->setDependsOnPreviousPhase(true);
+
+        $this->entityManager->persist($previousExercisePhase);
+        $this->entityManager->persist($currentExercisePhase);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
     }
 }
