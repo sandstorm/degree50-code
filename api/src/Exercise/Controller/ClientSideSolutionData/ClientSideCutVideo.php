@@ -16,9 +16,6 @@ final class ClientSideCutVideo implements JsonSerializable {
     private ?string $description;
     private ?float $duration;
 
-    // TODO if we keep these, we should properly type them
-    // currently we don't use/create subtitles, so it does not really matter.
-    private array $subtitles;
     private ClientSideVideoUrl $url;
 
     private function __construct(
@@ -26,7 +23,6 @@ final class ClientSideCutVideo implements JsonSerializable {
         string $name,
         ?string $description,
         ?float $duration,
-        array $subtitles,
         ClientSideVideoUrl $url
     )
     {
@@ -34,7 +30,6 @@ final class ClientSideCutVideo implements JsonSerializable {
         $this->name = $name;
         $this->description = $description;
         $this->duration = $duration;
-        $this->subtitles = $subtitles;
         $this->url = $url;
     }
 
@@ -44,7 +39,6 @@ final class ClientSideCutVideo implements JsonSerializable {
             $video->getTitle(),
             $video->getDescription(),
             $video->getVideoDuration(),
-            $video->getSubtitles()->getSubtitles(),
             $url,
         );
     }
@@ -55,7 +49,6 @@ final class ClientSideCutVideo implements JsonSerializable {
             $input['name'],
             $input['description'],
             $input['duration'],
-            $input['subtitles'],
             $input['url']
         );
     }
@@ -66,7 +59,6 @@ final class ClientSideCutVideo implements JsonSerializable {
             'name' => $this->name,
             'description' => $this->description,
             'duration' => $this->duration,
-            'subtitles' => $this->subtitles,
             'url' => $this->url,
         ];
     }
