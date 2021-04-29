@@ -546,4 +546,24 @@ final class DegreeContext implements Context
 
         $exercisePhaseTeam->addMember($user);
     }
+
+    /**
+     * @Given Exercise phase :currentExercisePhaseID depends on previous phase :previousExercisePhaseID
+     */
+    public function exercisePhaseDependsOnPreviousPhase($currentExercisePhaseID, $previousExercisePhaseID)
+    {
+        /** @var ExercisePhase $currentExercisePhase */
+        $currentExercisePhase = $this->entityManager->find(ExercisePhase::class, $currentExercisePhaseID);
+        /** @var ExercisePhase $previousExercisePhase */
+        $previousExercisePhase = $this->entityManager->find(ExercisePhase::class, $previousExercisePhaseID);
+
+        $previousExercisePhase->setSorting(0);
+        $currentExercisePhase->setSorting(1);
+        $currentExercisePhase->setDependsOnPreviousPhase(true);
+
+        $this->entityManager->persist($previousExercisePhase);
+        $this->entityManager->persist($currentExercisePhase);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
 }
