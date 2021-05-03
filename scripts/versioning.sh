@@ -9,9 +9,14 @@
 # NOTE: If we would not write the fallback version to the file, the provider
 # would crash instead!
 
-version="$(git describe --abbrev=0 --always)"
+# --abbrev=0 makes sure all shas of intermediate commits are stripped, so only the tag remains
+# --always makes sure that the command won't fail (we receive a commit hash instead of the tag, if no tag has been found)
+# --tags makes sure that lightweight tags are found as well (gitlab usually only creates lightweight tags and not annotated ones)
+version="$(git describe --abbrev=0 --always --tags)"
 
-if [[ $version =~ ^[vV]?[0-9]+\.[0-9]+\.[0-9]+(-[-a-zA-Z0-9]+)?$ ]]; then
+echo "Git describe result: $version"
+
+if [[ $version =~ ^[vV]?[\d]+\.[\d]+\.[\d]+(-[\w\d]+)*$ ]]; then
     echo "Found tag $version"
 	echo $version > ./api/VERSION
 else
