@@ -16,7 +16,7 @@ version="$(git describe --abbrev=0 --always --tags)"
 
 echo "Git describe result: $version"
 
-if [[ $version =~ ^[vV]?[\d]+\.[\d]+\.[\d]+(-[\w\d]+)*$ ]]; then
+if [[ $version =~ ^[vV]?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)*$ ]]; then
     echo "Found tag $version"
 	echo $version > ./api/VERSION
 else
