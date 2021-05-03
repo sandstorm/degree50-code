@@ -2,6 +2,8 @@
 
 <!-- vim-markdown-toc GitLab -->
 
+-   [Making a versioned release](#making-a-versioned-release)
+    -   [Special notes on master releases](#special-notes-on-master-releases)
 -   [Development Setup](#development-setup)
     -   [Prerequisites](#prerequisites)
     -   [Get Started with Development](#get-started-with-development)
@@ -32,6 +34,32 @@
     -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
 
 <!-- vim-markdown-toc -->
+
+## Making a versioned release
+
+To create and deploy a versioned release follow these steps:
+
+> **NOTE**: The tag you create **has to adhere to semantic versioning naming rules**!
+>
+> -   1.2.3 **works**
+> -   v1.2.3 **works**
+> -   V1.2.3 **works**
+> -   1.2.3-test-1 **works**
+> -   something-1-2-3 **does not work**
+> -   $1.2.3 **does not work**
+> -   1.2 **does not work**
+>     For further details have a look at the regex inside `scripts/versioning.sh`
+
+1. Create a tag (inside the remote repository) on the branch you would like to deploy (e.g. `master`)
+2. Inside **GitLab** open CI/CD->Pipelines
+3. Choose the branch you would like to deploy and run the pipeline
+4. Trigger the manual deploy step (either for our test system or the prod system)
+
+### Special notes on master releases
+
+If you are creating a release on master, please make sure to also create a release inside the
+gitlabe repository, link it with the tag you created (or do both inside a single step) and
+also add a meaningful changelog to the release (see past releases).
 
 ## Development Setup
 

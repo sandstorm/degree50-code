@@ -52,6 +52,10 @@ RUN composer dump-env prod; \
 	rm .env
 
 # copy only specifically what we need
+
+# VERSION file which is necessary to display our version tag inside the UI
+# See scripts/versioning.sh for further details
+COPY api/VERSION VERSION
 COPY api/bin bin/
 COPY api/config config/
 COPY api/events events/
