@@ -58,6 +58,8 @@ package_app:
         - privileged
     script:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+        # Also make sure that ./api/VERSION is copied into the docker container (see deployment/docker/Dockerfile)
+        - ./scripts/versioning.sh
         - docker build -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
 

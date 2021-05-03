@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b1abc7e8cb2297f2e371d11c0f00f60",
+    "content-hash": "f74a04a65c2e78b3b21d2643329cf761",
     "packages": [
         {
             "name": "alchemy/binary-driver",
@@ -2786,6 +2786,56 @@
             "time": "2020-12-20T10:01:03+00:00"
         },
         {
+            "name": "nikolaposa/version",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikolaposa/version.git",
+                "reference": "7ff2bbf2fe6a47efe47832d6198924e99b4a4f5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikolaposa/version/zipball/7ff2bbf2fe6a47efe47832d6198924e99b4a4f5a",
+                "reference": "7ff2bbf2fe6a47efe47832d6198924e99b4a4f5a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "phpunit/phpunit": "^6.0 || ^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Version\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": ["MIT"],
+            "authors": [
+                {
+                    "name": "Nikola Poša",
+                    "email": "posa.nikola@gmail.com",
+                    "homepage": "https://www.nikolaposa.in.rs"
+                }
+            ],
+            "description": "Value Object that represents a SemVer-compliant version number.",
+            "homepage": "https://github.com/nikolaposa/version",
+            "keywords": ["semantic", "semver", "version", "versioning"],
+            "support": {
+                "issues": "https://github.com/nikolaposa/version/issues",
+                "source": "https://github.com/nikolaposa/version/tree/master"
+            },
+            "time": "2019-08-11T08:31:54+00:00"
+        },
+        {
             "name": "ocramius/package-versions",
             "version": "1.9.0",
             "source": {
@@ -3979,6 +4029,57 @@
             "description": "This bundle provides a way to configure your controllers with annotations",
             "keywords": ["annotations", "controllers"],
             "time": "2020-06-15T20:28:02+00:00"
+        },
+        {
+            "name": "shivas/versioning-bundle",
+            "version": "3.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shivas/versioning-bundle.git",
+                "reference": "f17c797bdd651a714f2b114a61db60eb2cbeee4f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shivas/versioning-bundle/zipball/f17c797bdd651a714f2b114a61db60eb2cbeee4f",
+                "reference": "f17c797bdd651a714f2b114a61db60eb2cbeee4f",
+                "shasum": ""
+            },
+            "require": {
+                "nikolaposa/version": "^2.2 || ^3",
+                "php": "^7.1",
+                "symfony/console": "^3.4 || ^4 || ^5",
+                "symfony/framework-bundle": "^3.4 || ^4 || ^5",
+                "symfony/process": "^3.4 || ^4 || ^5"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^7 || ^8",
+                "symfony/phpunit-bridge": "^5"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Shivas\\VersioningBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": ["MIT"],
+            "authors": [
+                {
+                    "name": "Audrius Karabanovas",
+                    "email": "audrius@karabanovas.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Symfony application versioning, simple console command to manage version (with providers e.g. git tag) of your application using Semantic Versioning 2.0.0 recommendations",
+            "homepage": "https://github.com/shivas/versioning-bundle",
+            "keywords": ["semantic", "semver", "version", "versioning"],
+            "support": {
+                "issues": "https://github.com/shivas/versioning-bundle/issues",
+                "source": "https://github.com/shivas/versioning-bundle/tree/3.2.4",
+                "wiki": "https://github.com/shivas/versioning-bundle/wiki"
+            },
+            "time": "2021-02-14T16:16:33+00:00"
         },
         {
             "name": "symfony/asset",
