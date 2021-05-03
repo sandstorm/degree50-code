@@ -27,6 +27,7 @@
         "ramsey/uuid": "^4.0",
         "rokka/imagine-vips": "^0.11.0",
         "sensio/framework-extra-bundle": "^5.5",
+        "shivas/versioning-bundle": "^3.2",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",
         "symfony/expression-language": "5.0.*",
