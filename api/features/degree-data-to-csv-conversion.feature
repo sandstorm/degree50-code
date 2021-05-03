@@ -230,6 +230,6 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         """
         loesungsID;kursID;kursName;aufgabenID;aufgabenTitel;aufgabenBeschreibung;erstellungsDatum;status;phasenID;istGruppenphase;phasenTitel;phasenBeschreibung;phasenTyp;bautAufVorherigerPhaseAuf;vorherigePhasenID;teamID;teamErsteller
         solution-1;course-1;;exercise-1;;;{{CREATED_AT_DATE}};created;ex-p1;Nein;;;videoAnalysis;Nein;-;team-1;foo@bar.de
-        solution-2;course-1;;exercise-1;;;29.04.2021;created;ex-p2;Nein;;;videoAnalysis;Ja;ex-p1;team-2;foo@bar.de
+        solution-2;course-1;;exercise-1;;;{{CREATED_AT_DATE}};created;ex-p2;Nein;;;videoAnalysis;Ja;ex-p1;team-2;foo@bar.de
 
         """
