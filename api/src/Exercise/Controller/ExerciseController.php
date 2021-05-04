@@ -36,6 +36,7 @@ class ExerciseController extends AbstractController
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
+    private ExerciseService $exerciseService;
 
     private LoggerInterface $logger;
 
@@ -295,22 +296,13 @@ class ExerciseController extends AbstractController
      */
     public function delete(Exercise $exercise): Response
     {
-        $courseId = $exercise->getCourse()->getId();
-
-        $this->eventStore->addEvent('ExerciseDeleted', [
-            'exerciseId' => $exercise->getId(),
-            'courseId' => $courseId,
-        ]);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($exercise);
-        $entityManager->flush();
+        $this->exerciseService->deleteExercise($exercise);
 
         $this->addFlash(
             'success',
             $this->translator->trans('exercise.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview', ['id' => $courseId]);
+        return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);
     }
 }
