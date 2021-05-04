@@ -14,5 +14,10 @@
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
+
+    <script>
+        var degreeVersion = '{{ shivas_app_version }}'
+    </script>
+
 </body>
 </html>
