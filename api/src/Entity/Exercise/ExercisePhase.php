@@ -15,6 +15,13 @@ use Doctrine\ORM\Mapping\InheritanceType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * Describes a single Phase of an exercise (e.g. a "Video-Analysis" or "Video-Cutting").
+ * An exercisePhase might depend on a previous exercise if that is the case, the previous
+ * phase is determined by the next lower sorting of the phases.
+ *
+ * If "otherSolutionsAreAccessible" it is possible for "studierende" to display the solutions
+ * of other "studierende" for the phase.
+ *
  * @ApiResource(paginationEnabled=false)
  * @ORM\Entity
  * @InheritanceType("SINGLE_TABLE")
@@ -64,6 +71,9 @@ class ExercisePhase implements ExerciseInterface
      * @Assert\NotBlank
      */
     public $task = '';
+
+    // FIXME
+    // the definition does not seem to be in use
 
     /**
      * @var string
@@ -353,6 +363,7 @@ class ExercisePhase implements ExerciseInterface
         return $this;
     }
 
+    // The actual phase the current phase depends on is determined by their respective sorting.
     public function getDependsOnPreviousPhase(): ?bool
     {
         return $this->dependsOnPreviousPhase;
@@ -406,5 +417,10 @@ class ExercisePhase implements ExerciseInterface
                     return $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user);
                 }
             );
+    }
+
+    public function getDefinition()
+    {
+        return $this->definition;
     }
 }

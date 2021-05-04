@@ -3,6 +3,7 @@
 namespace App\Admin\Controller;
 
 use App\Entity\Account\User;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -17,6 +18,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class UserCrudController extends AbstractCrudController
 {
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -38,6 +46,15 @@ class UserCrudController extends AbstractCrudController
             return [$name, $isAdmin, $isStudent, $isDozent];
         } elseif (Crud::PAGE_EDIT === $pageName) {
             return [$name, $isAdmin, $isStudent, $isDozent];
+        }
+    }
+
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof User) {
+            $this->userService->removeUser($entityInstance);
+        } else {
+            parent::deleteEntity($entityManager, $entityInstance);
         }
     }
 }

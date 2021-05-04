@@ -2,6 +2,9 @@
 
 <!-- vim-markdown-toc GitLab -->
 
+-   [Making a versioned release](#making-a-versioned-release)
+    -   [Special notes on master releases](#special-notes-on-master-releases)
+    -   [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
 -   [Development Setup](#development-setup)
     -   [Prerequisites](#prerequisites)
     -   [Get Started with Development](#get-started-with-development)
@@ -12,13 +15,14 @@
     -   [Running Frontend Tests](#running-frontend-tests)
     -   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
 -   [Creating test users on the prod system](#creating-test-users-on-the-prod-system)
--   [Prodsystem](#prodsystem)
+-   [Prodsystem and Testsystem](#prodsystem-and-testsystem)
     -   [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
         -   [Prerequisites](#prerequisites-1)
         -   [Setup](#setup)
         -   [Connect](#connect)
         -   [Connect to the Production Database](#connect-to-the-production-database)
     -   [Ansible Setup](#ansible-setup)
+    -   [Firewall rules](#firewall-rules)
     -   [Automatic Updates](#automatic-updates)
     -   [Monitoring](#monitoring)
         -   [Uptime-robot](#uptime-robot)
@@ -31,6 +35,37 @@
     -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
 
 <!-- vim-markdown-toc -->
+
+## Making a versioned release
+
+To create and deploy a versioned release follow these steps:
+
+> **NOTE**: The tag you create **has to adhere to semantic versioning naming rules**!
+>
+> -   1.2.3 **works**
+> -   v1.2.3 **works**
+> -   V1.2.3 **works**
+> -   1.2.3-test-1 **works**
+> -   something-1-2-3 **does not work**
+> -   $1.2.3 **does not work**
+> -   1.2 **does not work**
+>     For further details have a look at the regex inside `scripts/versioning.sh`
+
+1. Create a tag (inside the remote repository) on the branch you would like to deploy (e.g. `master`)
+2. Inside **GitLab** open CI/CD->Pipelines
+3. Choose the branch you would like to deploy and run the pipeline
+4. Trigger the manual deploy step (either for our test system or the prod system)
+
+### Special notes on master releases
+
+If you are creating a release on master, please make sure to also create a release inside the
+gitlabe repository, link it with the tag you created (or do both inside a single step) and
+also add a meaningful changelog to the release (see past releases).
+
+### Where to find the version number inside the app
+
+1. You can find the version number inside the footer of the login screen
+2. The version is accessible as a global javascript variable `degreeVersion`
 
 ## Development Setup
 
@@ -83,7 +118,12 @@
 
 ### Running Behat Tests
 
-make test
+1. Start our docker-compose setup
+2. run `make test`
+
+> **NOTE**: We need the api container to create an environemnt to run our tests
+> in. However we currently do not use the actual running application and database.
+> Our test setup creates its own test instance + database inside the running container.
 
 **troubleshooting for Behat Tests**
 

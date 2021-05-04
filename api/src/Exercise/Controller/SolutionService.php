@@ -43,7 +43,7 @@ class SolutionService {
 
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
-        iterable $teams
+        array $teams
     ) {
         // FIXME
         // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
@@ -85,7 +85,7 @@ class SolutionService {
                 return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
             }, $exercisePhase->getVideoCodes()->toArray());
 
-            $clientSideSolutionDataBuilder->addVideoCodePrototoypes($configuredVideoCodePrototypes);
+            $clientSideSolutionDataBuilder->addVideoCodePrototypes($configuredVideoCodePrototypes);
         }
 
         return $clientSideSolutionDataBuilder;
@@ -109,6 +109,7 @@ class SolutionService {
         // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
         // However it is rather intransparent when and why that happens.
         // Therefore we should probably find a way to fix and document this.
+        // TODO we need to at least test this (@see {server-to-client-solution-conversion.feature}
         $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
         $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
         $clientSideCutVideo = $cutVideo ? $cutVideo->getAsArray($this->appRuntime) : null;
@@ -159,6 +160,7 @@ class SolutionService {
                         $teamMember,
                         $solutionEntity->getSolution(),
                         $solutionEntity->getId(),
+                        // TODO: parameter type mismatch
                         $solutionEntity->getCutVideo()
                     )]);
                 }, []);

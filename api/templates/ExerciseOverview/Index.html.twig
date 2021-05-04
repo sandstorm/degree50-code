@@ -32,6 +32,14 @@
                                         <i class="fas fa-pencil-alt"></i> {% trans %}course.edit.title{% endtrans %}
                                     </a>
                                 {% endif %}
+
+                                {% if is_granted('exportCSV', course) %}
+                                    <a href="{{ path('exercise-overview__course-export-csv', {id: course.id}) }}"
+                                       class="dropdown-item"
+                                       ><i class="fas fa-file-export"></i>  {% trans %}course.exportCSV.title{% endtrans %}
+                                    </a>
+                                {% endif %}
+
                                 {% if is_granted('delete', course) %}
                                     <div class="dropdown-divider"></div>
                                     <a href="{{ path('exercise-overview__course--delete', {id: course.id}) }}"

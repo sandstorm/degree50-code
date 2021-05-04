@@ -21,7 +21,7 @@ import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
     currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
     duration: configSelectors.selectVideos(state)[0].duration,
-    prototoypes: videoEditorSelectors.data.selectDenormalizedPrototypes(state),
+    prototypes: videoEditorSelectors.data.selectDenormalizedPrototypes(state),
     currentSolutionId: videoEditorSelectors.data.solutions.selectCurrentId(state),
 })
 
@@ -35,7 +35,7 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const CreateVideoCodeOverlay: FC<Props> = (props) => {
     const { currentTime, duration } = props
-    const initialPrototypeId = props.prototoypes[0]?.id
+    const initialPrototypeId = props.prototypes[0]?.id
 
     const close = () => {
         props.closeOverlay(VideoCodeOverlayIds.create)
@@ -63,7 +63,7 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         updateSelectedCode,
     } = useVideoCodeEdit(duration, initialVideoCode)
 
-    if (props.prototoypes.length < 1) {
+    if (props.prototypes.length < 1) {
         return (
             <Overlay closeCallback={close} title="Neue Codierung">
                 <p tabIndex={0}>Keine Codes vorhanden!</p>

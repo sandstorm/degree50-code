@@ -162,6 +162,8 @@ course:
         title: 'Kurs bearbeiten'
         messages:
             success: 'Kurs erfolgreich gespeichert!'
+    exportCSV:
+        title: 'CSV exportieren'
     editMembers:
         title: 'Kursmitglieder verwalten'
         messages:

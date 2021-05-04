@@ -384,23 +384,9 @@ class Video
         return $this->encodingStarted;
     }
 
-    public function setEncodingStarted(?\DateTimeImmutable $encodingStarted): self
-    {
-        $this->encodingStarted = $encodingStarted;
-
-        return $this;
-    }
-
     public function getEncodingFinished(): ?\DateTimeImmutable
     {
         return $this->encodingFinished;
-    }
-
-    public function setEncodingFinished(?\DateTimeImmutable $encodingFinished): self
-    {
-        $this->encodingFinished = $encodingFinished;
-
-        return $this;
     }
 
     public function getDataPrivacyPermissionsAccepted()

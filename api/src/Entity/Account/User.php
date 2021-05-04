@@ -3,9 +3,7 @@
 namespace App\Entity\Account;
 
 use App\Core\EntityTraits\IdentityTrait;
-use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\UserExerciseInteraction;
-use App\Entity\Video\Video;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,11 +14,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Account\UserRepository")
+ * TODO: possible leak of used email?
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface
 {
     use IdentityTrait;
+
     const ROLE_USER = 'ROLE_USER';
     const ROLE_ADMIN = 'ROLE_ADMIN';
     const ROLE_STUDENT = 'ROLE_STUDENT';
@@ -61,7 +61,7 @@ class User implements UserInterface
 
     /**
      * @var UserExerciseInteraction[]
-     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\UserExerciseInteraction", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\UserExerciseInteraction", mappedBy="user", orphanRemoval=true)
      */
     private $userExerciseInteractions;
 
@@ -207,22 +207,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Exercise[]
-     */
-    public function getCreatedExercises(): Collection
-    {
-        return $this->createdExercises;
-    }
-
-    /**
-     * @return Collection|Video[]
-     */
-    public function getCreatedVideos(): Collection
-    {
-        return $this->createdVideos;
-    }
-
     public function setIsAdmin(bool $isAdmin): void
     {
         $this->setRole(self::ROLE_ADMIN, $isAdmin);
@@ -248,7 +232,7 @@ class User implements UserInterface
         if ($set) {
             $this->roles[] = $roleToSet;
         } else {
-            $this->roles = array_filter($this->roles, function($role) use ($roleToSet) {
+            $this->roles = array_filter($this->roles, function ($role) use ($roleToSet) {
                 return $role !== $roleToSet;
             });
         }
@@ -290,7 +274,8 @@ class User implements UserInterface
         $this->dataPrivacyVersion = $dataPrivacyVersion;
     }
 
-    public function acceptedCurrentDataPrivacy(): bool {
+    public function acceptedCurrentDataPrivacy(): bool
+    {
         return $this->dataPrivacyAccepted && $this->dataPrivacyVersion >= DataPrivacyVoter::DATA_PRIVACY_VERSION;
     }
 
@@ -316,8 +301,8 @@ class User implements UserInterface
         $this->termsOfUseVersion = $termsOfUseVersion;
     }
 
-    public function acceptedCurrentTermsOfUse(): bool {
+    public function acceptedCurrentTermsOfUse(): bool
+    {
         return $this->termsOfUseAccepted && $this->termsOfUseVersion >= TermsOfUseVoter::TERMS_OF_USE_VERSION;
     }
-
 }

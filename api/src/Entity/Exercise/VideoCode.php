@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 // NOTE:
 // This actually what we call a 'VideoCodePrototype' not an actual 'videoCode'!!!
-// The naming was very missleading in the past. It might make sense to
+// The naming was very misleading in the past. It might make sense to
 // change the schema in the future. (I am just currently in the middle of
 // a rather big refactoring and don't know how to easily change the schema and
 // migrate existing data)
@@ -27,8 +27,14 @@ class VideoCode
      */
     private string $name = '';
 
+    // FIXME
+    // Do we actually need the videoCodePrototype description?
+    // As far as I can tell we never make this available inside the frontend anyway.
+    // TODO
+    // (also remove from videoCodePrototypeItem inside the frontend)
+
     /**
-     * @var string
+     * @var ?string
      *
      * @ORM\Column(type="text", nullable=true)
      */

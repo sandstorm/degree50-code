@@ -19,6 +19,7 @@ class EntityTest extends ArchitectureTest
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype::class))
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ServerSideSolutionLists\ServerSideAnnotation::class))
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ServerSideSolutionLists\ServerSideCut::class))
+            ->excludingClassesThat(Selector::haveClassName(\App\Entity\Account\userService::class))
             ->mustInclude()
             ->classesThat(Selector::haveClassName(App\Core\EntityTraits\IdentityTrait::class))
             ->build();

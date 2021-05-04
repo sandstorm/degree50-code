@@ -56,7 +56,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
     private array $clientSideVideoCodePrototypes;
 
     /**
-     * @var string
+     * @var ?string
      */
     private ?string $currentSolutionId;
 
@@ -154,7 +154,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         $clientSideCutIds = $this->addCuts($serverSideCutList, $solutionId);
 
         $serverSideVideoCodePrototypes = $serverSideSolutionLists->getVideoCodePrototypes();
-        $clientSideVideoCodePrototypeIds = $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes, $solutionId);
+        $clientSideVideoCodePrototypeIds = $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes);
 
         $this->clientSideSolutions[$solutionId] = ClientSideSolution::create(
             ClientSideSolutionLists::create(
@@ -246,7 +246,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
      * Creates clientSidePrototypes from serverSidePrototypes and adds them to the clientSideVideoCodePrototypesList
      * Returns the builder itself, so that further methods can be chained.
      */
-    public function addVideoCodePrototoypes(array $serverSideVideoCodePrototypes) {
+    public function addVideoCodePrototypes(array $serverSideVideoCodePrototypes) {
         $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes);
         return $this;
     }
