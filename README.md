@@ -4,6 +4,7 @@
 
 -   [Making a versioned release](#making-a-versioned-release)
     -   [Special notes on master releases](#special-notes-on-master-releases)
+    -   [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
 -   [Development Setup](#development-setup)
     -   [Prerequisites](#prerequisites)
     -   [Get Started with Development](#get-started-with-development)
@@ -60,6 +61,11 @@ To create and deploy a versioned release follow these steps:
 If you are creating a release on master, please make sure to also create a release inside the
 gitlabe repository, link it with the tag you created (or do both inside a single step) and
 also add a meaningful changelog to the release (see past releases).
+
+### Where to find the version number inside the app
+
+1. You can find the version number inside the footer of the login screen
+2. The version is accessible as a global javascript variable `degreeVersion`
 
 ## Development Setup
 
