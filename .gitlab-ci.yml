@@ -68,6 +68,7 @@ deploy-prod:
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
     only:
         - master
+        - tags
     when: manual
     tags:
         - docker
