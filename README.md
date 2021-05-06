@@ -51,9 +51,13 @@ To create and deploy a versioned release follow these steps:
 > -   1.2 **does not work**
 >     For further details have a look at the regex inside `scripts/versioning.sh`
 
+> **Note**: Deployments now currently only work from tags and no longer directly from branches.
+> If you would like to make a deployment to the test-system please create a tag on `dev` an deploy it.
+> It might be helpful to postfix the version with `-dev` (e.g. **v1.2.3-dev-1**).
+
 1. Create a tag (inside the remote repository) on the branch you would like to deploy (e.g. `master`)
 2. Inside **GitLab** open CI/CD->Pipelines
-3. Choose the branch you would like to deploy and run the pipeline
+3. A pipeline will be running for the tag choose this one
 4. Trigger the manual deploy step (either for our test system or the prod system)
 
 ### Special notes on master releases
