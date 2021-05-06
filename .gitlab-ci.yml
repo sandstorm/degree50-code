@@ -53,6 +53,8 @@ test_app:
 package_app:
     stage: package
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    only:
+        - tags
     tags:
         - docker
         - privileged
@@ -67,7 +69,7 @@ deploy-prod:
     stage: deploy
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
     only:
-        - master
+        - tags
     when: manual
     tags:
         - docker
@@ -85,6 +87,8 @@ deploy-prod:
 deploy-test:
     stage: deploy
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
+    only:
+        - tags
     when: manual
     tags:
         - docker
