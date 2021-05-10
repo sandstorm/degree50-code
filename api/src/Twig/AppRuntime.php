@@ -25,6 +25,10 @@ class AppRuntime implements RuntimeExtensionInterface
             return '/var/data/persistent/videos/original/' . $virtualizedFile->getRelativePathAndFilename();
         }
 
+        if ($virtualizedFile->getMountPoint() === 'uploaded_subtitles') {
+            return '/var/data/persistent/subtitles/original/' . $virtualizedFile->getRelativePathAndFilename();
+        }
+
         if ($virtualizedFile->getMountPoint() === 'encoded_videos') {
             return '/data/encoded_videos/' . $virtualizedFile->getRelativePathAndFilename();
         }
@@ -33,6 +37,6 @@ class AppRuntime implements RuntimeExtensionInterface
             return '/data/material/' . $virtualizedFile->getRelativePathAndFilename();
         }
 
-        return 'foo';
+        return 'Error: FileUrl not configured! See <AppRuntime.php>.';
     }
 }

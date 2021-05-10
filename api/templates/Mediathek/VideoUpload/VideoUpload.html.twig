@@ -21,6 +21,23 @@
             <strong>Hinweis:</strong> Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.
         </span>
     </div>
+    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}video.upload.subtitleUploadTitle{% endtrans %}</h3>
+        </header>
+        <div class="dropzone" data-controller="subtitleUpload"
+             data-subtitleUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_subtitles') }}"
+             data-subtitleUpload-remove-endpoint="{{ path('mediathek__subtitle--delete-ajax', {id: uuid}) }}"
+             data-subtitleUpload-video-id="{{ uuid }}"
+             data-subtitleUpload-label="Hier klicken um Untertitel hochzuladen">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <span class="form-text text-muted">
+            Es kann immer nur eine Untertitledatei hochgeladen werden. <br />
+            Untertitel sind optional.<br />
+            <strong>Hinweis:</strong> Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade die Datei an einem schnelleren Internetanschluss hoch.
+        </span>
+    </div>
 
     {{ form_start(form) }}
     <div class="container">

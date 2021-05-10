@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controller;
 
+use App\Admin\EventSubscriber\EasyAdminSubscriber;
 use App\Entity\Account\User;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -10,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -34,6 +36,13 @@ class UserCrudController extends AbstractCrudController
     {
         $id = IdField::new('id');
         $name = TextField::new('email');
+
+        /**
+         * Encrypting is handled by
+         * @see EasyAdminSubscriber::encodePassword()
+         */
+        $password = TextField::new('plain_password', Crud::PAGE_NEW === $pageName ? 'Password' : 'Change password')->setFormType(PasswordType::class);
+
         $isAdmin = BooleanField::new('isAdmin');
         $isStudent = BooleanField::new('isStudent');
         $isDozent = BooleanField::new('isDozent');
@@ -43,9 +52,11 @@ class UserCrudController extends AbstractCrudController
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $name, $isAdmin, $isStudent, $isDozent];
         } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$name, $isAdmin, $isStudent, $isDozent];
+            $name->setRequired(true);
+            $password->setRequired(true);
+            return [$name, $password, $isAdmin, $isStudent, $isDozent];
         } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$name, $isAdmin, $isStudent, $isDozent];
+            return [$name, $password, $isAdmin, $isStudent, $isDozent];
         }
     }
 
@@ -57,4 +68,5 @@ class UserCrudController extends AbstractCrudController
             parent::deleteEntity($entityManager, $entityInstance);
         }
     }
+
 }

@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "videoId": {
+            "type": "string"
+        },
+        "uploadedSubtitleFile": {
+            "type": "string"
+        }
+    },
+    "required": ["videoId", "uploadedSubtitleFile"],
+    "additionalProperties": false
+}
