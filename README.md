@@ -33,6 +33,7 @@
     -   [Additional Notes](#additional-notes)
 -   [Known Issues](#known-issues)
     -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
+-   [Backups](#backups)
 
 <!-- vim-markdown-toc -->
 
@@ -359,3 +360,12 @@ This will forward port `19999` to localhost, so you can open the gui on `http://
 -   The current production system does not have a lot of resources and runs `out of space` quickly.
 -   As quick fix try to remove unused docker resources with `docker system prune`.
 -   Hint: to see how much disc space docker is using, run: `docker system df`.
+
+## Backups
+
+Backups are handled by the TU-Dortmund and include incremental snapshots of both the test system as well as the prod system
+VMs.
+New backups are created on a nightly basis.
+These snapshots are "in-place-backups" meaning that everything that happened on the respective machine between the backup
+and the restoration will be thrown away and the machine will be restored to the state it was in during the backup.
+Restoration is also handled by the TU-Dortmund (just make a call).
