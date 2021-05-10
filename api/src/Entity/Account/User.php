@@ -2,6 +2,8 @@
 
 namespace App\Entity\Account;
 
+use App\Admin\Controller\UserCrudController;
+use App\Admin\EventSubscriber\EasyAdminSubscriber;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\UserExerciseInteraction;
 use App\Security\Voter\DataPrivacyVoter;
@@ -37,6 +39,14 @@ class User implements UserInterface
      * @ORM\Column(type="json")
      */
     private $roles = [];
+
+    /**
+     * This is solely used to define a plain unencrypted password inside the admin ui which will be encrypted and written
+     * to self::password upon persistence.
+     * @see EasyAdminSubscriber
+     * @see UserCrudController
+     */
+    private ?string $plainPassword = '';
 
     /**
      * @var string The hashed password
@@ -304,5 +314,15 @@ class User implements UserInterface
     public function acceptedCurrentTermsOfUse(): bool
     {
         return $this->termsOfUseAccepted && $this->termsOfUseVersion >= TermsOfUseVoter::TERMS_OF_USE_VERSION;
+    }
+
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
     }
 }
