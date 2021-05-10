@@ -12,6 +12,7 @@ import '../scss/App.scss'
 import 'bootstrap'
 import { Application } from 'stimulus'
 import VideoUploadController from './StimulusControllers/VideoUploadController'
+import SubtitlesUploadController from './StimulusControllers/SubtitlesUploadController'
 import MaterialUploadController from './StimulusControllers/MaterialUploadController'
 import ReactController from './StimulusControllers/ReactController'
 import ExercisePhaseController from './StimulusControllers/ExercisePhaseController'
@@ -25,6 +26,7 @@ import { initColors, ORIGINAL_COLORS } from 'ntc-ts'
 const application = Application.start()
 
 application.register('videoUpload', VideoUploadController)
+application.register('subtitleUpload', SubtitlesUploadController)
 application.register('materialUpload', MaterialUploadController)
 application.register('react', ReactController)
 application.register('exercisePhase', ExercisePhaseController)

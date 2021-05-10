@@ -11,7 +11,7 @@ use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ExerciseService;
-use App\Mediathek\Controller\VideoService;
+use App\Mediathek\Service\VideoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;

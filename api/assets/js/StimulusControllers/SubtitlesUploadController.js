@@ -6,17 +6,14 @@ import Axios from 'axios'
 Dropzone.autoDiscover = false
 
 /**
- * Responsible for the video upload dropzone form element.
+ * Responsible for the subtitle upload dropzone form element.
  * For further information have a look at UploadListener.php
  */
 export default class extends Controller {
     connect() {
-        // Submit button inside the footer
-        const formSubmitButton = document.getElementById('video_save')
-        formSubmitButton.setAttribute('disabled', '')
         const endpoint = this.data.get('endpoint')
         const removeEndpoint = this.data.get('removeEndpoint')
-        const id = this.data.get('id')
+        const videoId = this.data.get('videoId')
         const uploadLabel = this.data.get('label')
 
         this.element.classList.add('dropzone')
@@ -29,21 +26,21 @@ export default class extends Controller {
             retryChunks: true,
             dictDefaultMessage: uploadLabel,
             maxFiles: 1,
-            maxFilesize: 10000, // 10 GB
-            acceptedFiles: 'video/*,video/mp4',
+            maxFilesize: 0.1, // 100 MB
+            acceptedFiles: '.vtt',
             addRemoveLinks: true,
             init: function() {
-                this.on('addedfile', function(file) {
+                this.on('addedfile', function() {
                     if (this.files.length > 1) {
                         this.removeFile(this.files[0])
                     }
                 })
             },
-            params: function params(files, xhr, chunk) {
+            params: function params(_, _xhr, chunk) {
                 if (chunk) {
                     return {
-                        id: id,
-                        target: 'video',
+                        id: videoId,
+                        target: 'subtitle',
 
                         dzuuid: chunk.file.upload.uuid,
                         dzchunkindex: chunk.index,
@@ -55,24 +52,20 @@ export default class extends Controller {
                 }
 
                 return {
-                    id: id,
-                    target: 'video',
+                    id: videoId,
+                    target: 'subtitle',
                 }
-            },
-            success: function() {
-                formSubmitButton.removeAttribute('disabled')
             },
             removedfile: function(file) {
                 Axios.post(removeEndpoint)
                     .then(function() {
-                        formSubmitButton.setAttribute('disabled', '')
                         let _ref
                         return (_ref = file.previewElement) != null
                             ? _ref.parentNode.removeChild(file.previewElement)
                             : void 0
                     })
                     .catch(function(e) {
-                        console.error('>>>>> remove video failed', e)
+                        console.error('>>>>> remove subtitle failed', e)
                     })
             },
         })

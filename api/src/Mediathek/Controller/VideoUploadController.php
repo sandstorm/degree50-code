@@ -9,11 +9,14 @@ use App\Entity\Account\User;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Mediathek\EventListener\UploadListener;
 use App\Mediathek\Form\VideoType;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Ramsey\Uuid\Uuid;
+use App\Mediathek\Service\VideoService;
+use App\VideoEncoding\MessageHandler\WebEncodingHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -26,6 +29,18 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
+ * Handles the upload of video and subtitles files inside the mediathek.
+ * The locations where the files are saved to are specified inside @see {oneup_flysystem.yaml}.
+ *
+ * As soon as the videos form data is beeing submitted, we dispatch a
+ * @see {VideoEncoding\Message\WebEncodingTask}, which triggers the encoding of the
+ * video file and outputs the result into the encoded_videos/ directory.
+ *
+ * The application then makes only use of the encoded_files, but not of the originally uploaded videos (these are deleted after the encoding completion).
+ *
+ * NOTE: The upload of the original files which are later encoded by the WebEncodingTask is handled by our UploadListener-Implementation
+ * @see UploadListener
+ *
  * @IsGranted("ROLE_USER")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
@@ -41,7 +56,16 @@ class VideoUploadController extends AbstractController
     private AppRuntime $appRuntime;
     private KernelInterface  $kernel;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, MessageBusInterface $messageBus, Security $security, VideoRepository $videoRepository, VideoService $videoService, AppRuntime $appRuntime, KernelInterface $kernel)
+    public function __construct(
+        TranslatorInterface $translator,
+        DoctrineIntegratedEventStore $eventStore,
+        MessageBusInterface $messageBus,
+        Security $security,
+        VideoRepository $videoRepository,
+        VideoService $videoService,
+        AppRuntime $appRuntime,
+        KernelInterface $kernel
+    )
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -54,10 +78,16 @@ class VideoUploadController extends AbstractController
     }
 
     /**
+     * Either shows the video upload form or redirects to the mediathek if the form has been submitted.
+     * Afte a successful submit a WebEncodingTask is being dispatched, so that the original video gets encoded.
+     * @see WebEncodingTask
+     * @see WebEncodingHandler
+     *
      * @Route("/video/uploads/{id?}", name="mediathek__video--upload")
      */
-    public function videoUpload(Request $request, Course $course = null): Response
+    public function showVideoUploadForm(Request $request, Course $course = null): Response
     {
+        // TODO refactor!
         $videoUuid = $request->query->get('videoUuid', null);
 
         if (!$videoUuid) {
@@ -69,9 +99,11 @@ class VideoUploadController extends AbstractController
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($videoUuid);
         $this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
+
         if (!$video) {
             $video = new Video($videoUuid);
         }
+
         /* @var User $user */
         $user = $this->getUser();
         $video->setCreator($user);
@@ -185,11 +217,11 @@ class VideoUploadController extends AbstractController
     }
 
     /**
-     * Used from VideoUploadController.js to remove newly uploaded videos
+     * Triggered by VideoUploadController.js to remove newly uploaded videos
      *
      * @Route("/video/delete-ajax/{id}", name="mediathek__video--delete-ajax")
      */
-    public function deleteAjax(AppRuntime $appRuntime, Video $video): Response
+    public function deleteAjax(Video $video): Response
     {
         /* @var User $user */
         $user = $this->getUser();
@@ -198,15 +230,26 @@ class VideoUploadController extends AbstractController
             return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
         }
 
-        // remove uploaded video
-        $fileUrl = $appRuntime->virtualizedFileUrl($video->getUploadedVideoFile());
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->kernel->getProjectDir().$fileUrl);
+        $this->videoService->removeOriginalVideoFile($video);
 
-        $this->eventStore->addEvent('VideoDeleted', [
-            'videoId' => $video->getId(),
-            'uploadedFile' => $fileUrl
-        ]);
+        return Response::create('OK');
+    }
+
+    /**
+     * Triggered by VideoUploadController.js to remove newly uploaded subtitles
+     *
+     * @Route("/video/delete-subtitle-ajax/{id}", name="mediathek__subtitle--delete-ajax")
+     */
+    public function deleteSubtitleAjax(Video $video)
+    {
+        /* @var User $user */
+        $user = $this->getUser();
+
+        if ($video->getCreator() !== $user) {
+            return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
+        }
+
+        $this->videoService->removeOriginalSubtitleFile($video);
 
         return Response::create('OK');
     }

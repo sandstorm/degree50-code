@@ -7,6 +7,8 @@ namespace App\VideoEncoding\MessageHandler;
 use App\Core\FileSystemService;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Mediathek\Controller\VideoUploadController;
+use App\Mediathek\Service\VideoService;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,21 +19,43 @@ use FFMpeg\Format\Video\X264;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
+/**
+ * Encodes freshly uploaded videos
+ * @see VideoUploadController
+ *
+ * NOTE: If you make changes to a handler you need to manually stop the worker and restart it,
+ * to apply and test the changes.
+ *
+ * Stop workers:
+ * ./symfony-console messenger:stop-workers
+ *
+ * Start workers:
+ * ./symfony-console messenger:consume async -vV
+ */
 class WebEncodingHandler implements MessageHandlerInterface
 {
     private LoggerInterface $logger;
     private FileSystemService $fileSystemService;
     private VideoRepository $videoRepository;
+    private VideoService $videoService;
     private EntityManagerInterface $entityManager;
     private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(LoggerInterface $logger, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(
+        LoggerInterface $logger,
+        FileSystemService $fileSystemService,
+        VideoRepository $videoRepository,
+        EntityManagerInterface $entityManager,
+        DoctrineIntegratedEventStore $eventStore,
+        VideoService $videoService
+    )
     {
         $this->logger = $logger;
         $this->fileSystemService = $fileSystemService;
         $this->videoRepository = $videoRepository;
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
+        $this->videoService = $videoService;
     }
 
 
@@ -71,7 +95,12 @@ class WebEncodingHandler implements MessageHandlerInterface
             $this->encodeHLS($config, $mp4Url, $localOutputDirectory);
 
             $this->createPreviewImage($config, $mp4Url, $localOutputDirectory, $videoDuration);
-            $this->createEmptyDefaultSubtitlesFile($localOutputDirectory);
+
+            if (!empty($video->getUploadedSubtitleFile())) {
+                $this->copyUploadedSubtitleFileToOutputDirectory($video, $localOutputDirectory);
+            } else {
+                $this->createEmptyDefaultSubtitlesFile($localOutputDirectory);
+            }
 
             $video->setVideoDuration($videoDuration);
             $video->setEncodingStatus(Video::ENCODING_FINISHED);
@@ -86,6 +115,10 @@ class WebEncodingHandler implements MessageHandlerInterface
             $video->setEncodedVideoDirectory($encodingTask->getDesiredOutputDirectory());
 
             $this->pingAndReconnectDB();
+
+            // Remove intermediate uploaded files to save disc space
+            $this->videoService->removeOriginalSubtitleFile($video);
+            $this->videoService->removeOriginalVideoFile($video);
 
             $this->entityManager->persist($video);
             $this->entityManager->flush();
@@ -123,6 +156,12 @@ class WebEncodingHandler implements MessageHandlerInterface
         $ffmpegVideo->save(new X264('libmp3lame'), $localOutputDirectory . '/x264.mp4');
 
         $this->logger->info('Finished encoding MP4 of file <' . $inputVideoFilename . '>',);
+    }
+
+    private function copyUploadedSubtitleFileToOutputDirectory(Video $video, $localOutputDirectory) {
+        $uploadedFilePath = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedSubtitleFile());
+        $destinationPath = $localOutputDirectory . '/subtitles.vtt';
+        copy($uploadedFilePath, $destinationPath);
     }
 
     private function createEmptyDefaultSubtitlesFile($localOutputDirectory) {

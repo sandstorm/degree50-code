@@ -26,7 +26,7 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\Controller\ExerciseService;
 use App\Exercise\Controller\SolutionService;
-use App\Mediathek\Controller\VideoService;
+use App\Mediathek\Service\VideoService;
 use App\Repository\Exercise\ExerciseRepository;
 use App\Repository\Video\VideoRepository;
 use Behat\Behat\Context\Context;
@@ -429,6 +429,7 @@ final class DegreeContext implements Context
     {
         $expected = json_decode($expectedJSON->getRaw(), true);
         $actual = json_decode($this->clientSideJSON, true);
+
         assertEqualsCanonicalizing($expected, $actual);
     }
 
