@@ -11,6 +11,11 @@ oneup_uploader:
             storage:
                 type: flysystem
                 filesystem: oneup_flysystem.uploaded_subtitles_filesystem
+        uploaded_audio_descriptions:
+            frontend: dropzone
+            storage:
+                type: flysystem
+                filesystem: oneup_flysystem.uploaded_audio_descriptions_filesystem
         uploaded_material:
             frontend: dropzone
             storage:

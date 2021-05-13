@@ -2,8 +2,8 @@
 
 namespace App\Entity\Video;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\Course;
@@ -38,7 +38,7 @@ class Video
     private string $title = '';
 
     /**
-     * @var string
+     * @var ?string
      *
      * @ORM\Column(type="text", nullable=true)
      */
@@ -74,6 +74,11 @@ class Video
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
+    private ?VirtualizedFile $uploadedAudioDescriptionFile;
+
+    /**
+     * @ORM\Embedded(class=VirtualizedFile::class)
+     */
     private ?VirtualizedFile $encodedVideoDirectory;
 
     /**
@@ -85,7 +90,7 @@ class Video
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdVideos")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $creator;
+    private User $creator;
 
     /**
      * @var \DateTimeImmutable|null
@@ -191,7 +196,7 @@ class Video
     }
 
     /**
-     * @param VirtualizedFile $uploadedVideoFile
+     * @param ?VirtualizedFile $uploadedVideoFile
      */
     public function setUploadedVideoFile(?VirtualizedFile $uploadedVideoFile): void
     {
@@ -247,7 +252,7 @@ class Video
         return $this->creator;
     }
 
-    public function setCreator(?User $creator): self
+    public function setCreator(User $creator): self
     {
         $this->creator = $creator;
 
@@ -312,7 +317,7 @@ class Video
      *
      * @param float $videoDuration
      */
-    public function setVideoDuration($videoDuration): void
+    public function setVideoDuration(float $videoDuration): void
     {
         $this->videoDuration = $videoDuration;
     }
@@ -358,7 +363,8 @@ class Video
         return $this->createdAt;
     }
 
-    public function getAsArray(AppRuntime $appRuntime): ClientSideCutVideo {
+    public function getAsArray(AppRuntime $appRuntime): ClientSideCutVideo
+    {
         $videoUrl = $appRuntime->virtualizedFileUrl($this->getEncodedVideoDirectory());
 
         return ClientSideCutVideo::fromVideoEntity(
@@ -407,5 +413,15 @@ class Video
     public function setUploadedSubtitleFile(?VirtualizedFile $uploadedSubtitleFile)
     {
         $this->uploadedSubtitleFile = $uploadedSubtitleFile;
+    }
+
+    public function getUploadedAudioDescriptionFile(): VirtualizedFile
+    {
+        return $this->uploadedAudioDescriptionFile;
+    }
+
+    public function setUploadedAudioDescriptionFile(?VirtualizedFile $uploadedAudioDescriptionFile)
+    {
+        $this->uploadedAudioDescriptionFile = $uploadedAudioDescriptionFile;
     }
 }

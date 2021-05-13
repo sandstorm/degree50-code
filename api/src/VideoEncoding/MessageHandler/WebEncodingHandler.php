@@ -12,10 +12,9 @@ use App\Mediathek\Service\VideoService;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
+use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
-use FFMpeg\Coordinate\TimeCode;
-use FFMpeg\Format\Video\X264;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
@@ -30,7 +29,8 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  * ./symfony-console messenger:stop-workers
  *
  * Start workers:
- * ./symfony-console messenger:consume async -vV
+ * ./symfony-console messenger:consume async -vv
+ * Note: the -v|-vv|-vvv option determines the log level
  */
 class WebEncodingHandler implements MessageHandlerInterface
 {
@@ -74,8 +74,6 @@ class WebEncodingHandler implements MessageHandlerInterface
             $this->entityManager->persist($video);
             $this->entityManager->flush();
 
-            $inputVideoFilename = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
-
             $config = [
                 'ffmpeg.binaries' => '/usr/bin/ffmpeg',
                 'ffprobe.binaries' => '/usr/bin/ffprobe',
@@ -86,7 +84,7 @@ class WebEncodingHandler implements MessageHandlerInterface
             $outputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
             $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
 
-            $this->encodeMP4($config, $inputVideoFilename, $localOutputDirectory);
+            $this->encodeMP4WithAudioDescription($config, $video, $localOutputDirectory);
 
             // We use our encoded mp4 file as baseline for further encoding to HLS
             // That way we can guarantee that the resulting HLS will be playable.
@@ -118,6 +116,7 @@ class WebEncodingHandler implements MessageHandlerInterface
 
             // Remove intermediate uploaded files to save disc space
             $this->videoService->removeOriginalSubtitleFile($video);
+            $this->videoService->removeOriginalAudioDescriptionFile($video);
             $this->videoService->removeOriginalVideoFile($video);
 
             $this->entityManager->persist($video);
@@ -147,57 +146,215 @@ class WebEncodingHandler implements MessageHandlerInterface
         return $duration;
     }
 
-    private function encodeMP4(array $config, string $inputVideoFilename, string $localOutputDirectory)
+    private function encodeMP4WithAudioDescription(array $config, Video $video, string $localOutputDirectory)
     {
-        $this->logger->info('Start encoding MP4 of file <' . $inputVideoFilename . '>',);
+        $inputVideoFileName = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
+        $inputAudioDescriptionFileName = empty($video->getUploadedAudioDescriptionFile()->getVirtualPathAndFilename())
+            ? null
+            : $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedAudioDescriptionFile());
+
+        $this->logger->info('Start encoding MP4 of file <' . $inputVideoFileName . '>.');
+
+        /**
+         * We encode the audio description file into the video when we initially encode it to MP4
+         */
+
+        /**
+         * Build ffmpeg command.
+         * Why:
+         * We use a custom ffmpeg command because we are unable to model our needs
+         * and expected output with the \FFMpeg\FFMpeg package.
+         * We build the command as an array and use the Driver\FFMpegDriver to execute it.
+         */
+
+        $inputs = [
+            '-y', # overwrite previous outputs
+            '-i', "$inputVideoFileName", # video input (contains the prepared video with two audio streams)
+        ];
+
+        $inputMapping = [
+            '-map', '0:v', # map video to video stream #0
+            '-map', '0:a:0', # map first audio to audio stream #0
+        ];
+
+        # add audio description stream if available
+        if ($inputAudioDescriptionFileName) {
+            $this->logger->info('Adding AudioDescriptions of file <' . $inputAudioDescriptionFileName . '> to MP4');
+
+            # add audio description stream as input
+            $inputs[] = '-i';
+            $inputs[] = "$inputAudioDescriptionFileName";
+            # map audio stream of second input to audio #1
+            $inputMapping[] = '-map';
+            $inputMapping[] = '1:a';
+        }
+
+        $conversion = [
+            '-c:v', 'libx264', # convert video stream to h264
+            # WHY: We use aac over libmp3lame as the latter produced unplayable audio streams for videoJS (m4a).
+            # Error msg: "VIDEOJS: ERROR: DOMException: Failed to execute 'addSourceBuffer' on 'MediaSource': The type provided ('audio/mp4;codecs="mp4a.40.34"') is unsupported."
+            '-c:a', 'aac', # convert all audio streams to AAC
+            '-shortest', # the new duration will be determined by the shortest input
+        ];
+
+        $outputTarget = [
+            "$localOutputDirectory/x264.mp4"
+        ];
+
+        $finalCommand = array_merge($inputs, $inputMapping, $conversion, $outputTarget);
 
         $ffmpeg = FFMpeg::create($config, $this->logger);
-        $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
-        $ffmpegVideo->save(new X264('libmp3lame'), $localOutputDirectory . '/x264.mp4');
+        $ffmpeg->getFFMpegDriver()->command($finalCommand, false);
 
-        $this->logger->info('Finished encoding MP4 of file <' . $inputVideoFilename . '>',);
+        $this->logger->info("Finished encoding MP4 of file <$inputVideoFileName> to $localOutputDirectory/x264.mp4");
     }
 
-    private function copyUploadedSubtitleFileToOutputDirectory(Video $video, $localOutputDirectory) {
+    private function copyUploadedSubtitleFileToOutputDirectory(Video $video, $localOutputDirectory)
+    {
         $uploadedFilePath = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedSubtitleFile());
         $destinationPath = $localOutputDirectory . '/subtitles.vtt';
         copy($uploadedFilePath, $destinationPath);
     }
 
-    private function createEmptyDefaultSubtitlesFile($localOutputDirectory) {
+    private function createEmptyDefaultSubtitlesFile($localOutputDirectory)
+    {
         $path = $localOutputDirectory . '/subtitles.vtt';
 
         file_put_contents($path, '');
     }
 
-    private function encodeHLS(array $config, string $inputVideoFilename, string $localOutputDirectory)
+    private function encodeHLS(array $config, string $inputVideoFileName, string $localOutputDirectory)
     {
-        $this->logger->info('Start encoding HLS of file <' . $inputVideoFilename . '>',);
+        $this->logger->info('Start encoding HLS of file <' . $inputVideoFileName . '>');
 
-        $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
+        /**
+         * We count the input video (generated mp4 @see $encodeMP4WithAudioDescription) to determine
+         * whether we have just a single audio stream or both original audio and audio description streams.
+         */
+        $ffmpeg = FFMpeg::create($config, $this->logger);
+        $countOfAudioStreams = $ffmpeg->getFFProbe()->streams($inputVideoFileName)->audios()->count();
 
-        $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
+        $this->logger->info('Found ' . $countOfAudioStreams . ' audio streams.');
 
-        $ffmpegVideo->hls()
-            ->fragmentedMP4()
-            ->x264()
-            ->autoGenerateRepresentations([720, 360]) // You can limit the number of representatons
-            ->save($localOutputDirectory . '/hls.m3u8');
+        /**
+         * Build ffmpeg command.
+         * Why:
+         * We use a custom ffmpeg command because we are unable to model our needs
+         * and expected output with the \Streaming\FFMpeg package.
+         * We build the command as an array and use the Driver\FFMpegDriver to execute it.
+         */
 
-        $this->logger->info('Finished encoding HLS of file <' . $inputVideoFilename . '>',);
+        $inputMapping = [
+            '-y', # overwrite previous outputs
+            '-i', "$inputVideoFileName", # video input (contains the prepared video with two audio streams)
+            '-map', '0:v', # map video to video stream #0
+            '-map', '0:v', # map video to video stream #1
+            '-map', '0:v', # map video to video stream #2
+            '-map', '0:a:0', # map first audio to audio stream #0
+        ];
 
+        # WHY: conditional parameters depending on presence of additional audio (description) stream
+        if ($countOfAudioStreams > 1) {
+            # map second audio to audio stream #1 IF it is available\
+            $inputMapping[] = '-map';
+            $inputMapping[] = '0:a:1';
+            # This map describes the structure of the streams.
+            # We have 3 different video stream that use the audio of audio_group "audio" and two audio streams in that audio group.
+            # Note: unfortunately we can not set metadata like TITLE here. The name:XXX prop is only used for file naming.\
+            $inputMapping[] = '-var_stream_map';
+            $inputMapping[] = 'v:0,name:360p,agroup:audio v:1,agroup:audio,name:720p v:2,agroup:audio,name:1080p a:0,agroup:audio,name:Original,language:DE,default:YES a:1,agroup:audio,name:Descriptions,language:DE,default:NO';
+        } else {
+            # This map describes the structure of the streams.
+            # We have 3 different video stream that use the audio of audio_group "audio" and one audio stream in that audio group.
+            # Note: unfortunately we can not set metadata like TITLE here. The name:XXX prop is only used for file naming.\
+            $inputMapping[] = '-var_stream_map';
+            $inputMapping[] = 'v:0,agroup:audio,name:360p v:1,agroup:audio,name:720p v:2,agroup:audio,name:1080p a:0,agroup:audio,name:Original,language:DE,default:YES';
+        }
+
+        # convert streams to wanted format.
+        $encoding = [
+            # encode videos to h264 (again) (this has to be done for the "-filter:v:x" option to work)
+            '-c:v:0', 'libx264',
+            '-c:v:1', 'libx264',
+            '-c:v:2', 'libx264',
+            '-c:a', 'copy', # copy codec of any audio stream (we assume all audio streams already are encoded correctly because we create the baseline mp4 @see encodeMP4WithAudioDescription
+        ];
+
+        $preConversionHlsOptions = [
+            '-bf', '1',
+            '-g', '48',
+            '-keyint_min', '48',
+            '-sc_threshold', '0',
+            '-hls_list_size', '0',
+            '-hls_time', '10',
+            '-hls_allow_cache', '1',
+        ];
+
+        # low res video stream rendition
+        $lowResStream = [
+            '-b:v:0', '533k',
+            '-filter:v:0', "scale=w='min(640,iw)':h='min(360,ih)':force_original_aspect_ratio=decrease",
+        ];
+
+        # medium res video stream rendition
+        $mediumResStream = [
+            '-b:v:1', '710k',
+            '-filter:v:1', "scale=w='min(1280,iw)':h='min(720,ih)':force_original_aspect_ratio=decrease",
+        ];
+
+        # high res video stream rendition
+        $highResStream = [
+            '-b:v:2', '1066k',
+            '-filter:v:2', "scale=w='min(1920,iw)':h='min(1080,ih)':force_original_aspect_ratio=decrease",
+        ];
+
+        $generalHlsOptions = [
+            '-strict', '-2',
+            '-master_pl_name', 'hls.m3u8', # set the name of the master playlist
+            '-hls_playlist_type', 'vod', # set playlist type to video on demand
+            '-hls_segment_filename', "$localOutputDirectory/hls_%v_%04d.ts",
+            "$localOutputDirectory/hls_%v.m3u8",
+        ];
+
+        $finalCommand = array_merge($inputMapping, $encoding, $preConversionHlsOptions, $lowResStream, $mediumResStream, $highResStream, $generalHlsOptions);
+
+        $ffmpeg->getFFMpegDriver()->command($finalCommand, false);
+
+        /**
+         * WHY: In order to enable the videoJS player to show the correct names of the audio streams
+         *      we have to change them in the master playlist file (hls.m3u8) as we are currently
+         *      unable to set them correctly with ffmpeg.
+         *
+         *      We read the generated master playlist file into memory and search/replace the names
+         *      from "audio_3" and "audio_4" to "Original" and "Deskription" respectively.
+         *
+         *      As of now we are unsure if the auto generated names by ffmpeg are consistent so we
+         *      use a regex to accommodate for potential changes of the digit (e.g. "audio_1" or "audio23").
+         *
+         *      We also add the "CHARACTERISTICS" metadata "public.accessibility.describes-video" to the
+         *      audio descriptions stream to indicate it's purpose to the videoJS player and thus to the user.
+         */
+        $masterPlaylist = file_get_contents("$localOutputDirectory/hls.m3u8");
+
+        $masterPlaylist = preg_replace('/NAME="audio_\d+"/', 'NAME="Original"', $masterPlaylist, 1);
+        $masterPlaylist = preg_replace('/NAME="audio_\d+"/', 'NAME="Deskription"', $masterPlaylist, 1);
+        $masterPlaylist = preg_replace('/hls_Descriptions.m3u8"/', 'hls_Descriptions.m3u8",CHARACTERISTICS="public.accessibility.describes-video"', $masterPlaylist, 1);
+
+        file_put_contents("$localOutputDirectory/hls.m3u8", $masterPlaylist);
+
+        $this->logger->info('Finished encoding HLS of file <' . $inputVideoFileName . '>');
     }
 
     private function createPreviewImage(array $config, string $inputVideoFilename, string $localOutputDirectory, float $videoDuration)
     {
-        $this->logger->info('Create preview image for <' . $inputVideoFilename . '>',);
+        $this->logger->info('Create preview image for <' . $inputVideoFilename . '>');
 
         $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
         $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
         $frame = $ffmpegVideo->frame(TimeCode::fromSeconds($videoDuration * 0.25));
-        $frame->save($localOutputDirectory. '/thumbnail.jpg');
+        $frame->save($localOutputDirectory . '/thumbnail.jpg');
 
-        $this->logger->info('Finished creation of preview image for <' . $inputVideoFilename . '>',);
+        $this->logger->info('Finished creation of preview image for <' . $inputVideoFilename . '>');
     }
 
     private function pingAndReconnectDB()

@@ -13,6 +13,7 @@ import 'bootstrap'
 import { Application } from 'stimulus'
 import VideoUploadController from './StimulusControllers/VideoUploadController'
 import SubtitlesUploadController from './StimulusControllers/SubtitlesUploadController'
+import AudioDescriptionUploadController from './StimulusControllers/AudioDescriptionUploadController.js'
 import MaterialUploadController from './StimulusControllers/MaterialUploadController'
 import ReactController from './StimulusControllers/ReactController'
 import ExercisePhaseController from './StimulusControllers/ExercisePhaseController'
@@ -27,6 +28,7 @@ const application = Application.start()
 
 application.register('videoUpload', VideoUploadController)
 application.register('subtitleUpload', SubtitlesUploadController)
+application.register('audioDescriptionUpload', AudioDescriptionUploadController)
 application.register('materialUpload', MaterialUploadController)
 application.register('react', ReactController)
 application.register('exercisePhase', ExercisePhaseController)

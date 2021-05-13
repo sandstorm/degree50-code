@@ -19,7 +19,6 @@ use App\Mediathek\Service\VideoService;
 use App\VideoEncoding\MessageHandler\WebEncodingHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -29,10 +28,10 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Handles the upload of video and subtitles files inside the mediathek.
+ * Handles the upload of video, audio and subtitles files inside the mediathek.
  * The locations where the files are saved to are specified inside @see {oneup_flysystem.yaml}.
  *
- * As soon as the videos form data is beeing submitted, we dispatch a
+ * As soon as the videos form data is being submitted, we dispatch a
  * @see {VideoEncoding\Message\WebEncodingTask}, which triggers the encoding of the
  * video file and outputs the result into the encoded_videos/ directory.
  *
@@ -79,7 +78,7 @@ class VideoUploadController extends AbstractController
 
     /**
      * Either shows the video upload form or redirects to the mediathek if the form has been submitted.
-     * Afte a successful submit a WebEncodingTask is being dispatched, so that the original video gets encoded.
+     * After a successful submit a WebEncodingTask is being dispatched, so that the original video gets encoded.
      * @see WebEncodingTask
      * @see WebEncodingHandler
      *
@@ -250,6 +249,25 @@ class VideoUploadController extends AbstractController
         }
 
         $this->videoService->removeOriginalSubtitleFile($video);
+
+        return Response::create('OK');
+    }
+
+    /**
+     * Triggered by AudioDescriptionUploadController.js to remove newly uploaded audioDescriptions
+     *
+     * @Route("/video/delete-audio-description-ajax/{id}", name="mediathek__audio_description--delete-ajax")
+     */
+    public function deleteAudioDescriptionAjax(Video $video)
+    {
+        /* @var User $user */
+        $user = $this->getUser();
+
+        if ($video->getCreator() !== $user) {
+            return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
+        }
+
+        $this->videoService->removeOriginalAudioDescriptionFile($video);
 
         return Response::create('OK');
     }
