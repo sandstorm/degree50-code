@@ -96,7 +96,7 @@ class WebEncodingHandler implements MessageHandlerInterface
 
             $this->createPreviewImage($config, $mp4Url, $localOutputDirectory, $videoDuration);
 
-            if (!empty($video->getUploadedSubtitleFile())) {
+            if (!empty($video->getUploadedSubtitleFile()->getVirtualPathAndFilename())) {
                 $this->copyUploadedSubtitleFileToOutputDirectory($video, $localOutputDirectory);
             } else {
                 $this->createEmptyDefaultSubtitlesFile($localOutputDirectory);

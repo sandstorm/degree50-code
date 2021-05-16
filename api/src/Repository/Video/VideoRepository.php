@@ -7,6 +7,7 @@ use App\Entity\Account\User;
 use App\Entity\Video\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
 /**
  * @method Video|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,19 +17,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class VideoRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private LoggerInterface $logger;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        LoggerInterface $logger
+    )
     {
         parent::__construct($registry, Video::class);
+        $this->logger = $logger;
     }
 
     public function findByCreatorWithoutCutVideos(User $user) {
         $qb = $this->createQueryBuilder('v');
 
-        // We only want to show videos which where manually uploaded.
-        // Therefore we remove cuts, by checking if the video has an uploadedVideoFile filename set
+        // We only want to show videos which where manually uploaded, and not
+        // cut videos. Therefore we left join with the solutions table
+        // and check if the video is actually a cut video on the solution and if so, filter it out.
         return $qb
+            ->leftJoin(
+                'App\Entity\Exercise\Solution',
+                'solution',
+                \Doctrine\ORM\Query\Expr\Join::WITH,
+                'v.id = solution.cutVideo'
+            )
             ->where('v.creator = :user')
-            ->andWhere('v.uploadedVideoFile.virtualPathAndFilename IS NOT NULL')
+            ->andWhere('solution.cutVideo IS NULL')
             ->setParameter('user', $user)
             ->orderBy('v.createdAt', 'DESC')
             ->getQuery()

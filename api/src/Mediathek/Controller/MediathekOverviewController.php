@@ -7,6 +7,7 @@ use App\Entity\Account\User;
 use App\Entity\Video\Video;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Video\VideoRepository;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,14 +22,20 @@ class MediathekOverviewController extends AbstractController
 {
     private VideoRepository $videoRepository;
     private CourseRepository $courseRepository;
+    private LoggerInterface $logger;
 
     /**
      * @param VideoRepository $videoRepository
      */
-    public function __construct(VideoRepository $videoRepository, CourseRepository $courseRepository)
+    public function __construct(
+        VideoRepository $videoRepository,
+        CourseRepository $courseRepository,
+        LoggerInterface $logger
+    )
     {
         $this->videoRepository = $videoRepository;
         $this->courseRepository = $courseRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -64,12 +71,17 @@ class MediathekOverviewController extends AbstractController
             'id' => 'ownVideos',
             'videos' => $this->videoRepository->findByCreatorWithoutCutVideos($user)
         ];
+
         $this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
         $otherVideos = [
             'id' => 'otherVideos',
             'videos' => []
         ];
+
+        // TODO
+        // We should filter cut videos or make it possible to actually play them back.
+        // Currently cut videos by other creators are not playable inside the mediathek, but are shown anyway.
 
         /* @var $video Video */
         foreach ($videos as $video) {
