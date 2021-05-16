@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Video\VideoRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Video
@@ -44,20 +44,40 @@ class Video
      */
     private ?string $description = '';
 
-    /**
-     * @ORM\Embedded(class=VirtualizedFile::class)
-     */
-    private ?VirtualizedFile $uploadedVideoFile;
+    // NOTE
+    // Previously these VirtualizedFiles below where annotated as optional.
+    // The thought process behind this probably was, that they where set at certain
+    // stages by the application and that they should be nullable in some way.
+    //
+    // However they never actually where nullable in the first place, because these
+    // are Doctrine embeddables and they will therefore always be initalized with
+    // the VirtualizedFile class no matter if their column is set to NULL inside the
+    // database or not.
+    //
+    // This could lead to weird situations, where one would expect to receive NULL
+    // by the getters in this class and the getters still returned the class.
+    // (this also meant, that it was not possible to successfully use is_null() or empty())
+    //
+    // Now the code makes this explicit and is no longer optional.
+    // To check if you actually have some kind of value you should now rely on the methods
+    // defined on VirtualizedFile itself and e.g. check their return values for NULL etc.
+    // For example if $uploadedVideoFile would be NULL inside the database,
+    // its respective VirtualizedFile->getVirtualPathAndFilename() would also return NULL.
 
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private ?VirtualizedFile $uploadedSubtitleFile;
+    private VirtualizedFile $uploadedVideoFile;
 
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private ?VirtualizedFile $encodedVideoDirectory;
+    private VirtualizedFile $uploadedSubtitleFile;
+
+    /**
+     * @ORM\Embedded(class=VirtualizedFile::class)
+     */
+    private VirtualizedFile $encodedVideoDirectory;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhase", mappedBy="videos")
@@ -168,7 +188,7 @@ class Video
     /**
      * @return ?VirtualizedFile
      */
-    public function getUploadedVideoFile(): ?VirtualizedFile
+    public function getUploadedVideoFile(): VirtualizedFile
     {
         return $this->uploadedVideoFile;
     }
@@ -184,7 +204,7 @@ class Video
     /**
      * @return ?VirtualizedFile
      */
-    public function getEncodedVideoDirectory(): ?VirtualizedFile
+    public function getEncodedVideoDirectory(): VirtualizedFile
     {
         return $this->encodedVideoDirectory;
     }
@@ -382,7 +402,7 @@ class Video
         $this->dataPrivacyPermissionsAccepted = $dataPrivacyPermissionsAccepted;
     }
 
-    public function getUploadedSubtitleFile(): ?VirtualizedFile
+    public function getUploadedSubtitleFile(): VirtualizedFile
     {
         return $this->uploadedSubtitleFile;
     }
