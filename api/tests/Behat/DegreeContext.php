@@ -42,10 +42,15 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
+
+use function PHPUnit\Framework\assertCount;
+use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
 use function PHPUnit\Framework\assertIsObject;
 use function PHPUnit\Framework\assertNotEquals;
+use function PHPUnit\Framework\assertThat;
+use function PHPUnit\Framework\assertTrue;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -74,6 +79,8 @@ final class DegreeContext implements Context
 
     /** @var TextFileDto[] $csvDtoList */
     private ?array $csvDtoList;
+
+    private ?array $queryResult;
 
     /**
      * DegreeContext constructor.
@@ -1039,5 +1046,38 @@ final class DegreeContext implements Context
         $this->entityManager->persist($exercise);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
+    }
+
+    /**
+     * @When I find videos by creator :userId without cut videos
+     */
+    public function iFindVideosByCreatorWithoutCutVideos($userId)
+    {
+        /** @var VideoRepository $videoRepository */
+        $videoRepository = $this->entityManager->getRepository(Video::class);
+        /** @var User $user */
+        $user = $this->entityManager->find(User::class, $userId);
+
+        $this->entityManager->getFilters()->disable('video_doctrine_filter');
+        $this->queryResult = $videoRepository->findByCreatorWithoutCutVideos($user);
+        $this->entityManager->getFilters()->enable('video_doctrine_filter');
+    }
+
+    /**
+     * @Then I only receive the regular video :videoId and not the cut video :cutVideoId
+     */
+    public function iOnlyReceiveTheRegularVideoAndNotTheCutVideo($videoId, $cutVideoId)
+    {
+        assert(!empty($this->queryResult), 'Query result is empty!');
+
+        $filteredByCutId = array_filter($this->queryResult, function($video) use($cutVideoId) {
+            return $video->getId() === $cutVideoId;
+        });
+
+        assertEmpty($filteredByCutId, 'Cut video was found. (Should not be part of result!)');
+
+        /** @var Video $firstVideo */
+        $firstVideo = current($this->queryResult);
+        assertEquals($videoId, $firstVideo->getId());
     }
 }

@@ -16,7 +16,7 @@ class VirtualizedFile
      */
     private ?string $virtualPathAndFilename;
 
-    public function getVirtualPathAndFilename(): string
+    public function getVirtualPathAndFilename(): ?string
     {
         return $this->virtualPathAndFilename;
     }
