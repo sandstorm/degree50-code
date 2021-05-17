@@ -45,21 +45,18 @@ class Video
     private ?string $description = '';
 
     // NOTE
-    // Previously these VirtualizedFiles below where annotated as optional.
-    // The thought process behind this probably was, that they where set at certain
-    // stages by the application and that they should be nullable in some way.
+    // The VirtualizedFiles below need to be marked as optional, so that we can set
+    // them as NULL and write NULL values to the database (e.g. if no subtitles have been uploaded).
     //
-    // However they never actually where nullable in the first place, because these
-    // are Doctrine embeddables and they will therefore always be initalized with
-    // the VirtualizedFile class no matter if their column is set to NULL inside the
-    // database or not.
+    // However they will never be NULL when we retrieve them from the database, because
+    // doctrine will always initialize them as VirtualizedFile class (because of the "Embedded" annotation),
+    // no matter if their column is set to NULL inside the database or not.
     //
     // This could lead to weird situations, where one would expect to receive NULL
-    // by the getters in this class and the getters still returned the class.
-    // (this also meant, that it was not possible to successfully use is_null() or empty())
+    // by the getters in this class, but the getters still return a VirtualizedFil.
+    // (which also means, that it is not possible to successfully use is_null() or empty() directly on the getter results)
     //
-    // Now the code makes this explicit and is no longer optional.
-    // To check if you actually have some kind of value you should now rely on the methods
+    // To check if you actually have some kind of value you should rely on the methods
     // defined on VirtualizedFile itself and e.g. check their return values for NULL etc.
     // For example if $uploadedVideoFile would be NULL inside the database,
     // its respective VirtualizedFile->getVirtualPathAndFilename() would also return NULL.
@@ -67,17 +64,17 @@ class Video
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private VirtualizedFile $uploadedVideoFile;
+    private ?VirtualizedFile $uploadedVideoFile;
 
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private VirtualizedFile $uploadedSubtitleFile;
+    private ?VirtualizedFile $uploadedSubtitleFile;
 
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
      */
-    private VirtualizedFile $encodedVideoDirectory;
+    private ?VirtualizedFile $encodedVideoDirectory;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhase", mappedBy="videos")
