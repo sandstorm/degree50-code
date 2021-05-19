@@ -21,8 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * This listener handles the upload of subtitle, material and video files inside the video upload form
- * of our mediathek. The dropzone handling is done inside the VideoUploadController.js and SubtitlesUploadController.js frontend files.
+ * This listener handles the upload of subtitle, material, audioDescription and video files inside the video upload form
+ * of our mediathek. The dropzone handling is done inside the VideoUploadController.js, AudioDescriptionUploadController.js and SubtitlesUploadController.js frontend files.
  * The data these controllers use is provided by https://github.com/1up-lab/OneupUploaderBundle/ inside the VideoUpload.html.twig-Template.
  *
  * The actual video form is handled by
@@ -42,6 +42,7 @@ class UploadListener
     const TARGET_VIDEO = 'video';
     const TARGET_MATERIAL = 'material';
     const TARGET_SUBTITLE = 'subtitle';
+    const TARGET_AUDIO_DESCRIPTION = 'audio_description';
 
     public function __construct(
         FileSystemService $fileSystemService,
@@ -77,6 +78,8 @@ class UploadListener
                 return $this->uploadSubtitle($event, $user);
             case self::TARGET_MATERIAL:
                 return $this->uploadMaterial($event, $user);
+            case self::TARGET_AUDIO_DESCRIPTION:
+                return $this->uploadAudioDescription($event, $user);
         }
     }
 
@@ -176,5 +179,28 @@ class UploadListener
         assert($renamingSuccessful, 'Renaming the file did not work');
 
         return $uploadedFile;
+    }
+
+    private function uploadAudioDescription(PostUploadEvent $event, User $user)
+    {
+        $id = $event->getRequest()->get('id');
+        assert($id !== '', 'ID is set');
+
+        $this->entityManager->getFilters()->disable('video_doctrine_filter');
+        $video = $this->videoRepository->find($id);
+
+        if (!$video) {
+            $video = new Video($id);
+        }
+
+        $uploadedAudioDescriptionFile = $this->uploadFile($id, $event);
+
+        $this->videoService->persistUploadedAudioDescriptionFile($video, $uploadedAudioDescriptionFile, $user);
+
+        $this->entityManager->getFilters()->enable('video_doctrine_filter');
+
+        $response = $event->getResponse();
+        $response['success'] = true;
+        return $response;
     }
 }

@@ -3,7 +3,7 @@ FROM php:7.4.5-fpm-buster
 
 # Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips, zip
 RUN apt-get update -y && \
-    apt-get install --no-install-recommends -y libzip-dev zip libicu-dev libxslt1-dev nginx-light libvips42 libvips-dev supervisor procps redis ffmpeg unzip git acl libpq-dev && \
+    apt-get install --no-install-recommends -y libzip-dev zip libicu-dev libxslt1-dev nginx-light libvips42 libvips-dev supervisor procps redis unzip git acl libpq-dev && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* && \
     docker-php-ext-install intl bcmath pdo pdo_mysql mysqli xsl zip && \
@@ -23,6 +23,28 @@ RUN set -eux; \
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
+
+# add ffmpeg static build
+# Why:
+#	The version that comes with debian "buster" is too old and does not support features we need.
+# 	We tried to use the packages from buster/testing but that would lead to too much reconfiguration of the system.
+#   (see: https://serverfault.com/questions/22414/how-can-i-run-debian-stable-but-install-some-packages-from-testing)
+#   We tried pulling them out of a ffmpeg docker image:
+#	(https://hub.docker.com/layers/jrottenberg/ffmpeg/4.4-ubuntu/images/sha256-0fccee33c89ffa14c6b722e1f54185c5b11cdb64958718d79469708b043af1db?context=explore)
+#   Via
+#     COPY --from=jrottenberg/ffmpeg:4.4-ubuntu /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
+#     COPY --from=jrottenberg/ffmpeg:4.4-ubuntu /usr/local/bin/ffprobe /usr/local/bin/ffprobe
+#   But we first ran into "missing libraries" issues (such as libav<xxx>) and copying or getting them with apt-get
+#   didn't fix but rose other issues like:
+#   "ffmpeg: symbol av_opt_child_class_iterate version LIBAVUTIL_56 not defined in file libavutil.so.56 with link time reference".
+#	So we opted for the static build of the current version (4.4) that includes everything we need to run ffmpeg successfully.
+#
+#	NOTE:
+# 		This implies that security updates won't be installed automatically.
+#   	Once the working ffmpeg version (>4.4) is included in a (stable) debian release we should use the ffmpeg that the
+#		debian version distributes.
+ADD /deployment/ffmpeg/ffmpeg-4.4-amd64-static/ffmpeg /usr/bin/ffmpeg
+ADD /deployment/ffmpeg/ffmpeg-4.4-amd64-static/ffprobe /usr/bin/ffprobe
 
 # application entrypoint
 ADD /deployment/docker/entrypoint.sh /

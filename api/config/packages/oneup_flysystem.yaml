@@ -10,6 +10,9 @@ oneup_flysystem:
         uploaded_subtitles_adapter:
             local:
                 directory: '%kernel.project_dir%/var/data/persistent/subtitles/original'
+        uploaded_audio_descriptions_adapter:
+            local:
+                directory: '%kernel.project_dir%/var/data/persistent/audio_descriptions/original'
         encoded_videos_adapter:
             local:
                 directory: '%kernel.project_dir%/public/data/encoded_videos'
@@ -32,6 +35,9 @@ oneup_flysystem:
         uploaded_subtitles:
             adapter: uploaded_subtitles_adapter
             mount: uploaded_subtitles
+        uploaded_audio_descriptions:
+            adapter: uploaded_audio_descriptions_adapter
+            mount: uploaded_audio_descriptions
         encoded_videos:
             adapter: encoded_videos_adapter
             mount: encoded_videos

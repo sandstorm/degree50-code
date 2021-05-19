@@ -29,6 +29,10 @@ class AppRuntime implements RuntimeExtensionInterface
             return '/var/data/persistent/subtitles/original/' . $virtualizedFile->getRelativePathAndFilename();
         }
 
+        if ($virtualizedFile->getMountPoint() === 'uploaded_audio_descriptions') {
+            return '/var/data/persistent/audio_descriptions/original/' . $virtualizedFile->getRelativePathAndFilename();
+        }
+
         if ($virtualizedFile->getMountPoint() === 'encoded_videos') {
             return '/data/encoded_videos/' . $virtualizedFile->getRelativePathAndFilename();
         }

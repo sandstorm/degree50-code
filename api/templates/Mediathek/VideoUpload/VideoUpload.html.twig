@@ -33,8 +33,25 @@
             <i class="fas fa-spinner fa-spin"></i>
         </div>
         <span class="form-text text-muted">
-            Es kann immer nur eine Untertitledatei hochgeladen werden. <br />
+            Es kann immer nur eine Untertiteldatei hochgeladen werden. <br />
             Untertitel sind optional.<br />
+            <strong>Hinweis:</strong> Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade die Datei an einem schnelleren Internetanschluss hoch.
+        </span>
+    </div>
+    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}video.upload.audioDescriptionUploadTitle{% endtrans %}</h3>
+        </header>
+        <div class="dropzone" data-controller="audioDescriptionUpload"
+             data-audioDescriptionUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_audio_descriptions') }}"
+             data-audioDescriptionUpload-remove-endpoint="{{ path('mediathek__audio_description--delete-ajax', {id: uuid}) }}"
+             data-audioDescriptionUpload-video-id="{{ uuid }}"
+             data-audioDescriptionUpload-label="Hier klicken um Audio-Datei hochzuladen">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <span class="form-text text-muted">
+            Es kann immer nur eine Audio Datei hochgeladen werden. <br />
+            Audio Deskriptionen sind optional, können aktuell aber NICHT im Nachhinein hinzugefügt werden.<br />
             <strong>Hinweis:</strong> Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade die Datei an einem schnelleren Internetanschluss hoch.
         </span>
     </div>

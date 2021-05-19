@@ -91,10 +91,11 @@ class VideoService
      *
      * @see {App\Mediathek\Controller\VideoUploadController}
      */
-    public function removeOriginalVideoFile(Video $video) {
+    public function removeOriginalVideoFile(Video $video)
+    {
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedVideoFile());
         $filesystem = new Filesystem();
-        $filesystem->remove($this->kernel->getProjectDir().$fileUrl);
+        $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
 
         $video->setUploadedVideoFile(null);
 
@@ -114,10 +115,11 @@ class VideoService
      *
      * @see {App\Mediathek\Controller\VideoUploadController}
      */
-    public function removeOriginalSubtitleFile(Video $video) {
+    public function removeOriginalSubtitleFile(Video $video)
+    {
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedSubtitleFile());
         $filesystem = new Filesystem();
-        $filesystem->remove($this->kernel->getProjectDir().$fileUrl);
+        $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
 
         $video->setUploadedSubtitleFile(null);
 
@@ -184,5 +186,51 @@ class VideoService
 
         $filesystem = new Filesystem();
         $filesystem->remove($publicResourcesFolderPath . $fileUrl);
+    }
+
+    /**
+     * Persists the an uploaded audio file to the respective video and also sets some basic properties like <creator> and dataPrivacy properties.
+     *
+     * @see {App\Mediathek\Controller\VideoUploadController}
+     */
+    public function persistUploadedAudioDescriptionFile(
+        ?Video $video,
+        VirtualizedFile $uploadedAudioDescriptionFile,
+        User $user
+    ) {
+        $video->setCreator($user);
+        $video->setUploadedAudioDescriptionFile($uploadedAudioDescriptionFile);
+        $video->setDataPrivacyAccepted(false);
+        $video->setDataPrivacyPermissionsAccepted(false);
+
+        $this->eventStore->addEvent('AudioDescriptionUploaded', [
+            'videoId' => $video->getId(),
+            'uploadedAudioDescriptionFile' => $video->getUploadedAudioDescriptionFile()->getVirtualPathAndFilename(),
+        ]);
+
+        $this->entityManager->persist($video);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * This method removes the originally uploaded audio description file from the file system.
+     *
+     * @see {App\Mediathek\Controller\VideoUploadController}
+     */
+    public function removeOriginalAudioDescriptionFile(Video $video)
+    {
+        $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedAudioDescriptionFile());
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
+
+        $video->setUploadedAudioDescriptionFile(null);
+
+        $this->eventStore->addEvent('AudioDescriptionDeleted', [
+            'videoId' => $video->getId(),
+            'uploadedFile' => $fileUrl
+        ]);
+
+        $this->entityManager->persist($video);
+        $this->entityManager->flush();
     }
 }
