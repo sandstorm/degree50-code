@@ -4,6 +4,7 @@
 
 -   [Making a versioned release](#making-a-versioned-release)
     -   [Special notes on master releases](#special-notes-on-master-releases)
+        -   [Creating a fix on master](#creating-a-fix-on-master)
     -   [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
 -   [Development Setup](#development-setup)
     -   [Prerequisites](#prerequisites)
@@ -56,6 +57,7 @@ To create and deploy a versioned release follow these steps:
 > If you would like to make a deployment to the test-system please create a tag on `dev` an deploy it.
 > It might be helpful to postfix the version with `-dev` (e.g. **v1.2.3-dev-1**).
 
+0. Make sure that the respective branch is up-to-date (also see [master notes](#special-notes-on-master-releases))
 1. Create a tag (inside the remote repository) on the branch you would like to deploy (e.g. `master`)
 2. Inside **GitLab** open CI/CD->Pipelines
 3. A pipeline will be running for the tag choose this one
@@ -63,9 +65,21 @@ To create and deploy a versioned release follow these steps:
 
 ### Special notes on master releases
 
-If you are creating a release on master, please make sure to also create a release inside the
-gitlabe repository, link it with the tag you created (or do both inside a single step) and
-also add a meaningful changelog to the release (see past releases).
+-   To merge `dev` into `master` follow these steps: 0. make sure your local `dev` is up to date
+    1. create a release-branch from `dev`
+    2. rebase the current `master` on your release-branch via `git pull --rebase origin master`
+    3. Push the release branch and create a merge-request
+-   If you are creating a release on master, please make sure to also create a release inside the
+    gitlab repository, link it with the tag you created (or do both inside a single step) and
+    also add a meaningful changelog to the release (see past releases).
+
+#### Creating a fix on master
+
+1. Create a fix-branch from `master`
+2. Implement the fix
+3. Merge the fix back into `master`
+4. rebase the `fix` branch on `dev` via `git pull --rebase origin dev`
+5. Merge the fix into `dev` (to make sure that histories don't diverge)
 
 ### Where to find the version number inside the app
 
