@@ -63,6 +63,7 @@ services:
     depends_on:
       - db
     volumes:
+      - /home/deployment/data/app/var/log:/app/var/log
       - /home/deployment/data/app/var/data:/app/var/data
       - /home/deployment/data/app/public/data:/app/public/data
       - /home/deployment/data/app/config/secrets:/app/config/secrets
@@ -98,6 +99,31 @@ services:
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     volumes:
       - /home/deployment/data/mysql:/var/lib/mysql:rw
+
+  # Logging & Metrics
+  vector:
+    image: docker-hub.sandstorm.de/degree-4.0/code/loggingSidecar:test-stage
+    volumes:
+      - /home/deployment/data/app/var:/app/var
+    environment:
+      VECTOR_CONFIG_FILE_NAME: vector.symfony+cadvisor.toml
+      LOGGING_CUSTOMER_TENANT: degree40
+      LOGGING_CUSTOMER_PROJECT: degree40.test
+      LOGGING_HOST_NAME: degree40-test.tu-dortmund.de
+      LOGGING_HOST_GROUP: tu-dortmund.de
+
+  cadvisor:
+    # port 8080 /metrics
+    image: gcr.io/cadvisor/cadvisor:v0.37.5
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
 
 networks:
   default:

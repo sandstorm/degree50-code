@@ -65,6 +65,21 @@ package_app:
         - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
 
+package_logging_sidecar:
+  stage: package
+  image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+  only:
+    - tags
+  tags:
+    - docker
+    - privileged
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - cd deployment/loggingSidecar
+    - docker build -t $CI_REGISTRY_IMAGE/loggingSidecar:$CI_COMMIT_TAG .
+    - docker push $CI_REGISTRY_IMAGE/loggingSidecar:$CI_COMMIT_TAG
+
+
 deploy-prod:
     stage: deploy
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
@@ -80,6 +95,8 @@ deploy-prod:
         - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
         - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:master
         - docker push $CI_REGISTRY_IMAGE:master
+        - docker tag $CI_REGISTRY_IMAGE/loggingSidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/loggingSidecar:master
+        - docker push $CI_REGISTRY_IMAGE/loggingSidecar:master
 
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
@@ -105,6 +122,8 @@ deploy-test:
         - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
         - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:test-stage
         - docker push $CI_REGISTRY_IMAGE:test-stage
+        - docker tag $CI_REGISTRY_IMAGE/loggingSidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/loggingSidecar:test-stage
+        - docker push $CI_REGISTRY_IMAGE/loggingSidecar:test-stage
 
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
