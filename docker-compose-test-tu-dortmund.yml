@@ -102,7 +102,7 @@ services:
 
   # Logging & Metrics
   vector:
-    image: docker-hub.sandstorm.de/degree-4.0/code/loggingSidecar:test-stage
+    image: docker-hub.sandstorm.de/degree-4.0/code/logging-sidecar:test-stage
     volumes:
       - /home/deployment/data/app/var:/app/var
     environment:
