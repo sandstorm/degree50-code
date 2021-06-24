@@ -329,6 +329,8 @@ apt autoremove
 
 ##### Access the GUI
 
+**You can also use app.netdata.cloud (credentials in Vault) to access the Server Metrics.** 
+
 Connect to the degree server via ssh using the config above.
 This will forward port `19999` to localhost, so you can open the gui on `http://localhost:19999`.
 
@@ -350,23 +352,74 @@ This will forward port `19999` to localhost, so you can open the gui on `http://
     -   `video`
 -   These are all reference _we_ found for now. There might be more in `exercise_phase*` if the video was used in a phase.
 
-### Additional Notes
+### Prod Partition Setup
 
--   The app partition is mounted to `/data` and is 100 GB size. the system partition is 20 GB big.
-    -   This is done via the following `/etc/fstab` entry (required for automatic mounting on boot):
-        ```
-        /dev/sda3 /data/         auto     defaults 0 2
-        ```
--   In `/data`, there exist all the docker files; and the persistent volumes from the Degree project.
--   The `home/deployment/data` directory has been symlinked to `/data/degree-data`
--   The docker image location has been changed to `/data/docker` by adding the following `docker/daemon/json` to `/etc/` :
+- the system partition is 20 GB big.
+- The app partition is mounted to `/data` and is 600 GB size. This is a LVM array of the following parts:
+    - /dev/sda4 (500 GB)
+    - /dev/sda3 (100 GB)
+- We currently have a SPARE partition (the old /data partition, before 2021-06-24, mounted on /data-old, being 100 gb in size). We do NOT include this in the LVM array right now, as this makes the backup restore process potentially more
+difficult when multiple partitions are invol
 
-```json
-{
-    "data-root": "/data/docker"
-}
+For the TEST environment, we simply mount /dev/sda3 to /data, and this is 100 GB in size. This is done using the
+following /etc/fstab entry  (required for automatic mounting on boot)::
+```
+/dev/sda3 /data/         auto     defaults 0 2
 ```
 
+For the PROD environment, we changed the setup to use Logical Volumes Management (LVM) to be able to grow the
+data partition more and more, take snapshots etc. For an intro to LVM, see [this blog post](https://www.thomas-krenn.com/de/wiki/LVM_Grundkonfiguration).
+
+LVM has been setup in the following way for the data partitions:
+
+```bash
+#
+# This is just for DOCUMENTATION and REFERENCE purposes. ADDING a new disk to the LVM array
+# looks slightly different:
+#
+
+cfdisk /dev/sda
+# now create new partition (in our case /dev/sda4) of type "8e, Linux LVM"
+
+# 1) Create a PV (Persistent Volume) which we can later add to a volume group.
+pvcreate /dev/sda4 --metadatasize 1000k
+pvs # show PVs
+pvdisplay # show PVs
+
+# 2) Create a VG (Volume Group) from the Persistent Volume
+vgcreate vg00 /dev/sda4
+vgdisplay # show VGs
+
+# 3) Create a LV (Logical Volume) inside the Volume Group
+lvcreate -n data -l100%VG vg00
+lvdisplay # show LVs
+
+# 4) Create the Ext4 partition in the newly created LV
+mkfs.ext4 /dev/vg00/data
+```
+
+To ADD new storage, this works the following way:
+
+```bash
+# follow https://techmomblog.wordpress.com/2013/06/06/grow-extend-an-lvm-on-a-linux-vm/
+cfdisk /dev/sd  a    # create new partition
+partprobe /dev/sda # load the new partition into the partition table
+vgdisplay # check how the VG is named (e.g. "vg00")
+vgextend vg00 /dev/sda3 # sda3 is the new partition in the example
+lvextend -L +100G /dev/vg00/data
+resize2fs /dev/vg00/data
+```
+
+
+- In `/data`, there exist all the docker files; and the persistent volumes from the Degree project.
+- The `home/deployment/data` directory has been symlinked to `/data/degree-data`
+- The docker image location has been changed to `/data/docker` by adding the following `docker/daemon/json` to `/etc/` :
+
+    ```json
+    {
+        "data-root": "/data/docker"
+    }
+    ```
 ## Known Issues
 
 ### (random) Unexpected Behavior (i.e. Login suddenly not working)
