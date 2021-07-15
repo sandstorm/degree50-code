@@ -61,14 +61,24 @@ class WebEncodingHandler implements MessageHandlerInterface
 
     public function __invoke(WebEncodingTask $encodingTask)
     {
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
-        $video = $this->videoRepository->find($encodingTask->getVideoId());
-        if ($video === null) {
-            $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
-            return;
+        $this->logger->warning("WebEncodingHandler Line 64: filter enabled = " . $this->entityManager->getFilters()->isEnabled('video_doctrine_filter'));
+        if ($this->entityManager->getFilters()->isEnabled('video_doctrine_filter')) {
+            $this->entityManager->getFilters()->disable('video_doctrine_filter');
+        } else {
+            $this->logger->warning('WebEncodingHandler Line 66: Trying to disable "video_doctrine_filter" but this filter is not enabled at this point. This means that we probably have a race condition where some part of the application disables doctrine filters while other parts enable them almost simultaneously');
         }
 
+
         try {
+            $video = $this->videoRepository->find($encodingTask->getVideoId());
+            if ($video === null) {
+                $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
+                if ($this->entityManager->getFilters()->isEnabled('video_doctrine_filter')) {
+                    $this->logger->warning('WebEncodingHandler Line 76: Doctrine Filter already enabled again! This means that we probably have a race condition where some part of the application disables doctrine filters while other parts enable them almost simultaneously');
+                }
+                throw new \Exception('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
+            }
+
             $video->setEncodingStatus(Video::ENCODING_STARTED);
             $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->persist($video);
@@ -129,7 +139,9 @@ class WebEncodingHandler implements MessageHandlerInterface
         } finally {
             // Disabling the filter happens globally and not on a per request basis.
             // Therefore we have to re-enable the filter after we are done encoding.
-            $this->entityManager->getFilters()->enable('video_doctrine_filter');
+            if (!$this->entityManager->getFilters()->isEnabled('video_doctrine_filter')) {
+                $this->entityManager->getFilters()->enable('video_doctrine_filter');
+            }
 
             // WHY: chown output directory recursively because they're created as root by encoder process
             shell_exec('chown -R www-data:www-data ' . $this->fileSystemService->localPath($video->getEncodedVideoDirectory()));
