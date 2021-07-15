@@ -165,7 +165,7 @@ final class DegreeContext implements Context
      */
     public function iAmRedirectedToTheLoginPage()
     {
-        $this->assertSession()->pageTextContains('Einloggen');
+        $this->assertSession()->pageTextContains('Login mit Uni-Account (SSO)');
     }
 
     /**

@@ -35,6 +35,7 @@
 -   [Known Issues](#known-issues)
     -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
 -   [Backups](#backups)
+-   [Updating Datenschutzerklärung](#updating-datenschutzerklärung)
 
 <!-- vim-markdown-toc -->
 
@@ -329,7 +330,7 @@ apt autoremove
 
 ##### Access the GUI
 
-**You can also use app.netdata.cloud (credentials in Vault) to access the Server Metrics.** 
+**You can also use app.netdata.cloud (credentials in Vault) to access the Server Metrics.**
 
 Connect to the degree server via ssh using the config above.
 This will forward port `19999` to localhost, so you can open the gui on `http://localhost:19999`.
@@ -354,15 +355,16 @@ This will forward port `19999` to localhost, so you can open the gui on `http://
 
 ### Prod Partition Setup
 
-- the system partition is 20 GB big.
-- The app partition is mounted to `/data` and is 600 GB size. This is a LVM array of the following parts:
-    - /dev/sda4 (500 GB)
-    - /dev/sda3 (100 GB)
-- We currently have a SPARE partition (the old /data partition, before 2021-06-24, mounted on /data-old, being 100 gb in size). We do NOT include this in the LVM array right now, as this makes the backup restore process potentially more
-difficult when multiple partitions are invol
+-   the system partition is 20 GB big.
+-   The app partition is mounted to `/data` and is 600 GB size. This is a LVM array of the following parts:
+    -   /dev/sda4 (500 GB)
+    -   /dev/sda3 (100 GB)
+-   We currently have a SPARE partition (the old /data partition, before 2021-06-24, mounted on /data-old, being 100 gb in size). We do NOT include this in the LVM array right now, as this makes the backup restore process potentially more
+    difficult when multiple partitions are invol
 
 For the TEST environment, we simply mount /dev/sda3 to /data, and this is 100 GB in size. This is done using the
-following /etc/fstab entry  (required for automatic mounting on boot)::
+following /etc/fstab entry (required for automatic mounting on boot)::
+
 ```
 /dev/sda3 /data/         auto     defaults 0 2
 ```
@@ -410,16 +412,16 @@ lvextend -L +100G /dev/vg00/data
 resize2fs /dev/vg00/data
 ```
 
-
-- In `/data`, there exist all the docker files; and the persistent volumes from the Degree project.
-- The `home/deployment/data` directory has been symlinked to `/data/degree-data`
-- The docker image location has been changed to `/data/docker` by adding the following `docker/daemon/json` to `/etc/` :
+-   In `/data`, there exist all the docker files; and the persistent volumes from the Degree project.
+-   The `home/deployment/data` directory has been symlinked to `/data/degree-data`
+-   The docker image location has been changed to `/data/docker` by adding the following `docker/daemon/json` to `/etc/` :
 
     ```json
     {
         "data-root": "/data/docker"
     }
     ```
+
 ## Known Issues
 
 ### (random) Unexpected Behavior (i.e. Login suddenly not working)
@@ -436,3 +438,8 @@ New backups are created on a nightly basis.
 These snapshots are "in-place-backups" meaning that everything that happened on the respective machine between the backup
 and the restoration will be thrown away and the machine will be restored to the state it was in during the backup.
 Restoration is also handled by the TU-Dortmund (just make a call).
+
+## Updating Datenschutzerklärung
+
+1. Set `TERMS_OF_USE_VERSION` in `api/src/Security/Voter/TermsOfUseVoter.php` to a new (higher) value. This will indicate that users have to accept a new version.
+2. Update the text in `api/templates/Partials/TermsOfUseContent.html.twig`
