@@ -1,19 +1,28 @@
-.data-privacy .table-container {
-    overflow: auto;
-
-    table,
-    td,
-    th {
-        border: 1px solid $theme__color__grey;
+.data-privacy {
+    &__headline {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
     }
 
-    table {
-        margin-bottom: 20px;
-        width: 1050px;
-    }
+    .table-container {
+        overflow: auto;
 
-    td,
-    th {
-        padding: 10px;
+        table,
+        td,
+        th {
+            border: 1px solid $theme__color__grey;
+        }
+
+        table {
+            margin-bottom: 20px;
+            width: 1050px;
+        }
+
+        td,
+        th {
+            padding: 10px;
+        }
     }
 }
