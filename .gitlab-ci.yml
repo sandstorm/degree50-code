@@ -66,19 +66,18 @@ package_app:
         - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
 
 package_logging_sidecar:
-  stage: package
-  image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
-  only:
-    - tags
-  tags:
-    - docker
-    - privileged
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - cd deployment/loggingSidecar
-    - docker build -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG .
-    - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
-
+    stage: package
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    only:
+        - tags
+    tags:
+        - docker
+        - privileged
+    script:
+        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+        - cd deployment/loggingSidecar
+        - docker build -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG .
+        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
 
 deploy-prod:
     stage: deploy
@@ -89,12 +88,14 @@ deploy-prod:
     tags:
         - docker
         - privileged
+        - jumphost
     script:
         # pull the image of this branch and tag it as "master"
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
         - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:master
         - docker push $CI_REGISTRY_IMAGE:master
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
         - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/logging-sidecar:master
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:master
 
@@ -116,12 +117,14 @@ deploy-test:
     tags:
         - docker
         - privileged
+        - jumphost
     script:
         # pull the image of this branch and tag it as "test-stage"
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
         - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:test-stage
         - docker push $CI_REGISTRY_IMAGE:test-stage
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
         - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
 
