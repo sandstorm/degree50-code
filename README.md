@@ -3,8 +3,6 @@
 <!-- vim-markdown-toc GitLab -->
 
 -   [Making a versioned release](#making-a-versioned-release)
-    -   [Special notes on master releases](#special-notes-on-master-releases)
-        -   [Creating a fix on master](#creating-a-fix-on-master)
     -   [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
 -   [Development Setup](#development-setup)
     -   [Prerequisites](#prerequisites)
@@ -31,7 +29,7 @@
             -   [Access the GUI](#access-the-gui)
     -   [Deployment via Gitlab CI](#deployment-via-gitlab-ci)
     -   [How to remove a Video from Prod](#how-to-remove-a-video-from-prod)
-    -   [Additional Notes](#additional-notes)
+    -   [Prod Partition Setup](#prod-partition-setup)
 -   [Known Issues](#known-issues)
     -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
 -   [Backups](#backups)
@@ -63,24 +61,6 @@ To create and deploy a versioned release follow these steps:
 2. Inside **GitLab** open CI/CD->Pipelines
 3. A pipeline will be running for the tag choose this one
 4. Trigger the manual deploy step (either for our test system or the prod system)
-
-### Special notes on master releases
-
--   To merge `dev` into `master` follow these steps: 0. make sure your local `dev` is up to date
-    1. create a release-branch from `dev`
-    2. rebase the current `master` on your release-branch via `git pull --rebase origin master`
-    3. Push the release branch and create a merge-request
--   If you are creating a release on master, please make sure to also create a release inside the
-    gitlab repository, link it with the tag you created (or do both inside a single step) and
-    also add a meaningful changelog to the release (see past releases).
-
-#### Creating a fix on master
-
-1. Create a fix-branch from `master`
-2. Implement the fix
-3. Merge the fix back into `master`
-4. rebase the `fix` branch on `dev` via `git pull --rebase origin dev`
-5. Merge the fix into `dev` (to make sure that histories don't diverge)
 
 ### Where to find the version number inside the app
 
