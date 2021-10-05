@@ -51,6 +51,7 @@ class ExerciseController extends AbstractController
         ExercisePhaseRepository $exercisePhaseRepository,
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
+        ExerciseService $exerciseService,
         UserExerciseInteractionRepository $userExerciseInteractionRepository,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         LoggerInterface $logger
@@ -63,6 +64,7 @@ class ExerciseController extends AbstractController
         $this->eventStore = $eventStore;
         $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
+        $this->exerciseService = $exerciseService;
         $this->logger = $logger;
     }
 
