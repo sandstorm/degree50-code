@@ -9,6 +9,7 @@ hslavich_onelogin_saml:
         singleLogoutService:
             url: 'https://sso.itmc.tu-dortmund.de:443/openam/IDPSloPOST/metaAlias/idp'
             binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
+        # INFO: If the certificate of the IDP changes we as SP have to update it here as well.
         x509cert: |
             MIIJ3jCCCMagAwIBAgIMJU1IawOszJfLe0n9MA0GCSqGSIb3DQEBCwUAMIGNMQsw
             CQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVz

@@ -423,3 +423,11 @@ Restoration is also handled by the TU-Dortmund (just make a call).
 
 1. Set `TERMS_OF_USE_VERSION` in `api/src/Security/Voter/TermsOfUseVoter.php` to a new (higher) value. This will indicate that users have to accept a new version.
 2. Update the text in `api/templates/Partials/TermsOfUseContent.html.twig`
+
+## Updating SAML IDP Certificate of TU Dortmund
+It happens that the certificate of the SAML Identity Provider (IDP) of TU Dortmund changes.
+In that case the SAML login would not work with the old certificate and we have to update it on our end:
+1. There should be an email from TU Dortmund's ITMC that notifies all Service Providers (SP) about this change
+2. In that mail there should be information about the new certificate (in `xml` and/or `pem` form)
+3. Paste the new certificate into the `hslavich_onelogin_saml.idp.x509cert` setting in `api/config/packages/hslavich_onelogin_saml.yaml`
+4. Push-Tag-Release should be enough to apply the changes to production 
