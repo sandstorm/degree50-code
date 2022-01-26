@@ -2,38 +2,39 @@
 
 <!-- vim-markdown-toc GitLab -->
 
--   [Making a versioned release](#making-a-versioned-release)
-    -   [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
--   [Development Setup](#development-setup)
-    -   [Prerequisites](#prerequisites)
-    -   [Get Started with Development](#get-started-with-development)
-    -   [Connect with database](#connect-with-database)
-    -   [Symfony commands](#symfony-commands)
-    -   [Imported endpoints](#imported-endpoints)
-    -   [Running Behat Tests](#running-behat-tests)
-    -   [Running Frontend Tests](#running-frontend-tests)
-    -   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
--   [Creating test users on the prod system](#creating-test-users-on-the-prod-system)
--   [Prodsystem and Testsystem](#prodsystem-and-testsystem)
-    -   [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
-        -   [Prerequisites](#prerequisites-1)
-        -   [Setup](#setup)
-        -   [Connect](#connect)
-        -   [Connect to the Production Database](#connect-to-the-production-database)
-    -   [Ansible Setup](#ansible-setup)
-    -   [Firewall rules](#firewall-rules)
-    -   [Automatic Updates](#automatic-updates)
-    -   [Monitoring](#monitoring)
-        -   [Uptime-robot](#uptime-robot)
-        -   [Netdata](#netdata)
-            -   [Access the GUI](#access-the-gui)
-    -   [Deployment via Gitlab CI](#deployment-via-gitlab-ci)
-    -   [How to remove a Video from Prod](#how-to-remove-a-video-from-prod)
-    -   [Prod Partition Setup](#prod-partition-setup)
--   [Known Issues](#known-issues)
-    -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
--   [Backups](#backups)
--   [Updating Datenschutzerklärung](#updating-datenschutzerklärung)
+* [Making a versioned release](#making-a-versioned-release)
+    * [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
+* [Development Setup](#development-setup)
+    * [Prerequisites](#prerequisites)
+    * [Get Started with Development](#get-started-with-development)
+    * [Connect with database](#connect-with-database)
+    * [Symfony commands](#symfony-commands)
+    * [Imported endpoints](#imported-endpoints)
+    * [Running Behat Tests](#running-behat-tests)
+    * [Running Frontend Tests](#running-frontend-tests)
+    * [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
+* [Creating test users on the prod system](#creating-test-users-on-the-prod-system)
+* [Prodsystem and Testsystem](#prodsystem-and-testsystem)
+    * [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
+        * [Prerequisites](#prerequisites-1)
+        * [Setup](#setup)
+        * [Connect](#connect)
+        * [Connect to the Production Database](#connect-to-the-production-database)
+    * [Ansible Setup](#ansible-setup)
+    * [Firewall rules](#firewall-rules)
+    * [Automatic Updates](#automatic-updates)
+    * [Monitoring](#monitoring)
+        * [Uptime-robot](#uptime-robot)
+        * [Netdata](#netdata)
+            * [Access the GUI](#access-the-gui)
+    * [Deployment via Gitlab CI](#deployment-via-gitlab-ci)
+    * [How to remove a Video from Prod](#how-to-remove-a-video-from-prod)
+    * [Prod Partition Setup](#prod-partition-setup)
+* [Known Issues](#known-issues)
+    * [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
+* [Backups](#backups)
+* [Updating Datenschutzerklärung](#updating-datenschutzerklärung)
+* [Updating SAML IDP Certificate of TU Dortmund](#updating-saml-idp-certificate-of-tu-dortmund)
 
 <!-- vim-markdown-toc -->
 
@@ -56,8 +57,8 @@ To create and deploy a versioned release follow these steps:
 > If you would like to make a deployment to the test-system please create a tag on `dev` an deploy it.
 > It might be helpful to postfix the version with `-dev` (e.g. **v1.2.3-dev-1**).
 
-0. Make sure that the respective branch is up-to-date (also see [master notes](#special-notes-on-master-releases))
-1. Create a tag (inside the remote repository) on the branch you would like to deploy (e.g. `master`)
+0. Make sure that the respective branch is up-to-date (also see [main notes](#special-notes-on-main-releases))
+1. Create a tag (inside the remote repository) on the branch you would like to deploy (e.g. `main`)
 2. Inside **GitLab** open CI/CD->Pipelines
 3. A pipeline will be running for the tag choose this one
 4. Trigger the manual deploy step (either for our test system or the prod system)
@@ -319,7 +320,7 @@ This will forward port `19999` to localhost, so you can open the gui on `http://
 
 > Make sure you increase the app version in `/api/templates/Version.html.twig`!
 
--   When a pipeline on master succeeds you can manually trigger a deployment step.
+-   When a pipeline on main succeeds you can manually trigger a deployment step.
 
 ### How to remove a Video from Prod
 

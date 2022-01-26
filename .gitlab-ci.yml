@@ -90,14 +90,14 @@ deploy-prod:
         - privileged
         - jumphost
     script:
-        # pull the image of this branch and tag it as "master"
+        # pull the image of this branch and tag it as "main"
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:master
-        - docker push $CI_REGISTRY_IMAGE:master
+        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:main
+        - docker push $CI_REGISTRY_IMAGE:main
         - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/logging-sidecar:master
-        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:master
+        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/logging-sidecar:main
+        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:main
 
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
