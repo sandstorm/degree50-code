@@ -1,5 +1,5 @@
 import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
-import { eventChannel, EventChannel } from 'redux-saga'
+import { eventChannel, EventChannel, Task } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
 import {
@@ -48,17 +48,17 @@ function* presenceListener() {
         const mercureUrl = new URL(lifeSyncConfig.mercureEndpoint, document.location.toString())
         mercureUrl.searchParams.append('topic', lifeSyncConfig.topics.presence)
         const eventSource = new EventSource(mercureUrl.toString())
-        const eventChannel = yield call(connect, eventSource)
+        const eventChannel: EventChannel<EventSource> = yield call(connect, eventSource)
         yield put(presenceActions.setIsConnecting(false))
 
-        const messageHandler = yield fork(handleMessages, eventChannel)
+        const messageHandler: Task = yield fork(handleMessages, eventChannel)
         // TODO maybe remove as we do listen for open now
         yield* fetchSubscriptions()
 
         // wait for disconnect by user
         yield take(disconnectPresenceAction)
         yield cancel(messageHandler)
-    } catch (e) {
+    } catch (e: any) {
         yield put(presenceActions.setError(e.message ?? e))
         yield put(presenceActions.setIsConnecting(false))
     }
@@ -127,7 +127,9 @@ const getNewEditorId = (teamMembers: Record<string, TeamMember>) =>
 function* handleMessages(channel: EventChannel<unknown>) {
     try {
         while (true) {
-            const action = yield take(channel)
+            // FIXME
+            // refine typing
+            const action: { type: string } = yield take(channel)
 
             switch (action.type) {
                 case eventStreamOpenedAction.type:
@@ -143,13 +145,19 @@ function* handleMessages(channel: EventChannel<unknown>) {
     }
 }
 
+const isSubscriptionResponse = (response: any): response is { data: { subscriptions: Array<Subscription> } } => {
+    return Array.isArray(response?.data?.subscriptions)
+}
+
 function* fetchSubscriptions() {
     const lifeSyncConfig = selectLiveSyncConfig(yield select())
-    const subscriptions: Array<Subscription> = (yield Axios.get(lifeSyncConfig.subscriptionsEndpoint, {
+    const response: unknown = yield Axios.get(lifeSyncConfig.subscriptionsEndpoint, {
         headers: {
             'Content-Type': 'application/ld+json',
         },
-    })).data.subscriptions
+    })
+
+    const subscriptions: Array<Subscription> = isSubscriptionResponse(response) ? response.data.subscriptions : []
 
     // merge existing teamMembers with Members in Subscription
     // possibly adding new members
