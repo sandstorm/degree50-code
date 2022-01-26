@@ -6,7 +6,7 @@ stages:
 
 build_js:
     stage: build
-    image: node:12.18.0-stretch
+    image: node:16.13.1-stretch
     script:
         - yarn config set cache-folder .yarn
         - cd api
@@ -25,7 +25,7 @@ build_js:
 
 test_frontend:
     stage: test
-    image: node:12.18.0-stretch
+    image: node:16.13.1-stretch
     script:
         - yarn config set cache-folder .yarn
         - cd api

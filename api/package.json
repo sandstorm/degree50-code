@@ -37,6 +37,7 @@
         "build": "encore production --progress",
         "build-types": "npm run build-types:ExercisePhaseConfigSchema",
         "build-types:ExercisePhaseConfigSchema": "json2ts -i assets/api-definitions/ExercisePhaseConfigSchema.json -o assets/api-definitions/generated/ExercisePhaseConfigSchema.ts",
+        "test": "jest",
         "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
         "test:ci": "jest --runInBand",
         "lint": "eslint ./assets/js/**/*",
