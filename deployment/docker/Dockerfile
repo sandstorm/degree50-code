@@ -1,9 +1,9 @@
 # NOTE: this file is executed from the ROOT DIRECTORY of the project, i.e. "../"
-FROM php:7.4.5-fpm-buster
+FROM php:7.4-fpm-bullseye
 
 # Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips, zip
 RUN apt-get update -y && \
-    apt-get install --no-install-recommends -y libzip-dev zip libicu-dev libxslt1-dev nginx-light libvips42 libvips-dev supervisor procps redis unzip git acl libpq-dev && \
+    apt-get install --no-install-recommends -y libzip-dev zip libicu-dev libxslt1-dev nginx-light libvips libvips-dev supervisor procps redis unzip git acl libpq-dev ffmpeg && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* && \
     docker-php-ext-install intl bcmath pdo pdo_mysql mysqli xsl zip && \
@@ -22,8 +22,10 @@ RUN set -eux; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
+## Why no update possible
 COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
 
+#TODO: Test if bullseye's version of ffmpeg (4.3) works now (seems like it on my machine at least)
 # add ffmpeg static build
 # Why:
 #	The version that comes with debian "buster" is too old and does not support features we need.
@@ -43,8 +45,8 @@ COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
 # 		This implies that security updates won't be installed automatically.
 #   	Once the working ffmpeg version (>4.4) is included in a (stable) debian release we should use the ffmpeg that the
 #		debian version distributes.
-ADD /deployment/ffmpeg/ffmpeg-4.4-amd64-static/ffmpeg /usr/bin/ffmpeg
-ADD /deployment/ffmpeg/ffmpeg-4.4-amd64-static/ffprobe /usr/bin/ffprobe
+#ADD /deployment/ffmpeg/ffmpeg-4.4-amd64-static/ffmpeg /usr/bin/ffmpeg
+#ADD /deployment/ffmpeg/ffmpeg-4.4-amd64-static/ffprobe /usr/bin/ffprobe
 
 # application entrypoint
 ADD /deployment/docker/entrypoint.sh /
