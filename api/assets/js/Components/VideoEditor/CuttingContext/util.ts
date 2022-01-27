@@ -105,6 +105,7 @@ export const useCuttingMediaItemHandling = ({
                 end: adjustedEnd === item.end ? d2t((t2d(adjustedEnd) + 0.01).toFixed(3)) : adjustedEnd,
             }
 
+            // eslint-disable-next-line
             Object.assign(clone, newValues)
 
             if (clone.check) {
@@ -156,6 +157,8 @@ export const adjustItemTimelinePositionInList = (
     newStartTime: string
 ) => [
     ...items.slice(0, index),
+
+    // eslint-disable-next-line
     Object.assign(item.clone, {
         ...item,
         start: newStartTime,

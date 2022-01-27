@@ -116,6 +116,7 @@ const transformSubscriptionsToTeamMembers = (subscriptions: Array<Subscription>)
  * Get the Id of the first online team member sorted alphabetically by id
  */
 const getNewEditorId = (teamMembers: Record<string, TeamMember>) =>
+    // eslint-disable-next-line
     Object.keys(teamMembers)
         .filter((memberId) => teamMembers[memberId].connectionState === ConnectionState.CONNECTED)
         .sort()

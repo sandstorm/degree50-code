@@ -39,13 +39,8 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const EditVideoCodeOverlay: FC<Props> = (props) => {
     const defaultPrototypeId = props.prototypes[0].id
 
-    const {
-        transientVideoCode,
-        handleStartTimeChange,
-        handleEndTimeChange,
-        handleMemoChange,
-        updateSelectedCode,
-    } = useVideoCodeEdit(props.duration, props.videoCode)
+    const { transientVideoCode, handleStartTimeChange, handleEndTimeChange, handleMemoChange, updateSelectedCode } =
+        useVideoCodeEdit(props.duration, props.videoCode)
 
     const close = () => {
         props.closeOverlay(VideoCodeOverlayIds.edit)

@@ -55,13 +55,8 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    const {
-        transientVideoCode,
-        handleStartTimeChange,
-        handleEndTimeChange,
-        handleMemoChange,
-        updateSelectedCode,
-    } = useVideoCodeEdit(duration, initialVideoCode)
+    const { transientVideoCode, handleStartTimeChange, handleEndTimeChange, handleMemoChange, updateSelectedCode } =
+        useVideoCodeEdit(duration, initialVideoCode)
 
     if (props.prototypes.length < 1) {
         return (

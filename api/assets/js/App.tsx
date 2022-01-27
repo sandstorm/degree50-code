@@ -23,6 +23,7 @@ import VideosFormController from 'StimulusControllers/VideosFormController'
 import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
 import SidebarController from 'StimulusControllers/SidebarController'
 import { initColors, ORIGINAL_COLORS } from 'ntc-ts'
+import 'regenerator-runtime'
 
 const application = Application.start()
 

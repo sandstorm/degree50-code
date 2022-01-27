@@ -50,16 +50,14 @@ export const useMediaItemHandling = <T>({
 
             // This makes sure that all properties from the original item will be written back to the store
             // E.g. the 'url' property of a cut
-            const convertedToOriginalStructure = updatedItems.map(
-                (item: MediaItem<T>): T => {
-                    const { originalData, ...rest } = item
+            const convertedToOriginalStructure = updatedItems.map((item: MediaItem<T>): T => {
+                const { originalData, ...rest } = item
 
-                    return {
-                        ...originalData,
-                        ...rest,
-                    }
+                return {
+                    ...originalData,
+                    ...rest,
                 }
-            )
+            })
 
             setMediaItems(convertedToOriginalStructure)
             updateCallback()
@@ -111,6 +109,7 @@ export const useMediaItemHandling = <T>({
             const copiedItems = copyMediaItems()
             const { clone } = item
 
+            // eslint-disable-next-line
             Object.assign(clone, updatedValues)
 
             if (clone.check) {
