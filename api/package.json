@@ -142,5 +142,8 @@
         "hooks": {
             "pre-commit": "pretty-quick --staged"
         }
+    },
+    "devDependencies": {
+        "@babel/plugin-transform-runtime": "^7.16.10"
     }
 }

@@ -60,6 +60,11 @@ Encore
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
+    .configureBabel((config) => {
+        config.plugins.push('@babel/plugin-transform-runtime');
+    })
+
+
     // enables @babel/preset-env polyfills
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
