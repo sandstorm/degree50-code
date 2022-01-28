@@ -39,6 +39,6 @@
     <footer class="footer">
         <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
 
-        <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Zu Phase 1 gehen</a>
+        <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Zu Phase 1 gehen</a>
     </footer>
 {% endblock %}

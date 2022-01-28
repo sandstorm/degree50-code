@@ -3,9 +3,7 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\Course;
-use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\UserExerciseInteraction;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
@@ -29,14 +27,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ExerciseController extends AbstractController
 {
-    private CourseRepository $courseRepository;
-    private ExerciseRepository $exerciseRepository;
     private ExercisePhaseRepository $exercisePhaseRepository;
     private UserExerciseInteractionRepository $userExerciseInteractionRepository;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private ExerciseService $exerciseService;
+    private UserExerciseInteractionService $userExerciseInteractionService;
 
     private LoggerInterface $logger;
 
@@ -54,6 +51,7 @@ class ExerciseController extends AbstractController
         ExerciseService $exerciseService,
         UserExerciseInteractionRepository $userExerciseInteractionRepository,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        UserExerciseInteractionService $userExerciseInteractionService,
         LoggerInterface $logger
     )
     {
@@ -65,91 +63,93 @@ class ExerciseController extends AbstractController
         $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->exerciseService = $exerciseService;
+        $this->userExerciseInteractionService = $userExerciseInteractionService;
         $this->logger = $logger;
     }
 
     /**
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show/{id}/{phaseId}", name="exercise-overview__exercise--show")
+     * @Route("/exercise/show-phase-overview/{id}/{phaseId}", name="exercise-overview__exercise--show-phase-overview")
      */
-    public function show(Request $request, Exercise $exercise, string $phaseId = ''): Response
+    public function showPhaseOverview(Exercise $exercise, string $phaseId = ''): Response
     {
-        $template = 'Exercise/Show.html.twig';
 
         /* @var User $user */
         $user = $this->getUser();
         $userIsCreator = $user === $exercise->getCreator();
 
-        $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
+        /* @var ExercisePhase $exercisePhase */
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+
+        $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
+        $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
+
+        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+        $otherTeams = array_filter($this->exercisePhaseTeamRepository->findByExercisePhase($exercisePhase), function ($team) use ($teamOfCurrentUser) {
+            // filter out team of current user
+            if ($team === $teamOfCurrentUser) {
+                return false;
+            }
+            // only show teams that the user is allowed to see
+            return  $this->isGranted('viewExercisePhaseTeam', $team);
+        });
+
+        // WHY: Make sure the first team that's shown is the team of the current user
+        $allTeams = $teamOfCurrentUser ? array_merge([$teamOfCurrentUser], $otherTeams) : $otherTeams;
+
+        return $this->render(
+            'Exercise/Show.html.twig',
+            [
+                'userIsCreator' => $userIsCreator,
+                'exercise' => $exercise,
+                'exercisePhase' => $exercisePhase,
+                'currentPhaseIndex' => $exercisePhase->getSorting(),
+                'previousExercisePhase' => $previousExercisePhase,
+                'nextExercisePhase' => $nextExercisePhase,
+                'teams' => $allTeams,
+                'otherTeams' => $otherTeams,
+                'teamOfCurrentUser' => $teamOfCurrentUser,
+                'amountOfPhases' => count($exercise->getPhases()) - 1,
+            ]);
+    }
+
+    /**
+     * @IsGranted("view", subject="exercise")
+     * @Route("/exercise/show-overview/{id}}", name="exercise-overview__exercise--show-overview")
+     */
+    public function showOverview(Exercise $exercise) {
+        /* @var User $user */
+        $user = $this->getUser();
+        $userIsCreator = $user === $exercise->getCreator();
+
+        $userExerciseInteraction = $this
+            ->userExerciseInteractionRepository
+            ->findOneBy(['user' => $user, 'exercise' => $exercise]);
 
         if (!$userExerciseInteraction) {
-            $userExerciseInteraction = new UserExerciseInteraction();
-            $userExerciseInteraction->setExercise($exercise);
-            $userExerciseInteraction->setUser($user);
-            $userExerciseInteraction->setOpened(true);
-
-            $this->eventStore->disableEventPublishingForNextFlush();
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($userExerciseInteraction);
-            $entityManager->flush();
+            $this->userExerciseInteractionService->setUserOpenedExercise($user, $exercise);
         }
 
-        if ($phaseId) {
-            /* @var ExercisePhase $exercisePhase */
-            $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+        $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
 
-            $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
-            $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
-
-            $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
-            $otherTeams = array_filter($this->exercisePhaseTeamRepository->findByExercisePhase($exercisePhase), function ($team) use ($teamOfCurrentUser) {
-                // filter out team of current user
-                if ($team === $teamOfCurrentUser) {
-                    return false;
-                }
-                // only show teams that the user is allowed to see
-                return  $this->isGranted('viewExercisePhaseTeam', $team);
-            });
-
-            // WHY: Make sure the first team that's shown is the team of the current user
-            $allTeams = $teamOfCurrentUser ? array_merge([$teamOfCurrentUser], $otherTeams) : $otherTeams;
-
-            return $this->render($template,
-                [
-                    'userIsCreator' => $userIsCreator,
-                    'exercise' => $exercise,
-                    'exercisePhase' => $exercisePhase,
-                    'currentPhaseIndex' => $exercisePhase->getSorting(),
-                    'previousExercisePhase' => $previousExercisePhase,
-                    'nextExercisePhase' => $nextExercisePhase,
-                    'teams' => $allTeams,
-                    'otherTeams' => $otherTeams,
-                    'teamOfCurrentUser' => $teamOfCurrentUser,
-                    'amountOfPhases' => count($exercise->getPhases()) - 1,
-                ]);
-        } else {
-            $template = 'Exercise/ShowOverview.html.twig';
-
-            $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
-
-            return $this->render($template,
-                [
-                    'userIsCreator' => $userIsCreator,
-                    'exercise' => $exercise,
-                    'exercisePhase' => null,
-                    'previousExercisePhase' => null,
-                    'currentPhaseIndex' => false,
-                    'nextExercisePhase' => $nextExercisePhase,
-                    'amountOfPhases' => count($exercise->getPhases()) - 1,
-                ]);
-        }
+        return $this->render(
+            'Exercise/ShowOverview.html.twig',
+            [
+                'userIsCreator' => $userIsCreator,
+                'exercise' => $exercise,
+                'exercisePhase' => null,
+                'previousExercisePhase' => null,
+                'currentPhaseIndex' => false,
+                'nextExercisePhase' => $nextExercisePhase,
+                'amountOfPhases' => count($exercise->getPhases()) - 1,
+            ]);
     }
 
     /**
      * @IsGranted("view", subject="exercise")
      * @Route("/exercise/finish/{id}", name="exercise-overview__exercise--finish")
      */
-    public function finish(Request $request, Exercise $exercise): Response
+    public function finish(Exercise $exercise): Response
     {
         /* @var User $user */
         $user = $this->getUser();

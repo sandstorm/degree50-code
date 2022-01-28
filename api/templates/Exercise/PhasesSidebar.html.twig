@@ -5,7 +5,7 @@
             {{ _self.sidebarLink(exercise.course.name, false, '', path('exercise-overview', {id: exercise.course.id})) }}
         </p>
         <p>
-            {{ _self.sidebarLink(exercise.name, false, '', path('exercise-overview__exercise--show', {id: exercise.id})) }}
+            {{ _self.sidebarLink(exercise.name, false, '', path('exercise-overview__exercise--show-overview', {id: exercise.id})) }}
         </p>
     <header id="heading-phases">
         <h5>
@@ -36,7 +36,7 @@
                                     item.dependsOnPreviousPhase,
                                     item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
-                                        'exercise-overview__exercise--show',
+                                        'exercise-overview__exercise--show-phase-overview',
                                         {id: exercise.id, phaseId: item.id}
                                     ),
                                     is_granted('viewExercisePhase', item)
