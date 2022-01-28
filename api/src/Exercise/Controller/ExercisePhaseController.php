@@ -86,28 +86,21 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
-     * @Route("/exercise-phase/show/{id}/{team_id}", name="exercise-overview__exercise-phase--show")
+     * @Route("/exercise-phase/show-others/{id}/{team_id}", name="exercise-overview__exercise-phase--show-other-solution")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
-    public function show(Request $request, ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function showOtherStudentsSolution(
+        ExercisePhase $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response
     {
         // TODO refactor this method!
 
         /* @var User $user */
         $user = $this->getUser();
 
-        // NOTE:
-        // In this context "showSolution" is a flag that determines if the user is currently watching
-        // a single solution of another user (e.g. a student).
-        // This is usually done from the overview screen of the current exercise phase (Exercise/Show.html.twig)
-        //
-        // FIXME
-        // We should probably extract this code into its own controller action and get rid of the flag (see the template
-        // switch further down inside this method)
-        $showSolution = !!$request->get('showSolution');
-
         // config for the ui to render the react components
-        $config = $this->getConfig($exercisePhase, $showSolution);
+        $config = $this->getConfig($exercisePhase, true);
         $config['apiEndpoints'] = [
             'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
                 'id' => $exercisePhaseTeam->getId()
@@ -119,28 +112,74 @@ class ExercisePhaseController extends AbstractController
 
         $currentEditor = null;
 
-        if (!$showSolution) {
-            // FIXME add why comment please
+        $response = new Response();
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
 
-            if ($exercisePhaseTeam->getCurrentEditor()) {
-                $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
-            } else {
-                $currentEditor = $user->getId();
-                $exercisePhaseTeam->setCurrentEditor($user);
-            }
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+            $clientSideSolutionDataBuilder,
+            $exercisePhaseTeam,
+            $exercisePhase
+        );
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $this->eventStore->disableEventPublishingForNextFlush();
+        $template = 'ExercisePhase/ShowSolution.html.twig';
 
-            if (!$exercisePhaseTeam->getSolution()) {
-                $newSolution = new Solution();
-                $exercisePhaseTeam->setSolution($newSolution);
-                $entityManager->persist($newSolution);
-            }
+        return $this->render($template, [
+            'config' => $config,
+            'data' => $clientSideSolutionDataBuilder,
+            'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
+            'exercisePhase' => $exercisePhase,
+            'exercise' => $exercisePhase->getBelongsToExercise(),
+            'exercisePhaseTeam' => $exercisePhaseTeam,
+            'currentEditor' => $currentEditor,
+        ], $response);
+    }
 
-            $entityManager->persist($exercisePhaseTeam);
-            $entityManager->flush();
+    /**
+     * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
+     * @Route("/exercise-phase/show/{id}/{team_id}", name="exercise-overview__exercise-phase--show")
+     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
+     */
+    public function show(Request $request, ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        // TODO refactor this method!
+
+        /* @var User $user */
+        $user = $this->getUser();
+
+        // config for the ui to render the react components
+        $config = $this->getConfig($exercisePhase, false);
+        $config['apiEndpoints'] = [
+            'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
+            'updateCurrentEditor' => $this->router->generate('exercise-overview__exercise-phase-team--update-current-editor', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
+        ];
+
+        $currentEditor = null;
+
+        // FIXME add why comment please
+
+        if ($exercisePhaseTeam->getCurrentEditor()) {
+            $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
+        } else {
+            $currentEditor = $user->getId();
+            $exercisePhaseTeam->setCurrentEditor($user);
         }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $this->eventStore->disableEventPublishingForNextFlush();
+
+        if (!$exercisePhaseTeam->getSolution()) {
+            $newSolution = new Solution();
+            $exercisePhaseTeam->setSolution($newSolution);
+            $entityManager->persist($newSolution);
+        }
+
+        $entityManager->persist($exercisePhaseTeam);
+        $entityManager->flush();
 
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
@@ -152,12 +191,7 @@ class ExercisePhaseController extends AbstractController
             $exercisePhase
         );
 
-        // TODO maybe we should use separate endpoints here instead?
-        // to me it feels like this controller method does too much...
         $template = 'ExercisePhase/Show.html.twig';
-        if ($showSolution) {
-            $template = 'ExercisePhase/ShowSolution.html.twig';
-        }
 
         return $this->render($template, [
             'config' => $config,

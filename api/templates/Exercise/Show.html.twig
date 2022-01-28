@@ -135,7 +135,7 @@
                         <td>
                             {% if is_granted('viewOtherSolutions', exercisePhase) %}
                                 <a
-                                        href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">
+                                        href="{{ path('exercise-overview__exercise-phase--show-other-solution', { 'id':exercisePhase.id, 'team_id': team.id }) }}">
                                     Ergebnis anzeigen
                                 </a>
                             {% endif %}
