@@ -16,21 +16,22 @@ Feature: Redirections to the login if unauthenticated
     Then the response status code should be 200
 
     Examples:
-      | route                                       | params                            |
-      | mediathek--index                            |                                   |
-      | mediathek__video--player                    | {"id": "foo"}                     |
-      | mediathek__video--upload                    |                                   |
-      | mediathek__video--edit                      | {"id": "foo"}                     |
-      | mediathek__video--delete                    | {"id": "foo"}                     |
-      | exercise-overview__exercise--show           | {"id": "ex"}                      |
-      | exercise-overview__exercise--new            | {"id": "c"}                       |
-      | exercise-overview__exercise--edit           | {"id": "ex"}                      |
-      | exercise-overview                           | {"id": "c"}                       |
-      | exercise-overview__exercise-phase--new      | {"id": "ex"}                      |
-      | exercise-overview__exercise-phase--set-type | {"id": "ex"}                      |
-      | exercise-overview__exercise-phase--edit     | {"id": "ex", "phase_id": "ex-p1"} |
-      | exercise-overview__exercise-phase--delete   | {"id": "ex", "phase_id": "ex-p1"} |
-      | exercise-overview__material--download       | {"id": "m"}                       |
+      | route                                            | params                            |
+      | mediathek--index                                 |                                   |
+      | mediathek__video--player                         | {"id": "foo"}                     |
+      | mediathek__video--upload                         |                                   |
+      | mediathek__video--edit                           | {"id": "foo"}                     |
+      | mediathek__video--delete                         | {"id": "foo"}                     |
+      | exercise-overview__exercise--show-phase-overview | {"id": "ex"}                      |
+      | exercise-overview__exercise--show-overview       | {"id": "ex"}                      |
+      | exercise-overview__exercise--new                 | {"id": "c"}                       |
+      | exercise-overview__exercise--edit                | {"id": "ex"}                      |
+      | exercise-overview                                | {"id": "c"}                       |
+      | exercise-overview__exercise-phase--new           | {"id": "ex"}                      |
+      | exercise-overview__exercise-phase--set-type      | {"id": "ex"}                      |
+      | exercise-overview__exercise-phase--edit          | {"id": "ex", "phase_id": "ex-p1"} |
+      | exercise-overview__exercise-phase--delete        | {"id": "ex", "phase_id": "ex-p1"} |
+      | exercise-overview__material--download            | {"id": "m"}                       |
 
       # TODO add missing routes!
 

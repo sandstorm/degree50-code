@@ -14,6 +14,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * This controller is responsible for actions regarding the exercise overview
+ *
+ * Exercises are being displayed as tiles on the templates.
+ * NOTE: This has nothing to do with the overview of a single exercise.
+ * Single exercise overview handling is located inside the [ExerciseController]
+ *
  * @IsGranted("ROLE_USER")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")

@@ -327,48 +327,58 @@ class ExercisePhaseTeamController extends AbstractController
     public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         $user = $this->getUser();
+
         // get teamMember with the candidate id
-        $currentEditorCandidateIdFromJson = json_decode($request->getContent(), true)['currentEditorCandidateId'];
-        $currentEditorCandidate = $exercisePhaseTeam->getMembers()->filter(function (User $member) use ($currentEditorCandidateIdFromJson) {
-            return $member->getId() === $currentEditorCandidateIdFromJson;
-        })->first();
+        $currentEditorCandidateIdFromJson = json_decode(
+            $request->getContent(),
+            true
+        )['currentEditorCandidateId'];
 
-        if ($currentEditorCandidate) {
-            $isAlreadySet = $currentEditorCandidate === $exercisePhaseTeam->getCurrentEditor();
-            $userIsCandidate = $currentEditorCandidate === $user;
-            $userIsCurrentEditor = $user === $exercisePhaseTeam->getCurrentEditor();
+        $currentEditorCandidate = $exercisePhaseTeam
+            ->getMembers()
+            ->filter(function (User $member) use ($currentEditorCandidateIdFromJson) {
+                return $member->getId() === $currentEditorCandidateIdFromJson;
+              })
+            ->first();
 
-            // let only future currentEditor make the change
-            if (!$isAlreadySet && ($userIsCandidate || $userIsCurrentEditor)) {
-                $exercisePhaseTeam->setCurrentEditor($currentEditorCandidate);
-                // Why: We do not need the event info about the currentEditor
-                $this->eventStore->disableEventPublishingForNextFlush();
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($exercisePhaseTeam);
-                $entityManager->flush();
-
-                $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-                $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
-                $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
-                    $clientSideSolutionDataBuilder,
-                    $exercisePhaseTeam,
-                    $exercisePhase
-                );
-
-                // push new state to clients
-                $this->liveSyncService->publish(
-                    $exercisePhaseTeam,
-                    [
-                        'data' => $clientSideSolutionDataBuilder,
-                        'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
-                    ]
-                );
-                return Response::create('OK');
-            } else {
-                return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);
-            }
-        } else {
+        if (!$currentEditorCandidate) {
             return Response::create('currentEditor candidate is not member of exercisePhaseTeam!', Response::HTTP_FORBIDDEN);
+        }
+
+        $isAlreadySet = $currentEditorCandidate === $exercisePhaseTeam->getCurrentEditor();
+        $userIsCandidate = $currentEditorCandidate === $user;
+        $userIsCurrentEditor = $user === $exercisePhaseTeam->getCurrentEditor();
+
+        // let only current editor or candidate make the change
+        if (!$isAlreadySet && ($userIsCandidate || $userIsCurrentEditor)) {
+            $exercisePhaseTeam->setCurrentEditor($currentEditorCandidate);
+
+            // Why: We do not need the event info about the currentEditor
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($exercisePhaseTeam);
+            $entityManager->flush();
+
+            $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+
+            $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+            $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+                $clientSideSolutionDataBuilder,
+                $exercisePhaseTeam,
+                $exercisePhase
+            );
+
+            // push new state to clients
+            $this->liveSyncService->publish(
+                $exercisePhaseTeam,
+                [
+                    'data' => $clientSideSolutionDataBuilder,
+                    'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
+                ]
+            );
+            return Response::create('OK');
+        } else {
+            return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);
         }
     }
 }

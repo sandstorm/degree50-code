@@ -68,6 +68,9 @@ class ExerciseController extends AbstractController
     }
 
     /**
+     * This action is responsible for showing the phase overview screen from which a student
+     * is able to start solving the phase or seeing other students solutions.
+     *
      * @IsGranted("view", subject="exercise")
      * @Route("/exercise/show-phase-overview/{id}/{phaseId}", name="exercise-overview__exercise--show-phase-overview")
      */
@@ -114,6 +117,9 @@ class ExerciseController extends AbstractController
     }
 
     /**
+     * This actions is responsible for showing the general overview of an exercise.
+     * This includes the exercise description as well as an overview of phases.
+     *
      * @IsGranted("view", subject="exercise")
      * @Route("/exercise/show-overview/{id}}", name="exercise-overview__exercise--show-overview")
      */
