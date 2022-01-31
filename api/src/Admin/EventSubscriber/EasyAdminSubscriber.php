@@ -8,21 +8,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class EasyAdminSubscriber implements EventSubscriberInterface
 {
-    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserPasswordHasherInterface $userPasswordHasher;
     private DoctrineIntegratedEventStore $eventStore;
 
     /**
      * EasyAdminSubscriber constructor.
      * @param DoctrineIntegratedEventStore $eventStore
+     * @param UserPasswordHasherInterface $userPasswordHasher
      */
-    public function __construct(DoctrineIntegratedEventStore $eventStore, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(DoctrineIntegratedEventStore $eventStore, UserPasswordHasherInterface $userPasswordHasher)
     {
         $this->eventStore = $eventStore;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
     public static function getSubscribedEvents()
@@ -47,7 +48,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     {
         $entity = $event->getEntityInstance();
         if ($entity instanceof User && $entity->getPlainPassword()) {
-            $entity->setPassword($this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword()));
+            $entity->setPassword($this->userPasswordHasher->hashPassword($entity, $entity->getPlainPassword()));
         }
     }
 }

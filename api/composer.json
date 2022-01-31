@@ -7,54 +7,69 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "api-platform/api-pack": "^1.1",
+        "api-platform/core": "^2.6",
+        "doctrine/annotations": "^1.0",
+        "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-migrations-bundle": "^2.0",
-        "easycorp/easyadmin-bundle": "^3.0",
+        "doctrine/orm": "^2.11",
+        "easycorp/easyadmin-bundle": "3.4.3",
         "firebase/php-jwt": "^5.2",
         "friendsofsymfony/ckeditor-bundle": "^2.2",
         "guzzlehttp/guzzle": "^6.3",
         "hslavich/oneloginsaml-bundle": "dev-master",
         "liip/imagine-bundle": "^2.3",
+        "nelmio/cors-bundle": "^2.2",
         "oneup/flysystem-bundle": "^3.4",
         "oneup/uploader-bundle": "^3.0",
         "opis/json-schema": "^1.0",
-        "php-ffmpeg/php-ffmpeg": "^0.16.0",
+        "php-ffmpeg/php-ffmpeg": "^0.19.0",
+        "phpdocumentor/reflection-docblock": "^5.3",
+        "phpstan/phpdoc-parser": "^1.2",
         "ramsey/uuid": "^4.0",
-        "rokka/imagine-vips": "^0.11.0",
+        "rokka/imagine-vips": "^0.14.0",
         "sensio/framework-extra-bundle": "^5.5",
-        "shivas/versioning-bundle": "^3.2",
-        "symfony/console": "5.0.*",
-        "symfony/dotenv": "5.0.*",
-        "symfony/expression-language": "5.0.*",
+        "shivas/versioning-bundle": "^4.0",
+        "symfony/asset": "5.4.*",
+        "symfony/console": "5.4.*",
+        "symfony/dotenv": "5.4.*",
+        "symfony/expression-language": "5.4.*",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "5.0.*",
+        "symfony/framework-bundle": "5.4.*",
         "symfony/mercure-bundle": "^0.2",
-        "symfony/messenger": "5.0.*",
+        "symfony/messenger": "5.4.*",
         "symfony/monolog-bundle": "^3.5",
-        "symfony/security-bundle": "5.0.*",
-        "symfony/translation": "5.0.*",
+        "symfony/property-access": "5.4.*",
+        "symfony/property-info": "5.4.*",
+        "symfony/proxy-manager-bridge": "5.4.*",
+        "symfony/runtime": "^5.4",
+        "symfony/security-bundle": "5.4.*",
+        "symfony/serializer": "5.4.*",
+        "symfony/translation": "5.4.*",
+        "symfony/twig-bundle": "5.4.*",
+        "symfony/validator": "5.4.*",
         "symfony/webpack-encore-bundle": "^1.7",
-        "symfony/yaml": "5.0.*",
+        "symfony/yaml": "5.4.*",
         "vich/uploader-bundle": "^1.13",
         "webonyx/graphql-php": "^0.13.8"
     },
     "require-dev": {
         "api-platform/schema-generator": "^2.1",
-        "carlosas/phpat": "^0.6.1",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "friends-of-behat/mink": "^1.8",
         "friends-of-behat/mink-browserkit-driver": "^1.4",
         "friends-of-behat/mink-extension": "^2.4",
-        "friends-of-behat/symfony-extension": "^2.0",
+        "friends-of-behat/symfony-extension": "^2.3.1",
+        "phpat/phpat": "^0.8.3",
         "phpunit/phpunit": "^9.5",
-        "symfony/browser-kit": "5.0.*",
-        "symfony/css-selector": "5.0.*",
+        "symfony/browser-kit": "5.4.*",
+        "symfony/css-selector": "5.4.*",
         "symfony/maker-bundle": "^1.11",
-        "symfony/profiler-pack": "^1.0"
+        "symfony/stopwatch": "5.4.*",
+        "symfony/web-profiler-bundle": "5.4.*"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -78,6 +93,9 @@
         }
     },
     "config": {
+        "platform": {
+            "php": "8.1"
+        },
         "preferred-install": {
             "*": "dist"
         },
@@ -98,7 +116,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.0.*"
+            "require": "5.4.*"
         }
     }
 }

@@ -1,5 +1,5 @@
 # NOTE: this file is executed from the ROOT DIRECTORY of the project, i.e. "../"
-FROM php:7.4-fpm-bullseye
+FROM php:8.1-fpm-bullseye
 
 # Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips, zip
 RUN apt-get update -y && \
@@ -22,7 +22,6 @@ RUN set -eux; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
-## Why no update possible
 COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
 
 #TODO: Test if bullseye's version of ffmpeg (4.3) works now (seems like it on my machine at least)
@@ -90,8 +89,8 @@ COPY api/translations translations/
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
-	composer dump-autoload --classmap-authoritative --no-dev; \
-	composer run-script --no-dev post-install-cmd; \
+	# composer dump-autoload --classmap-authoritative --no-dev; \
+	# composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
 VOLUME /app/var
 
