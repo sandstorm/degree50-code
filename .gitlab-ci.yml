@@ -34,7 +34,7 @@ test_frontend:
 
 test_app:
     stage: test
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     tags:
         - docker
         - privileged
@@ -52,7 +52,7 @@ test_app:
 
 package_app:
     stage: package
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     tags:
@@ -67,7 +67,7 @@ package_app:
 
 package_logging_sidecar:
     stage: package
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     tags:
@@ -81,7 +81,7 @@ package_logging_sidecar:
 
 deploy-prod:
     stage: deploy
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     when: manual
@@ -110,7 +110,7 @@ deploy-prod:
 # manual deploy to degree40-test
 deploy-test:
     stage: deploy
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     when: manual
