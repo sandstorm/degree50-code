@@ -13,6 +13,7 @@
             "jsx": true
         },
         "project": "./tsconfig.json",
+        "tsconfigRootDir": ".",
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
@@ -22,6 +23,7 @@
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/prefer-readonly-parameter-types": "off",
         "functional/prefer-readonly-type": "off"
     },
     "settings": {
