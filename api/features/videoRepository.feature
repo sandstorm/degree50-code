@@ -65,7 +65,7 @@ Feature: CRUD operations on the videoRepository
                       "memo": "",
                       "color": null,
                       "url": "test",
-                      "offset": "00:01:03.315",
+                      "offset": 0,
                       "playbackRate": "1"
                   }
               ]

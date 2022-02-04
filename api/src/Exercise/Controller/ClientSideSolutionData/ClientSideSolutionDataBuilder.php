@@ -76,7 +76,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         $this->previousSolutionIds = [];
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             'solutions' => [
                 'byId' => $this->clientSideSolutions,
