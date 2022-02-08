@@ -87,8 +87,6 @@ deploy-prod:
         - tags
     when: manual
     tags:
-        - docker
-        - privileged
         - jumphost
     script:
         # pull the image of this branch and tag it as "main"
@@ -116,8 +114,6 @@ deploy-test:
         - tags
     when: manual
     tags:
-        - docker
-        - privileged
         - jumphost
     script:
         # pull the image of this branch and tag it as "test-stage"
