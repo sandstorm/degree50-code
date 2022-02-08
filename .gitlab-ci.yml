@@ -40,6 +40,7 @@ test_app:
         - privileged
     services:
         - mysql:latest
+        - redis:6.2
     variables:
         MYSQL_DATABASE: "test_db"
         MYSQL_ROOT_PASSWORD: "password"
