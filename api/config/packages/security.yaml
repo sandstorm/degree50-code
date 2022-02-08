@@ -38,11 +38,10 @@ security:
                     - App\Security\LoginFormAuthenticator
             logout:
                 # this URL must match the `app_logout` route.
-                # DO NOT CHANGE THE URL, ass the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
+                # DO NOT CHANGE THE URL, as the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
                 path: /saml/logout
                 # for logout, we both trigger the classic session-based logout, and as well the SAML logout.
                 handlers:
-                    - 'security.logout.handler.session'
                     - 'hslavich_onelogin_saml.saml_logout'
 
             # activate different ways to authenticate

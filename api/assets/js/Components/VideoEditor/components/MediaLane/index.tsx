@@ -68,7 +68,11 @@ const MediaLane = (props: Props) => {
 
     const { handleMediaLaneClick } = useMediaLaneClick(mediaLaneRenderConfig, setRenderConfig, setPlayPosition)
 
-    const { containerWidth, containerHeight, ref: $mediaTrackRef } = useMediaLaneRendering({
+    const {
+        containerWidth,
+        containerHeight,
+        ref: $mediaTrackRef,
+    } = useMediaLaneRendering({
         currentTime: props.playerSyncPlayPosition,
         videoDuration: firstVideoDuration,
         renderConfig: props.mediaLaneRenderConfig,

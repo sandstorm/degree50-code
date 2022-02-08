@@ -47,13 +47,8 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    const {
-        transientAnnotation,
-        handleStartTimeChange,
-        handleEndTimeChange,
-        updateText,
-        updateMemo,
-    } = useAnnotationEdit(duration, initialAnnotation)
+    const { transientAnnotation, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } =
+        useAnnotationEdit(duration, initialAnnotation)
 
     const close = () => {
         props.closeOverlay(AnnotationOverlayIds.create)

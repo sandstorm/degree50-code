@@ -316,12 +316,6 @@ apt autoremove
 Connect to the degree server via ssh using the config above.
 This will forward port `19999` to localhost, so you can open the gui on `http://localhost:19999`.
 
-### Deployment via Gitlab CI
-
-> Make sure you increase the app version in `/api/templates/Version.html.twig`!
-
--   When a pipeline on main succeeds you can manually trigger a deployment step.
-
 ### How to remove a Video from Prod
 
 > Admin should be able to do this inside the plattform

@@ -1,5 +1,5 @@
 import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
-import { eventChannel, EventChannel } from 'redux-saga'
+import { eventChannel, EventChannel, Task } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
 import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
@@ -27,11 +27,11 @@ function* solutionSyncListener() {
         const mercureUrl = new URL(lifeSyncConfig.mercureEndpoint, document.location.toString())
         mercureUrl.searchParams.append('topic', lifeSyncConfig.topics.solution)
         const eventSource = new EventSource(mercureUrl.toString())
-        const eventChannel = yield call(connect, eventSource)
+        const eventChannel: EventChannel<EventSource> = yield call(connect, eventSource)
 
         yield put(initPresenceAction())
 
-        const messageHandler = yield fork(handleMessages, eventChannel)
+        const messageHandler: Task = yield fork(handleMessages, eventChannel)
 
         // wait for disconnect by user
         yield take(disconnectSolutionSyncAction)
@@ -57,10 +57,12 @@ function connect(eventSource: EventSource) {
 function* handleMessages(channel: EventChannel<unknown>) {
     try {
         while (true) {
-            const action = yield take(channel)
+            // FIXME any typing
+            const action: { payload: any } = yield take(channel)
 
+            // FIXME any typings
             // set currentEditor
-            const eventData = yield JSON.parse(action.payload)
+            const eventData: { currentEditor: any; data: any } = yield JSON.parse(action.payload)
             const currentEditor: string = eventData.currentEditor
             yield put(setCurrentEditorId(currentEditor))
 

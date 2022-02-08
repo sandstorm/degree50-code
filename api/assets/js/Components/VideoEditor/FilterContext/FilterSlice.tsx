@@ -88,6 +88,10 @@ export const filterSlice = createSlice({
                             {}
                         ),
                     }
+
+                default: {
+                    return state
+                }
             }
             // In case this action is ever called with GlobalSolutionFilter.MIXED
             return state

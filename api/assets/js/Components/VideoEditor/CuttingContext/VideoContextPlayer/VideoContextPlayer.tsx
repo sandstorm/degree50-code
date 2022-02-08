@@ -40,9 +40,10 @@ const VideoContextPlayer: FC<Props> = (props) => {
     // controls
     const { volume, setVolume, isMuted, toggleIsMuted } = useVideoContextVolume(videoContext, 1)
     const { isPaused, toggleIsPaused } = useVideoContextPlayback(videoContext)
-    const duration = useMemo(() => videoContextPlayList.reduce((acc, cut) => acc + cut.duration, 0), [
-        videoContextPlayList,
-    ])
+    const duration = useMemo(
+        () => videoContextPlayList.reduce((acc, cut) => acc + cut.duration, 0),
+        [videoContextPlayList]
+    )
     const { currentTime, setCurrentTime } = useVideoContextCurrentTime(videoContext)
 
     // handleKeyDown to catch play/pause toggle via short cut

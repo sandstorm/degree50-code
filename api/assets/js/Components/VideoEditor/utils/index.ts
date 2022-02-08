@@ -15,6 +15,7 @@ export function getExt(url: string): string | undefined {
         return getExt(url.split('#')[0])
     }
 
+    // eslint-disable-next-line
     return url.trim().toLowerCase().split('.').pop()
 }
 

@@ -8,22 +8,19 @@ use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AccountFixtures extends Fixture
 {
     public const COURSE_REFERENCE = 'course';
     public const CREATOR_REFERENCE = 'creator';
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $passwordEncoder;
+    private UserPasswordHasherInterface $userPasswordHasher;
     private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, DoctrineIntegratedEventStore $eventStore)
     {
-        $this->passwordEncoder = $passwordEncoder;
+        $this->userPasswordHasher = $userPasswordHasher;
         $this->eventStore = $eventStore;
     }
 
@@ -57,7 +54,7 @@ class AccountFixtures extends Fixture
         $account = new User();
         $account->setEmail($userName);
         $account->setRoles($roles);
-        $account->setPassword($this->passwordEncoder->encodePassword($account, 'password'));
+        $account->setPassword($this->userPasswordHasher->hashPassword($account, 'password'));
         $manager->persist($account);
 
         return $account;

@@ -28,7 +28,9 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
     const playerId = useMemo(() => generate(), [])
 
     useEffect(() => {
-        setPlayer(videojs(videoRef.current, { ...defaultVideoJsOptions, ...props.videoJsOptions }))
+        if (videoRef.current !== null) {
+            setPlayer(videojs(videoRef.current, { ...defaultVideoJsOptions, ...props.videoJsOptions }))
+        }
 
         return () => {
             player?.dispose()
