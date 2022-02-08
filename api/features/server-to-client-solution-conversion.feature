@@ -74,7 +74,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "memo": "",
                       "color": null,
                       "url": "test",
-                      "offset": "00:01:03.315",
+                      "offset": 0,
                       "playbackRate": "1"
                   }
               ]
@@ -272,7 +272,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "memo": "",
                       "color": null,
                       "url": "test",
-                      "offset": "00:01:03.315",
+                      "offset": 0,
                       "playbackRate": "1"
                   }
               ]
@@ -503,7 +503,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "memo": "",
                       "color": null,
                       "url": "test",
-                      "offset": "00:01:03.315",
+                      "offset": 0,
                       "playbackRate": "1"
                   }
               ]
@@ -690,7 +690,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "memo": "",
                       "color": null,
                       "url": "test",
-                      "offset": "00:01:03.315",
+                      "offset": 0,
                       "playbackRate": "1"
                   }
               ]

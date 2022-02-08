@@ -6,7 +6,7 @@ stages:
 
 build_js:
     stage: build
-    image: node:12.18.0-stretch
+    image: node:16.13.1-bullseye-slim
     script:
         - yarn config set cache-folder .yarn
         - cd api
@@ -25,7 +25,7 @@ build_js:
 
 test_frontend:
     stage: test
-    image: node:12.18.0-stretch
+    image: node:16.13.1-bullseye-slim
     script:
         - yarn config set cache-folder .yarn
         - cd api
@@ -34,12 +34,13 @@ test_frontend:
 
 test_app:
     stage: test
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     tags:
         - docker
         - privileged
     services:
         - mysql:latest
+        - redis:6.2
     variables:
         MYSQL_DATABASE: "test_db"
         MYSQL_ROOT_PASSWORD: "password"
@@ -52,7 +53,7 @@ test_app:
 
 package_app:
     stage: package
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     tags:
@@ -67,7 +68,7 @@ package_app:
 
 package_logging_sidecar:
     stage: package
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.4-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     tags:
@@ -81,13 +82,11 @@ package_logging_sidecar:
 
 deploy-prod:
     stage: deploy
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     when: manual
     tags:
-        - docker
-        - privileged
         - jumphost
     script:
         # pull the image of this branch and tag it as "main"
@@ -110,13 +109,11 @@ deploy-prod:
 # manual deploy to degree40-test
 deploy-test:
     stage: deploy
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:7.3-v1
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
     when: manual
     tags:
-        - docker
-        - privileged
         - jumphost
     script:
         # pull the image of this branch and tag it as "test-stage"

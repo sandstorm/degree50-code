@@ -361,7 +361,7 @@ class WebEncodingHandler implements MessageHandlerInterface
     {
         $this->logger->info('Create preview image for <' . $inputVideoFilename . '>');
 
-        $ffmpeg = \Streaming\FFMpeg::create($config, $this->logger);
+        $ffmpeg = FFMpeg::create($config, $this->logger);
         $ffmpegVideo = $ffmpeg->open($inputVideoFilename);
         $frame = $ffmpegVideo->frame(TimeCode::fromSeconds($videoDuration * 0.25));
         $frame->save($localOutputDirectory . '/thumbnail.jpg');

@@ -35,13 +35,8 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 // TODO: this should probably be consolidated into a single component with the CreateAnnotationOverlay
 const EditAnnotationOverlay: FC<Props> = (props) => {
-    const {
-        transientAnnotation,
-        handleStartTimeChange,
-        handleEndTimeChange,
-        updateText,
-        updateMemo,
-    } = useAnnotationEdit(props.duration, props.annotation)
+    const { transientAnnotation, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } =
+        useAnnotationEdit(props.duration, props.annotation)
 
     const close = () => {
         props.closeOverlay(AnnotationOverlayIds.edit)

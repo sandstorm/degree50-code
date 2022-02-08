@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -20,15 +20,24 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
  */
 class DashboardController extends AbstractDashboardController
 {
+    private AdminUrlGenerator $adminUrlGenerator;
+
+    public function __construct(AdminUrlGenerator $adminUrlGenerator)
+    {
+        $this->adminUrlGenerator = $adminUrlGenerator;
+    }
+
     /**
      * @Route("/admin")
      */
     public function index(): Response
     {
         // redirect to some CRUD controller
-        $routeBuilder = $this->get(CrudUrlGenerator::class)->build();
+        $url = $this->adminUrlGenerator
+            ->setController(UserCrudController::class)
+            ->generateUrl();
 
-        return $this->redirect($routeBuilder->setController(UserCrudController::class)->generateUrl());
+        return $this->redirect($url);
 
     }
 

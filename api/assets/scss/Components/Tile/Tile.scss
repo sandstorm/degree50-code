@@ -2,6 +2,8 @@ $tileHeight: 200px;
 $tileHeight--small: 150px;
 
 .tile {
+    flex-grow: 0;
+
     position: relative;
     margin-right: 20px;
     margin-bottom: 20px;

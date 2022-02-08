@@ -58,7 +58,7 @@ class FileSystemService
     }
 
     /**
-     * @param string $inputFilename in the format understandable by MountManager, like uploaded_videos://my_video.mp4
+     * @param VirtualizedFile $inputFile
      * @return string a local path to the file.
      * @throws \League\Flysystem\FileExistsException
      */
