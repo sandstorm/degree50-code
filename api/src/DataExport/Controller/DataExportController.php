@@ -10,12 +10,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use ZipArchive;
 
 /**
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
  */
-class DataExportController extends AbstractController {
+class DataExportController extends AbstractController
+{
     private DegreeDataToCsvService $degreeDataToCsvService;
     private LoggerInterface $logger;
 
@@ -32,15 +34,16 @@ class DataExportController extends AbstractController {
      * @IsGranted("exportCSV", subject="course")
      * @Route("/exercise-overview/{id}/export-csv", name="exercise-overview__course-export-csv")
      */
-    public function exportData(Request $request, Course $course) {
+    public function exportData(Request $request, Course $course): Response
+    {
         $csvList = $this->degreeDataToCsvService->getAllAsVirtualCSVs($course);
 
         // Create temporary zip file
         $zipName = 'course_' . $course->getId() . '_csv-export.zip';
         $zipPath = sys_get_temp_dir() . '/' . Uuid::uuid4() . '_' . $zipName;
 
-        $zip = new \ZipArchive();
-        $zip->open($zipPath,  \ZipArchive::CREATE);
+        $zip = new ZipArchive();
+        $zip->open($zipPath, ZipArchive::CREATE);
         foreach ($csvList as $csvDto) {
             $zip->addFromString($csvDto->getFileName(), $csvDto->getContentString());
         }

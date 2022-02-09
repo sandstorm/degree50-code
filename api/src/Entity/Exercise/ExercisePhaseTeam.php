@@ -21,33 +21,37 @@ class ExercisePhaseTeam
      * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhase", inversedBy="teams")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $exercisePhase;
+    private ExercisePhase $exercisePhase;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Exercise\Solution", cascade={"remove"})
      */
-    private $solution;
+    private ?Solution $solution;
 
     /**
+     * @var User[]
+     *
      * @ORM\ManyToMany(targetEntity="App\Entity\Account\User")
      */
-    private $members;
+    private Collection $members;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User")
      */
-    private $currentEditor;
+    private ?User $currentEditor;
 
     /**
+     * @var AutosavedSolution[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\AutosavedSolution", mappedBy="team", orphanRemoval=true, cascade={"remove"})
      */
-    private $autosavedSolutions;
+    private Collection $autosavedSolutions;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $creator;
+    private User $creator;
 
     public function __construct(?string $id = null)
     {
@@ -86,7 +90,7 @@ class ExercisePhaseTeam
     }
 
     /**
-     * @return Collection|User[]
+     * @return User[]
      */
     public function getMembers(): Collection
     {
@@ -129,7 +133,7 @@ class ExercisePhaseTeam
     }
 
     /**
-     * @return Collection|AutosavedSolution[]
+     * @return AutosavedSolution[]
      */
     public function getAutosavedSolutions(): Collection
     {
@@ -155,12 +159,12 @@ class ExercisePhaseTeam
         return $this;
     }
 
-    public function getCreator(): ?User
+    public function getCreator(): User
     {
         return $this->creator;
     }
 
-    public function setCreator(?User $creator): self
+    public function setCreator(User $creator): self
     {
         $this->creator = $creator;
 
@@ -170,8 +174,7 @@ class ExercisePhaseTeam
     public function hasAdminOrDozentMember(): bool
     {
         return $this->getMembers()->exists(
-            function ($_key, User $member)
-            {
+            function ($_key, User $member) {
                 return $member->isDozent() || $member->isAdmin();
             }
         );

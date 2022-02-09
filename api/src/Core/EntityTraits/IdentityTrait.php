@@ -10,13 +10,13 @@ use Ramsey\Uuid\Uuid;
 trait IdentityTrait
 {
     /**
-     * @var string The entity Id
+     * The entity Id
      *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="guid")
      */
-    private $id;
+    private string $id;
 
     private function generateOrSetId(?string $id = null)
     {

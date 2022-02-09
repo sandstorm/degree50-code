@@ -16,7 +16,8 @@ use App\Twig\AppRuntime;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
-class SolutionService {
+class SolutionService
+{
     private AppRuntime $appRuntime;
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
@@ -44,14 +45,15 @@ class SolutionService {
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
         array $teams
-    ) {
+    ): ClientSideSolutionDataBuilder
+    {
         // FIXME
         // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
         // However it is rather intransparent when and why that happens.
         // Therefore we should probably find a way to fix and document this.
         $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
 
-        $previousSolutionDtos = array_map(function($exercisePhaseTeam) {
+        $previousSolutionDtos = array_map(function ($exercisePhaseTeam) {
             /** @var ExercisePhaseTeam $exercisePhaseTeam */
             $solutionEntity = $exercisePhaseTeam->getSolution();
 
@@ -81,7 +83,7 @@ class SolutionService {
         // Get configured videoCodePrototypes from ExercisePhase
         if (!empty($teams)) {
             $exercisePhase = $teams[0]->getExercisePhase();
-            $configuredVideoCodePrototypes = array_map(function(VideoCode $videoCodePrototypeEntity) {
+            $configuredVideoCodePrototypes = array_map(function (VideoCode $videoCodePrototypeEntity) {
                 return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
             }, $exercisePhase->getVideoCodes()->toArray());
 
@@ -95,11 +97,12 @@ class SolutionService {
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
         ExercisePhaseTeam $exercisePhaseTeam,
         ExercisePhase $exercisePhase
-    ) {
+    ): ClientSideSolutionDataBuilder
+    {
         // Note: This might either be an autosaved solution or an actual solution
         // FIXME: we should probably find a better way to handle solutions and autosavedSolutions in general.
         $solutionEntity = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
-        $configuredVideoCodePrototypes = array_map(function(VideoCode $videoCodePrototypeEntity) {
+        $configuredVideoCodePrototypes = array_map(function (VideoCode $videoCodePrototypeEntity) {
             return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
         }, $exercisePhase->getVideoCodes()->toArray());
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
@@ -135,8 +138,9 @@ class SolutionService {
 
     private function getPreviousSolutionDtosForVideoEditor(
         ExercisePhase $exercisePhase,
-        ExercisePhaseTeam  $exercisePhaseTeam = null
-    ) {
+        ExercisePhaseTeam $exercisePhaseTeam = null
+    )
+    {
         // Get the relevant solutions of the previous phase,
         // meaning we get the solutions of each of the members of the current team
         if ($exercisePhase->getDependsOnPreviousPhase() && $exercisePhaseTeam != null) {

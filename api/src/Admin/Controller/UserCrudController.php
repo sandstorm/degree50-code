@@ -32,7 +32,7 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
-    public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName): array
     {
         $id = IdField::new('id');
         $name = TextField::new('email');
@@ -47,16 +47,21 @@ class UserCrudController extends AbstractCrudController
         $isStudent = BooleanField::new('isStudent');
         $isDozent = BooleanField::new('isDozent');
 
-        if (Crud::PAGE_INDEX === $pageName) {
-            return[$id, $name, $isAdmin, $isStudent, $isDozent];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $name, $isAdmin, $isStudent, $isDozent];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            $name->setRequired(true);
-            $password->setRequired(true);
-            return [$name, $password, $isAdmin, $isStudent, $isDozent];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$name, $password, $isAdmin, $isStudent, $isDozent];
+        switch ($pageName) {
+            case Crud::PAGE_INDEX:
+            case Crud::PAGE_DETAIL:
+                return [$id, $name, $isAdmin, $isStudent, $isDozent];
+            case Crud::PAGE_NEW:
+            {
+                $name->setRequired(true);
+                $password->setRequired(true);
+                return [$name, $password, $isAdmin, $isStudent, $isDozent];
+            }
+            case Crud::PAGE_EDIT:
+                return [$name, $password, $isAdmin, $isStudent, $isDozent];
+            default:
+                // TODO: Should we throw?
+                return [];
         }
     }
 

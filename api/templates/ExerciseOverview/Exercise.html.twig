@@ -25,7 +25,7 @@
                 </a>
             {% endif %}
             {% if is_granted('view', exercise) %}
-                <a href="{{ path('exercise-overview__exercise--show', {id: exercise.id}) }}">
+                <a href="{{ path('exercise-overview__exercise--show-overview', {id: exercise.id}) }}">
                     <i class="fas fa-eye"></i> {% trans %}exercise.test.title{% endtrans %}
                 </a>
             {% endif %}
@@ -52,7 +52,7 @@
 {% endif %}
 
 {% macro tile(exercise, additionalClass, iconClass) %}
-    <a href="{{ path('exercise-overview__exercise--show', {id: exercise.id}) }}" class="tile {{ additionalClass }}" title="{{ exercise.description }}">
+    <a href="{{ path('exercise-overview__exercise--show-overview', {id: exercise.id}) }}" class="tile {{ additionalClass }}" title="{{ exercise.description }}">
         <div class="ribbon"><span>Is New</span></div>
         <div class="tile__content">
             <i class="tile__icon {{ iconClass }}"></i>

@@ -29,7 +29,8 @@ use JsonSerializable;
  * An additional benefit is the enhanced type safety we gain from using value objects for client/server side
  * representations of solution objects.
  */
-class ClientSideSolutionDataBuilder implements JsonSerializable {
+class ClientSideSolutionDataBuilder implements JsonSerializable
+{
     /**
      * @var ClientSideSolution[]
      */
@@ -76,7 +77,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         $this->previousSolutionIds = [];
     }
 
-    public function jsonSerialize(): array {
+    public function jsonSerialize(): array
+    {
         return [
             'solutions' => [
                 'byId' => $this->clientSideSolutions,
@@ -102,7 +104,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         ServerSideSolutionLists $serverSideSolutionLists,
         ExercisePhaseTeam $exercisePhaseTeam,
         ?ClientSideCutVideo $cutVideo
-    ) {
+    ): static
+    {
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
 
         $this->addSolution(
@@ -122,7 +125,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         string $solutionId,
         User $teamMember,
         ?ClientSideCutVideo $cutVideo
-    ) {
+    ): static
+    {
         $solutionId = $this->addSolution(
             $serverSideSolutionLists,
             $solutionId,
@@ -140,7 +144,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         string $solutionId,
         User $solutionCreator,
         ?ClientSideCutVideo $cutVideo
-    ) {
+    ): string
+    {
         $userName = $solutionCreator->getEmail();
         $userId = $solutionCreator->getId();
 
@@ -172,7 +177,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         return $solutionId;
     }
 
-    public function addVideoCodePrototypesToSolution(array $serverSideVideoCodePrototypes, string $solutionId) {
+    public function addVideoCodePrototypesToSolution(array $serverSideVideoCodePrototypes, string $solutionId): static
+    {
         $solution = $this->clientSideSolutions[$solutionId];
 
         $this->clientSideSolutions[$solutionId] = ClientSideSolution::create(
@@ -194,12 +200,13 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         return $this;
     }
 
-    private function addAnnotations(array $serverSideAnnotations, string $solutionId) {
-        $clientSideAnnotations = array_map(function (ServerSideAnnotation $annotation, int $index) use($solutionId) {
+    private function addAnnotations(array $serverSideAnnotations, string $solutionId): array
+    {
+        $clientSideAnnotations = array_map(function (ServerSideAnnotation $annotation, int $index) use ($solutionId) {
             return ClientSideAnnotation::fromServerSideAnnotation($annotation, $solutionId, $index);
         }, $serverSideAnnotations, array_keys($serverSideAnnotations));
 
-        foreach($clientSideAnnotations as $clientSideAnnotation) {
+        foreach ($clientSideAnnotations as $clientSideAnnotation) {
             $this->clientSideAnnotations[$clientSideAnnotation->getId()] = $clientSideAnnotation;
         }
 
@@ -210,12 +217,13 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         return $clientSideAnnotationIds;
     }
 
-    private function addVideoCodes(array $serverSideVideoCodes, string $solutionId) {
-        $clientSideVideoCodes = array_map(function (ServerSideVideoCode $videoCode, int $index) use($solutionId) {
+    private function addVideoCodes(array $serverSideVideoCodes, string $solutionId): array
+    {
+        $clientSideVideoCodes = array_map(function (ServerSideVideoCode $videoCode, int $index) use ($solutionId) {
             return ClientSideVideoCode::fromServerSideVideoCode($videoCode, $solutionId, $index);
         }, $serverSideVideoCodes, array_keys($serverSideVideoCodes));
 
-        foreach($clientSideVideoCodes as $clientSideVideoCode) {
+        foreach ($clientSideVideoCodes as $clientSideVideoCode) {
             $this->clientSideVideoCodes[$clientSideVideoCode->getId()] = $clientSideVideoCode;
         }
 
@@ -226,12 +234,13 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
         return $clientSideVideoCodeIds;
     }
 
-    private function addCuts(array $serverSideCutList, string $solutionId) {
-        $clientSideCutList = array_map(function (ServerSideCut $cut, int $index) use($solutionId) {
+    private function addCuts(array $serverSideCutList, string $solutionId): array
+    {
+        $clientSideCutList = array_map(function (ServerSideCut $cut, int $index) use ($solutionId) {
             return ClientSideCut::fromServerSideCut($cut, $solutionId, $index);
         }, $serverSideCutList, array_keys($serverSideCutList));
 
-        foreach($clientSideCutList as $clientSideCut) {
+        foreach ($clientSideCutList as $clientSideCut) {
             $this->clientSideCuts[$clientSideCut->getId()] = $clientSideCut;
         }
 
@@ -246,7 +255,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
      * Creates clientSidePrototypes from serverSidePrototypes and adds them to the clientSideVideoCodePrototypesList
      * Returns the builder itself, so that further methods can be chained.
      */
-    public function addVideoCodePrototypes(array $serverSideVideoCodePrototypes) {
+    public function addVideoCodePrototypes(array $serverSideVideoCodePrototypes): static
+    {
         $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes);
         return $this;
     }
@@ -257,17 +267,18 @@ class ClientSideSolutionDataBuilder implements JsonSerializable {
      *
      * For internal use only!
      */
-    private function _addVideoCodePrototypes(array $serverSideVideoCodePrototypes) {
-        $clientSideVideoCodePrototypes = array_reduce($serverSideVideoCodePrototypes, function($carry, $videoCodePrototype) {
+    private function _addVideoCodePrototypes(array $serverSideVideoCodePrototypes): array
+    {
+        $clientSideVideoCodePrototypes = array_reduce($serverSideVideoCodePrototypes, function ($carry, $videoCodePrototype) {
             $parentPrototype = ClientSideVideoCodePrototype::fromServerSideVideoCodePrototype($videoCodePrototype);
-            $childPrototypes = array_map(function($childPrototype) {
+            $childPrototypes = array_map(function ($childPrototype) {
                 return ClientSideVideoCodePrototype::fromServerSideVideoCodePrototype($childPrototype);
             }, $videoCodePrototype->getChildServerSidePrototypes());
 
             return array_merge($carry, [$parentPrototype], $childPrototypes);
         }, []);
 
-        foreach($clientSideVideoCodePrototypes as $clientSideVideoCodePrototype) {
+        foreach ($clientSideVideoCodePrototypes as $clientSideVideoCodePrototype) {
             $this->clientSideVideoCodePrototypes[$clientSideVideoCodePrototype->getId()] = $clientSideVideoCodePrototype;
         }
 

@@ -12,12 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DoctrineCustomParamConverter extends DoctrineParamConverter
 {
-
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(ManagerRegistry $registry = null, ExpressionLanguage $expressionLanguage = null, array $options = [], EntityManagerInterface $entityManager = null)
     {
@@ -25,7 +20,7 @@ class DoctrineCustomParamConverter extends DoctrineParamConverter
         $this->entityManager = $entityManager;
     }
 
-    public function apply(Request $request, ParamConverter $configuration)
+    public function apply(Request $request, ParamConverter $configuration): bool
     {
         try {
             return parent::apply($request, $configuration);
@@ -35,7 +30,7 @@ class DoctrineCustomParamConverter extends DoctrineParamConverter
             $this->entityManager->getFilters()->disable('video_doctrine_filter');
 
             // if a NotFoundHttpException is triggered, this is re-thrown.
-            parent::apply($request, $configuration);
+            return parent::apply($request, $configuration);
         }
     }
 }

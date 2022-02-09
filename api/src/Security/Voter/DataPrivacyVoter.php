@@ -13,12 +13,12 @@ class DataPrivacyVoter extends Voter
     const ACCEPTED = 'data-privacy-accepted';
     const DATA_PRIVACY_VERSION = 2;
 
-    public function supports($attribute, $subject)
+    public function supports($attribute, $subject): bool
     {
         return $attribute === self::ACCEPTED;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {

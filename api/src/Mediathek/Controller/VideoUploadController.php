@@ -21,10 +21,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -49,45 +47,39 @@ class VideoUploadController extends AbstractController
     private MessageBusInterface $messageBus;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
-    private Security $security;
     private VideoRepository $videoRepository;
     private VideoService $videoService;
     private AppRuntime $appRuntime;
-    private KernelInterface  $kernel;
 
     public function __construct(
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
         MessageBusInterface $messageBus,
-        Security $security,
         VideoRepository $videoRepository,
         VideoService $videoService,
         AppRuntime $appRuntime,
-        KernelInterface $kernel
     )
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->messageBus = $messageBus;
-        $this->security = $security;
         $this->videoRepository = $videoRepository;
         $this->videoService = $videoService;
         $this->appRuntime = $appRuntime;
-        $this->kernel = $kernel;
     }
 
     /**
      * Either shows the video upload form or redirects to the mediathek if the form has been submitted.
      * After a successful submit a WebEncodingTask is being dispatched, so that the original video gets encoded.
-     * @see WebEncodingTask
      * @see WebEncodingHandler
      *
      * @Route("/video/uploads/{id?}", name="mediathek__video--upload")
+     * @see WebEncodingTask
      */
     public function showVideoUploadForm(Request $request, Course $course = null): Response
     {
         // TODO refactor!
-        $videoUuid = $request->query->get('videoUuid', null);
+        $videoUuid = $request->query->get('videoUuid');
 
         if (!$videoUuid) {
             $videoUuid = Uuid::uuid4()->toString();
@@ -103,7 +95,7 @@ class VideoUploadController extends AbstractController
             $video = new Video($videoUuid);
         }
 
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $video->setCreator($user);
         if ($course) {
@@ -122,7 +114,7 @@ class VideoUploadController extends AbstractController
             $this->eventStore->addEvent('VideoNameAndDescriptionAdded', [
                 'videoId' => $video->getId(),
                 'title' => $video->getTitle(),
-                'description' => $video->getDescription() ? $video->getDescription() : '',
+                'description' => $video->getDescription() ?: '',
             ]);
 
             // dispatch event to start encoding when form is submitted
@@ -165,7 +157,7 @@ class VideoUploadController extends AbstractController
             $this->eventStore->addEvent('VideoNameAndDescriptionUpdated', [
                 'videoId' => $video->getId(),
                 'title' => $video->getTitle(),
-                'description' => $video->getDescription() ? $video->getDescription() : '',
+                'description' => $video->getDescription() ?: '',
             ]);
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -193,8 +185,9 @@ class VideoUploadController extends AbstractController
      * @IsGranted("delete", subject="video")
      * @Route("/video/delete/{id}", name="mediathek__video--delete")
      */
-    public function delete(AppRuntime $appRuntime, Video $video): Response
+    public function delete(Video $video): Response
     {
+        // seems to be a failsafe if the video has already been deleted
         if ($video) {
             if (count($video->getExercisePhases()) > 0) {
                 $this->addFlash(
@@ -222,7 +215,7 @@ class VideoUploadController extends AbstractController
      */
     public function deleteAjax(Video $video): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($video->getCreator() !== $user) {
@@ -239,9 +232,9 @@ class VideoUploadController extends AbstractController
      *
      * @Route("/video/delete-subtitle-ajax/{id}", name="mediathek__subtitle--delete-ajax")
      */
-    public function deleteSubtitleAjax(Video $video)
+    public function deleteSubtitleAjax(Video $video): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($video->getCreator() !== $user) {
@@ -258,9 +251,9 @@ class VideoUploadController extends AbstractController
      *
      * @Route("/video/delete-audio-description-ajax/{id}", name="mediathek__audio_description--delete-ajax")
      */
-    public function deleteAudioDescriptionAjax(Video $video)
+    public function deleteAudioDescriptionAjax(Video $video): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($video->getCreator() !== $user) {

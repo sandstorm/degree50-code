@@ -7,7 +7,8 @@ namespace App\Entity\Exercise\ServerSideSolutionLists;
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
-final class ServerSideCut {
+final class ServerSideCut
+{
     private string $start;
     private string $end;
     private string $text;
@@ -38,7 +39,8 @@ final class ServerSideCut {
         $this->playbackRate = $playbackRate;
     }
 
-    public static function fromArray(array $input) {
+    public static function fromArray(array $input): ServerSideCut
+    {
         return new self(
             $input['start'],
             $input['end'],
@@ -51,7 +53,8 @@ final class ServerSideCut {
         );
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'start' => $this->start,
             'end' => $this->end,
@@ -64,66 +67,42 @@ final class ServerSideCut {
         ];
     }
 
-     /**
-      * Get start.
-      */
-     public function getStart()
-     {
-         return $this->start;
-     }
+    public function getStart(): string
+    {
+        return $this->start;
+    }
 
-     /**
-      * Get end.
-      */
-     public function getEnd()
-     {
-         return $this->end;
-     }
+    public function getEnd(): string
+    {
+        return $this->end;
+    }
 
-     /**
-      * Get text.
-      */
-     public function getText()
-     {
-         return $this->text;
-     }
+    public function getText(): string
+    {
+        return $this->text;
+    }
 
-     /**
-      * Get memo.
-      */
-     public function getMemo()
-     {
-         return $this->memo;
-     }
+    public function getMemo(): string
+    {
+        return $this->memo;
+    }
 
-     /**
-      * Get color.
-      */
-     public function getColor()
-     {
-         return $this->color;
-     }
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
 
-     /**
-      * Get url.
-      */
-     public function getUrl()
-     {
-         return $this->url;
-     }
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
 
-    /**
-     * Get offset.
-     */
-    public function getOffset()
+    public function getOffset(): float
     {
         return $this->offset;
     }
 
-    /**
-     * Get playbackRate.
-     */
-    public function getPlaybackRate()
+    public function getPlaybackRate(): float
     {
         return $this->playbackRate;
     }

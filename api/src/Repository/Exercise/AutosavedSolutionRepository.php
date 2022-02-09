@@ -4,6 +4,7 @@ namespace App\Repository\Exercise;
 
 use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use App\Entity\Exercise\Solution;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
@@ -24,7 +25,8 @@ class AutosavedSolutionRepository extends ServiceEntityRepository
         $this->logger = $logger;
     }
 
-    public function getLatestSolutionOfExerciseTeam(ExercisePhaseTeam $exercisePhaseTeam) {
+    public function getLatestSolutionOfExerciseTeam(ExercisePhaseTeam $exercisePhaseTeam): Solution|AutosavedSolution|null
+    {
         $latestAutosavedSolution = $this->findOneBy(['team' => $exercisePhaseTeam], ['update_timestamp' => 'desc']);
 
         $solution = $exercisePhaseTeam->getSolution();

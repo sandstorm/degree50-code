@@ -2,8 +2,6 @@
 
 namespace App\VideoEncoding\Message;
 
-use App\Entity\Exercise\ExercisePhaseTeam;
-
 class CutListEncodingTask
 {
 
@@ -16,15 +14,15 @@ class CutListEncodingTask
         $this->videoId = $videoId;
     }
 
-     /**
-      * Get exercisePhaseTeam.
-      *
-      * @return string.
-      */
-     public function getExercisePhaseTeamId(): string
-     {
-         return $this->exercisePhaseTeamId;
-     }
+    /**
+     * Get exercisePhaseTeam.
+     *
+     * @return string.
+     */
+    public function getExercisePhaseTeamId(): string
+    {
+        return $this->exercisePhaseTeamId;
+    }
 
     /**
      * Get video.

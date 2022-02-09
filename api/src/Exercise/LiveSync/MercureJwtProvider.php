@@ -20,7 +20,7 @@ class MercureJwtProvider
     }
 
 
-    public function __invoke()
+    public function __invoke(): string
     {
         $payload = LiveSyncService::getBaseJwtPayload();
         $payload['mercure'] = [

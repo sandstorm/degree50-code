@@ -15,52 +15,50 @@ class UserExerciseInteraction
     use IdentityTrait;
 
     /**
-     * @var Exercise
      * @ORM\ManyToOne(targetEntity="Exercise", inversedBy="userExerciseInteractions")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $exercise;
+    private Exercise $exercise;
 
     /**
-     * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="userExerciseInteractions")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private User $user;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $opened = false;
+    private bool $opened = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $finished = false;
+    private bool $finished = false;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getExercise(): ?Exercise
+    public function getExercise(): Exercise
     {
         return $this->exercise;
     }
 
-    public function setExercise(?Exercise $exercise): self
+    public function setExercise(Exercise $exercise): self
     {
         $this->exercise = $exercise;
 
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 

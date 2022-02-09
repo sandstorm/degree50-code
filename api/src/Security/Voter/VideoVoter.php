@@ -4,9 +4,9 @@
 namespace App\Security\Voter;
 
 
-use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Video\Video;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -16,7 +16,7 @@ class VideoVoter extends Voter
     const EDIT = 'edit';
     const DELETE = 'delete';
 
-    protected function supports(string $attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
         if (!in_array($attribute, [self::EDIT, self::DELETE])) {
             return false;
@@ -29,7 +29,7 @@ class VideoVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
@@ -47,11 +47,11 @@ class VideoVoter extends Voter
                 return $this->canDelete($video, $user);
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
 
-    private function canEdit(Video $video, User $user)
+    private function canEdit(Video $video, User $user): bool
     {
         if ($user->isAdmin()) {
             return true;
@@ -59,7 +59,7 @@ class VideoVoter extends Voter
         return $user === $video->getCreator();
     }
 
-    private function canDelete(Video $video, User $user)
+    private function canDelete(Video $video, User $user): bool
     {
         if ($user->isAdmin()) {
             return true;

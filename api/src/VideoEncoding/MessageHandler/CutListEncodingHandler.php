@@ -13,7 +13,9 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
+use Closure;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
@@ -80,14 +82,15 @@ class CutListEncodingHandler implements MessageHandlerInterface
 
         $this->entityManager->getFilters()->disable('video_doctrine_filter');
 
+        $video = $this->videoRepository->find($encodingTask->getVideoId());
+
         try {
-            $video = $this->videoRepository->find($encodingTask->getVideoId());
 
             $config = [
-                'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
+                'ffmpeg.binaries' => '/usr/bin/ffmpeg',
                 'ffprobe.binaries' => '/usr/bin/ffprobe',
-                'timeout'          => 3600, // The timeout for the underlying process
-                'ffmpeg.threads'   => 12,   // The number of threads that FFmpeg should use
+                'timeout' => 3600, // The timeout for the underlying process
+                'ffmpeg.threads' => 12,   // The number of threads that FFmpeg should use
             ];
 
             $ffmpeg = FFMpeg::create($config, $this->logger);
@@ -124,7 +127,7 @@ class CutListEncodingHandler implements MessageHandlerInterface
             $this->entityManager->persist($solution);
             $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->error($exception->getMessage());
             $video->setEncodingStatus(Video::ENCODING_ERROR);
             $this->eventStore->disableEventPublishingForNextFlush();
@@ -204,7 +207,7 @@ class CutListEncodingHandler implements MessageHandlerInterface
      * Encodes intermediate video clips from a given cutList which are later used to
      * eventually concatenate them into a single video
      */
-    private function createTemporaryClips(FFMpeg $ffmpeg, $cutList)
+    private function createTemporaryClips(FFMpeg $ffmpeg, $cutList): array
     {
         $clipOutputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
         $rootDir = $this->parameterBag->get('kernel.project_dir');
@@ -264,12 +267,12 @@ class CutListEncodingHandler implements MessageHandlerInterface
      * The toSeconds() method of @FFMpeg/Coordinate/TimeCode does not take frames into account.
      * Therefore we do our own conversion with the detected frames per second.
      */
-    private function getSecondsFromTimeCode(TimeCode $timeCode, int $fps)
+    private function getSecondsFromTimeCode(TimeCode $timeCode, int $fps): int
     {
         $secondsWithoutFrames = $timeCode->toSeconds();
 
         // Small hack to access private properties of the TimeCode class
-        $frameGetter = \Closure::bind(function (TimeCode $class) {
+        $frameGetter = Closure::bind(function (TimeCode $class) {
             return $class->frames;
         }, null, TimeCode::class);
 

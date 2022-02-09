@@ -20,7 +20,7 @@ class SamlUserFactory implements SamlUserFactoryInterface
         $this->eventStore = $eventStore;
     }
 
-    public function createUser(SamlTokenInterface $token)
+    public function createUser(SamlTokenInterface $token): User
     {
         $attributes = $token->getAttributes();
 

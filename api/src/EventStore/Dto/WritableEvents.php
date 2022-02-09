@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace App\EventStore\Dto;
 
 /*
@@ -13,13 +14,18 @@ namespace App\EventStore\Dto;
  */
 
 
-final class WritableEvents implements \IteratorAggregate, \Countable
+use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
+
+final class WritableEvents implements IteratorAggregate, Countable
 {
 
     /**
      * @var WritableEvent[]
      */
-    private $events;
+    private array $events;
 
     private function __construct(array $events)
     {
@@ -30,7 +36,7 @@ final class WritableEvents implements \IteratorAggregate, \Countable
     {
         foreach ($events as $event) {
             if (!$event instanceof WritableEvent) {
-                throw new \InvalidArgumentException(sprintf('Only instances of WritableEvent are allowed, given: %s', is_object($event) ? get_class($event) : gettype($event)), 1540316594);
+                throw new InvalidArgumentException(sprintf('Only instances of WritableEvent are allowed, given: %s', is_object($event) ? get_class($event) : gettype($event)), 1540316594);
             }
         }
         return new static(array_values($events));
@@ -44,11 +50,11 @@ final class WritableEvents implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return WritableEvent[]|\ArrayIterator<WritableEvent>
+     * @return WritableEvent[]|ArrayIterator<WritableEvent>
      */
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->events);
+        return new ArrayIterator($this->events);
     }
 
     public function count(): int

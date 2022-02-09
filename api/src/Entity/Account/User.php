@@ -5,7 +5,9 @@ namespace App\Entity\Account;
 use App\Admin\Controller\UserCrudController;
 use App\Admin\EventSubscriber\EasyAdminSubscriber;
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\UserExerciseInteraction;
+use App\Entity\Video\Video;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,15 +33,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     const ROLE_SSO_USER = 'ROLE_SSO_USER';
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $email;
+    private string $email;
 
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
      * This is solely used to define a plain unencrypted password inside the admin ui which will be encrypted and written
@@ -50,51 +51,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = '';
 
     /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
+    private string $password;
 
     /**
+     * @var CourseRole[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Account\CourseRole", mappedBy="user", orphanRemoval=true)
      */
     private Collection $courseRoles;
 
     /**
+     * @var Exercise[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Exercise", mappedBy="creator")
      */
     private Collection $createdExercises;
 
     /**
+     * @var Video[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Video\Video", mappedBy="creator")
      */
-    private $createdVideos;
+    private Collection $createdVideos;
 
     /**
      * @var UserExerciseInteraction[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\UserExerciseInteraction", mappedBy="user", orphanRemoval=true)
      */
-    private $userExerciseInteractions;
+    private Collection $userExerciseInteractions;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $dataPrivacyAccepted = false;
+    private bool $dataPrivacyAccepted = false;
 
     /**
      * @ORM\Column(type="smallint", options={"default":1})
      */
-    private $dataPrivacyVersion = 1;
+    private int $dataPrivacyVersion = 1;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $termsOfUseAccepted = false;
+    private bool $termsOfUseAccepted = false;
 
     /**
      * @ORM\Column(type="smallint", options={"default":0})
      */
-    private $termsOfUseVersion = 0;
+    private int $termsOfUseVersion = 0;
 
     public function __construct(?string $id = null)
     {
@@ -103,6 +110,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdVideos = new ArrayCollection();
         $this->userExerciseInteractions = new ArrayCollection();
         $this->generateOrSetId($id);
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getId();
     }
 
     public function getEmail(): ?string
@@ -124,7 +136,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string)$this->email;
+        return $this->email;
     }
 
     /**
@@ -155,7 +167,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return (string)$this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self
@@ -188,7 +200,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|CourseRole[]
+     * @return CourseRole[]
      */
     public function getCourseRoles(): Collection
     {
@@ -317,7 +329,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->termsOfUseAccepted && $this->termsOfUseVersion >= TermsOfUseVoter::TERMS_OF_USE_VERSION;
     }
 
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }

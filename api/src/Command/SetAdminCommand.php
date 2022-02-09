@@ -32,8 +32,7 @@ class SetAdminCommand extends Command
     {
         $this
             ->setDescription('')
-            ->addArgument('email', InputArgument::REQUIRED, 'Email of new user')
-        ;
+            ->addArgument('email', InputArgument::REQUIRED, 'Email of new user');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

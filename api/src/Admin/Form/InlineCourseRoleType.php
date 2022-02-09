@@ -19,8 +19,7 @@ class InlineCourseRoleType extends AbstractType
                     'Student' => CourseRole::STUDENT,
                     'Dozent' => CourseRole::DOZENT,
                 ]
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

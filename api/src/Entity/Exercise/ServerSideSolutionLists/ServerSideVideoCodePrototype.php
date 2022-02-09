@@ -9,7 +9,8 @@ use App\Entity\Exercise\VideoCode;
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
-final class ServerSideVideoCodePrototype {
+final class ServerSideVideoCodePrototype
+{
 
     private string $id;
     private string $name;
@@ -68,7 +69,7 @@ final class ServerSideVideoCodePrototype {
         // Prototypes have been saved under the name 'videoCodes' as JSON before.
         // We need to stay compatible with already persisted solutions.
         // That's where the naming mismatch is coming from!
-        $childServerSidePrototypes = array_map(function($prototype) {
+        $childServerSidePrototypes = array_map(function ($prototype) {
             return self::fromArray($prototype);
         }, $input['videoCodes']);
 
@@ -88,7 +89,7 @@ final class ServerSideVideoCodePrototype {
      */
     public function toArray(): array
     {
-        $childPrototypes = array_map(function($prototype) {
+        $childPrototypes = array_map(function ($prototype) {
             return $prototype->toArray();
         }, $this->childServerSidePrototypes);
 
@@ -103,59 +104,41 @@ final class ServerSideVideoCodePrototype {
         ];
     }
 
-     /**
-      * Get id.
-      */
-     public function getId()
-     {
-         return $this->id;
-     }
+    public function getId(): string
+    {
+        return $this->id;
+    }
 
-     /**
-      * Get name.
-      */
-     public function getName()
-     {
-         return $this->name;
-     }
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
-     /**
-      * Get description.
-      */
-     public function getDescription()
-     {
-         return $this->description;
-     }
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
 
-     /**
-      * Get color.
-      */
-     public function getColor(): string
-     {
-         return $this->color;
-     }
+    public function getColor(): string
+    {
+        return $this->color;
+    }
 
-     /**
-      * Get parentId.
-      */
-     public function getParentId()
-     {
-         return $this->parentId;
-     }
+    public function getParentId(): ?string
+    {
+        return $this->parentId;
+    }
 
-    /**
-     * Get userCreated.
-     */
-    public function getUserCreated()
+    public function getUserCreated(): bool
     {
         return $this->userCreated;
     }
 
-     /**
-      * Get videoCodes.
-      */
-     public function getChildServerSidePrototypes()
-     {
-         return $this->childServerSidePrototypes;
-     }
+    /**
+     * @return ServerSideVideoCodePrototype[]
+     */
+    public function getChildServerSidePrototypes(): array
+    {
+        return $this->childServerSidePrototypes;
+    }
 }

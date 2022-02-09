@@ -9,7 +9,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideSolutionLists implements JsonSerializable {
+final class ClientSideSolutionLists implements JsonSerializable
+{
     /**
      * @var string[]
      */
@@ -41,15 +42,15 @@ final class ClientSideSolutionLists implements JsonSerializable {
             assert(is_string($annotationId));
         }
 
-        foreach($videoCodeIds as $videoCodeId) {
+        foreach ($videoCodeIds as $videoCodeId) {
             assert(is_string($videoCodeId));
         }
 
-        foreach($cutIds as $cutId) {
+        foreach ($cutIds as $cutId) {
             assert(is_string($cutId));
         }
 
-        foreach($videoCodePrototypeIds as $videoCodePrototypeId) {
+        foreach ($videoCodePrototypeIds as $videoCodePrototypeId) {
             assert(is_string($videoCodePrototypeId));
         }
 
@@ -64,7 +65,8 @@ final class ClientSideSolutionLists implements JsonSerializable {
         array $videoCodeIds,
         array $cutIds,
         array $videoCodePrototypeIds
-    ) {
+    ): ClientSideSolutionLists
+    {
         return new self(
             $annotationIds,
             $videoCodeIds,
@@ -73,7 +75,8 @@ final class ClientSideSolutionLists implements JsonSerializable {
         );
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array
+    {
         return [
             'annotations' => $this->annotationIds,
             'videoCodes' => $this->videoCodeIds,
@@ -82,7 +85,8 @@ final class ClientSideSolutionLists implements JsonSerializable {
         ];
     }
 
-    public static function fromArray(array $input) {
+    public static function fromArray(array $input): ClientSideSolutionLists
+    {
         return new self(
             $input['annotations'],
             $input['videoCodes'],
@@ -91,36 +95,23 @@ final class ClientSideSolutionLists implements JsonSerializable {
         );
     }
 
+    public function getAnnotationIds(): array
+    {
+        return $this->annotationIds;
+    }
 
-     /**
-      * Get annotationIds.
-      */
-     public function getAnnotationIds()
-     {
-         return $this->annotationIds;
-     }
+    public function getVideoCodeIds(): array
+    {
+        return $this->videoCodeIds;
+    }
 
-     /**
-      * Get videoCodeIds.
-      */
-     public function getVideoCodeIds()
-     {
-         return $this->videoCodeIds;
-     }
+    public function getCutIds(): array
+    {
+        return $this->cutIds;
+    }
 
-     /**
-      * Get cutIds.
-      */
-     public function getCutIds()
-     {
-         return $this->cutIds;
-     }
-
-     /**
-      * Get videoCodePrototypeIds.
-      */
-     public function getVideoCodePrototypeIds()
-     {
-         return $this->videoCodePrototypeIds;
-     }
+    public function getVideoCodePrototypeIds(): array
+    {
+        return $this->videoCodePrototypeIds;
+    }
 }

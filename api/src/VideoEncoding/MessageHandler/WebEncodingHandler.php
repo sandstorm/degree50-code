@@ -12,9 +12,11 @@ use App\Mediathek\Service\VideoService;
 use App\Repository\Video\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
+use League\Flysystem\FileExistsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
@@ -68,15 +70,15 @@ class WebEncodingHandler implements MessageHandlerInterface
             $this->logger->warning('WebEncodingHandler Line 66: Trying to disable "video_doctrine_filter" but this filter is not enabled at this point. This means that we probably have a race condition where some part of the application disables doctrine filters while other parts enable them almost simultaneously');
         }
 
+        $video = $this->videoRepository->find($encodingTask->getVideoId());
 
         try {
-            $video = $this->videoRepository->find($encodingTask->getVideoId());
             if ($video === null) {
                 $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
                 if ($this->entityManager->getFilters()->isEnabled('video_doctrine_filter')) {
                     $this->logger->warning('WebEncodingHandler Line 76: Doctrine Filter already enabled again! This means that we probably have a race condition where some part of the application disables doctrine filters while other parts enable them almost simultaneously');
                 }
-                throw new \Exception('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
+                throw new Exception('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
             }
 
             $video->setEncodingStatus(Video::ENCODING_STARTED);
@@ -131,7 +133,7 @@ class WebEncodingHandler implements MessageHandlerInterface
 
             $this->entityManager->persist($video);
             $this->entityManager->flush();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $video->setEncodingStatus(Video::ENCODING_ERROR);
             $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->persist($video);
@@ -158,6 +160,9 @@ class WebEncodingHandler implements MessageHandlerInterface
         return $duration;
     }
 
+    /**
+     * @throws FileExistsException
+     */
     private function encodeMP4WithAudioDescription(array $config, Video $video, string $localOutputDirectory)
     {
         $inputVideoFileName = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
@@ -221,6 +226,9 @@ class WebEncodingHandler implements MessageHandlerInterface
         $this->logger->info("Finished encoding MP4 of file <$inputVideoFileName> to $localOutputDirectory/x264.mp4");
     }
 
+    /**
+     * @throws FileExistsException
+     */
     private function copyUploadedSubtitleFileToOutputDirectory(Video $video, $localOutputDirectory)
     {
         $uploadedFilePath = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedSubtitleFile());

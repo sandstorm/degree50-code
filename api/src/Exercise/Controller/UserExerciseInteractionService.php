@@ -9,7 +9,8 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
-class UserExerciseInteractionService {
+class UserExerciseInteractionService
+{
     private ManagerRegistry $managerRegistry;
     private DoctrineIntegratedEventStore $eventStore;
     private LoggerInterface $logger;
@@ -25,7 +26,8 @@ class UserExerciseInteractionService {
         $this->managerRegistry = $managerRegistry;
     }
 
-    public function setUserOpenedExercise(User $user, Exercise $exercise) {
+    public function setUserOpenedExercise(User $user, Exercise $exercise)
+    {
         $userExerciseInteraction = new UserExerciseInteraction();
         $userExerciseInteraction->setExercise($exercise);
         $userExerciseInteraction->setUser($user);

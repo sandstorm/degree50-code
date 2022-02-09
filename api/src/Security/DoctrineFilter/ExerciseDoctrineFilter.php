@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 class ExerciseDoctrineFilter extends AbstractDoctrineFilter
 {
 
-    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
+    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         if ($targetEntity->getName() !== Exercise::class) {
             return '';

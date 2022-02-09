@@ -3,14 +3,13 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\Course;
+use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\UserExerciseInteraction;
+use App\Entity\Exercise\ExercisePhase;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\ExerciseType;
-use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Repository\Exercise\ExerciseRepository;
 use App\Repository\Exercise\UserExerciseInteractionRepository;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -37,14 +36,7 @@ class ExerciseController extends AbstractController
 
     private LoggerInterface $logger;
 
-    /**
-     * @param CourseRepository $courseRepository
-     * @param ExerciseRepository $exerciseRepository
-     * @param TranslatorInterface $translator
-     */
     public function __construct(
-        CourseRepository $courseRepository,
-        ExerciseRepository $exerciseRepository,
         ExercisePhaseRepository $exercisePhaseRepository,
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
@@ -55,8 +47,6 @@ class ExerciseController extends AbstractController
         LoggerInterface $logger
     )
     {
-        $this->courseRepository = $courseRepository;
-        $this->exerciseRepository = $exerciseRepository;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -77,11 +67,11 @@ class ExerciseController extends AbstractController
     public function showPhaseOverview(Exercise $exercise, string $phaseId = ''): Response
     {
 
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $userIsCreator = $user === $exercise->getCreator();
 
-        /* @var ExercisePhase $exercisePhase */
+        /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
 
         $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
@@ -94,7 +84,7 @@ class ExerciseController extends AbstractController
                 return false;
             }
             // only show teams that the user is allowed to see
-            return  $this->isGranted('viewExercisePhaseTeam', $team);
+            return $this->isGranted('viewExercisePhaseTeam', $team);
         });
 
         // WHY: Make sure the first team that's shown is the team of the current user
@@ -123,8 +113,9 @@ class ExerciseController extends AbstractController
      * @IsGranted("view", subject="exercise")
      * @Route("/exercise/show-overview/{id}}", name="exercise-overview__exercise--show-overview")
      */
-    public function showOverview(Exercise $exercise) {
-        /* @var User $user */
+    public function showOverview(Exercise $exercise): Response
+    {
+        /** @var User $user */
         $user = $this->getUser();
         $userIsCreator = $user === $exercise->getCreator();
 
@@ -157,7 +148,7 @@ class ExerciseController extends AbstractController
      */
     public function finish(Exercise $exercise): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
 
@@ -230,7 +221,7 @@ class ExerciseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$exercise` variable has also been updated
-            /* @var Exercise $exercise */
+            /** @var Exercise $exercise */
             $exercise = $form->getData();
 
             $this->eventStore->addEvent('ExerciseNameOrDescriptionUpdated', [
@@ -260,10 +251,11 @@ class ExerciseController extends AbstractController
         ]);
     }
 
-    private function getExerciseHasSolutions(Exercise $exercise): bool {
+    private function getExerciseHasSolutions(Exercise $exercise): bool
+    {
         $phases = $exercise->getPhases()->toArray();
 
-        return array_reduce($phases, function($carry, $phase) {
+        return array_reduce($phases, function ($carry, $phase) {
             return $carry || $phase->getHasSolutions();
         }, false);
     }
@@ -274,7 +266,7 @@ class ExerciseController extends AbstractController
      */
     public function changeStatus(Request $request, Exercise $exercise): Response
     {
-        $newStatus = (int) $request->query->get('status', Exercise::EXERCISE_CREATED);
+        $newStatus = (int)$request->query->get('status', Exercise::EXERCISE_CREATED);
         $exercise->setStatus($newStatus);
 
         if ($newStatus == Exercise::EXERCISE_PUBLISHED && count($exercise->getPhases()) == 0) {

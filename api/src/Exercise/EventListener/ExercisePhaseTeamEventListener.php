@@ -3,7 +3,6 @@
 namespace App\Exercise\EventListener;
 
 use App\Entity\Account\User;
-use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\Security\Core\Security;
@@ -27,7 +26,7 @@ class ExercisePhaseTeamEventListener
      */
     public function prePersist(ExercisePhaseTeam $exercisePhaseTeam, LifecycleEventArgs $event)
     {
-        /* @var User $currentUser */
+        /** @var User $currentUser */
         $currentUser = $this->security->getUser();
         if ($currentUser instanceof User) {
             $exercisePhaseTeam->setCreator($currentUser);

@@ -5,6 +5,7 @@ namespace App\Repository\Exercise;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,10 +22,10 @@ class ExercisePhaseRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Exercise $exercise
-     * @return ExercisePhase|null
+     * @throws NonUniqueResultException
      */
-    public function findFirstExercisePhase($exercise) {
+    public function findFirstExercisePhase(Exercise $exercise): ?ExercisePhase
+    {
         $em = $this->getEntityManager();
         $qb = $em->createQueryBuilder();
 
@@ -40,11 +41,9 @@ class ExercisePhaseRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $sorting
-     * @param Exercise $exercise
-     * @return ExercisePhase|null
+     * @throws NonUniqueResultException
      */
-    public function findExercisePhasesLargerThen($sorting, $exercise)
+    public function findExercisePhasesLargerThen(int $sorting, Exercise $exercise): ?ExercisePhase
     {
         $em = $this->getEntityManager();
         $qb = $em->createQueryBuilder();
@@ -62,17 +61,18 @@ class ExercisePhaseRepository extends ServiceEntityRepository
 
     }
 
-    public function findExercisePhaseAfter(ExercisePhase $exercisePhase)
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findExercisePhaseAfter(ExercisePhase $exercisePhase): ?ExercisePhase
     {
         return $this->findExercisePhasesLargerThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
     }
 
     /**
-     * @param int $sorting
-     * @param Exercise $exercise
-     * @return ExercisePhase|null
+     * @throws NonUniqueResultException
      */
-    public function findExercisePhasesLesserThen($sorting, $exercise)
+    public function findExercisePhasesLesserThen(int $sorting, Exercise $exercise): ?ExercisePhase
     {
         $em = $this->getEntityManager();
         $qb = $em->createQueryBuilder();
@@ -90,12 +90,16 @@ class ExercisePhaseRepository extends ServiceEntityRepository
 
     }
 
-    public function findExercisePhaseBefore(ExercisePhase $exercisePhase)
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findExercisePhaseBefore(ExercisePhase $exercisePhase): ?ExercisePhase
     {
         return $this->findExercisePhasesLesserThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
     }
 
-    public function findAllSortedBySorting($exercise) {
+    public function findAllSortedBySorting($exercise)
+    {
         return $this->createQueryBuilder('e')
             ->where('e.belongsToExercise = :exercise')
             ->orderBy('e.sorting', 'ASC')

@@ -14,7 +14,7 @@ class AppRuntime implements RuntimeExtensionInterface
         // extensions, you'll need to inject services using this constructor
     }
 
-    public function virtualizedFileUrl(?VirtualizedFile $virtualizedFile)
+    public function virtualizedFileUrl(?VirtualizedFile $virtualizedFile): ?string
     {
         if (!$virtualizedFile) {
             return null;

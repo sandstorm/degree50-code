@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\Entity\Video\Video;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,19 +20,17 @@ class Solution
     /**
      * @ORM\Column(type="json")
      */
-    private $solution;
+    private array $solution;
 
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @ORM\Column(type="datetimetz_immutable")
      */
-    private $update_timestamp;
+    private DateTimeImmutable $update_timestamp;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Video\Video", cascade={"remove"})
      */
-    private $cutVideo;
+    private ?Video $cutVideo = null;
 
     /**
      * Solution constructor.
@@ -45,7 +44,7 @@ class Solution
         ];
         $this->solution = $solutionPrototype;
         $this->generateOrSetId($id);
-        $this->update_timestamp = new \DateTimeImmutable();
+        $this->update_timestamp = new DateTimeImmutable();
     }
 
 
@@ -61,18 +60,12 @@ class Solution
         return $this;
     }
 
-    /**
-     * @return \DateTimeImmutable|null
-     */
-    public function getUpdateTimestamp(): ?\DateTimeImmutable
+    public function getUpdateTimestamp(): DateTimeImmutable
     {
         return $this->update_timestamp;
     }
 
-    /**
-     * @param \DateTimeImmutable|null $update_timestamp
-     */
-    public function setUpdateTimestamp(?\DateTimeImmutable $update_timestamp): void
+    public function setUpdateTimestamp(DateTimeImmutable $update_timestamp): void
     {
         $this->update_timestamp = $update_timestamp;
     }

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace App\EventStore\Dto;
 
 /*
@@ -14,25 +15,13 @@ namespace App\EventStore\Dto;
 
 final class WritableEvent
 {
-    /**
-     * @var string
-     */
-    private $identifier;
+    private string $identifier;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private string $type;
 
-    /**
-     * @var array
-     */
-    private $payload;
+    private array $payload;
 
-    /**
-     * @var array
-     */
-    private $metadata;
+    private array $metadata;
 
     public function __construct(string $identifier, string $type, array $payload, array $metadata)
     {

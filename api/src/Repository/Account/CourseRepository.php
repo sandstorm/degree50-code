@@ -3,7 +3,6 @@
 namespace App\Repository\Account;
 
 use App\Entity\Account\Course;
-use App\Entity\Account\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,7 +18,10 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-    public function findAll()
+    /**
+     * @return Course[]
+     */
+    public function findAll(): array
     {
         return $this->findBy(array(), array('name' => 'ASC'));
     }

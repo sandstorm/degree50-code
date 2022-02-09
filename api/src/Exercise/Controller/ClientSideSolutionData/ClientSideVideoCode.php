@@ -10,7 +10,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideVideoCode implements JsonSerializable {
+final class ClientSideVideoCode implements JsonSerializable
+{
     private string $id;
     private string $start;
     private string $end;
@@ -42,7 +43,8 @@ final class ClientSideVideoCode implements JsonSerializable {
         $this->solutionId = $solutionId;
     }
 
-    public static function fromServerSideVideoCode(ServerSideVideoCode $videoCode, string $solutionId, int $index) {
+    public static function fromServerSideVideoCode(ServerSideVideoCode $videoCode, string $solutionId, int $index): ClientSideVideoCode
+    {
         return new self(
             $videoCode->getStart(),
             $videoCode->getEnd(),
@@ -55,7 +57,8 @@ final class ClientSideVideoCode implements JsonSerializable {
         );
     }
 
-    public static function fromArray(array $input, int $index) {
+    public static function fromArray(array $input, int $index): ClientSideVideoCode
+    {
         return new self(
             $input['start'],
             $input['end'],
@@ -68,7 +71,8 @@ final class ClientSideVideoCode implements JsonSerializable {
         );
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'id' => $this->id,
             'start' => $this->start,
@@ -81,11 +85,13 @@ final class ClientSideVideoCode implements JsonSerializable {
         ];
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 
-    public function getId() {
+    public function getId(): string
+    {
         return $this->id;
     }
 }

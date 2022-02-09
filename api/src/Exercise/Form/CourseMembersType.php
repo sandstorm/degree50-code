@@ -28,18 +28,18 @@ class CourseMembersType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /* @var Course $course */
+        /** @var Course $course */
         $course = $options['data'];
         $courseRoles = $course->getCourseRoles();
 
-        $userChoices = array_filter($this->userRepository->findBy([], array('email' => 'ASC')), function(User $user) use ($courseRoles) {
+        $userChoices = array_filter($this->userRepository->findBy([], array('email' => 'ASC')), function (User $user) use ($courseRoles) {
             // skip users that are ROLE_DOZENT
             if ($user->isDozent()) {
                 return false;
             }
             $exists = $courseRoles->exists(fn($i, CourseRole $courseRole) => $courseRole->getUser() === $user);
             return !$exists;
-        });;
+        });
 
         $builder
             ->add('users', EntityType::class, [

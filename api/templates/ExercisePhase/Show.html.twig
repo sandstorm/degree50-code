@@ -11,7 +11,7 @@
         </div>
     </div>
     <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Zurück</a>
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Zurück</a>
         <span>{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
         {% if is_granted('updateSolution', exercisePhaseTeam) %}
             <a class="btn btn-primary" href="{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>

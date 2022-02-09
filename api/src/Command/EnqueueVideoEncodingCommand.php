@@ -30,7 +30,6 @@ class EnqueueVideoEncodingCommand extends Command
         $this
             ->setDescription('Enqueue a video for encoding')
             ->addArgument('video', InputArgument::REQUIRED, 'The Video UUID to queue for encoding');
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

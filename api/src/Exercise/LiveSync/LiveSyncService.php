@@ -10,7 +10,6 @@ use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\Mercure\PublisherInterface;
 use Symfony\Component\Mercure\Update;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Main service which handles all aspects of the mercure-based live sync.
@@ -23,14 +22,12 @@ class LiveSyncService
 {
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private string $jwtPrivateSigningKey;
-    private RouterInterface $router;
     private PublisherInterface $publisher;
 
-    public function __construct(ExercisePhaseTeamRepository $exercisePhaseTeamRepository, string $jwtPrivateSigningKey, RouterInterface $router, PublisherInterface $publisher)
+    public function __construct(ExercisePhaseTeamRepository $exercisePhaseTeamRepository, string $jwtPrivateSigningKey, PublisherInterface $publisher)
     {
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->jwtPrivateSigningKey = $jwtPrivateSigningKey;
-        $this->router = $router;
         $this->publisher = $publisher;
     }
 
@@ -83,17 +80,17 @@ class LiveSyncService
         ];
     }
 
-    private static function buildMercureTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam)
+    private static function buildMercureTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam): string
     {
         return 'exercisePhaseTeam-' . $exercisePhaseTeam->getId();
     }
 
-    private static function buildPresenceTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam)
+    private static function buildPresenceTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam): string
     {
         return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam) . '/{subscription}';
     }
 
-    private static function buildSubscriptionAPIEndpoint(ExercisePhaseTeam $exercisePhaseTeam)
+    private static function buildSubscriptionAPIEndpoint(ExercisePhaseTeam $exercisePhaseTeam): string
     {
         return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam);
     }

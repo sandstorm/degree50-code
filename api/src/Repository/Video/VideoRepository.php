@@ -6,6 +6,7 @@ use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Video\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
@@ -28,7 +29,8 @@ class VideoRepository extends ServiceEntityRepository
         $this->logger = $logger;
     }
 
-    public function findByCreatorWithoutCutVideos(User $user) {
+    public function findByCreatorWithoutCutVideos(User $user)
+    {
         $qb = $this->createQueryBuilder('v');
 
         // We only want to show videos which where manually uploaded, and not
@@ -38,7 +40,7 @@ class VideoRepository extends ServiceEntityRepository
             ->leftJoin(
                 'App\Entity\Exercise\Solution',
                 'solution',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
+                Join::WITH,
                 'v.id = solution.cutVideo'
             )
             ->where('v.creator = :user')
@@ -51,7 +53,7 @@ class VideoRepository extends ServiceEntityRepository
 
     /**
      * @param Course $course
-     * @return Video[]|\iterable
+     * @return Video[]|iterable
      */
     public function findByCourse(Course $course): iterable
     {

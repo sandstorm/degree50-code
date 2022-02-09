@@ -6,6 +6,7 @@ use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,7 +37,7 @@ class AuthenticationController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
 
         // WHY: We don't want to leak information about registered email addresses.
-        if ($error && $error instanceof CustomUserMessageAuthenticationException) {
+        if ($error instanceof CustomUserMessageAuthenticationException) {
             $maskedError = new BadCredentialsException();
         }
 
@@ -55,7 +56,7 @@ class AuthenticationController extends AbstractController
      */
     public function logout()
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
     /**
@@ -64,7 +65,7 @@ class AuthenticationController extends AbstractController
     public function dataPrivacy(Request $request): Response
     {
         $accepted = !!$request->query->get('accepted', false);
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($accepted) {
@@ -92,7 +93,7 @@ class AuthenticationController extends AbstractController
     public function termsOfUse(Request $request): Response
     {
         $accepted = !!$request->query->get('accepted', false);
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($accepted) {

@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -19,7 +20,7 @@ class ExercisePhaseTeamVoter extends Voter
     const UPDATE_SOLUTION = 'updateSolution';
     const VIEW = 'viewExercisePhaseTeam';
 
-    protected function supports(string $attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
         if (!in_array($attribute, [self::JOIN, self::SHOW, self::SHOW_SOLUTION, self::LEAVE, self::DELETE, self::UPDATE_SOLUTION, self::VIEW])) {
             return false;
@@ -32,7 +33,7 @@ class ExercisePhaseTeamVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
@@ -50,7 +51,7 @@ class ExercisePhaseTeamVoter extends Voter
             case self::SHOW:
                 return $this->canShow($exercisePhaseTeam, $user);
             case self::SHOW_SOLUTION:
-                return $this->canShowSolution($exercisePhaseTeam, $user);
+                return $this->canShowSolution($exercisePhaseTeam);
             case self::JOIN:
                 return $this->canJoin($exercisePhaseTeam, $user);
             case self::LEAVE:
@@ -63,7 +64,7 @@ class ExercisePhaseTeamVoter extends Voter
                 return $this->canView($exercisePhaseTeam, $user);
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
     private function canLeave(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
@@ -104,8 +105,8 @@ class ExercisePhaseTeamVoter extends Voter
 
         $existingTeams = $exercisePhaseTeam->getExercisePhase()->getTeams();
         $canJoin = true;
-        foreach($existingTeams as $team) {
-            if($team->getMembers()->contains($user)) {
+        foreach ($existingTeams as $team) {
+            if ($team->getMembers()->contains($user)) {
                 $canJoin = false;
             }
         }

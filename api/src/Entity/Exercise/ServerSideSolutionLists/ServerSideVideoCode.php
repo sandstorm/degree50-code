@@ -7,7 +7,8 @@ namespace App\Entity\Exercise\ServerSideSolutionLists;
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
-final class ServerSideVideoCode {
+final class ServerSideVideoCode
+{
     private string $start;
     private string $end;
     private string $text;
@@ -57,57 +58,33 @@ final class ServerSideVideoCode {
         ];
     }
 
-     /**
-      * Get start.
-      *
-      */
-     public function getStart()
-     {
-         return $this->start;
-     }
+    public function getStart(): string
+    {
+        return $this->start;
+    }
 
-     /**
-      * Get end.
-      *
-      */
-     public function getEnd()
-     {
-         return $this->end;
-     }
+    public function getEnd(): string
+    {
+        return $this->end;
+    }
 
-     /**
-      * Get text.
-      *
-      */
-     public function getText()
-     {
-         return $this->text;
-     }
+    public function getText(): string
+    {
+        return $this->text;
+    }
 
-     /**
-      * Get memo.
-      *
-      */
-     public function getMemo()
-     {
-         return $this->memo;
-     }
+    public function getMemo(): string
+    {
+        return $this->memo;
+    }
 
-     /**
-      * Get color.
-      *
-      */
-     public function getColor(): ?string
-     {
-         return $this->color;
-     }
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
 
-     /**
-      * Get idFromPrototype.
-      *
-      */
-     public function getIdFromPrototype()
-     {
-         return $this->idFromPrototype;
-     }
+    public function getIdFromPrototype(): string
+    {
+        return $this->idFromPrototype;
+    }
 }

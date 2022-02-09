@@ -141,7 +141,8 @@ class VideoService
         Video $video,
         VirtualizedFile $uploadedVideoFile,
         User $user
-    ) {
+    )
+    {
         $video->setCreator($user);
         $video->setUploadedVideoFile($uploadedVideoFile);
         $video->setDataPrivacyAccepted(false);
@@ -165,7 +166,8 @@ class VideoService
         Video $video,
         VirtualizedFile $uploadedSubtitleFile,
         User $user
-    ) {
+    )
+    {
         $video->setCreator($user);
         $video->setUploadedSubtitleFile($uploadedSubtitleFile);
         $video->setDataPrivacyAccepted(false);
@@ -197,7 +199,8 @@ class VideoService
         ?Video $video,
         VirtualizedFile $uploadedAudioDescriptionFile,
         User $user
-    ) {
+    )
+    {
         $video->setCreator($user);
         $video->setUploadedAudioDescriptionFile($uploadedAudioDescriptionFile);
         $video->setDataPrivacyAccepted(false);

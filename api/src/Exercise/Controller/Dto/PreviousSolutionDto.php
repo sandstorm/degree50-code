@@ -6,7 +6,8 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideCutVideo;
 
-class PreviousSolutionDto {
+class PreviousSolutionDto
+{
     private User $teamMember;
     private ServerSideSolutionLists $serverSideSolutionLists;
     private string $solutionId;
@@ -17,7 +18,8 @@ class PreviousSolutionDto {
         ServerSideSolutionLists $serverSideSolutionLists,
         string $solutionId,
         ?ClientSideCutVideo $cutVideo
-    ) {
+    ): PreviousSolutionDto
+    {
         return new self($teamMember, $serverSideSolutionLists, $solutionId, $cutVideo);
     }
 
@@ -34,33 +36,21 @@ class PreviousSolutionDto {
         $this->cutVideo = $cutVideo;
     }
 
-    /**
-     * Get teamMember.
-     */
     public function getTeamMember(): User
     {
         return $this->teamMember;
     }
 
-     /**
-      * Get serverSideSolutionLists.
-      */
-     public function getServerSideSolutionLists(): ServerSideSolutionLists
-     {
-         return $this->serverSideSolutionLists;
-     }
+    public function getServerSideSolutionLists(): ServerSideSolutionLists
+    {
+        return $this->serverSideSolutionLists;
+    }
 
-     /**
-      * Get solutionId.
-      */
-     public function getSolutionId(): string
-     {
-         return $this->solutionId;
-     }
+    public function getSolutionId(): string
+    {
+        return $this->solutionId;
+    }
 
-    /**
-     * Get cutVideo.
-     */
     public function getCutVideo(): ?ClientSideCutVideo
     {
         return $this->cutVideo;

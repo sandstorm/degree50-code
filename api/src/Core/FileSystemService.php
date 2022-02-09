@@ -5,10 +5,12 @@ namespace App\Core;
 use App\DependencyInjection\Compiler\FileSystemCompilerPass;
 use App\Entity\VirtualizedFile;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
 use Ramsey\Uuid\Uuid;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class FileSystemService
 {
@@ -51,7 +53,7 @@ class FileSystemService
         $result = array_search($filesystem, $this->mountPrefixesAndFilesystems, true);
 
         if ($result === FALSE) {
-            throw new \RuntimeException('given file system does not have a mount prefix assigned');
+            throw new RuntimeException('given file system does not have a mount prefix assigned');
         }
 
         return $result;
@@ -60,7 +62,7 @@ class FileSystemService
     /**
      * @param VirtualizedFile $inputFile
      * @return string a local path to the file.
-     * @throws \League\Flysystem\FileExistsException
+     * @throws FileExistsException
      */
     public function fetchIfNeededAndGetLocalPath(VirtualizedFile $inputFile): string
     {
@@ -91,7 +93,7 @@ class FileSystemService
         $adapter = $this->mountManager->getAdapter($inputFilename->getVirtualPathAndFilename());
 
         if (!$adapter instanceof Local) {
-            throw new \RuntimeException('File ' . $inputFilename . ' is not available locally.');
+            throw new RuntimeException('File ' . $inputFilename . ' is not available locally.');
         }
 
         return $adapter->applyPathPrefix($inputFilename->getRelativePathAndFilename());

@@ -9,7 +9,7 @@ use Twig\TwigFilter;
 
 class AppExtension extends AbstractExtension implements GlobalsInterface
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             // the logic of this filter is now implemented in a different class

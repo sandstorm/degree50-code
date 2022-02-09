@@ -7,6 +7,7 @@ namespace App\Security\Voter;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -20,7 +21,7 @@ class ExercisePhaseVoter extends Voter
     const VIEW_OTHER_SOLUTIONS = 'viewOtherSolutions';
     const VIEW = 'viewExercisePhase';
 
-    protected function supports(string $attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
         if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::SHOW_SOLUTIONS, self::CREATE_TEAM, self::VIEW_OTHER_SOLUTIONS, self::VIEW])) {
             return false;
@@ -33,7 +34,7 @@ class ExercisePhaseVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
@@ -42,7 +43,6 @@ class ExercisePhaseVoter extends Voter
         }
 
         if ($subject instanceof ExercisePhase) {
-            /** @var ExercisePhase $exercisePhase */
             $exercisePhase = $subject;
         } else {
             return false;
@@ -66,10 +66,10 @@ class ExercisePhaseVoter extends Voter
 
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
-    private function canShow(ExercisePhase $exercisePhase, User $user)
+    private function canShow(ExercisePhase $exercisePhase, User $user): bool
     {
         return $exercisePhase->getTeams()->exists(fn($i, ExercisePhaseTeam $exercisePhaseTeam) => $exercisePhaseTeam->getMembers()->contains($user));
     }
@@ -82,7 +82,7 @@ class ExercisePhaseVoter extends Voter
      * @param User $user
      * @return bool
      */
-    private function canViewExercisePhase(ExercisePhase $exercisePhase, User $user)
+    private function canViewExercisePhase(ExercisePhase $exercisePhase, User $user): bool
     {
         if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
             return true;
@@ -120,7 +120,7 @@ class ExercisePhaseVoter extends Voter
         return false;
     }
 
-    private function canGetToNextPhase(ExercisePhase $exercisePhase, User $user)
+    private function canGetToNextPhase(ExercisePhase $exercisePhase, User $user): bool
     {
         if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
             return true;
@@ -130,12 +130,12 @@ class ExercisePhaseVoter extends Voter
     }
 
     // TODO can only delete exercisePhases which have no results/teams
-    private function canDelete(ExercisePhase $exercisePhase, User $user)
+    private function canDelete(ExercisePhase $exercisePhase, User $user): bool
     {
         return $user === $exercisePhase->getBelongsToExercise()->getCreator();
     }
 
-    private function canShowSolutions(ExercisePhase $exercisePhase, User $user)
+    private function canShowSolutions(ExercisePhase $exercisePhase, User $user): bool
     {
         return $user === $exercisePhase->getBelongsToExercise()->getCreator();
     }
@@ -144,8 +144,8 @@ class ExercisePhaseVoter extends Voter
     {
         $existingTeams = $exercisePhase->getTeams();
         $canCreate = true;
-        foreach($existingTeams as $team) {
-            if($team->getMembers()->contains($user)) {
+        foreach ($existingTeams as $team) {
+            if ($team->getMembers()->contains($user)) {
                 $canCreate = false;
             }
 

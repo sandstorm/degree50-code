@@ -10,7 +10,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideAnnotation implements JsonSerializable {
+final class ClientSideAnnotation implements JsonSerializable
+{
     private string $id;
     private string $start;
     private string $end;
@@ -30,7 +31,8 @@ final class ClientSideAnnotation implements JsonSerializable {
         $this->solutionId = $solutionId;
     }
 
-    public static function fromServerSideAnnotation(ServerSideAnnotation $annotation, string $solutionId, int $index) {
+    public static function fromServerSideAnnotation(ServerSideAnnotation $annotation, string $solutionId, int $index): ClientSideAnnotation
+    {
         return new self(
             $annotation->getStart(),
             $annotation->getEnd(),
@@ -42,7 +44,8 @@ final class ClientSideAnnotation implements JsonSerializable {
         );
     }
 
-    public static function fromArray(array $input, int $index) {
+    public static function fromArray(array $input, int $index): ClientSideAnnotation
+    {
         return new self(
             $input['start'],
             $input['end'],
@@ -54,7 +57,8 @@ final class ClientSideAnnotation implements JsonSerializable {
         );
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'id' => $this->id,
             'start' => $this->start,
@@ -66,11 +70,13 @@ final class ClientSideAnnotation implements JsonSerializable {
         ];
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 
-    public function getId() {
+    public function getId(): string
+    {
         return $this->id;
     }
 }

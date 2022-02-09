@@ -20,13 +20,11 @@ class CourseRole
     const ROLES = [self::DOZENT, self::STUDENT];
 
     /**
-     * @var string
-     *
      * @ORM\Column
      * @Assert\NotBlank
      * @Assert\Choice(choices=CourseRole::ROLES, message="Choose a valid role.")
      */
-    public $name = '';
+    public string $name = '';
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="courseRoles")
@@ -64,17 +62,11 @@ class CourseRole
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -84,6 +76,4 @@ class CourseRole
     {
         return sprintf('CourseRole<%s, %s, %s>', $this->getCourse()->getName(), $this->getUser()->getEmail(), $this->name);
     }
-
-
 }
