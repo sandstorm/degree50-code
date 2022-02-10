@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,7 +52,7 @@ class CourseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newMembers = $form->get('users')->getData();
 
-            /* @var User $newMember */
+            /** @var User $newMember */
             foreach ($newMembers as $newMember) {
                 $courseRole = new CourseRole();
                 $courseRole->setName(CourseRole::STUDENT);
@@ -79,11 +80,13 @@ class CourseController extends AbstractController
         }
 
         $studentsArray = $course->getCourseRoles()
-            ->filter(function (CourseRole $role) { return $role->getUser()->isStudent(); })
+            ->filter(function (CourseRole $role) {
+                return $role->getUser()->isStudent();
+            })
             ->toArray();
 
         // MUTATION! Sort by userName
-        usort($studentsArray, function(CourseRole $a, CourseRole $b) {
+        usort($studentsArray, function (CourseRole $a, CourseRole $b) {
             return ($a->getUser()->getUsername() > $b->getUser()->getUsername()) ? -1 : 1;
         });
 
@@ -111,8 +114,8 @@ class CourseController extends AbstractController
             'userName' => $courseRole->getUser()->getUsername(),
         ]);
 
-        $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $courseRole) =>  $courseRole->getName() == CourseRole::DOZENT);
-        if($redirectToEdit && count($courseRolesWithDozent) == 1) {
+        $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $courseRole) => $courseRole->getName() == CourseRole::DOZENT);
+        if ($redirectToEdit && count($courseRolesWithDozent) == 1) {
             $this->addFlash(
                 'danger',
                 $this->translator->trans('course.removeMember.messages.notPossible', [], 'forms')
@@ -188,36 +191,7 @@ class CourseController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$course` variable has also been updated
-            $course = $form->getData();
-
-            $newMembers = $form->get('users')->getData();
-
-            /* @var User $newMember */
-            foreach ($newMembers as $newMember) {
-                $courseRole = new CourseRole();
-                $courseRole->setName(CourseRole::DOZENT);
-                $courseRole->setUser($newMember);
-                $course->addCourseRole($courseRole);
-            }
-
-            $this->eventStore->addEvent('CourseRolesAdded', [
-                'courseId' => $course->getId(),
-                'courseRoles' => $course->getCourseRoles()->map(fn(CourseRole $courseRole) => [
-                    'courseRoleId' => $courseRole->getId(),
-                    'userName' => $courseRole->getUser()->getUsername()
-                ])->toArray(),
-            ]);
-
-            $this->eventStore->addEvent('CourseCreated', [
-                'courseId' => $course->getId(),
-                'name' => $course->getName(),
-            ]);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($course);
-            $entityManager->flush();
+            $this->createOrUpdateCourse($form);
 
             $this->addFlash(
                 'success',
@@ -233,6 +207,40 @@ class CourseController extends AbstractController
         ]);
     }
 
+    private function createOrUpdateCourse(FormInterface $form)
+    {
+        // $form->getData() holds the submitted values
+        // but, the original `$course` variable has also been updated
+        $course = $form->getData();
+
+        $newMembers = $form->get('users')->getData();
+
+        /** @var User $newMember */
+        foreach ($newMembers as $newMember) {
+            $courseRole = new CourseRole();
+            $courseRole->setName(CourseRole::DOZENT);
+            $courseRole->setUser($newMember);
+            $course->addCourseRole($courseRole);
+        }
+
+        $this->eventStore->addEvent('CourseRolesAdded', [
+            'courseId' => $course->getId(),
+            'courseRoles' => $course->getCourseRoles()->map(fn(CourseRole $courseRole) => [
+                'courseRoleId' => $courseRole->getId(),
+                'userName' => $courseRole->getUser()->getUsername()
+            ])->toArray(),
+        ]);
+
+        $this->eventStore->addEvent('CourseCreated', [
+            'courseId' => $course->getId(),
+            'name' => $course->getName(),
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($course);
+        $entityManager->flush();
+    }
+
     /**
      * @IsGranted("edit", subject="course")
      * @Route("/exercise-overview/course/edit/{id}", name="exercise-overview__course--edit")
@@ -243,36 +251,7 @@ class CourseController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$course` variable has also been updated
-            $course = $form->getData();
-
-            $newMembers = $form->get('users')->getData();
-
-            /* @var User $newMember */
-            foreach ($newMembers as $newMember) {
-                $courseRole = new CourseRole();
-                $courseRole->setName(CourseRole::DOZENT);
-                $courseRole->setUser($newMember);
-                $course->addCourseRole($courseRole);
-            }
-
-            $this->eventStore->addEvent('CourseRolesAdded', [
-                'courseId' => $course->getId(),
-                'courseRoles' => $course->getCourseRoles()->map(fn(CourseRole $courseRole) => [
-                    'courseRoleId' => $courseRole->getId(),
-                    'userName' => $courseRole->getUser()->getUsername()
-                ])->toArray(),
-            ]);
-
-            $this->eventStore->addEvent('CourseCreated', [
-                'courseId' => $course->getId(),
-                'name' => $course->getName(),
-            ]);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($course);
-            $entityManager->flush();
+            $this->createOrUpdateCourse($form);
 
             $this->addFlash(
                 'success',
@@ -283,11 +262,13 @@ class CourseController extends AbstractController
         }
 
         $tutorsArray = $course->getCourseRoles()
-            ->filter(function (CourseRole $role) { return $role->getUser()->isDozent(); })
+            ->filter(function (CourseRole $role) {
+                return $role->getUser()->isDozent();
+            })
             ->toArray();
 
         // MUTATION! Sort by userName
-        usort($tutorsArray, function(CourseRole $a, CourseRole $b) {
+        usort($tutorsArray, function (CourseRole $a, CourseRole $b) {
             return ($a->getUser()->getUsername() > $b->getUser()->getUsername()) ? -1 : 1;
         });
 

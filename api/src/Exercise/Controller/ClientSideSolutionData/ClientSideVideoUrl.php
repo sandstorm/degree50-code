@@ -9,7 +9,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideVideoUrl implements JsonSerializable {
+final class ClientSideVideoUrl implements JsonSerializable
+{
     private string $hls;
     private string $mp4;
     private string $vtt;
@@ -25,11 +26,13 @@ final class ClientSideVideoUrl implements JsonSerializable {
         $this->vtt = $vtt;
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 
-    public function toArray() {
+    public function toArray(): array
+    {
         return [
             'hls' => $this->hls,
             'mp4' => $this->mp4,
@@ -37,7 +40,8 @@ final class ClientSideVideoUrl implements JsonSerializable {
         ];
     }
 
-    public static function fromBaseUrl(string $baseUrl) {
+    public static function fromBaseUrl(string $baseUrl): ClientSideVideoUrl
+    {
         return new self(
             $baseUrl . '/hls.m3u8',
             $baseUrl . '/x264.mp4',

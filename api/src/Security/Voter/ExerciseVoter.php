@@ -8,6 +8,7 @@ use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\UserExerciseInteraction;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -20,7 +21,7 @@ class ExerciseVoter extends Voter
     const IS_OPENED = 'isOpened';
     const IS_FINISHED = 'isFinished';
 
-    protected function supports(string $attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
         if (!in_array($attribute, [self::VIEW, self::SHOW_SOLUTION, self::EDIT, self::DELETE, self::IS_OPENED, self::IS_FINISHED])) {
             return false;
@@ -33,7 +34,7 @@ class ExerciseVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
@@ -64,20 +65,20 @@ class ExerciseVoter extends Voter
             return false;
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
-    private function exercisesIsOpened(Exercise $exercise, User $user)
+    private function exercisesIsOpened(Exercise $exercise, User $user): bool
     {
         return $exercise->getUserExerciseInteractions()->exists(fn($i, UserExerciseInteraction $userExerciseInteraction) => $userExerciseInteraction->isOpened() && $userExerciseInteraction->getUser() === $user);
     }
 
-    private function exercisesIsFinished(Exercise $exercise, User $user)
+    private function exercisesIsFinished(Exercise $exercise, User $user): bool
     {
         return $exercise->getUserExerciseInteractions()->exists(fn($i, UserExerciseInteraction $userExerciseInteraction) => $userExerciseInteraction->isFinished() && $userExerciseInteraction->getUser() === $user);
     }
 
-    private function canView(Exercise $exercise, User $user)
+    private function canView(Exercise $exercise, User $user): bool
     {
         // creator has access
         if ($exercise->getCreator() === $user) {
@@ -86,8 +87,7 @@ class ExerciseVoter extends Voter
 
         $course = $exercise->getCourse();
         $hasAccessToCourse = $user->getCourseRoles()->exists(
-            fn($i, CourseRole $courseRole) =>
-                $courseRole->getCourse() === $course &&
+            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
                 $courseRole->getUser() === $user
         );
 
@@ -111,17 +111,16 @@ class ExerciseVoter extends Voter
         return false;
     }
 
-    private function canEditOrDelete(Exercise $exercise, User $user)
+    private function canEditOrDelete(Exercise $exercise, User $user): bool
     {
         // creator has access
-        if($user === $exercise->getCreator()) {
+        if ($user === $exercise->getCreator()) {
             return true;
         }
 
         $course = $exercise->getCourse();
         $isCourseDozent = $user->getCourseRoles()->exists(
-            fn($i, CourseRole $courseRole) =>
-                $courseRole->getCourse() === $course &&
+            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
                 $courseRole->getUser() === $user &&
                 $courseRole->getName() === CourseRole::DOZENT
         );

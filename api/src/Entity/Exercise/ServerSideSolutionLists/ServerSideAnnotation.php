@@ -7,30 +7,36 @@ namespace App\Entity\Exercise\ServerSideSolutionLists;
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
-final class ServerSideAnnotation {
+final class ServerSideAnnotation
+{
     private string $start;
     private string $end;
     private string $text;
     private string $memo;
     private ?string $color;
 
-    public function getStart() {
+    public function getStart(): string
+    {
         return $this->start;
     }
 
-    public function getEnd() {
+    public function getEnd(): string
+    {
         return $this->end;
     }
 
-    public function getText() {
+    public function getText(): string
+    {
         return $this->text;
     }
 
-    public function getMemo() {
+    public function getMemo(): string
+    {
         return $this->memo;
     }
 
-    public function getColor() {
+    public function getColor(): ?string
+    {
         return $this->color;
     }
 
@@ -43,7 +49,8 @@ final class ServerSideAnnotation {
         $this->color = $color;
     }
 
-    public static function fromArray(array $input) {
+    public static function fromArray(array $input): ServerSideAnnotation
+    {
         return new self(
             $input['start'],
             $input['end'],
@@ -53,7 +60,8 @@ final class ServerSideAnnotation {
         );
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'start' => $this->start,
             'end' => $this->end,

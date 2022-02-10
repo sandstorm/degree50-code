@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -17,9 +18,9 @@ class CourseVoter extends Voter
     const NEW_EXERCISE = 'newExercise';
     const EXPORT_CSV = 'exportCSV';
 
-    protected function supports(string $attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [ self::EDIT_MEMBERS, self::EDIT, self::DELETE, self::NEW_EXERCISE, self::EXPORT_CSV])) {
+        if (!in_array($attribute, [self::EDIT_MEMBERS, self::EDIT, self::DELETE, self::NEW_EXERCISE, self::EXPORT_CSV])) {
             return false;
         }
 
@@ -30,7 +31,7 @@ class CourseVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
@@ -39,8 +40,9 @@ class CourseVoter extends Voter
         }
 
         if ($subject instanceof Course) {
-            /** @var Course $course */
             $course = $subject;
+        } else {
+            return false;
         }
 
         switch ($attribute) {
@@ -50,33 +52,31 @@ class CourseVoter extends Voter
                 return $this->canEdit($user, $course);
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
-    private function canCreateNewExercise(User $user, Course $course)
+    private function canCreateNewExercise(User $user, Course $course): bool
     {
         if ($user->isAdmin()) {
             return true;
         }
 
-        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) =>
-            $courseRole->getCourse() === $course
+        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course
             && $courseRole->getUser() === $user
             && $courseRole->getName() == CourseRole::DOZENT
         );
     }
 
-    private function canEdit(User $user, Course $course)
+    private function canEdit(User $user, Course $course): bool
     {
         if ($user->isAdmin()) {
             return true;
         }
 
         // User which has ROLE_DOZENT and has the courseRole DOZENT
-        return $user->isDozent() && $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) =>
-            $courseRole->getCourse() === $course
-            && $courseRole->getUser() === $user
-            && $courseRole->getName() == CourseRole::DOZENT
-        );
+        return $user->isDozent() && $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course
+                && $courseRole->getUser() === $user
+                && $courseRole->getName() == CourseRole::DOZENT
+            );
     }
 }

@@ -5,9 +5,8 @@ namespace App\Entity\Exercise;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use App\Entity\VirtualizedFile;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -22,11 +21,9 @@ class Material
     use IdentityTrait;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name = "";
+    private string $name = "";
 
     /**
      * @ORM\Embedded(class=VirtualizedFile::class)
@@ -34,31 +31,27 @@ class Material
     private ?VirtualizedFile $uploadedFile;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="mime_type", type="string", length=255)
      */
-    private $mimeType;
+    private string $mimeType;
 
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @ORM\Column(name="upload_at", type="datetimetz_immutable")
      */
-    private $uploadAt;
+    private ?DateTimeImmutable $uploadAt;
 
     /**
      * // TODO: inversedBy="createdVideos" -- is this a bug?
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdVideos")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $creator;
+    private User $creator;
 
     /**
      * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="material")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $exercisePhase;
+    private ?ExercisePhase $exercisePhase;
 
     /**
      * Material constructor.
@@ -69,18 +62,12 @@ class Material
     }
 
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -90,73 +77,49 @@ class Material
      */
     public function setUploadedAtValue()
     {
-        $this->uploadAt = new \DateTimeImmutable();
+        $this->uploadAt = new DateTimeImmutable();
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
-    public function getUploadAt()
+    public function getUploadAt(): ?DateTimeImmutable
     {
         return $this->uploadAt;
     }
 
-    /**
-     * @param ExercisePhase $exercisePhase
-     */
-    public function setExercisePhase(ExercisePhase $exercisePhase)
+    public function setExercisePhase(?ExercisePhase $exercisePhase)
     {
         $this->exercisePhase = $exercisePhase;
     }
 
-    /**
-     * @return ExercisePhase
-     */
-    public function getExercisePhase()
+    public function getExercisePhase(): ?ExercisePhase
     {
         return $this->exercisePhase;
     }
 
-    /**
-     * @param string $mimeType
-     */
     public function setMimeType(string $mimeType): void
     {
         $this->mimeType = $mimeType;
     }
 
-    /**
-     * @return string
-     */
     public function getMimeType(): string
     {
         return $this->mimeType;
     }
 
-    public function getCreator() : User
+    public function getCreator(): User
     {
         return $this->creator;
     }
 
-    /**
-     * @param mixed $creator
-     */
-    public function setCreator($creator): void
+    public function setCreator(User $creator): void
     {
         $this->creator = $creator;
     }
 
-    /**
-     * @return ?VirtualizedFile
-     */
     public function getUploadedFile(): ?VirtualizedFile
     {
         return $this->uploadedFile;
     }
 
-    /**
-     * @param VirtualizedFile $uploadedFile
-     */
     public function setUploadedFile(VirtualizedFile $uploadedFile): void
     {
         $this->uploadedFile = $uploadedFile;

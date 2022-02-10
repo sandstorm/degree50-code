@@ -28,10 +28,10 @@ class CourseType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /* @var Course $course */
+        /** @var Course $course */
         $course = $options['data'];
         $courseRoles = $course->getCourseRoles();
-        $userChoices = array_filter($this->userRepository->findBy([], array('email' => 'ASC')), function(User $user) use ($courseRoles) {
+        $userChoices = array_filter($this->userRepository->findBy([], array('email' => 'ASC')), function (User $user) use ($courseRoles) {
             // skip users that are ROLE_STUDENT
             if ($user->isStudent()) {
                 return false;
@@ -41,7 +41,7 @@ class CourseType extends AbstractType
         });
 
         $builder
-            ->add('name', TextType::class, ['label' =>"course.labels.name", 'translation_domain' => 'forms'])
+            ->add('name', TextType::class, ['label' => "course.labels.name", 'translation_domain' => 'forms'])
             ->add('users', EntityType::class, [
                 'class' => User::class,
                 'choices' => $userChoices,
@@ -54,8 +54,7 @@ class CourseType extends AbstractType
                 'translation_domain' => 'forms',
                 'mapped' => false
             ])
-            ->add('save', SubmitType::class, ['label' => 'course.labels.submit', 'translation_domain' => 'forms'])
-        ;
+            ->add('save', SubmitType::class, ['label' => 'course.labels.submit', 'translation_domain' => 'forms']);
     }
 
     public function configureOptions(OptionsResolver $resolver)

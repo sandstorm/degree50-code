@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,25 +21,23 @@ class AutosavedSolution
     /**
      * @ORM\Column(type="json")
      */
-    private $solution = [];
+    private array $solution = [];
 
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @ORM\Column(type="datetimetz_immutable")
      */
-    private $update_timestamp;
+    private ?DateTimeImmutable $update_timestamp;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User")
      */
-    private $owner;
+    private ?User $owner;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhaseTeam", inversedBy="autosavedSolutions")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $team;
+    private ExercisePhaseTeam $team;
 
     // TODO: get id of original Solution (via Team)
     // TODO: fake the id of AutosavedSolution to be the original Solution->id when sent to frontend
@@ -55,7 +54,7 @@ class AutosavedSolution
         return $this;
     }
 
-    public function getUpdateTimestamp(): ?\DateTimeImmutable
+    public function getUpdateTimestamp(): ?DateTimeImmutable
     {
         return $this->update_timestamp;
     }
@@ -65,7 +64,7 @@ class AutosavedSolution
      */
     public function setUpdateTimestampValue()
     {
-        $this->update_timestamp = new \DateTimeImmutable();
+        $this->update_timestamp = new DateTimeImmutable();
     }
 
     public function getOwner(): ?User

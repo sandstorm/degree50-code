@@ -13,6 +13,7 @@ use App\Entity\VirtualizedFile;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideCutVideo;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideVideoUrl;
 use App\Twig\AppRuntime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,8 +39,6 @@ class Video
     private string $title = '';
 
     /**
-     * @var ?string
-     *
      * @ORM\Column(type="text", nullable=true)
      */
     private ?string $description = '';
@@ -82,9 +81,11 @@ class Video
     private ?VirtualizedFile $encodedVideoDirectory;
 
     /**
+     * @var ExercisePhase[]
+     *
      * @ORM\ManyToMany(targetEntity="App\Entity\Exercise\ExercisePhase", mappedBy="videos")
      */
-    private $exercisePhases;
+    private Collection $exercisePhases;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdVideos")
@@ -93,13 +94,13 @@ class Video
     private User $creator;
 
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @ORM\Column(name="created_at", type="datetimetz_immutable")
      */
-    private $createdAt;
+    private ?DateTimeImmutable $createdAt;
 
     /**
+     * @var Course[]
+     *
      * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="videos")
      */
     private Collection $courses;
@@ -107,12 +108,12 @@ class Video
     /**
      * @ORM\Column(type="boolean")
      */
-    private $dataPrivacyAccepted;
+    private ?bool $dataPrivacyAccepted;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $dataPrivacyPermissionsAccepted;
+    private ?bool $dataPrivacyPermissionsAccepted;
 
     /**
      * 0 = not started
@@ -121,32 +122,30 @@ class Video
      * 3 = error
      * @ORM\Column(type="integer")
      */
-    private $encodingStatus = self::ENCODING_NOT_STARTED;
+    private int $encodingStatus = self::ENCODING_NOT_STARTED;
 
     /**
-     * @var float|null
      * @ORM\Column(type="float", nullable=true)
      */
-    private $videoDuration;
+    private ?float $videoDuration = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $visiblePersons;
+    private ?string $visiblePersons = null;
 
     /**
      * @ORM\Column(type="datetimetz_immutable", nullable=true)
      */
-    private $encodingStarted;
+    private ?DateTimeImmutable $encodingStarted = null;
 
     /**
      * @ORM\Column(type="datetimetz_immutable", nullable=true)
      */
-    private $encodingFinished;
+    private ?DateTimeImmutable $encodingFinished = null;
 
     /**
      * Video constructor.
-     * @param string $id
      */
     public function __construct(string $id = '')
     {
@@ -155,72 +154,48 @@ class Video
         $this->courses = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     */
     public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @return ?VirtualizedFile
-     */
-    public function getUploadedVideoFile(): VirtualizedFile
+    public function getUploadedVideoFile(): ?VirtualizedFile
     {
         return $this->uploadedVideoFile;
     }
 
-    /**
-     * @param ?VirtualizedFile $uploadedVideoFile
-     */
     public function setUploadedVideoFile(?VirtualizedFile $uploadedVideoFile): void
     {
         $this->uploadedVideoFile = $uploadedVideoFile;
     }
 
-    /**
-     * @return ?VirtualizedFile
-     */
-    public function getEncodedVideoDirectory(): VirtualizedFile
+    public function getEncodedVideoDirectory(): ?VirtualizedFile
     {
         return $this->encodedVideoDirectory;
     }
 
-    /**
-     * @param VirtualizedFile $encodedVideoDirectory
-     */
-    public function setEncodedVideoDirectory(VirtualizedFile $encodedVideoDirectory): void
+    public function setEncodedVideoDirectory(?VirtualizedFile $encodedVideoDirectory): void
     {
         $this->encodedVideoDirectory = $encodedVideoDirectory;
     }
 
     /**
-     * @return Collection|ExercisePhase[]
+     * @return ExercisePhase[]
      */
     public function getExercisePhases(): Collection
     {
@@ -247,7 +222,7 @@ class Video
         return $this;
     }
 
-    public function getCreator(): ?User
+    public function getCreator(): User
     {
         return $this->creator;
     }
@@ -290,7 +265,7 @@ class Video
         return $this->dataPrivacyAccepted;
     }
 
-    public function setDataPrivacyAccepted(bool $dataPrivacyAccepted): self
+    public function setDataPrivacyAccepted(?bool $dataPrivacyAccepted): self
     {
         $this->dataPrivacyAccepted = $dataPrivacyAccepted;
 
@@ -299,8 +274,6 @@ class Video
 
     /**
      * Get videoDuration.
-     *
-     * @return ?float.
      */
     public function getVideoDuration(): ?float
     {
@@ -314,33 +287,25 @@ class Video
 
     /**
      * Set videoDuration.
-     *
-     * @param float $videoDuration
      */
-    public function setVideoDuration(float $videoDuration): void
+    public function setVideoDuration(?float $videoDuration): void
     {
         $this->videoDuration = $videoDuration;
     }
 
-    /**
-     * @return int
-     */
     public function getEncodingStatus(): int
     {
         return $this->encodingStatus;
     }
 
-    /**
-     * @param int $encodingStatus
-     */
     public function setEncodingStatus(int $encodingStatus): void
     {
         switch ($encodingStatus) {
             case self::ENCODING_STARTED:
-                $this->encodingStarted = new \DateTimeImmutable();
+                $this->encodingStarted = new DateTimeImmutable();
                 break;
             case self::ENCODING_FINISHED:
-                $this->encodingFinished = new \DateTimeImmutable();
+                $this->encodingFinished = new DateTimeImmutable();
                 break;
         }
 
@@ -352,13 +317,10 @@ class Video
      */
     public function setCreatedAtValue()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
-    /**
-     * @return \DateTimeImmutable|null
-     */
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -385,17 +347,17 @@ class Video
         return $this;
     }
 
-    public function getEncodingStarted(): ?\DateTimeImmutable
+    public function getEncodingStarted(): ?DateTimeImmutable
     {
         return $this->encodingStarted;
     }
 
-    public function getEncodingFinished(): ?\DateTimeImmutable
+    public function getEncodingFinished(): ?DateTimeImmutable
     {
         return $this->encodingFinished;
     }
 
-    public function getDataPrivacyPermissionsAccepted()
+    public function getDataPrivacyPermissionsAccepted(): ?bool
     {
         return $this->dataPrivacyPermissionsAccepted;
     }

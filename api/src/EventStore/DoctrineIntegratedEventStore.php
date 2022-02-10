@@ -10,16 +10,17 @@ use App\EventStore\Exception\EventValidationException;
 use App\EventStore\Exception\MissingEventException;
 use App\EventStore\Storage\EventStorageInterface;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\UnitOfWork;
+use Exception;
 use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\ValidationError;
 use Opis\JsonSchema\Validator;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Throwable;
 
 /**
  * The doctrine integrated event store is an "EvenSourcing" event store which persists events together
@@ -64,7 +65,6 @@ class DoctrineIntegratedEventStore implements EventSubscriber
      *
      * @param string $type
      * @param array $payload
-     * @throws \JsonException
      */
     public function addEvent(string $type, array $payload): void
     {
@@ -106,7 +106,7 @@ class DoctrineIntegratedEventStore implements EventSubscriber
         $this->eventPublishingEnabledForNextFlush = false;
     }
 
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             Events::onFlush,
@@ -135,7 +135,7 @@ class DoctrineIntegratedEventStore implements EventSubscriber
 
         try {
             $this->eventStorage->commit($this->writableEvents);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $args->getEntityManager()->rollback();
             throw $e;
         }
@@ -185,7 +185,7 @@ class DoctrineIntegratedEventStore implements EventSubscriber
         $this->eventPublishingEnabledForNextFlush = true;
     }
 
-    private function throwOrLog(\Exception $exception): void
+    private function throwOrLog(Exception $exception): void
     {
         if ($this->throwExceptionOnFailure) {
             throw $exception;

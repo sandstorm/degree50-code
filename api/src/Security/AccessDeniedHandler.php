@@ -31,7 +31,7 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
         $this->twig = $twig;
     }
 
-    public function handle(Request $request, AccessDeniedException $accessDeniedException)
+    public function handle(Request $request, AccessDeniedException $accessDeniedException): RedirectResponse|Response
     {
         /**
          * @var User $user

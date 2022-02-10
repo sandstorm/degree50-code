@@ -10,7 +10,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideCutVideo implements JsonSerializable {
+final class ClientSideCutVideo implements JsonSerializable
+{
     private string $id;
     private string $name;
     private ?string $description;
@@ -33,7 +34,8 @@ final class ClientSideCutVideo implements JsonSerializable {
         $this->url = $url;
     }
 
-    public static function fromVideoEntity(Video $video, ClientSideVideoUrl $url) {
+    public static function fromVideoEntity(Video $video, ClientSideVideoUrl $url): ClientSideCutVideo
+    {
         return new self(
             $video->getId(),
             $video->getTitle(),
@@ -43,7 +45,8 @@ final class ClientSideCutVideo implements JsonSerializable {
         );
     }
 
-    public static function fromArray(array $input) {
+    public static function fromArray(array $input): ClientSideCutVideo
+    {
         return new self(
             $input['id'],
             $input['name'],
@@ -53,7 +56,8 @@ final class ClientSideCutVideo implements JsonSerializable {
         );
     }
 
-    public function toArray() {
+    public function toArray(): array
+    {
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -63,7 +67,8 @@ final class ClientSideCutVideo implements JsonSerializable {
         ];
     }
 
-    public function jsonSerialize(): array {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 }

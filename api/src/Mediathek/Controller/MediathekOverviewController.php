@@ -24,9 +24,6 @@ class MediathekOverviewController extends AbstractController
     private CourseRepository $courseRepository;
     private LoggerInterface $logger;
 
-    /**
-     * @param VideoRepository $videoRepository
-     */
     public function __construct(
         VideoRepository $videoRepository,
         CourseRepository $courseRepository,
@@ -57,12 +54,12 @@ class MediathekOverviewController extends AbstractController
     }
 
     /**
-     * @param array $videos
+     * @param Video[] $videos
      * @return array[]
      */
     private function getVideosGrouped(array $videos): array
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // we need all the videos, also the private ones that dont belong to any course
@@ -83,7 +80,6 @@ class MediathekOverviewController extends AbstractController
         // We should filter cut videos or make it possible to actually play them back.
         // Currently cut videos by other creators are not playable inside the mediathek, but are shown anyway.
 
-        /* @var $video Video */
         foreach ($videos as $video) {
             if ($video->getCreator() !== $user) {
                 array_push($otherVideos['videos'], $video);
@@ -105,7 +101,6 @@ class MediathekOverviewController extends AbstractController
         $courses = $this->courseRepository->findAll();
 
         $sidebarItems = [];
-        /* @var $course Course */
         foreach ($courses as $course) {
             $creationDateYear = $course->getCreationDateYear();
             if (!array_key_exists($creationDateYear, $sidebarItems)) {

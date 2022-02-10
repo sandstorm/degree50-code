@@ -9,22 +9,17 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\Material;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use App\Exercise\Controller\Dto\PreviousSolutionDto;
-use App\Exercise\Controller\SolutionService;
 use App\Exercise\Form\ExercisePhaseType;
 use App\Exercise\Form\VideoAnalysisType;
 use App\Exercise\Form\VideoCutType;
 use App\Exercise\LiveSync\LiveSyncService;
-use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Repository\Exercise\VideoCodeRepository;
 use App\Twig\AppRuntime;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -32,6 +27,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,16 +47,11 @@ class ExercisePhaseController extends AbstractController
     private LiveSyncService $liveSyncService;
     private RouterInterface $router;
     private ExercisePhaseRepository $exercisePhaseRepository;
-    private AutosavedSolutionRepository $autosavedSolutionRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private LoggerInterface $logger;
     private SolutionService $solutionService;
 
-    /**
-     * @param TranslatorInterface $translator
-     */
     public function __construct(
-        AutosavedSolutionRepository $autosavedSolutionRepository,
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
         AppRuntime $appRuntime,
@@ -72,7 +63,6 @@ class ExercisePhaseController extends AbstractController
         SolutionService $solutionService
     )
     {
-        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->logger = $logger;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -86,61 +76,19 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
-     * @Route("/exercise-phase/show/{id}/{team_id}", name="exercise-overview__exercise-phase--show")
+     * @Route("/exercise-phase/show-others/{id}/{team_id}", name="exercise-overview__exercise-phase--show-other-solution")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
-    public function show(Request $request, ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function showOtherStudentsSolution(
+        ExercisePhase $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response
     {
-        // TODO refactor this method!
-
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
-        // NOTE:
-        // In this context "showSolution" is a flag that determines if the user is currently watching
-        // a single solution of another user (e.g. a student).
-        // This is usually done from the overview screen of the current exercise phase (Exercise/Show.html.twig)
-        //
-        // FIXME
-        // We should probably extract this code into its own controller action and get rid of the flag (see the template
-        // switch further down inside this method)
-        $showSolution = !!$request->get('showSolution');
-
         // config for the ui to render the react components
-        $config = $this->getConfig($exercisePhase, $showSolution);
-        $config['apiEndpoints'] = [
-            'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
-                'id' => $exercisePhaseTeam->getId()
-            ]),
-            'updateCurrentEditor' => $this->router->generate('exercise-overview__exercise-phase-team--update-current-editor', [
-                'id' => $exercisePhaseTeam->getId()
-            ]),
-        ];
-
-        $currentEditor = null;
-
-        if (!$showSolution) {
-            // FIXME add why comment please
-
-            if ($exercisePhaseTeam->getCurrentEditor()) {
-                $currentEditor = $exercisePhaseTeam->getCurrentEditor()->getId();
-            } else {
-                $currentEditor = $user->getId();
-                $exercisePhaseTeam->setCurrentEditor($user);
-            }
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $this->eventStore->disableEventPublishingForNextFlush();
-
-            if (!$exercisePhaseTeam->getSolution()) {
-                $newSolution = new Solution();
-                $exercisePhaseTeam->setSolution($newSolution);
-                $entityManager->persist($newSolution);
-            }
-
-            $entityManager->persist($exercisePhaseTeam);
-            $entityManager->flush();
-        }
+        $config = $this->getConfigWithSolutionApiEndpoints($exercisePhase, $exercisePhaseTeam);
 
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
@@ -152,12 +100,7 @@ class ExercisePhaseController extends AbstractController
             $exercisePhase
         );
 
-        // TODO maybe we should use separate endpoints here instead?
-        // to me it feels like this controller method does too much...
-        $template = 'ExercisePhase/Show.html.twig';
-        if ($showSolution) {
-            $template = 'ExercisePhase/ShowSolution.html.twig';
-        }
+        $template = 'ExercisePhase/ShowSolution.html.twig';
 
         return $this->render($template, [
             'config' => $config,
@@ -166,57 +109,49 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'exercise' => $exercisePhase->getBelongsToExercise(),
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'currentEditor' => $currentEditor,
+            'currentEditor' => null,
         ], $response);
     }
 
-
-    private function getConfig(ExercisePhase $exercisePhase, $readOnly = false)
+    /**
+     * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
+     * @Route("/exercise-phase/show/{id}/{team_id}", name="exercise-overview__exercise-phase--show")
+     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
+     */
+    public function show(
+        ExercisePhase $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
-        $components = $exercisePhase->getComponents();
+        // config for the ui to render the react components
+        $config = $this->getConfigWithSolutionApiEndpoints($exercisePhase, $exercisePhaseTeam);
 
-        switch ($exercisePhase->getType()) {
-            case ExercisePhase::TYPE_VIDEO_ANALYSE :
-                /* @var $exercisePhase VideoAnalysisPhase */
-                if ($exercisePhase->getVideoAnnotationsActive()) {
-                    array_push($components, ExercisePhase::VIDEO_ANNOTATION);
-                }
-                if ($exercisePhase->getVideoCodesActive()) {
-                    array_push($components, ExercisePhase::VIDEO_CODE);
-                }
+        $this->initiateExercisePhaseTeamWithSolution($exercisePhaseTeam, $user);
 
-                break;
-            case ExercisePhase::TYPE_VIDEO_CUTTING :
-                array_push($components, ExercisePhase::VIDEO_CUTTING);
-                break;
-        }
+        $response = new Response();
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
 
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+            $clientSideSolutionDataBuilder,
+            $exercisePhaseTeam,
+            $exercisePhase
+        );
 
-        return [
-            'title' => $exercisePhase->getName(),
-            'description' => $exercisePhase->getTask(),
-            'type' => $exercisePhase->getType(),
-            'components' => $components,
-            'userId' => $user->getId(),
-            'userName' => $user->getEmail(),
-            'isGroupPhase' => $exercisePhase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
-            'readOnly' => $readOnly,
-            'material' => array_map(function (Material $entry) {
-                return [
-                    'id' => $entry->getId(),
-                    'name' => $entry->getName(),
-                    'type' => $entry->getMimeType(),
-                    'url' => $this->generateUrl('exercise-overview__material--download', ['id' => $entry->getId()])
-                ];
-            }, $exercisePhase->getMaterial()->toArray()),
-            'videos' => array_map(function (Video $video) {
-                return $video->getAsArray($this->appRuntime);
-            }, $exercisePhase->getVideos()->toArray())
-        ];
+        $template = 'ExercisePhase/Show.html.twig';
+
+        return $this->render($template, [
+            'config' => $config,
+            'data' => $clientSideSolutionDataBuilder,
+            'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
+            'exercisePhase' => $exercisePhase,
+            'exercise' => $exercisePhase->getBelongsToExercise(),
+            'exercisePhaseTeam' => $exercisePhaseTeam,
+            'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId(),
+        ], $response);
     }
 
     /**
@@ -225,12 +160,10 @@ class ExercisePhaseController extends AbstractController
      */
     public function showSolutions(Request $request, Exercise $exercise): Response
     {
-        $phaseId = $request->get('phase_id', null);
-        if (!$phaseId) {
-            $exercisePhase = $exercise->getPhases()->first();
-        } else {
-            $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
-        }
+        $phaseId = $request->get('phase_id');
+        $exercisePhase = $phaseId
+            ? $this->exercisePhaseRepository->find($phaseId)
+            : $exercise->getPhases()->first();
 
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
 
@@ -260,6 +193,9 @@ class ExercisePhaseController extends AbstractController
         $isGroupPhase = $request->query->get('isGroupPhase', false);
 
         $types = [];
+
+        // TODO
+        // Why would we ever have a list of types for a single phase?
         foreach (ExercisePhase::PHASE_TYPES as $type) {
             array_push($types, [
                 'id' => $type,
@@ -279,12 +215,13 @@ class ExercisePhaseController extends AbstractController
      * @IsGranted("edit", subject="exercise")
      * @Route("/exercise/edit/{id}/phase/type", name="exercise-overview__exercise-phase--set-type")
      */
-    public function setType(Request $request, Exercise $exercise): Response
+    public function initializePhaseByType(Request $request, Exercise $exercise): Response
     {
-        $type = $request->query->get('type', null);
+        $type = $request->query->get('type');
         $isGroupPhase = $request->query->get('isGroupPhase', false);
         $exercisePhase = new ExercisePhase();
 
+        // Initialize phase by type (mandatory)
         switch ($type) {
             case ExercisePhase::TYPE_VIDEO_ANALYSE :
                 $exercisePhase = new VideoAnalysisPhase();
@@ -298,19 +235,7 @@ class ExercisePhaseController extends AbstractController
         $exercisePhase->setBelongsToExercise($exercise);
 
         if ($type != null) {
-            $existingPhaseWithHighestSorting = $this->exercisePhaseRepository->findOneBy(['belongsToExercise' => $exercise], ['sorting' => 'desc']);
-            $exercisePhase->setSorting($existingPhaseWithHighestSorting ? $existingPhaseWithHighestSorting->getSorting() + 1 : 0);
-
-            $this->eventStore->addEvent('ExercisePhaseCreated', [
-                'exercisePhaseId' => $exercisePhase->getId(),
-                'type' => $type
-            ]);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($exercisePhase);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+            return $this->persistPhaseAndRedirectToEdit($exercise, $exercisePhase, $type);
         }
 
         return $this->render('ExercisePhase/ChooseType.html.twig', [
@@ -337,82 +262,6 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'form' => $form->createView(),
         ]);
-    }
-
-    private function handlePhaseEditFormSubmit(FormInterface $form, Exercise $exercise) {
-        $exercisePhase = $form->getData();
-
-        /* @var $exercisePhase VideoAnalysisPhase */
-        $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'name' => $exercisePhase->getName(),
-            'task' => $exercisePhase->getTask(),
-            'isGroupPhase' => $exercisePhase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
-            'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
-                'videoId' => $video->getId()
-            ])->toArray(),
-            'videoCodes' => $exercisePhase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
-                'videoCodeId' => $videoCode->getId()
-            ])->toArray(),
-            'components' => $exercisePhase->getComponents()
-        ]);
-
-        if ($this->hasInvalidPreviousPhase($exercisePhase)) {
-            $this->addFlash(
-                'danger',
-                'Verknüpfung von Phasen aktuell nur möglich wenn die vorherige Phase vom Typ "Video-Analyse" ist.'
-            );
-
-            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-        } else if ($this->hasNoActiveComponent($exercisePhase)) {
-            $this->addFlash(
-                'danger',
-                'Mindestens eine Komponente muss aktiv sein'
-            );
-
-            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-        } else {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($exercisePhase);
-            $entityManager->flush();
-
-            $this->addFlash(
-                'success',
-                $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
-            );
-
-            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-        }
-    }
-
-    private function hasNoActiveComponent(ExercisePhase $exercisePhase) {
-        $isVideoAnalysis = $exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE;
-
-        if (!$isVideoAnalysis) {
-            return false;
-        }
-
-        return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
-    }
-
-    private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase) {
-        $dependsOnPreviousPhase= $exercisePhase->getDependsOnPreviousPhase();
-        $previousPhase = $this->exercisePhaseRepository->findOneBy(['sorting' => $exercisePhase->getSorting() - 1, 'belongsToExercise' => $exercisePhase->getBelongsToExercise()]);
-        $hasNoPreviousPhase = empty($previousPhase);
-        $previousPhaseIsInvalid = $previousPhase && $previousPhase->getType() !== ExercisePhase::TYPE_VIDEO_ANALYSE;
-
-        return $dependsOnPreviousPhase && ($hasNoPreviousPhase || $previousPhaseIsInvalid);
-    }
-
-    private function getPhaseForm(ExercisePhase $exercisePhase) {
-        $this->createForm(ExercisePhaseType::class, $exercisePhase);
-        switch ($exercisePhase->getType()) {
-            case ExercisePhase::TYPE_VIDEO_ANALYSE :
-                return $this->createForm(VideoAnalysisType::class, $exercisePhase);
-            case ExercisePhase::TYPE_VIDEO_CUTTING :
-                return $this->createForm(VideoCutType::class, $exercisePhase);
-        }
     }
 
     /**
@@ -463,9 +312,10 @@ class ExercisePhaseController extends AbstractController
         $entityManager->flush();
 
         // Update sortings
+        /** @var ExercisePhase[] $remainingPhases */
         $remainingPhases = $this->exercisePhaseRepository->findAllSortedBySorting($exercise);
 
-        foreach($remainingPhases as $index => $phase) {
+        foreach ($remainingPhases as $index => $phase) {
             $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
                 'exercisePhaseId' => $phase->getId(),
                 'name' => $phase->getName(),
@@ -481,7 +331,6 @@ class ExercisePhaseController extends AbstractController
                 'components' => $phase->getComponents()
             ]);
 
-            /* @var $phase ExercisePhase */
             $phase->setSorting($index);
             $entityManager->persist($phase);
             $entityManager->flush();
@@ -494,5 +343,204 @@ class ExercisePhaseController extends AbstractController
 
         return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
 
+    }
+
+    private function initiateExercisePhaseTeamWithSolution(
+        ExercisePhaseTeam $exercisePhaseTeam,
+        User $user
+    )
+    {
+        if (!$exercisePhaseTeam->getCurrentEditor()) {
+            $exercisePhaseTeam->setCurrentEditor($user);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $this->eventStore->disableEventPublishingForNextFlush();
+
+        if (!$exercisePhaseTeam->getSolution()) {
+            $newSolution = new Solution();
+            $exercisePhaseTeam->setSolution($newSolution);
+            $entityManager->persist($newSolution);
+        }
+
+        $entityManager->persist($exercisePhaseTeam);
+        $entityManager->flush();
+    }
+
+    private function getConfigWithSolutionApiEndpoints(
+        ExercisePhase $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam,
+        ?bool $readOnly = false
+    ): array
+    {
+        $config = $this->getConfig($exercisePhase, $readOnly);
+        $config['apiEndpoints'] = [
+            'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
+            'updateCurrentEditor' => $this->router->generate('exercise-overview__exercise-phase-team--update-current-editor', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
+        ];
+
+        return $config;
+    }
+
+    private function getConfig(ExercisePhase $exercisePhase, $readOnly = false): array
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $components = $exercisePhase->getComponents();
+
+        switch ($exercisePhase->getType()) {
+            case ExercisePhase::TYPE_VIDEO_ANALYSE :
+                /**
+                 * @var VideoAnalysisPhase $exercisePhase
+                 **/
+                if ($exercisePhase->getVideoAnnotationsActive()) {
+                    array_push($components, ExercisePhase::VIDEO_ANNOTATION);
+                }
+                if ($exercisePhase->getVideoCodesActive()) {
+                    array_push($components, ExercisePhase::VIDEO_CODE);
+                }
+
+                break;
+            case ExercisePhase::TYPE_VIDEO_CUTTING :
+                array_push($components, ExercisePhase::VIDEO_CUTTING);
+                break;
+        }
+
+
+        return [
+            'title' => $exercisePhase->getName(),
+            'description' => $exercisePhase->getTask(),
+            'type' => $exercisePhase->getType(),
+            'components' => $components,
+            'userId' => $user->getId(),
+            'userName' => $user->getEmail(),
+            'isGroupPhase' => $exercisePhase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
+            'readOnly' => $readOnly,
+            'material' => array_map(function (Material $entry) {
+                return [
+                    'id' => $entry->getId(),
+                    'name' => $entry->getName(),
+                    'type' => $entry->getMimeType(),
+                    'url' => $this->generateUrl('exercise-overview__material--download', ['id' => $entry->getId()])
+                ];
+            }, $exercisePhase->getMaterial()->toArray()),
+            'videos' => array_map(function (Video $video) {
+                return $video->getAsArray($this->appRuntime);
+            }, $exercisePhase->getVideos()->toArray())
+        ];
+    }
+
+    private function persistPhaseAndRedirectToEdit(Exercise $exercise, ExercisePhase $exercisePhase, string $type): RedirectResponse
+    {
+        $existingPhaseWithHighestSorting = $this
+            ->exercisePhaseRepository
+            ->findOneBy(['belongsToExercise' => $exercise], ['sorting' => 'desc']);
+
+        $exercisePhase->setSorting(
+            $existingPhaseWithHighestSorting
+                ? $existingPhaseWithHighestSorting->getSorting() + 1
+                : 0
+        );
+
+        $this->eventStore->addEvent('ExercisePhaseCreated', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'type' => $type
+        ]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($exercisePhase);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+    }
+
+    private function handlePhaseEditFormSubmit(FormInterface $form, Exercise $exercise): RedirectResponse
+    {
+        $exercisePhase = $form->getData();
+
+        /** @var $exercisePhase VideoAnalysisPhase */
+        $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'name' => $exercisePhase->getName(),
+            'task' => $exercisePhase->getTask(),
+            'isGroupPhase' => $exercisePhase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
+            'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
+                'videoId' => $video->getId()
+            ])->toArray(),
+            'videoCodes' => $exercisePhase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
+                'videoCodeId' => $videoCode->getId()
+            ])->toArray(),
+            'components' => $exercisePhase->getComponents()
+        ]);
+
+        if ($this->hasInvalidPreviousPhase($exercisePhase)) {
+            $this->addFlash(
+                'danger',
+                'Verknüpfung von Phasen aktuell nur möglich wenn die vorherige Phase vom Typ "Video-Analyse" ist.'
+            );
+
+            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+        } else if ($this->hasNoActiveComponent($exercisePhase)) {
+            $this->addFlash(
+                'danger',
+                'Mindestens eine Komponente muss aktiv sein'
+            );
+
+            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+        } else {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($exercisePhase);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
+            );
+
+            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+        }
+    }
+
+    private function hasNoActiveComponent(ExercisePhase $exercisePhase): bool
+    {
+        $isVideoAnalysis = $exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE;
+
+        if (!$isVideoAnalysis) {
+            return false;
+        }
+
+        /**
+         * @var VideoAnalysisPhase $exercisePhase
+         **/
+        return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
+    }
+
+    private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
+    {
+        $dependsOnPreviousPhase = $exercisePhase->getDependsOnPreviousPhase();
+        $previousPhase = $this->exercisePhaseRepository->findOneBy(['sorting' => $exercisePhase->getSorting() - 1, 'belongsToExercise' => $exercisePhase->getBelongsToExercise()]);
+        $hasNoPreviousPhase = empty($previousPhase);
+        $previousPhaseIsInvalid = $previousPhase && $previousPhase->getType() !== ExercisePhase::TYPE_VIDEO_ANALYSE;
+
+        return $dependsOnPreviousPhase && ($hasNoPreviousPhase || $previousPhaseIsInvalid);
+    }
+
+    private function getPhaseForm(ExercisePhase $exercisePhase): FormInterface
+    {
+        switch ($exercisePhase->getType()) {
+            case ExercisePhase::TYPE_VIDEO_ANALYSE :
+                return $this->createForm(VideoAnalysisType::class, $exercisePhase);
+            case ExercisePhase::TYPE_VIDEO_CUTTING :
+                return $this->createForm(VideoCutType::class, $exercisePhase);
+            default:
+                return $this->createForm(ExercisePhaseType::class, $exercisePhase);
+        }
     }
 }

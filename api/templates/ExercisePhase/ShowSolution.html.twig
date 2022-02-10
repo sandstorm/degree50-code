@@ -11,7 +11,7 @@
         </div>
     </div>
     <footer class="footer">
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id, showSolution: true}) }}">Zurück</a>
+        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id, showSolution: true}) }}">Zurück</a>
         <span>Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
         <a class="btn btn-primary disabled" href="#">Ergebnis teilen</a>
     </footer>

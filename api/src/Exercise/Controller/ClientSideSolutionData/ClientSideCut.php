@@ -10,7 +10,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideCut implements JsonSerializable {
+final class ClientSideCut implements JsonSerializable
+{
     private string $id;
     private string $start;
     private string $end;
@@ -47,7 +48,8 @@ final class ClientSideCut implements JsonSerializable {
         $this->playbackRate = $playbackRate;
     }
 
-    public static function fromServerSideCut(ServerSideCut $cut, string $solutionId, int $index) {
+    public static function fromServerSideCut(ServerSideCut $cut, string $solutionId, int $index): ClientSideCut
+    {
         return new self(
             $cut->getStart(),
             $cut->getEnd(),
@@ -62,7 +64,8 @@ final class ClientSideCut implements JsonSerializable {
         );
     }
 
-    public static function fromArray(array $input, int $index) {
+    public static function fromArray(array $input, int $index): ClientSideCut
+    {
         return new self(
             $input['start'],
             $input['end'],
@@ -77,7 +80,8 @@ final class ClientSideCut implements JsonSerializable {
         );
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'id' => $this->id,
             'start' => $this->start,
@@ -92,11 +96,13 @@ final class ClientSideCut implements JsonSerializable {
         ];
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 
-    public function getId() {
+    public function getId(): string
+    {
         return $this->id;
     }
 }

@@ -10,7 +10,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideVideoCodePrototype implements JsonSerializable {
+final class ClientSideVideoCodePrototype implements JsonSerializable
+{
     private string $id;
     private string $name;
     private string $description;
@@ -38,7 +39,8 @@ final class ClientSideVideoCodePrototype implements JsonSerializable {
         $this->userCreated = $userCreated;
     }
 
-    public static function fromServerSideVideoCodePrototype(ServerSideVideoCodePrototype $videoCodePrototype) {
+    public static function fromServerSideVideoCodePrototype(ServerSideVideoCodePrototype $videoCodePrototype): ClientSideVideoCodePrototype
+    {
         $childClientSidePrototypes = array_map(function ($serverSidePrototype) {
             return self::fromServerSideVideoCodePrototype($serverSidePrototype);
         }, $videoCodePrototype->getChildServerSidePrototypes());
@@ -54,8 +56,9 @@ final class ClientSideVideoCodePrototype implements JsonSerializable {
         );
     }
 
-    public static function fromArray(array $input) {
-        $childClientSidePrototypes = array_map(function($prototype) {
+    public static function fromArray(array $input): ClientSideVideoCodePrototype
+    {
+        $childClientSidePrototypes = array_map(function ($prototype) {
             return self::fromArray($prototype);
         }, $input['videoCodes']); // => FIXME rename as soon as base refactoring is complete
 
@@ -70,7 +73,8 @@ final class ClientSideVideoCodePrototype implements JsonSerializable {
         );
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $childPrototypes = array_map(function ($clientSidePrototype) {
             return $clientSidePrototype->toArray();
         }, $this->childClientSidePrototypes);
@@ -86,11 +90,13 @@ final class ClientSideVideoCodePrototype implements JsonSerializable {
         ];
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 
-    public function getId() {
+    public function getId(): string
+    {
         return $this->id;
     }
 }

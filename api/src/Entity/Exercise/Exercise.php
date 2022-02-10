@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,46 +28,41 @@ class Exercise implements ExerciseInterface
     const EXERCISE_FINISHED = 1;
 
     /**
-     * @var string A nice person
-     *
      * @ORM\Column
      * @Assert\NotBlank
      */
-    public $name = '';
+    public string $name = '';
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      */
-    public $description = '';
+    public string $description = '';
 
     /**
      * @var ExercisePhase[]
+     *
      * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExercise", cascade={"all"})
      * @ORM\OrderBy({"sorting" = "ASC"})
      */
-    private $phases;
+    private Collection $phases;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\Course", inversedBy="exercises")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $course;
+    private ?Course $course;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account\User", inversedBy="createdExercises")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $creator;
+    private User $creator;
 
     /**
-     * @var \DateTimeImmutable|null
-     *
      * @ORM\Column(name="created_at", type="datetimetz_immutable")
      */
-    private $createdAt;
+    private ?DateTimeImmutable $createdAt;
 
     /**
      * 0 = created
@@ -74,15 +70,17 @@ class Exercise implements ExerciseInterface
      * 2 = published
      * @ORM\Column(type="integer")
      */
-    private $status = self::EXERCISE_CREATED;
+    private int $status = self::EXERCISE_CREATED;
 
     /**
      * @var UserExerciseInteraction[]
+     *
      * @ORM\OneToMany(targetEntity="UserExerciseInteraction", mappedBy="exercise",  cascade={"remove"})
      */
-    private $userExerciseInteractions;
+    private Collection $userExerciseInteractions;
 
-    public function __construct(string $id = null) {
+    public function __construct(string $id = null)
+    {
         $this->phases = new ArrayCollection();
         $this->userExerciseInteractions = new ArrayCollection();
         $this->generateOrSetId($id);
@@ -93,7 +91,7 @@ class Exercise implements ExerciseInterface
      */
     public function setCreatedAtValue()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getType(): string
@@ -114,10 +112,7 @@ class Exercise implements ExerciseInterface
         return $this->phases;
     }
 
-    /**
-     * @param ExercisePhase[] $phases
-     */
-    public function setPhases(iterable $phases): void
+    public function setPhases(Collection $phases): void
     {
         foreach ($phases as $phase) {
             $phase->belongsToExercise = $this;
@@ -132,72 +127,48 @@ class Exercise implements ExerciseInterface
         $this->phases->add($exercisePhase);
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return Course
-     */
     public function getCourse(): ?Course
     {
         return $this->course;
     }
 
-    /**
-     * @param Course $course
-     */
-    public function setCourse($course): void
+    public function setCourse(?Course $course): void
     {
         $this->course = $course;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * @param string $description
-     *
      * Note that the parameter has to be optional, so that null can be passed to
      * it, whenever we use this entity in symphony forms, because validation
-     * happesn AFTER the form has been processed.
+     * happens AFTER the form has been processed.
      */
     public function setDescription(?string $description): self
     {
-        $this->description = $description;
+        $this->description = $description ?? '';
 
         return $this;
     }
 
-    /**
-     * @return User
-     */
     public function getCreator(): User
     {
         return $this->creator;
     }
 
-    /**
-     * @param User $creator
-     * @return $this
-     */
     public function setCreator(User $creator): self
     {
         $this->creator = $creator;
@@ -205,50 +176,35 @@ class Exercise implements ExerciseInterface
         return $this;
     }
 
-    /**
-     * @return \DateTimeImmutable|null
-     */
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     */
     public function setStatus(int $status): void
     {
         $this->status = $status;
     }
 
     /**
-     * @return Collection|UserExerciseInteraction[]
+     * @return UserExerciseInteraction[]
      */
     public function getUserExerciseInteractions(): Collection
     {
         return $this->userExerciseInteractions;
     }
 
-    /**
-     * @param int $position
-     *
-     * @return ExercisePhase | null
-     */
-    public function getPhaseAtSortingPosition(int $position)
+    public function getPhaseAtSortingPosition(int $position): ?ExercisePhase
     {
         return $this
             ->getPhases()
             ->filter(
-                function (ExercisePhase $exercisePhase) use ($position)
-                {
+                function (ExercisePhase $exercisePhase) use ($position) {
                     return $exercisePhase->getSorting() === $position;
                 }
             )

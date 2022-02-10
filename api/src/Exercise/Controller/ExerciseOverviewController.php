@@ -14,6 +14,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * This controller is responsible for actions regarding the exercise overview
+ *
+ * Exercises are being displayed as tiles on the templates.
+ * NOTE: This has nothing to do with the overview of a single exercise.
+ * Single exercise overview handling is located inside the [ExerciseController]
+ *
  * @IsGranted("ROLE_USER")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
@@ -46,7 +52,7 @@ class ExerciseOverviewController extends AbstractController
      */
     public function overview(Request $request, Course $course = null): Response
     {
-        $statusFilter = $request->query->get('status', null);
+        $statusFilter = $request->query->get('status');
 
         $queryCriteria = [];
         if ($course) {
@@ -79,10 +85,10 @@ class ExerciseOverviewController extends AbstractController
             'exercises' => []
         ];
 
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
-        /* @var $exercise Exercise */
+        /** @var $exercise Exercise */
         foreach ($exercises as $exercise) {
             if ($exercise->getCreator() === $user) {
                 array_push($ownExercises['exercises'], $exercise);
@@ -105,7 +111,6 @@ class ExerciseOverviewController extends AbstractController
         $courses = $this->courseRepository->findAll();
 
         $sidebarItems = [];
-        /* @var $course Course */
         foreach ($courses as $course) {
             $creationDateYear = $course->getCreationDateYear();
             if (!array_key_exists($creationDateYear, $sidebarItems)) {

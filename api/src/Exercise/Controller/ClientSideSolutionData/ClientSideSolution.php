@@ -9,7 +9,8 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideSolution implements JsonSerializable {
+final class ClientSideSolution implements JsonSerializable
+{
 
     private ClientSideSolutionLists $clientSideSolutionLists;
     private string $id;
@@ -38,11 +39,13 @@ final class ClientSideSolution implements JsonSerializable {
         string $userName,
         string $userId,
         ?ClientSideCutVideo $cutVideo
-    ) {
+    ): ClientSideSolution
+    {
         return new self($clientSideSolutionLists, $id, $userName, $userId, $cutVideo);
     }
 
-    public static function fromArray(array $input) {
+    public static function fromArray(array $input): ClientSideSolution
+    {
         return new self(
             ClientSideSolutionLists::fromArray($input['solution']),
             $input['id'],
@@ -52,7 +55,8 @@ final class ClientSideSolution implements JsonSerializable {
         );
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize(): array
+    {
         return [
             'solutionLists' => $this->clientSideSolutionLists->jsonSerialize(),
             'id' => $this->id,
@@ -62,42 +66,42 @@ final class ClientSideSolution implements JsonSerializable {
         ];
     }
 
-     /**
-      * Get clientSideSolutionLists.
-      */
-     public function getClientSideSolutionLists()
-     {
-         return $this->clientSideSolutionLists;
-     }
+    /**
+     * Get clientSideSolutionLists.
+     */
+    public function getClientSideSolutionLists(): ClientSideSolutionLists
+    {
+        return $this->clientSideSolutionLists;
+    }
 
-     /**
-      * Get id.
-      */
-     public function getId()
-     {
-         return $this->id;
-     }
+    /**
+     * Get id.
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
 
-     /**
-      * Get userName.
-      */
-     public function getUserName()
-     {
-         return $this->userName;
-     }
+    /**
+     * Get userName.
+     */
+    public function getUserName(): string
+    {
+        return $this->userName;
+    }
 
-     /**
-      * Get userId.
-      */
-     public function getUserId()
-     {
-         return $this->userId;
-     }
+    /**
+     * Get userId.
+     */
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
 
     /**
      * Get cutVideo.
      */
-    public function getCutVideo()
+    public function getCutVideo(): ?ClientSideCutVideo
     {
         return $this->cutVideo;
     }

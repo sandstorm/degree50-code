@@ -11,21 +11,21 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CreateUserCommand extends Command
 {
     protected static $defaultName = 'app:create-user';
 
     private EntityManagerInterface $entityManager;
-    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserPasswordHasherInterface $userPasswordHasher;
     private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $userPasswordEncoder, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, DoctrineIntegratedEventStore $eventStore)
     {
         parent::__construct();
         $this->entityManager = $entityManager;
-        $this->passwordEncoder = $userPasswordEncoder;
+        $this->userPasswordHasher = $userPasswordHasher;
         $this->eventStore = $eventStore;
     }
 
@@ -36,8 +36,7 @@ class CreateUserCommand extends Command
             ->setDescription('Create a new user')
             ->addArgument('email', InputArgument::REQUIRED, 'Email of new user')
             ->addArgument('password', InputArgument::REQUIRED, 'Password of new user')
-            ->addOption('admin', null, InputOption::VALUE_NONE, 'should the new user be admin?')
-        ;
+            ->addOption('admin', null, InputOption::VALUE_NONE, 'should the new user be admin?');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -49,7 +48,7 @@ class CreateUserCommand extends Command
 
         $user = new User();
         $user->setEmail($email);
-        $user->setPassword($this->passwordEncoder->encodePassword(
+        $user->setPassword($this->userPasswordHasher->hashPassword(
             $user,
             $password
         ));

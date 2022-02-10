@@ -2,6 +2,7 @@
 
 
 namespace App\Mediathek\EventListener;
+
 use App\Core\FileSystemService;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Material;
@@ -13,11 +14,12 @@ use App\Mediathek\Service\VideoService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Video\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use Oneup\UploaderBundle\Event\PostUploadEvent;
+use Oneup\UploaderBundle\Uploader\Response\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -68,7 +70,7 @@ class UploadListener
     public function onUpload(PostUploadEvent $event)
     {
         $target = $event->getRequest()->get('target');
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->security->getUser();
 
         switch ($target) {
@@ -80,15 +82,16 @@ class UploadListener
                 return $this->uploadMaterial($event, $user);
             case self::TARGET_AUDIO_DESCRIPTION:
                 return $this->uploadAudioDescription($event, $user);
+            default:
+                throw new InvalidArgumentException('Unknown target: "' . $target . '"');
         }
     }
 
-    private function uploadMaterial(PostUploadEvent $event, User $user)
+    private function uploadMaterial(PostUploadEvent $event, User $user): ResponseInterface
     {
-        /* @var Request $request */
         $request = $event->getRequest();
 
-        /* @var UploadedFile $originalFile */
+        /** @var UploadedFile $originalFile */
         $originalFile = $request->files->get('file');
 
         $material = new Material();

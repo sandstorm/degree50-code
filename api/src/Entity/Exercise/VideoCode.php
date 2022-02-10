@@ -21,8 +21,6 @@ class VideoCode
     use IdentityTrait;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=255)
      */
     private string $name = '';
@@ -34,8 +32,6 @@ class VideoCode
     // (also remove from videoCodePrototypeItem inside the frontend)
 
     /**
-     * @var ?string
-     *
      * @ORM\Column(type="text", nullable=true)
      */
     private ?string $description = '';
@@ -44,11 +40,9 @@ class VideoCode
      * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="videoCodes")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $exercisePhase;
+    private ?ExercisePhase $exercisePhase;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=7)
      */
     private string $color = '';
@@ -94,18 +88,12 @@ class VideoCode
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getExercisePhase()
+    public function getExercisePhase(): ?ExercisePhase
     {
         return $this->exercisePhase;
     }
 
-    /**
-     * @param mixed $exercisePhase
-     */
-    public function setExercisePhase($exercisePhase): void
+    public function setExercisePhase(?ExercisePhase $exercisePhase): void
     {
         $this->exercisePhase = $exercisePhase;
     }

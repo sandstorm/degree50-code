@@ -51,86 +51,84 @@ class ExercisePhase implements ExerciseInterface
     const VIDEO_ANNOTATION = 'videoAnnotation';
 
     /**
-     * @var bool
      * @ORM\Column(type="boolean")
      */
-    public $isGroupPhase = false;
+    public bool $isGroupPhase = false;
 
     /**
-     * @var string
-     *
      * @ORM\Column
      * @Assert\NotBlank
      */
-    public $name = '';
+    public string $name = '';
 
     /**
-     * @var string Aufgabenstellung
-     *
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      */
-    public $task = '';
+    public string $task = '';
 
     // FIXME
     // the definition does not seem to be in use
 
     /**
-     * @var string
      * @ORM\Column(type="text")
      */
-    public $definition = '';
+    public string $definition = '';
 
     /**
-     * @var Exercise
      * @ORM\ManyToOne(targetEntity="Exercise", inversedBy="phases")
      */
-    public $belongsToExercise;
+    public Exercise $belongsToExercise;
 
     /**
-     * @var int
      * @ORM\Column
      */
-    public $sorting;
+    public int $sorting;
 
     /**
+     * @var ExercisePhaseTeam[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\ExercisePhaseTeam", mappedBy="exercisePhase", cascade={"all"})
      */
-    private $teams;
+    private Collection $teams;
 
     /**
-     * @var array|null
-     *
      * @ORM\Column(type="simple_array", nullable=TRUE)
      */
-    public $components = '';
+    public string|array|null $components = '';
 
     /**
+     * @var Material[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Material", mappedBy="exercisePhase", cascade={"persist", "remove"})
      * @ORM\OrderBy({"uploadAt" = "DESC"})
      */
-    private $material;
+    private Collection $material;
 
     /**
+     * @var VideoCode[]
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\VideoCode", mappedBy="exercisePhase", cascade={"persist", "remove"})
      * @ORM\OrderBy({"name" = "ASC"})
      */
-    private $videoCodes;
+    private Collection $videoCodes;
 
     /**
+     * @var Video[]
+     *
      * @ORM\ManyToMany(targetEntity="App\Entity\Video\Video", inversedBy="exercisePhases")
      */
-    private $videos;
+    private Collection $videos;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $dependsOnPreviousPhase = false;
+    private bool $dependsOnPreviousPhase = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $otherSolutionsAreAccessible = false;
+    private bool $otherSolutionsAreAccessible = false;
 
     public function __construct(string $id = null)
     {
@@ -147,7 +145,7 @@ class ExercisePhase implements ExerciseInterface
     }
 
     /**
-     * @return Collection|ExercisePhaseTeam[]
+     * @return ExercisePhaseTeam[]
      */
     public function getTeams(): Collection
     {
@@ -177,117 +175,74 @@ class ExercisePhase implements ExerciseInterface
         return $this;
     }
 
-    /**
-     * @return Exercise
-     */
     public function getBelongsToExercise(): Exercise
     {
         return $this->belongsToExercise;
     }
 
-    /**
-     * @param Exercise $belongsToExercise
-     */
     public function setBelongsToExercise(Exercise $belongsToExercise): void
     {
         $this->belongsToExercise = $belongsToExercise;
     }
 
-    /**
-     * @return int
-     */
     public function getSorting(): int
     {
         return $this->sorting;
     }
 
-    /**
-     * @param int $sorting
-     */
     public function setSorting(int $sorting): void
     {
         $this->sorting = $sorting;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getTask(): string
     {
         return $this->task;
     }
 
-    /**
-     * @param string $task
-     */
     public function setTask(string $task): void
     {
         $this->task = $task;
     }
 
-    /**
-     * @return bool
-     */
     public function isGroupPhase(): bool
     {
         return $this->isGroupPhase;
     }
 
-    /**
-     * @param bool $isGroupPhase
-     */
     public function setIsGroupPhase(bool $isGroupPhase): void
     {
         $this->isGroupPhase = $isGroupPhase;
     }
 
     /**
-     * Override in extending class
-     *
-     * @return string
+     * Override in extending class!
      */
     public function getType(): string
     {
         return 'exercisePhase';
     }
 
-    /**
-     * @return array|null
-     */
     public function getComponents(): ?array
     {
         return $this->components;
     }
 
-    /**
-     * @param array $components
-     */
     public function setComponents(array $components): void
     {
         $this->components = $components;
     }
 
-    /**
-     * @param Material $material
-     *
-     * @return ExercisePhase
-     */
     public function addMaterial(Material $material): self
     {
         $this->material->add($material);
@@ -295,16 +250,13 @@ class ExercisePhase implements ExerciseInterface
         return $this;
     }
 
-    /**
-     * @param Material $material
-     */
-    public function removeMaterial(Material $material): self
+    public function removeMaterial(Material $material): void
     {
         $this->material->removeElement($material);
     }
 
     /**
-     * @return Collection
+     * @return Material[]
      */
     public function getMaterial(): Collection
     {
@@ -312,7 +264,7 @@ class ExercisePhase implements ExerciseInterface
     }
 
     /**
-     * @return Collection|VideoCode[]
+     * @return VideoCode[]
      */
     public function getVideoCodes(): Collection
     {
@@ -338,7 +290,7 @@ class ExercisePhase implements ExerciseInterface
     }
 
     /**
-     * @return Collection|Video[]
+     * @return Video[]
      */
     public function getVideos(): Collection
     {
@@ -388,7 +340,8 @@ class ExercisePhase implements ExerciseInterface
         return $this;
     }
 
-    public function getHasSolutions() {
+    public function getHasSolutions(): bool
+    {
         $parentExercise = $this->getBelongsToExercise();
         $creator = $parentExercise->getCreator();
         $teams = $this->getTeams()->toArray();
@@ -403,23 +356,19 @@ class ExercisePhase implements ExerciseInterface
 
     /**
      * Check if a Solution exists on a Team that the user is a member of.
-     *
-     * @param User $user
-     * @return bool
      */
-    public function getHasSolutionForUser(User $user)
+    public function getHasSolutionForUser(User $user): bool
     {
         return $this
             ->getTeams()
             ->exists(
-                function ($i, ExercisePhaseTeam $exercisePhaseTeam) use ($user)
-                {
+                function ($i, ExercisePhaseTeam $exercisePhaseTeam) use ($user) {
                     return $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user);
                 }
             );
     }
 
-    public function getDefinition()
+    public function getDefinition(): string
     {
         return $this->definition;
     }

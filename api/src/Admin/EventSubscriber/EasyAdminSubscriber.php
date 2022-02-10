@@ -26,7 +26,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $this->userPasswordHasher = $userPasswordHasher;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             BeforeEntityPersistedEvent::class => [['disableEventPublishingForNextFlush'], ['encodePassword']],

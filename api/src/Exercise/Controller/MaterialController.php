@@ -27,15 +27,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class MaterialController extends AbstractController
 {
     private TranslatorInterface $translator;
-    private KernelInterface  $kernel;
+    private KernelInterface $kernel;
     private DoctrineIntegratedEventStore $eventStore;
     private MaterialRepository $materialRepository;
 
-
-    /**
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator, KernelInterface $kernel, DoctrineIntegratedEventStore $eventStore, MaterialRepository $materialRepository)
+    public function __construct(
+        TranslatorInterface $translator,
+        KernelInterface $kernel,
+        DoctrineIntegratedEventStore $eventStore,
+        MaterialRepository $materialRepository
+    )
     {
         $this->translator = $translator;
         $this->kernel = $kernel;
@@ -50,7 +51,7 @@ class MaterialController extends AbstractController
     {
         $fileUrl = $appRuntime->virtualizedFileUrl($material->getUploadedFile());
         $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
-        $response = new BinaryFileResponse($publicResourcesFolderPath.$fileUrl);
+        $response = new BinaryFileResponse($publicResourcesFolderPath . $fileUrl);
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $material->getName()
@@ -81,7 +82,7 @@ class MaterialController extends AbstractController
         $materialIdFromJson = json_decode($request->getContent(), true)['materialId'];
         $material = $this->materialRepository->find($materialIdFromJson);
 
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($material->getCreator() !== $user) {
@@ -99,7 +100,7 @@ class MaterialController extends AbstractController
         $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
 
         $filesystem = new Filesystem();
-        $filesystem->remove($publicResourcesFolderPath.$fileUrl);
+        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
 
         $this->eventStore->addEvent('MaterialDeleted', [
             'materialId' => $material->getId(),

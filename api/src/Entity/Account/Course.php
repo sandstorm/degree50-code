@@ -34,19 +34,22 @@ class Course
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank
      */
-    public $creationDate;
+    public DateTime $creationDate;
 
     /**
+     * @var Exercise[]
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Exercise", mappedBy="course", orphanRemoval=true)
      */
     private Collection $exercises;
 
     /**
+     * @var CourseRole[]
      * @ORM\OneToMany(targetEntity="App\Entity\Account\CourseRole", mappedBy="course", cascade={"all"}, orphanRemoval=true)
      */
     private Collection $courseRoles;
 
     /**
+     * @var Video[]
      * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="courses")
      */
     private Collection $videos;
@@ -61,7 +64,7 @@ class Course
     }
 
     /**
-     * @return Collection|CourseRole[]
+     * @return CourseRole[]
      */
     public function getCourseRoles(): Collection
     {
@@ -91,40 +94,28 @@ class Course
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
 
-    /**
-     * @return int
-     */
     public function getCreationDateYear(): int
     {
         return $this->creationDate->format('Y');
     }
 
     /**
-     * @return Collection|Exercise[]
+     * @return Exercise[]
      */
     public function getExercises(): Collection
     {
@@ -160,7 +151,7 @@ class Course
     }
 
     /**
-     * @return Collection|Video[]
+     * @return Video[]
      */
     public function getVideos(): Collection
     {

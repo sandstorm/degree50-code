@@ -7,7 +7,8 @@ namespace App\Entity\Exercise\ServerSideSolutionLists;
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
-final class ServerSideSolutionLists {
+final class ServerSideSolutionLists
+{
     /**
      * @var ServerSideAnnotation[]
      */
@@ -34,15 +35,15 @@ final class ServerSideSolutionLists {
             assert($annotation instanceof ServerSideAnnotation);
         }
 
-        foreach($serverSideVideoCodes as $videoCode) {
+        foreach ($serverSideVideoCodes as $videoCode) {
             assert($videoCode instanceof ServerSideVideoCode);
         }
 
-        foreach($serverSideCutList as $cut) {
+        foreach ($serverSideCutList as $cut) {
             assert($cut instanceof ServerSideCut);
         }
 
-        foreach($serverSideVideoCodePrototypes as $videoCodePrototype) {
+        foreach ($serverSideVideoCodePrototypes as $videoCodePrototype) {
             assert($videoCodePrototype instanceof ServerSideVideoCodePrototype);
         }
 
@@ -94,7 +95,8 @@ final class ServerSideSolutionLists {
      * Create Entity from clientSide JSON.
      *
      */
-    public static function fromClientJSON(array $input): self {
+    public static function fromClientJSON(array $input): self
+    {
         $serverSideAnnotations = array_map(function ($annotation) {
             return ServerSideAnnotation::fromArray($annotation);
         }, $input['annotations']);
@@ -152,22 +154,22 @@ final class ServerSideSolutionLists {
         ];
     }
 
-    public function getAnnotations() {
+    public function getAnnotations(): array
+    {
         return $this->serverSideAnnotations;
     }
 
-    public function getVideoCodes() {
+    public function getVideoCodes(): array
+    {
         return $this->serverSideVideoCodes;
     }
 
-    public function getCutList() {
+    public function getCutList(): array
+    {
         return $this->serverSideCutList;
     }
 
-    /**
-     * Get videoCodePrototypes.
-     */
-    public function getVideoCodePrototypes()
+    public function getVideoCodePrototypes(): array
     {
         return $this->serverSideVideoCodePrototypes;
     }

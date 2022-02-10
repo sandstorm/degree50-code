@@ -10,8 +10,9 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
 
 class AbstractDoctrineFilter extends SQLFilter
 {
-    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
+    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
+        return '';
     }
 
     protected function userIsAdmin(): bool

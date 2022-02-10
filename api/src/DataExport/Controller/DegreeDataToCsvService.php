@@ -9,9 +9,6 @@ use App\Entity\Exercise\ServerSideSolutionLists\ServerSideAnnotation;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideCut;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCode;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
-use App\Entity\Exercise\Solution;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Repository\Exercise\SolutionRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
@@ -31,8 +28,8 @@ use App\Repository\Exercise\ExercisePhaseRepository;
  * Also make sure that you update the README.md accordingly if you change columns etc. inside
  * those files.
  */
-class DegreeDataToCsvService {
-    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
+class DegreeDataToCsvService
+{
     private ExercisePhaseRepository $exercisePhaseRepository;
     private LoggerInterface $logger;
     private ManagerRegistry $managerRegistry;
@@ -47,14 +44,10 @@ class DegreeDataToCsvService {
 
     function __construct(
         LoggerInterface $logger,
-        ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         ExercisePhaseRepository $exercisePhaseRepository,
-        SolutionRepository $solutionRepository,
         ManagerRegistry $managerRegistry
     )
     {
-        $this->solutionRepository = $solutionRepository;
-        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->logger = $logger;
         $this->managerRegistry = $managerRegistry;
@@ -63,7 +56,8 @@ class DegreeDataToCsvService {
     /**
      * @return TextFileDto[]
      */
-    public function getAllAsVirtualCSVs(Course $course) {
+    public function getAllAsVirtualCSVs(Course $course): array
+    {
         $serializer = new Serializer([], [new CsvEncoder()]);
 
         $solutionData = $this->getSolutionData($course);
@@ -95,7 +89,8 @@ class DegreeDataToCsvService {
         ];
     }
 
-    private function getREADME() {
+    private function getREADME(): string
+    {
         $content = <<<'EOT'
 # README
 
@@ -238,10 +233,11 @@ EOT;
         return $content;
     }
 
-    public function getVideoCodeData(Course $course) {
+    public function getVideoCodeData(Course $course): array
+    {
         $exercisePhaseTeams = $this->getExercisePhaseTeamsByCourse($course);
 
-        $solutionDataRows = array_reduce($exercisePhaseTeams, function($carry, ExercisePhaseTeam $team) {
+        $solutionDataRows = array_reduce($exercisePhaseTeams, function ($carry, ExercisePhaseTeam $team) {
             $exercisePhase = $team->getExercisePhase();
             $solution = $team->getSolution();
 
@@ -261,9 +257,9 @@ EOT;
                 return array_merge($carry, $childServerSidePrototypes);
             }, $nestedServerSideVideoCodePrototypes);
 
-            $rows = array_map(function(ServerSideVideoCode $serverSideVideoCode) use($solution, $flattenedServerSideVideoCodePrototypes) {
-                /** @var ServerSideVideoCodePrototype $videoCodePrototype **/
-                $videoCodePrototype = current(array_filter($flattenedServerSideVideoCodePrototypes, function($prototype) use($serverSideVideoCode) {
+            $rows = array_map(function (ServerSideVideoCode $serverSideVideoCode) use ($solution, $flattenedServerSideVideoCodePrototypes) {
+                /** @var ServerSideVideoCodePrototype $videoCodePrototype * */
+                $videoCodePrototype = current(array_filter($flattenedServerSideVideoCodePrototypes, function ($prototype) use ($serverSideVideoCode) {
                     return $prototype->getId() == $serverSideVideoCode->getIdFromPrototype();
                 }));
 
@@ -310,16 +306,17 @@ EOT;
                 "codeFarbe",
                 "elternCodeID",
                 "selbstErstellterCode",
-          ],
+            ],
         ]);
 
         return $solutionDataRows;
     }
 
-    public function getAnnotationData(Course $course) {
+    public function getAnnotationData(Course $course): array
+    {
         $exercisePhaseTeams = $this->getExercisePhaseTeamsByCourse($course);
 
-        $solutionDataRows = array_reduce($exercisePhaseTeams, function($carry, ExercisePhaseTeam $team) {
+        $solutionDataRows = array_reduce($exercisePhaseTeams, function ($carry, ExercisePhaseTeam $team) {
             $exercisePhase = $team->getExercisePhase();
             $solution = $team->getSolution();
 
@@ -330,7 +327,7 @@ EOT;
             $solutionLists = $solution->getSolution();
             $annotations = $solutionLists->getAnnotations();
 
-            $rows = array_map(function(ServerSideAnnotation $serverSideAnnotation) use($solution) {
+            $rows = array_map(function (ServerSideAnnotation $serverSideAnnotation) use ($solution) {
                 return array_merge(
                     [$solution->getId()],
                     [
@@ -353,16 +350,17 @@ EOT;
                 "text",
                 "memo",
                 "farbe"
-          ],
+            ],
         ]);
 
         return $solutionDataRows;
     }
 
-    public function getCutData(Course $course) {
+    public function getCutData(Course $course): array
+    {
         $exercisePhaseTeams = $this->getExercisePhaseTeamsByCourse($course);
 
-        $solutionDataRows = array_reduce($exercisePhaseTeams, function($carry, ExercisePhaseTeam $team) {
+        $solutionDataRows = array_reduce($exercisePhaseTeams, function ($carry, ExercisePhaseTeam $team) {
             $exercisePhase = $team->getExercisePhase();
             $solution = $team->getSolution();
 
@@ -373,7 +371,7 @@ EOT;
             $solutionLists = $solution->getSolution();
             $cuts = $solutionLists->getCutList();
 
-            $rows = array_map(function(ServerSideCut $serverSideCut) use($solution) {
+            $rows = array_map(function (ServerSideCut $serverSideCut) use ($solution) {
                 return array_merge(
                     [$solution->getId()],
                     [
@@ -396,22 +394,23 @@ EOT;
                 "text",
                 "memo",
                 "farbe",
-          ],
+            ],
         ]);
 
         return $solutionDataRows;
     }
 
-    public function getTeamUserData(Course $course) {
+    public function getTeamUserData(Course $course): array
+    {
         $exercisePhaseTeams = $this->getExercisePhaseTeamsByCourse($course);
 
-        $teamDataRows = array_reduce($exercisePhaseTeams, function($carry, ExercisePhaseTeam $team) {
+        $teamDataRows = array_reduce($exercisePhaseTeams, function ($carry, ExercisePhaseTeam $team) {
             $solution = $team->getSolution();
             $solutionId = $solution ? $solution->getId() : "Keine Lösung vorhanden";
 
             $teamUsers = $team->getMembers()->toArray();
 
-            $rows = array_map(function(User $teamUser) use($solutionId, $team) {
+            $rows = array_map(function (User $teamUser) use ($solutionId, $team) {
                 return [
                     // User
                     $teamUser->getId(),
@@ -436,16 +435,17 @@ EOT;
                 "teamID",
                 "teamErstellerID",
                 "loesungsID"
-          ],
+            ],
         ]);
 
         return $teamDataRows;
     }
 
-    public function getCourseUserData(Course $course) {
+    public function getCourseUserData(Course $course): array
+    {
         $exercisePhaseTeams = $this->getExercisePhaseTeamsByCourse($course);
 
-        $courseDataRows = array_reduce($exercisePhaseTeams, function($carry, ExercisePhaseTeam $team) {
+        $courseDataRows = array_reduce($exercisePhaseTeams, function ($carry, ExercisePhaseTeam $team) {
             $exercisePhase = $team->getExercisePhase();
 
             if (empty($exercisePhase)) {
@@ -456,7 +456,7 @@ EOT;
             $course = $exercise->getCourse();
             $courseRoles = $course->getCourseRoles()->toArray();
 
-            $rows = array_map(function(CourseRole $courseRole) use($course) {
+            $rows = array_map(function (CourseRole $courseRole) use ($course) {
                 return [
                     $course->getId(),
                     $course->getName(),
@@ -474,19 +474,20 @@ EOT;
                 "kursName",
                 "kursRolle",
                 "nutzerName",
-          ],
+            ],
         ]);
 
         return $courseDataRows;
     }
 
-    public function getSolutionData(Course $course) {
+    public function getSolutionData(Course $course): array
+    {
         $exercisePhaseTeams = $this->getExercisePhaseTeamsByCourse($course);
 
         $this->managerRegistry->getManager()->getFilters()->disable('exercise_doctrine_filter');
         $this->managerRegistry->getManager()->getFilters()->disable('course_doctrine_filter');
 
-        $solutionDataRows = array_reduce($exercisePhaseTeams, function($carry, ExercisePhaseTeam $team) {
+        $solutionDataRows = array_reduce($exercisePhaseTeams, function ($carry, ExercisePhaseTeam $team) {
             $exercisePhase = $team->getExercisePhase();
 
             if (empty($exercisePhase)) {
@@ -497,11 +498,11 @@ EOT;
             $course = $exercise->getCourse();
             $solution = $team->getSolution();
             $previousPhase = $exercisePhase->getDependsOnPreviousPhase()
-               ? $this->exercisePhaseRepository->findOneBy([
+                ? $this->exercisePhaseRepository->findOneBy([
                     'sorting' => $exercisePhase->getSorting() - 1,
                     'belongsToExercise' => $exercisePhase->getBelongsToExercise()
-               ])
-               : null;
+                ])
+                : null;
 
             return array_merge($carry, [[
                 // Solution
@@ -560,17 +561,18 @@ EOT;
                 // Team
                 "teamID",
                 "teamErsteller",
-          ],
+            ],
         ]);
 
         return $solutionDataRows;
     }
 
-    private function getExercisePhaseTeamsByCourse(Course $course) {
+    private function getExercisePhaseTeamsByCourse(Course $course)
+    {
         $exercises = $course->getExercises()->toArray();
-        return array_reduce($exercises, function($carry, Exercise $exercise) {
+        return array_reduce($exercises, function ($carry, Exercise $exercise) {
             $phases = $exercise->getPhases()->toArray();
-            $teams = array_reduce($phases, function($carry, ExercisePhase $phase) {
+            $teams = array_reduce($phases, function ($carry, ExercisePhase $phase) {
                 return array_merge($carry, $phase->getTeams()->toArray());
             }, []);
 
@@ -580,11 +582,13 @@ EOT;
 
     // WHY:
     // Linebreaks might lead to broken csv rows (e.g. upon importing them into MS excel etc.)
-    private static function removeLineBreaksFromCellContent(string $cellContent) {
+    private static function removeLineBreaksFromCellContent(string $cellContent): string
+    {
         return str_replace(["\n", "\r"], " ", $cellContent);
     }
 
-    private function getExerciseStatus(int $statusCode) {
-        return [ "created", "published", "finished" ][$statusCode];
+    private function getExerciseStatus(int $statusCode): string
+    {
+        return ["created", "published", "finished"][$statusCode];
     }
 }

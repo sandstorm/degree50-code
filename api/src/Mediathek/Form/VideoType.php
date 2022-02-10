@@ -32,7 +32,7 @@ class VideoType extends AbstractType
                 'class' => Course::class,
                 'required' => false,
                 'choice_label' => function (Course $choice, $key, $value) {
-                    return $choice->getCreationDateYear() . ' - ' .$choice->getName();
+                    return $choice->getCreationDateYear() . ' - ' . $choice->getName();
                 },
                 'multiple' => true,
                 'expanded' => true,

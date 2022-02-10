@@ -23,12 +23,12 @@ class VideoAnalysisPhase extends ExercisePhase
     /**
      * @ORM\Column(type="boolean")
      */
-    private $videoAnnotationsActive = true;
+    private bool $videoAnnotationsActive = true;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $videoCodesActive = false;
+    private bool $videoCodesActive = false;
 
     public function __construct(string $id = null)
     {

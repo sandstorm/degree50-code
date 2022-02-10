@@ -133,7 +133,7 @@
                href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
             {% if is_granted('view', exercise) %}
                 <a class="btn btn-outline-primary"
-                   href="{{ path('exercise-overview__exercise--show', {id: exercise.id}) }}">{% trans %}exercise.labels.test{% endtrans %}</a>
+                   href="{{ path('exercise-overview__exercise--show-overview', {id: exercise.id}) }}">{% trans %}exercise.labels.test{% endtrans %}</a>
             {% else %}
                 <a class="btn btn-outline-primary disabled">{% trans %}exercise.labels.test{% endtrans %}</a>
             {% endif %}

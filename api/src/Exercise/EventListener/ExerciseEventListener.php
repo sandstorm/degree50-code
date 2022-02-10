@@ -27,7 +27,7 @@ class ExerciseEventListener
      */
     public function prePersist(Exercise $exercise, LifecycleEventArgs $event)
     {
-        /* @var User $currentUser */
+        /** @var User $currentUser */
         $currentUser = $this->security->getUser();
         if ($currentUser instanceof User) {
             $exercise->setCreator($currentUser);

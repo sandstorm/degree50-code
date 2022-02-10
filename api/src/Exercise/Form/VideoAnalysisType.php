@@ -15,7 +15,7 @@ class VideoAnalysisType extends ExercisePhaseType
     {
         parent::buildForm($builder, $options);
 
-        /* @var ExercisePhase $exercisePhase */
+        /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
 
         $components = $exercisePhase->getAllowedComponents();

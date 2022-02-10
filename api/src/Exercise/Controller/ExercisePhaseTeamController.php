@@ -6,7 +6,6 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -15,7 +14,6 @@ use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use App\Entity\Video\Video;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -42,14 +40,15 @@ class ExercisePhaseTeamController extends AbstractController
     private MessageBusInterface $messageBus;
     private SolutionService $solutionService;
 
-    /**
-     * ExercisePhaseTeamController constructor.
-     * @param TranslatorInterface $translator
-     * @param DoctrineIntegratedEventStore $eventStore
-     * @param AutosavedSolutionRepository $autosavedSolutionRepository
-     * @param LiveSyncService $liveSyncService
-     */
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, AutosavedSolutionRepository $autosavedSolutionRepository, LiveSyncService $liveSyncService, MessageBusInterface $messageBus, SolutionService $solutionService, LoggerInterface $logger)
+    public function __construct(
+        TranslatorInterface $translator,
+        DoctrineIntegratedEventStore $eventStore,
+        AutosavedSolutionRepository $autosavedSolutionRepository,
+        LiveSyncService $liveSyncService,
+        MessageBusInterface $messageBus,
+        SolutionService $solutionService,
+        LoggerInterface $logger
+    )
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -68,18 +67,24 @@ class ExercisePhaseTeamController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
         $exercise = $exercisePhase->getBelongsToExercise();
 
         $existingTeams = $exercisePhase->getTeams();
-        foreach($existingTeams as $team) {
+        foreach ($existingTeams as $team) {
             if ($team->getCreator() === $user) {
                 $this->addFlash(
                     'danger',
                     $this->translator->trans('exercisePhaseTeam.new.messages.alreadyCreatedATeam', [], 'forms')
                 );
-                return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseId' => $exercisePhase->getId()]);
+                return $this->redirectToRoute(
+                    'exercise-overview__exercise--show-phase-overview',
+                    [
+                        'id' => $exercise->getId(),
+                        'phaseId' => $exercisePhase->getId()
+                    ]
+                );
             }
         }
 
@@ -102,9 +107,21 @@ class ExercisePhaseTeamController extends AbstractController
                 $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercise->getId(), 'phaseId' => $exercisePhase->getId()]);
+            return $this->redirectToRoute(
+                'exercise-overview__exercise--show-phase-overview',
+                [
+                    'id' => $exercise->getId(),
+                    'phaseId' => $exercisePhase->getId()
+                ]
+            );
         } else {
-            return $this->redirectToRoute('exercise-overview__exercise-phase--show', ['id' => $exercisePhase->getId(), 'team_id' => $exercisePhaseTeam->getId()]);
+            return $this->redirectToRoute(
+                'exercise-overview__exercise-phase--show',
+                [
+                    'id' => $exercisePhase->getId(),
+                    'team_id' => $exercisePhaseTeam->getId()
+                ]
+            );
         }
     }
 
@@ -115,7 +132,7 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function join(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $exercisePhaseTeam->addMember($user);
@@ -135,7 +152,13 @@ class ExercisePhaseTeamController extends AbstractController
             $this->translator->trans('exercisePhaseTeam.join.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
+        return $this->redirectToRoute(
+            'exercise-overview__exercise--show-phase-overview',
+            [
+                'id' => $exercisePhase->getBelongsToExercise()->getId(),
+                'phaseId' => $exercisePhase->getId()
+            ]
+        );
     }
 
     /**
@@ -145,7 +168,7 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function delete(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $this->eventStore->addEvent('TeamDeleted', [
@@ -163,7 +186,13 @@ class ExercisePhaseTeamController extends AbstractController
             $this->translator->trans('exercisePhaseTeam.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
+        return $this->redirectToRoute(
+            'exercise-overview__exercise--show-phase-overview',
+            [
+                'id' => $exercisePhase->getBelongsToExercise()->getId(),
+                'phaseId' => $exercisePhase->getId()
+            ]
+        );
     }
 
     /**
@@ -173,7 +202,7 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function leave(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $exercisePhaseTeam->removeMember($user);
@@ -194,7 +223,13 @@ class ExercisePhaseTeamController extends AbstractController
         );
 
         // TODO change route from int to id of phase
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
+        return $this->redirectToRoute(
+            'exercise-overview__exercise--show-phase-overview',
+            [
+                'id' => $exercisePhase->getBelongsToExercise()->getId(),
+                'phaseId' => $exercisePhase->getId()
+            ]
+        );
     }
 
     /**
@@ -207,7 +242,11 @@ class ExercisePhaseTeamController extends AbstractController
         $solution = $exercisePhaseTeam->getSolution();
 
         // use solution of the latest autosaved one
-        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(['team' => $exercisePhaseTeam], ['update_timestamp' => 'desc']);
+        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(
+            ['team' => $exercisePhaseTeam],
+            ['update_timestamp' => 'desc']
+        );
+
         if ($latestAutosavedSolution) {
             $solution->setSolution($latestAutosavedSolution->getSolution());
             $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
@@ -231,10 +270,17 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->dispatchCutListEncodingTask($exercisePhaseTeam);
 
-        return $this->redirectToRoute('exercise-overview__exercise--show', ['id' => $exercisePhase->getBelongsToExercise()->getId(), 'phaseId' => $exercisePhase->getId()]);
+        return $this->redirectToRoute(
+            'exercise-overview__exercise--show-phase-overview',
+            [
+                'id' => $exercisePhase->getBelongsToExercise()->getId(),
+                'phaseId' => $exercisePhase->getId()
+            ]
+        );
     }
 
-    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam) {
+    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam)
+    {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         if (!$exercisePhase instanceof VideoCutPhase) {
@@ -242,7 +288,7 @@ class ExercisePhaseTeamController extends AbstractController
         }
 
         $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutList= $solution->getCutList();
+        $cutList = $solution->getCutList();
 
         if (empty($cutList)) {
             return;
@@ -252,7 +298,8 @@ class ExercisePhaseTeamController extends AbstractController
         $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutListVideo->getId()));
     }
 
-    private function createVideo(User $creator): ?Video {
+    private function createVideo(User $creator): ?Video
+    {
         $videoUuid = Uuid::uuid4()->toString();
         $video = new Video($videoUuid);
         $video->setCreator($creator);
@@ -277,9 +324,8 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function updateSolution(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $this->getUser();
-        $response = null;
         $solutionListsFromJson = json_decode($request->getContent(), true);
 
         $serverSideSolutionLists = ServerSideSolutionLists::fromClientJSON($solutionListsFromJson);
@@ -327,48 +373,58 @@ class ExercisePhaseTeamController extends AbstractController
     public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         $user = $this->getUser();
+
         // get teamMember with the candidate id
-        $currentEditorCandidateIdFromJson = json_decode($request->getContent(), true)['currentEditorCandidateId'];
-        $currentEditorCandidate = $exercisePhaseTeam->getMembers()->filter(function (User $member) use ($currentEditorCandidateIdFromJson) {
-            return $member->getId() === $currentEditorCandidateIdFromJson;
-        })->first();
+        $currentEditorCandidateIdFromJson = json_decode(
+            $request->getContent(),
+            true
+        )['currentEditorCandidateId'];
 
-        if ($currentEditorCandidate) {
-            $isAlreadySet = $currentEditorCandidate === $exercisePhaseTeam->getCurrentEditor();
-            $userIsCandidate = $currentEditorCandidate === $user;
-            $userIsCurrentEditor = $user === $exercisePhaseTeam->getCurrentEditor();
+        $currentEditorCandidate = $exercisePhaseTeam
+            ->getMembers()
+            ->filter(function (User $member) use ($currentEditorCandidateIdFromJson) {
+                return $member->getId() === $currentEditorCandidateIdFromJson;
+            })
+            ->first();
 
-            // let only future currentEditor make the change
-            if (!$isAlreadySet && ($userIsCandidate || $userIsCurrentEditor)) {
-                $exercisePhaseTeam->setCurrentEditor($currentEditorCandidate);
-                // Why: We do not need the event info about the currentEditor
-                $this->eventStore->disableEventPublishingForNextFlush();
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($exercisePhaseTeam);
-                $entityManager->flush();
-
-                $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-                $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
-                $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
-                    $clientSideSolutionDataBuilder,
-                    $exercisePhaseTeam,
-                    $exercisePhase
-                );
-
-                // push new state to clients
-                $this->liveSyncService->publish(
-                    $exercisePhaseTeam,
-                    [
-                        'data' => $clientSideSolutionDataBuilder,
-                        'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
-                    ]
-                );
-                return Response::create('OK');
-            } else {
-                return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);
-            }
-        } else {
+        if (!$currentEditorCandidate) {
             return Response::create('currentEditor candidate is not member of exercisePhaseTeam!', Response::HTTP_FORBIDDEN);
+        }
+
+        $isAlreadySet = $currentEditorCandidate === $exercisePhaseTeam->getCurrentEditor();
+        $userIsCandidate = $currentEditorCandidate === $user;
+        $userIsCurrentEditor = $user === $exercisePhaseTeam->getCurrentEditor();
+
+        // let only current editor or candidate make the change
+        if (!$isAlreadySet && ($userIsCandidate || $userIsCurrentEditor)) {
+            $exercisePhaseTeam->setCurrentEditor($currentEditorCandidate);
+
+            // Why: We do not need the event info about the currentEditor
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($exercisePhaseTeam);
+            $entityManager->flush();
+
+            $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+
+            $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+            $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+                $clientSideSolutionDataBuilder,
+                $exercisePhaseTeam,
+                $exercisePhase
+            );
+
+            // push new state to clients
+            $this->liveSyncService->publish(
+                $exercisePhaseTeam,
+                [
+                    'data' => $clientSideSolutionDataBuilder,
+                    'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
+                ]
+            );
+            return Response::create('OK');
+        } else {
+            return Response::create('Not updated!', Response::HTTP_NOT_MODIFIED);
         }
     }
 }

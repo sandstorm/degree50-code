@@ -30,7 +30,6 @@ use App\Mediathek\Service\VideoService;
 use App\Repository\Exercise\ExerciseRepository;
 use App\Repository\Video\VideoRepository;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
@@ -43,14 +42,11 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
 
-use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
 use function PHPUnit\Framework\assertIsObject;
 use function PHPUnit\Framework\assertNotEquals;
-use function PHPUnit\Framework\assertThat;
-use function PHPUnit\Framework\assertTrue;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -82,13 +78,6 @@ final class DegreeContext implements Context
 
     private ?array $queryResult;
 
-    /**
-     * DegreeContext constructor.
-     * @param Session $minkSession
-     * @param RouterInterface $router
-     * @param EntityManagerInterface $entityManager
-     * @param KernelInterface $kernel
-     */
     public function __construct(
         Session $minkSession,
         RouterInterface $router,
@@ -250,6 +239,7 @@ final class DegreeContext implements Context
      */
     public function iHaveACourseWithID($courseId)
     {
+        /* @var User $user */
         $user = $this->entityManager->find(User::class, 'foo@bar.de');
 
         $course = new Course($courseId);
@@ -289,10 +279,10 @@ final class DegreeContext implements Context
         $material = new Material($materialId);
         $fileName = tempnam(sys_get_temp_dir(), 'foo');
         file_put_contents($fileName, 'my file');
-        $file = new File($fileName);
-        $material->setName($file);
+        $material->setName($fileName);
         $material->setMimeType('application/pdf');
 
+        /* @var User $user */
         $user = $this->entityManager->find(User::class, 'foo@bar.de');
         $material->setCreator($user);
 
@@ -401,6 +391,7 @@ final class DegreeContext implements Context
         $autosaveSolution->setSolution($serverSideSolutionLists);
         /** @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
+        /* @var User $loggedInUser */
         $loggedInUser = $tokenStorage->getToken()->getUser();
         $autosaveSolution->setOwner($loggedInUser);
 
@@ -469,6 +460,7 @@ final class DegreeContext implements Context
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
         /** @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
+        /** @var User $loggedInUser */
         $loggedInUser = $tokenStorage->getToken()->getUser();
 
         $exercisePhaseTeam->addMember($loggedInUser);
@@ -946,8 +938,7 @@ final class DegreeContext implements Context
             $material = new Material($materialId);
             $fileName = tempnam(sys_get_temp_dir(), 'foo');
             file_put_contents($fileName, 'my file');
-            $file = new File($fileName);
-            $material->setName($file);
+            $material->setName($fileName);
             $material->setMimeType('application/pdf');
         }
 

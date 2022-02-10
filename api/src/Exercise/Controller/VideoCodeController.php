@@ -3,11 +3,8 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\Material;
 use App\Entity\Exercise\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Exercise\VideoCodeRepository;
-use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,13 +21,11 @@ class VideoCodeController extends AbstractController
 {
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
-    private VideoCodeRepository $videoCodeRepository;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore, VideoCodeRepository $videoCodeRepository)
+    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
     {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
-        $this->videoCodeRepository = $videoCodeRepository;
     }
 
     /**

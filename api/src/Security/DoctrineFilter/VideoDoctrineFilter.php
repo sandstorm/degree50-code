@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class VideoDoctrineFilter extends AbstractDoctrineFilter
 {
-    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
+    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         if ($targetEntity->getName() !== Video::class) {
             return '';
@@ -28,8 +28,8 @@ class VideoDoctrineFilter extends AbstractDoctrineFilter
         }
         // users can only see videos that are assigned to the course they have access to
         return sprintf('%s.id IN (
-            SELECT video_course.video_id 
-            FROM video_course 
+            SELECT video_course.video_id
+            FROM video_course
             WHERE video_course.course_id IN (
                 SELECT course_role.course_id
                 FROM course_role

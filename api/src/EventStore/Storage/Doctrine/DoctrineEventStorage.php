@@ -7,12 +7,14 @@ namespace App\EventStore\Storage\Doctrine;
 use App\EventStore\Dto\WritableEvent;
 use App\EventStore\Dto\WritableEvents;
 use App\EventStore\Storage\EventStorageInterface;
+use DateTimeImmutable;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaConfig;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
+use Throwable;
 
 /**
  * Database event storage adapter
@@ -21,24 +23,12 @@ class DoctrineEventStorage implements EventStorageInterface
 {
     const DEFAULT_EVENT_TABLE_NAME = 'eventstore_events';
 
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
 
-    /**
-     * @var string
-     */
-    private $eventTableName;
+    private string $eventTableName;
 
-    /**
-     * @var array
-     */
-    private $options;
+    private array $options;
 
-    /**
-     * @param array $options
-     */
     public function __construct(Connection $connection, array $options)
     {
         $this->options = $options;
@@ -48,7 +38,7 @@ class DoctrineEventStorage implements EventStorageInterface
 
     /**
      * @inheritdoc
-     * @throws DBALException | ConcurrencyException | \Throwable
+     * @throws DBALException | ConcurrencyException | Throwable
      */
     public function commit(WritableEvents $events): void
     {
@@ -56,14 +46,13 @@ class DoctrineEventStorage implements EventStorageInterface
             foreach ($events as $event) {
                 $this->commitEvent($event);
             }
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             throw $exception;
         }
     }
 
     /**
      * @param WritableEvent $event
-     * @param int $version
      * @throws DBALException | UniqueConstraintViolationException
      */
     private function commitEvent(WritableEvent $event): void
@@ -76,7 +65,7 @@ class DoctrineEventStorage implements EventStorageInterface
                 'type' => $event->getType(),
                 'payload' => json_encode($event->getPayload(), JSON_PRETTY_PRINT),
                 'metadata' => json_encode($metadata, JSON_PRETTY_PRINT),
-                'recordedat' => new \DateTimeImmutable()
+                'recordedat' => new DateTimeImmutable()
             ],
             [
                 'recordedat' => Types::DATETIME_IMMUTABLE,
@@ -86,7 +75,7 @@ class DoctrineEventStorage implements EventStorageInterface
 
     /**
      * @inheritdoc
-     * @throws DBALException | \Throwable
+     * @throws DBALException | Throwable
      */
     public function setup(): string
     {
@@ -111,7 +100,7 @@ class DoctrineEventStorage implements EventStorageInterface
                 $this->connection->exec($statement);
             }
             $this->connection->commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->connection->rollBack();
             throw $exception;
         }
