@@ -13,8 +13,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
         And I have an exercise phase "ex-p1" belonging to exercise "ex"
         And I have a team with ID "team-1" belonging to exercise phase "ex-p1"
         And I have a predefined videoCodePrototype belonging to execise phase "ex-p1" and with properties
-            | id        | name  | description | color     |
-            | foo_bar   | Foo   | FooBar      | #ffffff   |
+            | id      | name | color   |
+            | foo_bar | Foo  | #ffffff |
 
     Scenario: Conversion for general purpose (e.g. exercisePhase/show, exercisePhase/update-solution, exercisePhase/update-currentEditor)
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
@@ -51,14 +51,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 {
                   "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                   "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                  "description": "",
                   "color": "#ff9300",
                   "userCreated": false,
                   "videoCodes": [
                     {
                       "id": "1605544765106_#ff9300",
                       "name": "Lob; Kompliment",
-                      "description": "",
                       "color": "#ff9300",
                       "userCreated": true,
                       "videoCodes": []
@@ -175,13 +173,11 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "a9fabe25-081e-47bd-8905-4bd46ed3cadf": {
                 "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                 "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [
                   {
                     "id": "1605544765106_#ff9300",
                     "name": "Lob; Kompliment",
-                    "description": "",
                     "color": "#ff9300",
                     "videoCodes": [],
                     "parentId": null,
@@ -194,7 +190,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "1605544765106_#ff9300": {
                 "id": "1605544765106_#ff9300",
                 "name": "Lob; Kompliment",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [],
                 "parentId": null,
@@ -203,7 +198,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "foo_bar": {
                 "id": "foo_bar",
                 "name": "Foo",
-                "description": "FooBar",
                 "color": "#ffffff",
                 "videoCodes": [],
                 "parentId": null,
@@ -249,14 +243,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 {
                   "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                   "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                  "description": "",
                   "color": "#ff9300",
                   "userCreated": false,
                   "videoCodes": [
                     {
                       "id": "1605544765106_#ff9300",
                       "name": "Lob; Kompliment",
-                      "description": "",
                       "color": "#ff9300",
                       "userCreated": true,
                       "videoCodes": []
@@ -405,13 +397,11 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "a9fabe25-081e-47bd-8905-4bd46ed3cadf": {
                 "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                 "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [
                   {
                     "id": "1605544765106_#ff9300",
                     "name": "Lob; Kompliment",
-                    "description": "",
                     "color": "#ff9300",
                     "videoCodes": [],
                     "parentId": null,
@@ -424,7 +414,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "1605544765106_#ff9300": {
                 "id": "1605544765106_#ff9300",
                 "name": "Lob; Kompliment",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [],
                 "parentId": null,
@@ -433,7 +422,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "foo_bar": {
                 "id": "foo_bar",
                 "name": "Foo",
-                "description": "FooBar",
                 "color": "#ffffff",
                 "videoCodes": [],
                 "parentId": null,
@@ -480,14 +468,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 {
                   "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                   "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                  "description": "",
                   "color": "#ff9300",
                   "userCreated": false,
                   "videoCodes": [
                     {
                       "id": "1605544765106_#ff9300",
                       "name": "Lob; Kompliment",
-                      "description": "",
                       "color": "#ff9300",
                       "userCreated": true,
                       "videoCodes": []
@@ -593,13 +579,11 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "a9fabe25-081e-47bd-8905-4bd46ed3cadf": {
                 "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                 "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [
                   {
                     "id": "1605544765106_#ff9300",
                     "name": "Lob; Kompliment",
-                    "description": "",
                     "color": "#ff9300",
                     "videoCodes": [],
                     "parentId": null,
@@ -612,7 +596,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "1605544765106_#ff9300": {
                 "id": "1605544765106_#ff9300",
                 "name": "Lob; Kompliment",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [],
                 "parentId": null,
@@ -621,7 +604,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "foo_bar": {
                 "id": "foo_bar",
                 "name": "Foo",
-                "description": "FooBar",
                 "color": "#ffffff",
                 "videoCodes": [],
                 "parentId": null,
@@ -667,14 +649,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 {
                   "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                   "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                  "description": "",
                   "color": "#ff9300",
                   "userCreated": false,
                   "videoCodes": [
                     {
                       "id": "1605544765106_#ff9300",
                       "name": "Lob; Kompliment",
-                      "description": "",
                       "color": "#ff9300",
                       "userCreated": true,
                       "videoCodes": []
@@ -714,14 +694,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 {
                   "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                   "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                  "description": "",
                   "color": "#ff9300",
                   "userCreated": false,
                   "videoCodes": [
                     {
                       "id": "1605544765106_#ff9300",
                       "name": "Lob; Kompliment",
-                      "description": "",
                       "color": "#ff9300",
                       "userCreated": true,
                       "videoCodes": []
@@ -751,14 +729,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 {
                   "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                   "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                  "description": "",
                   "color": "#ff9300",
                   "userCreated": false,
                   "videoCodes": [
                     {
                       "id": "1605544765106_#ff9300",
                       "name": "Lob; Kompliment",
-                      "description": "",
                       "color": "#ff9300",
                       "userCreated": true,
                       "videoCodes": []
@@ -901,13 +877,11 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "a9fabe25-081e-47bd-8905-4bd46ed3cadf": {
                 "id": "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                 "name": "Verschiedene Arten der Beteiligung und der Motivation",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [
                   {
                     "id": "1605544765106_#ff9300",
                     "name": "Lob; Kompliment",
-                    "description": "",
                     "color": "#ff9300",
                     "videoCodes": [],
                     "parentId": null,
@@ -920,7 +894,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "1605544765106_#ff9300": {
                 "id": "1605544765106_#ff9300",
                 "name": "Lob; Kompliment",
-                "description": "",
                 "color": "#ff9300",
                 "videoCodes": [],
                 "parentId": null,
@@ -929,7 +902,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               "foo_bar": {
                 "id": "foo_bar",
                 "name": "Foo",
-                "description": "FooBar",
                 "color": "#ffffff",
                 "videoCodes": [],
                 "parentId": null,

@@ -324,7 +324,6 @@ final class DegreeContext implements Context
         $data = $propertyTable->getHash()[0];
         $videoCodePrototype = new VideoCode($data['id']);
         $videoCodePrototype->setName($data['name']);
-        $videoCodePrototype->setDescription($data['description']);
         $videoCodePrototype->setColor($data['color']);
         $videoCodePrototype->setExercisePhase($exercisePhase);
 

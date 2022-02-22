@@ -6,7 +6,6 @@ const defaultColor = '#cccccc'
 const createDefaultPrototype = (parentPrototypeParent?: VideoCodePrototype): VideoCodePrototype => ({
     id: generate(),
     name: '',
-    description: '',
     color: parentPrototypeParent?.color ?? defaultColor,
     userCreated: true,
     parentId: parentPrototypeParent?.id,

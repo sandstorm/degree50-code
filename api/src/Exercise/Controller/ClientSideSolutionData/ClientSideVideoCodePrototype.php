@@ -14,7 +14,6 @@ final class ClientSideVideoCodePrototype implements JsonSerializable
 {
     private string $id;
     private string $name;
-    private string $description;
     private string $color;
     private array $childClientSidePrototypes;
     private ?string $parentId;
@@ -23,7 +22,6 @@ final class ClientSideVideoCodePrototype implements JsonSerializable
     private function __construct(
         string $id,
         string $name,
-        string $description,
         string $color,
         array $childClientSidePrototypes,
         ?string $parentId,
@@ -32,7 +30,6 @@ final class ClientSideVideoCodePrototype implements JsonSerializable
     {
         $this->id = $id;
         $this->name = $name;
-        $this->description = $description;
         $this->color = $color;
         $this->childClientSidePrototypes = $childClientSidePrototypes;
         $this->parentId = $parentId;
@@ -48,7 +45,6 @@ final class ClientSideVideoCodePrototype implements JsonSerializable
         return new self(
             $videoCodePrototype->getId(),
             $videoCodePrototype->getName(),
-            $videoCodePrototype->getDescription(),
             $videoCodePrototype->getColor(),
             $childClientSidePrototypes,
             $videoCodePrototype->getParentId(),
@@ -65,7 +61,6 @@ final class ClientSideVideoCodePrototype implements JsonSerializable
         return new self(
             $input['id'],
             $input['name'],
-            $input['description'],
             $input['color'],
             $childClientSidePrototypes,
             $input['parentId'],
@@ -82,7 +77,6 @@ final class ClientSideVideoCodePrototype implements JsonSerializable
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
             'color' => $this->color,
             'videoCodes' => $childPrototypes, // => FIXME rename 'videoCodes' as soon as base refactoring is complete
             'parentId' => $this->parentId,

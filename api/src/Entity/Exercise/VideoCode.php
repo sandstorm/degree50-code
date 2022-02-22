@@ -26,17 +26,6 @@ class VideoCode
      */
     private string $name = '';
 
-    // FIXME
-    // Do we actually need the videoCodePrototype description?
-    // As far as I can tell we never make this available inside the frontend anyway.
-    // TODO
-    // (also remove from videoCodePrototypeItem inside the frontend)
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private ?string $description = '';
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase", inversedBy="videoCodes")
      * @ORM\JoinColumn(nullable=true)
@@ -61,18 +50,6 @@ class VideoCode
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }
