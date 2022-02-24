@@ -17,8 +17,9 @@ mkdir -p var/cache var/log
 #			* Then a directory is added correctly the next time an upload is performed
 #
 # The permissions will be set in the `setfacl` command below.
-mkdir -p var/data/persistent/audio_descriptions
-mkdir -p var/data/persistent/subtitles
+mkdir -p var/data/persistent/audio_descriptions/original
+mkdir -p var/data/persistent/subtitles/original
+mkdir -p var/data/persistent/videos/original
 
 setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
 # TODO: Why?
