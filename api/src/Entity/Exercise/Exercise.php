@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity
  */
-class Exercise implements ExerciseInterface
+class Exercise
 {
     use IdentityTrait;
 
@@ -92,11 +92,6 @@ class Exercise implements ExerciseInterface
     public function setCreatedAtValue()
     {
         $this->createdAt = new DateTimeImmutable();
-    }
-
-    public function getType(): string
-    {
-        return 'unspecified';
     }
 
     public function __toString()
