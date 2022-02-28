@@ -31,7 +31,7 @@ class ExercisePhaseType extends AbstractType
     {
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
-        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE;
+        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
         $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
 
         $builder

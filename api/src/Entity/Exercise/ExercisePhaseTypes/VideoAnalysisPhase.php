@@ -3,6 +3,9 @@
 namespace App\Entity\Exercise\ExercisePhaseTypes;
 
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\VideoCode;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoAnalysisPhase extends ExercisePhase
 {
+    const type = ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
+
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
         //ExercisePhase::DOCUMENT_UPLOAD,
@@ -19,6 +24,14 @@ class VideoAnalysisPhase extends ExercisePhase
         //ExercisePhase::CHAT,
         //ExercisePhase::SHARED_DOCUMENT,
     ];
+
+    /**
+     * @var VideoCode[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\VideoCode", mappedBy="exercisePhase", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"name" = "ASC"})
+     */
+    private Collection $videoCodes;
 
     /**
      * @ORM\Column(type="boolean")
@@ -33,14 +46,34 @@ class VideoAnalysisPhase extends ExercisePhase
     public function __construct(string $id = null)
     {
         parent::__construct($id);
+
+        $this->videoCodes = new ArrayCollection();
     }
 
     /**
-     * @return string
+     * @return VideoCode[]
      */
-    public function getType(): string
+    public function getVideoCodes(): Collection
     {
-        return $this::TYPE_VIDEO_ANALYSE;
+        return $this->videoCodes;
+    }
+
+    public function addVideoCode(VideoCode $videoCode): self
+    {
+        if (!$this->videoCodes->contains($videoCode)) {
+            $this->videoCodes[] = $videoCode;
+        }
+
+        return $this;
+    }
+
+    public function removeVideoCode(VideoCode $videoCode): self
+    {
+        if ($this->videoCodes->contains($videoCode)) {
+            $this->videoCodes->removeElement($videoCode);
+        }
+
+        return $this;
     }
 
     /**

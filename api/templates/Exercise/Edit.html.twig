@@ -56,7 +56,7 @@
                         </tr>
                         </thead>
                         {% for exercisePhase in exercise.phases %}
-                            {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
+                            {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type.value) ~ '.label' %}
                             <tr>
                                 <td>
                                     {% if exercisePhase.isGroupPhase %}

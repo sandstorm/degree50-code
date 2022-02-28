@@ -5,6 +5,7 @@ namespace App\Entity\Exercise;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,19 +28,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="phaseType", type="string")
  * @DiscriminatorMap({
- *     "exercisePhase" = "App\Entity\Exercise\ExercisePhase",
  *     "videoAnalysisPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase",
  *     "videoCutPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase",
  * })
  */
-class ExercisePhase implements ExerciseInterface
+abstract class ExercisePhase
 {
     use IdentityTrait;
 
-    // types of phases
-    const TYPE_VIDEO_ANALYSE = 'videoAnalysis';
-    const TYPE_VIDEO_CUTTING = 'videoCutting';
-    const PHASE_TYPES = [self::TYPE_VIDEO_ANALYSE, self::TYPE_VIDEO_CUTTING];
+    const type = null;
 
     // components for phases
     const VIDEO_PLAYER = 'videoPlayer';
@@ -66,14 +63,6 @@ class ExercisePhase implements ExerciseInterface
      * @Assert\NotBlank
      */
     public string $task = '';
-
-    // FIXME
-    // the definition does not seem to be in use
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    public string $definition = '';
 
     /**
      * @ORM\ManyToOne(targetEntity="Exercise", inversedBy="phases")
@@ -106,14 +95,6 @@ class ExercisePhase implements ExerciseInterface
     private Collection $material;
 
     /**
-     * @var VideoCode[]
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\VideoCode", mappedBy="exercisePhase", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"name" = "ASC"})
-     */
-    private Collection $videoCodes;
-
-    /**
      * @var Video[]
      *
      * @ORM\ManyToMany(targetEntity="App\Entity\Video\Video", inversedBy="exercisePhases")
@@ -135,13 +116,21 @@ class ExercisePhase implements ExerciseInterface
         $this->generateOrSetId($id);
         $this->teams = new ArrayCollection();
         $this->material = new ArrayCollection();
-        $this->videoCodes = new ArrayCollection();
         $this->videos = new ArrayCollection();
     }
 
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * NOTE: Runtime only
+     * @return ExercisePhaseType
+     */
+    public function getType(): ExercisePhaseType
+    {
+        return $this::type;
     }
 
     /**
@@ -225,14 +214,6 @@ class ExercisePhase implements ExerciseInterface
         $this->isGroupPhase = $isGroupPhase;
     }
 
-    /**
-     * Override in extending class!
-     */
-    public function getType(): string
-    {
-        return 'exercisePhase';
-    }
-
     public function getComponents(): ?array
     {
         return $this->components;
@@ -261,32 +242,6 @@ class ExercisePhase implements ExerciseInterface
     public function getMaterial(): Collection
     {
         return $this->material;
-    }
-
-    /**
-     * @return VideoCode[]
-     */
-    public function getVideoCodes(): Collection
-    {
-        return $this->videoCodes;
-    }
-
-    public function addVideoCode(VideoCode $videoCode): self
-    {
-        if (!$this->videoCodes->contains($videoCode)) {
-            $this->videoCodes[] = $videoCode;
-        }
-
-        return $this;
-    }
-
-    public function removeVideoCode(VideoCode $videoCode): self
-    {
-        if ($this->videoCodes->contains($videoCode)) {
-            $this->videoCodes->removeElement($videoCode);
-        }
-
-        return $this;
     }
 
     /**
@@ -366,10 +321,5 @@ class ExercisePhase implements ExerciseInterface
                     return $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user);
                 }
             );
-    }
-
-    public function getDefinition(): string
-    {
-        return $this->definition;
     }
 }

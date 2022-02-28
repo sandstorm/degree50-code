@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoCutPhase extends ExercisePhase
 {
+    const type = ExercisePhase\ExercisePhaseType::VIDEO_CUT;
+
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
         //ExercisePhase::DOCUMENT_UPLOAD,
@@ -23,14 +25,6 @@ class VideoCutPhase extends ExercisePhase
     public function __construct(string $id = null)
     {
         parent::__construct($id);
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this::TYPE_VIDEO_CUTTING;
     }
 
     /**

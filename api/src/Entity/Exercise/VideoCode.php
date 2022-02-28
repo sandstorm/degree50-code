@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise;
 
 use App\Core\EntityTraits\IdentityTrait;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Repository\Exercise\VideoCodeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,10 +38,10 @@ class VideoCode
     private ?string $description = '';
 
     /**
-     * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="videoCodes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase", inversedBy="videoCodes")
      * @ORM\JoinColumn(nullable=true)
      */
-    private ?ExercisePhase $exercisePhase;
+    private ?VideoAnalysisPhase $exercisePhase;
 
     /**
      * @ORM\Column(type="string", length=7)
@@ -88,12 +89,12 @@ class VideoCode
         return $this;
     }
 
-    public function getExercisePhase(): ?ExercisePhase
+    public function getExercisePhase(): ?VideoAnalysisPhase
     {
         return $this->exercisePhase;
     }
 
-    public function setExercisePhase(?ExercisePhase $exercisePhase): void
+    public function setExercisePhase(?VideoAnalysisPhase $exercisePhase): void
     {
         $this->exercisePhase = $exercisePhase;
     }
