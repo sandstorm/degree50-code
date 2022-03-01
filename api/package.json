@@ -12,7 +12,9 @@
         "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
         "test:ci": "jest --runInBand",
         "lint": "eslint ./assets/js/**/*",
-        "lint:fix": "eslint --quiet ./assets/js/**/* --fix"
+        "lint:fix": "eslint --quiet ./assets/js/**/* --fix",
+        "prepare-husky": "cd .. && husky install",
+        "pre-commit": "pretty-quick --staged"
     },
     "dependencies": {
         "@babel/preset-react": "^7.9.4",
@@ -136,11 +138,6 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "pretty-quick --staged"
-        }
     },
     "devDependencies": {
         "@babel/plugin-transform-runtime": "^7.16.10"
