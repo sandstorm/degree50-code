@@ -110,14 +110,14 @@ const selectCurrentCutIdsByStartTime = createSelector([selectCurrentCutListBySta
 )
 
 const selectAllPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
-    return codes.reduce((acc: VideoCodePrototype[], code) => {
+    return codes.reduce((prototypes: VideoCodePrototype[], code) => {
         if (code.parentId) {
-            return acc
+            return prototypes
         }
 
         const childCodes = codes.filter((c) => c.parentId === code.id)
 
-        return [...acc, { ...code, videoCodes: childCodes }]
+        return [...prototypes, { ...code, videoCodes: childCodes }]
     }, [])
 })
 
