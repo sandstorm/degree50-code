@@ -30,19 +30,6 @@
         "additionalProperties": false
       }
     },
-    "videoCodes": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "videoCodeId": {
-            "type": "string"
-          }
-        },
-        "required": ["videoCodeId"],
-        "additionalProperties": false
-      }
-    },
     "components": {
       "type": "array",
       "items": {
@@ -57,7 +44,6 @@
     "isGroupPhase",
     "dependsOnPreviousPhase",
     "videos",
-    "videoCodes",
     "components"
   ],
   "additionalProperties": false

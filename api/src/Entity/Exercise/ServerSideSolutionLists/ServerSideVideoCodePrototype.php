@@ -14,7 +14,6 @@ final class ServerSideVideoCodePrototype
 
     private string $id;
     private string $name;
-    private string $description;
     private string $color;
     private ?string $parentId;
     private bool $userCreated;
@@ -27,7 +26,6 @@ final class ServerSideVideoCodePrototype
     private function __construct(
         string $id,
         string $name,
-        string $description,
         string $color,
         array $childServerSidePrototypes,
         ?string $parentId,
@@ -36,7 +34,6 @@ final class ServerSideVideoCodePrototype
     {
         $this->id = $id;
         $this->name = $name;
-        $this->description = $description;
         $this->color = $color;
         $this->childServerSidePrototypes = $childServerSidePrototypes;
         $this->parentId = $parentId;
@@ -51,7 +48,6 @@ final class ServerSideVideoCodePrototype
         return new self(
             $videoCodePrototype->getId(),
             $videoCodePrototype->getName(),
-            $videoCodePrototype->getDescription(),
             $videoCodePrototype->getColor(),
             [],
             null,
@@ -76,7 +72,6 @@ final class ServerSideVideoCodePrototype
         return new self(
             $input['id'],
             $input['name'],
-            $input['description'],
             $input['color'],
             $childServerSidePrototypes,
             !empty($input['parentId']) ? $input['parentId'] : null,
@@ -96,7 +91,6 @@ final class ServerSideVideoCodePrototype
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
             'color' => $this->color,
             'videoCodes' => $childPrototypes,
             'parentId' => $this->parentId,
@@ -112,11 +106,6 @@ final class ServerSideVideoCodePrototype
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
     }
 
     public function getColor(): string

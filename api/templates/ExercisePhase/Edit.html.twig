@@ -1,5 +1,5 @@
 {% trans_default_domain 'forms' %}
-{% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type) ~ '.label' %}
+{% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type.value) ~ '.label' %}
 {% extends 'BaseFullscreen.html.twig' %}
 
 {% block title %}{% trans %}exercisePhase.edit.title{% endtrans %}{% endblock %}
@@ -53,7 +53,7 @@
             {{ form_row(form.task) }}
 
             <hr/>
-            {% if exercisePhase.type == 'videoAnalysis' %}
+            {% if exercisePhase.type.value == 'videoAnalysis' %}
                 <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
                 {{ form_widget(form.videoAnnotationsActive) }}
                 {{ form_widget(form.videoCodesActive) }}
@@ -67,7 +67,7 @@
             </div>
             <hr/>
 
-            {% if exercisePhase.type == 'videoAnalysis' and exercisePhase.videoCodesActive %}
+            {% if exercisePhase.type.value == 'videoAnalysis' and exercisePhase.videoCodesActive %}
                 <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
                 <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
                 <div class="form-inline video-code-form" id="add-new-video-code-form" data-controller="videoCodeForm"

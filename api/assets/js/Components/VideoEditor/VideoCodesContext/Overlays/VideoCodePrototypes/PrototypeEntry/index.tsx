@@ -37,7 +37,6 @@ const PrototypeEntry: FC<Props> = (props) => {
         setShowChildren(!showChildren)
     }, [setShowChildren, showChildren])
 
-    // FIXME: VideoCodePrototype has a description?
     /**
      * WHY:
      * This will be read by the screen reader when the list element if focused (when tabbing through list).
@@ -63,7 +62,6 @@ const PrototypeEntry: FC<Props> = (props) => {
         Farbe: ${getColorName(props.videoCodePrototype.color).name}
         ${props.videoCodePrototype.userCreated ? 'Selbst erstellter Code' : 'Vordefinierter Code'}.
         ${props.parentPrototype ? `Unter-Code von ${props.parentPrototype.name}.` : ''}
-        ${props.videoCodePrototype.description && `Beschreibung: ${props.videoCodePrototype.description}`}
         ${
             props.videoCodePrototype.videoCodes.length > 0
                 ? `Hat ${props.videoCodePrototype.videoCodes.length}`
@@ -84,7 +82,7 @@ const PrototypeEntry: FC<Props> = (props) => {
     }
 
     return (
-        <li tabIndex={0} aria-label={ariaLabel} className="video-code" title={props.videoCodePrototype.description}>
+        <li tabIndex={0} aria-label={ariaLabel} className="video-code" title={props.videoCodePrototype.name}>
             <div className={'video-code__content'}>
                 <Color color={props.videoCodePrototype.color} />
 

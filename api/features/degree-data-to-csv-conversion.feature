@@ -1,5 +1,6 @@
 @fixtures @conversionToCSV
 Feature: Degree data (courses, solutions etc.) is converted into csv data
+
     Background:
 
     Scenario: Conversion of all degree data for a single course
@@ -12,8 +13,8 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given A user "testuser@bar.de" exists
         Given User "testuser@bar.de" belongs to "team-1"
         Given I have a predefined videoCodePrototype belonging to execise phase "ex-p1" and with properties
-            | id        | name  | description | color     |
-            | foo_bar   | Foo   | FooBar      | #ffffff   |
+            | id      | name | color   |
+            | foo_bar | Foo  | #ffffff |
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
             """
             {
@@ -136,8 +137,8 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given User "testuser@bar.de" belongs to "team-1"
         Given User "testuser@bar.de" belongs to "team-2"
         Given I have a predefined videoCodePrototype belonging to execise phase "ex-p1" and with properties
-            | id        | name  | description | color     |
-            | foo_bar   | Foo   | FooBar      | #ffffff   |
+            | id      | name | color   |
+            | foo_bar | Foo  | #ffffff |
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
             """
             {

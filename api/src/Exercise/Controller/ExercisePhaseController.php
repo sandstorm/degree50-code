@@ -194,9 +194,7 @@ class ExercisePhaseController extends AbstractController
 
         $types = [];
 
-        // TODO
-        // Why would we ever have a list of types for a single phase?
-        foreach (ExercisePhase::PHASE_TYPES as $type) {
+        foreach (ExercisePhase\ExercisePhaseType::getPossibleValues() as $type) {
             array_push($types, [
                 'id' => $type,
                 'iconClass' => $this->translator->trans('exercisePhase.types.' . $type . '.iconClass', [], 'forms'),
@@ -219,17 +217,17 @@ class ExercisePhaseController extends AbstractController
     {
         $type = $request->query->get('type');
         $isGroupPhase = $request->query->get('isGroupPhase', false);
-        $exercisePhase = new ExercisePhase();
 
         // Initialize phase by type (mandatory)
-        switch ($type) {
-            case ExercisePhase::TYPE_VIDEO_ANALYSE :
-                $exercisePhase = new VideoAnalysisPhase();
-                break;
-            case ExercisePhase::TYPE_VIDEO_CUTTING :
-                $exercisePhase = new VideoCutPhase();
-                break;
-        }
+        $exercisePhase = match (ExercisePhase\ExercisePhaseType::tryFrom($type)) {
+            ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
+            ExercisePhase\ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
+            default => throw new \InvalidArgumentException(
+                "ExercisePhaseType has to be one of ["
+                . implode(', ', ExercisePhase\ExercisePhaseType::getPossibleValues()) .
+                "]! '$type' given."
+            ),
+        };
 
         $exercisePhase->setIsGroupPhase($isGroupPhase);
         $exercisePhase->setBelongsToExercise($exercise);
@@ -316,20 +314,7 @@ class ExercisePhaseController extends AbstractController
         $remainingPhases = $this->exercisePhaseRepository->findAllSortedBySorting($exercise);
 
         foreach ($remainingPhases as $index => $phase) {
-            $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
-                'exercisePhaseId' => $phase->getId(),
-                'name' => $phase->getName(),
-                'task' => $phase->getTask(),
-                'isGroupPhase' => $phase->isGroupPhase(),
-                'dependsOnPreviousPhase' => $phase->getDependsOnPreviousPhase(),
-                'videos' => $phase->getVideos()->map(fn(Video $video) => [
-                    'videoId' => $video->getId()
-                ])->toArray(),
-                'videoCodes' => $phase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
-                    'videoCodeId' => $videoCode->getId()
-                ])->toArray(),
-                'components' => $phase->getComponents()
-            ]);
+            $this->addExercisePhaseEditedEvent($phase);
 
             $phase->setSorting($index);
             $entityManager->persist($phase);
@@ -394,7 +379,7 @@ class ExercisePhaseController extends AbstractController
         $components = $exercisePhase->getComponents();
 
         switch ($exercisePhase->getType()) {
-            case ExercisePhase::TYPE_VIDEO_ANALYSE :
+            case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS :
                 /**
                  * @var VideoAnalysisPhase $exercisePhase
                  **/
@@ -406,7 +391,7 @@ class ExercisePhaseController extends AbstractController
                 }
 
                 break;
-            case ExercisePhase::TYPE_VIDEO_CUTTING :
+            case ExercisePhase\ExercisePhaseType::VIDEO_CUT :
                 array_push($components, ExercisePhase::VIDEO_CUTTING);
                 break;
         }
@@ -462,23 +447,10 @@ class ExercisePhaseController extends AbstractController
 
     private function handlePhaseEditFormSubmit(FormInterface $form, Exercise $exercise): RedirectResponse
     {
+        /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $form->getData();
 
-        /** @var $exercisePhase VideoAnalysisPhase */
-        $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'name' => $exercisePhase->getName(),
-            'task' => $exercisePhase->getTask(),
-            'isGroupPhase' => $exercisePhase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
-            'videos' => $exercisePhase->getVideos()->map(fn(Video $video) => [
-                'videoId' => $video->getId()
-            ])->toArray(),
-            'videoCodes' => $exercisePhase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
-                'videoCodeId' => $videoCode->getId()
-            ])->toArray(),
-            'components' => $exercisePhase->getComponents()
-        ]);
+        $this->addExercisePhaseEditedEvent($exercisePhase);
 
         if ($this->hasInvalidPreviousPhase($exercisePhase)) {
             $this->addFlash(
@@ -503,14 +475,14 @@ class ExercisePhaseController extends AbstractController
                 'success',
                 $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
             );
-
-            return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
         }
+
+        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
     }
 
     private function hasNoActiveComponent(ExercisePhase $exercisePhase): bool
     {
-        $isVideoAnalysis = $exercisePhase->getType() == ExercisePhase::TYPE_VIDEO_ANALYSE;
+        $isVideoAnalysis = $exercisePhase->getType() == ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
 
         if (!$isVideoAnalysis) {
             return false;
@@ -522,25 +494,65 @@ class ExercisePhaseController extends AbstractController
         return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
     }
 
-    private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
+        private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
     {
         $dependsOnPreviousPhase = $exercisePhase->getDependsOnPreviousPhase();
         $previousPhase = $this->exercisePhaseRepository->findOneBy(['sorting' => $exercisePhase->getSorting() - 1, 'belongsToExercise' => $exercisePhase->getBelongsToExercise()]);
         $hasNoPreviousPhase = empty($previousPhase);
-        $previousPhaseIsInvalid = $previousPhase && $previousPhase->getType() !== ExercisePhase::TYPE_VIDEO_ANALYSE;
+        $previousPhaseIsInvalid = $previousPhase && $previousPhase->getType() !== ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
 
         return $dependsOnPreviousPhase && ($hasNoPreviousPhase || $previousPhaseIsInvalid);
     }
 
     private function getPhaseForm(ExercisePhase $exercisePhase): FormInterface
     {
-        switch ($exercisePhase->getType()) {
-            case ExercisePhase::TYPE_VIDEO_ANALYSE :
-                return $this->createForm(VideoAnalysisType::class, $exercisePhase);
-            case ExercisePhase::TYPE_VIDEO_CUTTING :
-                return $this->createForm(VideoCutType::class, $exercisePhase);
-            default:
-                return $this->createForm(ExercisePhaseType::class, $exercisePhase);
+        return match ($exercisePhase->getType()) {
+            ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS => $this->createForm(VideoAnalysisType::class, $exercisePhase),
+            ExercisePhase\ExercisePhaseType::VIDEO_CUT => $this->createForm(VideoCutType::class, $exercisePhase),
+        };
+    }
+
+    private function addVideoAnalyseExercisePhaseEditedEvent(VideoAnalysisPhase $phase) {
+        $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
+            'exercisePhaseId' => $phase->getId(),
+            'name' => $phase->getName(),
+            'task' => $phase->getTask(),
+            'isGroupPhase' => $phase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $phase->getDependsOnPreviousPhase(),
+            'videos' => $phase->getVideos()->map(fn(Video $video) => [
+                'videoId' => $video->getId()
+            ])->toArray(),
+            'videoCodes' => $phase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
+                'videoCodeId' => $videoCode->getId()
+            ])->toArray(),
+            'components' => $phase->getComponents()
+        ]);
+    }
+
+    private function addVideoCutExercisePhaseEditedEvent(VideoCutPhase $phase) {
+        $this->eventStore->addEvent('VideoCutExercisePhaseEdited', [
+            'exercisePhaseId' => $phase->getId(),
+            'name' => $phase->getName(),
+            'task' => $phase->getTask(),
+            'isGroupPhase' => $phase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $phase->getDependsOnPreviousPhase(),
+            'videos' => $phase->getVideos()->map(fn(Video $video) => [
+                'videoId' => $video->getId()
+            ])->toArray(),
+            'components' => $phase->getComponents()
+        ]);
+    }
+
+    private function addExercisePhaseEditedEvent(ExercisePhase $phase)
+    {
+        switch ($phase->getType()) {
+            case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS:
+                /** @var VideoAnalysisPhase $phase */
+                $this->addVideoAnalyseExercisePhaseEditedEvent($phase);
+                break;
+            case ExercisePhase\ExercisePhaseType::VIDEO_CUT:
+                /** @var VideoCutPhase $phase */
+                $this->addVideoCutExercisePhaseEditedEvent($phase);
         }
     }
 }

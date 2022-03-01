@@ -524,7 +524,7 @@ EOT;
                 $exercisePhase->isGroupPhase() ? 'Ja' : 'Nein',
                 $exercisePhase->getName(),
                 DegreeDataToCsvService::removeLineBreaksFromCellContent($exercisePhase->getTask()),
-                $exercisePhase->getType(),
+                $exercisePhase->getType()->value,
                 $exercisePhase->getDependsOnPreviousPhase() ? 'Ja' : 'Nein',
                 $previousPhase ? $previousPhase->getId() : '-',
 

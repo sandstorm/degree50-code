@@ -75,7 +75,6 @@ const VideoCodeListItem = (props: Props) => {
 
     const creatorDescription = `Codierung von: ${props.creatorName}`
 
-    // FIXME: Does VideoCodePrototype have a description?
     /**
      * WHY:
      * This will be read by the screen reader when the list element if focused (when tabbing through list).
@@ -119,12 +118,6 @@ const VideoCodeListItem = (props: Props) => {
         Farbe: ${videoCodePrototype?.color ? getColorName(videoCodePrototype.color).name : ''}
         ${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
         ${parentVideoCodePrototype ? `Unter-Code von ${parentVideoCodePrototype.name}` : ''}
-
-        ${
-            videoCodePrototype?.description
-                ? `Beschreibung: ${videoCodePrototype?.description} - Beschreibung zu Ende.`
-                : ''
-        }
 
         ${creatorDescription}
 
