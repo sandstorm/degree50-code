@@ -219,16 +219,15 @@ class ExercisePhaseController extends AbstractController
         $isGroupPhase = $request->query->get('isGroupPhase', false);
 
         // Initialize phase by type (mandatory)
-        switch (ExercisePhase\ExercisePhaseType::tryFrom($type)) {
-            case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS :
-                $exercisePhase = new VideoAnalysisPhase();
-                break;
-            case ExercisePhase\ExercisePhaseType::VIDEO_CUT :
-                $exercisePhase = new VideoCutPhase();
-                break;
-            default:
-                throw new \InvalidArgumentException("ExercisePhaseType has to be one of [" . implode(', ', ExercisePhase\ExercisePhaseType::getPossibleValues()) . "]! '$type' given.");
-        }
+        $exercisePhase = match (ExercisePhase\ExercisePhaseType::tryFrom($type)) {
+            ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
+            ExercisePhase\ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
+            default => throw new \InvalidArgumentException(
+                "ExercisePhaseType has to be one of ["
+                . implode(', ', ExercisePhase\ExercisePhaseType::getPossibleValues()) .
+                "]! '$type' given."
+            ),
+        };
 
         $exercisePhase->setIsGroupPhase($isGroupPhase);
         $exercisePhase->setBelongsToExercise($exercise);
