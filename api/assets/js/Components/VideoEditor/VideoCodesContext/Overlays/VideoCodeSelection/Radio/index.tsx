@@ -1,10 +1,11 @@
 import { useRadio } from '@react-aria/radio'
 import React, { useRef } from 'react'
-import PredefinedCodeLock from '../PredefinedCodeLock'
-import Color from '../VideoCodePrototypes/PrototypeEntry/Color'
-import { RadioContext } from './RadioGroup'
+import PredefinedCodeLock from '../../PredefinedCodeLock'
+import Color from '../../VideoCodePrototypes/PrototypeEntry/Color'
+import { RadioContext } from '../RadioGroup'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import { getColorName } from 'ntc-ts'
+import LockSpacer from './LockSpacer'
 
 type Props = {
     children: React.ReactNode
@@ -47,12 +48,28 @@ const Radio = (props: Props) => {
         ${props.parentPrototype ? `Unter-Code von ${props.parentPrototype.name}.` : ''}
     `
 
+    const lockOrSpacer = (() => {
+        if (!props.prototype.userCreated) {
+            return <PredefinedCodeLock />
+        }
+
+        // Only Top level prototypes ever have a lock.
+        // To make the UI visually consistent we add a spacer for user created
+        // parent prototypes instead of the lock-icon
+        if (!props.parentPrototype) {
+            return <LockSpacer />
+        }
+
+        // Child-protoypes don't need either a lock or a spacer
+        return null
+    })()
+
     return (
-        <li className="video-code-select__option">
+        <li className={`video-code-select__option ${props.parentPrototype ? 'child-prototype' : ''}`}>
             <input {...inputProps} ref={ref} id={props.prototype.id} aria-label={ariaLabel} />
             <label htmlFor={props.prototype.id}>
                 <Color color={props.prototype.color} />
-                <PredefinedCodeLock isPredefined={!props.prototype.userCreated} />
+                {lockOrSpacer}
                 <span>{children}</span>
             </label>
         </li>

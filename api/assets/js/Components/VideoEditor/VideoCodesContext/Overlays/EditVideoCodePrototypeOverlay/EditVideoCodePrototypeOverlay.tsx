@@ -52,30 +52,19 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
         close()
     }
 
-    const canEditColor = props.videoCodePrototypeParent === undefined
-
     const overlayTitle = props.videoCodePrototype ? 'Video-Code bearbeiten' : 'Video-Code erstellen'
 
     return (
         <Overlay closeCallback={close} title={overlayTitle}>
             <div className={'new-video-code'}>
-                {canEditColor ? (
-                    <input
-                        value={transientVideoCodePrototype.color}
-                        type={'color'}
-                        className={'form-control form-control-sm'}
-                        onChange={handleColorChange}
-                        aria-label={`Ausgewählte Code-Farbe: ${getColorName(transientVideoCodePrototype.color).name}.`}
-                        title="Wähle eine Farbe"
-                    />
-                ) : (
-                    <div
-                        className={'video-code__color'}
-                        tabIndex={0}
-                        aria-label={`Vorgegebene Code-Farbe: ${getColorName(transientVideoCodePrototype.color).name}.`}
-                        style={{ backgroundColor: transientVideoCodePrototype.color }}
-                    />
-                )}
+                <input
+                    value={transientVideoCodePrototype.color}
+                    type={'color'}
+                    className={'form-control form-control-sm'}
+                    onChange={handleColorChange}
+                    aria-label={`Ausgewählte Code-Farbe: ${getColorName(transientVideoCodePrototype.color).name}.`}
+                    title="Wähle eine Farbe"
+                />
                 <input
                     type={'text'}
                     aria-label={'Name für neuen Video-Code'}

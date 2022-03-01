@@ -56,7 +56,18 @@ const selectDenormalizedCurrentCutList = createSelector(
 
 const selectDenormalizedCurrentPrototypes = createSelector(
     [solutionSelectors.selectCurrentPrototypeIds, videoCodePrototypeSelectors.selectById],
-    (currentIds, byId) => currentIds.map((id) => byId[id])
+    (currentIds, byId) =>
+        currentIds
+            .map((id) => byId[id])
+            .sort((a, b) => {
+                if (a.name < b.name) {
+                    return -1
+                } else if (a.name > b.name) {
+                    return 1
+                } else {
+                    return 0
+                }
+            })
 )
 
 const selectDenormalizedPrototypes = createSelector([videoCodePrototypeSelectors.selectById], (byId) =>
@@ -99,14 +110,14 @@ const selectCurrentCutIdsByStartTime = createSelector([selectCurrentCutListBySta
 )
 
 const selectAllPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
-    return codes.reduce((acc: VideoCodePrototype[], code) => {
+    return codes.reduce((prototypes: VideoCodePrototype[], code) => {
         if (code.parentId) {
-            return acc
+            return prototypes
         }
 
         const childCodes = codes.filter((c) => c.parentId === code.id)
 
-        return [...acc, { ...code, videoCodes: childCodes }]
+        return [...prototypes, { ...code, videoCodes: childCodes }]
     }, [])
 })
 

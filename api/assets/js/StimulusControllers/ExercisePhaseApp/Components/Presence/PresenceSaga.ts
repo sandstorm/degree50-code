@@ -58,8 +58,8 @@ function* presenceListener() {
         // wait for disconnect by user
         yield take(disconnectPresenceAction)
         yield cancel(messageHandler)
-    } catch (e: any) {
-        yield put(presenceActions.setError(e.message ?? e))
+    } catch (e) {
+        yield put(presenceActions.setError((e as any).message ?? e))
         yield put(presenceActions.setIsConnecting(false))
     }
 }

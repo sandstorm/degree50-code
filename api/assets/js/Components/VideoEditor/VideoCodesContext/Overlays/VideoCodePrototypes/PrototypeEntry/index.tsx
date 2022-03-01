@@ -106,7 +106,7 @@ const PrototypeEntry: FC<Props> = (props) => {
                         <RemoveButton onClick={handleRemove} />
                     </>
                 ) : (
-                    <PredefinedCodeLock isPredefined />
+                    <PredefinedCodeLock />
                 )}
 
                 {!props.videoCodePrototype.parentId ? (
