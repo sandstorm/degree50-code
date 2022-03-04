@@ -251,6 +251,7 @@ class ExercisePhaseController extends AbstractController
     public function edit(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
     {
         $form = $this->getPhaseForm($exercisePhase);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
