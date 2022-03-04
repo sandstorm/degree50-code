@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
 import videojs, { VideoJsPlayerOptions, VideoJsPlayer } from 'video.js'
+import videojsDE from 'video.js/dist/lang/de.json'
 
 import 'video.js/dist/video-js.css'
 import { Video } from './VideoPlayerWrapper'
@@ -17,6 +18,7 @@ type Props = {
 
 const defaultVideoJsOptions: VideoJsPlayerOptions = {
     fluid: true,
+    language: 'de',
 }
 
 const VideoJSPlayer: React.FC<Props> = (props) => {
@@ -29,6 +31,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
 
     useEffect(() => {
         if (videoRef.current !== null) {
+            videojs.addLanguage('de', videojsDE)
             setPlayer(videojs(videoRef.current, { ...defaultVideoJsOptions, ...props.videoJsOptions }))
         }
 
