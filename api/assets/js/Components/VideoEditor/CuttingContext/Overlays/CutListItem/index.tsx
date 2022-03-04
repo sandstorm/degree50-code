@@ -73,16 +73,16 @@ const CutListItem: FC<Props> = (props) => {
         Von: ${props.item.start}
         Bis: ${props.item.end}
 
-        Memo: ${props.item.memo}
+        ${props.item.memo.length > 0 ? `Memo: ${props.item.memo}` : ''}
     `
 
     return (
         <li className="cut-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={props.item.id}>
+            <p>Beschreibung: {props.item.text}</p>
             <Start start={props.item.start} />
             <End end={props.item.end} />
             <br />
-            <p>Beschreibung: {props.item.text}</p>
-            <p>Memo: {props.item.memo}</p>
+            {props.item.memo.length > 0 && <p>Memo: {props.item.memo}</p>}
             <Button className="btn btn-primary" onPress={handleJumpToPosition} title="Springe zu Position im Video">
                 Springe zu Position
             </Button>

@@ -124,16 +124,16 @@ const VideoCodeListItem = (props: Props) => {
         Von: ${item.start}
         Bis: ${item.end}
 
-        Memo: ${item.memo}
+        ${item.memo.length > 0 ? `Memo: ${item.memo}` : ''}
     `
 
     return (
         <li tabIndex={0} aria-label={ariaLabel}>
+            <PrototypeInformation videoCodePrototype={videoCodePrototype} />
             <p>{creatorDescription}</p>
             <Start start={item.start} />
             <End end={item.end} />
-            <PrototypeInformation videoCodePrototype={videoCodePrototype} />
-            <p>Memo: {item.memo}</p>
+            {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
             <Button className="btn btn-primary" onPress={handleJumpToPosition} title="Springe zu Position im Video">
                 Springe zu Position
             </Button>
