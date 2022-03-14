@@ -25,14 +25,15 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
 
 # application entrypoint
-ADD /deployment/docker/entrypoint.sh /
+ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-e2e.sh /
 ADD /deployment/config-files/php.override.ini /usr/local/etc/php/conf.d/php.override.ini
 
 RUN rm -Rf /usr/local/etc/php-fpm.*
 ADD deployment/config-files/php-fpm.conf /usr/local/etc/php-fpm.conf
 
-ADD /deployment/config-files/nginx.conf /etc/nginx/nginx.conf
-RUN mkdir -p /var/lib/nginx /usr/local/var/log/ & \
+ADD /deployment/config-files/nginx.conf /deployment/config-files/nginx-e2e-test-server.conf /etc/nginx/
+
+RUN mkdir -p /var/lib/nginx /usr/local/var/log/ && \
     chown -R www-data /var/lib/nginx /usr/local/var/log/ /etc/nginx/
 
 WORKDIR /app
@@ -42,14 +43,19 @@ ARG APP_ENV=prod
 
 # prevent the reinstallation of vendors at every changes in the source code
 COPY api/composer.json api/composer.lock api/symfony.lock ./
+
+# NOTE: we install dev packages as well for production, because we want to run Behat E2E tests from within the PROD container
+# via /entrypoint-e2e.sh
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest; \
+	composer install --prefer-dist --no-scripts --no-progress --no-suggest; \
 	composer clear-cache
 
 # do not use .env files in production
+# TODO we need .env for behat tests in CI. Does this have security/performance implications?
 COPY api/.env ./
-RUN composer dump-env prod; \
-	rm .env
+COPY api/.env.test ./
+#RUN composer dump-env prod; \
+#	rm .env
 
 # copy only specifically what we need
 
@@ -63,6 +69,10 @@ COPY api/public public/
 COPY api/src src/
 COPY api/templates templates/
 COPY api/translations translations/
+COPY api/tests tests/
+COPY api/behat.yml.dist behat.yml.dist
+COPY api/features features/
+COPY api/composer.json api/composer.lock /app/
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \

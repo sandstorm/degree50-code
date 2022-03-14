@@ -27,6 +27,7 @@ class VideoPlayerController extends AbstractController
     }
 
     /**
+     * @IsGranted("view", subject="video")
      * @Route("/video/play/{id}", name="mediathek__video--player")
      */
     public function videoPlayer(Video $video): Response

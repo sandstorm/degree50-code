@@ -9,6 +9,7 @@ supervisord.pid
 # IDE
 /.idea
 *.iml
+.vscode
 
 node_modules
 /video-poc/dist/
@@ -33,3 +34,7 @@ tags
 # OS
 .DS_Store
 
+# test results
+e2e-results/
+e2e-testrunner/**/*.png
+e2e-testrunner/**/*.zip

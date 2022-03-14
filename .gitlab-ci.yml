@@ -1,61 +1,35 @@
 stages:
+    - compile_resources
     - build
     - test
-    - package
     - deploy
 
-build_js:
-    stage: build
+compile_and_test_frontend:
+    stage: compile_resources
+    interruptible: true
     image: node:16.13.1-bullseye-slim
     script:
         - yarn config set cache-folder .yarn
         - cd api
         - yarn
         - yarn encore production || echo 1
+        # run tests directly after building, so we don't have to uplaod huge node_modules dir artifact
+        - yarn lint
+        - yarn test:ci
     artifacts:
         expire_in: 1 week
         paths:
             - api/public/build
-            - api/node_modules
     cache:
         key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG-build-js"
         paths:
             - api/node_modules
             - .yarn
-
-test_frontend:
-    stage: test
-    image: node:16.13.1-bullseye-slim
-    script:
-        - yarn config set cache-folder .yarn
-        - cd api
-        - yarn lint
-        - yarn test:ci
-
-test_app:
-    stage: test
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
-    tags:
-        - docker
-        - privileged
-    services:
-        - mysql:latest
-        - redis:6.2
-    variables:
-        MYSQL_DATABASE: "test_db"
-        MYSQL_ROOT_PASSWORD: "password"
-        DATABASE_URL: mysql://root:password@mysql/test_db
-    script:
-        - cd api
-        - composer install
-        - vendor/bin/phpat phpat.yaml
-        - vendor/bin/behat
-
+                
 package_app:
-    stage: package
+    stage: build
+    interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
-    only:
-        - tags
     tags:
         - docker
         - privileged
@@ -63,11 +37,14 @@ package_app:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         # Also make sure that ./api/VERSION is copied into the docker container (see deployment/docker/Dockerfile)
         - ./scripts/versioning.sh
-        - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG -f deployment/docker/Dockerfile .
-        - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+        # performance improvement for CI
+        - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG || true
+        - docker build --cache-from $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
+        - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
 
 package_logging_sidecar:
-    stage: package
+    stage: build
+    interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
@@ -77,8 +54,67 @@ package_logging_sidecar:
     script:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - cd deployment/loggingSidecar
-        - docker build -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG .
+        # performance improvement for CI
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:main || true
+        - docker build --cache-from $CI_REGISTRY_IMAGE/logging-sidecar:main -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG .
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
+
+build_e2e_testrunner:
+    stage: build
+    interruptible: true
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
+    script:
+        - cd e2e-testrunner
+        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+        # performance improvement for CI
+        - docker pull $CI_REGISTRY_IMAGE:e2e-testrunner || true
+        - docker build --cache-from $CI_REGISTRY_IMAGE:e2e-testrunner -t $CI_REGISTRY_IMAGE:e2e-testrunner .
+        - docker push $CI_REGISTRY_IMAGE:e2e-testrunner
+        - cd ..
+    tags:
+        - docker
+        - privileged
+
+e2e_test:
+    stage: test
+    interruptible: true
+    # we're running this job inside the production image we've just built previously
+    image:
+        name: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        # see `scripts` below
+        entrypoint: [ "" ]
+    dependencies: [ ] # we do not need any artifacts from prior steps
+    variables:
+        # service mariadb
+        MYSQL_DATABASE: "test_db"
+        MYSQL_ROOT_PASSWORD: "password"
+
+        # System under Test
+        APP_ENV: test
+        DATABASE_URL: mysql://root:password@mariadb/test_db
+        
+        MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
+        LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
+        JWT_KEY: changeme-test
+    services:
+        - name: mariadb:10.7
+        - name: redis:6.2
+        # here, we make the e2e-testrunner available
+        - name: $CI_REGISTRY_IMAGE:e2e-testrunner
+          alias: e2e-testrunner
+    script:
+        # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
+        # entrypoint and run the script here
+        - /entrypoint-e2e.sh
+    after_script:
+        - cp -R /app/e2e-results $CI_PROJECT_DIR/e2e-results
+    artifacts:
+        expire_in: 1 weeks
+        when: always
+        paths:
+            - e2e-results
+        reports:
+            junit: e2e-results/behat.xml
 
 deploy-prod:
     stage: deploy

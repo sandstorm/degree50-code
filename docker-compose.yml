@@ -5,13 +5,10 @@ services:
     build:
       context: ./
       dockerfile: deployment/docker/Dockerfile
-#    healthcheck:
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
-#      start_period: 30s
     ports:
       - 8080:8080
+      # Port for App running with test db for e2e tests @see nginx-e2e-test-server.conf
+      - 9090:9090
       # if you add a hosts entry for "degree40.tu-dortmund.de 127.0.0.1", you can test the SAML authentication locally
       - 443:443
     depends_on:
@@ -19,10 +16,9 @@ services:
     environment:
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-dev
       JWT_KEY: changeme-dev
+      LOCAL_DEVELOPMENT: 1
     volumes:
       - ./api:/app:rw,cached
-      # we had problems with non-updating build assets; so we mount this as non-cached.
-      #- ./api/public/build/:/app/public/build:ro
       - app-var:/app/var
 
   redis:
@@ -38,8 +34,6 @@ services:
     ports:
       - 8002:8900
 
-  #####
-  # DB
   db:
     image: mariadb:10.7
     ports:
@@ -51,32 +45,9 @@ services:
       MYSQL_PASSWORD: '!ChangeMe!'
     volumes:
       - db-data:/var/lib/mysql:rw
-
-#  # Logging & Metrics
-#  vector:
-#    build:
-#      context: ./deployment/loggingSidecar
-#    volumes:
-#      - app-var:/app/var
-#    environment:
-#      VECTOR_CONFIG_FILE_NAME: vector.symfony+cadvisor.toml
-#      LOGGING_CUSTOMER_TENANT: degree40
-#      LOGGING_CUSTOMER_PROJECT: degree40.localdev
-#      LOGGING_HOST_NAME: sebastians-mac
-#      LOGGING_HOST_GROUP: sandstorm-devs
-#
-#  cadvisor:
-#    # port 8080 /metrics
-#    image: gcr.io/cadvisor/cadvisor:v0.37.5
-#    privileged: true
-#    volumes:
-#      - /:/rootfs:ro
-#      - /var/run:/var/run:ro
-#      - /sys:/sys:ro
-#      - /var/lib/docker/:/var/lib/docker:ro
-#      - /dev/disk/:/dev/disk:ro
-#    devices:
-#      - /dev/kmsg
+      - ./deployment/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    # use Unicode encoding as default!
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
 
 volumes:
   app-var: {}

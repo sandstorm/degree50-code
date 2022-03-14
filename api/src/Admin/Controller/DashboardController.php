@@ -28,7 +28,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     /**
-     * @Route("/admin")
+     * @Route("/admin", name="admin-panel")
      */
     public function index(): Response
     {
@@ -38,7 +38,6 @@ class DashboardController extends AbstractDashboardController
             ->generateUrl();
 
         return $this->redirect($url);
-
     }
 
     public function configureAssets(): Assets

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -ex
 
 mkdir -p var/cache var/log
@@ -29,8 +29,17 @@ setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
 chown -R www-data:www-data /app/public/data/
 chown -R www-data:www-data /app/var/data/
 
-if [ "$APP_ENV" != 'prod' ]; then
+# install php dependencies for local development
+if [ "$LOCAL_DEVELOPMENT" == '1' ]; then
 	composer install --prefer-dist --no-progress --no-suggest --no-interaction
+fi
+
+if [ "$APP_ENV" != 'prod' ]; then
+	# run migrations for test db
+	APP_ENV=test bin/console doctrine:migrations:migrate --no-interaction
+
+	# for local dev we need to start the test server instance
+	ln -s /etc/nginx/nginx-e2e-test-server.conf /etc/nginx/conf.d/nginx-e2e-test-server.conf
 fi
 
 echo "Waiting for db to be ready..."

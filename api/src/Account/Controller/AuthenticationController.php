@@ -7,6 +7,7 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use LogicException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,6 +61,7 @@ class AuthenticationController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/user/data-privacy", name="app_data-privacy")
      */
     public function dataPrivacy(Request $request): Response
@@ -88,6 +90,7 @@ class AuthenticationController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/user/terms-of-use", name="app_terms-of-use")
      */
     public function termsOfUse(Request $request): Response

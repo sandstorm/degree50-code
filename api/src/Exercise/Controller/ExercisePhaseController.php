@@ -155,6 +155,8 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
+     * FIXME: It is possible that there are Exercises with no Phases! This currently just throws a 500 Error, but shouldn't!
+     *
      * @IsGranted("showSolution", subject="exercise")
      * @Route("/exercise-phase/show-solutions/{id}/{phase_id?}", name="exercise-overview__exercise-phase--show-solutions")
      */
