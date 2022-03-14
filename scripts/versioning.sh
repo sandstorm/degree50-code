@@ -23,5 +23,5 @@ else
     echo "Found commit hash $version"
 
 	# fallback version, if no tag has been provided
-	echo "0.0.0-fallback" > ./api/VERSION
+	echo "0.0.0-fallback-$version" > ./api/VERSION
 fi

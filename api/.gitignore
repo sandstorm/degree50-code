@@ -35,9 +35,6 @@ yarn-error.log
 /behat.yml
 ###< friends-of-behat/symfony-extension ###
 
-### IDE config files
-.vscode
-
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache

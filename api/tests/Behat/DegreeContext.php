@@ -29,16 +29,21 @@ use App\Exercise\Controller\SolutionService;
 use App\Mediathek\Service\VideoService;
 use App\Repository\Exercise\ExerciseRepository;
 use App\Repository\Video\VideoRepository;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
 use Behat\Behat\Context\Context;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
 use Behat\Mink\WebAssert;
 use DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\File\File;
+use Sandstorm\E2ETestTools\Tests\Behavior\Bootstrap\PlaywrightTrait;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
 
@@ -47,6 +52,8 @@ use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
 use function PHPUnit\Framework\assertIsObject;
 use function PHPUnit\Framework\assertNotEquals;
+use function PHPUnit\Framework\assertStringContainsString;
+use function PHPUnit\Framework\assertStringNotContainsString;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -58,6 +65,7 @@ final class DegreeContext implements Context
 {
 
     use DatabaseFixtureContextTrait;
+    use PlaywrightTrait;
 
     private Session $minkSession;
     private RouterInterface $router;
@@ -70,6 +78,7 @@ final class DegreeContext implements Context
     private UserService $userService;
     private VideoService $videoService;
     private ExerciseService $exerciseService;
+    private UserPasswordHasherInterface $userPasswordHasher;
 
     private ?string $clientSideJSON;
 
@@ -89,7 +98,8 @@ final class DegreeContext implements Context
         DegreeDataToCsvService $degreeDataToCsvService,
         UserService $userService,
         VideoService $videoService,
-        ExerciseService $exerciseService
+        ExerciseService $exerciseService,
+        UserPasswordHasherInterface $userPasswordHasher,
     )
     {
         $this->minkSession = $minkSession;
@@ -103,6 +113,9 @@ final class DegreeContext implements Context
         $this->userService = $userService;
         $this->videoService = $videoService;
         $this->exerciseService = $exerciseService;
+        $this->userPasswordHasher = $userPasswordHasher;
+
+        $this->setupPlaywright();
     }
 
 
@@ -111,8 +124,30 @@ final class DegreeContext implements Context
      */
     public function visitRoute(string $routeName): void
     {
-        // TODO we might directly submit a request on symfonys kernel instead of using minkSession
-        $this->minkSession->visit($this->router->generate($routeName));
+        $url = $this->router->generate($routeName);
+
+        $this->visitUrl($url);
+    }
+
+    /**
+     * @When I visit url :routeName
+     */
+    public function visitUrl(string $url): void
+    {
+        $this->playwrightConnector->execute($this->playwrightContext, sprintf(
+        // language=JavaScript
+            '
+            if (!vars.page) {
+                vars.page = await context.newPage()
+            }
+            // TODO write first goto and then waitforNavigation
+            const response = await vars.page.goto(`BASEURL%s`)
+
+            // save response in context
+            vars.response = response
+            '// language=PHP
+            , $url
+        ));
     }
 
     /**
@@ -124,7 +159,10 @@ final class DegreeContext implements Context
         if (!empty($jsonParameters)) {
             $parameters = json_decode($jsonParameters, true);
         }
-        $this->minkSession->visit($this->router->generate($routeName, $parameters));
+
+        $url = $this->router->generate($routeName, $parameters);
+
+        $this->visitUrl($url);
     }
 
     /**
@@ -136,14 +174,23 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Then /^the response status code should be (?P<code>\d+)$/
+     * @Then the response status code should be :code
      */
-    public function assertResponseStatus($code)
+    public function assertResponseStatus(int $code)
     {
-        $this->assertSession()->statusCodeEquals($code);
+        $actual = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            '
+            return vars.response.status();
+            '
+        );
+
+        assertEquals($code, $actual);
     }
 
-    /** @return WebAssert  */
+    /**
+     * @return WebAssert
+     */
     public function assertSession(): WebAssert
     {
         return new WebAssert($this->minkSession);
@@ -154,7 +201,7 @@ final class DegreeContext implements Context
      */
     public function iAmRedirectedToTheLoginPage()
     {
-        $this->assertSession()->pageTextContains('Login mit Uni-Account (SSO)');
+        $this->thePageShouldContainTheText('Login mit Uni-Account (SSO)');
     }
 
     /**
@@ -164,18 +211,37 @@ final class DegreeContext implements Context
     {
         $user = $this->entityManager->find(User::class, $username);
         if (!$user) {
-            $user = new User($username);
-            $user->setEmail($username);
-            $user->setPassword('password');
-            $this->entityManager->persist($user);
-            $this->eventStore->disableEventPublishingForNextFlush();
-            $this->entityManager->flush();
+            $user = $this->createUser($username);
         }
 
-        /** @var $tokenStorage \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface */
+        // create security token in tokenStorage and set user
+        /** @var $tokenStorage TokenStorageInterface */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
         $tokenStorage->setToken(new UsernamePasswordToken($username, 'foo', 'foo'));
         $tokenStorage->getToken()->setUser($user);
+    }
+
+    /**
+     * @Given I am logged in via browser as :username
+     */
+    public function iAmLoggedInViaBrowserAs($username)
+    {
+        $this->playwrightConnector->execute($this->playwrightContext, sprintf(
+        // language=JavaScript
+            '
+            vars.page = await context.newPage();
+            await vars.page.goto("BASEURL/login");
+
+            await vars.page.fill(`[name="email"]`, `%s`);
+            await vars.page.fill(`[name="password"]`, `password`);
+
+            await Promise.all([
+                vars.page.waitForNavigation(),
+                vars.page.click(`button[type="submit"]`),
+            ])
+        '// language=PHP
+            , $username
+        ));
     }
 
     /**
@@ -183,7 +249,7 @@ final class DegreeContext implements Context
      */
     public function iAmNotLoggedIn()
     {
-        /** @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage */
+        /** @var TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
         $tokenStorage->setToken(null);
     }
@@ -209,7 +275,9 @@ final class DegreeContext implements Context
             $video->setEncodedVideoDirectory($outputDirectory);
         }
 
-        $video->addCourse($course);
+        if ($course) {
+            $video->addCourse($course);
+        }
 
         $this->entityManager->persist($video);
         $this->eventStore->disableEventPublishingForNextFlush();
@@ -388,7 +456,7 @@ final class DegreeContext implements Context
         $solutionListsFromJson = json_decode($serverSideSolutionListsAsJSON->getRaw(), true);
         $serverSideSolutionLists = ServerSideSolutionLists::fromArray($solutionListsFromJson);
         $autosaveSolution->setSolution($serverSideSolutionLists);
-        /** @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage */
+        /** @var TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
         /* @var User $loggedInUser */
         $loggedInUser = $tokenStorage->getToken()->getUser();
@@ -457,7 +525,7 @@ final class DegreeContext implements Context
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage */
+        /** @var TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
         /** @var User $loggedInUser */
         $loggedInUser = $tokenStorage->getToken()->getUser();
@@ -488,7 +556,7 @@ final class DegreeContext implements Context
      */
     public function iHaveACutVideoBelongingToSolution($cutVideoId, $solutionId)
     {
-        /** @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage */
+        /** @var TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
         $loggedInUser = $tokenStorage->getToken()->getUser();
 
@@ -530,7 +598,7 @@ final class DegreeContext implements Context
     public function iHaveACsvDtoListContainingAFileWithACsvContentString(string $fileName, PyStringNode $contentString)
     {
         /** @var TextFileDto $csvDto */
-        $csvDto = current(array_filter($this->csvDtoList, function(TextFileDto $cSVDto) use($fileName) {
+        $csvDto = current(array_filter($this->csvDtoList, function (TextFileDto $cSVDto) use ($fileName) {
             return $cSVDto->getFileName() === $fileName;
         }));
 
@@ -547,10 +615,32 @@ final class DegreeContext implements Context
     public function iHaveCsvdtoListContainingAFile($fileName)
     {
         /** @var TextFileDto $csvDto */
-        $csvDto = current(array_filter($this->csvDtoList, function(TextFileDto $cSVDto) use($fileName) {
+        $csvDto = current(array_filter($this->csvDtoList, function (TextFileDto $cSVDto) use ($fileName) {
             return $cSVDto->getFileName() === $fileName;
         }));
         assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
+    }
+
+    private function createUser(string $username, string $password = null, bool $acceptPrivacyAndTerms = false): User
+    {
+        $user = new User($username);
+        $user->setEmail($username);
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, $password ?? 'password'));
+
+        // TODO: Put in separate step
+        if ($acceptPrivacyAndTerms) {
+            // accept current Privacy & Terms
+            $user->setDataPrivacyAccepted(true);
+            $user->setDataPrivacyVersion(DataPrivacyVoter::DATA_PRIVACY_VERSION);
+            $user->setTermsOfUseAccepted(true);
+            $user->setTermsOfUseVersion(TermsOfUseVoter::TERMS_OF_USE_VERSION);
+        }
+
+        $this->entityManager->persist($user);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+
+        return $user;
     }
 
     /**
@@ -560,12 +650,7 @@ final class DegreeContext implements Context
     {
         $user = $this->entityManager->find(User::class, $username);
         if (!$user) {
-            $user = new User($username);
-            $user->setEmail($username);
-            $user->setPassword('password');
-            $this->entityManager->persist($user);
-            $this->eventStore->disableEventPublishingForNextFlush();
-            $this->entityManager->flush();
+            $this->createUser($username, null, true);
         }
     }
 
@@ -696,8 +781,7 @@ final class DegreeContext implements Context
          */
         $exercisesCreatedByUser = array_filter(
             $exercises,
-            function (Exercise $exercise) use ($username)
-            {
+            function (Exercise $exercise) use ($username) {
                 return $exercise->getCreator()->getUsername() === $username;
             }
         );
@@ -727,8 +811,7 @@ final class DegreeContext implements Context
          */
         $videosCreatedByUser = array_filter(
             $videos,
-            function (Video $video) use ($username)
-            {
+            function (Video $video) use ($username) {
                 return $video->getCreator() === $username;
             }
         );
@@ -746,6 +829,7 @@ final class DegreeContext implements Context
 
         if (!$course) {
             $course = new Course($courseId);
+            $course->setName($courseId);
 
             $this->entityManager->persist($course);
             $this->eventStore->disableEventPublishingForNextFlush();
@@ -768,6 +852,8 @@ final class DegreeContext implements Context
         if (!$exercise) {
             $exercise = new Exercise($exerciseId);
         }
+
+        $exercise->setName($exerciseId);
 
         $exercise->setCreator($user);
         // This also sets the course on the exercise
@@ -984,7 +1070,7 @@ final class DegreeContext implements Context
             // video is not _only_ used in unpublished Exercise
             // If it is used in just a single published Exercise it has to persist
             $notAllExercisesUnpublished = !$video->getExercisePhases()
-                ->forAll(fn ($_i, Exercise $exercise) => $exercise->getStatus() === Exercise::EXERCISE_CREATED);
+                ->forAll(fn($_i, Exercise $exercise) => $exercise->getStatus() === Exercise::EXERCISE_CREATED);
 
             $creatorAnonymized = $video->getCreator()->getUsername() !== $username;
 
@@ -1025,6 +1111,7 @@ final class DegreeContext implements Context
     }
 
     /**
+     * TODO: setting status is only possible when the Exercise has at least one ExercisePhase (via UI)
      * @Given Exercise :exerciseId is published
      */
     public function ensureExerciseIsPublished($exerciseId)
@@ -1060,7 +1147,7 @@ final class DegreeContext implements Context
     {
         assert(!empty($this->queryResult), 'Query result is empty!');
 
-        $filteredByCutId = array_filter($this->queryResult, function($video) use($cutVideoId) {
+        $filteredByCutId = array_filter($this->queryResult, function ($video) use ($cutVideoId) {
             return $video->getId() === $cutVideoId;
         });
 
@@ -1069,5 +1156,132 @@ final class DegreeContext implements Context
         /** @var Video $firstVideo */
         $firstVideo = current($this->queryResult);
         assertEquals($videoId, $firstVideo->getId());
+    }
+
+    private function getPageContent(): string
+    {
+        $content = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            '
+                return await vars.page.content();
+            '
+        );
+
+        return $content;
+    }
+
+    /**
+     * @Then the page should contain the text :text
+     */
+    public function thePageShouldContainTheText($text)
+    {
+        $content = $this->getPageContent();
+
+        assertStringContainsString($text, $content);
+    }
+
+    /**
+     * @Then the page should not contain the text :text
+     */
+    public function thePageShouldNotContainTheText($text)
+    {
+        $content = $this->getPageContent();
+
+        assertStringNotContainsString($text, $content);
+    }
+
+    /**
+     * @Then the page contains all the following texts:
+     */
+    public function thePageContainsAllTheFollowingTexts(TableNode $tableNode)
+    {
+        $content = $this->getPageContent();
+
+        foreach ($tableNode->getColumn(0) as $text) {
+            assertStringContainsString($text, $content);
+        }
+    }
+
+    /**
+     * @Then the page contains none of the following texts:
+     */
+    public function thePageContainsNoneTheFollowingTexts(TableNode $tableNode)
+    {
+        $content = $this->getPageContent();
+
+        foreach ($tableNode->getColumn(0) as $text) {
+            assertStringNotContainsString($text, $content);
+        }
+    }
+
+    /**
+     * @Given I fill out the course form and submit
+     */
+    public function iFillOutTheCourseFormAndSubmit()
+    {
+        $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                await vars.page.fill(`input#course_name`, `Test-Kurs`)
+                await vars.page.selectOption(`select#course_users`, { index: 0 })
+                await vars.page.click(`button#course_save`)
+            "
+        );
+    }
+
+    /**
+     * @Given I click on :innerText
+     */
+    public function iClickOn($innerText)
+    {
+        $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                await vars.page.click(
+                    `[role='button']:has-text('{$innerText}'), button:has-text('{$innerText}'), .btn:has-text('{$innerText}'), a:has-text('{$innerText}')`
+                )
+            "
+        );
+    }
+
+    /**
+     * @Then I should be able to download the CSV export for :entityId when clicking on :label
+     */
+    public function iShouldBeAbleToDownloadCsvExport($entityId, $label)
+    {
+        $url = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                const [ download ] = await Promise.all(
+                    [
+                        vars.page.waitForEvent('download'),
+                        vars.page.click(`[role='button']:has-text('{$label}'), button:has-text('{$label}'), .btn:has-text('{$label}'), a:has-text('{$label}')`)
+                    ]
+                )
+                const path = await download.url()
+
+                return path
+            "
+        );
+
+        assertStringContainsString($entityId, $url);
+    }
+
+    /**
+     * @Given I fill out the exercise form and submit
+     */
+    public function iFillOutTheExerciseFormAndSubmit()
+    {
+        $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                await vars.page.fill(`input#exercise_name`, `Test-Aufgabe`)
+                // here we have to use this way to navigate to the description field because we use ckeditor
+                await vars.page.keyboard.press('Tab')
+                await vars.page.keyboard.type('Test-Aufgaben-Beschreibung')
+
+                await vars.page.click(`button#exercise_save`)
+            "
+        );
     }
 }

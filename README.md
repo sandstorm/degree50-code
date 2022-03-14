@@ -119,8 +119,10 @@ To create and deploy a versioned release follow these steps:
 
 ### Running Behat Tests
 
-1. Start our docker-compose setup
-2. run `make test`
+1. Start docker containers `docker-compose up -d`
+2. Enter `api` container `docker-compose exec api /bin/bash`
+3. execute tests `PLAYWRIGHT_API_URL="http://host.docker.internal:3000" SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" APP_ENV=test ./vendor/bin/behat`
+   1. use the `--tags` flag to run specific tests (i.e. `--tags myTest`)
 
 > **NOTE**: We need the api container to create an environemnt to run our tests
 > in. However we currently do not use the actual running application and database.

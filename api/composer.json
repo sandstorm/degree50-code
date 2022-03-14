@@ -66,6 +66,7 @@
         "friends-of-behat/symfony-extension": "^2.3.1",
         "phpat/phpat": "^0.8.3",
         "phpunit/phpunit": "^9.5",
+        "sandstorm/e2etesttools": "@dev",
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
         "symfony/maker-bundle": "^1.11",
