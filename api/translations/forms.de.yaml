@@ -66,6 +66,9 @@ exercisePhase:
         videoCutting:
             label: 'Videoschnitt'
             iconClass: 'fas fa-cut'
+        reflexion:
+            label: 'Reflexion'
+            iconClass: 'fas fa-book-open'
     components:
         videoPlayer:
             label: 'Videoplayer'

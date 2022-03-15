@@ -61,11 +61,13 @@
             {{ form_row(form.components) }}
             <hr/>
 
-            <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
-            <div data-controller="videosForm">
-                {{ form_row(form.videos) }}
-            </div>
-            <hr/>
+            {% if exercisePhase.type.value == 'videoAnalysis' or exercisePhase.type.value == 'videoCutting' %}
+                <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
+                <div data-controller="videosForm">
+                    {{  form_row(form.videos) }}
+                </div>
+                <hr/>
+            {% endif %}
 
             {% if exercisePhase.type.value == 'videoAnalysis' and exercisePhase.videoCodesActive %}
                 <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>

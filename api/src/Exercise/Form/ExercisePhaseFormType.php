@@ -3,27 +3,24 @@
 namespace App\Exercise\Form;
 
 use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Video\Video;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Repository\Exercise\ExercisePhaseRepository;
-use App\Repository\Video\VideoRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ExercisePhaseType extends AbstractType
+class ExercisePhaseFormType extends AbstractType
 {
-    private VideoRepository $videoRepository;
-
     private ExercisePhaseRepository $exercisePhaseRepository;
 
-    public function __construct(VideoRepository $videoRepository, ExercisePhaseRepository $exercisePhaseRepository)
+    public function __construct(ExercisePhaseRepository $exercisePhaseRepository)
     {
-        $this->videoRepository = $videoRepository;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
     }
 
@@ -31,9 +28,14 @@ class ExercisePhaseType extends AbstractType
     {
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
-        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
-        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
-        $exercisePhaseCoices = $this->exercisePhaseRepository->findBy(['belongsToExercise' => $exercisePhase->belongsToExercise]);
+        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhaseType::VIDEO_ANALYSIS;
+        $exercisePhaseChoices = $this->exercisePhaseRepository->findBy(['belongsToExercise' => $exercisePhase->belongsToExercise]);
+
+        $components = $exercisePhase->getAllowedComponents();
+        $componentChoices = [];
+        foreach ($components as $component) {
+            $componentChoices[$component] = $component;
+        }
 
         $builder
             ->add('isGroupPhase', CheckboxType::class, [
@@ -46,7 +48,7 @@ class ExercisePhaseType extends AbstractType
             ])
             ->add('dependsOnExercisePhase', EntityType::class, [
                 'class' => ExercisePhase::class,
-                'choices' => $exercisePhaseCoices,
+                'choices' => $exercisePhaseChoices,
                 'choice_label' => 'name',
                 'placeholder' => 'Keine',
                 'multiple' => false,
@@ -64,16 +66,16 @@ class ExercisePhaseType extends AbstractType
                 'block_prefix' => 'toggleable_button_checkbox',
                 'help' => "exercisePhase.help.otherSolutionsAreAccessible",
             ])
-            ->add('videos', EntityType::class, [
-                'class' => Video::class,
-                'choices' => $videoChoices,
-                'required' => true,
-                'disabled' => $exercisePhase->getHasSolutions(),
-                'choice_label' => 'title',
+            ->add('components', ChoiceType::class, [
+                'label' => "exercisePhase.labels.components",
+                'translation_domain' => 'forms',
+                'choices' => $componentChoices,
                 'multiple' => true,
                 'expanded' => true,
-                'label' => false,
-                'block_prefix' => 'video_entity'
+                'choice_label' => function ($choice, $key, $value) {
+                    return 'exercisePhase.components.' . $key . '.label';
+                },
+                'choice_translation_domain' => 'forms'
             ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             ->add('task', CKEditorType::class, ['label' => "exercisePhase.labels.task", 'translation_domain' => 'forms'])

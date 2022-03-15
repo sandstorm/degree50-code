@@ -4,6 +4,8 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\Material;
@@ -30,12 +32,13 @@ class ExercisePhaseService
         $newPhases = $originalExercise->getPhases()->map(
             function (ExercisePhase $originalPhase) use ($newExercise) {
                 $newPhase = match ($originalPhase->getType()) {
-                    ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
-                    ExercisePhase\ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
+                    ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
+                    ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
+                    ExercisePhaseType::REFLEXION => new ReflexionPhase(),
                 };
 
                 switch ($originalPhase->getType()) {
-                    case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS:
+                    case ExercisePhaseType::VIDEO_ANALYSIS:
                     {
                         /** @var VideoAnalysisPhase $newPhase */
                         /** @var VideoAnalysisPhase $originalPhase */
@@ -53,7 +56,8 @@ class ExercisePhaseService
                         };
                         break;
                     }
-                    case ExercisePhase\ExercisePhaseType::VIDEO_CUT:
+                    case ExercisePhaseType::VIDEO_CUT:
+                    case ExercisePhaseType::REFLEXION:
                         break;
                 }
 

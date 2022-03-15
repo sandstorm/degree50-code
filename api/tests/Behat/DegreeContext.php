@@ -14,6 +14,7 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\Material;
@@ -1338,7 +1339,7 @@ final class DegreeContext implements Context
     public function assureAnExercisePhaseWithTheFollowingDataExists(TableNode $tableNode)
     {
         foreach ($tableNode->getHash() as $phaseData) {
-            $phaseType = ExercisePhase\ExercisePhaseType::from($phaseData['type']);
+            $phaseType = ExercisePhaseType::from($phaseData['type']);
 
             $phase = ExercisePhase::byType($phaseType, $phaseData['id']);
 
@@ -1360,11 +1361,12 @@ final class DegreeContext implements Context
 
             // phase type specific
             switch ($phaseType) {
-                case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS:
+                case ExercisePhaseType::VIDEO_ANALYSIS:
                     $phase->setVideoAnnotationsActive(boolval($phaseData['videoAnnotationsActive']));
                     $phase->setVideoCodesActive(boolval($phaseData['videoCodesActive']));
                     break;
-                case ExercisePhase\ExercisePhaseType::VIDEO_CUT:
+                case ExercisePhaseType::VIDEO_CUT:
+                case ExercisePhaseType::REFLEXION:
                     break;
             }
 
