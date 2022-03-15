@@ -5,6 +5,7 @@ namespace App\Exercise\Form;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Video\Video;
+use App\Exercise\Controller\ExercisePhaseService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -17,9 +18,9 @@ class VideoAnalysisPhaseFormFormType extends ExercisePhaseFormType
 {
     private VideoRepository $videoRepository;
 
-    public function __construct(VideoRepository $videoRepository, ExercisePhaseRepository $exercisePhaseRepository)
+    public function __construct(ExercisePhaseRepository $exercisePhaseRepository, ExercisePhaseService $exercisePhaseService, VideoRepository $videoRepository)
     {
-        parent::__construct($exercisePhaseRepository);
+        parent::__construct($exercisePhaseRepository, $exercisePhaseService);
         $this->videoRepository = $videoRepository;
     }
 

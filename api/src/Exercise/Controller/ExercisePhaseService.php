@@ -25,6 +25,32 @@ class ExercisePhaseService
     }
 
     /**
+     * Check if the combination of ExercisePhase "depending on" and the "depending" ExercisePhase is valid.
+     */
+    public function isValidDependingOnExerciseCombination(ExercisePhase $phaseDependingOn, ExercisePhase $dependingPhase): bool
+    {
+        // check sorting: $phaseDependingOn must come _before_ this $dependingPhase
+        if ($phaseDependingOn->getSorting() >= $dependingPhase->getSorting()) {
+            return false;
+        }
+
+        // check type combination
+
+        // Reflexion can depend on any other(!) type
+        if ($dependingPhase->getType() === ExercisePhaseType::REFLEXION && $phaseDependingOn->getType() !== ExercisePhaseType::REFLEXION) {
+            return true;
+        }
+
+        // VideoCutting can depend on VideoAnalysis
+        if ($dependingPhase->getType() === ExercisePhaseType::VIDEO_CUT && $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS) {
+            return true;
+        }
+
+        // other combinations are invalid
+        return false;
+    }
+
+    /**
      * @return ExercisePhase[]|Collection
      */
     public function duplicatePhasesOfExerciseToExercise(Exercise $originalExercise, Exercise $newExercise): Collection

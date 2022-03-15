@@ -49,6 +49,7 @@ class ExercisePhaseController extends AbstractController
     private LiveSyncService $liveSyncService;
     private RouterInterface $router;
     private ExercisePhaseRepository $exercisePhaseRepository;
+    private ExercisePhaseService $exercisePhaseService;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private LoggerInterface $logger;
     private SolutionService $solutionService;
@@ -60,6 +61,7 @@ class ExercisePhaseController extends AbstractController
         LiveSyncService $liveSyncService,
         RouterInterface $router,
         ExercisePhaseRepository $exercisePhaseRepository,
+        ExercisePhaseService $exercisePhaseService,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         LoggerInterface $logger,
         SolutionService $solutionService
@@ -72,6 +74,7 @@ class ExercisePhaseController extends AbstractController
         $this->liveSyncService = $liveSyncService;
         $this->router = $router;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
+        $this->exercisePhaseService = $exercisePhaseService;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->solutionService = $solutionService;
     }
@@ -315,7 +318,7 @@ class ExercisePhaseController extends AbstractController
         $entityManager->remove($exercisePhase);
         $entityManager->flush();
 
-        // Update sortings
+        // Update sorting
         /** @var ExercisePhase[] $remainingPhases */
         $remainingPhases = $this->exercisePhaseRepository->findAllSortedBySorting($exercise);
 
@@ -503,6 +506,10 @@ class ExercisePhaseController extends AbstractController
         return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
     }
 
+    /**
+     * TODO: rather check for 'hasValidPreviousPhase'
+     * @deprecated
+     */
     private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
     {
         $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();
@@ -511,14 +518,7 @@ class ExercisePhaseController extends AbstractController
             return false;
         }
 
-        // check sorting: $exercisePhaseDependedOn must come _before_ this exercisePhase
-        if ($exercisePhaseDependedOn->getSorting() < $exercisePhase->getSorting()) {
-            return true;
-        }
-
-        // check type to be VideoAnalysis
-        // TODO
-        return $exercisePhaseDependedOn->getType() !== ExercisePhaseType::VIDEO_ANALYSIS;
+        return !$this->exercisePhaseService->isValidDependingOnExerciseCombination($exercisePhaseDependedOn, $exercisePhase);
     }
 
     private function getPhaseForm(ExercisePhase $exercisePhase): FormInterface

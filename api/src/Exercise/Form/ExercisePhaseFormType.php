@@ -4,6 +4,7 @@ namespace App\Exercise\Form;
 
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Exercise\Controller\ExercisePhaseService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,9 +20,12 @@ class ExercisePhaseFormType extends AbstractType
 {
     private ExercisePhaseRepository $exercisePhaseRepository;
 
-    public function __construct(ExercisePhaseRepository $exercisePhaseRepository)
+    private ExercisePhaseService $exercisePhaseService;
+
+    public function __construct(ExercisePhaseRepository $exercisePhaseRepository, ExercisePhaseService $exercisePhaseService)
     {
         $this->exercisePhaseRepository = $exercisePhaseRepository;
+        $this->exercisePhaseService = $exercisePhaseService;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -29,7 +33,11 @@ class ExercisePhaseFormType extends AbstractType
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
         $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhaseType::VIDEO_ANALYSIS;
-        $exercisePhaseChoices = $this->exercisePhaseRepository->findBy(['belongsToExercise' => $exercisePhase->belongsToExercise]);
+
+        $phasesFromSameCourse = $this->exercisePhaseRepository->findBy(['belongsToExercise' => $exercisePhase->belongsToExercise]);
+        $exercisePhaseChoices = array_filter($phasesFromSameCourse, function (ExercisePhase $phaseDependingOn) use ($exercisePhase) {
+            return $this->exercisePhaseService->isValidDependingOnExerciseCombination($phaseDependingOn, $exercisePhase);
+        });
 
         $components = $exercisePhase->getAllowedComponents();
         $componentChoices = [];

@@ -66,7 +66,7 @@ Feature: Copy Exercises
 
         When I am logged in via browser as 'test-admin@sandstorm.de'
         And I click on 'exercise1'
-        And I click on 'Aufgabe Kopieren'
+        And I click on 'Aufgabe kopieren'
         And I click on 'course2'
         And I click on 'Aufgabe mit Phase kopieren'
         And I submit the form
