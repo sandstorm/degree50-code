@@ -20,7 +20,7 @@ export const ExercisePhaseApp: React.FC = () => {
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>
             <div className={'exercise-phase__content'} ref={ref}>
-                {height && <VideoAnalysis />}
+                {height > 0 && <VideoAnalysis />}
             </div>
         </OverlayProvider>
     )

@@ -5,12 +5,12 @@ namespace App\Exercise\Controller;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
 use App\Entity\Exercise\VideoCode;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\Controller\Dto\PreviousSolutionDto;
 use App\Repository\Exercise\AutosavedSolutionRepository;
-use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Twig\AppRuntime;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,7 +21,6 @@ class SolutionService
     private AppRuntime $appRuntime;
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
-    private ExercisePhaseRepository $exercisePhaseRepository;
     private ManagerRegistry $managerRegistry;
     private LoggerInterface $logger;
 
@@ -30,18 +29,21 @@ class SolutionService
         LoggerInterface $logger,
         AppRuntime $appRuntime,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        ExercisePhaseRepository $exercisePhaseRepository,
         ManagerRegistry $managerRegistry
     )
     {
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->appRuntime = $appRuntime;
-        $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->logger = $logger;
         $this->managerRegistry = $managerRegistry;
     }
 
+    /**
+     * @param ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder
+     * @param ExercisePhaseTeam[] $teams
+     * @return ClientSideSolutionDataBuilder
+     */
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
         array $teams
@@ -54,11 +56,10 @@ class SolutionService
         $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
 
         $previousSolutionDtos = array_map(function ($exercisePhaseTeam) {
-            /** @var ExercisePhaseTeam $exercisePhaseTeam */
             $solutionEntity = $exercisePhaseTeam->getSolution();
 
             $cutVideo = $solutionEntity->getCutVideo();
-            $clientSideCutVideo = $cutVideo ? $cutVideo->getAsArray($this->appRuntime) : null;
+            $clientSideCutVideo = $cutVideo?->getAsArray($this->appRuntime);
 
             return PreviousSolutionDto::create(
                 $exercisePhaseTeam->getCreator(),
@@ -83,9 +84,13 @@ class SolutionService
         // Get configured videoCodePrototypes from ExercisePhase
         if (!empty($teams)) {
             $exercisePhase = $teams[0]->getExercisePhase();
-            $configuredVideoCodePrototypes = array_map(function (VideoCode $videoCodePrototypeEntity) {
-                return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
-            }, $exercisePhase->getVideoCodes()->toArray());
+
+            $configuredVideoCodePrototypes = [];
+            if ($exercisePhase instanceof VideoAnalysisPhase) {
+                $configuredVideoCodePrototypes = array_map(function (VideoCode $videoCodePrototypeEntity) {
+                    return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
+                }, $exercisePhase->getVideoCodes()->toArray());
+            }
 
             $clientSideSolutionDataBuilder->addVideoCodePrototypes($configuredVideoCodePrototypes);
         }
@@ -102,9 +107,15 @@ class SolutionService
         // Note: This might either be an autosaved solution or an actual solution
         // FIXME: we should probably find a better way to handle solutions and autosavedSolutions in general.
         $solutionEntity = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
-        $configuredVideoCodePrototypes = array_map(function (VideoCode $videoCodePrototypeEntity) {
-            return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
-        }, $exercisePhase->getVideoCodes()->toArray());
+
+        $configuredVideoCodePrototypes = [];
+
+        if ($exercisePhase instanceof VideoAnalysisPhase) {
+            $configuredVideoCodePrototypes = array_map(function (VideoCode $videoCodePrototypeEntity) {
+                return ServerSideVideoCodePrototype::fromVideoCodeEntity($videoCodePrototypeEntity);
+            }, $exercisePhase->getVideoCodes()->toArray());
+        }
+
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
         $previousSolutionDtos = $this->getPreviousSolutionDtosForVideoEditor($exercisePhase, $exercisePhaseTeam);
 
@@ -115,7 +126,8 @@ class SolutionService
         // TODO we need to at least test this (@see {server-to-client-solution-conversion.feature}
         $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
         $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
-        $clientSideCutVideo = $cutVideo ? $cutVideo->getAsArray($this->appRuntime) : null;
+
+        $clientSideCutVideo = $cutVideo?->getAsArray($this->appRuntime);
 
         $clientSideSolutionDataBuilder
             ->addCurrentSolution($solutionEntity->getSolution(), $exercisePhaseTeam, $clientSideCutVideo)

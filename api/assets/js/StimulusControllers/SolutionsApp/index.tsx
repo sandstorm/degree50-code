@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, {useMemo, useRef} from 'react'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -11,17 +11,22 @@ import {
 import CuttingSolutions from './CuttingSolutions'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 
-const mapStateToProps = (state: ConfigStateSlice) => {
-    const activePhaseType = configSelectors.selectPhaseType(state)
-    const isCuttingPhase = activePhaseType === ExercisePhaseTypesEnum.VIDEO_CUTTING
-    return {
-        isCuttingPhase,
-    }
-}
+const mapStateToProps = (state: ConfigStateSlice) => ({
+    activePhaseType: configSelectors.selectPhaseType(state),
+})
 
 const mapDispatchToProps = {}
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+
+const getSolutionComponentByPhaseType = (phaseType: ExercisePhaseTypesEnum) => {
+    switch (phaseType) {
+        case ExercisePhaseTypesEnum.VIDEO_ANALYSIS: return <VideoAnalysis />
+        case ExercisePhaseTypesEnum.VIDEO_CUTTING: return <CuttingSolutions />
+        default:
+            throw new Error(`No SolutionApp available for ExercisePhase with type "${phaseType}"`)
+    }
+}
 
 const SolutionsApp = (props: Props) => {
     // react-aria-modal watches a container element for aria-modal nodes and
@@ -32,10 +37,12 @@ const SolutionsApp = (props: Props) => {
 
     const { height } = useDebouncedResizeObserver(ref, 500)
 
+    const PhaseComponent = useMemo(() => getSolutionComponentByPhaseType(props.activePhaseType), [props.activePhaseType])
+
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>
             <div className={'exercise-phase__content'} ref={ref}>
-                {props.isCuttingPhase ? <CuttingSolutions /> : height && <VideoAnalysis />}
+                { height > 0 && PhaseComponent}
             </div>
         </OverlayProvider>
     )

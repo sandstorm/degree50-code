@@ -44,9 +44,11 @@
                 <div class="col-md-6">{{ form_row(form.isGroupPhase) }}</div>
                 <div class="col-md-6">{{ form_row(form.dependsOnExercisePhase) }}</div>
             </div>
-            <div class="row">
-                <div class="col-md-6">{{ form_row(form.otherSolutionsAreAccessible) }}</div>
-            </div>
+            {% if exercisePhase.type.value != 'reflexion' %}
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.otherSolutionsAreAccessible) }}</div>
+                </div>
+            {% endif %}
             <hr />
 
             {{ form_row(form.name) }}
