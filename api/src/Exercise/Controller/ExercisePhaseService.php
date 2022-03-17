@@ -8,9 +8,7 @@ use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Entity\Exercise\Material;
 use App\Entity\Exercise\VideoCode;
-use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,9 +49,9 @@ class ExercisePhaseService
     }
 
     /**
-     * @return ExercisePhase[]|Collection
+     * @return ExercisePhase[]|Collection<ExercisePhase>
      */
-    public function duplicatePhasesOfExerciseToExercise(Exercise $originalExercise, Exercise $newExercise): Collection
+    public function duplicatePhasesOfExercise(Exercise $originalExercise, Exercise $newExercise): Collection
     {
         $newPhases = $originalExercise->getPhases()->map(
             function (ExercisePhase $originalPhase) use ($newExercise) {

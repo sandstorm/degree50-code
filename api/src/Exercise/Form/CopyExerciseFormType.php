@@ -3,7 +3,7 @@
 namespace App\Exercise\Form;
 
 use App\Entity\Account\Course;
-use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\CopyExerciseFormDto;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -23,12 +23,11 @@ class CopyExerciseFormType extends AbstractType
                 // FIXME: The combo 'required' & 'expanded' renders a '*' before every option :( maybe suppress via css
                 'required' => true,
                 'expanded' => true,
-                'label' => 'Zu kurs hinzufügen', // TODO use translation
+                'label' => 'Zu kurs hinzufügen',
                 'translation_domain' => 'forms',
             ])
             ->add('copyPhases', CheckboxType::class, [
-                'mapped' => false,
-                'label' => 'Aufgabe mit Phase kopieren', // TODO use translation
+                'label' => 'Aufgabe mit Phase kopieren',
                 'required' => false,
                 'translation_domain' => 'forms',
             ])
@@ -38,7 +37,7 @@ class CopyExerciseFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Exercise::class,
+            'data_class' => CopyExerciseFormDto::class,
         ]);
     }
 }
