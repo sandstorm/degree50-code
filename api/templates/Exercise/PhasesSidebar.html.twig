@@ -33,7 +33,7 @@
                             {{
                                 _self.sidebarLink(
                                     item.name,
-                                    item.dependsOnPreviousPhase,
+                                    item.dependsOnExercisePhase,
                                     item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
                                         'exercise-overview__exercise--show-phase-overview',
@@ -52,13 +52,13 @@
 
 
 
-{% macro sidebarLink(name, dependsOnPreviousPhase, iconClass, href, canView = true)  %}
+{% macro sidebarLink(name, dependsOnExercisePhase, iconClass, href, canView = true)  %}
     <a
         class="nav-link"
         {% if canView %} href="{{ href }}" {% endif %}
     >
         <i class="{{ iconClass }}"></i>
-        {% if dependsOnPreviousPhase %}
+        {% if dependsOnExercisePhase %}
             <i class="fas fa-arrow-up"
                title="{% trans %}exercisePhase.labels.dependsOnPreviousPhase{% endtrans %}"></i>
         {% endif %}

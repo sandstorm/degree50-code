@@ -497,12 +497,7 @@ EOT;
             $exercise = $exercisePhase->getBelongsToExercise();
             $course = $exercise->getCourse();
             $solution = $team->getSolution();
-            $previousPhase = $exercisePhase->getDependsOnPreviousPhase()
-                ? $this->exercisePhaseRepository->findOneBy([
-                    'sorting' => $exercisePhase->getSorting() - 1,
-                    'belongsToExercise' => $exercisePhase->getBelongsToExercise()
-                ])
-                : null;
+            $previousPhase = $exercisePhase->getDependsOnExercisePhase();
 
             return array_merge($carry, [[
                 // Solution
@@ -525,7 +520,7 @@ EOT;
                 $exercisePhase->getName(),
                 DegreeDataToCsvService::removeLineBreaksFromCellContent($exercisePhase->getTask()),
                 $exercisePhase->getType()->value,
-                $exercisePhase->getDependsOnPreviousPhase() ? 'Ja' : 'Nein',
+                $exercisePhase->getDependsOnExercisePhase() !== null ? 'Ja' : 'Nein',
                 $previousPhase ? $previousPhase->getId() : '-',
 
                 // Team

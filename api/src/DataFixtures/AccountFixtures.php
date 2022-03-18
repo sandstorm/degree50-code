@@ -32,11 +32,12 @@ class AccountFixtures extends Fixture
         // other fixtures can get this object using the AccountFixtures::COURSE_REFERENCE constant
         $this->addReference(self::COURSE_REFERENCE, $course);
 
-        $dozent = $this->createUser($manager, 'admin@sandstorm.de', [User::ROLE_ADMIN, User::ROLE_DOZENT]);
-        $this->addReference(self::CREATOR_REFERENCE, $dozent);
+        $admin = $this->createUser($manager, 'admin@sandstorm.de', [User::ROLE_ADMIN]);
+        $this->addReference(self::CREATOR_REFERENCE, $admin);
 
+        // dozent user
+        $dozent = $this->createUser($manager, 'dozent@sandstorm.de', [USER::ROLE_DOZENT]);
         $this->createCourseRole($manager, CourseRole::DOZENT, $course, $dozent);
-        $this->createCourseRole($manager, CourseRole::DOZENT, $course2, $dozent);
 
         // student user
         $student = $this->createUser($manager, 'student@sandstorm.de', [User::ROLE_STUDENT]);

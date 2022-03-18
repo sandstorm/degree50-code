@@ -12,7 +12,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
         And I have an exercise with ID "ex" belonging to course "c"
         And I have an exercise phase "ex-p1" belonging to exercise "ex"
         And I have a team with ID "team-1" belonging to exercise phase "ex-p1"
-        And I have a predefined videoCodePrototype belonging to execise phase "ex-p1" and with properties
+        And I have a predefined videoCodePrototype belonging to exercise phase "ex-p1" and with properties
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
 

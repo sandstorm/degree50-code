@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
+use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Validator\Constraints as Assert;
+use function PHPUnit\Framework\matches;
 
 /**
  * Describes a single Phase of an exercise (e.g. a "Video-Analysis" or "Video-Cutting").
@@ -102,16 +106,25 @@ abstract class ExercisePhase
     private Collection $videos;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhase")
+     * @JoinColumn(referencedColumnName="id", nullable=true)
      */
-    private bool $dependsOnPreviousPhase = false;
+    private ?ExercisePhase $dependsOnExercisePhase = null;
 
     /**
      * @ORM\Column(type="boolean")
      */
     private bool $otherSolutionsAreAccessible = false;
 
-    public function __construct(string $id = null)
+    public static function byType(ExercisePhaseType $type, string $id = null): VideoAnalysisPhase | VideoCutPhase
+    {
+        return match ($type) {
+            ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase($id),
+            ExercisePhaseType::VIDEO_CUT => new VideoCutPhase($id),
+        };
+    }
+
+    protected function __construct(string $id = null)
     {
         $this->generateOrSetId($id);
         $this->teams = new ArrayCollection();
@@ -270,15 +283,14 @@ abstract class ExercisePhase
         return $this;
     }
 
-    // The actual phase the current phase depends on is determined by their respective sorting.
-    public function getDependsOnPreviousPhase(): ?bool
+    public function getDependsOnExercisePhase(): ?ExercisePhase
     {
-        return $this->dependsOnPreviousPhase;
+        return $this->dependsOnExercisePhase;
     }
 
-    public function setDependsOnPreviousPhase(bool $dependsOnPreviousPhase): self
+    public function setDependsOnExercisePhase(?ExercisePhase $exercisePhase): self
     {
-        $this->dependsOnPreviousPhase = $dependsOnPreviousPhase;
+        $this->dependsOnExercisePhase = $exercisePhase;
 
         return $this;
     }

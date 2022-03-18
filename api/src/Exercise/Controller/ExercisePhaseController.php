@@ -284,8 +284,8 @@ class ExercisePhaseController extends AbstractController
         $exercisePhase->setSorting($exercisePhaseAtNewSortIndex->getSorting());
         $exercisePhaseAtNewSortIndex->setSorting($currentSortIndex);
         // reset the depending status to false just to avoid strange behavior -> user hast to set it anew
-        $exercisePhase->setDependsOnPreviousPhase(false);
-        $exercisePhaseAtNewSortIndex->setDependsOnPreviousPhase(false);
+        $exercisePhase->setDependsOnExercisePhase(null);
+        $exercisePhaseAtNewSortIndex->setDependsOnExercisePhase(null);
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $entityManager = $this->getDoctrine()->getManager();
@@ -399,6 +399,7 @@ class ExercisePhaseController extends AbstractController
                 break;
         }
 
+        $dependsOnPreviousPhase = $exercisePhase->getDependsOnExercisePhase() !== null;
 
         return [
             'title' => $exercisePhase->getName(),
@@ -408,7 +409,7 @@ class ExercisePhaseController extends AbstractController
             'userId' => $user->getId(),
             'userName' => $user->getEmail(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $exercisePhase->getDependsOnPreviousPhase(),
+            'dependsOnPreviousPhase' => $dependsOnPreviousPhase,
             'readOnly' => $readOnly,
             'material' => array_map(function (Material $entry) {
                 return [
@@ -499,12 +500,19 @@ class ExercisePhaseController extends AbstractController
 
         private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
     {
-        $dependsOnPreviousPhase = $exercisePhase->getDependsOnPreviousPhase();
-        $previousPhase = $this->exercisePhaseRepository->findOneBy(['sorting' => $exercisePhase->getSorting() - 1, 'belongsToExercise' => $exercisePhase->getBelongsToExercise()]);
-        $hasNoPreviousPhase = empty($previousPhase);
-        $previousPhaseIsInvalid = $previousPhase && $previousPhase->getType() !== ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
+        $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();
 
-        return $dependsOnPreviousPhase && ($hasNoPreviousPhase || $previousPhaseIsInvalid);
+        if ($exercisePhaseDependedOn == null) {
+            return false;
+        }
+
+        // check sorting: has to be the previous phase by sorting (for now)
+        if ($exercisePhaseDependedOn->getSorting() !== $exercisePhase->getSorting() - 1) {
+            return true;
+        }
+
+        // check type to be VideoAnalysis
+        return $exercisePhaseDependedOn->getType() !== ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
     }
 
     private function getPhaseForm(ExercisePhase $exercisePhase): FormInterface
@@ -521,7 +529,7 @@ class ExercisePhaseController extends AbstractController
             'name' => $phase->getName(),
             'task' => $phase->getTask(),
             'isGroupPhase' => $phase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $phase->getDependsOnPreviousPhase(),
+            'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
             'videos' => $phase->getVideos()->map(fn(Video $video) => [
                 'videoId' => $video->getId()
             ])->toArray(),
@@ -538,7 +546,7 @@ class ExercisePhaseController extends AbstractController
             'name' => $phase->getName(),
             'task' => $phase->getTask(),
             'isGroupPhase' => $phase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $phase->getDependsOnPreviousPhase(),
+            'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
             'videos' => $phase->getVideos()->map(fn(Video $video) => [
                 'videoId' => $video->getId()
             ])->toArray(),

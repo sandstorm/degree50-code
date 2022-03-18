@@ -143,32 +143,26 @@ class SolutionService
     {
         // Get the relevant solutions of the previous phase,
         // meaning we get the solutions of each of the members of the current team
-        if ($exercisePhase->getDependsOnPreviousPhase() && $exercisePhaseTeam != null) {
-            $previousPhase = $this->exercisePhaseRepository->findOneBy([
-                'sorting' => $exercisePhase->getSorting() - 1,
-                'belongsToExercise' => $exercisePhase->getBelongsToExercise()
-            ]);
+        $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();
+        if ($exercisePhaseDependedOn !== null && $exercisePhaseTeam != null) {
+            // FIXME
+            // we can probably retrieve previous phases with a single query instead
+            return array_reduce($exercisePhaseTeam->getMembers()->toArray(), function (array $carry, User $teamMember) use ($exercisePhaseDependedOn) {
+                $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $exercisePhaseDependedOn);
+                $solutionEntity = $teamOfPreviousPhase?->getSolution();
 
-            if ($previousPhase) {
-                // FIXME
-                // we can probably retrieve previous phases with a single query instead
-                return array_reduce($exercisePhaseTeam->getMembers()->toArray(), function (array $carry, User $teamMember) use ($previousPhase) {
-                    $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $previousPhase);
-                    $solutionEntity = $teamOfPreviousPhase ? $teamOfPreviousPhase->getSolution() : null;
+                if (empty($solutionEntity)) {
+                    return $carry;
+                }
 
-                    if (empty($solutionEntity)) {
-                        return $carry;
-                    }
-
-                    return array_merge($carry, [PreviousSolutionDto::create(
-                        $teamMember,
-                        $solutionEntity->getSolution(),
-                        $solutionEntity->getId(),
-                        // TODO: parameter type mismatch
-                        $solutionEntity->getCutVideo()
-                    )]);
-                }, []);
-            }
+                return array_merge($carry, [PreviousSolutionDto::create(
+                    $teamMember,
+                    $solutionEntity->getSolution(),
+                    $solutionEntity->getId(),
+                    // TODO: parameter type mismatch
+                    $solutionEntity->getCutVideo()
+                )]);
+            }, []);
         }
 
         return [];

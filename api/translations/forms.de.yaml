@@ -36,6 +36,10 @@ exercise:
         title: 'Aufgabe löschen'
         messages:
             success: 'Aufgabe erfolgreich gelöscht!'
+    copy:
+        title: 'Aufgabe kopieren'
+        message:
+            success: 'Aufgabe erfolgreich kopert!'
 
 exercisePhase:
     labels:
