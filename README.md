@@ -2,39 +2,39 @@
 
 <!-- vim-markdown-toc GitLab -->
 
-* [Making a versioned release](#making-a-versioned-release)
-    * [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
-* [Development Setup](#development-setup)
-    * [Prerequisites](#prerequisites)
-    * [Get Started with Development](#get-started-with-development)
-    * [Connect with database](#connect-with-database)
-    * [Symfony commands](#symfony-commands)
-    * [Imported endpoints](#imported-endpoints)
-    * [Running Behat Tests](#running-behat-tests)
-    * [Running Frontend Tests](#running-frontend-tests)
-    * [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
-* [Creating test users on the prod system](#creating-test-users-on-the-prod-system)
-* [Prodsystem and Testsystem](#prodsystem-and-testsystem)
-    * [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
-        * [Prerequisites](#prerequisites-1)
-        * [Setup](#setup)
-        * [Connect](#connect)
-        * [Connect to the Production Database](#connect-to-the-production-database)
-    * [Ansible Setup](#ansible-setup)
-    * [Firewall rules](#firewall-rules)
-    * [Automatic Updates](#automatic-updates)
-    * [Monitoring](#monitoring)
-        * [Uptime-robot](#uptime-robot)
-        * [Netdata](#netdata)
-            * [Access the GUI](#access-the-gui)
-    * [Deployment via Gitlab CI](#deployment-via-gitlab-ci)
-    * [How to remove a Video from Prod](#how-to-remove-a-video-from-prod)
-    * [Prod Partition Setup](#prod-partition-setup)
-* [Known Issues](#known-issues)
-    * [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
-* [Backups](#backups)
-* [Updating Datenschutzerklärung](#updating-datenschutzerklärung)
-* [Updating SAML IDP Certificate of TU Dortmund](#updating-saml-idp-certificate-of-tu-dortmund)
+-   [Making a versioned release](#making-a-versioned-release)
+    -   [Where to find the version number inside the app](#where-to-find-the-version-number-inside-the-app)
+-   [Development Setup](#development-setup)
+    -   [Prerequisites](#prerequisites)
+    -   [Get Started with Development](#get-started-with-development)
+    -   [Connect with database](#connect-with-database)
+    -   [Symfony commands](#symfony-commands)
+    -   [Imported endpoints](#imported-endpoints)
+    -   [Running Behat Tests](#running-behat-tests)
+    -   [Running Frontend Tests](#running-frontend-tests)
+    -   [Testing the SAML Authentication locally](#testing-the-saml-authentication-locally)
+-   [Creating test users on the prod system](#creating-test-users-on-the-prod-system)
+-   [Prodsystem and Testsystem](#prodsystem-and-testsystem)
+    -   [Connecting via SSH to the production server](#connecting-via-ssh-to-the-production-server)
+        -   [Prerequisites](#prerequisites-1)
+        -   [Setup](#setup)
+        -   [Connect](#connect)
+        -   [Connect to the Production Database](#connect-to-the-production-database)
+    -   [Ansible Setup](#ansible-setup)
+    -   [Firewall rules](#firewall-rules)
+    -   [Automatic Updates](#automatic-updates)
+    -   [Monitoring](#monitoring)
+        -   [Uptime-robot](#uptime-robot)
+        -   [Netdata](#netdata)
+            -   [Access the GUI](#access-the-gui)
+    -   [Deployment via Gitlab CI](#deployment-via-gitlab-ci)
+    -   [How to remove a Video from Prod](#how-to-remove-a-video-from-prod)
+    -   [Prod Partition Setup](#prod-partition-setup)
+-   [Known Issues](#known-issues)
+    -   [(random) Unexpected Behavior (i.e. Login suddenly not working)](#random-unexpected-behavior-ie-login-suddenly-not-working)
+-   [Backups](#backups)
+-   [Updating Datenschutzerklärung](#updating-datenschutzerklärung)
+-   [Updating SAML IDP Certificate of TU Dortmund](#updating-saml-idp-certificate-of-tu-dortmund)
 
 <!-- vim-markdown-toc -->
 
@@ -119,10 +119,12 @@ To create and deploy a versioned release follow these steps:
 
 ### Running Behat Tests
 
-1. Start docker containers `docker-compose up -d`
-2. Enter `api` container `docker-compose exec api /bin/bash`
-3. execute tests `PLAYWRIGHT_API_URL="http://host.docker.internal:3000" SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" APP_ENV=test ./vendor/bin/behat`
-   1. use the `--tags` flag to run specific tests (i.e. `--tags myTest`)
+1. Install e2e-testrunner dependencies: `cd e2e-testrunner && npm install`
+2. Start e2e-testrunner: `node index.js`
+3. Start docker containers `docker-compose up -d`
+4. Enter `api` container `docker-compose exec api /bin/bash`
+5. execute tests `PLAYWRIGHT_API_URL="http://host.docker.internal:3000" SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" APP_ENV=test ./vendor/bin/behat` 
+6. use the `--tags` flag to run specific tests (i.e. `--tags myTest`)
 
 > **NOTE**: We need the api container to create an environemnt to run our tests
 > in. However we currently do not use the actual running application and database.
@@ -422,9 +424,11 @@ Restoration is also handled by the TU-Dortmund (just make a call).
 2. Update the text in `api/templates/Partials/TermsOfUseContent.html.twig`
 
 ## Updating SAML IDP Certificate of TU Dortmund
+
 It happens that the certificate of the SAML Identity Provider (IDP) of TU Dortmund changes.
 In that case the SAML login would not work with the old certificate and we have to update it on our end:
+
 1. There should be an email from TU Dortmund's ITMC that notifies all Service Providers (SP) about this change
 2. In that mail there should be information about the new certificate (in `xml` and/or `pem` form)
 3. Paste the new certificate into the `hslavich_onelogin_saml.idp.x509cert` setting in `api/config/packages/hslavich_onelogin_saml.yaml`
-4. Push-Tag-Release should be enough to apply the changes to production 
+4. Push-Tag-Release should be enough to apply the changes to production

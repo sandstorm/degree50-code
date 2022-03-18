@@ -65,7 +65,7 @@
                                     {% else %}
                                         <i class="fas fa-user"></i>
                                     {% endif %}
-                                    {% if exercisePhase.dependsOnPreviousPhase %}
+                                    {% if exercisePhase.dependsOnExercisePhase %}
                                         <i class="fas fa-arrow-up"
                                            title="{% trans %}exercisePhase.labels.dependsOnPreviousPhase{% endtrans %}"></i>
                                     {% endif %}
@@ -84,7 +84,9 @@
                                         </a>
                                     {% endif %}
                                     <a class="btn btn-primary btn-sm"
-                                       href="{{ path('exercise-overview__exercise-phase--edit', {id: exercise.id, phase_id: exercisePhase.id}) }}">
+                                       href="{{ path('exercise-overview__exercise-phase--edit', {id: exercise.id, phase_id: exercisePhase.id}) }}"
+                                       data-test-id="exercisePhaseEditButton"
+                                       >
                                         <i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.button{% endtrans %}
                                     </a>
 

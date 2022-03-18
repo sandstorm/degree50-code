@@ -254,6 +254,27 @@ final class DegreeContext implements Context
         $tokenStorage->setToken(null);
     }
 
+
+    /**
+     * @Given I have a video with ID :videoId belonging exercisePhase with ID :exercisePhaseId
+     *
+     * NOTE: The video you are trying to add needs to be available inside the same course, the
+     * exercisePhase belongs to
+     */
+    public function iHaveAVideoWithIdBelongingToExercisePhaseWithId($videoId, $exercisePhaseId)
+    {
+        /** @var ExercisePhase $exercisePhase */
+        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
+        /** @var Video $video */
+        $video = $this->entityManager->find(Video::class, $videoId);
+
+        $exercisePhase->addVideo($video);
+
+        $this->entityManager->persist($exercisePhase);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
     /**
      * @Given I have a video with ID :videoId belonging to course :courseId
      */
@@ -379,7 +400,7 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I have a predefined videoCodePrototype belonging to execise phase :exercisePhaseId and with properties
+     * @Given I have a predefined videoCodePrototype belonging to exercise phase :exercisePhaseId and with properties
      */
     public function iHaveAPredefinedVideocodeprototypeWithIdBelongingToExecisePhaseAndWithProperties(
         $exercisePhaseId,
@@ -503,12 +524,12 @@ final class DegreeContext implements Context
      */
     public function theExercisePhaseDependsOnThePreviousPhase($exercisePhaseId1, $exercisePhaseId2)
     {
-        /** @var ExercisePhase $exercisePhase */
+        /** @var ExercisePhase $exercisePhase1 */
         $exercisePhase1 = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId1);
-        /** @var ExercisePhase $exercisePhase */
+        /** @var ExercisePhase $exercisePhase2 */
         $exercisePhase2 = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId2);
 
-        $exercisePhase1->setDependsOnPreviousPhase(true);
+        $exercisePhase1->setDependsOnExercisePhase($exercisePhase2);
         $exercisePhase1->setSorting(2);
         $exercisePhase2->setSorting(1);
 
@@ -665,26 +686,6 @@ final class DegreeContext implements Context
         $user = $this->entityManager->find(User::class, $username);
 
         $exercisePhaseTeam->addMember($user);
-    }
-
-    /**
-     * @Given Exercise phase :currentExercisePhaseID depends on previous phase :previousExercisePhaseID
-     */
-    public function exercisePhaseDependsOnPreviousPhase($currentExercisePhaseID, $previousExercisePhaseID)
-    {
-        /** @var ExercisePhase $currentExercisePhase */
-        $currentExercisePhase = $this->entityManager->find(ExercisePhase::class, $currentExercisePhaseID);
-        /** @var ExercisePhase $previousExercisePhase */
-        $previousExercisePhase = $this->entityManager->find(ExercisePhase::class, $previousExercisePhaseID);
-
-        $previousExercisePhase->setSorting(0);
-        $currentExercisePhase->setSorting(1);
-        $currentExercisePhase->setDependsOnPreviousPhase(true);
-
-        $this->entityManager->persist($previousExercisePhase);
-        $this->entityManager->persist($currentExercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
     }
 
     /**
@@ -1023,7 +1024,7 @@ final class DegreeContext implements Context
             $material = new Material($materialId);
             $fileName = tempnam(sys_get_temp_dir(), 'foo');
             file_put_contents($fileName, 'my file');
-            $material->setName($fileName);
+            $material->setName('TEST_MATERIAL_' . $materialId);
             $material->setMimeType('application/pdf');
         }
 
@@ -1237,10 +1238,34 @@ final class DegreeContext implements Context
         $this->playwrightConnector->execute($this->playwrightContext,
             // language=JavaScript
             "
-                await vars.page.click(
-                    `[role='button']:has-text('{$innerText}'), button:has-text('{$innerText}'), .btn:has-text('{$innerText}'), a:has-text('{$innerText}')`
-                )
+                await vars.page.click(`text=${innerText}`)
             "
+        );
+    }
+
+    /**
+     * @When I click on first element with testId :testId
+     */
+    public function iClickOnFirstElementWith($testId)
+    {
+        $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                await vars.page.click('data-test-id=$testId')
+            "
+        );
+    }
+
+    /**
+     * @Given I submit the form
+     */
+    public function iSubmitTheForm()
+    {
+        $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            '
+                await vars.page.click(`[type="submit"]`)
+            '
         );
     }
 
@@ -1283,5 +1308,69 @@ final class DegreeContext implements Context
                 await vars.page.click(`button#exercise_save`)
             "
         );
+    }
+
+    /**
+     * @Given An Exercise with the following data exists:
+     */
+    public function assureAnExerciseWithTheFollowingDataExists(TableNode $tableNode)
+    {
+        $exerciseData = $tableNode->getHash()[0];
+        /** @var Course $course */
+        $course = $this->entityManager->find(Course::class, $exerciseData['course']);
+        /** @var User $creator */
+        $creator = $this->entityManager->find(User::class, $exerciseData['creator']);
+
+        $exercise = new Exercise($exerciseData['id']);
+        $exercise->setName($exerciseData['name']);
+        $exercise->setDescription($exerciseData['description']);
+        $exercise->setCreator($creator);
+        $exercise->setCourse($course);
+
+        $this->entityManager->persist($exercise);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given An ExercisePhase with the following data exists:
+     */
+    public function assureAnExercisePhaseWithTheFollowingDataExists(TableNode $tableNode)
+    {
+        foreach ($tableNode->getHash() as $phaseData) {
+            $phaseType = ExercisePhase\ExercisePhaseType::from($phaseData['type']);
+
+            $phase = ExercisePhase::byType($phaseType, $phaseData['id']);
+
+            $phase->setName($phaseData['name']);
+            $phase->setTask($phaseData['task']);
+            $phase->setIsGroupPhase((boolval($phaseData['isGroupPhase'])));
+            $phase->setSorting(intval($phaseData['sorting']));
+            $phase->setOtherSolutionsAreAccessible(boolval($phaseData['otherSolutionsAreAccessible']));
+
+            /** @var Exercise $exercise */
+            $exercise = $this->entityManager->find(Exercise::class, $phaseData['belongsToExercise']);
+            $phase->setBelongsToExercise($exercise);
+
+            if ($phaseData['dependsOnPhase'] !== null) {
+                /** @var ExercisePhase $phaseDependingOn */
+                $phaseDependingOn = $this->entityManager->find(ExercisePhase::class, $phaseData['dependsOnPhase']);
+                $phase->setDependsOnExercisePhase($phaseDependingOn);
+            }
+
+            // phase type specific
+            switch ($phaseType) {
+                case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS:
+                    $phase->setVideoAnnotationsActive(boolval($phaseData['videoAnnotationsActive']));
+                    $phase->setVideoCodesActive(boolval($phaseData['videoCodesActive']));
+                    break;
+                case ExercisePhase\ExercisePhaseType::VIDEO_CUT:
+                    break;
+            }
+
+            $this->entityManager->persist($phase);
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $this->entityManager->flush();
+        }
     }
 }

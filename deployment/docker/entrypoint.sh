@@ -39,7 +39,7 @@ if [ "$APP_ENV" != 'prod' ]; then
 	APP_ENV=test bin/console doctrine:migrations:migrate --no-interaction
 
 	# for local dev we need to start the test server instance
-	ln -s /etc/nginx/nginx-e2e-test-server.conf /etc/nginx/conf.d/nginx-e2e-test-server.conf
+	ln -s -f /etc/nginx/nginx-e2e-test-server.conf /etc/nginx/conf.d/nginx-e2e-test-server.conf
 fi
 
 echo "Waiting for db to be ready..."

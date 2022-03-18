@@ -7,6 +7,7 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Exercise\Form\CopyExerciseFormType;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
@@ -17,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -27,27 +29,32 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ExerciseController extends AbstractController
 {
     private ExercisePhaseRepository $exercisePhaseRepository;
+    private ExercisePhaseService $exercisePhaseService;
     private UserExerciseInteractionRepository $userExerciseInteractionRepository;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private ExerciseService $exerciseService;
     private UserExerciseInteractionService $userExerciseInteractionService;
+    private Security $security;
 
     private LoggerInterface $logger;
 
     public function __construct(
         ExercisePhaseRepository $exercisePhaseRepository,
+        ExercisePhaseService $exercisePhaseService,
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
         ExerciseService $exerciseService,
         UserExerciseInteractionRepository $userExerciseInteractionRepository,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         UserExerciseInteractionService $userExerciseInteractionService,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        Security $security,
     )
     {
         $this->exercisePhaseRepository = $exercisePhaseRepository;
+        $this->exercisePhaseService = $exercisePhaseService;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
@@ -55,6 +62,7 @@ class ExerciseController extends AbstractController
         $this->exerciseService = $exerciseService;
         $this->userExerciseInteractionService = $userExerciseInteractionService;
         $this->logger = $logger;
+        $this->security = $security;
     }
 
     /**
@@ -304,5 +312,84 @@ class ExerciseController extends AbstractController
         );
 
         return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);
+    }
+
+    /**
+     * TODO: special authorization?
+     * @IsGranted("edit", subject="exercise")
+     * @Route("/exercise/copy/{id}", name="exercise-overview__exercise--copy")
+     */
+    public function copy(Request $request, Exercise $exercise): Response
+    {
+        // Exercise that is exclusively used by the form
+        // WHY: using the original Exercise in the form will automatically change and persist it but we want
+        //      to keep the original Exercise untouched
+        $transientExercise = new Exercise();
+        $transientExercise->setName($exercise->getName());
+        $transientExercise->setDescription($exercise->getDescription());
+        $transientExercise->setCreator($exercise->getCreator());
+        $transientExercise->setCreatedAtValue();
+        $transientExercise->setStatus($exercise->getStatus());
+        $transientExercise->setCourse($exercise->getCourse());
+
+        $form = $this->createForm(CopyExerciseFormType::class, $transientExercise);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /**
+             * @var Exercise $updatedTransientExercise
+             */
+            $updatedTransientExercise = $form->getData();
+
+            $selectedCourse = $updatedTransientExercise->getCourse();
+
+            /** @var User $user */
+            $user = $this->security->getUser();
+
+            // WHY: If 'copyPhases' is set to 'false' in form then the array key does (somehow) not exists
+            $copyPhases = array_key_exists('copyPhases', $request->request->get('copy_exercise_form'))
+                && $request->request->get('copy_exercise_form')['copyPhases'];
+
+            /**
+             * The new copy of the exercise that will be persisted
+             */
+            $newExercise = new Exercise();
+
+            // copy stuff over to new Exercise
+            $newExercise->setName($updatedTransientExercise->getName());
+            $newExercise->setDescription($updatedTransientExercise->getDescription());
+            // set creator to current user performing the action
+            $newExercise->setCreator($user);
+            $newExercise->setCreatedAtValue();
+            // set status to "created" (unpublished)
+            $newExercise->setStatus(Exercise::EXERCISE_CREATED);
+            // set course to Course the user selected in form
+            $newExercise->setCourse($selectedCourse);
+
+            // create new ExercisePhases by duplicating the original ones
+            if ($copyPhases) {
+                // mutates
+                $newPhases = $this->exercisePhaseService->duplicatePhasesOfExerciseToExercise($exercise, $newExercise);
+                $newExercise->setPhases($newPhases);
+            }
+
+            $this->eventStore->addEvent('ExerciseCreated', [
+                'exerciseId' => $newExercise->getId(),
+                'courseId' => $selectedCourse->getId(),
+                'name' => $newExercise->getName(),
+                'description' => $newExercise->getDescription(),
+            ]);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($newExercise);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $newExercise->getId()]);
+        }
+
+        return $this->render('Exercise/Copy.html.twig', [
+            'exercise' => $exercise,
+            'form' => $form->createView()
+        ]);
     }
 }

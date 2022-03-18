@@ -4,6 +4,7 @@ namespace App\Exercise\Form;
 
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Video\Video;
+use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Video\VideoRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -18,13 +19,12 @@ class ExercisePhaseType extends AbstractType
 {
     private VideoRepository $videoRepository;
 
-    /**
-     * ExercisePhaseType constructor.
-     * @param VideoRepository $videoRepository
-     */
-    public function __construct(VideoRepository $videoRepository)
+    private ExercisePhaseRepository $exercisePhaseRepository;
+
+    public function __construct(VideoRepository $videoRepository, ExercisePhaseRepository $exercisePhaseRepository)
     {
         $this->videoRepository = $videoRepository;
+        $this->exercisePhaseRepository = $exercisePhaseRepository;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -33,6 +33,7 @@ class ExercisePhaseType extends AbstractType
         $exercisePhase = $options['data'];
         $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
         $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
+        $exercisePhaseCoices = $this->exercisePhaseRepository->findBy(['belongsToExercise' => $exercisePhase->belongsToExercise]);
 
         $builder
             ->add('isGroupPhase', CheckboxType::class, [
@@ -43,12 +44,16 @@ class ExercisePhaseType extends AbstractType
                 'block_prefix' => 'toggleable_button_checkbox',
                 'help' => "exercisePhase.help.isGroupPhase",
             ])
-            ->add('dependsOnPreviousPhase', CheckboxType::class, [
+            ->add('dependsOnExercisePhase', EntityType::class, [
+                'class' => ExercisePhase::class,
+                'choices' => $exercisePhaseCoices,
+                'choice_label' => 'name',
+                'placeholder' => 'Keine',
+                'multiple' => false,
                 'required' => false,
                 'disabled' => $dependsOnPreviousPhaseIsDisabled || $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.labels.dependsOnPreviousPhase",
                 'translation_domain' => 'forms',
-                'block_prefix' => 'toggleable_button_checkbox',
                 'help' => "exercisePhase.help.dependsOnPreviousPhase",
             ])
             ->add('otherSolutionsAreAccessible', CheckboxType::class, [

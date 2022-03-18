@@ -12,7 +12,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given I have a team with ID "team-1" belonging to exercise phase "ex-p1"
         Given A user "testuser@bar.de" exists
         Given User "testuser@bar.de" belongs to "team-1"
-        Given I have a predefined videoCodePrototype belonging to execise phase "ex-p1" and with properties
+        Given I have a predefined videoCodePrototype belonging to exercise phase "ex-p1" and with properties
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
@@ -132,11 +132,11 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given I have an exercise phase "ex-p2" belonging to exercise "exercise-1"
         Given I have a team with ID "team-1" belonging to exercise phase "ex-p1"
         Given I have a team with ID "team-2" belonging to exercise phase "ex-p2"
-        Given Exercise phase "ex-p2" depends on previous phase "ex-p1"
+        Given The exercise phase "ex-p2" depends on the previous phase "ex-p1"
         Given A user "testuser@bar.de" exists
         Given User "testuser@bar.de" belongs to "team-1"
         Given User "testuser@bar.de" belongs to "team-2"
-        Given I have a predefined videoCodePrototype belonging to execise phase "ex-p1" and with properties
+        Given I have a predefined videoCodePrototype belonging to exercise phase "ex-p1" and with properties
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON

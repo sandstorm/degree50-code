@@ -33,6 +33,9 @@
                 <a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">
                     <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
                 </a>
+                <a href="{{ path('exercise-overview__exercise--copy', {id: exercise.id}) }}">
+                    <i class="fas fa-clone"></i> {% trans %}exercise.copy.title{% endtrans %}
+                </a>
                 <a href="{{ path('exercise-overview__exercise--delete', {id: exercise.id}) }}" class="color-alert">
                     <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
                 </a>

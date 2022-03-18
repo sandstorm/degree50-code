@@ -3,6 +3,7 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\EventStore\DoctrineIntegratedEventStore;

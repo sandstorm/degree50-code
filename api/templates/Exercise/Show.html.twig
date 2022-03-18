@@ -16,7 +16,7 @@
     {% endif %}
     <h2 class="text-center">Phase {{ currentPhaseIndex + 1 }}: {{ exercisePhase.name }}</h2>
     <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong></p>
-    {% if exercisePhase.dependsOnPreviousPhase %}
+    {% if exercisePhase.dependsOnExercisePhase %}
         <p class="text-center">
             <strong>ACHTUNG:</strong> Diese Phase baut auf der vorherigen auf. Es muss ein Ergebnis aus der vorherigen Phase vorliegen.
         </p>

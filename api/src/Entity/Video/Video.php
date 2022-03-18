@@ -202,26 +202,6 @@ class Video
         return $this->exercisePhases;
     }
 
-    public function addVideoAnalysisType(ExercisePhase $exercisePhase): self
-    {
-        if (!$this->exercisePhases->contains($exercisePhase)) {
-            $this->exercisePhases[] = $exercisePhase;
-            $exercisePhase->addVideo($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVideoAnalysisType(ExercisePhase $exercisePhase): self
-    {
-        if ($this->exercisePhases->contains($exercisePhase)) {
-            $this->exercisePhases->removeElement($exercisePhase);
-            $exercisePhase->removeVideo($this);
-        }
-
-        return $this;
-    }
-
     public function getCreator(): User
     {
         return $this->creator;

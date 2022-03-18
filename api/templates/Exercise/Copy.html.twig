@@ -1,0 +1,41 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseFullscreen.html.twig' %}
+
+{% block title %}{% trans %}exercise.edit.title{% endtrans %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                        {{ exercise.course.name }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ exercise.name }}</li>
+            </ol>
+        </nav>
+
+        <header class="content-header">
+            <h3>{% trans %}exercise.copy.title{% endtrans %}</h3>
+        </header>
+        <div class="exercise-form">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            {{ form_row(form.course) }}
+            {{ form_row(form.copyPhases) }}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="btn-group">
+            <a class="btn btn-outline-primary"
+               href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}
+            </a>
+        </div>
+        {{ form_row(form.save) }}
+    </footer>
+    {{ form_end(form) }}
+
+{% endblock %}
