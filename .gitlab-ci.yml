@@ -154,11 +154,11 @@ deploy-test:
     script:
         # pull the image of this branch and tag it as "test-stage"
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-        - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:test-stage
+        - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE:test-stage
         - docker push $CI_REGISTRY_IMAGE:test-stage
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
 
         - eval $(ssh-agent -s)
