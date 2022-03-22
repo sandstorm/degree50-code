@@ -128,6 +128,47 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseTeam $exercisePhaseTeam
     ): Response
     {
+        if ($exercisePhase->getType() === ExercisePhaseType::REFLEXION) {
+            return $this->reflectInPhase($exercisePhase, $exercisePhaseTeam);
+        } else {
+            return $this->workOnPhase($exercisePhase, $exercisePhaseTeam);
+        }
+    }
+
+    private function reflectInPhase(
+        ExercisePhase $reflexionPhase,
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response {
+        $phaseReflexionDependsOn = $reflexionPhase->getDependsOnExercisePhase();
+        $exercise = $reflexionPhase->getBelongsToExercise();
+        $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $phaseReflexionDependsOn);
+
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
+            $clientSideSolutionDataBuilder,
+            $teams
+        );
+
+        $template = 'ExercisePhase/Show.html.twig';
+
+        $configOfDependingPhase = $this->getConfig($phaseReflexionDependsOn);
+
+        return $this->render($template, [
+            'config' => array_merge($this->getConfig($reflexionPhase), [
+                'type' => $configOfDependingPhase['type'],
+                'videos' => $configOfDependingPhase['videos'],
+            ]),
+            'data' => $clientSideSolutionDataBuilder,
+            'exercise' => $exercise,
+            'exercisePhaseTeam' => $exercisePhaseTeam,
+            'exercisePhase' => $reflexionPhase,
+        ]);
+    }
+
+    private function workOnPhase(
+        ExercisePhase $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response {
         /** @var User $user */
         $user = $this->getUser();
 
@@ -197,8 +238,6 @@ class ExercisePhaseController extends AbstractController
      */
     public function new(Request $request, Exercise $exercise): Response
     {
-        $isGroupPhase = $request->query->get('isGroupPhase', false);
-
         $types = [];
 
         foreach (ExercisePhaseType::getPossibleValues() as $type) {
@@ -212,7 +251,6 @@ class ExercisePhaseController extends AbstractController
         return $this->render('ExercisePhase/ChooseType.html.twig', [
             'types' => $types,
             'exercise' => $exercise,
-            'isGroupPhase' => $isGroupPhase
         ]);
     }
 
@@ -223,7 +261,6 @@ class ExercisePhaseController extends AbstractController
     public function initializePhaseByType(Request $request, Exercise $exercise): Response
     {
         $type = $request->query->get('type');
-        $isGroupPhase = $request->query->get('isGroupPhase', false);
 
         // Initialize phase by type (mandatory)
         $exercisePhase = match (ExercisePhaseType::tryFrom($type)) {
@@ -237,7 +274,6 @@ class ExercisePhaseController extends AbstractController
             ),
         };
 
-        $exercisePhase->setIsGroupPhase($isGroupPhase);
         $exercisePhase->setBelongsToExercise($exercise);
 
         if ($type != null) {

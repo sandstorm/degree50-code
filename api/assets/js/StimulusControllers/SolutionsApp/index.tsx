@@ -1,4 +1,4 @@
-import React, {useMemo, useRef} from 'react'
+import React, { useMemo, useRef } from 'react'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -21,8 +21,10 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const getSolutionComponentByPhaseType = (phaseType: ExercisePhaseTypesEnum) => {
     switch (phaseType) {
-        case ExercisePhaseTypesEnum.VIDEO_ANALYSIS: return <VideoAnalysis />
-        case ExercisePhaseTypesEnum.VIDEO_CUTTING: return <CuttingSolutions />
+        case ExercisePhaseTypesEnum.VIDEO_ANALYSIS:
+            return <VideoAnalysis />
+        case ExercisePhaseTypesEnum.VIDEO_CUTTING:
+            return <CuttingSolutions />
         default:
             throw new Error(`No SolutionApp available for ExercisePhase with type "${phaseType}"`)
     }
@@ -37,12 +39,15 @@ const SolutionsApp = (props: Props) => {
 
     const { height } = useDebouncedResizeObserver(ref, 500)
 
-    const PhaseComponent = useMemo(() => getSolutionComponentByPhaseType(props.activePhaseType), [props.activePhaseType])
+    const PhaseComponent = useMemo(
+        () => getSolutionComponentByPhaseType(props.activePhaseType),
+        [props.activePhaseType]
+    )
 
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>
             <div className={'exercise-phase__content'} ref={ref}>
-                { height > 0 && PhaseComponent}
+                {height > 0 && PhaseComponent}
             </div>
         </OverlayProvider>
     )

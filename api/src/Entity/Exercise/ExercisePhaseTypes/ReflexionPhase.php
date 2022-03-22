@@ -26,6 +26,9 @@ class ReflexionPhase extends ExercisePhase
     public function __construct(string $id = null)
     {
         parent::__construct($id);
+
+        // Reflexionphase should always be a group phase
+        $this->setIsGroupPhase(true);
     }
 
     /**

@@ -132,6 +132,7 @@ abstract class ExercisePhase
         $this->teams = new ArrayCollection();
         $this->material = new ArrayCollection();
         $this->videos = new ArrayCollection();
+        $this->isGroupPhase = false;
     }
 
     public function __toString()
@@ -321,6 +322,10 @@ abstract class ExercisePhase
         $hasSolutionsWithoutTestSolution = !empty($solutionsWithoutTestSolution);
 
         return $hasSolutionsWithoutTestSolution;
+    }
+
+    public function getAllowedComponents() {
+        return [];
     }
 
     /**

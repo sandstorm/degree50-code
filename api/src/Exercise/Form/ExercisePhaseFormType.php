@@ -45,15 +45,9 @@ class ExercisePhaseFormType extends AbstractType
             $componentChoices[$component] = $component;
         }
 
+        $isReflexionPhase = $exercisePhase->getType() === ExercisePhaseType::REFLEXION;
+
         $builder
-            ->add('isGroupPhase', CheckboxType::class, [
-                'required' => false,
-                'label' => "exercisePhase.labels.isGroupPhase",
-                'disabled' => $exercisePhase->getHasSolutions(),
-                'translation_domain' => 'forms',
-                'block_prefix' => 'toggleable_button_checkbox',
-                'help' => "exercisePhase.help.isGroupPhase",
-            ])
             ->add('dependsOnExercisePhase', EntityType::class, [
                 'class' => ExercisePhase::class,
                 'choices' => $exercisePhaseChoices,
@@ -64,7 +58,9 @@ class ExercisePhaseFormType extends AbstractType
                 'disabled' => $dependsOnPreviousPhaseIsDisabled || $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.labels.dependsOnPreviousPhase",
                 'translation_domain' => 'forms',
-                'help' => "exercisePhase.help.dependsOnPreviousPhase",
+                'help' => $isReflexionPhase
+                    ? "exercisePhase.help.dependsOnPreviousPhase.reflexion"
+                    : "exercisePhase.help.dependsOnPreviousPhase.regular",
             ])
             ->add('components', ChoiceType::class, [
                 'label' => "exercisePhase.labels.components",
@@ -77,21 +73,31 @@ class ExercisePhaseFormType extends AbstractType
                 },
                 'choice_translation_domain' => 'forms'
             ])
+            ->add('isGroupPhase', CheckboxType::class, [
+                'required' => false,
+                'label' => "exercisePhase.labels.isGroupPhase",
+                'disabled' => $exercisePhase->getHasSolutions() || $isReflexionPhase,
+                'translation_domain' => 'forms',
+                'block_prefix' => 'toggleable_button_checkbox',
+                'help' => "exercisePhase.help.isGroupPhase",
+            ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             ->add('task', CKEditorType::class, ['label' => "exercisePhase.labels.task", 'translation_domain' => 'forms'])
             ->add('save', SubmitType::class, ['label' => 'exercisePhase.labels.submit', 'translation_domain' => 'forms']);
 
-        // We can't just simply omit fields, because they will be appended to the form,
+        // We can't just simply omit fields inside the twig template, because they will be appended to the form,
         // even if we "turn them off" inside the template.
-        if ($exercisePhase->getType() !== ExercisePhaseType::REFLEXION) {
-            $builder->add('otherSolutionsAreAccessible', CheckboxType::class, [
-                'required' => false,
-                'disabled' => false,
-                'label' => "exercisePhase.labels.otherSolutionsAreAccessible",
-                'translation_domain' => 'forms',
-                'block_prefix' => 'toggleable_button_checkbox',
-                'help' => "exercisePhase.help.otherSolutionsAreAccessible",
-            ]);
+        // Therefore we add them conditionally here
+        if (!$isReflexionPhase) {
+            $builder
+                ->add('otherSolutionsAreAccessible', CheckboxType::class, [
+                    'required' => false,
+                    'disabled' => false,
+                    'label' => "exercisePhase.labels.otherSolutionsAreAccessible",
+                    'translation_domain' => 'forms',
+                    'block_prefix' => 'toggleable_button_checkbox',
+                    'help' => "exercisePhase.help.otherSolutionsAreAccessible",
+                ]);
         }
     }
 

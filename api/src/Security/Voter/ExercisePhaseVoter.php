@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -76,7 +77,7 @@ class ExercisePhaseVoter extends Voter
 
     /**
      * User can view this ExercisePhase.
-     * He can if it's the first or the user has a Solution for the previous ExercisePhase.
+     * He can if it's the first or the user has a Solution for the previous ExercisePhase or the previous phase was a reflexion phase.
      *
      * @param ExercisePhase $exercisePhase
      * @param User $user
@@ -96,12 +97,14 @@ class ExercisePhaseVoter extends Voter
             return true;
         }
 
-        $previousExercisePhaseHasSolution = $exercisePhase
+        $previousPhase = $exercisePhase
             ->getBelongsToExercise()
-            ->getPhaseAtSortingPosition($sortingPosition - 1)
-            ->getHasSolutionForUser($user);
+            ->getPhaseAtSortingPosition($sortingPosition - 1);
 
-        if ($previousExercisePhaseHasSolution) {
+
+        $previousExercisePhaseHasSolution = $previousPhase->getHasSolutionForUser($user);
+
+        if ($previousExercisePhaseHasSolution || $previousPhase->getType() === ExercisePhaseType::REFLEXION) {
             return true;
         }
 
