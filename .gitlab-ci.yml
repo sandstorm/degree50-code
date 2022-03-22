@@ -56,8 +56,8 @@ package_logging_sidecar:
         - cd deployment/loggingSidecar
         # performance improvement for CI
         - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:main || true
-        - docker build --cache-from $CI_REGISTRY_IMAGE/logging-sidecar:main -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG .
-        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
+        - docker build --cache-from $CI_REGISTRY_IMAGE/logging-sidecar:main -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG .
+        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG
 
 build_e2e_testrunner:
     stage: build
@@ -127,11 +127,11 @@ deploy-prod:
     script:
         # pull the image of this branch and tag it as "main"
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-        - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:main
+        - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE:main
         - docker push $CI_REGISTRY_IMAGE:main
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/logging-sidecar:main
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:main
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:main
 
         - eval $(ssh-agent -s)
@@ -154,11 +154,11 @@ deploy-test:
     script:
         # pull the image of this branch and tag it as "test-stage"
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-        - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE:test-stage
+        - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE:test-stage
         - docker push $CI_REGISTRY_IMAGE:test-stage
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_TAG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
 
         - eval $(ssh-agent -s)
