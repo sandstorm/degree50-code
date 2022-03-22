@@ -66,14 +66,6 @@ class ExercisePhaseFormType extends AbstractType
                 'translation_domain' => 'forms',
                 'help' => "exercisePhase.help.dependsOnPreviousPhase",
             ])
-            ->add('otherSolutionsAreAccessible', CheckboxType::class, [
-                'required' => false,
-                'disabled' => false,
-                'label' => "exercisePhase.labels.otherSolutionsAreAccessible",
-                'translation_domain' => 'forms',
-                'block_prefix' => 'toggleable_button_checkbox',
-                'help' => "exercisePhase.help.otherSolutionsAreAccessible",
-            ])
             ->add('components', ChoiceType::class, [
                 'label' => "exercisePhase.labels.components",
                 'translation_domain' => 'forms',
@@ -88,6 +80,19 @@ class ExercisePhaseFormType extends AbstractType
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             ->add('task', CKEditorType::class, ['label' => "exercisePhase.labels.task", 'translation_domain' => 'forms'])
             ->add('save', SubmitType::class, ['label' => 'exercisePhase.labels.submit', 'translation_domain' => 'forms']);
+
+        // We can't just simply omit fields, because they will be appended to the form,
+        // even if we "turn them off" inside the template.
+        if ($exercisePhase->getType() !== ExercisePhaseType::REFLEXION) {
+            $builder->add('otherSolutionsAreAccessible', CheckboxType::class, [
+                'required' => false,
+                'disabled' => false,
+                'label' => "exercisePhase.labels.otherSolutionsAreAccessible",
+                'translation_domain' => 'forms',
+                'block_prefix' => 'toggleable_button_checkbox',
+                'help' => "exercisePhase.help.otherSolutionsAreAccessible",
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
