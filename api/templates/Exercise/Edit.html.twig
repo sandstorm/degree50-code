@@ -55,6 +55,12 @@
                             <th></th>
                         </tr>
                         </thead>
+
+                        {#
+                            We want to check, if our current phase depends on the previousPhase.
+                            Therefore we set the currentPhase to the previousPhase variable on iteration.
+                        #}
+                        {% set previousPhase = false %}
                         {% for exercisePhase in exercise.phases %}
                             {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type.value) ~ '.label' %}
                             <tr>
@@ -96,12 +102,18 @@
                                                     aria-disabled="true" title="Phase nach oben sortieren">
                                                 <i class="fas fa-arrow-up"></i>
                                             </button>
+                                        {% elseif previousPhase and exercisePhase.dependsOnExercisePhase == previousPhase %}
+                                            <button class="btn btn-outline-primary btn-sm" disabled="disabled"
+                                                    aria-disabled="true" title="Phase nach oben sortieren">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
                                         {% else %}
                                             <a class="btn btn-outline-primary btn-sm" title="Phase nach oben sortieren"
                                                href="{{ path('exercise-overview__exercise-phase--change-sorting', {id: exercise.id, phase_id: exercisePhase.id, sortUp: true}) }}">
                                                 <i class="fas fa-arrow-up"></i>
                                             </a>
                                         {% endif %}
+
                                         {% if loop.last %}
                                             <button class="btn btn-outline-primary btn-sm" disabled="disabled"
                                                     aria-disabled="true" title="Phase nach unten sortieren">
@@ -116,7 +128,10 @@
                                     </div>
                                 </td>
                             </tr>
+
+                            {% set previousPhase = exercisePhase %}
                         {% endfor %}
+
                     </table>
                     <a class="btn btn-primary btn-sm"
                        href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id}) }}">

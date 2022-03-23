@@ -23,6 +23,7 @@ use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Twig\AppRuntime;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -328,11 +329,15 @@ class ExercisePhaseController extends AbstractController
             $exercisePhaseAtNewSortIndex = $this->exercisePhaseRepository->findExercisePhasesLargerThen($currentSortIndex, $exercise);
         }
 
+        if ($exercisePhaseAtNewSortIndex === $exercisePhase->getDependsOnExercisePhase()) {
+            // NOTE:
+            // Technically this case should never occur, because we check this condition inside the
+            // Twig template as well and disable the sort button, if it is true
+            throw new Exception("A phase can't be sorted before the phase it depends on!");
+        }
+
         $exercisePhase->setSorting($exercisePhaseAtNewSortIndex->getSorting());
         $exercisePhaseAtNewSortIndex->setSorting($currentSortIndex);
-        // reset the depending status to false just to avoid strange behavior -> user hast to set it anew
-        $exercisePhase->setDependsOnExercisePhase(null);
-        $exercisePhaseAtNewSortIndex->setDependsOnExercisePhase(null);
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $entityManager = $this->getDoctrine()->getManager();
