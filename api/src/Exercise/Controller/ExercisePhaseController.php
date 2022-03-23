@@ -209,6 +209,9 @@ class ExercisePhaseController extends AbstractController
     public function showSolutions(Request $request, Exercise $exercise): Response
     {
         $phaseId = $request->get('phase_id');
+        /**
+         * @var ExercisePhase $exercisePhase
+         */
         $exercisePhase = $phaseId
             ? $this->exercisePhaseRepository->find($phaseId)
             : $exercise->getPhases()->first();
@@ -216,17 +219,19 @@ class ExercisePhaseController extends AbstractController
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
 
         $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
-        $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
-            $clientSideSolutionDataBuilder,
-            $teams
-        );
+        $data = $exercisePhase->getType() === ExercisePhaseType::REFLEXION
+            ? null
+            : $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
+                $clientSideSolutionDataBuilder,
+                $teams
+            );
 
         // TODO throws Parameter 'userId' does not exist.... why?
         //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
             'config' => $this->getConfig($exercisePhase, true),
-            'data' => $clientSideSolutionDataBuilder,
+            'data' => $data,
             'exercise' => $exercise,
             'exercisePhase' => $exercisePhase,
         ]);
