@@ -34,8 +34,11 @@
             <div class="col-3">
                 {% if is_granted('createTeam', exercisePhase) %}
                     <div class="tile">
-                        <a class="tile__content"
-                           href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
+                        <a
+                           class="tile__content"
+                           href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}"
+                           data-test-id="createGroupButton"
+                       >
                             <i class="tile__icon fas fa-plus-circle"></i>
                             <h5>Neue Gruppe anlegen</h5>
                         </a>
@@ -81,9 +84,12 @@
                                             löschen</a>
                                     {% endif %}
                                     {% if is_granted('show', team) %}
-                                        <a class="btn btn-primary btn-sm"
-                                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}"><i class="fas fa-play"></i> Phase
-                                            starten</a>
+                                        <a
+                                           class="btn btn-primary btn-sm"
+                                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}"
+                                           data-test-id="startPhaseButtonGroup"
+                                       ><i class="fas fa-play"></i> Phase starten
+                                       </a>
                                     {% else %}
                                         {% if is_granted('viewOtherSolutions', exercisePhase) %}
                                             <a class="btn btn-outline-primary btn-sm"
@@ -108,8 +114,11 @@
                 </a>
             {% else %}
                 {% if is_granted('createTeam', exercisePhase) %}
-                    <a class="btn btn-lg btn-primary"
-                       href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}">
+                    <a
+                       class="btn btn-lg btn-primary"
+                       href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}"
+                       data-test-id="startPhaseButtonSingle"
+                   >
                         <i class="fas fa-play"></i>
                         Phase starten
                     </a>

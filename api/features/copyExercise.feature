@@ -35,7 +35,6 @@ Feature: Copy Exercises
     #       * description -> copy
     #       * color -> copy
 
-    @todo
     Scenario: Copy Exercise with ExercisePhases
         Given A User 'test-admin@sandstorm.de' with the role 'ROLE_ADMIN' exists
 

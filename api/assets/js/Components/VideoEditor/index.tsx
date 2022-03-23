@@ -13,7 +13,7 @@ const VideoEditor: FC<Props> = (props) => {
     const firstVideo = props.videos[0]
 
     return (
-        <div className="video-editor">
+        <div className="video-editor" data-test-id="videoEditor">
             <ConnectedVideoJSPlayer
                 videoJsOptions={{
                     autoplay: false,

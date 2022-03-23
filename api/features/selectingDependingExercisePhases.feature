@@ -22,6 +22,7 @@ Feature: Valid choices for "dependsOnExercisePhase" when editing ExercisePhases
     Scenario: First ExercisePhase can not depend on any other ExercisePhase
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1/phase/analysis1/edit"
+        # These texts are all options of the 'dependsOnExercisePhase' select
         Then the page contains all the following texts:
             | Keine |
         And the page contains none of the following texts:
@@ -36,6 +37,7 @@ Feature: Valid choices for "dependsOnExercisePhase" when editing ExercisePhases
     Scenario: Second ExercisePhase is a VideoCuttingPhase and can only depend on the first ExercisePhase because it's a VideoAnalysisPhase
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1/phase/cutting1/edit"
+        # These texts are all options of the 'dependsOnExercisePhase' select
         Then the page contains all the following texts:
             | Keine     |
             | Analysis1 |
@@ -50,6 +52,7 @@ Feature: Valid choices for "dependsOnExercisePhase" when editing ExercisePhases
     Scenario: Third ExercisePhase is a ReflexionPhase and can only depend on the first two ExercisePhases
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1/phase/reflexion1/edit"
+        # These texts are all options of the 'dependsOnExercisePhase' select
         Then the page contains all the following texts:
             | Keine     |
             | Analysis1 |
@@ -64,6 +67,7 @@ Feature: Valid choices for "dependsOnExercisePhase" when editing ExercisePhases
     Scenario: Fourth ExercisePhase is a VideoAnalysisPhase and can not depend on any other ExercisePhase
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1/phase/analysis2/edit"
+        # These texts are all options of the 'dependsOnExercisePhase' select
         Then the page contains all the following texts:
             | Keine     |
         And the page contains none of the following texts:
@@ -78,6 +82,7 @@ Feature: Valid choices for "dependsOnExercisePhase" when editing ExercisePhases
     Scenario: Fifth ExercisePhase is a VideoCuttingPhase and can only depend on the two VideoAnalysisPhases sorted before it
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1/phase/cutting2/edit"
+        # These texts are all options of the 'dependsOnExercisePhase' select
         Then the page contains all the following texts:
             | Keine     |
             | Analysis1 |
@@ -92,6 +97,7 @@ Feature: Valid choices for "dependsOnExercisePhase" when editing ExercisePhases
     Scenario: Last ExercisePhase is a ReflexionPhase and can depend on any other ExercisePhase sorted before it except ReflexionPhases
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1/phase/reflexion2/edit"
+        # These texts are all options of the 'dependsOnExercisePhase' select
         Then the page contains all the following texts:
             | Keine     |
             | Analysis1 |

@@ -97,18 +97,31 @@ class ExercisePhaseVoter extends Voter
             return true;
         }
 
-        $previousPhase = $exercisePhase
-            ->getBelongsToExercise()
-            ->getPhaseAtSortingPosition($sortingPosition - 1);
+        $phaseSortingsUpToThisPhase = range(0, $exercisePhase->getSorting() - 1);
+        $exercise =$exercisePhase->getBelongsToExercise();
 
+        $phasesBeforeAreDone = array_reduce(
+            $phaseSortingsUpToThisPhase,
+            function($allAreDone, $phaseSorting
+        ) use($exercise, $user) {
+            $phase = $exercise->getPhaseAtSortingPosition($phaseSorting);
 
-        $previousExercisePhaseHasSolution = $previousPhase->getHasSolutionForUser($user);
+            if (empty($phase)) {
+                return $allAreDone;
+            }
 
-        if ($previousExercisePhaseHasSolution || $previousPhase->getType() === ExercisePhaseType::REFLEXION) {
-            return true;
-        }
+            if ($phase->getType() === ExercisePhaseType::REFLEXION) {
+                return $allAreDone && true;
+            }
 
-        return false;
+            if ($phase->getHasSolutionForUser($user)) {
+                return $allAreDone && true;
+            }
+
+            return false;
+        }, true);
+
+        return $phasesBeforeAreDone;
     }
 
     private function canViewOtherSolutions(ExercisePhase $exercisePhase, User $user): bool

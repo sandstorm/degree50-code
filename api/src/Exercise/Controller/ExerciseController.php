@@ -120,7 +120,7 @@ class ExerciseController extends AbstractController
      * This includes the exercise description as well as an overview of phases.
      *
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show-overview/{id}}", name="exercise-overview__exercise--show-overview")
+     * @Route("/exercise/show-overview/{id}", name="exercise-overview__exercise--show-overview")
      */
     public function showOverview(Exercise $exercise): Response
     {
@@ -253,8 +253,28 @@ class ExerciseController extends AbstractController
 
         $exerciseHasSolutions = $this->getExerciseHasSolutions($exercise);
 
+        $exercisePhases = $exercise->getPhases()->toArray();
+
+        $phasesWithAllowedSortingIndication = array_map(function($index, ExercisePhase $phase) use ($exercisePhases) {
+            $previousPhase = $index === 0 ? null : $exercisePhases[$index - 1];
+            $canMoveUp = $phase->getDependsOnExercisePhase() !== $previousPhase;
+
+            /**
+             * @var ExercisePhase
+             */
+            $nextPhase = $index === count($exercisePhases) - 1 ? null : $exercisePhases[$index + 1];
+            $canMoveDown = $nextPhase && $nextPhase->getDependsOnExercisePhase() !== $phase;
+
+            return [
+                "phase" => $phase,
+                "canMoveUp" => $canMoveUp,
+                "canMoveDown" => $canMoveDown,
+            ];
+        }, array_keys($exercisePhases), $exercisePhases);
+
         return $this->render('Exercise/Edit.html.twig', [
             'exercise' => $exercise,
+            'exercisePhases' => $phasesWithAllowedSortingIndication,
             'exerciseHasSolutions' => $exerciseHasSolutions,
             'form' => $form->createView()
         ]);

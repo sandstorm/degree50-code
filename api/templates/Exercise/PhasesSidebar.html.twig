@@ -16,7 +16,7 @@
         <div class="sidebar__group-body">
             <ul class="list">
                 {% for item in sidebarItems %}
-                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item) ? "" : "sidebar-item--disabled" }}">
+                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item) ? "" : "sidebar-item--disabled" }}" data-test-id="exercisePhaseSidebarItem">
                         {% if showSolution %}
                             {{
                                 _self.sidebarLink(
