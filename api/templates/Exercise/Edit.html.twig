@@ -52,6 +52,7 @@
                             <th></th>
                             <th>{% trans %}exercisePhase.labels.type{% endtrans %}</th>
                             <th>{% trans %}exercisePhase.labels.name{% endtrans %}</th>
+                            <th>{% trans %}exercisePhase.labels.dependsOnPhaseName{% endtrans %}</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -78,6 +79,11 @@
                                 </td>
                                 <td>{{ phaseTypeTransVar | trans }}</td>
                                 <td>{{ exercisePhase.name }}</td>
+                                <td>
+                                    {% if exercisePhase.dependsOnExercisePhase %}
+                                        {{ exercisePhase.dependsOnExercisePhase.name }}
+                                    {% endif %}
+                                </td>
                                 <td class="text-right">
                                     {% if exercisePhase.hasSolutions %}
                                         <a class="btn btn-outline-danger disabled btn-sm">

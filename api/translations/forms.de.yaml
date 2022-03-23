@@ -44,7 +44,8 @@ exercise:
 exercisePhase:
     labels:
         isGroupPhase: 'Ist eine Gruppenarbeit'
-        dependsOnPreviousPhase: 'Nutzt Ergebnis vorheriger Phase'
+        dependsOnPreviousPhase: 'Nutzt Ergebnis von Phase'
+        dependsOnPhaseName: 'Nutzt Ergebnis von Phase'
         otherSolutionsAreAccessible: 'Studierende können gegenseitig Ergebnisse einsehen'
         name: 'Titel der Phase'
         task: 'Lernauftrag / Beschreibung'
