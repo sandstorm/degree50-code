@@ -57,6 +57,7 @@ class SolutionService
 
         $previousSolutionDtos = array_map(function ($exercisePhaseTeam) {
             $solutionEntity = $exercisePhaseTeam->getSolution();
+            $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
             $cutVideo = $solutionEntity->getCutVideo();
             $clientSideCutVideo = $cutVideo?->getAsArray($this->appRuntime);
@@ -65,7 +66,8 @@ class SolutionService
                 $exercisePhaseTeam->getCreator(),
                 $solutionEntity->getSolution(),
                 $solutionEntity->getId(),
-                $clientSideCutVideo
+                $clientSideCutVideo,
+                $exercisePhase->isGroupPhase(),
             );
         }, $teams);
 
@@ -77,7 +79,8 @@ class SolutionService
                 $previousSolutionDto->getServerSideSolutionLists(),
                 $previousSolutionDto->getSolutionId(),
                 $previousSolutionDto->getTeamMember(),
-                $previousSolutionDto->getCutVideo()
+                $previousSolutionDto->getCutVideo(),
+                $previousSolutionDto->getFromGroupPhase(),
             );
         }
 
@@ -141,7 +144,8 @@ class SolutionService
                 $previousSolutionDto->getServerSideSolutionLists(),
                 $previousSolutionDto->getSolutionId(),
                 $previousSolutionDto->getTeamMember(),
-                $previousSolutionDto->getCutVideo()
+                $previousSolutionDto->getCutVideo(),
+                $previousSolutionDto->getFromGroupPhase(),
             );
         }
 
@@ -172,7 +176,8 @@ class SolutionService
                     $solutionEntity->getSolution(),
                     $solutionEntity->getId(),
                     // TODO: parameter type mismatch
-                    $solutionEntity->getCutVideo()
+                    $solutionEntity->getCutVideo(),
+                    $exercisePhaseDependedOn->isGroupPhase(),
                 )]);
             }, []);
         }

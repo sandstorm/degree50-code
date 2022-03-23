@@ -7,6 +7,7 @@ import { VideoEditorState, selectors as videoEditorSelectors } from 'Components/
 import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import MediaLaneDescription from '../MediaLaneDescription'
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
     const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)
@@ -15,6 +16,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
     return {
         cuts: videoEditorSelectors.data.selectCurrentCutListByStartTime(state),
         currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
+        currentIsFromGroupPhase: videoEditorSelectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
         isReadonly,
     }
 }
@@ -28,10 +30,13 @@ const CutLaneContainer = (props: Props) => {
     return (
         <>
             <div>
-                <div className="multilane__medialane-description">
-                    {getComponentName(TabsTypesEnum.VIDEO_CUTTING)} ({props.cuts.length}) - {ownerName} [Aktuelle
-                    Lösung]
-                </div>
+                <MediaLaneDescription
+                    componentName={getComponentName(TabsTypesEnum.VIDEO_CUTTING)}
+                    itemCount={props.cuts.length}
+                    userName={ownerName}
+                    isCurrent={true}
+                    fromGroupPhase={props.currentIsFromGroupPhase}
+                />
                 <VideoCutMedialane cuts={props.cuts} readOnly={props.isReadonly} />
             </div>
         </>

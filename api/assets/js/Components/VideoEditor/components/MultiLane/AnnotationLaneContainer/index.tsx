@@ -11,6 +11,7 @@ import AnnotationLane from './AnnotationLane'
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
+import MediaLaneDescription from '../MediaLaneDescription'
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
     const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)
@@ -18,6 +19,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
 
     return {
         currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
+        currentIsFromGroupPhase: videoEditorSelectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
         annotations: videoEditorSelectors.data.selectCurrentAnnotationsByStartTime(state),
         previousSolutions: videoEditorSelectors.selectActiveSolutionsWithAnnotations(state),
         exercisePhaseType: configSelectors.selectPhaseType(state),
@@ -38,9 +40,13 @@ const AnnotationLaneContainer = (props: Props) => {
 
         return (
             <div>
-                <div className="multilane__medialane-description">
-                    {componentName} ({props.annotations.length}) - {ownerName} [Aktuelle Lösung]
-                </div>
+                <MediaLaneDescription
+                    componentName={componentName}
+                    itemCount={props.annotations.length}
+                    userName={ownerName}
+                    isCurrent={true}
+                    fromGroupPhase={props.currentIsFromGroupPhase}
+                />
                 <AnnotationLane annotations={props.annotations} readOnly={props.isReadonly} />
             </div>
         )
@@ -50,9 +56,12 @@ const AnnotationLaneContainer = (props: Props) => {
         <>
             {props.previousSolutions.map((solution) => (
                 <div key={solution.id}>
-                    <div className="multilane__medialane-description">
-                        {componentName} ({solution.annotations.length}) - {solution.userName}
-                    </div>
+                    <MediaLaneDescription
+                        componentName={componentName}
+                        itemCount={solution.annotations.length}
+                        userName={solution.userName}
+                        fromGroupPhase={solution.fromGroupPhase}
+                    />
                     <AnnotationLane annotations={solution.annotations} readOnly />
                 </div>
             ))}

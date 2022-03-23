@@ -67,7 +67,7 @@ const ActivePreviousSolutions = (props: Props) => {
                                         onChange={handleToggle}
                                         value={s.id}
                                     />
-                                    {s.userName}
+                                    {s.fromGroupPhase ? 'Gruppe von' : ''} {s.userName}
                                 </label>
                             </li>
                         ))}

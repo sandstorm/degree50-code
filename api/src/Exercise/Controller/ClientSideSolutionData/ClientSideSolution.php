@@ -17,13 +17,15 @@ final class ClientSideSolution implements JsonSerializable
     private string $userName;
     private string $userId;
     private ?ClientSideCutVideo $cutVideo;
+    private ?bool $fromGroupPhase;
 
     private function __construct(
         ClientSideSolutionLists $clientSideSolutionLists,
         string $id,
         string $userName,
         string $userId,
-        ?ClientSideCutVideo $cutVideo
+        ?ClientSideCutVideo $cutVideo,
+        ?bool $fromGroupPhase
     )
     {
         $this->clientSideSolutionLists = $clientSideSolutionLists;
@@ -31,6 +33,7 @@ final class ClientSideSolution implements JsonSerializable
         $this->userName = $userName;
         $this->userId = $userId;
         $this->cutVideo = $cutVideo;
+        $this->fromGroupPhase = $fromGroupPhase;
     }
 
     public static function create(
@@ -38,10 +41,11 @@ final class ClientSideSolution implements JsonSerializable
         string $id,
         string $userName,
         string $userId,
-        ?ClientSideCutVideo $cutVideo
+        ?ClientSideCutVideo $cutVideo,
+        ?bool $fromGroupPhase
     ): ClientSideSolution
     {
-        return new self($clientSideSolutionLists, $id, $userName, $userId, $cutVideo);
+        return new self($clientSideSolutionLists, $id, $userName, $userId, $cutVideo, $fromGroupPhase);
     }
 
     public static function fromArray(array $input): ClientSideSolution
@@ -52,6 +56,7 @@ final class ClientSideSolution implements JsonSerializable
             $input['userName'],
             $input['userId'],
             ClientSideCutVideo::fromArray($input['cutVideo']),
+            $input['fromGroupPhase'],
         );
     }
 
@@ -62,7 +67,8 @@ final class ClientSideSolution implements JsonSerializable
             'id' => $this->id,
             'userName' => $this->userName,
             'userId' => $this->userId,
-            'cutVideo' => $this->cutVideo
+            'cutVideo' => $this->cutVideo,
+            'fromGroupPhase' => $this->fromGroupPhase
         ];
     }
 
@@ -104,5 +110,13 @@ final class ClientSideSolution implements JsonSerializable
     public function getCutVideo(): ?ClientSideCutVideo
     {
         return $this->cutVideo;
+    }
+
+    /**
+     * Get fromGroupPhase.
+     */
+    public function getFromGroupPhase(): ?bool
+    {
+        return $this->fromGroupPhase;
     }
 }
