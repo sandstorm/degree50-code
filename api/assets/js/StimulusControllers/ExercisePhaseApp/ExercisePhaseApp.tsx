@@ -3,7 +3,7 @@ import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 import { OverlayProvider } from '@react-aria/overlays'
-import HotKeyTarget from "../../Components/HotKey/HotKeyTarget";
+import { useShortCuts } from '../../useShortCuts'
 
 export const ExercisePhaseApp: React.FC = () => {
     // react-aria-modal watches a container element for aria-modal nodes and
@@ -18,12 +18,13 @@ export const ExercisePhaseApp: React.FC = () => {
     // so remove it.
     const { height } = useDebouncedResizeObserver(ref, 500)
 
+    useShortCuts()
+
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>
             <div className={'exercise-phase__content'} ref={ref}>
                 {height > 0 && <VideoAnalysis />}
             </div>
-            <HotKeyTarget />
         </OverlayProvider>
     )
 }

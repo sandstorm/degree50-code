@@ -20,6 +20,8 @@ import presenceSaga from '../ExercisePhaseApp/Components/Presence/PresenceSaga'
 import solutionSaga from '../ExercisePhaseApp/Components/Solution/SolutionSaga'
 import currentEditorReducer, { selectCurrentEditorId } from '../ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import VideoEditorSlice, { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
+import shortCutsReducer from '../../ShortCutsSlice'
+import { shortCutsSaga } from '../../ShortCutsSaga'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -33,6 +35,7 @@ export const store = configureStore({
         materialViewer: materialViewerReducer,
         presence: presenceReducer,
         currentEditor: currentEditorReducer,
+        shortCuts: shortCutsReducer,
     }),
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
     devTools: {
@@ -40,7 +43,7 @@ export const store = configureStore({
     },
 })
 
-const sagas = [presenceSaga, solutionSaga]
+const sagas = [presenceSaga, solutionSaga, shortCutsSaga]
 sagaMiddleWare.run(function* rootSaga() {
     yield all(
         sagas.map((saga) =>
@@ -67,7 +70,7 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 /**
- * WHY: yield select() returns any so we wrap this to get type safety
+ * WHY: yield select() returns any, so we wrap this to get type safety
  *
  * @example
  *  const state = yield* selectState() // state: AppState
