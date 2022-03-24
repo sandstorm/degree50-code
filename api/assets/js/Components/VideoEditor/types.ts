@@ -60,6 +60,7 @@ export type Solution = {
     userName?: string
     solutionLists: SolutionLists
     cutVideo?: Video
+    fromGroupPhase?: boolean
 }
 
 export type VideoListsState = {

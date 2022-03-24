@@ -3,6 +3,7 @@
 namespace App\Entity\Exercise\ExercisePhaseTypes;
 
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\VideoCode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoAnalysisPhase extends ExercisePhase
 {
-    const type = ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS;
+    const type = ExercisePhaseType::VIDEO_ANALYSIS;
 
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,

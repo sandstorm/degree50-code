@@ -109,7 +109,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                     "mp4": "/data/encoded_videos/cut-video-1/x264.mp4",
                     "vtt": "/data/encoded_videos/cut-video-1/subtitles.vtt"
                   }
-                }
+                },
+                "fromGroupPhase": false
               }
             },
             "current": "solution-1",
@@ -312,7 +313,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "solution-1",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": null,
+                "fromGroupPhase": false
               },
               "previous-solution-1": {
                 "solutionLists": {
@@ -324,7 +326,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "previous-solution-1",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": null,
+                "fromGroupPhase": false
               }
             },
             "current": "solution-1",
@@ -515,7 +518,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "solution-1",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": null,
+                "fromGroupPhase": false
               }
             },
             "current": "solution-1",
@@ -764,7 +768,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "solution-1",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": null,
+                "fromGroupPhase": false
               },
               "solution-2": {
                 "solutionLists": {
@@ -779,7 +784,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "solution-2",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": null,
+                "fromGroupPhase": false
               },
               "solution-3": {
                 "solutionLists": {
@@ -794,7 +800,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "id": "solution-3",
                 "userName": "foo@bar.de",
                 "userId": "foo@bar.de",
-                "cutVideo": null
+                "cutVideo": null,
+                "fromGroupPhase": false
               }
             },
             "current": null,

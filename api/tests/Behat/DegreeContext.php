@@ -14,6 +14,7 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\Material;
@@ -54,6 +55,7 @@ use function PHPUnit\Framework\assertIsObject;
 use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringNotContainsString;
+use function PHPUnit\Framework\assertTrue;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -324,6 +326,25 @@ final class DegreeContext implements Context
     }
 
     /**
+     * @Given Course :courseId belongs to exercise :exerciseId
+     */
+    public function courseWithIdBelongsToExercise($courseId, $exerciseId) {
+        /** @var Course $course */
+        $course = $this->entityManager->find(Course::class, $courseId);
+
+        /** @var Exercise $exercise */
+        $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
+
+        $exercise->setCourse($course);
+        $course->addExercise($exercise);
+
+        $this->entityManager->persist($exercise);
+        $this->entityManager->persist($course);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
      * @Given I have a course with ID :courseId
      */
     public function iHaveACourseWithID($courseId)
@@ -389,6 +410,28 @@ final class DegreeContext implements Context
         $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
 
         $exercisePhaseTeam = new ExercisePhaseTeam($teamId);
+        $exercisePhaseTeam->setExercisePhase($exercisePhase);
+
+        $exercisePhase->addTeam($exercisePhaseTeam);
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->persist($exercisePhase);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given I have a team with ID :teamId belonging to exercise phase :exercisePhaseId and creator :creatorId
+     */
+    public function iHaveATeamWithIdBelongingToExercisePhaseAndCreatorId($teamId, $exercisePhaseId, $creatorId)
+    {
+        /** @var ExercisePhase $exercisePhase */
+        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
+        /** @var User $creator */
+        $creator = $this->entityManager->find(User::class, $creatorId);
+
+        $exercisePhaseTeam = new ExercisePhaseTeam($teamId);
+        $exercisePhaseTeam->setCreator($creator);
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
 
         $exercisePhase->addTeam($exercisePhaseTeam);
@@ -1333,12 +1376,38 @@ final class DegreeContext implements Context
     }
 
     /**
+     * @Given An Exercise with the following json-data exists:
+     *
+     * This is just another way to use the step above, because oftentimes configuring
+     * the step via JSON is much more convenient and easier to read for large data sets.
+     */
+    public function assureAnExerciseWithTheFollowingJsonDataExists(PyStringNode $exerciseDataJson)
+    {
+        $exerciseData = json_decode($exerciseDataJson->getRaw(), true);
+        /** @var Course $course */
+        $course = $this->entityManager->find(Course::class, $exerciseData['course']);
+        /** @var User $creator */
+        $creator = $this->entityManager->find(User::class, $exerciseData['creator']);
+
+        $exercise = new Exercise($exerciseData['id']);
+        $exercise->setName($exerciseData['name']);
+        $exercise->setDescription($exerciseData['description']);
+        $exercise->setCreator($creator);
+        $exercise->setCourse($course);
+        $exercise->setStatus($exerciseData['status']);
+
+        $this->entityManager->persist($exercise);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
      * @Given An ExercisePhase with the following data exists:
      */
     public function assureAnExercisePhaseWithTheFollowingDataExists(TableNode $tableNode)
     {
         foreach ($tableNode->getHash() as $phaseData) {
-            $phaseType = ExercisePhase\ExercisePhaseType::from($phaseData['type']);
+            $phaseType = ExercisePhaseType::from($phaseData['type']);
 
             $phase = ExercisePhase::byType($phaseType, $phaseData['id']);
 
@@ -1360,11 +1429,12 @@ final class DegreeContext implements Context
 
             // phase type specific
             switch ($phaseType) {
-                case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS:
+                case ExercisePhaseType::VIDEO_ANALYSIS:
                     $phase->setVideoAnnotationsActive(boolval($phaseData['videoAnnotationsActive']));
                     $phase->setVideoCodesActive(boolval($phaseData['videoCodesActive']));
                     break;
-                case ExercisePhase\ExercisePhaseType::VIDEO_CUT:
+                case ExercisePhaseType::VIDEO_CUT:
+                case ExercisePhaseType::REFLEXION:
                     break;
             }
 
@@ -1372,5 +1442,139 @@ final class DegreeContext implements Context
             $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         }
+    }
+
+    /**
+     * @Given An ExercisePhase with the following json-data exists:
+     *
+     * This is just another way to use the step above, because oftentimes configuring
+     * the step via JSON is much more convenient and easier to read for large data sets.
+     */
+    public function assureAnExercisePhaseWithTheFollowingJsonDataExists(PyStringNode $exercisePhaseDataJson)
+    {
+        $phases = json_decode($exercisePhaseDataJson->getRaw(), true);
+        foreach ($phases as $phaseData) {
+            $phaseType = ExercisePhaseType::from($phaseData['type']);
+
+            $phase = ExercisePhase::byType($phaseType, $phaseData['id']);
+
+            $phase->setName($phaseData['name']);
+            $phase->setTask($phaseData['task']);
+            $phase->setIsGroupPhase((boolval($phaseData['isGroupPhase'])));
+            $phase->setSorting(intval($phaseData['sorting']));
+            $phase->setOtherSolutionsAreAccessible(boolval($phaseData['otherSolutionsAreAccessible']));
+
+            /** @var Exercise $exercise */
+            $exercise = $this->entityManager->find(Exercise::class, $phaseData['belongsToExercise']);
+            $phase->setBelongsToExercise($exercise);
+
+            if ($phaseData['dependsOnPhase'] !== null) {
+                /** @var ExercisePhase $phaseDependingOn */
+                $phaseDependingOn = $this->entityManager->find(ExercisePhase::class, $phaseData['dependsOnPhase']);
+                $phase->setDependsOnExercisePhase($phaseDependingOn);
+            }
+
+            // phase type specific
+            switch ($phaseType) {
+                case ExercisePhaseType::VIDEO_ANALYSIS:
+                    $phase->setVideoAnnotationsActive(boolval($phaseData['videoAnnotationsActive']));
+                    $phase->setVideoCodesActive(boolval($phaseData['videoCodesActive']));
+                    break;
+                case ExercisePhaseType::VIDEO_CUT:
+                case ExercisePhaseType::REFLEXION:
+                    break;
+            }
+
+            $this->entityManager->persist($phase);
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $this->entityManager->flush();
+        }
+    }
+
+    /**
+     * @When I select the nth :index element with testId :testId
+     */
+    public function iSelectTheNthElementWithTestId(int $index, string $testId) {
+        $hasElement = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                const element = await vars.page.locator('data-test-id=$testId >> nth=$index')
+                vars.selectedElement = element
+
+                return element
+                 ? true
+                 : false
+            "
+        );
+
+        assertTrue($hasElement);
+    }
+
+    /**
+     * @Then the selected element should have its attribute :attribute set to value :expectedValue
+     */
+    public function theSelectedElementShouldHaveAttributeSetToValue(string $attribute, string $expectedValue) {
+        $actual = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                return vars.selectedElement.getAttribute('$attribute')
+            "
+        );
+
+        assertEquals($actual, $expectedValue);
+    }
+
+    /**
+     * @Then I click on the selected element
+     */
+    public function iClickOnTheSelectedElement() {
+        $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                vars.selectedElement.click()
+            "
+        );
+    }
+
+    /**
+     * @Then :count elements of selectedElement type should exist
+     */
+    public function numberOfElementsShouldExist($count) {
+        $actual = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                return vars.selectedElement.count()
+            "
+        );
+
+        assertEquals($count, $actual);
+    }
+
+    /**
+     * @Then The selected element should have the CSS-class :cssClass
+     */
+    public function selectedElementShouldHaveCssClass($cssClass) {
+        $actualClasses = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                return await vars.selectedElement.getAttribute('class')
+            "
+        );
+
+        assertTrue(str_contains($actualClasses, $cssClass));
+    }
+
+    /**
+     * @Then The selected element should not have the CSS-class :cssClass
+     */
+    public function selectedElementShouldNotHaveCssClass($cssClass) {
+        $actualClasses = $this->playwrightConnector->execute($this->playwrightContext,
+            // language=JavaScript
+            "
+                return await vars.selectedElement.getAttribute('class')
+            "
+        );
+
+        assertTrue(!str_contains($actualClasses, $cssClass));
     }
 }

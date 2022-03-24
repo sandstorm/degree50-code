@@ -12,28 +12,32 @@ class PreviousSolutionDto
     private ServerSideSolutionLists $serverSideSolutionLists;
     private string $solutionId;
     private ?ClientSideCutVideo $cutVideo;
+    private ?bool $fromGroupPhase;
 
     public static function create(
         User $teamMember,
         ServerSideSolutionLists $serverSideSolutionLists,
         string $solutionId,
-        ?ClientSideCutVideo $cutVideo
+        ?ClientSideCutVideo $cutVideo,
+        ?bool $fromGroupPhase,
     ): PreviousSolutionDto
     {
-        return new self($teamMember, $serverSideSolutionLists, $solutionId, $cutVideo);
+        return new self($teamMember, $serverSideSolutionLists, $solutionId, $cutVideo, $fromGroupPhase);
     }
 
     private function __construct(
         User $teamMember,
         ServerSideSolutionLists $serverSideSolutionLists,
         string $solutionId,
-        ?ClientSideCutVideo $cutVideo
+        ?ClientSideCutVideo $cutVideo,
+        ?bool $fromGroupPhase,
     )
     {
         $this->teamMember = $teamMember;
         $this->serverSideSolutionLists = $serverSideSolutionLists;
         $this->solutionId = $solutionId;
         $this->cutVideo = $cutVideo;
+        $this->fromGroupPhase = $fromGroupPhase;
     }
 
     public function getTeamMember(): User
@@ -54,5 +58,13 @@ class PreviousSolutionDto
     public function getCutVideo(): ?ClientSideCutVideo
     {
         return $this->cutVideo;
+    }
+
+    /**
+     * Get fromGroupPhase.
+     */
+    public function getFromGroupPhase()
+    {
+        return $this->fromGroupPhase;
     }
 }

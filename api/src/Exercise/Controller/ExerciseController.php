@@ -4,6 +4,7 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
+use App\Entity\Exercise\CopyExerciseFormDto;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -119,7 +120,7 @@ class ExerciseController extends AbstractController
      * This includes the exercise description as well as an overview of phases.
      *
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show-overview/{id}}", name="exercise-overview__exercise--show-overview")
+     * @Route("/exercise/show-overview/{id}", name="exercise-overview__exercise--show-overview")
      */
     public function showOverview(Exercise $exercise): Response
     {
@@ -252,8 +253,28 @@ class ExerciseController extends AbstractController
 
         $exerciseHasSolutions = $this->getExerciseHasSolutions($exercise);
 
+        $exercisePhases = $exercise->getPhases()->toArray();
+
+        $phasesWithAllowedSortingIndication = array_map(function($index, ExercisePhase $phase) use ($exercisePhases) {
+            $previousPhase = $index === 0 ? null : $exercisePhases[$index - 1];
+            $canMoveUp = $phase->getDependsOnExercisePhase() !== $previousPhase;
+
+            /**
+             * @var ExercisePhase
+             */
+            $nextPhase = $index === count($exercisePhases) - 1 ? null : $exercisePhases[$index + 1];
+            $canMoveDown = $nextPhase && $nextPhase->getDependsOnExercisePhase() !== $phase;
+
+            return [
+                "phase" => $phase,
+                "canMoveUp" => $canMoveUp,
+                "canMoveDown" => $canMoveDown,
+            ];
+        }, array_keys($exercisePhases), $exercisePhases);
+
         return $this->render('Exercise/Edit.html.twig', [
             'exercise' => $exercise,
+            'exercisePhases' => $phasesWithAllowedSortingIndication,
             'exerciseHasSolutions' => $exerciseHasSolutions,
             'form' => $form->createView()
         ]);
@@ -315,40 +336,22 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * TODO: special authorization?
      * @IsGranted("edit", subject="exercise")
      * @Route("/exercise/copy/{id}", name="exercise-overview__exercise--copy")
      */
     public function copy(Request $request, Exercise $exercise): Response
     {
-        // Exercise that is exclusively used by the form
-        // WHY: using the original Exercise in the form will automatically change and persist it but we want
-        //      to keep the original Exercise untouched
-        $transientExercise = new Exercise();
-        $transientExercise->setName($exercise->getName());
-        $transientExercise->setDescription($exercise->getDescription());
-        $transientExercise->setCreator($exercise->getCreator());
-        $transientExercise->setCreatedAtValue();
-        $transientExercise->setStatus($exercise->getStatus());
-        $transientExercise->setCourse($exercise->getCourse());
-
-        $form = $this->createForm(CopyExerciseFormType::class, $transientExercise);
+        $form = $this->createForm(CopyExerciseFormType::class, CopyExerciseFormDto::fromExercise($exercise));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var Exercise $updatedTransientExercise
+             * @var CopyExerciseFormDto $formDto
              */
-            $updatedTransientExercise = $form->getData();
-
-            $selectedCourse = $updatedTransientExercise->getCourse();
+            $formDto = $form->getData();
 
             /** @var User $user */
             $user = $this->security->getUser();
-
-            // WHY: If 'copyPhases' is set to 'false' in form then the array key does (somehow) not exists
-            $copyPhases = array_key_exists('copyPhases', $request->request->get('copy_exercise_form'))
-                && $request->request->get('copy_exercise_form')['copyPhases'];
 
             /**
              * The new copy of the exercise that will be persisted
@@ -356,26 +359,25 @@ class ExerciseController extends AbstractController
             $newExercise = new Exercise();
 
             // copy stuff over to new Exercise
-            $newExercise->setName($updatedTransientExercise->getName());
-            $newExercise->setDescription($updatedTransientExercise->getDescription());
+            $newExercise->setName($exercise->getName());
+            $newExercise->setDescription($exercise->getDescription());
             // set creator to current user performing the action
             $newExercise->setCreator($user);
             $newExercise->setCreatedAtValue();
             // set status to "created" (unpublished)
             $newExercise->setStatus(Exercise::EXERCISE_CREATED);
             // set course to Course the user selected in form
-            $newExercise->setCourse($selectedCourse);
+            $newExercise->setCourse($formDto->getCourse());
 
             // create new ExercisePhases by duplicating the original ones
-            if ($copyPhases) {
-                // mutates
-                $newPhases = $this->exercisePhaseService->duplicatePhasesOfExerciseToExercise($exercise, $newExercise);
+            if ($formDto->getCopyPhases()) {
+                $newPhases = $this->exercisePhaseService->duplicatePhasesOfExercise($exercise, $newExercise);
                 $newExercise->setPhases($newPhases);
             }
 
             $this->eventStore->addEvent('ExerciseCreated', [
                 'exerciseId' => $newExercise->getId(),
-                'courseId' => $selectedCourse->getId(),
+                'courseId' => $formDto->getCourse()->getId(),
                 'name' => $newExercise->getName(),
                 'description' => $newExercise->getDescription(),
             ]);

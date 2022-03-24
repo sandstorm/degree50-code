@@ -9,27 +9,31 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Exercise\ExercisePhaseRepository")
  */
-class VideoCutPhase extends ExercisePhase
+class ReflexionPhase extends ExercisePhase
 {
-    const type = ExercisePhaseType::VIDEO_CUT;
+    const type = ExercisePhaseType::REFLEXION;
 
-    const PHASE_COMPONENTS = [
-        ExercisePhase::VIDEO_PLAYER,
-        //ExercisePhase::DOCUMENT_UPLOAD,
-    ];
+    /**
+     * @deprecated
+     */
+    const PHASE_COMPONENTS = [];
 
-    const PHASE_COMPONENTS_GROUP = [
-        //ExercisePhase::CHAT,
-        //ExercisePhase::SHARED_DOCUMENT,
-    ];
+    /**
+     * @deprecated
+     */
+    const PHASE_COMPONENTS_GROUP = [];
 
     public function __construct(string $id = null)
     {
         parent::__construct($id);
+
+        // Reflexionphase should always be a group phase
+        $this->setIsGroupPhase(true);
     }
 
     /**
      * @return array
+     * @deprecated
      */
     public function getAllowedComponents(): array
     {

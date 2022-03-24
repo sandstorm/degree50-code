@@ -44,9 +44,11 @@
                 <div class="col-md-6">{{ form_row(form.isGroupPhase) }}</div>
                 <div class="col-md-6">{{ form_row(form.dependsOnExercisePhase) }}</div>
             </div>
-            <div class="row">
-                <div class="col-md-6">{{ form_row(form.otherSolutionsAreAccessible) }}</div>
-            </div>
+            {% if exercisePhase.type.value != 'reflexion' %}
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.otherSolutionsAreAccessible) }}</div>
+                </div>
+            {% endif %}
             <hr />
 
             {{ form_row(form.name) }}
@@ -61,11 +63,13 @@
             {{ form_row(form.components) }}
             <hr/>
 
-            <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
-            <div data-controller="videosForm">
-                {{ form_row(form.videos) }}
-            </div>
-            <hr/>
+            {% if exercisePhase.type.value == 'videoAnalysis' or exercisePhase.type.value == 'videoCutting' %}
+                <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
+                <div data-controller="videosForm">
+                    {{  form_row(form.videos) }}
+                </div>
+                <hr/>
+            {% endif %}
 
             {% if exercisePhase.type.value == 'videoAnalysis' and exercisePhase.videoCodesActive %}
                 <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>

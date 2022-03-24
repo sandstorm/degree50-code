@@ -41,7 +41,7 @@ const CuttingSolutions = (props: Props) => {
             />
             <Toolbar />
             <OverlayContainer />
-            <div className="cutting-solutions">
+            <div className="cutting-solutions" data-test-id="cuttingSolutions">
                 {props.solutions.map((s) => (
                     <div key={s.id} className="cutting-solution">
                         <h5>Lösung von {s.userName}:</h5>

@@ -4,13 +4,26 @@ namespace App\Exercise\Form;
 
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
+use App\Entity\Video\Video;
+use App\Exercise\Controller\ExercisePhaseService;
+use App\Repository\Exercise\ExercisePhaseRepository;
+use App\Repository\Video\VideoRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class VideoAnalysisType extends ExercisePhaseType
+class VideoAnalysisPhaseFormFormType extends ExercisePhaseFormType
 {
+    private VideoRepository $videoRepository;
+
+    public function __construct(ExercisePhaseRepository $exercisePhaseRepository, ExercisePhaseService $exercisePhaseService, VideoRepository $videoRepository)
+    {
+        parent::__construct($exercisePhaseRepository, $exercisePhaseService);
+        $this->videoRepository = $videoRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -18,11 +31,7 @@ class VideoAnalysisType extends ExercisePhaseType
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
 
-        $components = $exercisePhase->getAllowedComponents();
-        $componentChoices = [];
-        foreach ($components as $component) {
-            $componentChoices[$component] = $component;
-        }
+        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
 
         $builder
             ->add('videoAnnotationsActive', CheckboxType::class, [
@@ -39,16 +48,16 @@ class VideoAnalysisType extends ExercisePhaseType
                 'translation_domain' => 'forms',
                 'block_prefix' => 'toggleable_button_checkbox',
             ])
-            ->add('components', ChoiceType::class, [
-                'label' => "exercisePhase.labels.components",
-                'translation_domain' => 'forms',
-                'choices' => $componentChoices,
+            ->add('videos', EntityType::class, [
+                'class' => Video::class,
+                'choices' => $videoChoices,
+                'required' => true,
+                'disabled' => $exercisePhase->getHasSolutions(),
+                'choice_label' => 'title',
                 'multiple' => true,
                 'expanded' => true,
-                'choice_label' => function ($choice, $key, $value) {
-                    return 'exercisePhase.components.' . $key . '.label';
-                },
-                'choice_translation_domain' => 'forms'
+                'label' => false,
+                'block_prefix' => 'video_entity'
             ]);
     }
 

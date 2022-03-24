@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Video\Video;
@@ -17,7 +18,6 @@ use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Validator\Constraints as Assert;
-use function PHPUnit\Framework\matches;
 
 /**
  * Describes a single Phase of an exercise (e.g. a "Video-Analysis" or "Video-Cutting").
@@ -34,6 +34,7 @@ use function PHPUnit\Framework\matches;
  * @DiscriminatorMap({
  *     "videoAnalysisPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase",
  *     "videoCutPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase",
+ *     "reflexionPhase" = "App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase",
  * })
  */
 abstract class ExercisePhase
@@ -116,11 +117,12 @@ abstract class ExercisePhase
      */
     private bool $otherSolutionsAreAccessible = false;
 
-    public static function byType(ExercisePhaseType $type, string $id = null): VideoAnalysisPhase | VideoCutPhase
+    public static function byType(ExercisePhaseType $type, string $id = null): VideoAnalysisPhase | VideoCutPhase | ReflexionPhase
     {
         return match ($type) {
             ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase($id),
             ExercisePhaseType::VIDEO_CUT => new VideoCutPhase($id),
+            ExercisePhaseType::REFLEXION => new ReflexionPhase($id),
         };
     }
 
@@ -130,6 +132,7 @@ abstract class ExercisePhase
         $this->teams = new ArrayCollection();
         $this->material = new ArrayCollection();
         $this->videos = new ArrayCollection();
+        $this->isGroupPhase = false;
     }
 
     public function __toString()
@@ -319,6 +322,10 @@ abstract class ExercisePhase
         $hasSolutionsWithoutTestSolution = !empty($solutionsWithoutTestSolution);
 
         return $hasSolutionsWithoutTestSolution;
+    }
+
+    public function getAllowedComponents() {
+        return [];
     }
 
     /**

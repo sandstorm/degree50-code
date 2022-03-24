@@ -44,7 +44,8 @@ exercise:
 exercisePhase:
     labels:
         isGroupPhase: 'Ist eine Gruppenarbeit'
-        dependsOnPreviousPhase: 'Nutzt Ergebnis vorheriger Phase'
+        dependsOnPreviousPhase: 'Nutzt Ergebnis von Phase'
+        dependsOnPhaseName: 'Nutzt Ergebnis von Phase'
         otherSolutionsAreAccessible: 'Studierende können gegenseitig Ergebnisse einsehen'
         name: 'Titel der Phase'
         task: 'Lernauftrag / Beschreibung'
@@ -57,7 +58,9 @@ exercisePhase:
         type: 'Typ'
     help:
         isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
-        dependsOnPreviousPhase: 'Wenn aktiv, können die Studierende beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
+        dependsOnPreviousPhase:
+            regular: 'Wenn aktiv, können die Studierende beim Bearbeiten ihr Ergebnis der vorherigen Phase einsehen, verwenden. Diese Funktion ist aktuell nur möglich für Phasen vom Typ Videoschnitt die auf eine Phase vom Typ Videoanalyse folgen.'
+            reflexion: 'Bestimmt die Phase, welche innerhalb der Reflexionsphase reflektiert wird.'
         otherSolutionsAreAccessible: 'Wenn aktiv, können die Studierenden für diese Phase die Ergebnisse ihrer Mitstudierenden einsehen.'
     types:
         videoAnalysis:
@@ -66,6 +69,9 @@ exercisePhase:
         videoCutting:
             label: 'Videoschnitt'
             iconClass: 'fas fa-cut'
+        reflexion:
+            label: 'Reflexion'
+            iconClass: 'fas fa-book-open'
     components:
         videoPlayer:
             label: 'Videoplayer'

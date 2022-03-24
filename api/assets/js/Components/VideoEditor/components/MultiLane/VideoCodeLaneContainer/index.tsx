@@ -12,6 +12,7 @@ import {
 import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
+import MediaLaneDescription from '../MediaLaneDescription'
 
 const mergeCodesAndPrototypesToItems = (videoCodes: VideoCode[], prototypes: Record<string, VideoCodePrototype>) => {
     return videoCodes.map((videoCode) => {
@@ -35,6 +36,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
 
     return {
         currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
+        currentIsFromGroupPhase: videoEditorSelectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
         videoCodesById: videoEditorSelectors.data.videoCodes.selectById(state),
         videoCodes: videoEditorSelectors.data.selectCurrentVideoCodesByStartTime(state),
         prototypes: videoEditorSelectors.data.videoCodePrototypes.selectById(state),
@@ -58,9 +60,13 @@ const VideoCodeLaneContainer = (props: Props) => {
 
         return (
             <div>
-                <div className="multilane__medialane-description">
-                    {getComponentName(TabsTypesEnum.VIDEO_CODES)} ({mediaItems.length}) - {ownerName} [Aktuelle Lösung]
-                </div>
+                <MediaLaneDescription
+                    componentName={getComponentName(TabsTypesEnum.VIDEO_CODES)}
+                    itemCount={mediaItems.length}
+                    userName={ownerName}
+                    isCurrent={true}
+                    fromGroupPhase={props.currentIsFromGroupPhase}
+                />
                 <VideoCodesMedialane mediaItems={mediaItems} readOnly={props.isReadonly} />
             </div>
         )
@@ -77,6 +83,12 @@ const VideoCodeLaneContainer = (props: Props) => {
                         <div className="multilane__medialane-description">
                             {componentName} ({mediaItems.length}) - {solution.userName}
                         </div>
+                        <MediaLaneDescription
+                            componentName={componentName}
+                            itemCount={mediaItems.length}
+                            userName={solution.userName}
+                            fromGroupPhase={solution.fromGroupPhase}
+                        />
                         <VideoCodesMedialane mediaItems={mediaItems} readOnly />
                     </div>
                 )

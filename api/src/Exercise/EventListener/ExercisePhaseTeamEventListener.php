@@ -18,6 +18,9 @@ class ExercisePhaseTeamEventListener
         $this->security = $security;
     }
 
+    // FIXME
+    // This magic has catched us off guard multiple times
+    // The creator should instead always be set explicitely!
     /**
      * Sets the current user as creator to every exercise created
      *

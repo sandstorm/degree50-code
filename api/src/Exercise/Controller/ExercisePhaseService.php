@@ -4,11 +4,11 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Entity\Exercise\Material;
 use App\Entity\Exercise\VideoCode;
-use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,19 +23,46 @@ class ExercisePhaseService
     }
 
     /**
-     * @return ExercisePhase[]|Collection
+     * Check if the combination of ExercisePhase "depending on" and the "depending" ExercisePhase is valid.
      */
-    public function duplicatePhasesOfExerciseToExercise(Exercise $originalExercise, Exercise $newExercise): Collection
+    public function isValidDependingOnExerciseCombination(ExercisePhase $phaseDependingOn, ExercisePhase $dependingPhase): bool
+    {
+        // check sorting: $phaseDependingOn must come _before_ this $dependingPhase
+        if ($phaseDependingOn->getSorting() >= $dependingPhase->getSorting()) {
+            return false;
+        }
+
+        // check type combination
+
+        // Reflexion can depend on any other(!) type
+        if ($dependingPhase->getType() === ExercisePhaseType::REFLEXION && $phaseDependingOn->getType() !== ExercisePhaseType::REFLEXION) {
+            return true;
+        }
+
+        // VideoCutting can depend on VideoAnalysis
+        if ($dependingPhase->getType() === ExercisePhaseType::VIDEO_CUT && $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS) {
+            return true;
+        }
+
+        // other combinations are invalid
+        return false;
+    }
+
+    /**
+     * @return ExercisePhase[]|Collection<ExercisePhase>
+     */
+    public function duplicatePhasesOfExercise(Exercise $originalExercise, Exercise $newExercise): Collection
     {
         $newPhases = $originalExercise->getPhases()->map(
             function (ExercisePhase $originalPhase) use ($newExercise) {
                 $newPhase = match ($originalPhase->getType()) {
-                    ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
-                    ExercisePhase\ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
+                    ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
+                    ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
+                    ExercisePhaseType::REFLEXION => new ReflexionPhase(),
                 };
 
                 switch ($originalPhase->getType()) {
-                    case ExercisePhase\ExercisePhaseType::VIDEO_ANALYSIS:
+                    case ExercisePhaseType::VIDEO_ANALYSIS:
                     {
                         /** @var VideoAnalysisPhase $newPhase */
                         /** @var VideoAnalysisPhase $originalPhase */
@@ -53,7 +80,8 @@ class ExercisePhaseService
                         };
                         break;
                     }
-                    case ExercisePhase\ExercisePhaseType::VIDEO_CUT:
+                    case ExercisePhaseType::VIDEO_CUT:
+                    case ExercisePhaseType::REFLEXION:
                         break;
                 }
 

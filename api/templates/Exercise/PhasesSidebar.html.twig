@@ -16,12 +16,12 @@
         <div class="sidebar__group-body">
             <ul class="list">
                 {% for item in sidebarItems %}
-                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item) ? "" : "sidebar-item--disabled" }}">
+                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item) ? "" : "sidebar-item--disabled" }}" data-test-id="exercisePhaseSidebarItem">
                         {% if showSolution %}
                             {{
                                 _self.sidebarLink(
                                     item.name,
-                                    item.dependsOnPreviousPhase,
+                                    item.dependsOnExercisePhase != null,
                                     item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
                                         'exercise-overview__exercise-phase--show-solutions',
@@ -33,7 +33,7 @@
                             {{
                                 _self.sidebarLink(
                                     item.name,
-                                    item.dependsOnExercisePhase,
+                                    item.dependsOnExercisePhase != null,
                                     item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
                                         'exercise-overview__exercise--show-phase-overview',
@@ -52,13 +52,13 @@
 
 
 
-{% macro sidebarLink(name, dependsOnExercisePhase, iconClass, href, canView = true)  %}
+{% macro sidebarLink(name, doesDependOnExercisePhase, iconClass, href, canView = true)  %}
     <a
         class="nav-link"
         {% if canView %} href="{{ href }}" {% endif %}
     >
         <i class="{{ iconClass }}"></i>
-        {% if dependsOnExercisePhase %}
+        {% if doesDependOnExercisePhase %}
             <i class="fas fa-arrow-up"
                title="{% trans %}exercisePhase.labels.dependsOnPreviousPhase{% endtrans %}"></i>
         {% endif %}

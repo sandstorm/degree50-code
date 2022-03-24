@@ -9,36 +9,19 @@
 
 .exercise-form__columns {
     display: flex;
-    flex-direction: row;
-
-    @include mq(medium) {
-        flex-direction: column;
-    }
+    flex-direction: column;
 }
 
 .exercise-form__left {
-    padding-right: 20px;
-    width: 40%;
-
-    border-right: 1px solid $theme__color__grey--light;
-
-    @include mq(medium) {
-        width: 100%;
-        padding-right: 0;
-        margin-bottom: 40px;
-
-        border-right: none;
-    }
+    margin-bottom: 40px;
+    padding-right: 0;
+    width: 100%;
+    border-right: none;
 }
 
 .exercise-form__right {
-    padding-left: 20px;
-    width: 60%;
-
-    @include mq(medium) {
-        width: 100%;
-        padding-left: 0;
-    }
+    width: 100%;
+    padding-left: 0;
 }
 
 label.required:before {

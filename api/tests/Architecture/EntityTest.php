@@ -13,6 +13,7 @@ class EntityTest extends ArchitectureTest
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\VirtualizedFile::class))
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase::class))
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase::class))
+            ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase::class))
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists::class))
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCode::class))
             ->excludingClassesThat(Selector::haveClassName(\App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype::class))

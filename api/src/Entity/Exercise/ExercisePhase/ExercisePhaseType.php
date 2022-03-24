@@ -9,6 +9,7 @@ namespace App\Entity\Exercise\ExercisePhase;
 enum ExercisePhaseType: string {
     case VIDEO_ANALYSIS = 'videoAnalysis';
     case VIDEO_CUT = 'videoCutting';
+    case REFLEXION = 'reflexion';
 
     /**
      * @return string[]

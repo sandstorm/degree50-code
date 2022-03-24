@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -76,7 +77,7 @@ class ExercisePhaseVoter extends Voter
 
     /**
      * User can view this ExercisePhase.
-     * He can if it's the first or the user has a Solution for the previous ExercisePhase.
+     * He can if it's the first or the user has a Solution for the previous ExercisePhase or the previous phase was a reflexion phase.
      *
      * @param ExercisePhase $exercisePhase
      * @param User $user
@@ -96,16 +97,31 @@ class ExercisePhaseVoter extends Voter
             return true;
         }
 
-        $previousExercisePhaseHasSolution = $exercisePhase
-            ->getBelongsToExercise()
-            ->getPhaseAtSortingPosition($sortingPosition - 1)
-            ->getHasSolutionForUser($user);
+        $phaseSortingsUpToThisPhase = range(0, $exercisePhase->getSorting() - 1);
+        $exercise =$exercisePhase->getBelongsToExercise();
 
-        if ($previousExercisePhaseHasSolution) {
-            return true;
-        }
+        $phasesBeforeAreDone = array_reduce(
+            $phaseSortingsUpToThisPhase,
+            function($allAreDone, $phaseSorting
+        ) use($exercise, $user) {
+            $phase = $exercise->getPhaseAtSortingPosition($phaseSorting);
 
-        return false;
+            if (empty($phase)) {
+                return $allAreDone;
+            }
+
+            if ($phase->getType() === ExercisePhaseType::REFLEXION) {
+                return $allAreDone && true;
+            }
+
+            if ($phase->getHasSolutionForUser($user)) {
+                return $allAreDone && true;
+            }
+
+            return false;
+        }, true);
+
+        return $phasesBeforeAreDone;
     }
 
     private function canViewOtherSolutions(ExercisePhase $exercisePhase, User $user): bool

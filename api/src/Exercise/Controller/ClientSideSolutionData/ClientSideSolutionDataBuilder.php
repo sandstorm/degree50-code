@@ -107,12 +107,14 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
     ): static
     {
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         $this->addSolution(
             $serverSideSolutionLists,
             $solutionId,
             $exercisePhaseTeam->getCreator(),
-            $cutVideo
+            $cutVideo,
+            $exercisePhase->isGroupPhase()
         );
 
         $this->currentSolutionId = $solutionId;
@@ -124,14 +126,16 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         ServerSideSolutionLists $serverSideSolutionLists,
         string $solutionId,
         User $teamMember,
-        ?ClientSideCutVideo $cutVideo
+        ?ClientSideCutVideo $cutVideo,
+        ?bool $fromGroupPhase,
     ): static
     {
         $solutionId = $this->addSolution(
             $serverSideSolutionLists,
             $solutionId,
             $teamMember,
-            $cutVideo
+            $cutVideo,
+            $fromGroupPhase,
         );
 
         array_push($this->previousSolutionIds, $solutionId);
@@ -143,7 +147,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         ServerSideSolutionLists $serverSideSolutionLists,
         string $solutionId,
         User $solutionCreator,
-        ?ClientSideCutVideo $cutVideo
+        ?ClientSideCutVideo $cutVideo,
+        ?bool $fromGroupPhase,
     ): string
     {
         $userName = $solutionCreator->getEmail();
@@ -171,7 +176,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
             $solutionId,
             $userName,
             $userId,
-            $cutVideo
+            $cutVideo,
+            $fromGroupPhase
         );
 
         return $solutionId;
@@ -194,7 +200,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
             $solutionId,
             $solution->getUserName(),
             $solution->getUserId(),
-            $solution->getCutVideo()
+            $solution->getCutVideo(),
+            $solution->getFromGroupPhase()
         );
 
         return $this;
