@@ -11,10 +11,9 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { initializeComponentFilter, initializePreviousSolutionsFilter, normalizeFilterData } from './normalizeData'
+import { normalizeFilterData } from './normalizeData'
 import { initData } from 'Components/VideoEditor/initData'
 import { DataState } from 'Components/VideoEditor/DataSlice'
-import { initializeShortCuts } from '../ShortCutsSaga'
 
 export default class extends Controller {
     connect() {
@@ -30,7 +29,6 @@ export default class extends Controller {
         store.dispatch(hydrateLiveSyncConfig(liveSyncConfig))
 
         store.dispatch(initData(data))
-        store.dispatch(initializeShortCuts())
 
         store.dispatch(actions.filter.init(normalizeFilterData(config, data)))
 

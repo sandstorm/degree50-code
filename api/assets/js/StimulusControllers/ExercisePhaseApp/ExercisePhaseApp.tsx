@@ -3,7 +3,6 @@ import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 import { OverlayProvider } from '@react-aria/overlays'
-import { useShortCuts } from '../../useShortCuts'
 
 export const ExercisePhaseApp: React.FC = () => {
     // react-aria-modal watches a container element for aria-modal nodes and
@@ -17,8 +16,6 @@ export const ExercisePhaseApp: React.FC = () => {
     // Therefore we should properly test if it works without this observer and if
     // so remove it.
     const { height } = useDebouncedResizeObserver(ref, 500)
-
-    useShortCuts()
 
     return (
         <OverlayProvider className={'exercise-phase__inner solutions-container'}>

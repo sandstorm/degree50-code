@@ -20,8 +20,8 @@ import presenceSaga from '../ExercisePhaseApp/Components/Presence/PresenceSaga'
 import solutionSaga from '../ExercisePhaseApp/Components/Solution/SolutionSaga'
 import currentEditorReducer, { selectCurrentEditorId } from '../ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import VideoEditorSlice, { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
-import shortCutsReducer from '../../ShortCutsSlice'
-import { shortCutsSaga } from '../../ShortCutsSaga'
+import shortCutsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSlice'
+import { shortCutsSaga } from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSaga'
 
 const sagaMiddleWare = createSagaMiddleware()
 

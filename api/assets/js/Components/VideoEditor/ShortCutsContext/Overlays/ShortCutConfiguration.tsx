@@ -1,0 +1,81 @@
+import { AppState } from '../../../../StimulusControllers/ExerciseAndSolutionStore/Store'
+import {
+    allShortCutModifiers,
+    selectShortCutConfigurationById,
+    ShortCutId,
+    ShortCutModifierId,
+    toggleModifierForShortCut,
+    setKeyForShortCut,
+} from '../ShortCutsSlice'
+import React, { ChangeEvent, FocusEventHandler, FormEventHandler, memo } from 'react'
+import { connect } from 'react-redux'
+
+const modifierToLabelMap: Record<ShortCutModifierId, string> = {
+    [ShortCutModifierId.CTRL]: 'Control',
+    [ShortCutModifierId.ALT]: 'Alt',
+    [ShortCutModifierId.OPTION]: 'Option',
+    [ShortCutModifierId.SHIFT]: 'Shift',
+}
+
+const shortCutIdToLabelMap: Record<ShortCutId, string> = {
+    [ShortCutId.TOGGLE_PLAY]: 'VideoPlayer play/pause',
+}
+
+type OwnProps = {
+    shortCutId: ShortCutId
+}
+
+const mapStateToProps = (state: AppState, ownProps: OwnProps) => ({
+    shortCutConfiguration: selectShortCutConfigurationById(state, ownProps.shortCutId),
+})
+
+const mapDispatchToProps = {
+    toggleModifierForShortCut,
+    setKeyForShortCut,
+}
+
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+
+const ShortCutConfiguration = (props: Props) => {
+    const handleKeyFocus: FocusEventHandler<HTMLInputElement> = (ev) => {
+        ev.target.select()
+    }
+
+    const handleKeyInput = (ev: ChangeEvent<HTMLInputElement>) => {
+        const newKey = ev.target.value
+
+        props.setKeyForShortCut({ shortCutId: props.shortCutId, key: newKey })
+        ev.target.select()
+    }
+
+    return (
+        <div className="short-cut-configuration">
+            <p>{shortCutIdToLabelMap[props.shortCutId]}</p>
+            <div className="short-cut-configuration--modifiers">
+                {allShortCutModifiers.map((modifierId) => {
+                    const id = `shortCut-${props.shortCutId}-modifier--${modifierId}`
+
+                    const enabled = props.shortCutConfiguration.modifiers[modifierId].enabled
+                    const handleChange = () =>
+                        props.toggleModifierForShortCut({ shortCutId: props.shortCutId, modifierId: modifierId })
+
+                    return (
+                        <div key={id} className="highlight-focus-within">
+                            <input id={id} type="checkbox" checked={enabled} onChange={handleChange} />
+                            <label htmlFor={id}>{modifierToLabelMap[modifierId]}</label>
+                        </div>
+                    )
+                })}
+            </div>
+            <input
+                type="text"
+                maxLength={1}
+                value={props.shortCutConfiguration.key}
+                onInput={handleKeyInput}
+                onFocus={handleKeyFocus}
+            />
+        </div>
+    )
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(ShortCutConfiguration))

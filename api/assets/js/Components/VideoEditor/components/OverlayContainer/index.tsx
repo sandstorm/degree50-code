@@ -34,6 +34,8 @@ import ZusatzMaterialOverlay, {
 import { SolutionFilterOverlayIds } from 'Components/VideoEditor/FilterContext/FilterMenu'
 import SolutionFilterOverlay from 'Components/VideoEditor/FilterContext/Overlays/SolutionFilterOverlay'
 import { AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { ShortCutsOverlayIds } from '../../ShortCutsContext/ShortCutsMenu'
+import ShortCutsConfigurationOverlay from '../../ShortCutsContext/Overlays/ShortCutsConfigurationOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
@@ -109,6 +111,11 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
         // Filter
         case SolutionFilterOverlayIds.filterSolutions: {
             return <SolutionFilterOverlay />
+        }
+
+        // ShortCuts
+        case ShortCutsOverlayIds.configureShortCuts: {
+            return <ShortCutsConfigurationOverlay />
         }
 
         default:
