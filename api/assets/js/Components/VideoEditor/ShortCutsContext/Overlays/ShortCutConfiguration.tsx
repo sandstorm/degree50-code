@@ -54,7 +54,7 @@ const ShortCutConfiguration = (props: Props) => {
     return (
         <div className="short-cut-configuration">
             <p>{shortCutIdToLabelMap[props.shortCutId]}</p>
-            <div className="short-cut-configuration--modifiers">
+            <div className="short-cut-configuration--modifier-list">
                 {allShortCutModifiers.map((modifierId) => {
                     const id = `shortCut-${props.shortCutId}-modifier--${modifierId}`
 
@@ -65,7 +65,7 @@ const ShortCutConfiguration = (props: Props) => {
                     }
 
                     return (
-                        <div key={id} className="highlight-focus-within">
+                        <div key={id} className="short-cut-configuration--modifier highlight-focus-within">
                             <input id={id} type="checkbox" checked={enabled} onChange={handleChange} />
                             <label htmlFor={id}>{modifierToLabelMap[modifierId]}</label>
                         </div>
@@ -78,6 +78,7 @@ const ShortCutConfiguration = (props: Props) => {
                 value={props.shortCutConfiguration.key}
                 onInput={handleKeyInput}
                 onFocus={handleKeyFocus}
+                className="short-cut-configuration-key"
             />
         </div>
     )

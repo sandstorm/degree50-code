@@ -1,0 +1,41 @@
+.short-cut-configuration {
+    @include transition(all 250ms ease);
+
+    .short-cut-configuration--modifier,
+    .short-cut-configuration-key {
+        padding: $theme__spacing--small $theme__spacing--base;
+    }
+
+    .highlight-focus-within {
+        &:hover {
+            color: $theme__color__white;
+            background-color: $theme__color__primary--dark;
+        }
+
+        &:focus-within,
+        &:focus {
+            color: $theme__color__white;
+            background-color: $theme__color__secondary--dark;
+        }
+
+        &:active {
+            color: $theme__color__white;
+            background-color: $theme__color__grey--dark;
+        }
+
+        &--active {
+            color: $theme__color__white;
+            background-color: $theme__color__primary;
+        }
+
+        &:hover,
+        &:focus-within,
+        &:focus,
+        &--active,
+        &:active {
+            a {
+                color: $theme__color__white !important;
+            }
+        }
+    }
+}
