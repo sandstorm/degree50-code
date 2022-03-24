@@ -9,6 +9,7 @@ import {
 } from '../ShortCutsSlice'
 import React, { ChangeEvent, FocusEventHandler, FormEventHandler, memo } from 'react'
 import { connect } from 'react-redux'
+import { persistShortCuts } from '../ShortCutsSaga'
 
 const modifierToLabelMap: Record<ShortCutModifierId, string> = {
     [ShortCutModifierId.CTRL]: 'Control',
@@ -32,6 +33,7 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => ({
 const mapDispatchToProps = {
     toggleModifierForShortCut,
     setKeyForShortCut,
+    persistShortCuts,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -45,6 +47,7 @@ const ShortCutConfiguration = (props: Props) => {
         const newKey = ev.target.value
 
         props.setKeyForShortCut({ shortCutId: props.shortCutId, key: newKey })
+        props.persistShortCuts()
         ev.target.select()
     }
 
@@ -56,8 +59,10 @@ const ShortCutConfiguration = (props: Props) => {
                     const id = `shortCut-${props.shortCutId}-modifier--${modifierId}`
 
                     const enabled = props.shortCutConfiguration.modifiers[modifierId].enabled
-                    const handleChange = () =>
+                    const handleChange = () => {
                         props.toggleModifierForShortCut({ shortCutId: props.shortCutId, modifierId: modifierId })
+                        props.persistShortCuts()
+                    }
 
                     return (
                         <div key={id} className="highlight-focus-within">

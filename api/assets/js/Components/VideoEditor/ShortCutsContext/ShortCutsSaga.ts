@@ -18,8 +18,6 @@ function* initializeShortCutsSaga() {
     const persistedShortCuts = localStorage.getItem(STORAGE_KEY)
 
     if (persistedShortCuts) {
-        debugger
-
         const shortCutsStateFromStore = selectShortCutsState(yield selectState())
         const shortCutsStateFromLocalStorage = JSON.parse(persistedShortCuts) as ShortCutsState
 
