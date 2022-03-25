@@ -22,6 +22,8 @@ function* initializeShortCutsSaga() {
         const shortCutsStateFromLocalStorage = JSON.parse(persistedShortCuts) as ShortCutsState
 
         // set new state as combination
+        // TODO: If we remove a shortCut from the system this should not re-introduce it but rather be filtered out
+        // That means we map only the systems shortCuts and can only overwrite those
         const combinedShortCuts = merge({}, shortCutsStateFromStore, shortCutsStateFromLocalStorage)
 
         yield put(setShortCutsState(combinedShortCuts))

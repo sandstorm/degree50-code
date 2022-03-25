@@ -20,7 +20,7 @@ const ShortCutsMenu = (props: Props) => {
 
     return (
         <div className="video-editor__menu">
-            <MenuButton icon={<i className="fas  fa-universal-access" />} ariaLabel="Filter">
+            <MenuButton icon={<i className="fas  fa-keyboard" />} ariaLabel="Tastenkombination bearbeiten">
                 <MenuItem
                     ariaLabel={label}
                     label={label}

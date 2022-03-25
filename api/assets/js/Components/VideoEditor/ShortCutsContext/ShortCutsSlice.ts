@@ -22,7 +22,11 @@ export enum ShortCutId {
 
 export const shortCutIds = Object.values(ShortCutId)
 
-export type ShortCutConfiguration = { shortCutId: ShortCutId; key: string; modifiers: ShortCutModifierConfigurations }
+export type ShortCutConfiguration = {
+    shortCutId: ShortCutId
+    key: string
+    modifiers: ShortCutModifierConfigurations
+}
 
 export type ShortCutsState = Record<ShortCutId, ShortCutConfiguration>
 
@@ -61,7 +65,7 @@ const ShortCutsSlice = createSlice({
         setKeyForShortCut: (
             state: ShortCutsState,
             action: PayloadAction<{ shortCutId: ShortCutId; key: ShortCutConfiguration['key'] }>
-        ) => {
+        ): ShortCutsState => {
             const { key, shortCutId } = action.payload
             return {
                 ...state,

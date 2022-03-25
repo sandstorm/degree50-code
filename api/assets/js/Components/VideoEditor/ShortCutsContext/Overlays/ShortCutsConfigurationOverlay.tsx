@@ -3,16 +3,14 @@ import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import Overlay from '../../components/Overlay'
 import { ShortCutsOverlayIds } from '../ShortCutsMenu'
-import { shortCutIds, ShortCutsState } from '../ShortCutsSlice'
+import { shortCutIds } from '../ShortCutsSlice'
 import ShortCutConfiguration from './ShortCutConfiguration'
-
-const mapStateToProps = (state: { shortCuts: ShortCutsState }) => ({})
 
 const mapDispatchToProps = {
     closeOverlay: actions.overlay.unsetOverlay,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+type Props = typeof mapDispatchToProps
 
 const ShortCutsConfigurationOverlay = (props: Props) => {
     const close = () => {
@@ -28,4 +26,4 @@ const ShortCutsConfigurationOverlay = (props: Props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(ShortCutsConfigurationOverlay))
+export default connect(undefined, mapDispatchToProps)(memo(ShortCutsConfigurationOverlay))

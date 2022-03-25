@@ -1,3 +1,5 @@
+import React, { ChangeEvent, FocusEventHandler, memo } from 'react'
+import { connect } from 'react-redux'
 import { AppState } from '../../../../StimulusControllers/ExerciseAndSolutionStore/Store'
 import {
     allShortCutModifiers,
@@ -7,8 +9,6 @@ import {
     toggleModifierForShortCut,
     setKeyForShortCut,
 } from '../ShortCutsSlice'
-import React, { ChangeEvent, FocusEventHandler, FormEventHandler, memo } from 'react'
-import { connect } from 'react-redux'
 import { persistShortCuts } from '../ShortCutsSaga'
 
 const modifierToLabelMap: Record<ShortCutModifierId, string> = {
@@ -46,9 +46,16 @@ const ShortCutConfiguration = (props: Props) => {
     const handleKeyInput = (ev: ChangeEvent<HTMLInputElement>) => {
         const newKey = ev.target.value
 
-        props.setKeyForShortCut({ shortCutId: props.shortCutId, key: newKey })
-        props.persistShortCuts()
-        ev.target.select()
+        // prevent empty value
+        if (newKey !== '') {
+            props.setKeyForShortCut({ shortCutId: props.shortCutId, key: newKey })
+            props.persistShortCuts()
+        }
+
+        // WHY: Hack: Pressing `delete` or `carriage return` somehow prevents the browser from selecting the input value again.
+        setTimeout(() => {
+            ev.target.select()
+        }, 0)
     }
 
     return (
@@ -60,6 +67,7 @@ const ShortCutConfiguration = (props: Props) => {
 
                     const enabled = props.shortCutConfiguration.modifiers[modifierId].enabled
                     const handleChange = () => {
+                        // TODO: prevent if it's the last enabled modifier
                         props.toggleModifierForShortCut({ shortCutId: props.shortCutId, modifierId: modifierId })
                         props.persistShortCuts()
                     }
