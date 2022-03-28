@@ -80,7 +80,8 @@ const ShortCutsSlice = createSlice({
             action: PayloadAction<{ shortCutId: ShortCutId; modifierId: ShortCutModifierId }>
         ): ShortCutsState => {
             const { shortCutId, modifierId } = action.payload
-            return {
+
+            const newState: ShortCutsState = {
                 ...state,
                 [shortCutId]: {
                     ...state[shortCutId],
@@ -93,6 +94,12 @@ const ShortCutsSlice = createSlice({
                     },
                 },
             }
+
+            // WHY: At least one modifier needs to be enabled
+            if (allShortCutModifiers.filter((id) => newState[shortCutId].modifiers[id].enabled).length > 0) {
+                return newState
+            }
+            return state
         },
     },
 })

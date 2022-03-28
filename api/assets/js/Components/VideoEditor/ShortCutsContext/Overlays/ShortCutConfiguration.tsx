@@ -67,7 +67,6 @@ const ShortCutConfiguration = (props: Props) => {
 
                     const enabled = props.shortCutConfiguration.modifiers[modifierId].enabled
                     const handleChange = () => {
-                        // TODO: prevent if it's the last enabled modifier
                         props.toggleModifierForShortCut({ shortCutId: props.shortCutId, modifierId: modifierId })
                         props.persistShortCuts()
                     }
