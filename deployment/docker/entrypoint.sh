@@ -34,6 +34,18 @@ if [ "$LOCAL_DEVELOPMENT" == '1' ]; then
 	composer install --prefer-dist --no-progress --no-suggest --no-interaction
 fi
 
+# do not use .env files in production - we dump them into .env.local.php for performance reasons and delete the env files
+if [ "$APP_ENV" == 'test' ]; then
+	# only use test env in test environment
+	composer dump-env test
+	rm .env
+	rm .env.test
+else
+	composer dump-env prod
+	rm .env
+	rm .env.test
+fi
+
 if [ "$APP_ENV" != 'prod' ]; then
 	# run migrations for test db
 	APP_ENV=test bin/console doctrine:migrations:migrate --no-interaction

@@ -50,12 +50,9 @@ RUN set -eux; \
 	composer install --prefer-dist --no-scripts --no-progress --no-suggest; \
 	composer clear-cache
 
-# do not use .env files in production
-# TODO we need .env for behat tests in CI. Does this have security/performance implications?
+# these will be dumped and deleted in entrypoint.sh depending on the APP_ENV
 COPY api/.env ./
 COPY api/.env.test ./
-#RUN composer dump-env prod; \
-#	rm .env
 
 # copy only specifically what we need
 
@@ -90,11 +87,6 @@ COPY --from=fluent/fluent-bit:1.4 /fluent-bit/bin/fluent-bit /usr/bin/fluent-bit
 COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
 COPY /deployment/config-files/fluentbit.conf /etc/fluentbit.conf
 
-
-#COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
-#RUN chmod +x /usr/local/bin/docker-healthcheck
-
-#HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
 COPY deployment/docker/entrypoint.sh /entrypoint.sh
 
