@@ -10,6 +10,7 @@ import {
     setKeyForShortCut,
 } from '../ShortCutsSlice'
 import { persistShortCuts } from '../ShortCutsSaga'
+import Accordion from '../../../Accordion/Accordion'
 
 const modifierToLabelMap: Record<ShortCutModifierId, string> = {
     [ShortCutModifierId.CTRL]: 'Control',
@@ -59,8 +60,7 @@ const ShortCutConfiguration = (props: Props) => {
     }
 
     return (
-        <div className="short-cut-configuration">
-            <p>{shortCutIdToLabelMap[props.shortCutId]}</p>
+        <Accordion className="short-cut-configuration" title={shortCutIdToLabelMap[props.shortCutId]}>
             <div className="short-cut-configuration--modifier-list">
                 {allShortCutModifiers.map((modifierId) => {
                     const id = `shortCut-${props.shortCutId}-modifier--${modifierId}`
@@ -87,7 +87,7 @@ const ShortCutConfiguration = (props: Props) => {
                 onFocus={handleKeyFocus}
                 className="short-cut-configuration-key"
             />
-        </div>
+        </Accordion>
     )
 }
 

@@ -1,0 +1,22 @@
+.accordion {
+    &__title {
+        cursor: pointer;
+
+        i {
+            margin-right: $theme__spacing--small;
+        }
+    }
+
+    &__content {
+        height: 0;
+        visibility: hidden;
+    }
+
+    &--open {
+        &__title {
+            i {
+                transform: rotate(90deg);
+            }
+        }
+    }
+}
