@@ -1,4 +1,4 @@
-@fixtures @playwright @todo
+@fixtures @playwright
 Feature: When a student solves an exercise they should only be able to access phases, where all predecessors either have a solution or are reflexionPhases
 
     Background:

@@ -2,16 +2,33 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(min-content, max-content) auto minmax(min-content, max-content);
+    grid-template-rows: 100%;
+    grid-template-areas: 'left center right';
+    grid-gap: 20px;
+
     padding: 10px;
 
     background-color: $theme__color__grey--lighter;
     border-top: 1px solid $theme__color__grey--light;
 
     z-index: 8000;
+
+    & .footer__left {
+        grid-area: left;
+    }
+
+    & .footer__center {
+        grid-area: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    & .footer__right {
+        grid-area: right;
+    }
 
     .form-group {
         margin: 0 !important;

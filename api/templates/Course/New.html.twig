@@ -27,9 +27,11 @@
     </div>
 
     <footer class="footer">
-        <a class="btn btn-outline-primary"
+        <a class="btn btn-outline-primary footer__left"
            href="{{ path('exercise-overview') }}">{% trans %}course.new.back{% endtrans %}</a>
-        {{ form_row(form.save) }}
+        <div class="footer__right">
+            {{ form_row(form.save) }}
+        </div>
     </footer>
     {{ form_end(form) }}
 {% endblock %}

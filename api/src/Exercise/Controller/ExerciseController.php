@@ -359,7 +359,7 @@ class ExerciseController extends AbstractController
             $newExercise = new Exercise();
 
             // copy stuff over to new Exercise
-            $newExercise->setName($exercise->getName());
+            $newExercise->setName('Kopie - ' . $exercise->getName());
             $newExercise->setDescription($exercise->getDescription());
             // set creator to current user performing the action
             $newExercise->setCreator($user);

@@ -157,7 +157,7 @@
     </div>
 
     <footer class="footer">
-        <div class="btn-group">
+        <div class="btn-group footer__left">
             <a class="btn btn-outline-primary"
                href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
             {% if is_granted('view', exercise) %}
@@ -167,7 +167,9 @@
                 <a class="btn btn-outline-primary disabled">{% trans %}exercise.labels.test{% endtrans %}</a>
             {% endif %}
         </div>
-        {{ form_row(form.save) }}
+        <div class="footer__right">
+            {{ form_row(form.save) }}
+        </div>
     </footer>
     {{ form_end(form) }}
 

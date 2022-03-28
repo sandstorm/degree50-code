@@ -1,4 +1,4 @@
-@fixtures @playwright
+@fixtures @playwright @todo
 Feature: Copy Exercises
 
     # This feature introduces the ability to copy an exercise.

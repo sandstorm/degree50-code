@@ -1,14 +1,17 @@
 {% trans_default_domain 'forms' %}
 
 <footer class="footer">
+    <div class="footer__left">
     {% if previousExercisePhase %}
         <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercise.id, phaseId: previousExercisePhase.id}) }}">Vorherige Phase</a>
     {% else %}
         <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
     {% endif %}
+    </div>
 
-    <span>Phase {{ currentPhaseIndex + 1 }} / {{ amountOfPhases + 1 }}</span>
+    <span class="footer__center">Phase {{ currentPhaseIndex + 1 }} / {{ amountOfPhases + 1 }}</span>
 
+    <div class="footer__right">
     {% if nextExercisePhase %}
         {% if is_granted('viewExercisePhase', nextExercisePhase) %}
             <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Nächste Phase</a>
@@ -18,4 +21,5 @@
     {% else %}
         <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--finish', {id: exercise.id}) }}">Aufgabe abschließen</a>
     {% endif %}
+    </div>
 </footer>
