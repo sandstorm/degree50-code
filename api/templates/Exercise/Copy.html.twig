@@ -29,12 +29,14 @@
     </div>
 
     <footer class="footer">
-        <div class="btn-group">
+        <div class="btn-group footer__left">
             <a class="btn btn-outline-primary"
                href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}
             </a>
         </div>
-        {{ form_row(form.save) }}
+        <div class="footer__right">
+            {{ form_row(form.save) }}
+        </div>
     </footer>
     {{ form_end(form) }}
 

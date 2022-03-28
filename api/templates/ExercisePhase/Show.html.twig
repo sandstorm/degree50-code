@@ -12,8 +12,8 @@
             </div>
         </div>
         <footer class="footer">
-            <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Reflexion beenden</a>
-            <span>{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
+            <a class="btn btn-outline-primary footer_left" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Reflexion beenden</a>
+            <span class="footer__center">{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
         </footer>
     {% else %}
         <div class="exercise-phase" data-controller="exercisePhase" data-exercisePhase-props="{{ { data: data, currentEditor: currentEditor, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
@@ -22,10 +22,10 @@
             </div>
         </div>
         <footer class="footer">
-            <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Zurück</a>
-            <span>{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
+            <a class="btn btn-outline-primary footer__left" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Zurück</a>
+            <span class="footer__center">{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
             {% if is_granted('updateSolution', exercisePhaseTeam) %}
-                <a class="btn btn-primary" href="{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
+                <a class="btn btn-primary footer__right" href="{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
             {% endif %}
         </footer>
     {% endif %}

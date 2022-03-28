@@ -45,8 +45,10 @@
         </div>
 
         <footer class="footer">
-            <a class="btn btn-outline-primary" href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
-            {{ form_row(form.save) }}
+            <a class="btn btn-outline-primary footer__left" href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
+            <div class="footer__right">
+                {{ form_row(form.save) }}
+            </div>
         </footer>
     {{ form_end(form) }}
 {% endblock %}
