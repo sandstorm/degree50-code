@@ -8,7 +8,7 @@ import { useVideoCodeEdit } from './useVideoCodeEdit'
 import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
-import VideoCodeSelection from './VideoCodeSelection'
+import VideoCodeSelection from './VideoCodePrototypeSelection'
 import {
     ConfigStateSlice,
     selectors as configSelectors,
@@ -22,7 +22,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
 
     return {
         videoCode,
-        prototypes: selectors.data.selectDenormalizedPrototypes(state),
+        prototypes: selectors.data.selectAllPrototypesFlattened(state),
         duration,
     }
 }

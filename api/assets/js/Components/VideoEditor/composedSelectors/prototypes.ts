@@ -19,36 +19,44 @@ const selectDenormalizedCurrentPrototypes = createSelector(
 )
 
 const selectDenormalizedPrototypes = createSelector([videoCodePrototypeSelectors.selectById], (byId) =>
-    Object.values(byId).map((prototype) => byId[prototype.id])
+    Object.values(byId)
+        .map((prototype) => byId[prototype.id])
+        .sort(prototypesByName)
 )
 
-const selectAllPrototypesList = createSelector([selectDenormalizedPrototypes], (codes) => {
-    return codes.reduce((prototypes: VideoCodePrototype[], code) => {
-        if (code.parentId) {
-            return prototypes
+const selectAllPrototypesList = createSelector([selectDenormalizedPrototypes], (prototypes) => {
+    return prototypes.reduce((allPrototypes: VideoCodePrototype[], prototype) => {
+        if (prototype.parentId) {
+            return allPrototypes
         }
 
-        const childCodes = codes.filter((c) => c.parentId === code.id)
+        const childCodes = prototypes.filter((p) => p.parentId === prototype.id)
 
-        return [...prototypes, { ...code, videoCodes: childCodes }]
+        return [...allPrototypes, { ...prototype, videoCodes: childCodes }]
     }, [])
 })
 
-const selectCurrentPrototypesList = createSelector([selectDenormalizedCurrentPrototypes], (codes) => {
-    return codes.reduce((acc: VideoCodePrototype[], code) => {
-        if (code.parentId) {
+const selectAllPrototypesFlattened = createSelector([selectAllPrototypesList], (prototypes) => {
+    return prototypes.reduce((allFlattenedPrototypes: VideoCodePrototype[], prototype) => {
+        return [...allFlattenedPrototypes, prototype, ...prototype.videoCodes]
+    }, [])
+})
+
+const selectCurrentPrototypesList = createSelector([selectDenormalizedCurrentPrototypes], (prototypes) => {
+    return prototypes.reduce((acc: VideoCodePrototype[], prototype) => {
+        if (prototype.parentId) {
             return acc
         }
 
-        const childCodes = codes.filter((c) => c.parentId === code.id)
+        const childCodes = prototypes.filter((c) => c.parentId === prototype.id)
 
-        return [...acc, { ...code, videoCodes: childCodes }]
+        return [...acc, { ...prototype, videoCodes: childCodes }]
     }, [])
 })
 
 export const composedPrototypeSelectors = {
     selectCurrentPrototypesList,
     selectAllPrototypesList,
+    selectAllPrototypesFlattened,
     selectDenormalizedCurrentPrototypes,
-    selectDenormalizedPrototypes,
 }

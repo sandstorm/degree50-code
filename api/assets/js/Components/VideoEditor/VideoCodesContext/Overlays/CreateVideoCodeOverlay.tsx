@@ -10,7 +10,7 @@ import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { useVideoCodeEdit } from './useVideoCodeEdit'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
-import VideoCodeSelection from './VideoCodeSelection'
+import VideoCodeSelection from './VideoCodePrototypeSelection'
 import { VideoCode } from 'Components/VideoEditor/types'
 import {
     ConfigStateSlice,
@@ -21,7 +21,7 @@ import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
     currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
     duration: configSelectors.selectVideos(state)[0].duration,
-    prototypes: videoEditorSelectors.data.selectDenormalizedPrototypes(state),
+    prototypes: videoEditorSelectors.data.selectAllPrototypesFlattened(state),
     currentSolutionId: videoEditorSelectors.data.solutions.selectCurrentId(state),
 })
 

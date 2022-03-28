@@ -11,13 +11,13 @@ type OwnProps = {
 }
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    prototypes: selectors.data.selectDenormalizedPrototypes(state),
+    prototypes: selectors.data.selectAllPrototypesFlattened(state),
     prototypesById: selectors.data.videoCodePrototypes.selectById(state),
 })
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>
 
-const VideoCodeSelection: FC<Props> = (props) => {
+const VideoCodePrototypeSelection: FC<Props> = (props) => {
     const { onSelect, defaultPrototypeId, selectedPrototypeId, prototypes } = props
 
     if (prototypes.length < 1) {
@@ -51,4 +51,4 @@ const VideoCodeSelection: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps)(React.memo(VideoCodeSelection))
+export default connect(mapStateToProps)(React.memo(VideoCodePrototypeSelection))
