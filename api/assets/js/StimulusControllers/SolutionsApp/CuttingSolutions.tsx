@@ -44,7 +44,9 @@ const CuttingSolutions = (props: Props) => {
             <div className="cutting-solutions" data-test-id="cuttingSolutions">
                 {props.solutions.map((s) => (
                     <div key={s.id} className="cutting-solution">
-                        <h5>Lösung von {s.userName}:</h5>
+                        <h5>
+                            {s.fromGroupPhase ? 'Lösung der Gruppe von' : 'Lösung von'} {s.userName}:
+                        </h5>
                         <div className="cutting-solution__video">
                             <VideoCutSolutionVideo videoConfig={s.cutVideo} />
                         </div>
