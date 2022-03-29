@@ -64,7 +64,7 @@ const ShortCutConfiguration = (props: Props) => {
     const title = (
         <span className="short-cut-configuration__title">
             <span>{shortCutIdToLabelMap[props.shortCutId]}</span>
-            <span>({props.shortCutText})</span>
+            <span className="hot-key-text">({props.shortCutText})</span>
         </span>
     )
 

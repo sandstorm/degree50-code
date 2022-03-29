@@ -1,6 +1,9 @@
 .short-cut-configuration__title {
-    span + span {
+    * + * {
         margin-left: $theme__spacing--small;
+    }
+
+    .hot-key-text {
         color: $theme__color__grey;
     }
 }
@@ -27,38 +30,5 @@
     .short-cut-configuration__key {
         width: 50px;
         margin-left: $theme__spacing--small;
-    }
-
-    .highlight-focus-within {
-        &:hover {
-            color: $theme__color__white;
-            background-color: $theme__color__primary--dark;
-        }
-
-        &:focus-within,
-        &:focus {
-            color: $theme__color__white;
-            background-color: $theme__color__secondary--dark;
-        }
-
-        &:active {
-            color: $theme__color__white;
-            background-color: $theme__color__grey--dark;
-        }
-
-        &--active {
-            color: $theme__color__white;
-            background-color: $theme__color__primary;
-        }
-
-        &:hover,
-        &:focus-within,
-        &:focus,
-        &--active,
-        &:active {
-            a {
-                color: $theme__color__white !important;
-            }
-        }
     }
 }

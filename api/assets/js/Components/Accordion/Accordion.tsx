@@ -14,8 +14,6 @@ const Accordion = (props: Props) => {
 
     const handleClick = useMemo(() => () => setIsOpen((value) => !value), [])
 
-    console.log(isOpen)
-
     const className = `accordion${isOpen ? ' accordion--is-open' : ''} ${props.className ?? ''}`.trim()
 
     return (

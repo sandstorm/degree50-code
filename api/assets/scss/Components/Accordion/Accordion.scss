@@ -1,6 +1,12 @@
 .accordion {
+    overflow: hidden;
+
     &__title {
-        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: $theme__spacing--small;
 
         i {
             margin: 0 $theme__spacing--small;
@@ -9,7 +15,7 @@
     }
 
     &__content {
-        transition: height .2s linear;
+        visibility: collapse;
         height: 0;
     }
 
@@ -21,8 +27,8 @@
         }
 
         .accordion__content {
-            height: 1.8em;
             visibility: visible;
+            height: inherit;
         }
     }
 }
