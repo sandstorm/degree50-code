@@ -3,20 +3,26 @@
         cursor: pointer;
 
         i {
-            margin-right: $theme__spacing--small;
+            margin: 0 $theme__spacing--small;
+            transition: transform .2s linear;
         }
     }
 
     &__content {
+        transition: height .2s linear;
         height: 0;
-        visibility: hidden;
     }
 
-    &--open {
-        &__title {
+    &--is-open {
+        .accordion__title {
             i {
                 transform: rotate(90deg);
             }
+        }
+
+        .accordion__content {
+            height: 1.8em;
+            visibility: visible;
         }
     }
 }

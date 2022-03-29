@@ -1,9 +1,32 @@
-.short-cut-configuration {
-    @include transition(all 250ms ease);
+.short-cut-configuration__title {
+    span + span {
+        margin-left: $theme__spacing--small;
+        color: $theme__color__grey;
+    }
+}
 
-    .short-cut-configuration--modifier,
-    .short-cut-configuration-key {
-        padding: $theme__spacing--small $theme__spacing--base;
+.short-cut-configuration {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    align-items: center;
+
+    .short-cut-configuration__modifier {
+        padding: 0 $theme__spacing--small;
+    }
+
+    .short-cut-configuration__modifier-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        align-items: center;
+
+        input {
+            margin-right: $theme__spacing--small;
+        }
+    }
+
+    .short-cut-configuration__key {
+        width: 50px;
+        margin-left: $theme__spacing--small;
     }
 
     .highlight-focus-within {
