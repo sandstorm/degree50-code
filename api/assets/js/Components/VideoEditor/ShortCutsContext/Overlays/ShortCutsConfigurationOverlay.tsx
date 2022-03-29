@@ -18,7 +18,11 @@ const ShortCutsConfigurationOverlay = (props: Props) => {
     }
 
     return (
-        <Overlay closeCallback={close} title="Short Cut Konfiguration">
+        <Overlay closeCallback={close} title="Tastenkombinationen">
+            <p className="short-cut-configuration__info-block">
+                <i className="fas fa-info-circle" />
+                <span>Hinweis: Änderungen werden sofort übernommen.</span>
+            </p>
             {shortCutIds.map((shortCutId) => (
                 <ShortCutConfiguration shortCutId={shortCutId} key={shortCutId} />
             ))}

@@ -1,8 +1,7 @@
 import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import { actions } from '../VideoEditorSlice'
-import MenuButton from '../components/MenuButton'
-import MenuItem from '../components/MenuItem'
+import Button from '../../Button/Button'
 
 const prefix = 'SHORT_CUTS'
 export const ShortCutsOverlayIds = {
@@ -16,19 +15,17 @@ const mapDispatchToProps = {
 type Props = typeof mapDispatchToProps
 
 const ShortCutsMenu = (props: Props) => {
-    const label = 'ShortCuts anpassen'
+    const handleClick = () => props.setOverlay({ overlayId: ShortCutsOverlayIds.configureShortCuts, closeOthers: true })
 
     return (
         <div className="video-editor__menu">
-            <MenuButton icon={<i className="fas  fa-keyboard" />} ariaLabel="Tastenkombination bearbeiten">
-                <MenuItem
-                    ariaLabel={label}
-                    label={label}
-                    onClick={() =>
-                        props.setOverlay({ overlayId: ShortCutsOverlayIds.configureShortCuts, closeOthers: true })
-                    }
-                />
-            </MenuButton>
+            <Button
+                title="Tastenkombinationen ansehen und bearbeiten"
+                className="btn btn-grey btn-sm video-editor__toolbar__button"
+                onPress={handleClick}
+            >
+                <i className="fas fa-keyboard" />
+            </Button>
         </div>
     )
 }

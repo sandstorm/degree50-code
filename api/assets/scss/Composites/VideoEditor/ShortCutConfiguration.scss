@@ -1,3 +1,18 @@
+// in overlay
+.short-cut-configuration__info-block {
+    * + * {
+        margin-left: $theme__spacing--small;
+    }
+
+    span {
+        color: $theme__color__grey;
+    }
+
+    i {
+        color: $theme__color__primary;
+    }
+}
+
 .short-cut-configuration__title {
     * + * {
         margin-left: $theme__spacing--small;
@@ -12,6 +27,7 @@
     display: grid;
     grid-template-columns: 4fr 1fr;
     align-items: center;
+    justify-items: end;
 
     .short-cut-configuration__modifier {
         padding: 0 $theme__spacing--small;

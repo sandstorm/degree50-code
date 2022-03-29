@@ -14,14 +14,14 @@ import { persistShortCuts } from '../ShortCutsSaga'
 import Accordion from '../../../Accordion/Accordion'
 
 const modifierToLabelMap: Record<ShortCutModifierId, string> = {
-    [ShortCutModifierId.CTRL]: 'Control',
-    [ShortCutModifierId.ALT]: 'Alt',
-    [ShortCutModifierId.OPTION]: 'Option',
-    [ShortCutModifierId.SHIFT]: 'Shift',
+    [ShortCutModifierId.CTRL]: 'Strg (Ctrl)',
+    [ShortCutModifierId.ALT]: 'Alt (Win/Linux)',
+    [ShortCutModifierId.OPTION]: 'Option (Mac)',
+    [ShortCutModifierId.SHIFT]: 'Umschalt (Shift)',
 }
 
 const shortCutIdToLabelMap: Record<ShortCutId, string> = {
-    [ShortCutId.TOGGLE_PLAY]: 'VideoPlayer play/pause',
+    [ShortCutId.TOGGLE_PLAY]: 'Video Wiedergabe/Pause',
 }
 
 type OwnProps = {

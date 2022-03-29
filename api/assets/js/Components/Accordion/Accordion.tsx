@@ -18,7 +18,7 @@ const Accordion = (props: Props) => {
 
     return (
         <div className={className}>
-            <p tabIndex={1} className="accordion__title highlight-focus-within">
+            <p tabIndex={1} className="accordion__title highlight-focus-within--outline">
                 {props.title}
                 <Button
                     className="btn btn-outline-primary"

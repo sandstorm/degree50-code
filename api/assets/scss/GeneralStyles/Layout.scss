@@ -96,6 +96,7 @@ body {
         background-color: $theme__color__primary;
     }
 
+    // force overwrite a tag styling
     &:hover,
     &:focus-within,
     &:focus,
@@ -104,5 +105,26 @@ body {
         a {
             color: $theme__color__white !important;
         }
+    }
+}
+
+.highlight-focus-within--outline {
+    border: 2px solid transparent;
+
+    &:hover {
+        border-color: $theme__color__primary--dark;
+    }
+
+    &:focus-within,
+    &:focus {
+        border-color: $theme__color__secondary--dark;
+    }
+
+    &:active {
+        border-color: $theme__color__grey--dark;
+    }
+
+    &--active {
+        border-color: $theme__color__primary;
     }
 }
