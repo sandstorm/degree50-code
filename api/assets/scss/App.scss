@@ -13,6 +13,7 @@
 
 // components
 
+@import 'Components/Accordion/Accordion';
 @import 'Components/Button/Button';
 @import 'Components/ButtonCheckbox/ButtonCheckbox';
 @import 'Components/Dropdown/Dropdown';
@@ -74,6 +75,7 @@
 @import 'Composites/VideoEditor/MediaLaneContainer';
 @import 'Composites/VideoEditor/Overlay';
 @import 'Composites/VideoEditor/PreviousSolutions';
+@import 'Composites/VideoEditor/ShortCutConfiguration';
 @import 'Composites/VideoEditor/VideoCodePrototypeInformation';
 @import 'Composites/VideoEditor/VideoContextPlayer';
 @import 'Composites/VideoEditor/VideoEditor';
