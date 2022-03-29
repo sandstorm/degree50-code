@@ -4,6 +4,7 @@ import React, { FC, memo } from 'react'
 import MediaLaneContainer from './components/MediaLaneContainer'
 import OverlayContainer from './components/OverlayContainer'
 import Toolbar from './components/Toolbar'
+import { useShortCuts } from './ShortCutsContext/useShortCuts'
 
 type Props = {
     videos: Array<Video>
@@ -11,6 +12,8 @@ type Props = {
 
 const VideoEditor: FC<Props> = (props) => {
     const firstVideo = props.videos[0]
+
+    useShortCuts()
 
     return (
         <div className="video-editor" data-test-id="videoEditor">

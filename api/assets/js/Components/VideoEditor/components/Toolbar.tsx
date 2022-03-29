@@ -6,6 +6,7 @@ import TeamMenu from '../Team/TeamMenu'
 import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
 import ZusatzMaterialMenu from '../ZusatzMaterial/ZusatzMaterialMenu'
 import FilterMenu from '../FilterContext/FilterMenu'
+import ShortCutsMenu from '../ShortCutsContext/ShortCutsMenu'
 
 const Toolbar = () => {
     return (
@@ -17,6 +18,7 @@ const Toolbar = () => {
             <ZusatzMaterialMenu />
             <TeamMenu />
             <FilterMenu />
+            <ShortCutsMenu />
         </div>
     )
 }

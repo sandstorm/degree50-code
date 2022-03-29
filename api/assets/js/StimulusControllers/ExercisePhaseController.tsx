@@ -11,7 +11,7 @@ import { initSolutionSyncAction } from './ExercisePhaseApp/Components/Solution/S
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setCurrentEditorId } from './ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
-import { initializeComponentFilter, initializePreviousSolutionsFilter, normalizeFilterData } from './normalizeData'
+import { normalizeFilterData } from './normalizeData'
 import { initData } from 'Components/VideoEditor/initData'
 import { DataState } from 'Components/VideoEditor/DataSlice'
 

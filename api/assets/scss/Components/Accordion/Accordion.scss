@@ -1,0 +1,34 @@
+.accordion {
+    overflow: hidden;
+
+    &__title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: $theme__spacing--small;
+
+        i {
+            margin: 0 $theme__spacing--small;
+            transition: transform .2s linear;
+        }
+    }
+
+    &__content {
+        visibility: collapse;
+        height: 0;
+    }
+
+    &--is-open {
+        .accordion__title {
+            i {
+                transform: rotate(90deg);
+            }
+        }
+
+        .accordion__content {
+            visibility: visible;
+            height: inherit;
+        }
+    }
+}
