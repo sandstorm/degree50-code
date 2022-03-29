@@ -59,7 +59,7 @@ const ShortCutConfiguration = (props: Props) => {
         /**
          * WHY: Hack: Pressing `delete` or `carriage return` somehow prevents the browser from selecting the input value again.
          *
-         * HOW I think it workes:
+         * HOW I think it works:
          *  This "Hack" with setTimeout registers the ev.target.select() call further down the stack so whatever the
          *  browser is doing right after delete or carriage return is pressed.. this callback is executed after it.
          */
