@@ -42,11 +42,8 @@ class DashboardController extends AbstractDashboardController
 
     public function configureAssets(): Assets
     {
-        return parent::configureAssets()
-            ->addCssFile('/build/admin.css')
-            ->addJsFile('/build/runtime.js')
-            ->addJsFile('/build/vendors~app.js')
-            ->addJsFile('/build/app.js');
+        return Assets::new()
+            ->addWebpackEncoreEntry('admin');
     }
 
     public function configureDashboard(): Dashboard
