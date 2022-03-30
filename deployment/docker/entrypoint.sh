@@ -20,6 +20,8 @@ mkdir -p var/cache var/log
 mkdir -p var/data/persistent/audio_descriptions/original
 mkdir -p var/data/persistent/subtitles/original
 mkdir -p var/data/persistent/videos/original
+mkdir -p /app/public/data
+mkdir -p /app/var/data
 
 setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
 # TODO: Why?
@@ -50,6 +52,9 @@ done
 if ls -A src/Migrations/*.php > /dev/null 2>&1; then
 	bin/console doctrine:migrations:migrate --no-interaction || echo "!!!!!!!!! ERROR running Doctrine migrations. Run them after starting and fix the errors."
 fi
+
+# install assets of bundles into public folder
+php bin/console assets:install
 
 /usr/bin/supervisord
 
