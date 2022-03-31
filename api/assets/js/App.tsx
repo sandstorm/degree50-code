@@ -23,6 +23,7 @@ import VideosFormController from 'StimulusControllers/VideosFormController'
 import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
 import SidebarController from 'StimulusControllers/SidebarController'
 import { initColors, ORIGINAL_COLORS } from 'ntc-ts'
+import TimeInputTest from './StimulusControllers/TimeInputTest'
 
 const application = Application.start()
 
@@ -37,6 +38,9 @@ application.register('videoCodeForm', VideoCodeFormController)
 application.register('videosForm', VideosFormController)
 application.register('deleteEntity', DeleteEntityController)
 application.register('sidebar', SidebarController)
+
+// TODO just for dev
+application.register('timeInput', TimeInputTest)
 
 /**
  * Initialize color map for ntc (color hex -> color name conversion) with default colors (browser standard).

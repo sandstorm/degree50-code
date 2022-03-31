@@ -8,7 +8,7 @@ export function sleep(ms = 0) {
 }
 
 export function secondToTime(seconds = 0) {
-    return DT.d2t(seconds.toFixed(3))
+    return DT.d2t(seconds.toFixed(0))
 }
 
 export function timeToSecond(time: string): number {
@@ -19,17 +19,19 @@ export const getSecondsFromTimeSeconds = (seconds: number) => (seconds % 60) % 6
 export const getMinutesFromTimeSeconds = (seconds: number) => Math.floor(seconds / 60) % 60
 export const getHoursFromTimeSeconds = (seconds: number) => Math.floor(seconds / 60 / 60)
 
+export const timeNumberFormat = {
+    minimumIntegerDigits: 2,
+    maximumFractionDigits: 0,
+    useGrouping: false,
+}
+
 /**
  * Formatter for number of hours to string representation.
  *
  * Example:
  *  HoursStringFormatter.format(5) -> "05"
  */
-export const HoursStringFormatter = Intl.NumberFormat('en', {
-    minimumIntegerDigits: 2,
-    maximumFractionDigits: 0,
-    useGrouping: false,
-})
+export const HoursStringFormatter = Intl.NumberFormat('de-DE', timeNumberFormat)
 
 /**
  * Formatter for number of minutes to string representation.
@@ -37,11 +39,7 @@ export const HoursStringFormatter = Intl.NumberFormat('en', {
  * Example:
  *  MinutesStringFormatter.format(2) -> "02"
  */
-export const MinutesStringFormatter = Intl.NumberFormat('en', {
-    minimumIntegerDigits: 2,
-    maximumFractionDigits: 0,
-    useGrouping: false,
-})
+export const MinutesStringFormatter = Intl.NumberFormat('de-DE', timeNumberFormat)
 
 /**
  * Formatter for number of seconds to string representation.
@@ -49,11 +47,7 @@ export const MinutesStringFormatter = Intl.NumberFormat('en', {
  * Example:
  *  SecondsStringFormatter.format(1) -> "01"
  */
-export const SecondsStringFormatter = Intl.NumberFormat('en', {
-    minimumIntegerDigits: 2,
-    maximumFractionDigits: 0,
-    useGrouping: false,
-})
+export const SecondsStringFormatter = Intl.NumberFormat('de-DE', timeNumberFormat)
 
 /**
  * Formatter for number of seconds to string representation.
@@ -63,11 +57,10 @@ export const SecondsStringFormatter = Intl.NumberFormat('en', {
  *  SecondsStringFormatter.format(23) -> "23.000"
  *  SecondsStringFormatter.format(5.23) -> "05.230"
  */
-export const SecondsWithMillisecondsStringFormatter = Intl.NumberFormat('en', {
+export const SecondsWithMillisecondsStringFormatter = Intl.NumberFormat('de-DE', {
+    ...timeNumberFormat,
     minimumFractionDigits: 3,
     maximumFractionDigits: 3,
-    minimumIntegerDigits: 2,
-    useGrouping: false,
 })
 
 export const sortByStartTime = <T extends { id: string; start: string }>(entities: T[]): T[] =>
