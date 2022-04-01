@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus'
-import React, { useState, StrictMode } from 'react'
+import React, { useState, StrictMode, useMemo } from 'react'
 import ReactDOM from 'react-dom'
 import TimeInput from '../Components/TimeInput/TimeInput'
 import { I18nProvider } from '@react-aria/i18n'
@@ -10,10 +10,13 @@ const TimeInputTest = () => {
     const [minutes, setMinutes] = useState(23)
     const [seconds, setSeconds] = useState(42)
 
-    const formatOptions: Intl.NumberFormatOptions = {
-        ...timeNumberFormat,
-        style: 'unit',
-    }
+    const formatOptions: Intl.NumberFormatOptions = useMemo(
+        () => ({
+            ...timeNumberFormat,
+            style: 'unit',
+        }),
+        []
+    )
 
     return (
         <TimeInput

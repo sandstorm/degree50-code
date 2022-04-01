@@ -9,7 +9,7 @@ input,
     &:focus,
     &:focus-within {
         border-color: $theme__color__secondary--dark;
-        border-width: 2px;
+        border-width: 1px;
     }
 
     &:hover {

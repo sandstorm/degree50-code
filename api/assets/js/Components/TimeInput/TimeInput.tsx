@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, MouseEvent, useCallback, useMemo } from 'react'
 import NumberField from './NumberField'
 
 type Props = {
@@ -23,44 +23,78 @@ type Props = {
 }
 
 const TimeInput = (props: Props) => {
-    const hoursLabel = `${props.label} Stunden`
-    const minutesLabel = `${props.label} Minuten`
-    const secondsLabel = `${props.label} Sekunden`
+    const hoursLabel = useMemo(() => `${props.label} Stunden`, [props.label])
+    const minutesLabel = useMemo(() => `${props.label} Minuten`, [props.label])
+    const secondsLabel = useMemo(() => `${props.label} Sekunden`, [props.label])
 
-    // TODO: better label handling - similar to native label
-    // maybe separate component with forHtml prop, onClick handler that sets focus on first NumberField and correct aria stuff
+    const hoursFormatOptions = useMemo(
+        () => ({
+            ...props.formatOptions,
+            unit: 'hour',
+        }),
+        [props.formatOptions]
+    )
+
+    const minutesFormatOptions = useMemo(
+        () => ({
+            ...props.formatOptions,
+            unit: 'minute',
+        }),
+        [props.formatOptions]
+    )
+
+    const secondsFormatOptions = useMemo(
+        () => ({
+            ...props.formatOptions,
+            unit: 'second',
+        }),
+        [props.formatOptions]
+    )
+
+    // TODO: Is this restriction justified? Alternatively could be unrestricted by default (like hours)
+    const maxMinutes = useMemo(() => Math.min(59, props.maxMinutes ?? 59), [props.maxMinutes])
+    const maxSeconds = useMemo(() => Math.min(59, props.maxSeconds ?? 59), [props.maxSeconds])
+
+    // WHY: Simulate label onClick behavior
+    const handleLabelClick = useCallback((ev: MouseEvent<HTMLLabelElement>) => {
+        // @ts-ignore - wrong DOM typing?
+        ev.target?.parentElement?.querySelector('input')?.focus()
+    }, [])
+
     return (
-        <div className="input time-input">
-            <span className="time-input__label">{props.label}</span>
-            <NumberField
-                value={props.hours}
-                defaultValue={0}
-                minValue={props.minHours}
-                maxValue={props.maxHours}
-                onChange={props.onChangeHours}
-                aria-label={hoursLabel}
-                formatOptions={{ ...props.formatOptions, unit: 'hour' }}
-            />
-            <NumberField
-                value={props.minutes}
-                defaultValue={0}
-                minValue={props.minMinutes}
-                // TODO: Is this restriction justified? Alternatively could be unrestricted by default (like hours)
-                maxValue={Math.min(59, props.maxMinutes ?? 59)}
-                onChange={props.onChangeMinutes}
-                aria-label={minutesLabel}
-                formatOptions={{ ...props.formatOptions, unit: 'minute' }}
-            />
-            <NumberField
-                value={props.seconds}
-                defaultValue={0}
-                minValue={props.minSeconds}
-                // TODO: Is this restriction justified? Alternatively could be unrestricted by default (like hours)
-                maxValue={Math.min(59, props.maxSeconds ?? 59)}
-                onChange={props.onChangeSeconds}
-                aria-label={secondsLabel}
-                formatOptions={{ ...props.formatOptions, unit: 'second' }}
-            />
+        <div className="time-input">
+            <label className="time-input__label" onClick={handleLabelClick}>
+                {props.label}
+            </label>
+            <div role="group" className="input">
+                <NumberField
+                    value={props.hours}
+                    defaultValue={0}
+                    minValue={props.minHours}
+                    maxValue={props.maxHours}
+                    onChange={props.onChangeHours}
+                    aria-label={hoursLabel}
+                    formatOptions={hoursFormatOptions}
+                />
+                <NumberField
+                    value={props.minutes}
+                    defaultValue={0}
+                    minValue={props.minMinutes}
+                    maxValue={maxMinutes}
+                    onChange={props.onChangeMinutes}
+                    aria-label={minutesLabel}
+                    formatOptions={minutesFormatOptions}
+                />
+                <NumberField
+                    value={props.seconds}
+                    defaultValue={0}
+                    minValue={props.minSeconds}
+                    maxValue={maxSeconds}
+                    onChange={props.onChangeSeconds}
+                    aria-label={secondsLabel}
+                    formatOptions={secondsFormatOptions}
+                />
+            </div>
         </div>
     )
 }
