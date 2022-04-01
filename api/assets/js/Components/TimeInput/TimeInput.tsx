@@ -8,25 +8,24 @@ type Props = {
     maxHours?: number
     minHours?: number
     onChangeHours: (hours: number) => void
+    hoursLabel: string
 
     minutes: number
     maxMinutes?: number
     minMinutes?: number
     onChangeMinutes: (hours: number) => void
+    minutesLabel: string
 
     seconds: number
     maxSeconds?: number
     minSeconds?: number
     onChangeSeconds: (hours: number) => void
+    secondsLabel: string
 
     formatOptions?: Intl.NumberFormatOptions
 }
 
 const TimeInput = (props: Props) => {
-    const hoursLabel = useMemo(() => `${props.label} Stunden`, [props.label])
-    const minutesLabel = useMemo(() => `${props.label} Minuten`, [props.label])
-    const secondsLabel = useMemo(() => `${props.label} Sekunden`, [props.label])
-
     const hoursFormatOptions = useMemo(
         () => ({
             ...props.formatOptions,
@@ -73,7 +72,7 @@ const TimeInput = (props: Props) => {
                     minValue={props.minHours}
                     maxValue={props.maxHours}
                     onChange={props.onChangeHours}
-                    aria-label={hoursLabel}
+                    aria-label={props.hoursLabel}
                     formatOptions={hoursFormatOptions}
                 />
                 <NumberField
@@ -82,7 +81,7 @@ const TimeInput = (props: Props) => {
                     minValue={props.minMinutes}
                     maxValue={maxMinutes}
                     onChange={props.onChangeMinutes}
-                    aria-label={minutesLabel}
+                    aria-label={props.minutesLabel}
                     formatOptions={minutesFormatOptions}
                 />
                 <NumberField
@@ -91,7 +90,7 @@ const TimeInput = (props: Props) => {
                     minValue={props.minSeconds}
                     maxValue={maxSeconds}
                     onChange={props.onChangeSeconds}
-                    aria-label={secondsLabel}
+                    aria-label={props.secondsLabel}
                     formatOptions={secondsFormatOptions}
                 />
             </div>
