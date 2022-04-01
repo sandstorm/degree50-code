@@ -28,11 +28,11 @@ const NumberField = (props: Props) => {
         <div className="number-field">
             <div className="group" {...groupProps}>
                 <button className="number-field__inc-button" {...incrementProps} ref={incrRef}>
-                    <i className="fas fa-chevron-up" />
+                    <i className="far fa-angle-up" />
                 </button>
                 <input {...inputProps} ref={inputRef} />
                 <button className="number-field__dec-button" {...decrementProps} ref={decRef}>
-                    <i className="fas fa-chevron-down" />
+                    <i className="far fa-angle-down" />
                 </button>
             </div>
         </div>

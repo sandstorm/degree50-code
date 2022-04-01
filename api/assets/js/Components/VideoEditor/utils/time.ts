@@ -63,6 +63,28 @@ export const SecondsWithMillisecondsStringFormatter = Intl.NumberFormat('de-DE',
     maximumFractionDigits: 3,
 })
 
+export const timeValuesToTimeString = ({
+    hours,
+    minutes,
+    seconds,
+}: {
+    hours: number
+    minutes: number
+    seconds: number
+}): string => {
+    return [
+        HoursStringFormatter.format(hours),
+        MinutesStringFormatter.format(minutes),
+        SecondsStringFormatter.format(seconds),
+    ].join(':')
+}
+
+export const timeStringToTimeValues = (
+    timeString: string
+): { hours: number; minutes: number; seconds: number } | undefined => {
+    return
+}
+
 export const sortByStartTime = <T extends { id: string; start: string }>(entities: T[]): T[] =>
     [...entities].sort((a, b) => {
         if (a.start < b.start) {

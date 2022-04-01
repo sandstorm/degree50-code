@@ -78,16 +78,18 @@ To create and deploy a versioned release follow these steps:
 
 ### Get Started with Development
 
--   Initially, run `make build-docker` to build the docker container
--   run `docker-compose up -d`
--   check installation with `docker-compose logs -f api`
--   When the container is running:
-    -   import fixtures by running `make import-fixtures` (dummy data)
-    -   Run the assets build (locally) using `cd api && nvm use && yarn`
-    -   Run frontend build using `cd api && yarn dev`
-    -   Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
-    -   After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
-    -   The Symfony Console can be executed via `./symfony-console`
+- Initially, run `make build-docker` to build the docker container
+- run `docker-compose up -d`
+- check installation with `docker-compose logs -f api`
+- When the container is running:
+    - import fixtures by running `make import-fixtures` (dummy data)
+    - Make sure you have set the Fontawesome Pro NPM Token Env Variable: FONTAWESOME_NPM_AUTH_TOKEN
+        - Log into fontawesome (credentials in Bitwarden), get NPM Token and put `export FONTAWESOME_NPM_AUTH_TOKEN=<TOKEN>` into your shell rc
+    - Run the assets build (locally) using `cd api && nvm use && yarn`
+    - Run frontend build using `cd api && yarn dev`
+    - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
+    - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
+    - The Symfony Console can be executed via `./symfony-console`
 
 ### Connect with database
 

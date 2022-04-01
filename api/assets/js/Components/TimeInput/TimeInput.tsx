@@ -56,17 +56,17 @@ const TimeInput = (props: Props) => {
     const maxSeconds = useMemo(() => Math.min(59, props.maxSeconds ?? 59), [props.maxSeconds])
 
     // WHY: Simulate label onClick behavior
-    const handleLabelClick = useCallback((ev: MouseEvent<HTMLLabelElement>) => {
+    const focusFirstInput = useCallback((ev: MouseEvent<HTMLElement>) => {
         // @ts-ignore - wrong DOM typing?
         ev.target?.parentElement?.querySelector('input')?.focus()
     }, [])
 
     return (
         <div className="time-input">
-            <label className="time-input__label" onClick={handleLabelClick}>
+            <label className="time-input__label" onClick={focusFirstInput}>
                 {props.label}
             </label>
-            <div role="group" className="input">
+            <div role="group" className="input" onClick={focusFirstInput}>
                 <NumberField
                     value={props.hours}
                     defaultValue={0}
