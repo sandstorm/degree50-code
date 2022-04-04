@@ -1,68 +1,117 @@
 import React, { memo, MouseEvent, useCallback, useMemo } from 'react'
 import NumberField from './NumberField'
-import {
-    getHoursFromTimeSeconds,
-    getMinutesFromTimeSeconds,
-    getSecondsFromTimeSeconds,
-} from '../VideoEditor/utils/time'
-import { hoursToSeconds, minutesToSeconds } from 'date-fns'
-import { clamp } from 'lodash'
+import { timeStringToTimeValues, timeValuesToTimeString } from '../VideoEditor/utils/time'
 
-// TODO: each field should be optional
-// TODO: add milliseconds
-// TODO: do subdivision handling inside and get time as seconds number as prop
+// TODO: some fields should be optional
 
 type Props = {
     label: string
 
-    value: number
-    max: number
-    min: number
+    /**
+     * Time in format 'h:m:s:ms'
+     */
+    value: string
+    max?: string
+    min?: string
 
-    hoursLabel: string
-    minutesLabel: string
-    secondsLabel: string
+    hoursLabel?: string
+    minutesLabel?: string
+    secondsLabel?: string
+    msLabel?: string
 
-    onChange: (time: number) => void
+    showMs?: boolean
+
+    onChange: (value: string) => void
 
     formatOptions?: Intl.NumberFormatOptions
 }
 
 const TimeInput = (props: Props) => {
-    const hourFormatOpts = useMemo(() => numberFormatWithUnit('hour', props.formatOptions), [props.formatOptions])
-    const minuteFormatOpts = useMemo(() => numberFormatWithUnit('minute', props.formatOptions), [props.formatOptions])
-    const secondFormatOpts = useMemo(() => numberFormatWithUnit('second', props.formatOptions), [props.formatOptions])
-
     // WHY: Simulate label onClick behavior
     const focusFirstInput = useCallback((ev: MouseEvent<HTMLLabelElement | HTMLDivElement>) => {
         // WHY: type issue
         const eventTarget = ev.target as HTMLElement
-        eventTarget.querySelector('input')?.focus()
+        eventTarget.parentElement?.querySelector('input')?.focus()
     }, [])
 
-    const hours = getHoursFromTimeSeconds(props.value)
-    const minutes = getMinutesFromTimeSeconds(props.value)
-    const seconds = getSecondsFromTimeSeconds(props.value)
+    // NumberFormatOptions
+    const hourFormatOpts = useMemo(() => numberFormatWithUnit('hour', props.formatOptions), [props.formatOptions])
+    const minuteFormatOpts = useMemo(() => numberFormatWithUnit('minute', props.formatOptions), [props.formatOptions])
+    const secondFormatOpts = useMemo(() => numberFormatWithUnit('second', props.formatOptions), [props.formatOptions])
+    const msFormatOpts = useMemo(() => numberFormatWithUnit('millisecond', props.formatOptions), [props.formatOptions])
 
-    const maxHours = getHoursFromTimeSeconds(props.max - props.value)
-    const maxMinutes = getHoursFromTimeSeconds(props.max - props.value)
-    const maxSeconds = getSecondsFromTimeSeconds(props.max - props.value)
+    const timeValues = timeStringToTimeValues(props.value)
+    // NOTE: negative time handling not planned and shaped yet
+    const minTimeValues = timeStringToTimeValues(props.min ?? '00:00:00.000')
+    const maxTimeValues = timeStringToTimeValues(props.max ?? '99:59:59.999')
 
-    const minHours = getHoursFromTimeSeconds(props.min)
-    const minMinutes = getMinutesFromTimeSeconds(props.min)
-    const minSeconds = getSecondsFromTimeSeconds(props.min)
+    // TODO: maybe extract functions for this and write tests
+    // special handling of max values because if '1h 1m 30s' is maximum, then '0h 20m 55s' is a valid value
+    const maxHours = maxTimeValues.hours
+    const maxMinutes = timeValues.hours < maxHours ? 59 : maxTimeValues.minutes
+    const maxSeconds = timeValues.hours < maxHours || timeValues.minutes < maxMinutes ? 59 : maxTimeValues.seconds
+    const maxMs =
+        timeValues.hours < maxHours || timeValues.minutes < maxMinutes || timeValues.seconds < maxSeconds
+            ? 999
+            : maxTimeValues.ms
+
+    const minHours = minTimeValues.hours
+    const minMinutes = timeValues.hours > minHours ? 0 : minTimeValues.minutes
+    const minSeconds = timeValues.hours > minHours || timeValues.minutes > minMinutes ? 0 : minTimeValues.seconds
+    const minMs =
+        timeValues.hours > minHours || timeValues.minutes > minMinutes || timeValues.seconds > minSeconds
+            ? 0
+            : minTimeValues.ms
+
+    const hours = Math.max(Math.min(timeValues.hours, maxHours), minHours)
+    const minutes = Math.max(Math.min(timeValues.minutes, maxMinutes), minMinutes)
+    const seconds = Math.max(Math.min(timeValues.seconds, maxSeconds), minSeconds)
+    const ms = Math.max(Math.min(timeValues.ms, maxMs), minMs)
+
+    const showMs = props.showMs ?? false
 
     const onChangeHours = (newHours: number) => {
-        const newValue = hoursToSeconds(newHours) + minutesToSeconds(minutes) + seconds
-        props.onChange(clamp())
+        props.onChange(
+            timeValuesToTimeString({
+                hours: newHours,
+                minutes,
+                seconds,
+                ms,
+            })
+        )
     }
 
     const onChangeMinutes = (newMinutes: number) => {
-        props.onChange(hoursToSeconds(hours) + minutesToSeconds(newMinutes) + seconds)
+        props.onChange(
+            timeValuesToTimeString({
+                hours,
+                minutes: newMinutes,
+                seconds,
+                ms,
+            })
+        )
     }
 
     const onChangeSeconds = (newSeconds: number) => {
-        props.onChange(hoursToSeconds(hours) + minutesToSeconds(minutes) + newSeconds)
+        props.onChange(
+            timeValuesToTimeString({
+                hours,
+                minutes,
+                seconds: newSeconds,
+                ms,
+            })
+        )
+    }
+
+    const onChangeMs = (newMs: number) => {
+        props.onChange(
+            timeValuesToTimeString({
+                hours,
+                minutes,
+                seconds,
+                ms: newMs,
+            })
+        )
     }
 
     return (
@@ -98,6 +147,17 @@ const TimeInput = (props: Props) => {
                     aria-label={props.secondsLabel}
                     formatOptions={secondFormatOpts}
                 />
+                {showMs && (
+                    <NumberField
+                        value={ms}
+                        defaultValue={0}
+                        minValue={minMs}
+                        maxValue={maxMs}
+                        onChange={onChangeMs}
+                        aria-label={props.msLabel}
+                        formatOptions={msFormatOpts}
+                    />
+                )}
             </div>
         </div>
     )

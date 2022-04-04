@@ -5,14 +5,14 @@
     align-items: center;
     justify-content: space-between;
 
-    // width: 100%;
-
-    & + & {
-        margin-top: $theme__spacing--base;
-    }
-
     .number-field input {
         border: none;
+        width: 5rem;
+    }
+
+    .input[role="group"] {
+        display: flex;
+        justify-content: space-evenly;
     }
 }
 

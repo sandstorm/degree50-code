@@ -15,7 +15,7 @@ export function timeToSecond(time: string): number {
     return DT.t2d(time)
 }
 
-export const getSecondsFromTimeSeconds = (seconds: number) => (seconds % 60) % 60
+export const getSecondsFromTimeSeconds = (seconds: number) => seconds % 60
 export const getMinutesFromTimeSeconds = (seconds: number) => Math.floor(seconds / 60) % 60
 export const getHoursFromTimeSeconds = (seconds: number) => Math.floor(seconds / 60 / 60)
 
@@ -63,31 +63,39 @@ export const SecondsWithMillisecondsStringFormatter = Intl.NumberFormat('de-DE',
     maximumFractionDigits: 3,
 })
 
-/**
- * Get TimeString in format 'hh:mm:ss' from hours, minutes and seconds values.
- */
-export const timeValuesToTimeString = ({
-    hours,
-    minutes,
-    seconds,
-}: {
+export const MillisecondsStringFormatter = Intl.NumberFormat('de-DE', {})
+
+export type TimeValues = {
     hours: number
     minutes: number
     seconds: number
-}): string => {
+    ms: number
+}
+
+/**
+ * Get TimeString in format 'hh:mm:ss' from hours, minutes and seconds values.
+ */
+export const timeValuesToTimeString = ({ hours, minutes, seconds, ms }: TimeValues): string => {
     return [
         HoursStringFormatter.format(hours),
         MinutesStringFormatter.format(minutes),
         SecondsStringFormatter.format(seconds),
-    ].join(':')
+    ]
+        .join(':')
+        .concat('.', MillisecondsStringFormatter.format(ms))
 }
 
 /**
- * Get hours, minutes and seconds from TimeString in format 'hh:mm:ss'
+ * Get hours, minutes and seconds from TimeString in format 'hh:mm:ss.ms'
  */
-export const timeStringToTimeValues = (timeString: string): [number, number, number] => {
+export const timeStringToTimeValues = (timeString: string): TimeValues => {
     const [hours, minutes, seconds] = timeString.split(':')
-    return [parseInt(hours), parseInt(minutes), parseInt(seconds)]
+    return {
+        hours: parseInt(hours),
+        minutes: parseInt(minutes),
+        seconds: parseInt(seconds),
+        ms: (parseFloat(seconds) * 1000) % 1000,
+    }
 }
 
 export const sortByStartTime = <T extends { id: string; start: string }>(entities: T[]): T[] =>

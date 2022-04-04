@@ -5,9 +5,7 @@ import { I18nProvider } from '@react-aria/i18n'
 import TimeInput from '../Components/TimeInput/TimeInput'
 
 const TimeInputTest = () => {
-    const [hours, setHours] = useState(5)
-    const [minutes, setMinutes] = useState(23)
-    const [seconds, setSeconds] = useState(42)
+    const [time, setTime] = useState('05:23:42.123')
 
     const formatOptions: Intl.NumberFormatOptions = useMemo(
         () => ({
@@ -21,26 +19,21 @@ const TimeInputTest = () => {
     const hoursLabel = `${label} Stunden`
     const minutesLabel = `${label} Minuten`
     const secondsLabel = `${label} Sekunden`
+    const msLabel = `${label} Millisekunden`
 
     return (
-        // <React.StrictMode>
         <TimeInput
             label="test"
-            hours={hours}
-            minHours={0}
-            onChangeHours={setHours}
+            value={time}
+            onChange={setTime}
+            min="01:12:35.813"
+            max="25:55:02.666"
             hoursLabel={hoursLabel}
-            minutes={minutes}
-            minMinutes={0}
-            onChangeMinutes={setMinutes}
             minutesLabel={minutesLabel}
-            seconds={seconds}
-            minSeconds={0}
-            onChangeSeconds={setSeconds}
-            formatOptions={formatOptions}
             secondsLabel={secondsLabel}
+            msLabel={msLabel}
+            formatOptions={formatOptions}
         />
-        // </React.StrictMode>
     )
 }
 

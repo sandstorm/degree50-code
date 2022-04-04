@@ -25,46 +25,7 @@ type Props = {
 }
 
 const DegreeTimeInput = (props: Props) => {
-    const [hours, minutes, seconds] = timeStringToTimeValues(props.value)
-    const [minHours, minMinutes, minSeconds] = timeStringToTimeValues(props.minValue)
-    const [maxHours, maxMinutes, maxSeconds] = timeStringToTimeValues(props.maxValue)
-
-    const hoursLabel = `${props.label} Stunden`
-    const minutesLabel = `${props.label} Minuten`
-    const secondsLabel = `${props.label} Sekunden`
-
-    const handleHoursChange = (newHoursValue: number) => {
-        props.onChange(timeValuesToTimeString({ hours: newHoursValue, minutes, seconds }))
-    }
-
-    const handleMinutesChange = (newMinutesValue: number) => {
-        props.onChange(timeValuesToTimeString({ hours, minutes: newMinutesValue, seconds }))
-    }
-
-    const handleSecondsChange = (newSecondsValue: number) => {
-        props.onChange(timeValuesToTimeString({ hours, minutes, seconds: newSecondsValue }))
-    }
-
-    return (
-        <TimeInput
-            label={props.label}
-            hours={hours}
-            minHours={minHours}
-            maxHours={maxHours}
-            hoursLabel={hoursLabel}
-            onChangeHours={handleHoursChange}
-            minutes={minutes}
-            minMinutes={minMinutes}
-            maxMinutes={maxMinutes}
-            minutesLabel={minutesLabel}
-            onChangeMinutes={handleMinutesChange}
-            seconds={seconds}
-            minSeconds={minSeconds}
-            maxSeconds={maxSeconds}
-            secondsLabel={secondsLabel}
-            onChangeSeconds={handleSecondsChange}
-        />
-    )
+    return <div />
 }
 
 export default memo(DegreeTimeInput)
