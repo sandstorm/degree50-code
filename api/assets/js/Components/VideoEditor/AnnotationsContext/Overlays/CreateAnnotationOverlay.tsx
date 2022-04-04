@@ -1,6 +1,6 @@
 import Button from 'Components/Button/Button'
 import TextField from 'Components/VideoEditor/components/TextField'
-import DegreeTimeInput from 'Components/VideoEditor/components/DegreeTimeInput'
+import TimeInput from 'Components/TimeInput'
 import { Annotation } from 'Components/VideoEditor/types'
 import { secondToTime } from 'Components/VideoEditor/utils/time'
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
@@ -34,12 +34,8 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const CreateAnnotationOverlay: FC<Props> = (props) => {
     const { currentTime, duration } = props
 
-    const currentTimeTimeString = secondToTime(currentTime)
-    console.log(currentTimeTimeString)
-    const durationTimeString = secondToTime(duration)
-
     // currentTime as start
-    const start = currentTimeTimeString
+    const start = secondToTime(currentTime)
     // some default delta for end
     const end = secondToTime(Math.min(currentTime + duration / 10, duration))
 
@@ -54,8 +50,17 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    const { transientAnnotation, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } =
-        useAnnotationEdit(duration, initialAnnotation)
+    const {
+        transientAnnotation,
+        handleStartTimeChange,
+        handleEndTimeChange,
+        updateText,
+        updateMemo,
+        minStart,
+        maxStart,
+        minEnd,
+        maxEnd,
+    } = useAnnotationEdit(duration, initialAnnotation)
 
     const close = () => {
         props.closeOverlay(AnnotationOverlayIds.create)
@@ -74,19 +79,25 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Neue Annotation">
-            <DegreeTimeInput
+            <TimeInput
                 label="Start"
                 value={transientAnnotation.start}
-                minValue={'00:00:00'}
-                maxValue={durationTimeString}
+                min={minStart}
+                max={maxStart}
                 onChange={handleStartTimeChange}
+                hoursLabel="Start Stunden"
+                minutesLabel="Start Minuten"
+                secondsLabel="Start Sekunden"
             />
-            <DegreeTimeInput
+            <TimeInput
                 label="Ende"
                 value={transientAnnotation.end}
-                minValue={transientAnnotation.start}
-                maxValue={durationTimeString}
+                min={minEnd}
+                max={maxEnd}
                 onChange={handleEndTimeChange}
+                hoursLabel="Ende Stunden"
+                minutesLabel="Ende Minuten"
+                secondsLabel="Ende Sekunden"
             />
             <hr />
             <label htmlFor="text">Beschreibung</label>

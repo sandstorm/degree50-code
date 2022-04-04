@@ -52,6 +52,11 @@ export const useVideoCodeEdit = (duration: number, initialVideoCode?: VideoCode)
         }
     }
 
+    const minStart = '00:00:00.000'
+    const maxStart = secondToTime(duration - 1)
+    const minEnd = secondToTime(Math.min(timeToSecond(transientVideoCode?.start ?? minStart) + 1, duration))
+    const maxEnd = secondToTime(duration)
+
     return {
         transientVideoCode,
         handleStartTimeChange,
@@ -59,5 +64,9 @@ export const useVideoCodeEdit = (duration: number, initialVideoCode?: VideoCode)
         handleTextChange,
         handleMemoChange,
         updateSelectedCode,
+        minStart,
+        maxStart,
+        minEnd,
+        maxEnd,
     }
 }

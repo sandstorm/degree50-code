@@ -48,11 +48,20 @@ export const useCutEdit = (duration: number, initialCut?: Cut) => {
         }
     }
 
+    const minStart = '00:00:00.000'
+    const maxStart = secondToTime(duration - 1)
+    const minEnd = secondToTime(Math.min(timeToSecond(transientCut?.start ?? minStart) + 1, duration))
+    const maxEnd = secondToTime(duration)
+
     return {
         transientCut,
         handleStartTimeChange,
         handleEndTimeChange,
         updateText,
         updateMemo,
+        minStart,
+        maxStart,
+        minEnd,
+        maxEnd,
     }
 }

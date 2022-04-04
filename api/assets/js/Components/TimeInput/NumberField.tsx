@@ -24,13 +24,17 @@ const NumberField = (props: Props) => {
     const { buttonProps: incrementProps } = useButton(incrementButtonProps, incrRef)
     const { buttonProps: decrementProps } = useButton(decrementButtonProps, decRef)
 
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        e.target.select()
+    }
+
     return (
         <div className="number-field">
             <div className="group" {...groupProps}>
                 <button className="number-field__inc-button" {...incrementProps} ref={incrRef}>
                     <i className="far fa-angle-up" />
                 </button>
-                <input {...inputProps} ref={inputRef} />
+                <input {...inputProps} ref={inputRef} onFocus={handleFocus} />
                 <button className="number-field__dec-button" {...decrementProps} ref={decRef}>
                     <i className="far fa-angle-down" />
                 </button>

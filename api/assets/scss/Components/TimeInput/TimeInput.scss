@@ -5,6 +5,9 @@
     align-items: center;
     justify-content: space-between;
 
+    margin-top: $theme__spacing--huge;
+    margin-bottom: $theme__spacing--huge;
+
     .number-field input {
         border: none;
         width: 5rem;

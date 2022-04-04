@@ -1,16 +1,16 @@
-import TimeInput from 'Components/VideoEditor/components/TimeInput'
-import { secondToTime } from 'Components/VideoEditor/utils/time'
-import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { generate } from 'shortid'
-import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
+import TimeInput from 'Components/TimeInput'
 import Overlay from '../../components/Overlay'
+import TextField from 'Components/VideoEditor/components/TextField'
+import VideoCodeSelection from './VideoCodePrototypeSelection'
+import Button from 'Components/Button/Button'
+import { secondToTime } from 'Components/VideoEditor/utils/time'
+import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { useVideoCodeEdit } from './useVideoCodeEdit'
-import TextField from 'Components/VideoEditor/components/TextField'
-import Button from 'Components/Button/Button'
-import VideoCodeSelection from './VideoCodePrototypeSelection'
 import { VideoCode } from 'Components/VideoEditor/types'
 import {
     ConfigStateSlice,
@@ -55,8 +55,17 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    const { transientVideoCode, handleStartTimeChange, handleEndTimeChange, handleMemoChange, updateSelectedCode } =
-        useVideoCodeEdit(duration, initialVideoCode)
+    const {
+        transientVideoCode,
+        handleStartTimeChange,
+        handleEndTimeChange,
+        handleMemoChange,
+        updateSelectedCode,
+        minStart,
+        maxStart,
+        minEnd,
+        maxEnd,
+    } = useVideoCodeEdit(duration, initialVideoCode)
 
     if (props.prototypes.length < 1) {
         return (
@@ -79,8 +88,26 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Neuer VideoCode">
-            <TimeInput label="Start" value={transientVideoCode.start} onChange={handleStartTimeChange} />
-            <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
+            <TimeInput
+                label="Start"
+                hoursLabel="Start Stunden"
+                minutesLabel="Start Minuten"
+                secondsLabel="Start Sekunden"
+                value={transientVideoCode.start}
+                min={minStart}
+                max={maxStart}
+                onChange={handleStartTimeChange}
+            />
+            <TimeInput
+                label="Ende"
+                hoursLabel="Ende Stunden"
+                minutesLabel="End Minuten"
+                secondsLabel="Ende Sekunden"
+                value={transientVideoCode.end}
+                min={minEnd}
+                max={maxEnd}
+                onChange={handleEndTimeChange}
+            />
             <hr />
             <VideoCodeSelection
                 defaultPrototypeId={initialPrototypeId}

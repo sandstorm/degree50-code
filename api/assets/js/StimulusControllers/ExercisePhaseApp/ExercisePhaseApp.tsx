@@ -1,8 +1,9 @@
 import React, { useRef } from 'react'
-import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
-import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 import { OverlayProvider } from '@react-aria/overlays'
+import { I18nProvider } from '@react-aria/i18n'
+import VideoAnalysis from './Domain/ExercisePhases/VideoAnalysis'
+import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
 
 export const ExercisePhaseApp: React.FC = () => {
     // react-aria-modal watches a container element for aria-modal nodes and
@@ -18,10 +19,12 @@ export const ExercisePhaseApp: React.FC = () => {
     const { height } = useDebouncedResizeObserver(ref, 500)
 
     return (
-        <OverlayProvider className={'exercise-phase__inner solutions-container'}>
-            <div className={'exercise-phase__content'} ref={ref}>
-                {height > 0 && <VideoAnalysis />}
-            </div>
-        </OverlayProvider>
+        <I18nProvider locale="de-DE">
+            <OverlayProvider className={'exercise-phase__inner solutions-container'}>
+                <div className={'exercise-phase__content'} ref={ref}>
+                    {height > 0 && <VideoAnalysis />}
+                </div>
+            </OverlayProvider>
+        </I18nProvider>
     )
 }

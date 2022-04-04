@@ -2,7 +2,10 @@ import React, { memo, MouseEvent, useCallback, useMemo } from 'react'
 import NumberField from './NumberField'
 import { timeStringToTimeValues, timeValuesToTimeString } from '../VideoEditor/utils/time'
 
-// TODO: some fields should be optional
+export const defaultTimeInputFormatOptions: Intl.NumberFormatOptions = {
+    style: 'unit',
+    unitDisplay: 'short',
+}
 
 type Props = {
     label: string
@@ -35,10 +38,34 @@ const TimeInput = (props: Props) => {
     }, [])
 
     // NumberFormatOptions
-    const hourFormatOpts = useMemo(() => numberFormatWithUnit('hour', props.formatOptions), [props.formatOptions])
-    const minuteFormatOpts = useMemo(() => numberFormatWithUnit('minute', props.formatOptions), [props.formatOptions])
-    const secondFormatOpts = useMemo(() => numberFormatWithUnit('second', props.formatOptions), [props.formatOptions])
-    const msFormatOpts = useMemo(() => numberFormatWithUnit('millisecond', props.formatOptions), [props.formatOptions])
+    const hourFormatOpts = useMemo(
+        () => ({
+            ...(props.formatOptions ?? defaultTimeInputFormatOptions),
+            unit: 'hour',
+        }),
+        [props.formatOptions]
+    )
+    const minuteFormatOpts = useMemo(
+        () => ({
+            ...(props.formatOptions ?? defaultTimeInputFormatOptions),
+            unit: 'minute',
+        }),
+        [props.formatOptions]
+    )
+    const secondFormatOpts = useMemo(
+        () => ({
+            ...(props.formatOptions ?? defaultTimeInputFormatOptions),
+            unit: 'second',
+        }),
+        [props.formatOptions]
+    )
+    const msFormatOpts = useMemo(
+        () => ({
+            ...(props.formatOptions ?? defaultTimeInputFormatOptions),
+            unit: 'millisecond',
+        }),
+        [props.formatOptions]
+    )
 
     const timeValues = timeStringToTimeValues(props.value)
     // NOTE: negative time handling not planned and shaped yet
@@ -164,13 +191,3 @@ const TimeInput = (props: Props) => {
 }
 
 export default memo(TimeInput)
-
-function numberFormatWithUnit(
-    unit: Intl.NumberFormatOptions['unit'],
-    format?: Intl.NumberFormatOptions
-): Intl.NumberFormatOptions {
-    return {
-        ...format,
-        unit,
-    }
-}

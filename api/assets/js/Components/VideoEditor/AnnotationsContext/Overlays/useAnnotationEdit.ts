@@ -44,11 +44,20 @@ export const useAnnotationEdit = (duration: number, initialAnnotation?: Annotati
         }
     }
 
+    const minStart = '00:00:00.000'
+    const maxStart = secondToTime(duration - 1)
+    const minEnd = secondToTime(Math.min(timeToSecond(transientAnnotation?.start ?? minStart) + 1, duration))
+    const maxEnd = secondToTime(duration)
+
     return {
         transientAnnotation,
         handleStartTimeChange,
         handleEndTimeChange,
         updateText,
         updateMemo,
+        minStart,
+        maxStart,
+        minEnd,
+        maxEnd,
     }
 }
