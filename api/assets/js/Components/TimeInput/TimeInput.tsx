@@ -1,64 +1,69 @@
 import React, { memo, MouseEvent, useCallback, useMemo } from 'react'
 import NumberField from './NumberField'
+import {
+    getHoursFromTimeSeconds,
+    getMinutesFromTimeSeconds,
+    getSecondsFromTimeSeconds,
+} from '../VideoEditor/utils/time'
+import { hoursToSeconds, minutesToSeconds } from 'date-fns'
+import { clamp } from 'lodash'
+
+// TODO: each field should be optional
+// TODO: add milliseconds
+// TODO: do subdivision handling inside and get time as seconds number as prop
 
 type Props = {
     label: string
 
-    hours: number
-    maxHours?: number
-    minHours?: number
-    onChangeHours: (hours: number) => void
+    value: number
+    max: number
+    min: number
+
     hoursLabel: string
-
-    minutes: number
-    maxMinutes?: number
-    minMinutes?: number
-    onChangeMinutes: (hours: number) => void
     minutesLabel: string
-
-    seconds: number
-    maxSeconds?: number
-    minSeconds?: number
-    onChangeSeconds: (hours: number) => void
     secondsLabel: string
+
+    onChange: (time: number) => void
 
     formatOptions?: Intl.NumberFormatOptions
 }
 
 const TimeInput = (props: Props) => {
-    const hoursFormatOptions = useMemo(
-        () => ({
-            ...props.formatOptions,
-            unit: 'hour',
-        }),
-        [props.formatOptions]
-    )
-
-    const minutesFormatOptions = useMemo(
-        () => ({
-            ...props.formatOptions,
-            unit: 'minute',
-        }),
-        [props.formatOptions]
-    )
-
-    const secondsFormatOptions = useMemo(
-        () => ({
-            ...props.formatOptions,
-            unit: 'second',
-        }),
-        [props.formatOptions]
-    )
-
-    // TODO: Is this restriction justified? Alternatively could be unrestricted by default (like hours)
-    const maxMinutes = useMemo(() => Math.min(59, props.maxMinutes ?? 59), [props.maxMinutes])
-    const maxSeconds = useMemo(() => Math.min(59, props.maxSeconds ?? 59), [props.maxSeconds])
+    const hourFormatOpts = useMemo(() => numberFormatWithUnit('hour', props.formatOptions), [props.formatOptions])
+    const minuteFormatOpts = useMemo(() => numberFormatWithUnit('minute', props.formatOptions), [props.formatOptions])
+    const secondFormatOpts = useMemo(() => numberFormatWithUnit('second', props.formatOptions), [props.formatOptions])
 
     // WHY: Simulate label onClick behavior
-    const focusFirstInput = useCallback((ev: MouseEvent<HTMLElement>) => {
-        // @ts-ignore - wrong DOM typing?
-        ev.target?.parentElement?.querySelector('input')?.focus()
+    const focusFirstInput = useCallback((ev: MouseEvent<HTMLLabelElement | HTMLDivElement>) => {
+        // WHY: type issue
+        const eventTarget = ev.target as HTMLElement
+        eventTarget.querySelector('input')?.focus()
     }, [])
+
+    const hours = getHoursFromTimeSeconds(props.value)
+    const minutes = getMinutesFromTimeSeconds(props.value)
+    const seconds = getSecondsFromTimeSeconds(props.value)
+
+    const maxHours = getHoursFromTimeSeconds(props.max - props.value)
+    const maxMinutes = getHoursFromTimeSeconds(props.max - props.value)
+    const maxSeconds = getSecondsFromTimeSeconds(props.max - props.value)
+
+    const minHours = getHoursFromTimeSeconds(props.min)
+    const minMinutes = getMinutesFromTimeSeconds(props.min)
+    const minSeconds = getSecondsFromTimeSeconds(props.min)
+
+    const onChangeHours = (newHours: number) => {
+        const newValue = hoursToSeconds(newHours) + minutesToSeconds(minutes) + seconds
+        props.onChange(clamp())
+    }
+
+    const onChangeMinutes = (newMinutes: number) => {
+        props.onChange(hoursToSeconds(hours) + minutesToSeconds(newMinutes) + seconds)
+    }
+
+    const onChangeSeconds = (newSeconds: number) => {
+        props.onChange(hoursToSeconds(hours) + minutesToSeconds(minutes) + newSeconds)
+    }
 
     return (
         <div className="time-input">
@@ -67,31 +72,31 @@ const TimeInput = (props: Props) => {
             </label>
             <div role="group" className="input" onClick={focusFirstInput}>
                 <NumberField
-                    value={props.hours}
+                    value={hours}
                     defaultValue={0}
-                    minValue={props.minHours}
-                    maxValue={props.maxHours}
-                    onChange={props.onChangeHours}
+                    minValue={minHours}
+                    maxValue={maxHours}
+                    onChange={onChangeHours}
                     aria-label={props.hoursLabel}
-                    formatOptions={hoursFormatOptions}
+                    formatOptions={hourFormatOpts}
                 />
                 <NumberField
-                    value={props.minutes}
+                    value={minutes}
                     defaultValue={0}
-                    minValue={props.minMinutes}
+                    minValue={minMinutes}
                     maxValue={maxMinutes}
-                    onChange={props.onChangeMinutes}
+                    onChange={onChangeMinutes}
                     aria-label={props.minutesLabel}
-                    formatOptions={minutesFormatOptions}
+                    formatOptions={minuteFormatOpts}
                 />
                 <NumberField
-                    value={props.seconds}
+                    value={seconds}
                     defaultValue={0}
-                    minValue={props.minSeconds}
+                    minValue={minSeconds}
                     maxValue={maxSeconds}
-                    onChange={props.onChangeSeconds}
+                    onChange={onChangeSeconds}
                     aria-label={props.secondsLabel}
-                    formatOptions={secondsFormatOptions}
+                    formatOptions={secondFormatOpts}
                 />
             </div>
         </div>
@@ -99,3 +104,13 @@ const TimeInput = (props: Props) => {
 }
 
 export default memo(TimeInput)
+
+function numberFormatWithUnit(
+    unit: Intl.NumberFormatOptions['unit'],
+    format?: Intl.NumberFormatOptions
+): Intl.NumberFormatOptions {
+    return {
+        ...format,
+        unit,
+    }
+}

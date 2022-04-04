@@ -10,6 +10,7 @@ export const useAnnotationEdit = (duration: number, initialAnnotation?: Annotati
         if (transientAnnotation) {
             setTransientAnnotation({
                 ...transientAnnotation,
+                // TODO: should we clamp to 'duration - 1 second' maximum?
                 start: secondToTime(clamp(timeToSecond(time), 0, duration)),
                 end: adjustEndTimeByStart(time, transientAnnotation.end, duration),
             })

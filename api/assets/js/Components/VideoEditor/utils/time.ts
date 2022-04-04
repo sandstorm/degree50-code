@@ -63,6 +63,9 @@ export const SecondsWithMillisecondsStringFormatter = Intl.NumberFormat('de-DE',
     maximumFractionDigits: 3,
 })
 
+/**
+ * Get TimeString in format 'hh:mm:ss' from hours, minutes and seconds values.
+ */
 export const timeValuesToTimeString = ({
     hours,
     minutes,
@@ -79,10 +82,12 @@ export const timeValuesToTimeString = ({
     ].join(':')
 }
 
-export const timeStringToTimeValues = (
-    timeString: string
-): { hours: number; minutes: number; seconds: number } | undefined => {
-    return
+/**
+ * Get hours, minutes and seconds from TimeString in format 'hh:mm:ss'
+ */
+export const timeStringToTimeValues = (timeString: string): [number, number, number] => {
+    const [hours, minutes, seconds] = timeString.split(':')
+    return [parseInt(hours), parseInt(minutes), parseInt(seconds)]
 }
 
 export const sortByStartTime = <T extends { id: string; start: string }>(entities: T[]): T[] =>

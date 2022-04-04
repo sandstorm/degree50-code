@@ -23,15 +23,14 @@ const TimeInputTest = () => {
     const secondsLabel = `${label} Sekunden`
 
     return (
+        // <React.StrictMode>
         <TimeInput
             label="test"
             hours={hours}
-            maxHours={25}
             minHours={0}
             onChangeHours={setHours}
             hoursLabel={hoursLabel}
             minutes={minutes}
-            maxMinutes={25}
             minMinutes={0}
             onChangeMinutes={setMinutes}
             minutesLabel={minutesLabel}
@@ -41,6 +40,7 @@ const TimeInputTest = () => {
             formatOptions={formatOptions}
             secondsLabel={secondsLabel}
         />
+        // </React.StrictMode>
     )
 }
 

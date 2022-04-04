@@ -1,54 +1,70 @@
-import React, { ChangeEvent, memo } from 'react'
-import { clamp } from '../utils'
-import { HoursStringFormatter, MinutesStringFormatter, SecondsWithMillisecondsStringFormatter } from '../utils/time'
+import React, { memo } from 'react'
+import { timeStringToTimeValues, timeValuesToTimeString } from '../utils/time'
 import TimeInput from 'Components/TimeInput'
+
+// TODO: what about milliseconds?
 
 type Props = {
     label: string
     /**
-     * time in the format "hh:mm:ss.msec"
+     * time in the format "hh:mm:ss"
      */
     value: string
     /**
-     * minimum time in the format "hh:mm:ss.msec"
+     * minimum time in the format "hh:mm:ss"
      */
     minValue: string
     /**
-     * maximum time in the format "hh:mm:ss.msec"
+     * maximum time in the format "hh:mm:ss"
      */
     maxValue: string
     /**
-     * @param time The time in the format "hh:mm:ss.msec"
+     * @param time The time in the format "hh:mm:ss"
      */
-    onChange: (time: string) => void
+    onChange: (timeString: string) => void
 }
 
 const DegreeTimeInput = (props: Props) => {
-    const valueSplit = props.value.split(':')
-    const minValueSplit = props.value.split(':')
-    const maxValueSplit = props.value.split(':')
+    const [hours, minutes, seconds] = timeStringToTimeValues(props.value)
+    const [minHours, minMinutes, minSeconds] = timeStringToTimeValues(props.minValue)
+    const [maxHours, maxMinutes, maxSeconds] = timeStringToTimeValues(props.maxValue)
 
-    const hours = valueSplit[0]
-    const minHours = minValueSplit[0]
-    const minutes = valueSplit[1]
-    const seconds = valueSplit[2]
+    const hoursLabel = `${props.label} Stunden`
+    const minutesLabel = `${props.label} Minuten`
+    const secondsLabel = `${props.label} Sekunden`
 
-    const handleHoursChange = (ev: ChangeEvent<HTMLInputElement>) => {
-        const newHours = HoursStringFormatter.format(parseInt(ev.target.value))
-        props.onChange([newHours, valueSplit[1], valueSplit[2]].join(':'))
+    const handleHoursChange = (newHoursValue: number) => {
+        props.onChange(timeValuesToTimeString({ hours: newHoursValue, minutes, seconds }))
     }
 
-    const handleMinutesChange = (ev: ChangeEvent<HTMLInputElement>) => {
-        const newMinutes = MinutesStringFormatter.format(clamp(parseInt(ev.target.value), 0, 59))
-        props.onChange([valueSplit[0], newMinutes, valueSplit[2]].join(':'))
+    const handleMinutesChange = (newMinutesValue: number) => {
+        props.onChange(timeValuesToTimeString({ hours, minutes: newMinutesValue, seconds }))
     }
 
-    const handleSecondsChange = (ev: ChangeEvent<HTMLInputElement>) => {
-        const newSeconds = SecondsWithMillisecondsStringFormatter.format(clamp(parseFloat(ev.target.value), 0, 59))
-        props.onChange([valueSplit[0], valueSplit[1], newSeconds].join(':'))
+    const handleSecondsChange = (newSecondsValue: number) => {
+        props.onChange(timeValuesToTimeString({ hours, minutes, seconds: newSecondsValue }))
     }
 
-    return <div />
+    return (
+        <TimeInput
+            label={props.label}
+            hours={hours}
+            minHours={minHours}
+            maxHours={maxHours}
+            hoursLabel={hoursLabel}
+            onChangeHours={handleHoursChange}
+            minutes={minutes}
+            minMinutes={minMinutes}
+            maxMinutes={maxMinutes}
+            minutesLabel={minutesLabel}
+            onChangeMinutes={handleMinutesChange}
+            seconds={seconds}
+            minSeconds={minSeconds}
+            maxSeconds={maxSeconds}
+            secondsLabel={secondsLabel}
+            onChangeSeconds={handleSecondsChange}
+        />
+    )
 }
 
 export default memo(DegreeTimeInput)

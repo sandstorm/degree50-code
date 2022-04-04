@@ -43,11 +43,9 @@ export default class extends Controller {
         store.dispatch(videoEditorActions.filter.init(normalizeFilterData(config, data)))
 
         ReactDOM.render(
-            <React.StrictMode>
-                <Provider store={store}>
-                    <SolutionsApp />
-                </Provider>
-            </React.StrictMode>,
+            <Provider store={store}>
+                <SolutionsApp />
+            </Provider>,
             this.element
         )
     }
