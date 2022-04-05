@@ -12,9 +12,8 @@ compile_and_test_frontend:
         - yarn config set cache-folder .yarn
         - cd api
         # set up FontAwesomePro - the sample file has a reference to a ENV that the CI provides (GitLab->Settings->CI/CD->Variables)
-        - cp .npmrc.sample .npmrc
-        - echo $FONTAWESOME_NPM_AUTH_TOKEN
-        - cat .npmrc
+        - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+        - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_NPM_AUTH_TOKEN
         - npm config list
         # install deps
         - yarn
