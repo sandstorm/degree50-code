@@ -13,6 +13,7 @@ compile_and_test_frontend:
         - cd api
         # set up FontAwesomePro - the sample file has a reference to a ENV that the CI provides (GitLab->Settings->CI/CD->Variables)
         - cp .npmrc.sample .npmrc
+        - cat .npmrc
         # install deps
         - yarn
         # run build
