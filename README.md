@@ -72,9 +72,10 @@ To create and deploy a versioned release follow these steps:
 
 ### Prerequisites
 
--   docker & docker-compose
--   Make
--   yarn (cd api && nvm use && npm install yarn -g)
+- docker & docker-compose
+- Make
+- Set up the FontAwesomePro token in `.npmrc` (see `api/.npmrc.sample` for detailed instructions) 
+- yarn (cd api && nvm use && npm install yarn -g)
 
 ### Get Started with Development
 
@@ -83,9 +84,8 @@ To create and deploy a versioned release follow these steps:
 - check installation with `docker-compose logs -f api`
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
-    - Make sure you have set the Fontawesome Pro NPM Token Env Variable: FONTAWESOME_NPM_AUTH_TOKEN
-        - Log into fontawesome (credentials in Bitwarden), get NPM Token and put `export FONTAWESOME_NPM_AUTH_TOKEN=<TOKEN>` into your shell rc
-    - Run the assets build (locally) using `cd api && nvm use && yarn`
+    - Run the assets build (locally) using `cd api && nvm use && yarn` 
+      (if it fails because it can't access FontAwesomePro, have a look at Prerequisites)
     - Run frontend build using `cd api && yarn dev`
     - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
     - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
