@@ -1,14 +1,14 @@
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { VideoCodeOverlayIds } from '../VideoCodesMenu'
-import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import TimeInput from 'Components/VideoEditor/components/TimeInput'
-import { useVideoCodeEdit } from './useVideoCodeEdit'
+import TimeInput from 'Components/TimeInput'
 import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodePrototypeSelection'
+import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { VideoCodeOverlayIds } from '../VideoCodesMenu'
+import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
+import { useVideoCodeEdit } from './useVideoCodeEdit'
 import {
     ConfigStateSlice,
     selectors as configSelectors,
@@ -39,8 +39,17 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const EditVideoCodeOverlay: FC<Props> = (props) => {
     const defaultPrototypeId = props.prototypes[0].id
 
-    const { transientVideoCode, handleStartTimeChange, handleEndTimeChange, handleMemoChange, updateSelectedCode } =
-        useVideoCodeEdit(props.duration, props.videoCode)
+    const {
+        transientVideoCode,
+        handleStartTimeChange,
+        handleEndTimeChange,
+        handleMemoChange,
+        updateSelectedCode,
+        minAllowedStartTime,
+        maxAllowedStartTime,
+        minAllowedEndTime,
+        maxAllowedEndTime,
+    } = useVideoCodeEdit(props.duration, props.videoCode)
 
     const close = () => {
         props.closeOverlay(VideoCodeOverlayIds.edit)
@@ -59,8 +68,26 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Codierung bearbeiten">
-            <TimeInput label="Start" value={transientVideoCode.start} onChange={handleStartTimeChange} />
-            <TimeInput label="Ende" value={transientVideoCode.end} onChange={handleEndTimeChange} />
+            <TimeInput
+                label="Start"
+                hoursLabel="Start Stunden"
+                minutesLabel="Start Minuten"
+                secondsLabel="Start Sekunden"
+                value={transientVideoCode.start}
+                min={minAllowedStartTime}
+                max={maxAllowedStartTime}
+                onChange={handleStartTimeChange}
+            />
+            <TimeInput
+                label="Ende"
+                hoursLabel="Ende Stunden"
+                minutesLabel="End Minuten"
+                secondsLabel="Ende Sekunden"
+                value={transientVideoCode.end}
+                min={minAllowedEndTime}
+                max={maxAllowedEndTime}
+                onChange={handleEndTimeChange}
+            />
             <hr />
             <VideoCodeSelection
                 defaultPrototypeId={defaultPrototypeId}
