@@ -1,9 +1,10 @@
 import React, { useMemo, useRef } from 'react'
-import { watchModals } from '@react-aria/aria-modal-polyfill'
-import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
-import { OverlayProvider } from '@react-aria/overlays'
-import VideoAnalysis from 'StimulusControllers/ExercisePhaseApp/Domain/ExercisePhases/VideoAnalysis'
 import { connect } from 'react-redux'
+import { watchModals } from '@react-aria/aria-modal-polyfill'
+import { OverlayProvider } from '@react-aria/overlays'
+import { I18nProvider } from '@react-aria/i18n'
+import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
+import VideoAnalysis from 'StimulusControllers/ExercisePhaseApp/Domain/ExercisePhases/VideoAnalysis'
 import {
     ConfigStateSlice,
     selectors as configSelectors,
@@ -45,11 +46,13 @@ const SolutionsApp = (props: Props) => {
     )
 
     return (
-        <OverlayProvider className={'exercise-phase__inner solutions-container'}>
-            <div className={'exercise-phase__content'} ref={ref}>
-                {height > 0 && PhaseComponent}
-            </div>
-        </OverlayProvider>
+        <I18nProvider locale="de-DE">
+            <OverlayProvider className={'exercise-phase__inner solutions-container'}>
+                <div className={'exercise-phase__content'} ref={ref}>
+                    {height > 0 && PhaseComponent}
+                </div>
+            </OverlayProvider>
+        </I18nProvider>
     )
 }
 

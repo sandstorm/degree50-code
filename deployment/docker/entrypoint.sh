@@ -55,6 +55,8 @@ fi
 
 # install assets of bundles into public folder
 php bin/console assets:install
+# clear caches
+php bin/console cache:clear
 
 /usr/bin/supervisord
 

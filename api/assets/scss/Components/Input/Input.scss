@@ -1,12 +1,15 @@
-input {
+input,
+.input {
     color: $theme__color__text;
     background-color: $theme__color__white;
 
-    border: 1px solid $theme__color__grey--dark;
+    border: 1px solid $theme__color__grey--light;
     border-radius: 2px;
 
-    &:focus {
+    &:focus,
+    &:focus-within {
         border-color: $theme__color__secondary--dark;
+        border-width: 1px;
     }
 
     &:hover {

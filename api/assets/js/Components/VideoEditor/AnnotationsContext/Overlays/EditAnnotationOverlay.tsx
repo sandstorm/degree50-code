@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import TimeInput from 'Components/VideoEditor/components/TimeInput'
+import TimeInput from 'Components/TimeInput'
 import { useAnnotationEdit } from './useAnnotationEdit'
 import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
@@ -35,8 +35,17 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 // TODO: this should probably be consolidated into a single component with the CreateAnnotationOverlay
 const EditAnnotationOverlay: FC<Props> = (props) => {
-    const { transientAnnotation, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } =
-        useAnnotationEdit(props.duration, props.annotation)
+    const {
+        transientAnnotation,
+        handleStartTimeChange,
+        handleEndTimeChange,
+        updateText,
+        updateMemo,
+        minAllowedStartTime,
+        maxAllowedStartTime,
+        minAllowedEndTime,
+        maxAllowedEndTime,
+    } = useAnnotationEdit(props.duration, props.annotation)
 
     const close = () => {
         props.closeOverlay(AnnotationOverlayIds.edit)
@@ -55,8 +64,26 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Annotation bearbeiten">
-            <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
-            <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
+            <TimeInput
+                label="Start"
+                value={transientAnnotation.start}
+                min={minAllowedStartTime}
+                max={maxAllowedStartTime}
+                onChange={handleStartTimeChange}
+                hoursLabel="Start Stunden"
+                minutesLabel="Start Minuten"
+                secondsLabel="Start Sekunden"
+            />
+            <TimeInput
+                label="Ende"
+                value={transientAnnotation.end}
+                min={minAllowedEndTime}
+                max={maxAllowedEndTime}
+                onChange={handleEndTimeChange}
+                hoursLabel="Ende Stunden"
+                minutesLabel="Ende Minuten"
+                secondsLabel="Ende Sekunden"
+            />
             <hr />
             <label htmlFor="text">Beschreibung</label>
             <TextField id="text" text={transientAnnotation.text} updateText={updateText} />

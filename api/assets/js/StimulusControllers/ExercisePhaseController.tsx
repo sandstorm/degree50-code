@@ -50,11 +50,9 @@ export default class extends Controller {
         }
 
         ReactDOM.render(
-            <React.StrictMode>
-                <Provider store={store}>
-                    <ExercisePhaseApp />
-                </Provider>
-            </React.StrictMode>,
+            <Provider store={store}>
+                <ExercisePhaseApp />
+            </Provider>,
             this.element
         )
     }

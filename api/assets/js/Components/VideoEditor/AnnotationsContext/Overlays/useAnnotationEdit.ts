@@ -1,6 +1,6 @@
 import { Annotation } from 'Components/VideoEditor/types'
 import { clamp } from 'Components/VideoEditor/utils'
-import { secondToTime, timeToSecond, adjustEndTimeByStart } from 'Components/VideoEditor/utils/time'
+import { adjustEndTimeByStart, secondToTime, timeToSecond } from 'Components/VideoEditor/utils/time'
 import { useState } from 'react'
 
 export const useAnnotationEdit = (duration: number, initialAnnotation?: Annotation) => {
@@ -10,6 +10,7 @@ export const useAnnotationEdit = (duration: number, initialAnnotation?: Annotati
         if (transientAnnotation) {
             setTransientAnnotation({
                 ...transientAnnotation,
+                // TODO: should we clamp to 'duration - 1 second' maximum?
                 start: secondToTime(clamp(timeToSecond(time), 0, duration)),
                 end: adjustEndTimeByStart(time, transientAnnotation.end, duration),
             })
@@ -43,11 +44,22 @@ export const useAnnotationEdit = (duration: number, initialAnnotation?: Annotati
         }
     }
 
+    const minAllowedStartTime = '00:00:00.000'
+    const maxAllowedStartTime = secondToTime(duration - 1)
+    const minAllowedEndTime = secondToTime(
+        Math.min(timeToSecond(transientAnnotation?.start ?? minAllowedStartTime) + 1, duration)
+    )
+    const maxAllowedEndTime = secondToTime(duration)
+
     return {
         transientAnnotation,
         handleStartTimeChange,
         handleEndTimeChange,
         updateText,
         updateMemo,
+        minAllowedStartTime,
+        maxAllowedStartTime,
+        minAllowedEndTime,
+        maxAllowedEndTime,
     }
 }

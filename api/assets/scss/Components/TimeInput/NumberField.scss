@@ -1,0 +1,25 @@
+.number-field {
+    .group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .number-field__inc-button,
+    .number-field__dec-button {
+        border: none;
+        background: transparent;
+        visibility: hidden;
+    }
+
+    &:focus-within,
+    &:hover {
+        .number-field__inc-button,
+        .number-field__dec-button {
+            visibility: visible;
+        }
+    }
+
+    input {
+        text-align: center;
+    }
+}

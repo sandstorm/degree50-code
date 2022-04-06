@@ -1,6 +1,6 @@
 import Button from 'Components/Button/Button'
 import TextField from 'Components/VideoEditor/components/TextField'
-import TimeInput from 'Components/VideoEditor/components/TimeInput'
+import TimeInput from 'Components/TimeInput'
 import { Annotation } from 'Components/VideoEditor/types'
 import { secondToTime } from 'Components/VideoEditor/utils/time'
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
@@ -34,21 +34,33 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const CreateAnnotationOverlay: FC<Props> = (props) => {
     const { currentTime, duration } = props
 
-    // transient annotation
     // currentTime as start
+    const start = secondToTime(currentTime)
     // some default delta for end
+    const end = secondToTime(Math.min(currentTime + duration / 10, duration))
+
+    // transient annotation
     const initialAnnotation: Annotation = {
         id: generate(),
-        start: secondToTime(currentTime),
-        end: secondToTime(Math.min(currentTime + duration / 10, duration)),
+        start,
+        end,
         text: '',
         memo: '',
         color: null,
         solutionId: props.currentSolutionId,
     }
 
-    const { transientAnnotation, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } =
-        useAnnotationEdit(duration, initialAnnotation)
+    const {
+        transientAnnotation,
+        handleStartTimeChange,
+        handleEndTimeChange,
+        updateText,
+        updateMemo,
+        minAllowedStartTime,
+        maxAllowedStartTime,
+        minAllowedEndTime,
+        maxAllowedEndTime,
+    } = useAnnotationEdit(duration, initialAnnotation)
 
     const close = () => {
         props.closeOverlay(AnnotationOverlayIds.create)
@@ -67,8 +79,26 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Neue Annotation">
-            <TimeInput label="Start" value={transientAnnotation.start} onChange={handleStartTimeChange} />
-            <TimeInput label="Ende" value={transientAnnotation.end} onChange={handleEndTimeChange} />
+            <TimeInput
+                label="Start"
+                value={transientAnnotation.start}
+                min={minAllowedStartTime}
+                max={maxAllowedStartTime}
+                onChange={handleStartTimeChange}
+                hoursLabel="Start Stunden"
+                minutesLabel="Start Minuten"
+                secondsLabel="Start Sekunden"
+            />
+            <TimeInput
+                label="Ende"
+                value={transientAnnotation.end}
+                min={minAllowedEndTime}
+                max={maxAllowedEndTime}
+                onChange={handleEndTimeChange}
+                hoursLabel="Ende Stunden"
+                minutesLabel="Ende Minuten"
+                secondsLabel="Ende Sekunden"
+            />
             <hr />
             <label htmlFor="text">Beschreibung</label>
             <TextField id="text" text={transientAnnotation.text} updateText={updateText} />

@@ -72,22 +72,24 @@ To create and deploy a versioned release follow these steps:
 
 ### Prerequisites
 
--   docker & docker-compose
--   Make
--   yarn (cd api && nvm use && npm install yarn -g)
+- docker & docker-compose
+- Make
+- Set up the FontAwesomePro token in `.npmrc` (see `api/.npmrc.sample` for detailed instructions) 
+- yarn (cd api && nvm use && npm install yarn -g)
 
 ### Get Started with Development
 
--   Initially, run `make build-docker` to build the docker container
--   run `docker-compose up -d`
--   check installation with `docker-compose logs -f api`
--   When the container is running:
-    -   import fixtures by running `make import-fixtures` (dummy data)
-    -   Run the assets build (locally) using `cd api && nvm use && yarn`
-    -   Run frontend build using `cd api && yarn dev`
-    -   Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
-    -   After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
-    -   The Symfony Console can be executed via `./symfony-console`
+- Initially, run `make build-docker` to build the docker container
+- run `docker-compose up -d`
+- check installation with `docker-compose logs -f api`
+- When the container is running:
+    - import fixtures by running `make import-fixtures` (dummy data)
+    - Run the assets build (locally) using `cd api && nvm use && yarn` 
+      (if it fails because it can't access FontAwesomePro, have a look at Prerequisites)
+    - Run frontend build using `cd api && yarn dev`
+    - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
+    - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
+    - The Symfony Console can be executed via `./symfony-console`
 
 ### Connect with database
 

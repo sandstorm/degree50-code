@@ -1,6 +1,6 @@
 import Button from 'Components/Button/Button'
 import TextField from 'Components/VideoEditor/components/TextField'
-import TimeInput from 'Components/VideoEditor/components/TimeInput'
+import TimeInput from 'Components/TimeInput'
 import { Cut } from 'Components/VideoEditor/types'
 import { getNewMediaItemStartAndEnd } from 'Components/VideoEditor/utils/useMediaItemHandling'
 import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
@@ -55,10 +55,17 @@ const CreateCutOverlay: FC<Props> = (props) => {
         solutionId: props.currentSolutionId,
     }
 
-    const { transientCut, handleStartTimeChange, handleEndTimeChange, updateText, updateMemo } = useCutEdit(
-        duration,
-        initialCut
-    )
+    const {
+        transientCut,
+        handleStartTimeChange,
+        handleEndTimeChange,
+        updateText,
+        updateMemo,
+        minAllowedStartTime,
+        maxAllowedStartTime,
+        minAllowedEndTime,
+        maxAllowedEndTime,
+    } = useCutEdit(duration, initialCut)
 
     const close = () => {
         props.closeOverlay(CutOverlayIds.create)
@@ -77,8 +84,26 @@ const CreateCutOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Neuer Schnitt">
-            <TimeInput label="Start" value={transientCut.start} onChange={handleStartTimeChange} />
-            <TimeInput label="Ende" value={transientCut.end} onChange={handleEndTimeChange} />
+            <TimeInput
+                label="Start"
+                hoursLabel="Start Stunden"
+                minutesLabel="Start Minuten"
+                secondsLabel="Start Sekunden"
+                value={transientCut.start}
+                min={minAllowedStartTime}
+                max={maxAllowedStartTime}
+                onChange={handleStartTimeChange}
+            />
+            <TimeInput
+                label="Ende"
+                hoursLabel="Ende Stunden"
+                minutesLabel="End Minuten"
+                secondsLabel="Ende Sekunden"
+                value={transientCut.end}
+                min={minAllowedEndTime}
+                max={maxAllowedEndTime}
+                onChange={handleEndTimeChange}
+            />
             <hr />
             <label htmlFor="text">Beschreibung</label>
             <TextField id="text" text={transientCut.text} updateText={updateText} />
