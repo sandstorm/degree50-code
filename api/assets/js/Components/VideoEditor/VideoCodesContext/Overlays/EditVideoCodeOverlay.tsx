@@ -13,17 +13,21 @@ import {
     ConfigStateSlice,
     selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { secondToTime } from '../../utils/time'
+import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
     const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
     const videoCodesById = selectors.data.videoCodes.selectById(state)
     const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
     const duration = configSelectors.selectVideos(state)[0].duration
+    const currentTime = selectors.player.selectSyncPlayPosition(state)
 
     return {
         videoCode,
         prototypes: selectors.data.selectAllPrototypesFlattened(state),
         duration,
+        currentTime,
     }
 }
 
@@ -66,28 +70,56 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
         close()
     }
 
+    const handleUseCurrentTimeForStartValue = () => {
+        handleStartTimeChange(secondToTime(props.currentTime))
+    }
+
+    const handleUseCurrentTimeForEndValue = () => {
+        handleEndTimeChange(secondToTime(props.currentTime))
+    }
+
     return (
         <Overlay closeCallback={close} title="Codierung bearbeiten">
-            <TimeInput
-                label="Start"
-                hoursLabel="Start Stunden"
-                minutesLabel="Start Minuten"
-                secondsLabel="Start Sekunden"
-                value={transientVideoCode.start}
-                min={minAllowedStartTime}
-                max={maxAllowedStartTime}
-                onChange={handleStartTimeChange}
-            />
-            <TimeInput
-                label="Ende"
-                hoursLabel="Ende Stunden"
-                minutesLabel="End Minuten"
-                secondsLabel="Ende Sekunden"
-                value={transientVideoCode.end}
-                min={minAllowedEndTime}
-                max={maxAllowedEndTime}
-                onChange={handleEndTimeChange}
-            />
+            <div className="time-input-wrapper">
+                <TimeInput
+                    label="Start"
+                    hoursLabel="Start Stunden"
+                    minutesLabel="Start Minuten"
+                    secondsLabel="Start Sekunden"
+                    value={transientVideoCode.start}
+                    min={minAllowedStartTime}
+                    max={maxAllowedStartTime}
+                    onChange={handleStartTimeChange}
+                />
+                <Button
+                    className="btn btn-outline-primary"
+                    onPress={handleUseCurrentTimeForStartValue}
+                    title={'Aktuelle Zeit als Startzeit übernehmen'}
+                    data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
+                >
+                    <i className="fas fa-stopwatch" />
+                </Button>
+            </div>
+            <div className="time-input-wrapper">
+                <TimeInput
+                    label="Ende"
+                    hoursLabel="Ende Stunden"
+                    minutesLabel="End Minuten"
+                    secondsLabel="Ende Sekunden"
+                    value={transientVideoCode.end}
+                    min={minAllowedEndTime}
+                    max={maxAllowedEndTime}
+                    onChange={handleEndTimeChange}
+                />
+                <Button
+                    className="btn btn-outline-primary"
+                    onPress={handleUseCurrentTimeForEndValue}
+                    title={'Aktuelle Zeit als Endzeit übernehmen'}
+                    data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
+                >
+                    <i className="fas fa-stopwatch" />
+                </Button>
+            </div>
             <hr />
             <VideoCodeSelection
                 defaultPrototypeId={defaultPrototypeId}

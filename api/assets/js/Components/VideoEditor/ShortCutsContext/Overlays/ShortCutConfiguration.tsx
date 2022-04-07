@@ -22,6 +22,8 @@ const modifierToLabelMap: Record<ShortCutModifierId, string> = {
 
 const shortCutIdToLabelMap: Record<ShortCutId, string> = {
     [ShortCutId.TOGGLE_PLAY]: 'Video Wiedergabe/Pause',
+    [ShortCutId.SET_CURRENT_TIME_AS_START_VALUE]: 'Aktuelle Player-Zeit als Startzeit verwenden',
+    [ShortCutId.SET_CURRENT_TIME_AS_END_VALUE]: 'Aktuelle Player-Zeit als Endzeit verwenden',
 }
 
 type OwnProps = {

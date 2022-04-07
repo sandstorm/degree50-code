@@ -1,10 +1,10 @@
 import {
-    configureStore,
-    ThunkAction,
     Action,
-    getDefaultMiddleware,
     combineReducers,
+    configureStore,
     createSelector,
+    getDefaultMiddleware,
+    ThunkAction,
 } from '@reduxjs/toolkit'
 import toolbarReducer from '../ExercisePhaseApp/Components/Toolbar/ToolbarSlice'
 import configReducer, { selectors as configSelectors } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
@@ -12,16 +12,16 @@ import liveSyncConfigReducer from '../ExercisePhaseApp/Components/LiveSyncConfig
 import overlayReducer from '../ExercisePhaseApp/Components/Overlay/OverlaySlice'
 import materialViewerReducer from '../ExercisePhaseApp/Components/MaterialViewer/MaterialViewerSlice'
 import presenceReducer from '../ExercisePhaseApp/Components/Presence/PresenceSlice'
-import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux'
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import createSagaMiddleware from 'redux-saga'
-import { select } from 'redux-saga/effects'
-import { all, spawn, call } from 'redux-saga/effects'
+import { all, call, select, spawn } from 'redux-saga/effects'
 import presenceSaga from '../ExercisePhaseApp/Components/Presence/PresenceSaga'
 import solutionSaga from '../ExercisePhaseApp/Components/Solution/SolutionSaga'
 import currentEditorReducer, { selectCurrentEditorId } from '../ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
 import VideoEditorSlice, { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
 import shortCutsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSlice'
 import { shortCutsSaga } from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSaga'
+import { setCurrentTimeAsValueShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/SetCurrentTimeAsValueShortCutSaga'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -43,7 +43,7 @@ export const store = configureStore({
     },
 })
 
-const sagas = [presenceSaga, solutionSaga, shortCutsSaga]
+const sagas = [presenceSaga, solutionSaga, shortCutsSaga, setCurrentTimeAsValueShortCutSaga]
 sagaMiddleWare.run(function* rootSaga() {
     yield all(
         sagas.map((saga) =>
