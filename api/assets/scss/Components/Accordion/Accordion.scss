@@ -1,5 +1,6 @@
 .accordion {
     overflow: hidden;
+    margin-bottom: 1rem;
 
     &__title {
         display: flex;
@@ -7,6 +8,7 @@
         justify-content: space-between;
 
         padding: $theme__spacing--small;
+        margin-bottom: 0;
 
         i {
             margin: 0 $theme__spacing--small;
@@ -17,6 +19,7 @@
     &__content {
         visibility: collapse;
         height: 0;
+        margin-top: 0;
     }
 
     &--is-open {
@@ -29,6 +32,7 @@
         .accordion__content {
             visibility: visible;
             height: inherit;
+            margin-top: $theme__spacing--base;
         }
     }
 }
