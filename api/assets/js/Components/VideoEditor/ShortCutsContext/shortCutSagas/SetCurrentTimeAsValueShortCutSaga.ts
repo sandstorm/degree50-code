@@ -1,11 +1,12 @@
-import { takeLatest } from 'redux-saga/effects'
+import { put, takeLatest } from 'redux-saga/effects'
 import { createAction } from '@reduxjs/toolkit'
-import { CutOverlayIds } from '../CuttingContext/CuttingMenu'
-import { AnnotationOverlayIds } from '../AnnotationsContext/AnnotationsMenu'
-import { VideoCodeOverlayIds } from '../VideoCodesContext/VideoCodesMenu'
-import { selectState } from '../../../StimulusControllers/ExerciseAndSolutionStore/Store'
-import { selectors as OverlaySelectors } from '../components/OverlayContainer/OverlaySlice'
-import { ShortCutId } from './ShortCutsSlice'
+import { CutOverlayIds } from '../../CuttingContext/CuttingMenu'
+import { AnnotationOverlayIds } from '../../AnnotationsContext/AnnotationsMenu'
+import { VideoCodeOverlayIds } from '../../VideoCodesContext/VideoCodesMenu'
+import { selectState } from '../../../../StimulusControllers/ExerciseAndSolutionStore/Store'
+import { selectors as OverlaySelectors } from '../../components/OverlayContainer/OverlaySlice'
+import { ShortCutId } from '../ShortCutsSlice'
+import { playShortCutSuccessSoundAction, playShortCutTriggerSoundAction } from '../shortCutSoundsSaga'
 
 export const setCurrentTimeAsStartValueAction = createAction('SAGA/SHORT_CUTS/SET_CURRENT_TIME_AS_START_VALUE')
 export const setCurrentTimeAsEndValueAction = createAction('SAGA/SHORT_CUTS/SET_CURRENT_TIME_AS_END_VALUE')
@@ -36,6 +37,10 @@ function* setCurrentTimeAsStartValueSaga() {
                 `button[data-short-cut-id="${ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}"]`
             )
             ?.click()
+
+        yield put(playShortCutSuccessSoundAction())
+    } else {
+        yield put(playShortCutTriggerSoundAction())
     }
 }
 
@@ -48,5 +53,9 @@ function* setCurrentTimeAsEndValueSaga() {
         document
             .querySelector<HTMLButtonElement>(`button[data-short-cut-id="${ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}"]`)
             ?.click()
+
+        yield put(playShortCutSuccessSoundAction())
+    } else {
+        yield put(playShortCutTriggerSoundAction())
     }
 }

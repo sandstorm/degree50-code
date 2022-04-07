@@ -3,18 +3,23 @@ import { useAppDispatch, useAppSelector } from '../../../StimulusControllers/Exe
 import { initializeShortCuts } from './ShortCutsSaga'
 import { useEffect } from 'react'
 import { selectHotKeyByShortCutId, ShortCutId } from './ShortCutsSlice'
-import { actions as PlayerActions } from '../PlayerSlice'
-import { setCurrentTimeAsEndValueAction, setCurrentTimeAsStartValueAction } from './SetCurrentTimeAsValueShortCutSaga'
-import { actions as OverlayActions } from '../components/OverlayContainer/OverlaySlice'
+import {
+    setCurrentTimeAsEndValueAction,
+    setCurrentTimeAsStartValueAction,
+} from './shortCutSagas/SetCurrentTimeAsValueShortCutSaga'
 import { AnnotationOverlayIds } from '../AnnotationsContext/AnnotationsMenu'
 import { VideoCodeOverlayIds } from '../VideoCodesContext/VideoCodesMenu'
 import { CutOverlayIds } from '../CuttingContext/CuttingMenu'
+import { togglePlayShortCutAction } from './shortCutSagas/togglePlayShortCutSaga'
+import { openOverlayAction } from './shortCutSagas/openOverlayShortCutSaga'
+import { initializeSoundOptionsAction } from './shortCutSoundsSaga'
 
 export const useShortCuts = () => {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         dispatch(initializeShortCuts())
+        dispatch(initializeSoundOptionsAction())
     }, [])
 
     /**
@@ -26,7 +31,7 @@ export const useShortCuts = () => {
     useHotkeys(
         togglePlayHotKey,
         (keyboardEvent) => {
-            dispatch(PlayerActions.togglePlay())
+            dispatch(togglePlayShortCutAction())
 
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()
@@ -74,7 +79,7 @@ export const useShortCuts = () => {
     useHotkeys(
         createAnnotationHotKey,
         (keyboardEvent) => {
-            dispatch(OverlayActions.setOverlay({ overlayId: AnnotationOverlayIds.create, closeOthers: false }))
+            dispatch(openOverlayAction(AnnotationOverlayIds.create))
 
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()
@@ -90,7 +95,7 @@ export const useShortCuts = () => {
     useHotkeys(
         createVideoCodeHotKey,
         (keyboardEvent) => {
-            dispatch(OverlayActions.setOverlay({ overlayId: VideoCodeOverlayIds.create, closeOthers: false }))
+            dispatch(openOverlayAction(VideoCodeOverlayIds.create))
 
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()
@@ -104,7 +109,7 @@ export const useShortCuts = () => {
     useHotkeys(
         createVideoCutHotKey,
         (keyboardEvent) => {
-            dispatch(OverlayActions.setOverlay({ overlayId: CutOverlayIds.create, closeOthers: false }))
+            dispatch(openOverlayAction(CutOverlayIds.create))
 
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()

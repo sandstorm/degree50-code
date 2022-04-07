@@ -21,7 +21,11 @@ import currentEditorReducer, { selectCurrentEditorId } from '../ExercisePhaseApp
 import VideoEditorSlice, { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
 import shortCutsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSlice'
 import { shortCutsSaga } from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSaga'
-import { setCurrentTimeAsValueShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/SetCurrentTimeAsValueShortCutSaga'
+import shortCutSoundOptionsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutSoundsSlice'
+import { shortCutSoundsSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSoundsSaga'
+import { setCurrentTimeAsValueShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/SetCurrentTimeAsValueShortCutSaga'
+import { togglePlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/togglePlayShortCutSaga'
+import { openOverlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/openOverlayShortCutSaga'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -36,6 +40,7 @@ export const store = configureStore({
         presence: presenceReducer,
         currentEditor: currentEditorReducer,
         shortCuts: shortCutsReducer,
+        shortCutSoundOptions: shortCutSoundOptionsReducer,
     }),
     middleware: [...getDefaultMiddleware(), sagaMiddleWare],
     devTools: {
@@ -43,7 +48,15 @@ export const store = configureStore({
     },
 })
 
-const sagas = [presenceSaga, solutionSaga, shortCutsSaga, setCurrentTimeAsValueShortCutSaga]
+const sagas = [
+    presenceSaga,
+    solutionSaga,
+    shortCutsSaga,
+    setCurrentTimeAsValueShortCutSaga,
+    shortCutSoundsSaga,
+    togglePlayShortCutSaga,
+    openOverlayShortCutSaga,
+]
 sagaMiddleWare.run(function* rootSaga() {
     yield all(
         sagas.map((saga) =>

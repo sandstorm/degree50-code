@@ -38,6 +38,7 @@ type Props = {
     'aria-describedby'?: AriaAttributes['aria-describedby']
 }
 
+// TODO: Remove in favor of Components/Checkbox
 const CheckboxWithIndeterminate: FC<Props> = (props) => {
     const checked = mapCheckboxValueToChecked(props.value)
     const ref = useRef<HTMLInputElement>(null)
