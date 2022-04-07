@@ -1,5 +1,6 @@
 import React, { memo, ReactNode, useMemo, useState } from 'react'
 import Button from '../Button/Button'
+import shortid from 'shortid'
 
 type Props = {
     className?: string
@@ -16,19 +17,31 @@ const Accordion = (props: Props) => {
 
     const className = `accordion${isOpen ? ' accordion--is-open' : ''} ${props.className ?? ''}`.trim()
 
+    const labelId = useMemo(() => shortid(), [])
+    const regionId = useMemo(() => shortid(), [])
+    const toggleId = useMemo(() => shortid(), [])
+
     return (
         <div className={className}>
             <p tabIndex={1} className="accordion__title highlight-focus-within--outline">
-                {props.title}
+                <span id={labelId}>{props.title}</span>
                 <Button
                     className="btn btn-outline-primary"
                     title={isOpen ? props.buttonTitleClose : props.buttonTitleOpen}
                     onPress={handleClick}
+                    aria-expanded={isOpen}
+                    aria-controls={isOpen ? regionId : undefined}
                 >
                     <i className="fas fa-angle-right" />
                 </Button>
             </p>
-            <div className="accordion__content" aria-hidden={!isOpen}>
+            <div
+                id={regionId}
+                role="region"
+                aria-labelledby={labelId}
+                className="accordion__content"
+                aria-hidden={!isOpen}
+            >
                 {props.children}
             </div>
         </div>
