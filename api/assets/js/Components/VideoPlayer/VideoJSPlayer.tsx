@@ -5,6 +5,15 @@ import videojsDE from 'video.js/dist/lang/de.json'
 import 'video.js/dist/video-js.css'
 import { Video } from './VideoPlayerWrapper'
 import { generate } from 'shortid'
+import { AnyAction } from '@reduxjs/toolkit'
+
+export type CustomVideoControl<T extends AnyAction | (() => void)> = {
+    controlText: string
+    ariaLabel: string
+    iconClassNames: Array<string>
+    action: T
+    indexPosition: number
+}
 
 type Props = {
     videoJsOptions: VideoJsPlayerOptions
@@ -14,6 +23,7 @@ type Props = {
     setPauseCallback?: (pause: boolean) => void
     isPaused?: boolean
     playPosition?: number
+    customControls?: Array<CustomVideoControl<() => void>>
 }
 
 const defaultVideoJsOptions: VideoJsPlayerOptions = {
@@ -25,6 +35,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
     const [player, setPlayer] = useState<VideoJsPlayer | undefined>(undefined)
     const videoRef: React.RefObject<HTMLVideoElement> = useRef(null)
     const [vttPath, setVttPath] = useState(props?.videoMap?.url?.vtt)
+    const [customComponentsInitialized, setCustomComponentsInitialized] = useState(false)
 
     // WHY: We create a UID to support multiple players on a single page
     const playerId = useMemo(() => generate(), [])
@@ -39,6 +50,34 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
             player?.dispose()
         }
     }, [])
+
+    useEffect(() => {
+        if (player && !customComponentsInitialized) {
+            setCustomComponentsInitialized(true)
+            props.customControls?.forEach((customControl) => {
+                const button = player.getChild('ControlBar')?.addChild('button', undefined, customControl.indexPosition)
+
+                if (button) {
+                    button.controlText(customControl.controlText)
+                    button.el().setAttribute('aria-label', customControl.ariaLabel)
+
+                    const icon = document.createElement('i')
+                    icon.classList.add(
+                        'vjs-icon-placeholder',
+                        'video-player__custom-control__icon',
+                        ...customControl.iconClassNames
+                    )
+                    icon.setAttribute('aria-hidden', 'true')
+                    button.el().querySelector('.vjs-icon-placeholder')?.replaceWith(icon)
+
+                    button.on('click', () => {
+                        console.log('clicked')
+                        customControl.action()
+                    })
+                }
+            })
+        }
+    }, [player, props.customControls, customComponentsInitialized, setCustomComponentsInitialized])
 
     useEffect(() => {
         // FIXME switching/adding new subtitles on the fly does currently not work

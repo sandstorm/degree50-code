@@ -5,12 +5,15 @@ import { VideoJsPlayerOptions } from 'video.js'
 import 'video.js/dist/video-js.css'
 import { Video } from './VideoPlayerWrapper'
 import { actions, selectors, VideoEditorState } from '../VideoEditor/VideoEditorSlice'
-import VideoJSPlayer from './VideoJSPlayer'
+import VideoJSPlayer, { CustomVideoControl } from './VideoJSPlayer'
+import { AppDispatch } from '../../StimulusControllers/ExerciseAndSolutionStore/Store'
+import { AnyAction } from '@reduxjs/toolkit'
 
 type OwnProps = {
     videoJsOptions: VideoJsPlayerOptions
     videoMap?: Video
     worker?: Worker
+    customVideoControls?: Array<CustomVideoControl<AnyAction>>
 }
 
 const mapStateToProps = (state: VideoEditorState) => {
@@ -20,15 +23,29 @@ const mapStateToProps = (state: VideoEditorState) => {
     }
 }
 
-const mapDispatchToProps = {
-    setSyncPlayPosition: actions.player.setSyncPlayPosition,
-    setPause: actions.player.setPause,
-}
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+    setSyncPlayPosition: (pos: number) => dispatch(actions.player.setSyncPlayPosition(pos)),
+    setPause: (isPaused: boolean) => dispatch(actions.player.setPause(isPaused)),
+    dispatch,
+})
 
-type VideoPlayerProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
+type VideoPlayerProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & OwnProps
 
 const ConnectedVideoJSPlayer: React.FC<VideoPlayerProps> = (props) => {
-    return <VideoJSPlayer {...props} updateTimeCallback={props.setSyncPlayPosition} setPauseCallback={props.setPause} />
+    const customVideoControlsWithDispatch: Array<CustomVideoControl<() => void>> | undefined =
+        props.customVideoControls?.map((customControl) => ({
+            ...customControl,
+            action: () => props.dispatch(customControl.action),
+        }))
+
+    return (
+        <VideoJSPlayer
+            {...props}
+            customControls={customVideoControlsWithDispatch}
+            updateTimeCallback={props.setSyncPlayPosition}
+            setPauseCallback={props.setPause}
+        />
+    )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ConnectedVideoJSPlayer))
