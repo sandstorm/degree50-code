@@ -32,8 +32,6 @@ export default class extends Controller {
         const data = props.data as DataState
         const config = props.config as ConfigState
 
-        console.log({ config })
-
         // set initial Redux state
         store.dispatch(configActions.hydrateConfig(config))
         store.dispatch(configActions.setIsSolutionView())

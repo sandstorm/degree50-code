@@ -7,18 +7,21 @@ import Toolbar from './components/Toolbar'
 import { useShortCuts } from './ShortCutsContext/useShortCuts'
 import { CustomVideoControl } from '../VideoPlayer/VideoJSPlayer'
 import { SetVideoPlayerTimeOverlayId } from './SetVideoPlayerTimeContext/SetVideoPlayerTimeMenu'
-import { AnyAction } from '@reduxjs/toolkit'
-import { openOverlayAction } from './ShortCutsContext/shortCutSagas/openOverlayShortCutSaga'
+import { AppDispatch } from '../../StimulusControllers/ExerciseAndSolutionStore/Store'
+import { actions } from './VideoEditorSlice'
 
 type Props = {
     videos: Array<Video>
 }
 
-const SetPlayerTimeControl: CustomVideoControl<AnyAction> = {
+const SetPlayerTimeControl: CustomVideoControl<(dispatch: AppDispatch) => void> = {
     controlText: 'Springe zu Zeit in Video',
     ariaLabel: 'Springe zu Zeit in Video',
     iconClassNames: ['far', 'fa-stopwatch'],
-    action: openOverlayAction(SetVideoPlayerTimeOverlayId),
+    dispatchActions: (dispatch: AppDispatch) => {
+        dispatch(actions.player.setPause(true))
+        dispatch(actions.overlay.setOverlay({ overlayId: SetVideoPlayerTimeOverlayId, closeOthers: false }))
+    },
     indexPosition: 1,
 }
 

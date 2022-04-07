@@ -5,13 +5,13 @@ import videojsDE from 'video.js/dist/lang/de.json'
 import 'video.js/dist/video-js.css'
 import { Video } from './VideoPlayerWrapper'
 import { generate } from 'shortid'
-import { AnyAction } from '@reduxjs/toolkit'
+import { AppDispatch } from '../../StimulusControllers/ExerciseAndSolutionStore/Store'
 
-export type CustomVideoControl<T extends AnyAction | (() => void)> = {
+export type CustomVideoControl<T extends ((dispatch: AppDispatch) => void) | (() => void)> = {
     controlText: string
     ariaLabel: string
     iconClassNames: Array<string>
-    action: T
+    dispatchActions: T
     indexPosition: number
 }
 
@@ -51,16 +51,33 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
         }
     }, [])
 
+    // Add custom controls
     useEffect(() => {
         if (player && !customComponentsInitialized) {
+            // WHY: patch videoJs keyDown handling to enable key down events when player controls are focussed
+            // @ts-ignore
+            const originalHandler = player.handleKeyDown
+            // @ts-ignore
+            // eslint-disable-next-line
+            videojs.getComponent('Component').prototype.handleKeyDown = function (event: KeyboardEvent) {
+                originalHandler.call(player, event)
+                document.dispatchEvent(new Event(event.type, { ...event }))
+            }
+
+            // WHY: Only set up custom controls once (effect is run every time 'player' changes - e.g. on play toggle)
             setCustomComponentsInitialized(true)
+
             props.customControls?.forEach((customControl) => {
+                // add new button in ControlBar at specified position
                 const button = player.getChild('ControlBar')?.addChild('button', undefined, customControl.indexPosition)
 
                 if (button) {
+                    // set title
                     button.controlText(customControl.controlText)
+                    // set aria label
                     button.el().setAttribute('aria-label', customControl.ariaLabel)
 
+                    // create Icon
                     const icon = document.createElement('i')
                     icon.classList.add(
                         'vjs-icon-placeholder',
@@ -68,11 +85,12 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
                         ...customControl.iconClassNames
                     )
                     icon.setAttribute('aria-hidden', 'true')
+                    // replace icon placeholder with new Icon
                     button.el().querySelector('.vjs-icon-placeholder')?.replaceWith(icon)
 
+                    // add click handler
                     button.on('click', () => {
-                        console.log('clicked')
-                        customControl.action()
+                        customControl.dispatchActions()
                     })
                 }
             })

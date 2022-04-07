@@ -7,13 +7,12 @@ import { Video } from './VideoPlayerWrapper'
 import { actions, selectors, VideoEditorState } from '../VideoEditor/VideoEditorSlice'
 import VideoJSPlayer, { CustomVideoControl } from './VideoJSPlayer'
 import { AppDispatch } from '../../StimulusControllers/ExerciseAndSolutionStore/Store'
-import { AnyAction } from '@reduxjs/toolkit'
 
 type OwnProps = {
     videoJsOptions: VideoJsPlayerOptions
     videoMap?: Video
     worker?: Worker
-    customVideoControls?: Array<CustomVideoControl<AnyAction>>
+    customVideoControls?: Array<CustomVideoControl<(dispatch: AppDispatch) => void>>
 }
 
 const mapStateToProps = (state: VideoEditorState) => {
@@ -35,7 +34,7 @@ const ConnectedVideoJSPlayer: React.FC<VideoPlayerProps> = (props) => {
     const customVideoControlsWithDispatch: Array<CustomVideoControl<() => void>> | undefined =
         props.customVideoControls?.map((customControl) => ({
             ...customControl,
-            action: () => props.dispatch(customControl.action),
+            dispatchActions: () => customControl.dispatchActions(props.dispatch),
         }))
 
     return (
