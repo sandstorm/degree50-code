@@ -27,6 +27,7 @@ const shortCutIdToLabelMap: Record<ShortCutId, string> = {
     [ShortCutId.CREATE_ANNOTATION]: 'Neue Annotation erstellen',
     [ShortCutId.CREATE_VIDEO_CODE]: 'Neuen Video-Code erstellen',
     [ShortCutId.CREATE_VIDEO_CUT]: 'Neuen Schnitt erstellen',
+    [ShortCutId.SET_VIDEO_PLAYER_TIME]: 'Zu bestimmter Zeit im Video Springen',
 }
 
 type OwnProps = {
