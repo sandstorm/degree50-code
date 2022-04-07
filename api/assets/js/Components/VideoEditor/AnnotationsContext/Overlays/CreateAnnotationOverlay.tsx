@@ -16,6 +16,7 @@ import {
     selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
+import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
 
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
     currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
@@ -77,28 +78,56 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
         close()
     }
 
+    const handleUseCurrentTimeForStartValue = () => {
+        handleStartTimeChange(secondToTime(currentTime))
+    }
+
+    const handleUseCurrentTimeForEndValue = () => {
+        handleEndTimeChange(secondToTime(currentTime))
+    }
+
     return (
         <Overlay closeCallback={close} title="Neue Annotation">
-            <TimeInput
-                label="Start"
-                value={transientAnnotation.start}
-                min={minAllowedStartTime}
-                max={maxAllowedStartTime}
-                onChange={handleStartTimeChange}
-                hoursLabel="Start Stunden"
-                minutesLabel="Start Minuten"
-                secondsLabel="Start Sekunden"
-            />
-            <TimeInput
-                label="Ende"
-                value={transientAnnotation.end}
-                min={minAllowedEndTime}
-                max={maxAllowedEndTime}
-                onChange={handleEndTimeChange}
-                hoursLabel="Ende Stunden"
-                minutesLabel="Ende Minuten"
-                secondsLabel="Ende Sekunden"
-            />
+            <div className="time-input-wrapper">
+                <TimeInput
+                    label="Start"
+                    value={transientAnnotation.start}
+                    min={minAllowedStartTime}
+                    max={maxAllowedStartTime}
+                    onChange={handleStartTimeChange}
+                    hoursLabel="Start Stunden"
+                    minutesLabel="Start Minuten"
+                    secondsLabel="Start Sekunden"
+                />
+                <Button
+                    className="btn btn-outline-primary"
+                    onPress={handleUseCurrentTimeForStartValue}
+                    title={'Aktuelle Zeit als Startzeit übernehmen'}
+                    data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
+                >
+                    <i className="fas fa-stopwatch" />
+                </Button>
+            </div>
+            <div className="time-input-wrapper">
+                <TimeInput
+                    label="Ende"
+                    value={transientAnnotation.end}
+                    min={minAllowedEndTime}
+                    max={maxAllowedEndTime}
+                    onChange={handleEndTimeChange}
+                    hoursLabel="Ende Stunden"
+                    minutesLabel="Ende Minuten"
+                    secondsLabel="Ende Sekunden"
+                />
+                <Button
+                    className="btn btn-outline-primary"
+                    onPress={handleUseCurrentTimeForEndValue}
+                    title={'Aktuelle Zeit als Endzeit übernehmen'}
+                    data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
+                >
+                    <i className="fas fa-stopwatch" />
+                </Button>
+            </div>
             <hr />
             <label htmlFor="text">Beschreibung</label>
             <TextField id="text" text={transientAnnotation.text} updateText={updateText} />

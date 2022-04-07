@@ -22,3 +22,13 @@
 .time-input__label {
     margin-right: $theme__spacing--base;
 }
+
+// integration code - no component styling
+.time-input-wrapper {
+    display: flex;
+    align-items: center;
+
+    > * + * {
+        margin-left: $theme__spacing--small;
+    }
+}

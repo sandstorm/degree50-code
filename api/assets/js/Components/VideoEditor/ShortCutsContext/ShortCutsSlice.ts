@@ -18,6 +18,8 @@ export type ShortCutModifierConfigurations = Record<ShortCutModifierId, ShortCut
 
 export enum ShortCutId {
     TOGGLE_PLAY = 'togglePlay',
+    SET_CURRENT_TIME_AS_START_VALUE = 'setCurrentTimeAsStartValue',
+    SET_CURRENT_TIME_AS_END_VALUE = 'setCurrentTimeAsEndValue',
 }
 
 export const shortCutIds = Object.values(ShortCutId)
@@ -34,6 +36,50 @@ const initialState: ShortCutsState = {
     [ShortCutId.TOGGLE_PLAY]: {
         shortCutId: ShortCutId.TOGGLE_PLAY,
         key: 'p',
+        modifiers: {
+            [ShortCutModifierId.CTRL]: {
+                modifier: ShortCutModifierId.CTRL,
+                enabled: true,
+            },
+            [ShortCutModifierId.ALT]: {
+                modifier: ShortCutModifierId.ALT,
+                enabled: false,
+            },
+            [ShortCutModifierId.OPTION]: {
+                modifier: ShortCutModifierId.OPTION,
+                enabled: false,
+            },
+            [ShortCutModifierId.SHIFT]: {
+                modifier: ShortCutModifierId.SHIFT,
+                enabled: true,
+            },
+        },
+    },
+    [ShortCutId.SET_CURRENT_TIME_AS_START_VALUE]: {
+        shortCutId: ShortCutId.SET_CURRENT_TIME_AS_START_VALUE,
+        key: 's',
+        modifiers: {
+            [ShortCutModifierId.CTRL]: {
+                modifier: ShortCutModifierId.CTRL,
+                enabled: true,
+            },
+            [ShortCutModifierId.ALT]: {
+                modifier: ShortCutModifierId.ALT,
+                enabled: false,
+            },
+            [ShortCutModifierId.OPTION]: {
+                modifier: ShortCutModifierId.OPTION,
+                enabled: false,
+            },
+            [ShortCutModifierId.SHIFT]: {
+                modifier: ShortCutModifierId.SHIFT,
+                enabled: true,
+            },
+        },
+    },
+    [ShortCutId.SET_CURRENT_TIME_AS_END_VALUE]: {
+        shortCutId: ShortCutId.SET_CURRENT_TIME_AS_END_VALUE,
+        key: 'e',
         modifiers: {
             [ShortCutModifierId.CTRL]: {
                 modifier: ShortCutModifierId.CTRL,
