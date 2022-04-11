@@ -1,6 +1,6 @@
+import React, { FC, memo } from 'react'
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
-import React, { FC, memo } from 'react'
 import MediaLaneContainer from './components/MediaLaneContainer'
 import OverlayContainer from './components/OverlayContainer'
 import Toolbar from './components/Toolbar'

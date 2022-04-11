@@ -23,6 +23,7 @@ export enum ShortCutId {
     CREATE_ANNOTATION = 'createAnnotation',
     CREATE_VIDEO_CODE = 'createVideoCode',
     CREATE_VIDEO_CUT = 'createVideoCut',
+    SET_VIDEO_PLAYER_TIME = 'setVideoPlayerTime',
 }
 
 export const shortCutIds = Object.values(ShortCutId)
@@ -35,138 +36,61 @@ export type ShortCutConfiguration = {
 
 export type ShortCutsState = Record<ShortCutId, ShortCutConfiguration>
 
+// Ctrl and Shift as default modifiers -> "ctrl+shift+<key>"
+const defaultModifiers: ShortCutModifierConfigurations = {
+    [ShortCutModifierId.CTRL]: {
+        modifier: ShortCutModifierId.CTRL,
+        enabled: true,
+    },
+    [ShortCutModifierId.ALT]: {
+        modifier: ShortCutModifierId.ALT,
+        enabled: false,
+    },
+    [ShortCutModifierId.OPTION]: {
+        modifier: ShortCutModifierId.OPTION,
+        enabled: false,
+    },
+    [ShortCutModifierId.SHIFT]: {
+        modifier: ShortCutModifierId.SHIFT,
+        enabled: true,
+    },
+}
+
 const initialState: ShortCutsState = {
     [ShortCutId.TOGGLE_PLAY]: {
         shortCutId: ShortCutId.TOGGLE_PLAY,
         key: 'p',
-        modifiers: {
-            [ShortCutModifierId.CTRL]: {
-                modifier: ShortCutModifierId.CTRL,
-                enabled: true,
-            },
-            [ShortCutModifierId.ALT]: {
-                modifier: ShortCutModifierId.ALT,
-                enabled: false,
-            },
-            [ShortCutModifierId.OPTION]: {
-                modifier: ShortCutModifierId.OPTION,
-                enabled: false,
-            },
-            [ShortCutModifierId.SHIFT]: {
-                modifier: ShortCutModifierId.SHIFT,
-                enabled: true,
-            },
-        },
+        modifiers: defaultModifiers,
     },
     [ShortCutId.SET_CURRENT_TIME_AS_START_VALUE]: {
         shortCutId: ShortCutId.SET_CURRENT_TIME_AS_START_VALUE,
         key: 's',
-        modifiers: {
-            [ShortCutModifierId.CTRL]: {
-                modifier: ShortCutModifierId.CTRL,
-                enabled: true,
-            },
-            [ShortCutModifierId.ALT]: {
-                modifier: ShortCutModifierId.ALT,
-                enabled: false,
-            },
-            [ShortCutModifierId.OPTION]: {
-                modifier: ShortCutModifierId.OPTION,
-                enabled: false,
-            },
-            [ShortCutModifierId.SHIFT]: {
-                modifier: ShortCutModifierId.SHIFT,
-                enabled: true,
-            },
-        },
+        modifiers: defaultModifiers,
     },
     [ShortCutId.SET_CURRENT_TIME_AS_END_VALUE]: {
         shortCutId: ShortCutId.SET_CURRENT_TIME_AS_END_VALUE,
         key: 'e',
-        modifiers: {
-            [ShortCutModifierId.CTRL]: {
-                modifier: ShortCutModifierId.CTRL,
-                enabled: true,
-            },
-            [ShortCutModifierId.ALT]: {
-                modifier: ShortCutModifierId.ALT,
-                enabled: false,
-            },
-            [ShortCutModifierId.OPTION]: {
-                modifier: ShortCutModifierId.OPTION,
-                enabled: false,
-            },
-            [ShortCutModifierId.SHIFT]: {
-                modifier: ShortCutModifierId.SHIFT,
-                enabled: true,
-            },
-        },
+        modifiers: defaultModifiers,
     },
     [ShortCutId.CREATE_ANNOTATION]: {
         shortCutId: ShortCutId.CREATE_ANNOTATION,
         key: 'a',
-        modifiers: {
-            [ShortCutModifierId.CTRL]: {
-                modifier: ShortCutModifierId.CTRL,
-                enabled: true,
-            },
-            [ShortCutModifierId.ALT]: {
-                modifier: ShortCutModifierId.ALT,
-                enabled: false,
-            },
-            [ShortCutModifierId.OPTION]: {
-                modifier: ShortCutModifierId.OPTION,
-                enabled: false,
-            },
-            [ShortCutModifierId.SHIFT]: {
-                modifier: ShortCutModifierId.SHIFT,
-                enabled: true,
-            },
-        },
+        modifiers: defaultModifiers,
     },
     [ShortCutId.CREATE_VIDEO_CODE]: {
         shortCutId: ShortCutId.CREATE_VIDEO_CODE,
         key: 'c',
-        modifiers: {
-            [ShortCutModifierId.CTRL]: {
-                modifier: ShortCutModifierId.CTRL,
-                enabled: true,
-            },
-            [ShortCutModifierId.ALT]: {
-                modifier: ShortCutModifierId.ALT,
-                enabled: false,
-            },
-            [ShortCutModifierId.OPTION]: {
-                modifier: ShortCutModifierId.OPTION,
-                enabled: false,
-            },
-            [ShortCutModifierId.SHIFT]: {
-                modifier: ShortCutModifierId.SHIFT,
-                enabled: true,
-            },
-        },
+        modifiers: defaultModifiers,
     },
     [ShortCutId.CREATE_VIDEO_CUT]: {
         shortCutId: ShortCutId.CREATE_VIDEO_CUT,
         key: 'x',
-        modifiers: {
-            [ShortCutModifierId.CTRL]: {
-                modifier: ShortCutModifierId.CTRL,
-                enabled: true,
-            },
-            [ShortCutModifierId.ALT]: {
-                modifier: ShortCutModifierId.ALT,
-                enabled: false,
-            },
-            [ShortCutModifierId.OPTION]: {
-                modifier: ShortCutModifierId.OPTION,
-                enabled: false,
-            },
-            [ShortCutModifierId.SHIFT]: {
-                modifier: ShortCutModifierId.SHIFT,
-                enabled: true,
-            },
-        },
+        modifiers: defaultModifiers,
+    },
+    [ShortCutId.SET_VIDEO_PLAYER_TIME]: {
+        shortCutId: ShortCutId.SET_VIDEO_PLAYER_TIME,
+        key: 'j',
+        modifiers: defaultModifiers,
     },
 }
 
