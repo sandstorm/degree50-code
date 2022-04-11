@@ -5,6 +5,9 @@ import videojsDE from 'video.js/dist/lang/de.json'
 import 'video.js/dist/video-js.css'
 import { Video } from './VideoPlayerWrapper'
 import { generate } from 'shortid'
+import { useAddCustomVideoJsComponent } from '../VideoEditor/useCustomVideoJsComponent'
+import { SetPlayerTimeControl } from '../VideoEditor/SetVideoPlayerTimeContext/SetVideoPlayerTimeMenu'
+import { usePatchVideoJsToMakeHotKeysWork } from '../VideoEditor/usePatchVideoJsToMakeHotKeysWork'
 
 type Props = {
     videoJsOptions: VideoJsPlayerOptions
@@ -39,6 +42,10 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
             player?.dispose()
         }
     }, [])
+
+    usePatchVideoJsToMakeHotKeysWork(player)
+
+    useAddCustomVideoJsComponent(SetPlayerTimeControl, player)
 
     useEffect(() => {
         // FIXME switching/adding new subtitles on the fly does currently not work

@@ -36,6 +36,9 @@ import SolutionFilterOverlay from 'Components/VideoEditor/FilterContext/Overlays
 import { AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ShortCutsOverlayIds } from '../../ShortCutsContext/ShortCutsMenu'
 import ShortCutsConfigurationOverlay from '../../ShortCutsContext/Overlays/ShortCutsConfigurationOverlay'
+import SetVideoPlayerTimeOverlay, {
+    SetVideoPlayerTimeOverlayId,
+} from '../../SetVideoPlayerTimeContext/Overlays/SetVideoPlayerTimeOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
@@ -116,6 +119,11 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
         // ShortCuts
         case ShortCutsOverlayIds.configureShortCuts: {
             return <ShortCutsConfigurationOverlay />
+        }
+
+        // SetVideoPlayerTime
+        case SetVideoPlayerTimeOverlayId: {
+            return <SetVideoPlayerTimeOverlay />
         }
 
         default:

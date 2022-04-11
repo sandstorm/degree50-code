@@ -13,6 +13,7 @@ import { CutOverlayIds } from '../CuttingContext/CuttingMenu'
 import { togglePlayShortCutAction } from './shortCutSagas/togglePlayShortCutSaga'
 import { openOverlayAction } from './shortCutSagas/openOverlayShortCutSaga'
 import { initializeSoundOptionsAction } from './shortCutSoundsSaga'
+import { SetVideoPlayerTimeOverlayId } from '../SetVideoPlayerTimeContext/Overlays/SetVideoPlayerTimeOverlay'
 
 export const useShortCuts = () => {
     const dispatch = useAppDispatch()
@@ -110,6 +111,22 @@ export const useShortCuts = () => {
         createVideoCutHotKey,
         (keyboardEvent) => {
             dispatch(openOverlayAction(CutOverlayIds.create))
+
+            keyboardEvent.preventDefault()
+            keyboardEvent.stopPropagation()
+        },
+        { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'] },
+        [dispatch]
+    )
+
+    // setVideoPlayerTime
+    const setVideoPlayerTimeHotKey = useAppSelector((state) =>
+        selectHotKeyByShortCutId(state, ShortCutId.SET_VIDEO_PLAYER_TIME)
+    )
+    useHotkeys(
+        setVideoPlayerTimeHotKey,
+        (keyboardEvent) => {
+            dispatch(openOverlayAction(SetVideoPlayerTimeOverlayId))
 
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()

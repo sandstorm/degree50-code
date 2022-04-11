@@ -26,6 +26,7 @@ import { shortCutSoundsSaga } from '../../Components/VideoEditor/ShortCutsContex
 import { setCurrentTimeAsValueShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/SetCurrentTimeAsValueShortCutSaga'
 import { togglePlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/togglePlayShortCutSaga'
 import { openOverlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/openOverlayShortCutSaga'
+import { setPlayerTimeControlSaga } from '../../Components/VideoEditor/SetVideoPlayerTimeContext/SetPlayerTimeControlSaga'
 
 const sagaMiddleWare = createSagaMiddleware()
 
@@ -56,6 +57,7 @@ const sagas = [
     shortCutSoundsSaga,
     togglePlayShortCutSaga,
     openOverlayShortCutSaga,
+    setPlayerTimeControlSaga,
 ]
 sagaMiddleWare.run(function* rootSaga() {
     yield all(
