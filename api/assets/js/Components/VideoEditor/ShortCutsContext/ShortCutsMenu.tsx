@@ -20,7 +20,7 @@ const ShortCutsMenu = (props: Props) => {
     return (
         <div className="video-editor__menu">
             <Button
-                title="Tastenkombinationen ansehen und bearbeiten"
+                title="Tastenkombination zur Bedienung"
                 className="btn btn-grey btn-sm video-editor__toolbar__button"
                 onPress={handleClick}
             >
