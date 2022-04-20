@@ -10,7 +10,7 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Entity\Exercise\Material;
+use App\Entity\Exercise\Attachment;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
@@ -66,8 +66,7 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         LoggerInterface $logger,
         SolutionService $solutionService
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -88,8 +87,7 @@ class ExercisePhaseController extends AbstractController
     public function showOtherStudentsSolution(
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
-    ): Response
-    {
+    ): Response {
         /** @var User $user */
         $user = $this->getUser();
 
@@ -127,8 +125,7 @@ class ExercisePhaseController extends AbstractController
     public function show(
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
-    ): Response
-    {
+    ): Response {
         if ($exercisePhase->getType() === ExercisePhaseType::REFLEXION) {
             return $this->reflectInPhase($exercisePhase, $exercisePhaseTeam);
         } else {
@@ -275,8 +272,8 @@ class ExercisePhaseController extends AbstractController
             ExercisePhaseType::REFLEXION => new ReflexionPhase(),
             default => throw new \InvalidArgumentException(
                 "ExercisePhaseType has to be one of ["
-                . implode(', ', ExercisePhaseType::getPossibleValues()) .
-                "]! '$type' given."
+                    . implode(', ', ExercisePhaseType::getPossibleValues()) .
+                    "]! '$type' given."
             ),
         };
 
@@ -382,14 +379,12 @@ class ExercisePhaseController extends AbstractController
         );
 
         return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
-
     }
 
     private function initiateExercisePhaseTeamWithSolution(
         ExercisePhaseTeam $exercisePhaseTeam,
         User $user
-    )
-    {
+    ) {
         if (!$exercisePhaseTeam->getCurrentEditor()) {
             $exercisePhaseTeam->setCurrentEditor($user);
         }
@@ -411,8 +406,7 @@ class ExercisePhaseController extends AbstractController
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam,
         ?bool $readOnly = false
-    ): array
-    {
+    ): array {
         $config = $this->getConfig($exercisePhase, $readOnly);
         $config['apiEndpoints'] = [
             'updateSolution' => $this->router->generate('exercise-overview__exercise-phase-team--update-solution', [
@@ -434,7 +428,7 @@ class ExercisePhaseController extends AbstractController
         $components = $exercisePhase->getComponents();
 
         switch ($exercisePhase->getType()) {
-            case ExercisePhaseType::VIDEO_ANALYSIS :
+            case ExercisePhaseType::VIDEO_ANALYSIS:
                 /**
                  * @var VideoAnalysisPhase $exercisePhase
                  **/
@@ -446,7 +440,7 @@ class ExercisePhaseController extends AbstractController
                 }
 
                 break;
-            case ExercisePhaseType::VIDEO_CUT :
+            case ExercisePhaseType::VIDEO_CUT:
                 array_push($components, ExercisePhase::VIDEO_CUTTING);
                 break;
             case ExercisePhaseType::REFLEXION:
@@ -465,14 +459,14 @@ class ExercisePhaseController extends AbstractController
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'dependsOnPreviousPhase' => $dependsOnPreviousPhase,
             'readOnly' => $readOnly,
-            'material' => array_map(function (Material $entry) {
+            'attachments' => array_map(function (Attachment $entry) {
                 return [
                     'id' => $entry->getId(),
                     'name' => $entry->getName(),
                     'type' => $entry->getMimeType(),
-                    'url' => $this->generateUrl('exercise-overview__material--download', ['id' => $entry->getId()])
+                    'url' => $this->generateUrl('exercise-overview__attachment--download', ['id' => $entry->getId()])
                 ];
-            }, $exercisePhase->getMaterial()->toArray()),
+            }, $exercisePhase->getAttachment()->toArray()),
             'videos' => array_map(function (Video $video) {
                 return $video->getAsArray($this->appRuntime);
             }, $exercisePhase->getVideos()->toArray())
@@ -584,10 +578,10 @@ class ExercisePhaseController extends AbstractController
             'task' => $phase->getTask(),
             'isGroupPhase' => $phase->isGroupPhase(),
             'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'videos' => $phase->getVideos()->map(fn(Video $video) => [
+            'videos' => $phase->getVideos()->map(fn (Video $video) => [
                 'videoId' => $video->getId()
             ])->toArray(),
-            'videoCodes' => $phase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
+            'videoCodes' => $phase->getVideoCodes()->map(fn (VideoCode $videoCode) => [
                 'videoCodeId' => $videoCode->getId()
             ])->toArray(),
             'components' => $phase->getComponents()
@@ -602,7 +596,7 @@ class ExercisePhaseController extends AbstractController
             'task' => $phase->getTask(),
             'isGroupPhase' => $phase->isGroupPhase(),
             'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'videos' => $phase->getVideos()->map(fn(Video $video) => [
+            'videos' => $phase->getVideos()->map(fn (Video $video) => [
                 'videoId' => $video->getId()
             ])->toArray(),
             'components' => $phase->getComponents()

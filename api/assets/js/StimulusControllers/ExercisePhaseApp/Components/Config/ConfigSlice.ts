@@ -1,6 +1,6 @@
 import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
-import { Material } from '../MaterialViewer/MaterialViewer'
+import { Attachment } from '../AttachmentViewer/AttachmentViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
 import { ExercisePhaseTypesEnum } from '../../../ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 
@@ -21,7 +21,7 @@ export interface ConfigState {
     dependsOnPreviousPhase: boolean
     readOnly: boolean
     components: Array<ComponentId>
-    material: Array<Material>
+    attachments: Array<Attachment>
     videos: Array<Video>
     apiEndpoints: ApiEndpoints
     isSolutionView: boolean
@@ -37,7 +37,7 @@ const initialState: ConfigState = {
     dependsOnPreviousPhase: false,
     readOnly: false,
     components: [],
-    material: [],
+    attachments: [],
     videos: [],
     apiEndpoints: {
         updateSolution: '',

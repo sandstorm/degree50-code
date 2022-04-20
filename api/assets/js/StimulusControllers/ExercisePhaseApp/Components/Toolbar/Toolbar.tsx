@@ -73,9 +73,9 @@ const possibleComponentsForToolbar: Array<Component> = [
         },
     },
     {
-        id: ComponentTypesEnum.MATERIAL_VIEWER,
+        id: ComponentTypesEnum.ATTACHMENT_VIEWER,
         isMandatory: true,
-        label: 'Material',
+        label: 'Anhänge',
         icon: 'fas fa-folder-open',
         isVisible: (config: ConfigState) => {
             return true

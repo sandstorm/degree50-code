@@ -10,7 +10,7 @@ import toolbarReducer from '../ExercisePhaseApp/Components/Toolbar/ToolbarSlice'
 import configReducer, { selectors as configSelectors } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
 import liveSyncConfigReducer from '../ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
 import overlayReducer from '../ExercisePhaseApp/Components/Overlay/OverlaySlice'
-import materialViewerReducer from '../ExercisePhaseApp/Components/MaterialViewer/MaterialViewerSlice'
+import attachmentViewerReducer from '../ExercisePhaseApp/Components/AttachmentViewer/AttachmentViewerSlice'
 import presenceReducer from '../ExercisePhaseApp/Components/Presence/PresenceSlice'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import createSagaMiddleware from 'redux-saga'
@@ -37,7 +37,7 @@ export const store = configureStore({
         config: configReducer,
         liveSyncConfig: liveSyncConfigReducer,
         overlay: overlayReducer,
-        materialViewer: materialViewerReducer,
+        attachmentViewer: attachmentViewerReducer,
         presence: presenceReducer,
         currentEditor: currentEditorReducer,
         shortCuts: shortCutsReducer,

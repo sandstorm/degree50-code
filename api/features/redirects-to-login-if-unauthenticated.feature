@@ -7,7 +7,7 @@ Feature: Redirections to the login if unauthenticated
         Given I have an exercise with ID "ex" belonging to course "c"
         Given I have an exercise phase "ex-p1" belonging to exercise "ex"
         Given I have a video with ID "foo" belonging to course "c"
-        Given I have a material with ID "m"
+        Given I have an attachment with ID "m"
         Given I am not logged in
 
     Scenario Outline: Redirections to the login page if we are not authenticated
@@ -33,7 +33,7 @@ Feature: Redirections to the login if unauthenticated
             | exercise-overview__exercise-phase--set-type      | {"id": "ex"}                      |
             | exercise-overview__exercise-phase--edit          | {"id": "ex", "phase_id": "ex-p1"} |
             | exercise-overview__exercise-phase--delete        | {"id": "ex", "phase_id": "ex-p1"} |
-            | exercise-overview__material--download            | {"id": "m"}                       |
+            | exercise-overview__attachment--download            | {"id": "m"}                       |
 
       # TODO add missing routes!
 

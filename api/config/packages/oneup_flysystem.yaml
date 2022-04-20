@@ -16,7 +16,7 @@ oneup_flysystem:
         encoded_videos_adapter:
             local:
                 directory: '%kernel.project_dir%/public/data/encoded_videos'
-        uploaded_material_adapter:
+        uploaded_attachment_adapter:
             local:
                 directory: '%kernel.project_dir%/public/data/material'
     filesystems:
@@ -41,6 +41,6 @@ oneup_flysystem:
         encoded_videos:
             adapter: encoded_videos_adapter
             mount: encoded_videos
-        uploaded_material:
-            adapter: uploaded_material_adapter
-            mount: uploaded_material
+        uploaded_attachment:
+            adapter: uploaded_attachment_adapter
+            mount: uploaded_attachment

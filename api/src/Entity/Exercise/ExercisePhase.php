@@ -92,12 +92,12 @@ abstract class ExercisePhase
     public string|array|null $components = '';
 
     /**
-     * @var Material[]
+     * @var Attachment[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Material", mappedBy="exercisePhase", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Attachment", mappedBy="exercisePhase", cascade={"persist", "remove"})
      * @ORM\OrderBy({"uploadAt" = "DESC"})
      */
-    private Collection $material;
+    private Collection $attachment;
 
     /**
      * @var Video[]
@@ -130,7 +130,7 @@ abstract class ExercisePhase
     {
         $this->generateOrSetId($id);
         $this->teams = new ArrayCollection();
-        $this->material = new ArrayCollection();
+        $this->attachment = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->isGroupPhase = false;
     }
@@ -240,24 +240,24 @@ abstract class ExercisePhase
         $this->components = $components;
     }
 
-    public function addMaterial(Material $material): self
+    public function addAttachment(Attachment $attachment): self
     {
-        $this->material->add($material);
-        $material->setExercisePhase($this);
+        $this->attachment->add($attachment);
+        $attachment->setExercisePhase($this);
         return $this;
     }
 
-    public function removeMaterial(Material $material): void
+    public function removeAttachment(Attachment $attachment): void
     {
-        $this->material->removeElement($material);
+        $this->attachment->removeElement($attachment);
     }
 
     /**
-     * @return Material[]
+     * @return Attachment[]
      */
-    public function getMaterial(): Collection
+    public function getAttachment(): Collection
     {
-        return $this->material;
+        return $this->attachment;
     }
 
     /**
@@ -318,13 +318,14 @@ abstract class ExercisePhase
 
         // A creator can test created phases and create solutions only the creator can see this way.
         // Therefore we need to check if solutions exist, where the creator isn't also the creator of the phase.
-        $solutionsWithoutTestSolution = array_filter($teams, fn(ExercisePhaseTeam $team) => $team->getCreator() !== $creator);
+        $solutionsWithoutTestSolution = array_filter($teams, fn (ExercisePhaseTeam $team) => $team->getCreator() !== $creator);
         $hasSolutionsWithoutTestSolution = !empty($solutionsWithoutTestSolution);
 
         return $hasSolutionsWithoutTestSolution;
     }
 
-    public function getAllowedComponents() {
+    public function getAllowedComponents()
+    {
         return [];
     }
 

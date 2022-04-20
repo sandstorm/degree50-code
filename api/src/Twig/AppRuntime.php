@@ -37,7 +37,7 @@ class AppRuntime implements RuntimeExtensionInterface
             return '/data/encoded_videos/' . $virtualizedFile->getRelativePathAndFilename();
         }
 
-        if ($virtualizedFile->getMountPoint() === 'uploaded_material') {
+        if ($virtualizedFile->getMountPoint() === 'uploaded_attachment') {
             return '/data/material/' . $virtualizedFile->getRelativePathAndFilename();
         }
 

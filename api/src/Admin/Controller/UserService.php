@@ -57,7 +57,7 @@ class UserService
         /**
          * Why
          *   We do not remove Dozent like a Student or Admin because we want to keep their
-         *   created educational content (used exercises, used videos, used material).
+         *   created educational content (used exercises, used videos, used attachments).
          *   Dozent will be anonymized and the Account made practically unusable.
          */
         if ($user->isDozent()) {

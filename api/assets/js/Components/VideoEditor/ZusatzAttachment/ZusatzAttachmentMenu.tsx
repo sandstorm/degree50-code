@@ -1,11 +1,10 @@
 import Button from 'Components/Button/Button'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { actions } from '../VideoEditorSlice'
-import { ZUSATZ_MATERIAL_OVERLAY_ID } from './ZusatzMaterialOverlay'
+import { ZUSATZ_ATTACHMENTS_OVERLAY_ID } from './ZusatzAttachmentOverlay'
 
-const mapStateToProps = (state: ConfigStateSlice) => ({})
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = {
     setOverlay: actions.overlay.setOverlay,
@@ -13,15 +12,15 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-const ZusatzMaterialMenu: FC<Props> = (props) => {
+const ZusatzAttachmentMenu: FC<Props> = (props) => {
     const handleClick = () => {
-        props.setOverlay({ overlayId: ZUSATZ_MATERIAL_OVERLAY_ID, closeOthers: true })
+        props.setOverlay({ overlayId: ZUSATZ_ATTACHMENTS_OVERLAY_ID, closeOthers: true })
     }
 
     return (
         <div className="video-editor__menu">
             <Button
-                title="Zusatzmaterialien"
+                title="Zusätzliche Anhänge"
                 className="btn btn-grey btn-sm video-editor__toolbar__button"
                 onPress={handleClick}
             >
@@ -31,4 +30,4 @@ const ZusatzMaterialMenu: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(ZusatzMaterialMenu))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(ZusatzAttachmentMenu))

@@ -92,8 +92,8 @@ class ExercisePhaseService
                 $newPhase->setIsGroupPhase($originalPhase->isGroupPhase());
                 $newPhase->setOtherSolutionsAreAccessible($originalPhase->getOtherSolutionsAreAccessible());
 
-                foreach ($originalPhase->getMaterial() as $_key => $material) {
-                    $newPhase->addMaterial($material);
+                foreach ($originalPhase->getAttachment() as $_key => $attachment) {
+                    $newPhase->addAttachment($attachment);
                 }
 
                 foreach ($originalPhase->getVideos() as $_key => $video) {

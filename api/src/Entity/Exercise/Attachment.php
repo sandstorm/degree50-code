@@ -10,13 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * Material
+ * Attachment
  *
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\MaterialRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Exercise\AttachmentRepository")
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
-class Material
+class Attachment
 {
     use IdentityTrait;
 
@@ -48,13 +48,13 @@ class Material
     private User $creator;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="material")
+     * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="attachment")
      * @ORM\JoinColumn(nullable=true)
      */
     private ?ExercisePhase $exercisePhase;
 
     /**
-     * Material constructor.
+     * Attachment constructor.
      */
     public function __construct($id = null)
     {

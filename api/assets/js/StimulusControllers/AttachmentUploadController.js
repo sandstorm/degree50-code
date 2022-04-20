@@ -1,0 +1,93 @@
+import { Controller } from 'stimulus'
+import 'dropzone/dist/dropzone.css'
+import Axios from 'axios'
+
+const Dropzone = require('dropzone/dist/min/dropzone.min')
+
+Dropzone.autoDiscover = false
+
+export default class extends Controller {
+    connect() {
+        const updateAttachmentList = (attachmentList) => {
+            const updateEndPoint = attachmentList.getAttribute('data-update-endpoint')
+
+            Axios.post(updateEndPoint)
+                .then(function (response) {
+                    attachmentList.innerHTML = response.data
+                })
+                .catch(function (e) {
+                    console.error('>>>>> update attachment list failed', e)
+                })
+        }
+
+        const endpoint = this.data.get('endpoint')
+        const removeEndpoint = this.data.get('remove-endpoint')
+        const id = this.data.get('id')
+        const phaseId = this.data.get('phase-id')
+        const uploadLabel = this.data.get('label')
+        const updateOnSuccess = this.data.get('update')
+        const attachmentList = document.getElementById(updateOnSuccess)
+
+        this.element.classList.add('dropzone')
+
+        new Dropzone(this.element, {
+            url: endpoint,
+            timeout: 2 * 60 * 1000, // 2 minutes
+            chunking: true,
+            chunkSize: 5000000, // 5 MB
+            retryChunks: true,
+            dictDefaultMessage: uploadLabel,
+            maxFiles: 20,
+            maxFilesize: 10000, // 10 GB
+            acceptedFiles: 'image/*,application/pdf',
+            addRemoveLinks: true,
+            params: function params(files, xhr, chunk) {
+                if (chunk) {
+                    return {
+                        id: id,
+                        target: 'attachment',
+                        phaseId: phaseId,
+
+                        dzuuid: chunk.file.upload.uuid,
+                        dzchunkindex: chunk.index,
+                        dztotalfilesize: chunk.file.size,
+                        dzchunksize: this.options.chunkSize,
+                        dztotalchunkcount: chunk.file.upload.totalChunkCount,
+                        dzchunkbyteoffset: chunk.index * this.options.chunkSize,
+                    }
+                }
+
+                return {
+                    id: id,
+                    target: 'attachment',
+                    phaseId: phaseId,
+                }
+            },
+            success: function (file, response) {
+                // add attachmentId to the file to eventually delete it after direct upload
+                file.attachmentId = response.attachmentId
+
+                // update list of attachment
+                updateAttachmentList(attachmentList)
+
+                // This return statement is necessary to remove progress bar after uploading.
+                return file.previewElement.classList.add('dz-success')
+            },
+            removedfile: function (file) {
+                Axios.post(removeEndpoint, {
+                    attachmentId: file.attachmentId,
+                })
+                    .then(function () {
+                        // update list of attachment
+                        updateAttachmentList(attachmentList)
+                    })
+                    .catch(function (e) {
+                        console.error('>>>>> remove attachment failed', e)
+                    })
+
+                let _ref
+                return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0
+            },
+        })
+    }
+}

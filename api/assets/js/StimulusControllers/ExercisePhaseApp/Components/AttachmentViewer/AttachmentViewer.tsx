@@ -2,28 +2,28 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ConfigStateSlice, selectors } from '../Config/ConfigSlice'
 import PDFViewer from 'pdf-viewer-reactjs'
-import { MaterialViewerStateSlice, selectActiveMaterial, setActiveMaterial } from './MaterialViewerSlice'
+import { AttachmentViewerStateSlice, selectActiveAttachment, setActiveAttachment } from './AttachmentViewerSlice'
 import Button from 'Components/Button/Button'
 
-const mapStateToProps = (state: ConfigStateSlice & MaterialViewerStateSlice) => ({
+const mapStateToProps = (state: ConfigStateSlice & AttachmentViewerStateSlice) => ({
     config: selectors.selectConfig(state),
-    activeMaterial: selectActiveMaterial(state),
+    activeAttachment: selectActiveAttachment(state),
 })
 
 const mapDispatchToProps = {
-    setActiveMaterial: setActiveMaterial,
+    setActiveAttachment: setActiveAttachment,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
-export type Material = {
+export type Attachment = {
     id: string
     name: string
     type: string
     url: string
 }
 
-const mapMaterialTypeToIcon = (type: Material['type']) => {
+const mapAttachmentTypeToIcon = (type: Attachment['type']) => {
     if (type.startsWith('audio/')) {
         return 'file-audio'
     }
@@ -50,44 +50,45 @@ const mapMaterialTypeToIcon = (type: Material['type']) => {
     }
 }
 
-const MaterialViewer: React.FC<Props> = (props) => {
-    const materialTiles = props.config.material.map(function (material: Material) {
+const AttachmentViewer: React.FC<Props> = (props) => {
+    console.log({ props })
+    const attachmentTiles = props.config.attachments.map(function (attachment: Attachment) {
         return (
             <button
-                key={material.id}
+                key={attachment.id}
                 className={'btn tile tile--small'}
-                title={material.name}
-                aria-label={material.name}
-                onClick={() => props.setActiveMaterial(material)}
+                title={attachment.name}
+                aria-label={attachment.name}
+                onClick={() => props.setActiveAttachment(attachment)}
             >
                 <div className={'tile__content'}>
-                    <i className={`tile__icon fas fa-${mapMaterialTypeToIcon(material.type)}`}></i>
-                    <span className="tile__title">{material.name}</span>
+                    <i className={`tile__icon fas fa-${mapAttachmentTypeToIcon(attachment.type)}`}></i>
+                    <span className="tile__title">{attachment.name}</span>
                 </div>
             </button>
         )
     })
 
     return (
-        <div className={'material-viewer'}>
-            {props.activeMaterial ? (
-                <div className={'material-viewer'}>
-                    <header className={'material-viewer__header'}>
-                        <h4>{props.activeMaterial.name}</h4>
+        <div className={'attachment-viewer'}>
+            {props.activeAttachment ? (
+                <div className={'attachment-viewer'}>
+                    <header className={'attachment-viewer__header'}>
+                        <h4>{props.activeAttachment.name}</h4>
                     </header>
 
-                    <div className={'material-viewer__actions'}>
+                    <div className={'attachment-viewer__actions'}>
                         <Button
                             className={'btn btn-sm btn-outline-primary'}
-                            title="Zurück zur Material-Übersicht"
-                            onPress={() => props.setActiveMaterial(undefined)}
+                            title="Zurück zur Attachment-Übersicht"
+                            onPress={() => props.setActiveAttachment(undefined)}
                         >
                             <i className={'fas fa-chevron-left'}></i>
                             <span>Zurück</span>
                         </Button>
                         <a
                             className={'btn btn-sm btn-primary'}
-                            href={props.activeMaterial.url}
+                            href={props.activeAttachment.url}
                             aria-label="Download"
                             title="Download"
                             target="_blank"
@@ -98,10 +99,10 @@ const MaterialViewer: React.FC<Props> = (props) => {
                         </a>
                     </div>
 
-                    {props.activeMaterial.type === 'application/pdf' ? (
+                    {props.activeAttachment.type === 'application/pdf' ? (
                         <PDFViewer
                             document={{
-                                url: props.activeMaterial.url,
+                                url: props.activeAttachment.url,
                             }}
                             hideZoom={true}
                             hideRotation={true}
@@ -129,11 +130,11 @@ const MaterialViewer: React.FC<Props> = (props) => {
                 </div>
             ) : (
                 <div className={'tiles'}>
-                    {materialTiles.length > 0 ? materialTiles : 'Kein Material zur Verfügung'}
+                    {attachmentTiles.length > 0 ? attachmentTiles : 'Kein Anhang zur Verfügung'}
                 </div>
             )}
         </div>
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MaterialViewer)
+export default connect(mapStateToProps, mapDispatchToProps)(AttachmentViewer)

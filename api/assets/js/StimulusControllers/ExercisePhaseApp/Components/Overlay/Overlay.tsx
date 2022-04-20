@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { selectComponent, selectIsVisible, selectSize, setOverlayVisibility } from './OverlaySlice'
 import FileUpload from '../FileUpload/FileUpload'
 import { ComponentTypesEnum } from '../../../../types'
-import MaterialViewer from '../MaterialViewer/MaterialViewer'
+import AttachmentViewer from '../AttachmentViewer/AttachmentViewer'
 import VideoPlayerWrapper, { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import Presence from '../Presence/Presence'
 import ExerciseDescription from '../ExerciseDescription/ExerciseDescription'
@@ -22,8 +22,8 @@ const renderOverlayComponent = (component?: ComponentTypesEnum, videos: Video[] 
             return <ExerciseDescription />
         case ComponentTypesEnum.DOCUMENT_UPLOAD:
             return <FileUpload />
-        case ComponentTypesEnum.MATERIAL_VIEWER:
-            return <MaterialViewer />
+        case ComponentTypesEnum.ATTACHMENT_VIEWER:
+            return <AttachmentViewer />
         case ComponentTypesEnum.VIDEO_PLAYER:
             return <VideoPlayerWrapper videos={videos} />
         case ComponentTypesEnum.PRESENCE:

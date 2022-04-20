@@ -14,7 +14,7 @@ import { Application } from 'stimulus'
 import VideoUploadController from './StimulusControllers/VideoUploadController'
 import SubtitlesUploadController from './StimulusControllers/SubtitlesUploadController'
 import AudioDescriptionUploadController from './StimulusControllers/AudioDescriptionUploadController.js'
-import MaterialUploadController from './StimulusControllers/MaterialUploadController'
+import AttachmentUploadController from './StimulusControllers/AttachmentUploadController'
 import ReactController from './StimulusControllers/ReactController'
 import ExercisePhaseController from './StimulusControllers/ExercisePhaseController'
 import SolutionsController from './StimulusControllers/SolutionsController'
@@ -29,7 +29,7 @@ const application = Application.start()
 application.register('videoUpload', VideoUploadController)
 application.register('subtitleUpload', SubtitlesUploadController)
 application.register('audioDescriptionUpload', AudioDescriptionUploadController)
-application.register('materialUpload', MaterialUploadController)
+application.register('attachmentUpload', AttachmentUploadController)
 application.register('react', ReactController)
 application.register('exercisePhase', ExercisePhaseController)
 application.register('solutions', SolutionsController)

@@ -54,7 +54,7 @@ Feature: Copy Exercises
             | p2 | exercisePhase2 | description of exercisePhase2 | true         | 1       | true                        | e1ID              | p1             | videoCutting  |                        |                  |
 
         And I have a video with ID 'video1' belonging exercisePhase with ID 'p1'
-        And A Material with Id 'material1' created by User 'test-admin@sandstorm.de' exists for ExercisePhase 'p1'
+        And An Attachment with Id 'attachment1' created by User 'test-admin@sandstorm.de' exists for ExercisePhase 'p1'
 
         And I have a predefined videoCodePrototype belonging to exercise phase p1 and with properties
             | id         | name       | color   |
@@ -84,4 +84,4 @@ Feature: Copy Exercises
         Then the page should contain the text 'VideoCode1'
         And the page should contain the text 'VideoCode2'
         And the page should contain the text 'TEST_Video_video1'
-        And the page should contain the text 'TEST_MATERIAL_material1'
+        And the page should contain the text 'TEST_ATTACHMENT_attachment1'

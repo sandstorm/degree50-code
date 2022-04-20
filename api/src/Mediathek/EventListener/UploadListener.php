@@ -5,7 +5,7 @@ namespace App\Mediathek\EventListener;
 
 use App\Core\FileSystemService;
 use App\Entity\Account\User;
-use App\Entity\Exercise\Material;
+use App\Entity\Exercise\Attachment;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * This listener handles the upload of subtitle, material, audioDescription and video files inside the video upload form
+ * This listener handles the upload of subtitle, attachment, audioDescription and video files inside the video upload form
  * of our mediathek. The dropzone handling is done inside the VideoUploadController.js, AudioDescriptionUploadController.js and SubtitlesUploadController.js frontend files.
  * The data these controllers use is provided by https://github.com/1up-lab/OneupUploaderBundle/ inside the VideoUpload.html.twig-Template.
  *
@@ -42,7 +42,7 @@ class UploadListener
     private LoggerInterface $logger;
 
     const TARGET_VIDEO = 'video';
-    const TARGET_MATERIAL = 'material';
+    const TARGET_ATTACHMENT = 'attachment';
     const TARGET_SUBTITLE = 'subtitle';
     const TARGET_AUDIO_DESCRIPTION = 'audio_description';
 
@@ -78,8 +78,8 @@ class UploadListener
                 return $this->uploadVideo($event, $user);
             case self::TARGET_SUBTITLE:
                 return $this->uploadSubtitle($event, $user);
-            case self::TARGET_MATERIAL:
-                return $this->uploadMaterial($event, $user);
+            case self::TARGET_ATTACHMENT:
+                return $this->uploadAttachment($event, $user);
             case self::TARGET_AUDIO_DESCRIPTION:
                 return $this->uploadAudioDescription($event, $user);
             default:
@@ -87,36 +87,36 @@ class UploadListener
         }
     }
 
-    private function uploadMaterial(PostUploadEvent $event, User $user): ResponseInterface
+    private function uploadAttachment(PostUploadEvent $event, User $user): ResponseInterface
     {
         $request = $event->getRequest();
 
         /** @var UploadedFile $originalFile */
         $originalFile = $request->files->get('file');
 
-        $material = new Material();
-        $material->setCreator($user);
-        $material->setMimeType($originalFile->getClientMimeType());
-        $material->setName($originalFile->getClientOriginalName());
+        $attachment = new Attachment();
+        $attachment->setCreator($user);
+        $attachment->setMimeType($originalFile->getClientMimeType());
+        $attachment->setName($originalFile->getClientOriginalName());
 
         $phaseId = $request->get('phaseId');
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
-        $material->setExercisePhase($exercisePhase);
+        $attachment->setExercisePhase($exercisePhase);
 
-        $uploadedFile = $this->uploadFile($material->getId(), $event);
-        $material->setUploadedFile($uploadedFile);
+        $uploadedFile = $this->uploadFile($attachment->getId(), $event);
+        $attachment->setUploadedFile($uploadedFile);
 
-        $this->eventStore->addEvent('MaterialUploaded', [
-            'materialId' => $material->getId(),
-            'uploadedFile' => $material->getUploadedFile()->getVirtualPathAndFilename(),
+        $this->eventStore->addEvent('AttachmentUploaded', [
+            'attachmentId' => $attachment->getId(),
+            'uploadedFile' => $attachment->getUploadedFile()->getVirtualPathAndFilename(),
         ]);
 
-        $this->entityManager->persist($material);
+        $this->entityManager->persist($attachment);
         $this->entityManager->flush();
 
         $response = $event->getResponse();
         $response['success'] = true;
-        $response['materialId'] = $material->getId();
+        $response['attachmentId'] = $attachment->getId();
         return $response;
     }
 

@@ -4,9 +4,9 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\Material;
+use App\Entity\Exercise\Attachment;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Exercise\MaterialRepository;
+use App\Repository\Exercise\AttachmentRepository;
 use App\Twig\AppRuntime;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -24,101 +24,101 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
  */
-class MaterialController extends AbstractController
+class AttachmentController extends AbstractController
 {
     private TranslatorInterface $translator;
     private KernelInterface $kernel;
     private DoctrineIntegratedEventStore $eventStore;
-    private MaterialRepository $materialRepository;
+    private AttachmentRepository $attachmentRepository;
 
     public function __construct(
         TranslatorInterface $translator,
         KernelInterface $kernel,
         DoctrineIntegratedEventStore $eventStore,
-        MaterialRepository $materialRepository
+        AttachmentRepository $attachmentRepository
     )
     {
         $this->translator = $translator;
         $this->kernel = $kernel;
         $this->eventStore = $eventStore;
-        $this->materialRepository = $materialRepository;
+        $this->attachmentRepository = $attachmentRepository;
     }
 
     /**
-     * @Route("/material/download/{id}", name="exercise-overview__material--download")
+     * @Route("/attachment/download/{id}", name="exercise-overview__attachment--download")
      */
-    public function download(AppRuntime $appRuntime, Material $material): BinaryFileResponse
+    public function download(AppRuntime $appRuntime, Attachment $attachment): BinaryFileResponse
     {
-        $fileUrl = $appRuntime->virtualizedFileUrl($material->getUploadedFile());
+        $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
         $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
         $response = new BinaryFileResponse($publicResourcesFolderPath . $fileUrl);
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $material->getName()
+            $attachment->getName()
         );
         return $response;
     }
 
     /**
-     * @Route("/material/delete/{id}", name="exercise-overview__material--delete")
+     * @Route("/attachment/delete/{id}", name="exercise-overview__attachment--delete")
      */
-    public function delete(AppRuntime $appRuntime, Material $material): Response
+    public function delete(AppRuntime $appRuntime, Attachment $attachment): Response
     {
-        $this->removeMaterial($appRuntime, $material);
+        $this->removeAttachment($appRuntime, $attachment);
 
         $this->addFlash(
             'success',
-            $this->translator->trans('material.delete.messages.success', [], 'forms')
+            $this->translator->trans('attachment.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $material->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $material->getExercisePhase()->getId()]);
+        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $attachment->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $attachment->getExercisePhase()->getId()]);
     }
 
     /**
-     * @Route("/material/delete-ajax", name="exercise-overview__material--delete-ajax")
+     * @Route("/attachment/delete-ajax", name="exercise-overview__attachment--delete-ajax")
      */
     public function deleteAjax(AppRuntime $appRuntime, Request $request): Response
     {
-        $materialIdFromJson = json_decode($request->getContent(), true)['materialId'];
-        $material = $this->materialRepository->find($materialIdFromJson);
+        $attachmentIdFromJson = json_decode($request->getContent(), true)['attachmentId'];
+        $attachment = $this->attachmentRepository->find($attachmentIdFromJson);
 
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($material->getCreator() !== $user) {
+        if ($attachment->getCreator() !== $user) {
             return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
         }
 
-        $this->removeMaterial($appRuntime, $material);
+        $this->removeAttachment($appRuntime, $attachment);
 
         return Response::create('OK');
     }
 
-    private function removeMaterial(AppRuntime $appRuntime, Material $material): void
+    private function removeAttachment(AppRuntime $appRuntime, Attachment $attachment): void
     {
-        $fileUrl = $appRuntime->virtualizedFileUrl($material->getUploadedFile());
+        $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
         $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
 
         $filesystem = new Filesystem();
         $filesystem->remove($publicResourcesFolderPath . $fileUrl);
 
-        $this->eventStore->addEvent('MaterialDeleted', [
-            'materialId' => $material->getId(),
+        $this->eventStore->addEvent('AttachmentDeleted', [
+            'attachmentId' => $attachment->getId(),
             'uploadedFile' => $fileUrl
         ]);
 
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($material);
+        $entityManager->remove($attachment);
         $entityManager->flush();
     }
 
     /**
-     * @Route("/material/list/{id}", name="exercise-overview__material--list")
+     * @Route("/attachment/list/{id}", name="exercise-overview__attachment--list")
      */
-    public function uploadedMaterial(ExercisePhase $exercisePhase): Response
+    public function uploadedAttachment(ExercisePhase $exercisePhase): Response
     {
-        return $this->render('ExercisePhase/MaterialList.html.twig', [
-            'materialList' => $exercisePhase->getMaterial()
+        return $this->render('ExercisePhase/AttachmentList.html.twig', [
+            'attachmentList' => $exercisePhase->getAttachment()
         ]);
     }
 }

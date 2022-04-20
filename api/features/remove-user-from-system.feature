@@ -74,12 +74,12 @@ Feature: Degree User is removed completely from system
         # will persist
         And I have an exercise phase "exercisePhase1" belonging to exercise "exerciseByDozent1"
         And I have a video with ID "video1" belonging to course "course1"
-        And A Material with Id "material1" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase1"
+        And An Attachment with Id "attachment1" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase1"
         And Exercise "exerciseByDozent1" is published
         # will be removed
         And I have an exercise phase "exercisePhase2" belonging to exercise "exerciseByDozent2"
         And A Video with ID "video2" created by User "dozent@test.de" exists
-        And A Material with Id "material2" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase2"
+        And An Attachment with Id "attachment2" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase2"
 
         And I am logged in as "admin@test.de"
         When I delete User "dozent@test.de"

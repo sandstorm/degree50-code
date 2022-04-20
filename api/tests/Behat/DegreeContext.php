@@ -17,7 +17,7 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Entity\Exercise\Material;
+use App\Entity\Exercise\Attachment;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
@@ -382,21 +382,21 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I have a material with ID :materialId
+     * @Given I have an attachment with ID :attachmentId
      */
-    public function iHaveAMaterialWithId($materialId)
+    public function iHaveAnAttachmentWithId($attachmentId)
     {
-        $material = new Material($materialId);
+        $attachment = new Attachment($attachmentId);
         $fileName = tempnam(sys_get_temp_dir(), 'foo');
         file_put_contents($fileName, 'my file');
-        $material->setName($fileName);
-        $material->setMimeType('application/pdf');
+        $attachment->setName($fileName);
+        $attachment->setMimeType('application/pdf');
 
         /* @var User $user */
         $user = $this->entityManager->find(User::class, 'foo@bar.de');
-        $material->setCreator($user);
+        $attachment->setCreator($user);
 
-        $this->entityManager->persist($material);
+        $this->entityManager->persist($attachment);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
@@ -1052,30 +1052,30 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given A Material with Id :materialId created by User :username exists for ExercisePhase :exercisePhaseId
+     * @Given An Attachment with Id :attachmentId created by User :username exists for ExercisePhase :exercisePhaseId
      */
-    public function ensureMaterialByUserExistsInExercisePhase($materialId, $username, $exercisePhaseId)
+    public function ensureAttachmentByUserExistsInExercisePhase($attachmentId, $username, $exercisePhaseId)
     {
         /** @var User $user */
         $user = $this->entityManager->find(User::class, $username);
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
-        /** @var Material $material */
-        $material = $this->entityManager->find(Material::class, $materialId);
+        /** @var Attachment $attachment */
+        $attachment = $this->entityManager->find(Attachment::class, $attachmentId);
 
-        if (!$material) {
-            $material = new Material($materialId);
+        if (!$attachment) {
+            $attachment = new Attachment($attachmentId);
             $fileName = tempnam(sys_get_temp_dir(), 'foo');
             file_put_contents($fileName, 'my file');
-            $material->setName('TEST_MATERIAL_' . $materialId);
-            $material->setMimeType('application/pdf');
+            $attachment->setName('TEST_ATTACHMENT_' . $attachmentId);
+            $attachment->setMimeType('application/pdf');
         }
 
-        $material->setCreator($user);
-        $exercisePhase->addMaterial($material);
+        $attachment->setCreator($user);
+        $exercisePhase->addAttachment($attachment);
 
         $this->entityManager->persist($exercisePhase);
-        $this->entityManager->persist($material);
+        $this->entityManager->persist($attachment);
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
@@ -1095,18 +1095,18 @@ final class DegreeContext implements Context
          */
         assertNotEquals($username, $user->getUsername(), "Username should be anonymized.");
 
-        // material
-        $materialByUser = $this->entityManager->getRepository(Material::class)->findBy(['creator' => $user]);
-        $materialNotCorrectlyRemoved = array_filter($materialByUser, function (Material $material) use ($username) {
-            // material is not used in unpublished Exercise
-            $notUnpublished = $material->getExercisePhase()->getBelongsToExercise()->getStatus() !== Exercise::EXERCISE_CREATED;
-            // material user is not $username
-            $usernameIsAnonymized = $material->getCreator()->getUsername() !== $username;
+        // attachment
+        $attachmentByUser = $this->entityManager->getRepository(Attachment::class)->findBy(['creator' => $user]);
+        $attachmentNotCorrectlyRemoved = array_filter($attachmentByUser, function (Attachment $attachment) use ($username) {
+            // attachment is not used in unpublished Exercise
+            $notUnpublished = $attachment->getExercisePhase()->getBelongsToExercise()->getStatus() !== Exercise::EXERCISE_CREATED;
+            // attachment user is not $username
+            $usernameIsAnonymized = $attachment->getCreator()->getUsername() !== $username;
 
             return !($notUnpublished || $usernameIsAnonymized);
         });
 
-        assertEquals(0, count($materialNotCorrectlyRemoved), "Unused Material should be removed.");
+        assertEquals(0, count($attachmentNotCorrectlyRemoved), "Unused Attachment should be removed.");
 
         // videos
         $videos = $this->videoService->getVideosCreatedByUserWithoutFilters($user);
