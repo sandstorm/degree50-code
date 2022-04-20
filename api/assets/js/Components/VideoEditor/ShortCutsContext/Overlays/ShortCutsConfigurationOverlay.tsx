@@ -39,7 +39,7 @@ const ShortCutsConfigurationOverlay = (props: Props) => {
                 <span>Hinweis: Änderungen werden sofort übernommen.</span>
             </p>
             <Checkbox isSelected={props.isSoundEnabled} onChange={handleIsSoundEnabledChange}>
-                Ton aktiviert
+                Ton aktiviert bei Verwendung der Tastenkombination
             </Checkbox>
             <hr />
             {shortCutIds.map((shortCutId) => (

@@ -23,7 +23,7 @@ class CopyExerciseFormType extends AbstractType
                 // FIXME: The combo 'required' & 'expanded' renders a '*' before every option :( maybe suppress via css
                 'required' => true,
                 'expanded' => true,
-                'label' => 'Zu kurs hinzufügen',
+                'label' => 'Zu Kurs hinzufügen',
                 'translation_domain' => 'forms',
             ])
             ->add('copyPhases', CheckboxType::class, [

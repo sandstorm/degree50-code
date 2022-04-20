@@ -25,7 +25,7 @@ const shortCutIdToLabelMap: Record<ShortCutId, string> = {
     [ShortCutId.SET_CURRENT_TIME_AS_START_VALUE]: 'Aktuelle Player-Zeit als Startzeit verwenden',
     [ShortCutId.SET_CURRENT_TIME_AS_END_VALUE]: 'Aktuelle Player-Zeit als Endzeit verwenden',
     [ShortCutId.CREATE_ANNOTATION]: 'Neue Annotation erstellen',
-    [ShortCutId.CREATE_VIDEO_CODE]: 'Neuen Video-Code erstellen',
+    [ShortCutId.CREATE_VIDEO_CODE]: 'Neue Codierung erstellen',
     [ShortCutId.CREATE_VIDEO_CUT]: 'Neuen Schnitt erstellen',
     [ShortCutId.SET_VIDEO_PLAYER_TIME]: 'Zu bestimmter Zeit im Video Springen',
 }
