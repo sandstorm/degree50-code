@@ -16,9 +16,9 @@ class CopyExerciseFormDto
         $this->copyPhases = $copyPhases;
     }
 
-    public static function fromExercise(Exercise $exercise)
+    public static function fromExercise(Exercise $exercise): CopyExerciseFormDto
     {
-        return new self($exercise->getCourse(), false);
+        return new self($exercise->getCourse(), true);
     }
 
     /**

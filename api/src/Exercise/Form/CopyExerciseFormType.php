@@ -4,6 +4,7 @@ namespace App\Exercise\Form;
 
 use App\Entity\Account\Course;
 use App\Entity\Exercise\CopyExerciseFormDto;
+use App\Repository\Account\CourseRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,6 +19,10 @@ class CopyExerciseFormType extends AbstractType
         $builder
             ->add('course', EntityType::class, [
                 'class' => Course::class,
+                'query_builder' => function (CourseRepository $courseRepository) {
+                    return $courseRepository->createQueryBuilder('c')
+                        ->orderBy('c.name', 'ASC');
+                },
                 'choice_label' => 'name',
                 'multiple' => false,
                 // FIXME: The combo 'required' & 'expanded' renders a '*' before every option :( maybe suppress via css
@@ -27,7 +32,7 @@ class CopyExerciseFormType extends AbstractType
                 'translation_domain' => 'forms',
             ])
             ->add('copyPhases', CheckboxType::class, [
-                'label' => 'Aufgabe mit Phase kopieren',
+                'label' => 'Aufgabe mit Phasen kopieren',
                 'required' => false,
                 'translation_domain' => 'forms',
             ])

@@ -61,7 +61,6 @@
         "@typescript-eslint/eslint-plugin": "^5.10.1",
         "@typescript-eslint/parser": "^5.10.1",
         "apollo": "^2.27.4",
-        "artplayer-react": "^3.5.4",
         "autoprefixer": "^10.4.2",
         "axios": "^0.25.0",
         "babel-eslint": "^10.1.0",

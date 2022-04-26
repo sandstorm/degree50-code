@@ -3848,13 +3848,6 @@ arrify@^2.0.1:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-2.0.1.tgz#c9655e9331e0abcd588d2a7cad7e9956f66701fa"
   integrity sha512-3duEwti880xqi4eAMN8AyR4a0ByT90zoYdLlevfrvU43vb0YZwZVfxOgxWrLXXXpyugL0hNZc9G6BiB5B3nUug==
 
-artplayer-react@^3.5.4:
-  version "3.5.31"
-  resolved "https://registry.yarnpkg.com/artplayer-react/-/artplayer-react-3.5.31.tgz#d433f08303319ea959f743c87efe9f8b63f94b21"
-  integrity sha512-yoHcIkaVqJU4MzDgrrGJ7LAi7BzoP2IN2BRn7l1/8JXhzZTpl7EiGmfWY6l/LpN5Qazku/Tr3bO77+5bMBVKUw==
-  dependencies:
-    react latest
-
 asap@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
@@ -10148,7 +10141,7 @@ react-virtualized@^9.21.2:
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.4"
 
-react@17, react@latest:
+react@17:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
   integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
