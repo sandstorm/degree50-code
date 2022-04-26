@@ -67,7 +67,6 @@ Feature: Copy Exercises
         And I click on 'exercise1'
         And I click on 'Aufgabe kopieren'
         And I click on 'course2'
-        And I click on 'Aufgabe mit Phase kopieren'
         And I submit the form
         And I visit url '/exercise-overview/course2'
 
