@@ -100,8 +100,7 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
     #########################
     Scenario Outline: As admin I can create an exercise in all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "<courseId>"
+        When I visit url "/exercise-overview/<courseId>"
         And I click on "Neue Aufgabe anlegen"
         And I fill out the exercise form and submit
         Then the response status code should be 200
@@ -116,8 +115,7 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
 
     Scenario: As dozent I can create an exercise in assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         And I click on "Neue Aufgabe anlegen"
         And I fill out the exercise form and submit
         Then the response status code should be 200
@@ -137,8 +135,7 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
 
     Scenario: As student I can create an exercise courses where I am KursDozent
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course2"
+        When I visit url "/exercise-overview/course2"
         And I click on "Neue Aufgabe anlegen"
         And I fill out the exercise form and submit
         Then the response status code should be 200

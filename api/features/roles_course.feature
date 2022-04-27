@@ -147,8 +147,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     ## Admin
     Scenario Outline: As admin I can edit "Kursmitglieder" for all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "<courseId>"
+        When I visit url "/exercise-overview/<courseId>"
         And I click on "Kurs verwalten"
         And I click on "Kursmitglieder verwalten"
         And I click on "Kursmitglieder speichern"
@@ -162,8 +161,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
 
     Scenario Outline: As admin I can edit all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "<courseId>"
+        When I visit url "/exercise-overview/<courseId>"
         And I click on "Kurs verwalten"
         And I click on "Kurs bearbeiten"
         And I click on "Kurs speichern"
@@ -177,8 +175,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
 
     Scenario Outline: As admin I can delete all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "<courseId>"
+        When I visit url "/exercise-overview/<courseId>"
         And I click on "Kurs verwalten"
         And I click on "Kurs löschen"
         Then the response status code should be 200
@@ -192,8 +189,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     Scenario: As admin I can not delete a course with exercises in it
         Given An Exercise with ID "exercise1" created by User "test-admin@sandstorm.de" in Course "course1" exists
         And I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         And I click on "Kurs verwalten"
         And I click on "Kurs löschen"
         Then the response status code should be 200
@@ -202,8 +198,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
 
     Scenario Outline: As admin I can download CSV export for all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "<courseId>"
+        When I visit url "/exercise-overview/<courseId>"
         And I click on "Kurs verwalten"
         Then I should be able to download the CSV export for "<courseId>" when clicking on "CSV exportieren"
 
@@ -215,8 +210,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     ## Dozent
     Scenario: As dozent I can edit "Kursmitglieder" for assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         And I click on "Kurs verwalten"
         And I click on "Kursmitglieder verwalten"
         And I click on "Kursmitglieder speichern"
@@ -232,8 +226,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
 
     Scenario: As dozent I can edit assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         And I click on "Kurs verwalten"
         And I click on "Kurs bearbeiten"
         And I click on "Kurs speichern"
@@ -249,8 +242,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
 
     Scenario: As dozent I can delete assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         And I click on "Kurs verwalten"
         And I click on "Kurs löschen"
         Then the response status code should be 200
@@ -259,8 +251,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     Scenario: As dozent I can not delete an assigned course with exercises in it
         Given An Exercise with ID "exercise1" created by User "test-admin@sandstorm.de" in Course "course1" exists
         And I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         And I click on "Kurs verwalten"
         And I click on "Kurs löschen"
         Then the response status code should be 200
@@ -276,8 +267,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
 
     Scenario: As dozent I can download CSV export for assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         And I click on "Kurs verwalten"
         Then I should be able to download the CSV export for "course1" when clicking on "CSV exportieren"
 
@@ -291,8 +281,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     ## Student
     Scenario: As student I can not see the "Kurs verwalten" options for any courses
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit route "exercise-overview"
-        And I click on "course1"
+        When I visit url "/exercise-overview/course1"
         Then the response status code should be 200
         And the page should not contain the text "Kurs verwalten"
 

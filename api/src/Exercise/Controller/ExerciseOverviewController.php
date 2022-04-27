@@ -119,6 +119,10 @@ class ExerciseOverviewController extends AbstractController
             array_push($sidebarItems[$creationDateYear]['courses'], $course);
         }
 
+        // WHY: We want to sort the years DESC in the sidebar
+        // ! mutation !
+        krsort($sidebarItems, SORT_NUMERIC);
+
         return $sidebarItems;
     }
 }
