@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, Action } from '@reduxjs/toolkit'
+import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
 import { Material } from '../MaterialViewer/MaterialViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
@@ -72,7 +72,7 @@ const selectUserId = (state: ConfigStateSlice) => state.config.userId
 const selectUserName = (state: ConfigStateSlice) => state.config.userName
 const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 const selectVideos = (state: ConfigStateSlice) => state.config.videos
-const selectComponents = (state: ConfigStateSlice) => state.config.components
+export const selectComponents = (state: ConfigStateSlice) => state.config.components
 const selectIsGroupPhase = (state: ConfigStateSlice) => state.config.isGroupPhase
 const selectTitle = (state: ConfigStateSlice) => state.config.title
 const selectDescription = (state: ConfigStateSlice) => state.config.description
