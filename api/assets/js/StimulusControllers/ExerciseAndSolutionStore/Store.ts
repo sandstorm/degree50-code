@@ -1,11 +1,4 @@
-import {
-    Action,
-    combineReducers,
-    configureStore,
-    createSelector,
-    getDefaultMiddleware,
-    ThunkAction,
-} from '@reduxjs/toolkit'
+import { Action, combineReducers, configureStore, createSelector, ThunkAction } from '@reduxjs/toolkit'
 import toolbarReducer from '../ExercisePhaseApp/Components/Toolbar/ToolbarSlice'
 import configReducer, { selectors as configSelectors } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
 import liveSyncConfigReducer from '../ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
@@ -43,7 +36,7 @@ export const store = configureStore({
         shortCuts: shortCutsReducer,
         shortCutSoundOptions: shortCutSoundOptionsReducer,
     }),
-    middleware: [...getDefaultMiddleware(), sagaMiddleWare],
+    middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), sagaMiddleWare],
     devTools: {
         name: 'ExercisePhaseApp',
     },
