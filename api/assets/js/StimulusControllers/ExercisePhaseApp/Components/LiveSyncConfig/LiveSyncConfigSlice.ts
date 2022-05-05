@@ -33,7 +33,10 @@ const LiveSyncConfigSlice = createSlice({
     },
 })
 
-export const { hydrateLiveSyncConfig } = LiveSyncConfigSlice.actions
+export const { actions } = LiveSyncConfigSlice
 export default LiveSyncConfigSlice.reducer
 
-export const selectLiveSyncConfig = (state: AppState) => state.liveSyncConfig
+const selectLiveSyncConfig = (state: AppState) => state.liveSyncConfig
+export const selectors = {
+    selectLiveSyncConfig,
+}

@@ -1,18 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
-import { VideoEditorState, selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import Toolbar from 'Components/VideoEditor/components/Toolbar'
 import OverlayContainer from 'Components/VideoEditor/components/OverlayContainer'
 import VideoCutSolutionVideo from './VideoCutSolutionVideo'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
-    videos: configSelectors.selectVideos(state),
-    solutions: videoEditorSelectors.selectActiveSolutionsWithCuts(state),
+const mapStateToProps = (state: AppState) => ({
+    videos: selectors.config.selectVideos(state),
+    solutions: selectors.selectActiveSolutionsWithCuts(state),
 })
 
 const mapDispatchToProps = {}

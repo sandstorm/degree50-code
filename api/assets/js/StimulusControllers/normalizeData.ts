@@ -9,7 +9,7 @@ import {
     ActivePreviousSolution,
 } from '../Components/VideoEditor/FilterContext/FilterSlice'
 import { TabsTypesEnum } from '../types'
-import { DataState } from 'Components/VideoEditor/DataSlice'
+import { DataState } from 'StimulusControllers/ExerciseAndSolutionStore/DataSlice'
 
 export const addIdsToEntities = <E extends { id?: string }>(entities: Array<E>) =>
     entities.map((e) => ({ ...e, id: e?.id ?? generate() }))

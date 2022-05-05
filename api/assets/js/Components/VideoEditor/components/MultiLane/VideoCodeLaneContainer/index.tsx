@@ -3,16 +3,11 @@ import { connect } from 'react-redux'
 import { getComponentName } from '../index'
 import { TabsTypesEnum } from 'types'
 import VideoCodesMedialane from 'Components/VideoEditor/components/MultiLane/VideoCodeLaneContainer/VideoCodesMedialane'
-import { VideoEditorState, selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { MediaItem, VideoCode, VideoCodePrototype } from 'Components/VideoEditor/types'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import MediaLaneDescription from '../MediaLaneDescription'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mergeCodesAndPrototypesToItems = (videoCodes: VideoCode[], prototypes: Record<string, VideoCodePrototype>) => {
     return videoCodes.map((videoCode) => {
@@ -30,19 +25,19 @@ const mergeCodesAndPrototypesToItems = (videoCodes: VideoCode[], prototypes: Rec
     })
 }
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
-    const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)
-    const isReadonly = !selectUserCanEditSolution(state, { solutionId: currentSolutionId })
+const mapStateToProps = (state: AppState) => {
+    const currentSolutionId = selectors.data.solutions.selectCurrentId(state)
+    const isReadonly = !selectors.selectUserCanEditSolution(state, { solutionId: currentSolutionId })
 
     return {
-        currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
-        currentIsFromGroupPhase: videoEditorSelectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
-        videoCodesById: videoEditorSelectors.data.videoCodes.selectById(state),
-        videoCodes: videoEditorSelectors.data.selectCurrentVideoCodesByStartTime(state),
-        prototypes: videoEditorSelectors.data.videoCodePrototypes.selectById(state),
-        previousSolutions: videoEditorSelectors.selectActiveSolutionsWithVideoCodes(state),
-        exercisePhaseType: configSelectors.selectPhaseType(state),
-        isSolutionView: configSelectors.selectIsSolutionView(state),
+        currentSolutionOwner: selectors.data.solutions.selectCurrentSolutionOwner(state),
+        currentIsFromGroupPhase: selectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
+        videoCodesById: selectors.data.videoCodes.selectById(state),
+        videoCodes: selectors.data.selectCurrentVideoCodesByStartTime(state),
+        prototypes: selectors.data.videoCodePrototypes.selectById(state),
+        previousSolutions: selectors.selectActiveSolutionsWithVideoCodes(state),
+        exercisePhaseType: selectors.config.selectPhaseType(state),
+        isSolutionView: selectors.config.selectIsSolutionView(state),
         isReadonly,
     }
 }

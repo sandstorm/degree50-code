@@ -2,28 +2,23 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getComponentName } from '..'
 import { TabsTypesEnum } from 'types'
-import { VideoEditorState, selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import AnnotationLane from './AnnotationLane'
-import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import MediaLaneDescription from '../MediaLaneDescription'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
-    const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)
-    const isReadonly = !selectUserCanEditSolution(state, { solutionId: currentSolutionId })
+const mapStateToProps = (state: AppState) => {
+    const currentSolutionId = selectors.data.solutions.selectCurrentId(state)
+    const isReadonly = !selectors.selectUserCanEditSolution(state, { solutionId: currentSolutionId })
 
     return {
-        currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
-        currentIsFromGroupPhase: videoEditorSelectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
-        annotations: videoEditorSelectors.data.selectCurrentAnnotationsByStartTime(state),
-        previousSolutions: videoEditorSelectors.selectActiveSolutionsWithAnnotations(state),
-        exercisePhaseType: configSelectors.selectPhaseType(state),
-        isSolutionView: configSelectors.selectIsSolutionView(state),
+        currentSolutionOwner: selectors.data.solutions.selectCurrentSolutionOwner(state),
+        currentIsFromGroupPhase: selectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
+        annotations: selectors.data.selectCurrentAnnotationsByStartTime(state),
+        previousSolutions: selectors.selectActiveSolutionsWithAnnotations(state),
+        exercisePhaseType: selectors.config.selectPhaseType(state),
+        isSolutionView: selectors.config.selectIsSolutionView(state),
         isReadonly,
     }
 }

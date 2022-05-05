@@ -3,7 +3,7 @@ import TextField from 'Components/VideoEditor/components/TextField'
 import TimeInput from 'Components/TimeInput'
 import { Cut } from 'Components/VideoEditor/types'
 import { getNewMediaItemStartAndEnd } from 'Components/VideoEditor/utils/useMediaItemHandling'
-import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { t2d } from 'duration-time-conversion'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
@@ -12,23 +12,19 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import Overlay from '../../components/Overlay'
 import { CutOverlayIds } from '../CuttingMenu'
 import { useCutEdit } from './useCutEdit'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 import { secondToTime } from '../../utils/time'
 import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
-    currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
-    videos: configSelectors.selectVideos(state),
-    currentSolutionId: videoEditorSelectors.data.solutions.selectCurrentId(state),
+const mapStateToProps = (state: AppState) => ({
+    currentTime: selectors.videoEditor.player.selectSyncPlayPosition(state),
+    videos: selectors.config.selectVideos(state),
+    currentSolutionId: selectors.data.solutions.selectCurrentId(state),
 })
 
 const mapDispatchToProps = {
     appendCut: actions.data.cuts.append,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

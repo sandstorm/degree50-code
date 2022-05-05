@@ -1,4 +1,4 @@
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { CutOverlayIds } from '../CuttingMenu'
@@ -8,19 +8,17 @@ import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import { useCutEdit } from './useCutEdit'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { selectors as configSelectors } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { secondToTime } from '../../utils/time'
 import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
-    const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
+const mapStateToProps = (state: AppState) => {
+    const currentlyEditedElementId = selectors.videoEditor.overlay.currentlyEditedElementId(state)
     const cutsById = selectors.data.cuts.selectById(state)
     const cut = currentlyEditedElementId ? cutsById[currentlyEditedElementId] : undefined
     const duration = configSelectors.selectVideos(state)[0].duration
-    const currentTime = selectors.player.selectSyncPlayPosition(state)
+    const currentTime = selectors.videoEditor.player.selectSyncPlayPosition(state)
 
     return {
         cut,
@@ -31,7 +29,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
 
 const mapDispatchToProps = {
     updateCut: actions.data.cuts.update,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

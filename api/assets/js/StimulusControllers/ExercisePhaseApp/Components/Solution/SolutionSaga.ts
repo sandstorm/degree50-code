@@ -2,12 +2,9 @@ import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'red
 import { eventChannel, EventChannel, Task } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
-import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
-import { selectors as configSelectors } from '../Config/ConfigSlice'
-import { selectCurrentEditorId, setCurrentEditorId } from '../Presence/CurrentEditorSlice'
 import { initPresenceAction } from '../Presence/PresenceSaga'
-import { selectors } from 'Components/VideoEditor/VideoEditorSlice'
 import { initData } from 'Components/VideoEditor/initData'
+import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
 export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
@@ -20,7 +17,7 @@ export default function* solutionSaga() {
 }
 
 function* solutionSyncListener() {
-    const lifeSyncConfig = selectLiveSyncConfig(yield select())
+    const lifeSyncConfig = selectors.liveSyncConfig.selectLiveSyncConfig(yield select())
 
     try {
         // setup SSE for presence topic
@@ -64,7 +61,7 @@ function* handleMessages(channel: EventChannel<unknown>) {
             // set currentEditor
             const eventData: { currentEditor: any; data: any } = yield JSON.parse(action.payload)
             const currentEditor: string = eventData.currentEditor
-            yield put(setCurrentEditorId(currentEditor))
+            yield put(actions.currentEditor.setCurrentEditorId(currentEditor))
 
             const { data } = eventData
 
@@ -79,11 +76,11 @@ function* handleMessages(channel: EventChannel<unknown>) {
  * Upload solution if user is currentEditor
  */
 function* syncSolution() {
-    const config = configSelectors.selectConfig(yield select())
+    const config = selectors.config.selectConfig(yield select())
 
-    if (!config.readOnly && config.userId === selectCurrentEditorId(yield select())) {
+    if (!config.readOnly && config.userId === selectors.currentEditor.selectCurrentEditorId(yield select())) {
         const solutionLists = selectors.selectSolutionLists(yield select())
-        const updateSolutionEndpoint = configSelectors.selectConfig(yield select()).apiEndpoints.updateSolution
+        const updateSolutionEndpoint = selectors.config.selectConfig(yield select()).apiEndpoints.updateSolution
 
         try {
             yield Axios.post(updateSolutionEndpoint, solutionLists)

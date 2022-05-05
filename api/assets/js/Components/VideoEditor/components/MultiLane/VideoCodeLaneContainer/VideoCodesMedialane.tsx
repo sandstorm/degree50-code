@@ -1,23 +1,22 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 
-import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import MediaLane from '../../MediaLane/index'
 import { VideoCode, MediaItem } from '../../../types'
 import { solveConflicts } from '../../../utils/solveItemConflicts'
 import { useMediaItemHandling } from '../../../utils/useMediaItemHandling'
-import { MediaLaneRenderConfigState } from '../../../MediaLaneRenderConfigSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import { VideoCodePoolStateSlice } from '../../../VideoCodesContext/VideoCodePrototypesSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     mediaItems: MediaItem<VideoCode>[]
     readOnly?: boolean
 }
 
-const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState & VideoCodePoolStateSlice) => {
+const mapStateToProps = (state: AppState) => {
     return {
-        mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+        mediaLaneRenderConfig: selectors.videoEditor.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
     }
 }
 

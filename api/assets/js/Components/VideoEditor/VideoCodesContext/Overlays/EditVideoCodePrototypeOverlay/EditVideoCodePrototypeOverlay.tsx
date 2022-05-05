@@ -1,15 +1,16 @@
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 import { useVideoCodePrototypeEdit } from './useVideoCodePrototypeEdit'
 import Overlay from '../../../components/Overlay'
 import { getColorName } from 'ntc-ts'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState) => {
-    const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
-    const currentlyEditedElementParentId = selectors.overlay.currentlyEditedElementParentId(state)
+const mapStateToProps = (state: AppState) => {
+    const currentlyEditedElementId = selectors.videoEditor.overlay.currentlyEditedElementId(state)
+    const currentlyEditedElementParentId = selectors.videoEditor.overlay.currentlyEditedElementParentId(state)
     const videoCodesById = selectors.data.videoCodePrototypes.selectById(state)
 
     const videoCodePrototype = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
@@ -26,7 +27,7 @@ const mapStateToProps = (state: VideoEditorState) => {
 const mapDispatchToProps = {
     appendPrototype: actions.data.videoCodePrototypes.append,
     updatePrototype: actions.data.videoCodePrototypes.update,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

@@ -6,6 +6,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { set, removeIn } from 'immutable'
 import { VideoCodePrototype } from '../types'
 import { initData } from '../initData'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 export type VideoCodePrototypeId = string
 
@@ -76,11 +77,9 @@ export const videoCodePrototypesSlice = createSlice({
 // SELECTORS //
 ///////////////
 
-export type VideoCodePoolStateSlice = { videoEditor: { data: { videoCodePrototypes: VideoCodePrototypesState } } }
-
-const selectById = (state: VideoCodePoolStateSlice) => state.videoEditor.data.videoCodePrototypes.byId
-const selectPrototypeById = (state: VideoCodePoolStateSlice, props: { videoCodeId: VideoCodePrototypeId }) =>
-    state.videoEditor.data.videoCodePrototypes.byId[props.videoCodeId]
+const selectById = (state: AppState) => state.data.videoCodePrototypes.byId
+const selectPrototypeById = (state: AppState, props: { videoCodeId: VideoCodePrototypeId }) =>
+    state.data.videoCodePrototypes.byId[props.videoCodeId]
 
 export const selectors = {
     selectById,

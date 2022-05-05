@@ -51,18 +51,24 @@ const PresenceSlice = createSlice({
     },
 })
 
-export const presenceActions = PresenceSlice.actions
+export const { actions } = PresenceSlice
 export default PresenceSlice.reducer
 
 // Selectors
 
-export type PresenceStateSlice = { presence: PresenceState }
+const selectTeamMemberIds = (state: AppState) => state.presence.teamMemberIds
+const selectTeamMemberById = (id: TeamMemberId, state: AppState) => state.presence.teamMembersById[id]
+const selectTeamMembersById = (state: AppState) => state.presence.teamMembersById
+const selectIsConnecting = (state: AppState) => state.presence.isConnecting
 
-export const selectTeamMemberIds = (state: PresenceStateSlice) => state.presence.teamMemberIds
-export const selectTeamMemberById = (id: TeamMemberId, state: PresenceStateSlice) => state.presence.teamMembersById[id]
-export const selectTeamMembersById = (state: PresenceStateSlice) => state.presence.teamMembersById
-export const selectIsConnecting = (state: PresenceStateSlice) => state.presence.isConnecting
-
-export const selectOnlineTeamMemberIds = createSelector([selectTeamMemberIds, selectTeamMembersById], (allIds, byId) =>
+const selectOnlineTeamMemberIds = createSelector([selectTeamMemberIds, selectTeamMembersById], (allIds, byId) =>
     allIds.filter((memberId) => byId[memberId].connectionState === ConnectionState.CONNECTED)
 )
+
+export const selectors = {
+    selectTeamMemberIds,
+    selectTeamMemberById,
+    selectTeamMembersById,
+    selectIsConnecting,
+    selectOnlineTeamMemberIds,
+}

@@ -1,17 +1,18 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
-import { VideoEditorState, actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import CheckboxWithIndeterminate, { CheckboxValue } from '../../CheckboxWithIndeterminate'
 import { GlobalSolutionFilter } from 'Components/VideoEditor/FilterContext/FilterSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: AppState) => {
     const solutions = selectors.data.solutions.selectById(state)
-    const previousSolutionsFromFilter = selectors.filter.selectPreviousSolutions(state)
+    const previousSolutionsFromFilter = selectors.videoEditor.filter.selectPreviousSolutions(state)
     const previousSolutions = previousSolutionsFromFilter.map((s) => ({
         ...s,
         ...solutions[s.id],
     }))
-    const globalSolutionFilter = selectors.filter.selectGlobalSolutionFilter(state)
+    const globalSolutionFilter = selectors.videoEditor.filter.selectGlobalSolutionFilter(state)
 
     return {
         previousSolutions,
@@ -20,8 +21,8 @@ const mapStateToProps = (state: VideoEditorState) => {
 }
 
 const mapDispatchToProps = {
-    togglePreviousSolution: actions.filter.togglePreviousSolution,
-    setGlobalSolutionFilter: actions.filter.setGlobalSolutionFilter,
+    togglePreviousSolution: actions.videoEditor.filter.togglePreviousSolution,
+    setGlobalSolutionFilter: actions.videoEditor.filter.setGlobalSolutionFilter,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
@@ -31,7 +32,7 @@ const ActivePreviousSolutions = (props: Props) => {
         (ev: React.ChangeEvent<HTMLInputElement>) => {
             props.togglePreviousSolution(ev.currentTarget.value)
         },
-        [props.togglePreviousSolution]
+        [props]
     )
 
     const handleGlobalSolutionFilterChange = (value: CheckboxValue) => {

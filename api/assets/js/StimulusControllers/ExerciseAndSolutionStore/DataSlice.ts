@@ -3,19 +3,31 @@ import {
     AnnotationsState,
     annotationsSlice,
     selectors as annotationSelectors,
-} from './AnnotationsContext/AnnotationsSlice'
-import { cuttingSlice, CutsState, selectors as cutsSelectors } from './CuttingContext/CuttingSlice'
+} from '../../Components/VideoEditor/AnnotationsContext/AnnotationsSlice'
+import {
+    cuttingSlice,
+    CutsState,
+    selectors as cutsSelectors,
+} from '../../Components/VideoEditor/CuttingContext/CuttingSlice'
 import {
     videoCodePrototypesSlice,
     VideoCodePrototypesState,
     selectors as videoCodePrototypeSelectors,
-} from './VideoCodesContext/VideoCodePrototypesSlice'
-import { videoCodesSlice, VideoCodesState, selectors as videoCodeSelectors } from './VideoCodesContext/VideoCodesSlice'
-import { SolutionSlice, selectors as solutionSelectors, SolutionState } from './SolutionSlice'
-import { composedPrototypeSelectors } from './composedSelectors/prototypes'
-import { composedCutSelectors } from './composedSelectors/cuts'
-import { composedAnnotationSelectors } from './composedSelectors/annotations'
-import { composedVideoCodeSelectors } from './composedSelectors/videoCodes'
+} from '../../Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
+import {
+    videoCodesSlice,
+    VideoCodesState,
+    selectors as videoCodeSelectors,
+} from '../../Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
+import {
+    SolutionSlice,
+    selectors as solutionSelectors,
+    SolutionState,
+} from '../../Components/VideoEditor/SolutionSlice'
+import { composedPrototypeSelectors } from '../../Components/VideoEditor/composedSelectors/prototypes'
+import { composedCutSelectors } from '../../Components/VideoEditor/composedSelectors/cuts'
+import { composedAnnotationSelectors } from '../../Components/VideoEditor/composedSelectors/annotations'
+import { composedVideoCodeSelectors } from '../../Components/VideoEditor/composedSelectors/videoCodes'
 
 export type DataState = {
     solutions: SolutionState

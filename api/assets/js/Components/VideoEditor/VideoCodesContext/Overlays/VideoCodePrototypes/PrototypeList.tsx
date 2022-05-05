@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import PrototypeEntry from './PrototypeEntry'
 import { VideoCodePrototype } from 'Components/VideoEditor/types'
@@ -28,9 +28,9 @@ const mapDispatchToProps = {
     createVideoCodePrototype: actions.data.videoCodePrototypes.append,
     removeVideoCodePrototype: actions.data.videoCodePrototypes.remove,
     syncSolution: syncSolutionAction,
-    openOverlay: actions.overlay.setOverlay,
-    setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
-    setCurrentlyEditedElementParentId: actions.overlay.setCurrentlyEditedElementParentId,
+    openOverlay: actions.videoEditor.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.videoEditor.overlay.setCurrentlyEditedElementId,
+    setCurrentlyEditedElementParentId: actions.videoEditor.overlay.setCurrentlyEditedElementParentId,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps

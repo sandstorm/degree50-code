@@ -16,6 +16,7 @@ import {
 import { CutId, cuttingSlice } from './CuttingContext/CuttingSlice'
 import { videoCodePrototypesSlice, VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
 import { initData } from './initData'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 export type SolutionState = {
     byId: Record<SolutionId, Solution>
@@ -214,16 +215,14 @@ export const SolutionSlice = createSlice({
 // SELECTORS //
 ///////////////
 
-export type SolutionStateSlice = { videoEditor: { data: { solutions: SolutionState } } }
+const selectById = (state: AppState) => state.data.solutions.byId
+const selectSolutionById = (state: AppState, props: { solutionId: string }) =>
+    state.data.solutions.byId[props.solutionId]
+const selectCurrentId = (state: AppState) => state.data.solutions.current
+const selectPreviousIds = (state: AppState) => state.data.solutions.previous
 
-const selectById = (state: SolutionStateSlice) => state.videoEditor.data.solutions.byId
-const selectSolutionById = (state: SolutionStateSlice, props: { solutionId: string }) =>
-    state.videoEditor.data.solutions.byId[props.solutionId]
-const selectCurrentId = (state: SolutionStateSlice) => state.videoEditor.data.solutions.current
-const selectPreviousIds = (state: SolutionStateSlice) => state.videoEditor.data.solutions.previous
-
-const selectIsCurrentSolution = (state: SolutionStateSlice, props: { solutionId?: string }) =>
-    !!(props.solutionId && state.videoEditor.data.solutions.current === props.solutionId)
+const selectIsCurrentSolution = (state: AppState, props: { solutionId?: string }) =>
+    !!(props.solutionId && state.data.solutions.current === props.solutionId)
 
 const selectPreviousSolutions = createSelector([selectById, selectPreviousIds], (byId, ids) =>
     ids.map((id) => byId[id])

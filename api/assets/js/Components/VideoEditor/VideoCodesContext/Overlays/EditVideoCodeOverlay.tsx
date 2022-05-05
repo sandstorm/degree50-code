@@ -5,23 +5,21 @@ import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
 import VideoCodeSelection from './VideoCodePrototypeSelection'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { useVideoCodeEdit } from './useVideoCodeEdit'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { selectors as configSelectors } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { secondToTime } from '../../utils/time'
 import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
-    const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
+const mapStateToProps = (state: AppState) => {
+    const currentlyEditedElementId = selectors.videoEditor.overlay.currentlyEditedElementId(state)
     const videoCodesById = selectors.data.videoCodes.selectById(state)
     const videoCode = currentlyEditedElementId ? videoCodesById[currentlyEditedElementId] : undefined
     const duration = configSelectors.selectVideos(state)[0].duration
-    const currentTime = selectors.player.selectSyncPlayPosition(state)
+    const currentTime = selectors.videoEditor.player.selectSyncPlayPosition(state)
 
     return {
         videoCode,
@@ -33,7 +31,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
 
 const mapDispatchToProps = {
     updateVideoCode: actions.data.videoCodes.update,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

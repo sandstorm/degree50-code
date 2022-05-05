@@ -1,22 +1,18 @@
 import Button from 'Components/Button/Button'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { ConfigStateSlice, selectors } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import {
-    PresenceStateSlice,
-    selectOnlineTeamMemberIds,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Presence/PresenceSlice'
-import { actions } from '../VideoEditorSlice'
 import { TEAM_OVERLAY_ID } from './TeamOverlay'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: ConfigStateSlice & PresenceStateSlice) => ({
-    isSolutionView: selectors.selectIsSolutionView(state),
-    isGroupPhase: selectors.selectIsGroupPhase(state),
-    onlineTeamMemberIds: selectOnlineTeamMemberIds(state),
+const mapStateToProps = (state: AppState) => ({
+    isSolutionView: selectors.config.selectIsSolutionView(state),
+    isGroupPhase: selectors.config.selectIsGroupPhase(state),
+    onlineTeamMemberIds: selectors.presence.selectOnlineTeamMemberIds(state),
 })
 
 const mapDispatchToProps = {
-    setOverlay: actions.overlay.setOverlay,
+    setOverlay: actions.videoEditor.overlay.setOverlay,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps

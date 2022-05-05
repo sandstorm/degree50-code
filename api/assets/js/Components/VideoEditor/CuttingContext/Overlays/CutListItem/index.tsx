@@ -1,17 +1,15 @@
 import Button from 'Components/Button/Button'
 import { CutId } from 'Components/VideoEditor/CuttingContext/CuttingSlice'
 import { CutOverlayIds } from 'Components/VideoEditor/CuttingContext/CuttingMenu'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import End from '../../../components/End'
 import Start from '../../../components/Start'
 import PositionControls from './PositionControls'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { t2d } from 'duration-time-conversion'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     cutId: CutId
@@ -19,9 +17,9 @@ type OwnProps = {
     showPositionControls?: boolean
 }
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice, ownProps: OwnProps) => {
+const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
     const item = selectors.data.cuts.selectCutById(state, ownProps)
-    const canEdit = selectUserCanEditSolution(state, { solutionId: item.solutionId })
+    const canEdit = selectors.selectUserCanEditSolution(state, { solutionId: item.solutionId })
 
     return {
         item,
@@ -32,10 +30,10 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
 const mapDispatchToProps = {
     moveUp: actions.data.solutions.moveCutUp,
     moveDown: actions.data.solutions.moveCutDown,
-    setOverlay: actions.overlay.setOverlay,
-    setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
+    setOverlay: actions.videoEditor.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.videoEditor.overlay.setCurrentlyEditedElementId,
     syncSolution: syncSolutionAction,
-    setPlayPosition: actions.player.setPlayPosition,
+    setPlayPosition: actions.videoEditor.player.setPlayPosition,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps

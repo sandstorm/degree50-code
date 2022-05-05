@@ -1,18 +1,19 @@
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import Overlay from '../../components/Overlay'
 import Button from 'Components/Button/Button'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState) => ({
-    currentlyEditedElementId: selectors.overlay.currentlyEditedElementId(state),
+const mapStateToProps = (state: AppState) => ({
+    currentlyEditedElementId: selectors.videoEditor.overlay.currentlyEditedElementId(state),
 })
 
 const mapDispatchToProps = {
     removeVideoCode: actions.data.videoCodes.remove,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

@@ -1,4 +1,4 @@
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { CutOverlayIds } from '../CuttingMenu'
@@ -6,15 +6,16 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import Overlay from '../../components/Overlay'
 import Button from 'Components/Button/Button'
 import { remove } from 'immutable'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState) => ({
-    currentlyEditedElementId: selectors.overlay.currentlyEditedElementId(state),
+const mapStateToProps = (state: AppState) => ({
+    currentlyEditedElementId: selectors.videoEditor.overlay.currentlyEditedElementId(state),
     cutIds: selectors.data.solutions.selectCurrentCutIds(state),
 })
 
 const mapDispatchToProps = {
     removeCut: actions.data.cuts.remove,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

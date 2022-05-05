@@ -3,7 +3,7 @@ import TextField from 'Components/VideoEditor/components/TextField'
 import TimeInput from 'Components/TimeInput'
 import { Annotation } from 'Components/VideoEditor/types'
 import { secondToTime } from 'Components/VideoEditor/utils/time'
-import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { generate } from 'shortid'
@@ -11,22 +11,18 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import Overlay from '../../components/Overlay'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import { useAnnotationEdit } from './useAnnotationEdit'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
-    currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
-    duration: configSelectors.selectVideos(state)[0].duration,
-    currentSolutionId: videoEditorSelectors.data.solutions.selectCurrentId(state),
+const mapStateToProps = (state: AppState) => ({
+    currentTime: selectors.videoEditor.player.selectSyncPlayPosition(state),
+    duration: selectors.config.selectVideos(state)[0].duration,
+    currentSolutionId: selectors.data.solutions.selectCurrentId(state),
 })
 
 const mapDispatchToProps = {
     appendAnnotation: actions.data.annotations.append,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

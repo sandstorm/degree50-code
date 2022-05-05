@@ -2,7 +2,8 @@ import React, { FC } from 'react'
 import { connect } from 'react-redux'
 import Radio from './Radio'
 import RadioGroup from './RadioGroup'
-import { selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     defaultPrototypeId: string
@@ -10,7 +11,7 @@ type OwnProps = {
     selectedPrototypeId?: string | null
 }
 
-const mapStateToProps = (state: VideoEditorState) => ({
+const mapStateToProps = (state: AppState) => ({
     prototypes: selectors.data.selectAllPrototypesFlattened(state),
     prototypesById: selectors.data.videoCodePrototypes.selectById(state),
 })

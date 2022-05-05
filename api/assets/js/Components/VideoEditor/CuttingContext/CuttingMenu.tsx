@@ -1,15 +1,10 @@
-import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
-import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserIsCurrentEditor } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const prefix = 'CUT'
 
@@ -23,27 +18,27 @@ export const CutOverlayIds = {
     cutPreview: `${prefix}/cutPreview`,
 }
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
-    const activePhaseType = configSelectors.selectPhaseType(state)
-    const isSolutionView = configSelectors.selectIsSolutionView(state)
-    const userIsCurrentEditor = selectUserIsCurrentEditor(state)
-    const cutsAreActive = configSelectors.selectCutsAreActive(state)
+const mapStateToProps = (state: AppState) => {
+    const activePhaseType = selectors.config.selectPhaseType(state)
+    const isSolutionView = selectors.config.selectIsSolutionView(state)
+    const userIsCurrentEditor = selectors.selectUserIsCurrentEditor(state)
+    const cutsAreActive = selectors.config.selectCutsAreActive(state)
 
     const disableCreate =
         isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_CUTTING || !userIsCurrentEditor
     const disabled = !cutsAreActive
 
     return {
-        allCutsCount: videoEditorSelectors.selectAllCutIdsByStartTime(state).length,
-        activeCutCount: videoEditorSelectors.selectCurrentCutIdsAtCursor(state).length,
+        allCutsCount: selectors.selectAllCutIdsByStartTime(state).length,
+        activeCutCount: selectors.selectCurrentCutIdsAtCursor(state).length,
         disableCreate,
         disabled,
     }
 }
 
 const mapDispatchToProps = {
-    setOverlay: actions.overlay.setOverlay,
-    setCurrentlyEditedElementIndex: actions.overlay.setCurrentlyEditedElementId,
+    setOverlay: actions.videoEditor.overlay.setOverlay,
+    setCurrentlyEditedElementIndex: actions.videoEditor.overlay.setCurrentlyEditedElementId,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
