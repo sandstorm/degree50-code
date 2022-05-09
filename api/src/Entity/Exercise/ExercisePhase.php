@@ -215,9 +215,15 @@ abstract class ExercisePhase
         return $this->task;
     }
 
-    public function setTask(string $task): void
+    /**
+     * Note that the parameter has to be optional, so that null can be passed to
+     * it, whenever we use this entity in symphony forms, because validation
+     * happens AFTER the form has been processed.
+     * This is currently necessary as a validation workaround for our CKEditor-FormType (see ExercisePhaseFormType.php)
+     */
+    public function setTask(?string $task): void
     {
-        $this->task = $task;
+        $this->task = $task ?? '';
     }
 
     public function isGroupPhase(): bool

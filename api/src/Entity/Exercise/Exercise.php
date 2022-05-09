@@ -34,6 +34,7 @@ class Exercise
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
+     * NOTE: the assertion is currently necessary as a validation workaround for our CKEditor-Formtype
      */
     public string $description = '';
 
@@ -149,6 +150,7 @@ class Exercise
      * Note that the parameter has to be optional, so that null can be passed to
      * it, whenever we use this entity in symphony forms, because validation
      * happens AFTER the form has been processed.
+     * This is currently necessary as a validation workaround for our CKEditor-FormType (see ExerciseType.php)
      */
     public function setDescription(?string $description): self
     {
