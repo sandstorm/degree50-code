@@ -1,16 +1,17 @@
-import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { CutOverlayIds } from '../CuttingMenu'
 import Overlay from '../../components/Overlay'
 import VideoContextPlayer from '../VideoContextPlayer/VideoContextPlayer'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState) => ({
+const mapStateToProps = (state: AppState) => ({
     cutList: selectors.data.selectCurrentCuts(state),
 })
 
 const mapDispatchToProps = {
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps

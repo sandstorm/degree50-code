@@ -1,13 +1,13 @@
-import {Controller} from "stimulus"
+import { Controller } from 'stimulus'
 import Axios from 'axios'
 import { getColorName } from 'ntc-ts'
 
 export default class extends Controller {
     connect() {
-        const formSubmitButton = document.getElementById('add-new-video-code');
-        const endpoint = this.data.get('endpoint');
-        const updateOnSuccess = this.data.get('update');
-        const videoCodesList = document.getElementById(updateOnSuccess);
+        const formSubmitButton = document.getElementById('add-new-video-code')
+        const endpoint = this.data.get('endpoint')
+        const updateOnSuccess = this.data.get('update')
+        const videoCodesList = document.getElementById(updateOnSuccess)
 
         /**
          * WHY:
@@ -25,12 +25,15 @@ export default class extends Controller {
          *
          */
         const updateVideoCodeListAriaLabels = () => {
-            videoCodesList.querySelectorAll('li.video-codes-list-item').forEach(el => {
-                el.setAttribute('aria-label', `
+            videoCodesList.querySelectorAll('li.video-codes-list-item').forEach((el) => {
+                el.setAttribute(
+                    'aria-label',
+                    `
                     Video-Code.
                     Name: ${el.getAttribute('data-code-name')}.
                     Farbe: ${getColorName(el.getAttribute('data-code-color')).name}.
-                `)
+                `
+                )
             })
         }
 
@@ -43,7 +46,7 @@ export default class extends Controller {
                     updateVideoCodeListAriaLabels()
                 })
                 .catch(function (e) {
-                    console.error('>>>>> update material list failed', e);
+                    console.error('>>>>> update attachment list failed', e)
                 })
         }
 
@@ -62,7 +65,7 @@ export default class extends Controller {
             ev.target.setAttribute('aria-label', `Gewählte Farbe: ${getColorName(ev.target.value).name}`)
         })
 
-        formSubmitButton.onclick = (() => {
+        formSubmitButton.onclick = () => {
             const color = document.getElementById('video-code-color').value
             const name = document.getElementById('video-code-name').value
 
@@ -71,19 +74,19 @@ export default class extends Controller {
             if (color && name) {
                 Axios.post(endpoint, {
                     color: color,
-                    name: name
+                    name: name,
                 })
                     .then(function () {
                         updateVideoCodesList(videoCodesList)
                     })
                     .catch(function (e) {
-                        console.error('>>>>> add video-code failed', e);
+                        console.error('>>>>> add video-code failed', e)
                     })
                     .finally(function () {
                         formSubmitButton.removeAttribute('disabled')
                     })
             }
-        })
+        }
 
         updateVideoCodeListAriaLabels()
     }

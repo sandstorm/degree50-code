@@ -1,15 +1,11 @@
-import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
-import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserIsCurrentEditor } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const prefix = 'VIDEO_CODE'
 export const VideoCodeOverlayIds = {
@@ -23,12 +19,12 @@ export const VideoCodeOverlayIds = {
     removePrototype: `${prefix}/removePrototype`,
 }
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
-    const activePhaseType = configSelectors.selectPhaseType(state)
-    const isSolutionView = configSelectors.selectIsSolutionView(state)
-    const userIsCurrentEditor = selectUserIsCurrentEditor(state)
-    const videoCodesAreActive = configSelectors.selectVideoCodesAreActive(state)
-    const dependsOnPreviousPhase = configSelectors.selectDependsOnPreviousPhase(state)
+const mapStateToProps = (state: AppState) => {
+    const activePhaseType = selectors.config.selectPhaseType(state)
+    const isSolutionView = selectors.config.selectIsSolutionView(state)
+    const userIsCurrentEditor = selectors.selectUserIsCurrentEditor(state)
+    const videoCodesAreActive = selectors.config.selectVideoCodesAreActive(state)
+    const dependsOnPreviousPhase = selectors.config.selectDependsOnPreviousPhase(state)
 
     const disableCreate =
         isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS || !userIsCurrentEditor
@@ -37,8 +33,8 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEdi
         (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
 
     return {
-        allVideoCodesCount: videoEditorSelectors.selectAllVideoCodeIdsByStartTime(state).length,
-        activeVideoCodeCount: videoEditorSelectors.selectAllActiveVideoCodeIdsAtCursor(state).length,
+        allVideoCodesCount: selectors.selectAllVideoCodeIdsByStartTime(state).length,
+        activeVideoCodeCount: selectors.selectAllActiveVideoCodeIdsAtCursor(state).length,
         disableCreate,
         disabled,
     }

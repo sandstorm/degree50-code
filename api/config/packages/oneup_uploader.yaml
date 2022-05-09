@@ -16,11 +16,11 @@ oneup_uploader:
             storage:
                 type: flysystem
                 filesystem: oneup_flysystem.uploaded_audio_descriptions_filesystem
-        uploaded_material:
+        uploaded_attachment:
             frontend: dropzone
             storage:
                 type: flysystem
-                filesystem: oneup_flysystem.uploaded_material_filesystem
+                filesystem: oneup_flysystem.uploaded_attachment_filesystem
 
     orphanage:
         maxage: 86400

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { TeamMemberId } from './PresenceSlice'
 
 export type CurrentEditorState = {
@@ -20,9 +21,13 @@ const CurrentEditorSlice = createSlice({
     },
 })
 
-export const { setCurrentEditorId } = CurrentEditorSlice.actions
+export const { actions } = CurrentEditorSlice
 export default CurrentEditorSlice.reducer
 
 export type CurrentEditorStateSlice = { currentEditor: CurrentEditorState }
 
-export const selectCurrentEditorId = (state: CurrentEditorStateSlice) => state.currentEditor.currentEditorId
+const selectCurrentEditorId = (state: AppState) => state.currentEditor.currentEditorId
+
+export const selectors = {
+    selectCurrentEditorId,
+}

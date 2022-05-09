@@ -3,20 +3,18 @@ import { connect } from 'react-redux'
 import { getComponentName } from '..'
 import { TabsTypesEnum } from 'types'
 import VideoCutMedialane from 'Components/VideoEditor/components/MultiLane/CutLaneContainer/VideoCutMedialane'
-import { VideoEditorState, selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
-import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import MediaLaneDescription from '../MediaLaneDescription'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & CurrentEditorStateSlice) => {
-    const currentSolutionId = videoEditorSelectors.data.solutions.selectCurrentId(state)
-    const isReadonly = !selectUserCanEditSolution(state, { solutionId: currentSolutionId })
+const mapStateToProps = (state: AppState) => {
+    const currentSolutionId = selectors.data.solutions.selectCurrentId(state)
+    const isReadonly = !selectors.selectUserCanEditSolution(state, { solutionId: currentSolutionId })
 
     return {
-        cuts: videoEditorSelectors.data.selectCurrentCutListByStartTime(state),
-        currentSolutionOwner: videoEditorSelectors.data.solutions.selectCurrentSolutionOwner(state),
-        currentIsFromGroupPhase: videoEditorSelectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
+        cuts: selectors.data.selectCurrentCutListByStartTime(state),
+        currentSolutionOwner: selectors.data.solutions.selectCurrentSolutionOwner(state),
+        currentIsFromGroupPhase: selectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
         isReadonly,
     }
 }

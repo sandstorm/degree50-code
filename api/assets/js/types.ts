@@ -13,6 +13,6 @@ export enum ComponentTypesEnum {
     PRESENCE = 'presence',
     TASK = 'task',
     DOCUMENT_UPLOAD = 'documentUpload',
-    MATERIAL_VIEWER = 'materialViewer',
+    ATTACHMENT_VIEWER = 'attachmentViewer',
     VIDEO_PLAYER = 'videoPlayer',
 }

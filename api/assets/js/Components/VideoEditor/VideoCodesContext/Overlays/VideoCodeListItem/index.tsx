@@ -1,17 +1,13 @@
-import { VideoCodeId, VideoCodesStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
+import { VideoCodeId } from 'Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
 import { VideoCodeOverlayIds } from 'Components/VideoEditor/VideoCodesContext/VideoCodesMenu'
 import Button from 'Components/Button/Button'
-import { actions, selectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import End from '../../../components/End'
 import Start from '../../../components/Start'
-import { VideoCodePoolStateSlice } from 'Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
 import PrototypeInformation from './PrototypeInformation'
-import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
-import { CurrentEditorStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { selectUserCanEditSolution } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { t2d } from 'duration-time-conversion'
 import { getColorName } from 'ntc-ts'
 
@@ -20,16 +16,9 @@ type OwnProps = {
     index: number
 }
 
-const mapStateToProps = (
-    state: VideoCodesStateSlice &
-        SolutionStateSlice &
-        VideoCodePoolStateSlice &
-        CurrentEditorStateSlice &
-        ConfigStateSlice,
-    ownProps: OwnProps
-) => {
+const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
     const item = selectors.data.videoCodes.selectVideoCodeById(state, ownProps)
-    const canEdit = selectUserCanEditSolution(state, { solutionId: item.solutionId })
+    const canEdit = selectors.selectUserCanEditSolution(state, { solutionId: item.solutionId })
     const videoCodePrototype = item.idFromPrototype
         ? selectors.data.videoCodePrototypes.selectPrototypeById(state, { videoCodeId: item.idFromPrototype })
         : undefined
@@ -49,9 +38,9 @@ const mapStateToProps = (
 }
 
 const mapDispatchToProps = {
-    setOverlay: actions.overlay.setOverlay,
-    setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
-    setPlayPosition: actions.player.setPlayPosition,
+    setOverlay: actions.videoEditor.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.videoEditor.overlay.setCurrentlyEditedElementId,
+    setPlayPosition: actions.videoEditor.player.setPlayPosition,
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps

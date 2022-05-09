@@ -59,7 +59,7 @@ class ExerciseService
          *   1. All attached ExercisePhases will be removed @see Exercise::$phases
          *   2. All attached UserExerciseInteractions will be removed @see Exercise::$userExerciseInteractions
          *
-         * TODO: There will be no Events triggered like "ExercisePhaseDeleted" or "MaterialDeleted" (cascaded removal when
+         * TODO: There will be no Events triggered like "ExercisePhaseDeleted" or "AttachmentDeleted" (cascaded removal when
          *       deleting an ExercisePhase).
          */
         $this->entityManager->remove($exercise);

@@ -1,0 +1,12 @@
+<ul class="attachment-list">
+    {% for attachment in attachmentList %}
+        <li>
+            <a class="attachment-list__name" href="{{ path('exercise-overview__attachment--download', {id: attachment.id}) }}" target="_blank">{{ attachment.name }}</a>
+            <a class="btn btn-sm btn-danger" data-controller="deleteEntity" href="{{ path('exercise-overview__attachment--delete', {id: attachment.id}) }}"><i class="fas fa-trash-alt"></i> Datei Löschen</a>
+        </li>
+    {% else %}
+        <li>
+            Noch keine.
+        </li>
+    {% endfor %}
+</ul>

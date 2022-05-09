@@ -6,6 +6,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { remove, set } from 'immutable'
 import { Annotation } from '../types'
 import { initData } from '../initData'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 export type AnnotationId = string
 
@@ -81,11 +82,9 @@ export const annotationsSlice = createSlice({
 // SELECTORS //
 ///////////////
 
-type AnnotationsSlice = { videoEditor: { data: { annotations: AnnotationsState } } }
-
-const selectById = (state: AnnotationsSlice) => state.videoEditor.data.annotations.byId
-const selectAnnotationById = (state: AnnotationsSlice, props: { annotationId: AnnotationId }) =>
-    state.videoEditor.data.annotations.byId[props.annotationId]
+const selectById = (state: AppState) => state.data.annotations.byId
+const selectAnnotationById = (state: AppState, props: { annotationId: AnnotationId }) =>
+    state.data.annotations.byId[props.annotationId]
 
 export const selectors = {
     selectById,

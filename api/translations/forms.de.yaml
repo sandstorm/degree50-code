@@ -53,7 +53,7 @@ exercisePhase:
         videosExtended: 'Video für die Aufgabe auswählen'
         videoCodes: 'Video-Codes'
         components: 'Zusätzlich Komponenten'
-        material: 'Material'
+        attachments: 'Anhänge'
         submit: 'Phase speichern'
         type: 'Typ'
     help:
@@ -137,9 +137,9 @@ video:
             success: 'Video erfolgreich gelöscht!'
             isCurrentlyUsed: 'Das Video kann nicht gelöscht werden: Es wird in einer oder mehreren Phasen genutzt!'
 
-material:
+attachments:
     labels:
-        name: 'Name des Dokuments/Materials'
+        name: 'Name des Dokuments/Anhangs'
         file: 'Datei'
         selectFile: 'Datei auswählen'
     delete:

@@ -12,7 +12,7 @@ import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEditorSlice'
 import SolutionsApp from './SolutionsApp'
 import { initData } from 'Components/VideoEditor/initData'
-import { DataState } from 'Components/VideoEditor/DataSlice'
+import { DataState } from './ExerciseAndSolutionStore/DataSlice'
 
 export type SolutionByTeam = Solution & {
     teamCreator: string
@@ -24,7 +24,7 @@ export type SolutionByTeam = Solution & {
 setTranslations(i18n)
 setLocale('de')
 
-export default class extends Controller {
+class SolutionsController extends Controller {
     connect() {
         const propsAsString = this.data.get('props')
         const props = propsAsString ? JSON.parse(propsAsString) : {}
@@ -48,3 +48,5 @@ export default class extends Controller {
         )
     }
 }
+
+export default SolutionsController

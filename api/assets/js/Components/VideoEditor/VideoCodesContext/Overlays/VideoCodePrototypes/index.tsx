@@ -1,16 +1,13 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import PrototypeList from './PrototypeList'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
-    const isSolutionView = configSelectors.selectIsSolutionView(state)
+const mapStateToProps = (state: AppState) => {
+    const isSolutionView = selectors.config.selectIsSolutionView(state)
 
     const videoCodePrototypes = isSolutionView
         ? selectors.data.selectAllPrototypesList(state)
@@ -23,9 +20,9 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
 }
 
 const mapDispatchToProps = {
-    openOverlay: actions.overlay.setOverlay,
-    setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
-    setCurrentlyEditedElementParentId: actions.overlay.setCurrentlyEditedElementParentId,
+    openOverlay: actions.videoEditor.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.videoEditor.overlay.setCurrentlyEditedElementId,
+    setCurrentlyEditedElementParentId: actions.videoEditor.overlay.setCurrentlyEditedElementParentId,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps

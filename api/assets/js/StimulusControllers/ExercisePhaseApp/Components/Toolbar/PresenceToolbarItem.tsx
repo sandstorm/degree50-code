@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from './Toolbar'
 import { useAppSelector } from '../../../ExerciseAndSolutionStore/Store'
-import { selectOnlineTeamMemberIds } from '../Presence/PresenceSlice'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 
 type ToolbarItemProps = {
     component: Component
@@ -9,7 +9,7 @@ type ToolbarItemProps = {
 }
 
 export function PresenceToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
-    const onlineTeamMembers = useAppSelector(selectOnlineTeamMemberIds)
+    const onlineTeamMembers = useAppSelector(selectors.presence.selectOnlineTeamMemberIds)
 
     return (
         <button

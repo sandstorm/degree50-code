@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { ConnectionState, PresenceStateSlice, selectTeamMemberById, TeamMemberId } from './PresenceSlice'
-import { CurrentEditorStateSlice, selectCurrentEditorId } from './CurrentEditorSlice'
+import { ConnectionState, TeamMemberId } from './PresenceSlice'
 import { promoteUserToCurrentEditorAction } from './PresenceSaga'
-import { ConfigStateSlice, selectors } from '../Config/ConfigSlice'
+import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     teamMemberId: TeamMemberId
@@ -69,13 +69,10 @@ const TeamMembersListItem: React.FC<Props> = (props) => {
     )
 }
 
-const mapStateToProps = (
-    state: PresenceStateSlice & CurrentEditorStateSlice & ConfigStateSlice,
-    ownProps: OwnProps
-) => ({
-    teamMember: selectTeamMemberById(ownProps.teamMemberId, state),
-    currentEditor: selectCurrentEditorId(state),
-    userId: selectors.selectUserId(state),
+const mapStateToProps = (state: AppState, ownProps: OwnProps) => ({
+    teamMember: selectors.presence.selectTeamMemberById(ownProps.teamMemberId, state),
+    currentEditor: selectors.currentEditor.selectCurrentEditorId(state),
+    userId: selectors.config.selectUserId(state),
 })
 
 const mapDispatchToProps = {

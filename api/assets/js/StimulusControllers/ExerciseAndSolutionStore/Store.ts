@@ -1,49 +1,22 @@
-import {
-    Action,
-    combineReducers,
-    configureStore,
-    createSelector,
-    getDefaultMiddleware,
-    ThunkAction,
-} from '@reduxjs/toolkit'
-import toolbarReducer from '../ExercisePhaseApp/Components/Toolbar/ToolbarSlice'
-import configReducer, { selectors as configSelectors } from '../ExercisePhaseApp/Components/Config/ConfigSlice'
-import liveSyncConfigReducer from '../ExercisePhaseApp/Components/LiveSyncConfig/LiveSyncConfigSlice'
-import overlayReducer from '../ExercisePhaseApp/Components/Overlay/OverlaySlice'
-import materialViewerReducer from '../ExercisePhaseApp/Components/MaterialViewer/MaterialViewerSlice'
-import presenceReducer from '../ExercisePhaseApp/Components/Presence/PresenceSlice'
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import createSagaMiddleware from 'redux-saga'
 import { all, call, select, spawn } from 'redux-saga/effects'
 import presenceSaga from '../ExercisePhaseApp/Components/Presence/PresenceSaga'
 import solutionSaga from '../ExercisePhaseApp/Components/Solution/SolutionSaga'
-import currentEditorReducer, { selectCurrentEditorId } from '../ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import VideoEditorSlice, { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
-import shortCutsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSlice'
 import { shortCutsSaga } from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSaga'
-import shortCutSoundOptionsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutSoundsSlice'
 import { shortCutSoundsSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSoundsSaga'
 import { setCurrentTimeAsValueShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/SetCurrentTimeAsValueShortCutSaga'
 import { togglePlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/togglePlayShortCutSaga'
 import { openOverlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/openOverlayShortCutSaga'
 import { setPlayerTimeControlSaga } from '../../Components/VideoEditor/SetVideoPlayerTimeContext/SetPlayerTimeControlSaga'
+import RootReducer from './rootSlice'
 
 const sagaMiddleWare = createSagaMiddleware()
 
 export const store = configureStore({
-    reducer: combineReducers({
-        toolbar: toolbarReducer,
-        videoEditor: VideoEditorSlice,
-        config: configReducer,
-        liveSyncConfig: liveSyncConfigReducer,
-        overlay: overlayReducer,
-        materialViewer: materialViewerReducer,
-        presence: presenceReducer,
-        currentEditor: currentEditorReducer,
-        shortCuts: shortCutsReducer,
-        shortCutSoundOptions: shortCutSoundOptionsReducer,
-    }),
-    middleware: [...getDefaultMiddleware(), sagaMiddleWare],
+    reducer: RootReducer,
+    middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), sagaMiddleWare],
     devTools: {
         name: 'ExercisePhaseApp',
     },
@@ -97,23 +70,3 @@ export function* selectState() {
     const state: AppState = yield select()
     return state
 }
-
-export const selectUserIsCurrentEditor = createSelector(
-    [configSelectors.selectUserId, selectCurrentEditorId],
-    (userId, editorId) => editorId && userId === editorId
-)
-
-export const selectUserCanEditSolution = createSelector(
-    [
-        configSelectors.selectReadOnly,
-        selectUserIsCurrentEditor,
-        videoEditorSelectors.data.solutions.selectIsCurrentSolution,
-    ],
-    (isReadonly, userIsCurrentEditor, isCurrentSolution) => {
-        if (isReadonly) {
-            return false
-        }
-
-        return userIsCurrentEditor && isCurrentSolution
-    }
-)

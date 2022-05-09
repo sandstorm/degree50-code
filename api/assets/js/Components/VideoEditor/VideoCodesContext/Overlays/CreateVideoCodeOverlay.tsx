@@ -7,28 +7,24 @@ import TextField from 'Components/VideoEditor/components/TextField'
 import VideoCodeSelection from './VideoCodePrototypeSelection'
 import Button from 'Components/Button/Button'
 import { secondToTime } from 'Components/VideoEditor/utils/time'
-import { actions, selectors as videoEditorSelectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { VideoCodeOverlayIds } from '../VideoCodesMenu'
 import { useVideoCodeEdit } from './useVideoCodeEdit'
 import { VideoCode } from 'Components/VideoEditor/types'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { SolutionStateSlice } from 'Components/VideoEditor/SolutionSlice'
 import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice & SolutionStateSlice) => ({
-    currentTime: videoEditorSelectors.player.selectSyncPlayPosition(state),
-    duration: configSelectors.selectVideos(state)[0].duration,
-    prototypes: videoEditorSelectors.data.selectAllPrototypesFlattened(state),
-    currentSolutionId: videoEditorSelectors.data.solutions.selectCurrentId(state),
+const mapStateToProps = (state: AppState) => ({
+    currentTime: selectors.videoEditor.player.selectSyncPlayPosition(state),
+    duration: selectors.config.selectVideos(state)[0].duration,
+    prototypes: selectors.data.selectAllPrototypesFlattened(state),
+    currentSolutionId: selectors.data.solutions.selectCurrentId(state),
 })
 
 const mapDispatchToProps = {
     appendVideoCode: actions.data.videoCodes.append,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

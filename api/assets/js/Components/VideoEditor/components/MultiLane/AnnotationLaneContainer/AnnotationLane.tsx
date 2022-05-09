@@ -1,21 +1,21 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import { MediaLaneRenderConfigState } from 'Components/VideoEditor/MediaLaneRenderConfigSlice'
 import { MediaItem, Annotation } from 'Components/VideoEditor/types'
 import { solveConflicts } from 'Components/VideoEditor/utils/solveItemConflicts'
 import { useMediaItemHandling } from 'Components/VideoEditor/utils/useMediaItemHandling'
 import MediaLane from '../../MediaLane'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 type OwnProps = {
     annotations: Annotation[]
     readOnly?: boolean
 }
 
-const mapStateToProps = (state: VideoEditorState & MediaLaneRenderConfigState) => ({
-    mediaLaneRenderConfig: selectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
+const mapStateToProps = (state: AppState) => ({
+    mediaLaneRenderConfig: selectors.videoEditor.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
 })
 
 const mapDispatchToProps = {

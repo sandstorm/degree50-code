@@ -1,4 +1,4 @@
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
@@ -8,19 +8,16 @@ import { useAnnotationEdit } from './useAnnotationEdit'
 import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
-import {
-    ConfigStateSlice,
-    selectors as configSelectors,
-} from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { secondToTime } from '../../utils/time'
 import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
-    const currentlyEditedElementId = selectors.overlay.currentlyEditedElementId(state)
+const mapStateToProps = (state: AppState) => {
+    const currentlyEditedElementId = selectors.videoEditor.overlay.currentlyEditedElementId(state)
     const annotationsById = selectors.data.annotations.selectById(state)
     const annotation = currentlyEditedElementId ? annotationsById[currentlyEditedElementId] : undefined
-    const duration = configSelectors.selectVideos(state)[0].duration
-    const currentTime = selectors.player.selectSyncPlayPosition(state)
+    const duration = selectors.config.selectVideos(state)[0].duration
+    const currentTime = selectors.videoEditor.player.selectSyncPlayPosition(state)
 
     return {
         annotation,
@@ -31,7 +28,7 @@ const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => {
 
 const mapDispatchToProps = {
     updateAnnotation: actions.data.annotations.update,
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
     syncSolution: syncSolutionAction,
 }
 

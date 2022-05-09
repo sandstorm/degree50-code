@@ -28,9 +28,9 @@ import DeleteVideoCodePrototypeOverlay from 'Components/VideoEditor/VideoCodesCo
 import CutPreviewOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CutPreviewOverlay'
 import TeamOverlay, { TEAM_OVERLAY_ID } from 'Components/VideoEditor/Team/TeamOverlay'
 import AufgabeOverlay, { AUFGABE_OVERLAY_ID } from 'Components/VideoEditor/Aufgabe/AufgabeOverlay'
-import ZusatzMaterialOverlay, {
-    ZUSATZ_MATERIAL_OVERLAY_ID,
-} from 'Components/VideoEditor/ZusatzMaterial/ZusatzMaterialOverlay'
+import ZusatzAttachmentOverlay, {
+    ZUSATZ_ATTACHMENTS_OVERLAY_ID,
+} from 'Components/VideoEditor/ZusatzAttachment/ZusatzAttachmentOverlay'
 import { SolutionFilterOverlayIds } from 'Components/VideoEditor/FilterContext/FilterMenu'
 import SolutionFilterOverlay from 'Components/VideoEditor/FilterContext/Overlays/SolutionFilterOverlay'
 import { AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
@@ -107,8 +107,8 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
         case AUFGABE_OVERLAY_ID: {
             return <AufgabeOverlay />
         }
-        case ZUSATZ_MATERIAL_OVERLAY_ID: {
-            return <ZusatzMaterialOverlay />
+        case ZUSATZ_ATTACHMENTS_OVERLAY_ID: {
+            return <ZusatzAttachmentOverlay />
         }
 
         // Filter

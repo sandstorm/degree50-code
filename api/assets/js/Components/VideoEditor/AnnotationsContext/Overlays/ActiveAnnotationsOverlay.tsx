@@ -1,16 +1,17 @@
-import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import AnnotationListItem from 'Components/VideoEditor/AnnotationsContext/Overlays/AnnotationListItem'
 import Overlay from '../../components/Overlay'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: VideoEditorState) => ({
+const mapStateToProps = (state: AppState) => ({
     activeAnnotationIds: selectors.selectAllActiveAnnotationIdsAtCursor(state),
 })
 
 const mapDispatchToProps = {
-    closeOverlay: actions.overlay.unsetOverlay,
+    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
 }
 
 type OwnProps = {

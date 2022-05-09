@@ -2,16 +2,8 @@ import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'red
 import { eventChannel, EventChannel, Task } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
-import {
-    ConnectionState,
-    presenceActions,
-    selectTeamMemberIds,
-    selectTeamMembersById,
-    TeamMember,
-} from './PresenceSlice'
-import { selectLiveSyncConfig } from '../LiveSyncConfig/LiveSyncConfigSlice'
-import { selectCurrentEditorId } from './CurrentEditorSlice'
-import { selectors } from '../Config/ConfigSlice'
+import { ConnectionState, TeamMember } from './PresenceSlice'
+import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 
 export const initPresenceAction = createAction('Presence/Saga/init')
 export const disconnectPresenceAction = createAction('Presence/Saga/disconnect')
@@ -40,8 +32,8 @@ export default function* presenceSaga() {
 
 // presenceListenerLifeCycle
 function* presenceListener() {
-    const lifeSyncConfig = selectLiveSyncConfig(yield select())
-    yield put(presenceActions.setIsConnecting(true))
+    const lifeSyncConfig = selectors.liveSyncConfig.selectLiveSyncConfig(yield select())
+    yield put(actions.presence.setIsConnecting(true))
 
     try {
         // setup SSE for presence topic
@@ -49,7 +41,7 @@ function* presenceListener() {
         mercureUrl.searchParams.append('topic', lifeSyncConfig.topics.presence)
         const eventSource = new EventSource(mercureUrl.toString())
         const eventChannel: EventChannel<EventSource> = yield call(connect, eventSource)
-        yield put(presenceActions.setIsConnecting(false))
+        yield put(actions.presence.setIsConnecting(false))
 
         const messageHandler: Task = yield fork(handleMessages, eventChannel)
         // TODO maybe remove as we do listen for open now
@@ -59,8 +51,8 @@ function* presenceListener() {
         yield take(disconnectPresenceAction)
         yield cancel(messageHandler)
     } catch (e) {
-        yield put(presenceActions.setError((e as any).message ?? e))
-        yield put(presenceActions.setIsConnecting(false))
+        yield put(actions.presence.setError((e as any).message ?? e))
+        yield put(actions.presence.setIsConnecting(false))
     }
 }
 
@@ -113,16 +105,6 @@ const transformSubscriptionsToTeamMembers = (subscriptions: Array<Subscription>)
     )
 
 /**
- * Get the Id of the first online team member sorted alphabetically by id
- */
-const getNewEditorId = (teamMembers: Record<string, TeamMember>) =>
-    // eslint-disable-next-line
-    Object.keys(teamMembers)
-        .filter((memberId) => teamMembers[memberId].connectionState === ConnectionState.CONNECTED)
-        .sort()
-        .shift()
-
-/**
  * Push actions emitted from custom channel to root saga
  */
 function* handleMessages(channel: EventChannel<unknown>) {
@@ -151,8 +133,8 @@ const isSubscriptionResponse = (response: any): response is { data: { subscripti
 }
 
 function* fetchSubscriptions() {
-    const lifeSyncConfig = selectLiveSyncConfig(yield select())
-    const response: unknown = yield Axios.get(lifeSyncConfig.subscriptionsEndpoint, {
+    const liveSyncConfig = selectors.liveSyncConfig.selectLiveSyncConfig(yield select())
+    const response: unknown = yield Axios.get(liveSyncConfig.subscriptionsEndpoint, {
         headers: {
             'Content-Type': 'application/ld+json',
         },
@@ -163,19 +145,21 @@ function* fetchSubscriptions() {
     // merge existing teamMembers with Members in Subscription
     // possibly adding new members
     // setting the connection state of members that are not subscribed to DISCONNECTED
-    const teamMembersFromState = selectTeamMembersById(yield select())
+    const teamMembersFromState = selectors.presence.selectTeamMembersById(yield select())
 
     // set all members as DISCONNECTED - only members with active subscription will be set as CONNECTED again
-    const teamMembersFromStateDisconnected: Record<string, TeamMember> = selectTeamMemberIds(yield select()).reduce(
-        (acc, teamMemberId) => ({
-            ...acc,
-            [teamMemberId]: {
-                ...teamMembersFromState[teamMemberId],
-                connectionState: ConnectionState.DISCONNECTED,
-            },
-        }),
-        {}
-    )
+    const teamMembersFromStateDisconnected: Record<string, TeamMember> = selectors.presence
+        .selectTeamMemberIds(yield select())
+        .reduce(
+            (acc, teamMemberId) => ({
+                ...acc,
+                [teamMemberId]: {
+                    ...teamMembersFromState[teamMemberId],
+                    connectionState: ConnectionState.DISCONNECTED,
+                },
+            }),
+            {}
+        )
     const teamMembersInSubscription = transformSubscriptionsToTeamMembers(subscriptions)
     const updatedTeamMembers = Object.keys(teamMembersInSubscription).reduce(
         (acc, teamMemberId) => ({
@@ -188,18 +172,18 @@ function* fetchSubscriptions() {
     )
 
     // WHY: it's possible that while a team phase session is open, that other members join the team - so we need to update those
-    yield put(presenceActions.setTeamMembers(updatedTeamMembers))
+    yield put(actions.presence.setTeamMembers(updatedTeamMembers))
 }
 
 function* promoteUserToCurrentEditor(action: ReturnType<typeof promoteUserToCurrentEditorAction>) {
-    const userId = selectors.selectUserId(yield select())
-    const currentEditorId = selectCurrentEditorId(yield select())
+    const userId = selectors.config.selectUserId(yield select())
+    const currentEditorId = selectors.currentEditor.selectCurrentEditorId(yield select())
 
     const { userId: userIdToPromote } = action.payload
 
     if (userId !== currentEditorId) {
         try {
-            Axios.post(selectors.selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
+            Axios.post(selectors.config.selectConfig(yield select()).apiEndpoints.updateCurrentEditor, {
                 currentEditorCandidateId: userIdToPromote,
             })
         } catch (e) {

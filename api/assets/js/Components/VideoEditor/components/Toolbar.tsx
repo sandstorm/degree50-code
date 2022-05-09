@@ -4,7 +4,7 @@ import AufgabeMenu from '../Aufgabe/AufgabeMenu'
 import CuttingMenu from '../CuttingContext/CuttingMenu'
 import TeamMenu from '../Team/TeamMenu'
 import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
-import ZusatzMaterialMenu from '../ZusatzMaterial/ZusatzMaterialMenu'
+import ZusatzAttachmentMenu from '../ZusatzAttachment/ZusatzAttachmentMenu'
 import FilterMenu from '../FilterContext/FilterMenu'
 import ShortCutsMenu from '../ShortCutsContext/ShortCutsMenu'
 
@@ -15,7 +15,7 @@ const Toolbar = () => {
             <VideoCodesMenu />
             <CuttingMenu />
             <AufgabeMenu />
-            <ZusatzMaterialMenu />
+            <ZusatzAttachmentMenu />
             <TeamMenu />
             <FilterMenu />
             <ShortCutsMenu />

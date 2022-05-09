@@ -1,8 +1,9 @@
-import { actions, VideoEditorState, selectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React from 'react'
 import { connect } from 'react-redux'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const prefix = 'SOLUTION_FILTER'
 
@@ -10,14 +11,14 @@ export const SolutionFilterOverlayIds = {
     filterSolutions: `${prefix}/filterSolutions`,
 }
 
-const mapStateToProps = (state: VideoEditorState) => {
+const mapStateToProps = (state: AppState) => {
     return {
         hasNoPreviousSolutions: selectors.data.solutions.selectPreviousIds(state).length === 0,
     }
 }
 
 const mapDispatchToProps = {
-    setOverlay: actions.overlay.setOverlay,
+    setOverlay: actions.videoEditor.overlay.setOverlay,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
