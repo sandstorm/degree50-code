@@ -39,9 +39,16 @@ import ShortCutsConfigurationOverlay from '../../ShortCutsContext/Overlays/Short
 import SetVideoPlayerTimeOverlay, {
     SetVideoPlayerTimeOverlayId,
 } from '../../SetVideoPlayerTimeContext/Overlays/SetVideoPlayerTimeOverlay'
+import { AllMediaItemsOverlayIds } from 'Components/VideoEditor/AllMediaItemsContext/AllMediaItemsMenu'
+import AllMediaItemsOverlay from 'Components/VideoEditor/AllMediaItemsContext/Overlays/AllMediaItemsOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
     switch (id) {
+        // All media items
+        case AllMediaItemsOverlayIds.all: {
+            return <AllMediaItemsOverlay />
+        }
+
         // Annotations
         case AnnotationOverlayIds.active: {
             return <ActiveAnnotationsOverlay itemUpdateCondition={true} />
