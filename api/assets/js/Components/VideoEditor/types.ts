@@ -11,6 +11,12 @@ import {
     CUTLIST_API_PROPERTY,
 } from '../../StimulusControllers/normalizeData'
 
+export enum MediaItemTypeEnum {
+    annotation = 'annotation',
+    videoCode = 'videoCode',
+    cut = 'cut',
+}
+
 export type VideoCodePrototype = {
     id: string
     name: string

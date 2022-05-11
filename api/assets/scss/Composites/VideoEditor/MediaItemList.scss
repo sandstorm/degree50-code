@@ -8,7 +8,7 @@
     }
 
     li {
-        padding: $theme__spacing--tiny $theme__spacing--small;
+        padding: $theme__spacing--base $theme__spacing--base;
 
         &:nth-child(even) {
             background-color: $theme__color__grey--lighter;
@@ -18,6 +18,10 @@
         &:focus-within {
             background-color: $theme__color__secondary--dark;
             color: $theme__color__white;
+        }
+
+        & .video-code-prototype-information {
+            margin-top: 0;
         }
     }
 }

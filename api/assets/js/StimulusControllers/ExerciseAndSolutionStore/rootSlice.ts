@@ -32,7 +32,7 @@ import {
 } from 'Components/VideoEditor/VideoEditorSlice'
 import { createSelector } from '@reduxjs/toolkit'
 import { sortByStartTime, timeToSecond } from 'Components/VideoEditor/utils/time'
-import { Annotation, Cut, VideoCode } from 'Components/VideoEditor/types'
+import { Annotation, Cut, MediaItemTypeEnum, VideoCode } from 'Components/VideoEditor/types'
 
 export default combineReducers({
     toolbar: toolbarReducer,
@@ -224,6 +224,17 @@ const selectAllVideoCodeIdsByStartTime = createSelector([selectAllVideoCodesBySt
     videoCodes.map((vc) => vc.id)
 )
 
+const selectAllMediaItemsByStartTime = createSelector(
+    [selectAllAnnotations, selectAllVideoCodes, selectAllCuts],
+    (annotations, videoCodes, cuts) => {
+        return sortByStartTime([
+            ...annotations.map((a) => ({ ...a, type: MediaItemTypeEnum.annotation })),
+            ...videoCodes.map((vc) => ({ ...vc, type: MediaItemTypeEnum.videoCode })),
+            ...cuts.map((c) => ({ ...c, type: MediaItemTypeEnum.cut })),
+        ])
+    }
+)
+
 const selectAllCutIdsByStartTime = createSelector([selectAllCutsByStartTime], (cuts) => cuts.map((c) => c.id))
 
 const selectAllActiveAnnotationIdsAtCursor = createSelector(
@@ -260,6 +271,8 @@ export const selectors = {
     selectUserIsCurrentEditor,
     selectUserCanEditSolution,
     selectSolutionLists,
+
+    selectAllMediaItemsByStartTime,
 
     selectVideoCodeIdsAtCursor: selectCurrentVideoCodeIdsAtCursor,
     selectAllVideoCodesByStartTime,
