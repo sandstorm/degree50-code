@@ -24,6 +24,7 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
     return {
         item,
         canEdit,
+        creatorName: selectors.data.selectCreatorNameForCut(state, ownProps),
     }
 }
 
@@ -63,10 +64,14 @@ const CutListItem: FC<Props> = (props) => {
         props.setPlayPosition(t2d(props.item.start))
     }
 
+    const creatorDescription = `Schnitt von: ${props.creatorName}`
+
     const ariaLabel = `
         ${props.index + 1}. Element
 
         Beschreibung: ${props.item.text}
+
+        ${creatorDescription}
 
         Von: ${props.item.start}
         Bis: ${props.item.end}
@@ -77,6 +82,7 @@ const CutListItem: FC<Props> = (props) => {
     return (
         <li className="cut-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={props.item.id}>
             <p>Beschreibung: {props.item.text}</p>
+            <p>{creatorDescription}</p>
             <Start start={props.item.start} />
             <End end={props.item.end} />
             <br />

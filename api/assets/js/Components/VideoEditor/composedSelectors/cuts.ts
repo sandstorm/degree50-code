@@ -24,10 +24,20 @@ const selectCutIsFromCurrentSolution = createSelector(
     (currentSolutionId, cut) => currentSolutionId && cut && currentSolutionId === cut.solutionId
 )
 
+const selectCreatorNameForCut = createSelector(
+    [solutionSelectors.selectById, cutsSelectors.selectCutById],
+    (solutionsById, cut) => {
+        const solution = cut.solutionId ? solutionsById[cut.solutionId] : undefined
+
+        return solution?.userName ?? '<Unbekannter Ersteller>'
+    }
+)
+
 export const composedCutSelectors = {
     selectDenormalizedCurrentCutList,
     selectCurrentCutListByStartTime,
     selectCurrentCutIdsByStartTime,
     selectCutIsFromCurrentSolution,
     selectCurrentCuts,
+    selectCreatorNameForCut,
 }
