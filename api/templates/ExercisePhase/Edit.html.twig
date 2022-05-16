@@ -41,7 +41,9 @@
             {{ form_errors(form) }}
 
             <div class="row">
-                <div class="col-md-6">{{ form_row(form.isGroupPhase) }}</div>
+                {% if exercisePhase.type.value != 'reflexion' %}
+                    <div class="col-md-6">{{ form_row(form.isGroupPhase) }}</div>
+                {% endif %}
                 <div class="col-md-6">{{ form_row(form.dependsOnExercisePhase) }}</div>
             </div>
             {% if exercisePhase.type.value != 'reflexion' %}

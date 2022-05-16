@@ -3,6 +3,7 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\Attachment;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
@@ -10,7 +11,6 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Entity\Exercise\Attachment;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
@@ -140,6 +140,16 @@ class ExercisePhaseController extends AbstractController
         $phaseReflexionDependsOn = $reflexionPhase->getDependsOnExercisePhase();
         $exercise = $reflexionPhase->getBelongsToExercise();
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $phaseReflexionDependsOn);
+
+        // Fix "Aufgabe Testen"
+        $user = $this->getUser();
+        if ($user === $exercise->getCreator()) {
+            $teamOfCreator = $phaseReflexionDependsOn->getTeams()->filter(fn(ExercisePhaseTeam $team) => $team->getCreator() === $user)->first();
+
+            if ($teamOfCreator) {
+                $teams[] = $teamOfCreator;
+            }
+        }
 
         $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(

@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\VideoCode;
@@ -54,8 +55,7 @@ class AppFixtures extends Fixture
         ';
         $exercise->addPhase($exercise_p2);
 
-        $exercise_p3 = new VideoAnalysisPhase();
-        $exercise_p3->isGroupPhase = true;
+        $exercise_p3 = new ReflexionPhase();
         $exercise_p3->name = "Austausch über die erstellten Filme";
         $exercise_p3->task = '
         Konkreter Arbeitsauftrag:
