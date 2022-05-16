@@ -75,9 +75,6 @@ const VideoCodeLaneContainer = (props: Props) => {
 
                 return (
                     <div key={solution.id}>
-                        <div className="multilane__medialane-description">
-                            {componentName} ({mediaItems.length}) - {solution.userName}
-                        </div>
                         <MediaLaneDescription
                             componentName={componentName}
                             itemCount={mediaItems.length}

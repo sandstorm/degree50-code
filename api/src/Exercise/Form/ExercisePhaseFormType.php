@@ -73,14 +73,6 @@ class ExercisePhaseFormType extends AbstractType
                 },
                 'choice_translation_domain' => 'forms'
             ])
-            ->add('isGroupPhase', CheckboxType::class, [
-                'required' => false,
-                'label' => "exercisePhase.labels.isGroupPhase",
-                'disabled' => $exercisePhase->getHasSolutions() || $isReflexionPhase,
-                'translation_domain' => 'forms',
-                'block_prefix' => 'toggleable_button_checkbox',
-                'help' => "exercisePhase.help.isGroupPhase",
-            ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             // NOTE: there seems to be a bug inside CKEditor where the editor does not respect the 'required' attribute
             // We currently work around this by falling back to symfonys own validation via Annotations on the ExercisePhase.php entity.
@@ -100,6 +92,15 @@ class ExercisePhaseFormType extends AbstractType
                     'translation_domain' => 'forms',
                     'block_prefix' => 'toggleable_button_checkbox',
                     'help' => "exercisePhase.help.otherSolutionsAreAccessible",
+                ])
+                // ReflexionPhase is always a group phase
+                ->add('isGroupPhase', CheckboxType::class, [
+                    'required' => false,
+                    'label' => "exercisePhase.labels.isGroupPhase",
+                    'disabled' => $exercisePhase->getHasSolutions(),
+                    'translation_domain' => 'forms',
+                    'block_prefix' => 'toggleable_button_checkbox',
+                    'help' => "exercisePhase.help.isGroupPhase",
                 ]);
         }
     }
