@@ -36,6 +36,8 @@ export type MediaItemType = {
     solutionId?: string
 }
 
+export type MediaItemTypeWithTypeInformation = MediaItemType & { type: MediaItemTypeEnum }
+
 export type AnnotationFromAPI = MediaItemType & { id?: string }
 export type Annotation = Omit<AnnotationFromAPI, 'id'> & { id: string }
 

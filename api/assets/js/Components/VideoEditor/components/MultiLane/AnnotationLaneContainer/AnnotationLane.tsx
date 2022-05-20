@@ -47,14 +47,7 @@ const Annotationlane = (props: Props) => {
         updateCondition: true, // TODO
     })
 
-    return (
-        <MediaLane
-            updateMediaItem={updateMediaItem}
-            mediaItems={mediaItems}
-            showTextInMediaItems={false}
-            readOnly={props.readOnly}
-        />
-    )
+    return <MediaLane updateMediaItem={updateMediaItem} mediaItems={mediaItems} readOnly={props.readOnly} />
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Annotationlane))

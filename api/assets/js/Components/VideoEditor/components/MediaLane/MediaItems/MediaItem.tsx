@@ -1,6 +1,11 @@
 import React, { useCallback, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { MediaItem as MediaItemClass, MediaItemType } from '../../../types'
+import {
+    MediaItem as MediaItemClass,
+    MediaItemType,
+    MediaItemTypeEnum,
+    MediaItemTypeWithTypeInformation,
+} from '../../../types'
 import { RenderConfig } from '../MediaTrack'
 import { actions } from '../../../PlayerSlice'
 import { useModalHook } from 'Components/Modal/useModalHook'
@@ -8,16 +13,19 @@ import Button from 'Components/Button/Button'
 import { Handle } from './types'
 import MediaItemLabel from './MediaItemLabel'
 import { clamp } from './helpers'
+import AnnotationListItem from 'Components/VideoEditor/AnnotationsContext/Overlays/AnnotationListItem'
+import VideoCodeListItem from 'Components/VideoEditor/VideoCodesContext/Overlays/VideoCodeListItem'
+import CutListItem from 'Components/VideoEditor/CuttingContext/Overlays/CutListItem'
 
 type OwnProps = {
-    item: MediaItemClass<MediaItemType>
+    item: MediaItemClass<MediaItemTypeWithTypeInformation>
     id: number | string
     renderConfig: RenderConfig
     isPlayedBack?: boolean
     checkMediaItem: (item: MediaItemClass<any>) => boolean
     onItemMouseDown: (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        item: MediaItemClass<MediaItemType>,
+        item: MediaItemClass<MediaItemTypeWithTypeInformation>,
         side: Handle
     ) => void
     updateMediaItem: (
@@ -77,7 +85,7 @@ const MediaItem = ({
         renderConfig.padding * renderConfig.gridGap +
         (item.startTime - renderConfig.timelineStartTime) * renderConfig.gridGap * 10
 
-    const { showModal: showMemoModal, RenderModal: RenderMemoModal } = useModalHook()
+    const { showModal: showMediaItemModal, RenderModal: RenderMediaItemModal } = useModalHook()
 
     const width = (item.endTime - item.startTime) * renderConfig.gridGap * 10
 
@@ -98,6 +106,44 @@ const MediaItem = ({
 
     // WHY: Clamp width of lane item drag handle between min and max value
     const laneItemHandleWidth = clamp(renderConfig.gridGap, 8, 12)
+
+    const modalTitle = (() => {
+        switch (item.originalData.type) {
+            case MediaItemTypeEnum.annotation: {
+                return 'Annotation'
+            }
+
+            case MediaItemTypeEnum.videoCode: {
+                return 'Video Codierung'
+            }
+
+            case MediaItemTypeEnum.cut: {
+                return 'Schnitt'
+            }
+        }
+    })()
+
+    const modalBody = (() => {
+        if (item.originalData.id) {
+            switch (item.originalData.type) {
+                case MediaItemTypeEnum.annotation: {
+                    return (
+                        <AnnotationListItem key={item.originalData.id} annotationId={item.originalData.id} index={1} />
+                    )
+                }
+
+                case MediaItemTypeEnum.videoCode: {
+                    return <VideoCodeListItem key={item.originalData.id} videoCodeId={item.originalData.id} index={1} />
+                }
+
+                case MediaItemTypeEnum.cut: {
+                    return <CutListItem key={item.originalData.id} cutId={item.originalData.id} index={1} />
+                }
+            }
+        } else {
+            return null
+        }
+    })()
 
     return (
         <div
@@ -123,11 +169,10 @@ const MediaItem = ({
                 setPlayPosition(item.startTime + 0.001)
             }}
         >
-            {item.memo ? (
-                <Button onPress={showMemoModal} className={'video-editor__media-items__memo-toggle'}>
-                    <i className={'fas fa-info'} />
-                </Button>
-            ) : null}
+            <Button onPress={showMediaItemModal} className={'video-editor__media-items__memo-toggle'}>
+                <i className={'fas fa-info'} />
+            </Button>
+
             <div
                 className="video-editor__media-item__handle"
                 style={{
@@ -149,7 +194,11 @@ const MediaItem = ({
                 }}
                 onMouseDown={handleRightHandleMouseDown}
             />
-            <RenderMemoModal title={'Memo'}>{item.memo}</RenderMemoModal>
+            {modalBody && (
+                <RenderMediaItemModal title={modalTitle}>
+                    <ol className="video-editor__media-item-list-new">{modalBody}</ol>
+                </RenderMediaItemModal>
+            )}
         </div>
     )
 }

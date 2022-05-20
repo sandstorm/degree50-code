@@ -37,14 +37,7 @@ const VideoCodeMedialane = (props: Props) => {
         updateCondition: true, // TODO
     })
 
-    return (
-        <MediaLane
-            mediaItems={mediaItems}
-            updateMediaItem={updateMediaItem}
-            showTextInMediaItems={false}
-            readOnly={props.readOnly}
-        />
-    )
+    return <MediaLane mediaItems={mediaItems} updateMediaItem={updateMediaItem} readOnly={props.readOnly} />
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(VideoCodeMedialane))

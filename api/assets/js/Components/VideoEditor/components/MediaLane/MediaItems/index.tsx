@@ -1,20 +1,25 @@
 import React, { useRef } from 'react'
 import MediaItem from './MediaItem'
-import { MediaItem as MediaItemClass, MediaItemType } from '../../../types'
+import {
+    MediaItem as MediaItemClass,
+    MediaItemType,
+    MediaItemTypeEnum,
+    MediaItemTypeWithTypeInformation,
+} from '../../../types'
 import { RenderConfig } from '../MediaTrack'
 import { useItemInteraction } from './useItemInteraction'
 import { itemIsVisible } from './helpers'
 import ReadOnlyMediaItem from './ReadOnlyMediaItem'
 
 const renderItems = (config: {
-    mediaItems: MediaItemClass<MediaItemType>[]
+    mediaItems: MediaItemClass<MediaItemTypeWithTypeInformation>[]
     renderConfig: RenderConfig
     activeItemIndex: number
     checkMediaItem: (item: MediaItemClass<any>) => boolean
     handlers: {
         onItemMouseDown: (
             event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-            item: MediaItemClass<MediaItemType>,
+            item: MediaItemClass<MediaItemTypeWithTypeInformation>,
             side: 'left' | 'right' | 'center'
         ) => void
     }
@@ -65,7 +70,7 @@ const renderReadOnlyItems = (config: {
     ))
 
 type Props = {
-    mediaItems: MediaItemClass<MediaItemType>[]
+    mediaItems: MediaItemClass<MediaItemType & { type: MediaItemTypeEnum }>[]
     renderConfig: RenderConfig
     currentTime: number
     updateMediaItem: (

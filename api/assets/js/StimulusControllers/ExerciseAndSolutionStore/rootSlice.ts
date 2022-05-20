@@ -129,7 +129,10 @@ const selectActiveSolutionsWithAnnotations = createSelector(
     (visibleSolutions, solutionsById, annotationsById) => {
         return visibleSolutions.map((visibleSolution) => {
             const solution = solutionsById[visibleSolution.id]
-            const annotations = solution.solutionLists.annotations.map((id) => annotationsById[id])
+            const annotations = solution.solutionLists.annotations.map((id) => ({
+                ...annotationsById[id],
+                type: MediaItemTypeEnum.annotation,
+            }))
 
             return {
                 ...solution,
@@ -148,7 +151,10 @@ const selectActiveSolutionsWithVideoCodes = createSelector(
     (visibleSolutions, solutionsById, videoCodesById) => {
         return visibleSolutions.map((visibleSolution) => {
             const solution = solutionsById[visibleSolution.id]
-            const videoCodes = solution.solutionLists.videoCodes.map((id) => videoCodesById[id])
+            const videoCodes = solution.solutionLists.videoCodes.map((id) => ({
+                ...videoCodesById[id],
+                type: MediaItemTypeEnum.videoCode,
+            }))
 
             return {
                 ...solution,
