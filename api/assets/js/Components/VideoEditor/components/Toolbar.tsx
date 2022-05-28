@@ -1,4 +1,3 @@
-import React from 'react'
 import AnnotationsMenu from '../AnnotationsContext/AnnotationsMenu'
 import AufgabeMenu from '../Aufgabe/AufgabeMenu'
 import CuttingMenu from '../CuttingContext/CuttingMenu'

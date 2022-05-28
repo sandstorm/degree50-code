@@ -7,8 +7,8 @@ import {
     setShortCutSoundsState,
     ShortCutSoundState,
 } from './ShortCutSoundsSlice'
-import { selectState } from '../../../StimulusControllers/ExerciseAndSolutionStore/Store'
 import { merge } from 'lodash'
+import { selectState } from 'StimulusControllers/ExerciseAndSolutionStore/rootSaga'
 
 export const playShortCutSuccessSoundAction = createAction('SAGA/SHORT_CUT/SHORT_CUT_SUCCESS')
 export const playShortCutTriggerSoundAction = createAction('SAGA/SHORT_CUT/SHORT_CUT_TRIGGER')

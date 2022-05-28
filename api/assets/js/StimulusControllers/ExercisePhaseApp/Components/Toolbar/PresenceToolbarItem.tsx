@@ -1,7 +1,6 @@
-import React from 'react'
 import { Component } from './Toolbar'
-import { useAppSelector } from '../../../ExerciseAndSolutionStore/Store'
 import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { useAppSelector } from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
 
 type ToolbarItemProps = {
     component: Component

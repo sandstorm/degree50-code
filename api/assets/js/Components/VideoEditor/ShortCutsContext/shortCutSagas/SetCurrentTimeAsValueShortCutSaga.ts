@@ -3,10 +3,10 @@ import { createAction } from '@reduxjs/toolkit'
 import { CutOverlayIds } from '../../CuttingContext/CuttingMenu'
 import { AnnotationOverlayIds } from '../../AnnotationsContext/AnnotationsMenu'
 import { VideoCodeOverlayIds } from '../../VideoCodesContext/VideoCodesMenu'
-import { selectState } from '../../../../StimulusControllers/ExerciseAndSolutionStore/Store'
 import { selectors as OverlaySelectors } from '../../components/OverlayContainer/OverlaySlice'
 import { ShortCutId } from '../ShortCutsSlice'
 import { playShortCutSuccessSoundAction, playShortCutTriggerSoundAction } from '../shortCutSoundsSaga'
+import { selectState } from 'StimulusControllers/ExerciseAndSolutionStore/rootSaga'
 
 export const setCurrentTimeAsStartValueAction = createAction('SAGA/SHORT_CUTS/SET_CURRENT_TIME_AS_START_VALUE')
 export const setCurrentTimeAsEndValueAction = createAction('SAGA/SHORT_CUTS/SET_CURRENT_TIME_AS_END_VALUE')

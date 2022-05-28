@@ -34,7 +34,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { sortByStartTime, timeToSecond } from 'Components/VideoEditor/utils/time'
 import { Annotation, Cut, MediaItemTypeEnum, VideoCode } from 'Components/VideoEditor/types'
 
-export default combineReducers({
+export const RootReducer = combineReducers({
     toolbar: toolbarReducer,
     videoEditor: VideoEditorSlice,
     data: DataSlice,

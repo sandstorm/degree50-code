@@ -1,8 +1,8 @@
 import { put, takeLatest } from 'redux-saga/effects'
 import { createAction } from '@reduxjs/toolkit'
 import { merge } from 'lodash'
-import { selectState } from '../../../StimulusControllers/ExerciseAndSolutionStore/Store'
 import { selectShortCutsState, setShortCutsState, ShortCutsState } from './ShortCutsSlice'
+import { selectState } from 'StimulusControllers/ExerciseAndSolutionStore/rootSaga'
 
 export const initializeShortCuts = createAction('SAGA/SHORT_CUTS/INITIALIZE')
 export const persistShortCuts = createAction('SAGA/SHORT_CUTS/PERSIST')

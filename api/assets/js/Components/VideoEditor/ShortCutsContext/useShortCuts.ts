@@ -1,5 +1,5 @@
 import { useHotkeys } from 'react-hotkeys-hook'
-import { useAppDispatch, useAppSelector } from '../../../StimulusControllers/ExerciseAndSolutionStore/Store'
+import { useAppDispatch, useAppSelector } from '../../../StimulusControllers/ExerciseAndSolutionStore/hooks'
 import { initializeShortCuts } from './ShortCutsSaga'
 import { useEffect } from 'react'
 import { selectHotKeyByShortCutId, ShortCutId } from './ShortCutsSlice'
@@ -21,6 +21,9 @@ export const useShortCuts = () => {
     useEffect(() => {
         dispatch(initializeShortCuts())
         dispatch(initializeSoundOptionsAction())
+        // TODO
+        // should we add dispatch here? Or is this supposed to run only once?
+        // If the latter is the case, please document this and add the respective eslint-ignore comment
     }, [])
 
     /**

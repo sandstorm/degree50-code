@@ -4,11 +4,11 @@ import { actions as OverlayActions } from '../../components/OverlayContainer/Ove
 import { playShortCutSuccessSoundAction, playShortCutTriggerSoundAction } from '../shortCutSoundsSaga'
 import { actions as PlayerActions } from '../../PlayerSlice'
 import { selectComponents } from '../../../../StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
-import { selectState } from '../../../../StimulusControllers/ExerciseAndSolutionStore/Store'
 import { AnnotationOverlayIds } from '../../AnnotationsContext/AnnotationsMenu'
 import { TabsTypesEnum } from '../../../../types'
 import { VideoCodeOverlayIds } from '../../VideoCodesContext/VideoCodesMenu'
 import { CutOverlayIds } from '../../CuttingContext/CuttingMenu'
+import { selectState } from 'StimulusControllers/ExerciseAndSolutionStore/rootSaga'
 
 export const openOverlayAction = createAction('SAGA/SHORT_CUT/OPEN_OVERLAY', (overlayId: string) => ({
     payload: { overlayId },

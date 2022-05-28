@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit'
 import { actions, selectors } from '../../VideoEditorSlice'
-import { selectState } from '../../../../StimulusControllers/ExerciseAndSolutionStore/Store'
 import { put, takeLatest } from 'redux-saga/effects'
 import { playShortCutSuccessSoundAction, playShortCutTriggerSoundAction } from '../shortCutSoundsSaga'
+import { selectState } from 'StimulusControllers/ExerciseAndSolutionStore/rootSaga'
 
 export const togglePlayShortCutAction = createAction('SAGA/SHORT_CUT/TOGGLE_PLAY')
 
@@ -17,7 +17,7 @@ function* togglePlayShortCut() {
 
     const newIsPaused = selectors.player.selectIsPaused(yield selectState())
 
-    if (isPaused != newIsPaused) {
+    if (isPaused !== newIsPaused) {
         yield put(playShortCutSuccessSoundAction())
     } else {
         yield put(playShortCutTriggerSoundAction())

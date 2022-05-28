@@ -3,11 +3,12 @@ import { ToolbarItem } from './ToolbarItem'
 import { connect } from 'react-redux'
 import { selectActiveToolbarItem, toggleComponent, toggleToolbarVisibility, selectIsVisible } from './ToolbarSlice'
 import { setOverlayVisibility, setOverlayComponent, setOverlaySize } from '../Overlay/OverlaySlice'
-import { AppState, AppDispatch, useAppDispatch } from '../../../ExerciseAndSolutionStore/Store'
+import { AppState, AppDispatch } from '../../../ExerciseAndSolutionStore/Store'
 import { ComponentTypesEnum } from '../../../../types'
 import { ComponentId, ConfigState, selectors } from '../Config/ConfigSlice'
 import { overlaySizesEnum } from '../Overlay/Overlay'
 import { PresenceToolbarItem } from './PresenceToolbarItem'
+import { useAppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
 
 const mapStateToProps = (state: AppState) => ({
     activeToolbarItem: selectActiveToolbarItem(state),
@@ -52,7 +53,7 @@ const possibleComponentsForToolbar: Array<Component> = [
         isVisible: (config: ConfigState) => {
             return config.isGroupPhase
         },
-        onClick: (dispatch, component, config, closeComponent) => {
+        onClick: (dispatch, component, _config, closeComponent) => {
             toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.SMALL))
@@ -63,10 +64,10 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: true,
         label: 'Aufgabenstellung',
         icon: 'fas fa-tasks',
-        isVisible: (config: ConfigState) => {
+        isVisible: (_config: ConfigState) => {
             return true
         },
-        onClick: (dispatch, component, config, closeComponent) => {
+        onClick: (dispatch, component, _config, closeComponent) => {
             toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
@@ -77,10 +78,10 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: true,
         label: 'Anhänge',
         icon: 'fas fa-folder-open',
-        isVisible: (config: ConfigState) => {
+        isVisible: (_config: ConfigState) => {
             return true
         },
-        onClick: (dispatch, component, config, closeComponent) => {
+        onClick: (dispatch, component, _config, closeComponent) => {
             toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))
@@ -91,10 +92,10 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: false,
         label: 'Videos',
         icon: 'fas fa-file-video',
-        isVisible: (config: ConfigState) => {
+        isVisible: (_config: ConfigState) => {
             return true
         },
-        onClick: (dispatch, component, config, closeComponent) => {
+        onClick: (dispatch, component, _config, closeComponent) => {
             toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.LARGE))
@@ -105,10 +106,10 @@ const possibleComponentsForToolbar: Array<Component> = [
         isMandatory: false,
         label: 'Dokumenten-Upload',
         icon: 'fas fa-file-upload',
-        isVisible: (config: ConfigState) => {
+        isVisible: (_config: ConfigState) => {
             return true
         },
-        onClick: (dispatch, component, config, closeComponent) => {
+        onClick: (dispatch, component, _config, closeComponent) => {
             toggleOverlayVisibility(dispatch, closeComponent)
             dispatch(setOverlayComponent(component.id))
             dispatch(setOverlaySize(overlaySizesEnum.DEFAULT))

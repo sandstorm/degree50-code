@@ -1,22 +1,28 @@
-import {Controller} from "stimulus"
-import {Provider} from 'react-redux'
+import { Controller } from 'stimulus'
+import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
-import React from 'react'
 import widgets from '../Widgets/Index'
-import {store} from "./ExerciseAndSolutionStore/Store"
+import { store, sagaMiddleWare } from './ExerciseAndSolutionStore/Store'
+import rootSaga from './ExerciseAndSolutionStore/rootSaga'
 
-export default class extends Controller {
+sagaMiddleWare.run(rootSaga)
+
+class ReactController extends Controller {
     connect() {
         const widgetName = this.data.get('widget')
         const propsAsString = this.data.get('props')
 
+        // @ts-ignore
         const ReactWidget = widgets[widgetName]
         const props = propsAsString ? JSON.parse(propsAsString) : {}
 
         ReactDOM.render(
             <Provider store={store}>
                 <ReactWidget {...props} />
-            </Provider>
-            , this.element)
+            </Provider>,
+            this.element
+        )
     }
 }
+
+export default ReactController

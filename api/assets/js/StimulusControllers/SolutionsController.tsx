@@ -1,8 +1,7 @@
 import { Controller } from 'stimulus'
 import ReactDOM from 'react-dom'
-import React from 'react'
 import { Provider } from 'react-redux'
-import { store } from './ExerciseAndSolutionStore/Store'
+import { store, sagaMiddleWare } from './ExerciseAndSolutionStore/Store'
 import { ConfigState, actions as configActions } from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setTranslations, setLocale } from 'react-i18nify'
 import i18n from 'StimulusControllers/i18n'
@@ -13,6 +12,7 @@ import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEdito
 import SolutionsApp from './SolutionsApp'
 import { initData } from 'Components/VideoEditor/initData'
 import { DataState } from './ExerciseAndSolutionStore/DataSlice'
+import rootSaga from './ExerciseAndSolutionStore/rootSaga'
 
 export type SolutionByTeam = Solution & {
     teamCreator: string
@@ -23,6 +23,8 @@ export type SolutionByTeam = Solution & {
 
 setTranslations(i18n)
 setLocale('de')
+
+sagaMiddleWare.run(rootSaga)
 
 class SolutionsController extends Controller {
     connect() {
