@@ -57,7 +57,6 @@ const mapAttachmentTypeToIcon = (type: Attachment['type']) => {
 }
 
 const AttachmentViewer: React.FC<Props> = (props) => {
-  console.log({ props })
   const attachmentTiles = props.config.attachments.map(function (
     attachment: Attachment
   ) {
