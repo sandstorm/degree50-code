@@ -10,99 +10,104 @@ import { SetPlayerTimeControl } from '../VideoEditor/SetVideoPlayerTimeContext/S
 import { usePatchVideoJsToMakeHotKeysWork } from '../VideoEditor/usePatchVideoJsToMakeHotKeysWork'
 
 type Props = {
-    videoJsOptions: VideoJsPlayerOptions
-    videoMap?: Video
-    worker?: Worker
-    updateTimeCallback?: (currentTime: number) => void
-    setPauseCallback?: (pause: boolean) => void
-    isPaused?: boolean
-    playPosition?: number
+  videoJsOptions: VideoJsPlayerOptions
+  videoMap?: Video
+  worker?: Worker
+  updateTimeCallback?: (currentTime: number) => void
+  setPauseCallback?: (pause: boolean) => void
+  isPaused?: boolean
+  playPosition?: number
 }
 
 const defaultVideoJsOptions: VideoJsPlayerOptions = {
-    fluid: true,
-    language: 'de',
+  fluid: true,
+  language: 'de',
 }
 
 const VideoJSPlayer: React.FC<Props> = (props) => {
-    const [player, setPlayer] = useState<VideoJsPlayer | undefined>(undefined)
-    const videoRef: React.RefObject<HTMLVideoElement> = useRef(null)
-    const [vttPath, setVttPath] = useState(props?.videoMap?.url?.vtt)
+  const [player, setPlayer] = useState<VideoJsPlayer | undefined>(undefined)
+  const videoRef: React.RefObject<HTMLVideoElement> = useRef(null)
+  const [vttPath, setVttPath] = useState(props?.videoMap?.url?.vtt)
 
-    // WHY: We create a UID to support multiple players on a single page
-    const playerId = useMemo(() => generate(), [])
+  // WHY: We create a UID to support multiple players on a single page
+  const playerId = useMemo(() => generate(), [])
 
-    useEffect(() => {
-        if (videoRef.current !== null) {
-            videojs.addLanguage('de', videojsDE)
-            setPlayer(videojs(videoRef.current, { ...defaultVideoJsOptions, ...props.videoJsOptions }))
-        }
-
-        return () => {
-            player?.dispose()
-        }
-    }, [])
-
-    usePatchVideoJsToMakeHotKeysWork(player)
-
-    useAddCustomVideoJsComponent(SetPlayerTimeControl, player)
-
-    useEffect(() => {
-        // FIXME switching/adding new subtitles on the fly does currently not work
-        // This is only relevant for the SubtitleEditor, because as soon as the .vtt file
-        // has been transmitted to the server it will be available to all player occurrences!
-        if (player && props.worker && !props.worker.onmessage) {
-            // eslint-disable-next-line
-            props.worker.onmessage = (event) => {
-                setVttPath(event.data)
-            }
-        }
-    }, [player, props.worker])
-
-    useEffect(() => {
-        if (player && props.isPaused !== undefined) {
-            if (props.isPaused) {
-                player.pause()
-            } else {
-                player.play()
-            }
-        }
-    }, [player, props.isPaused])
-
-    useEffect(() => {
-        if (player && props.playPosition !== undefined) {
-            player.currentTime(props.playPosition)
-        }
-    }, [player, props.playPosition])
-
-    const updateTime = (event: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-        if (props.updateTimeCallback) {
-            props.updateTimeCallback(event.currentTarget.currentTime)
-        }
+  useEffect(() => {
+    if (videoRef.current !== null) {
+      videojs.addLanguage('de', videojsDE)
+      setPlayer(
+        videojs(videoRef.current, {
+          ...defaultVideoJsOptions,
+          ...props.videoJsOptions,
+        })
+      )
     }
 
-    const handlePause = (pause: boolean) => {
-        if (props.setPauseCallback) {
-            props.setPauseCallback(pause)
-        }
+    return () => {
+      player?.dispose()
     }
+  }, [])
 
-    return (
-        <div className={'video-player'}>
-            <div data-vjs-player>
-                <video
-                    id={playerId}
-                    ref={videoRef}
-                    onTimeUpdate={updateTime}
-                    onPause={() => handlePause(true)}
-                    onPlay={() => handlePause(false)}
-                    className="video-js"
-                >
-                    <track kind="captions" src={vttPath} label="Standard" default />
-                </video>
-            </div>
-        </div>
-    )
+  usePatchVideoJsToMakeHotKeysWork(player)
+
+  useAddCustomVideoJsComponent(SetPlayerTimeControl, player)
+
+  useEffect(() => {
+    // FIXME switching/adding new subtitles on the fly does currently not work
+    // This is only relevant for the SubtitleEditor, because as soon as the .vtt file
+    // has been transmitted to the server it will be available to all player occurrences!
+    if (player && props.worker && !props.worker.onmessage) {
+      // eslint-disable-next-line
+      props.worker.onmessage = (event) => {
+        setVttPath(event.data)
+      }
+    }
+  }, [player, props.worker])
+
+  useEffect(() => {
+    if (player && props.isPaused !== undefined) {
+      if (props.isPaused) {
+        player.pause()
+      } else {
+        player.play()
+      }
+    }
+  }, [player, props.isPaused])
+
+  useEffect(() => {
+    if (player && props.playPosition !== undefined) {
+      player.currentTime(props.playPosition)
+    }
+  }, [player, props.playPosition])
+
+  const updateTime = (event: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    if (props.updateTimeCallback) {
+      props.updateTimeCallback(event.currentTarget.currentTime)
+    }
+  }
+
+  const handlePause = (pause: boolean) => {
+    if (props.setPauseCallback) {
+      props.setPauseCallback(pause)
+    }
+  }
+
+  return (
+    <div className={'video-player'}>
+      <div data-vjs-player>
+        <video
+          id={playerId}
+          ref={videoRef}
+          onTimeUpdate={updateTime}
+          onPause={() => handlePause(true)}
+          onPlay={() => handlePause(false)}
+          className="video-js"
+        >
+          <track kind="captions" src={vttPath} label="Standard" default />
+        </video>
+      </div>
+    </div>
+  )
 }
 
 export default React.memo(VideoJSPlayer)

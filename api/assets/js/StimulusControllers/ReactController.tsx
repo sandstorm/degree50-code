@@ -8,21 +8,21 @@ import rootSaga from './ExerciseAndSolutionStore/rootSaga'
 sagaMiddleWare.run(rootSaga)
 
 class ReactController extends Controller {
-    connect() {
-        const widgetName = this.data.get('widget')
-        const propsAsString = this.data.get('props')
+  connect() {
+    const widgetName = this.data.get('widget')
+    const propsAsString = this.data.get('props')
 
-        // @ts-ignore
-        const ReactWidget = widgets[widgetName]
-        const props = propsAsString ? JSON.parse(propsAsString) : {}
+    // @ts-ignore
+    const ReactWidget = widgets[widgetName]
+    const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-        ReactDOM.render(
-            <Provider store={store}>
-                <ReactWidget {...props} />
-            </Provider>,
-            this.element
-        )
-    }
+    ReactDOM.render(
+      <Provider store={store}>
+        <ReactWidget {...props} />
+      </Provider>,
+      this.element
+    )
+  }
 }
 
 export default ReactController

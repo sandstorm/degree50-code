@@ -1,4 +1,7 @@
-import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import {
+  selectors,
+  actions,
+} from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { CutOverlayIds } from '../CuttingMenu'
@@ -7,34 +10,39 @@ import Overlay from '../../components/Overlay'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mapStateToProps = (state: AppState) => ({
-    cutIdsByStartTime: selectors.selectAllCutIdsByStartTime(state),
+  cutIdsByStartTime: selectors.selectAllCutIdsByStartTime(state),
 })
 
 const mapDispatchToProps = {
-    closeOverlay: actions.videoEditor.overlay.unsetOverlay,
+  closeOverlay: actions.videoEditor.overlay.unsetOverlay,
 }
 
 type OwnProps = {
-    // TODO: make readonly property a redux state
-    itemUpdateCondition: boolean
+  // TODO: make readonly property a redux state
+  itemUpdateCondition: boolean
 }
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+type Props = OwnProps &
+  ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps
 
 const AllCutsOverlay: FC<Props> = (props) => {
-    const close = () => {
-        props.closeOverlay(CutOverlayIds.all)
-    }
+  const close = () => {
+    props.closeOverlay(CutOverlayIds.all)
+  }
 
-    return (
-        <Overlay closeCallback={close} title="Alle Schnitte">
-            <ol className="video-editor__media-item-list-new">
-                {props.cutIdsByStartTime.map((id, index) => (
-                    <CutListItem key={id} cutId={id} index={index} />
-                ))}
-            </ol>
-        </Overlay>
-    )
+  return (
+    <Overlay closeCallback={close} title="Alle Schnitte">
+      <ol className="video-editor__media-item-list-new">
+        {props.cutIdsByStartTime.map((id, index) => (
+          <CutListItem key={id} cutId={id} index={index} />
+        ))}
+      </ol>
+    </Overlay>
+  )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(AllCutsOverlay))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(memo(AllCutsOverlay))

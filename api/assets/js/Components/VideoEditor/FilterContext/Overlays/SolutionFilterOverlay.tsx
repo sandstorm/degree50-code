@@ -6,21 +6,24 @@ import { SolutionFilterOverlayIds } from '../FilterMenu'
 import ActivePreviousSolutions from 'Components/VideoEditor/components/MultiLane/Filter/ActivePreviousSolutions'
 
 const mapDispatchToProps = {
-    closeOverlay: actions.overlay.unsetOverlay,
+  closeOverlay: actions.overlay.unsetOverlay,
 }
 
 type Props = typeof mapDispatchToProps
 
 const SolutionFilterOverlay = (props: Props) => {
-    const close = () => {
-        props.closeOverlay(SolutionFilterOverlayIds.filterSolutions)
-    }
+  const close = () => {
+    props.closeOverlay(SolutionFilterOverlayIds.filterSolutions)
+  }
 
-    return (
-        <Overlay closeCallback={close} title="Aktive Lösungen">
-            <ActivePreviousSolutions />
-        </Overlay>
-    )
+  return (
+    <Overlay closeCallback={close} title="Aktive Lösungen">
+      <ActivePreviousSolutions />
+    </Overlay>
+  )
 }
 
-export default connect(undefined, mapDispatchToProps)(memo(SolutionFilterOverlay))
+export default connect(
+  undefined,
+  mapDispatchToProps
+)(memo(SolutionFilterOverlay))

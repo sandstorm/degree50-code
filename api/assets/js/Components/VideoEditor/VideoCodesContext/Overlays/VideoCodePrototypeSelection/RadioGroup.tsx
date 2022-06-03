@@ -8,22 +8,22 @@ import { RadioGroupProps } from '@react-types/radio'
 export const RadioContext = React.createContext()
 
 type Props = RadioGroupProps & {
-    children: React.ReactNode
-    className: string
-    label?: string
+  children: React.ReactNode
+  className: string
+  label?: string
 }
 
 const RadioGroup = (props: Props) => {
-    const { children, label } = props
-    const state = useRadioGroupState(props)
-    const { radioGroupProps, labelProps } = useRadioGroup(props, state)
+  const { children, label } = props
+  const state = useRadioGroupState(props)
+  const { radioGroupProps, labelProps } = useRadioGroup(props, state)
 
-    return (
-        <ul {...radioGroupProps} className={props.className}>
-            {label && <span {...labelProps}>{label}</span>}
-            <RadioContext.Provider value={state}>{children}</RadioContext.Provider>
-        </ul>
-    )
+  return (
+    <ul {...radioGroupProps} className={props.className}>
+      {label && <span {...labelProps}>{label}</span>}
+      <RadioContext.Provider value={state}>{children}</RadioContext.Provider>
+    </ul>
+  )
 }
 
 export default React.memo(RadioGroup)

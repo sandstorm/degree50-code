@@ -1,91 +1,123 @@
-import { call, cancel, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import {
+  call,
+  cancel,
+  debounce,
+  fork,
+  put,
+  select,
+  take,
+  takeLatest,
+} from 'redux-saga/effects'
 import { eventChannel, EventChannel, Task } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
 import Axios from 'axios'
 import { initPresenceAction } from '../Presence/PresenceSaga'
 import { initData } from 'Components/VideoEditor/initData'
-import { selectors, actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import {
+  selectors,
+  actions,
+} from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
-export const disconnectSolutionSyncAction = createAction('Solution/Saga/disconnect')
-export const updateSolutionAction = createAction('Solution/Saga/updateSolution', (data) => ({ payload: data }))
+export const disconnectSolutionSyncAction = createAction(
+  'Solution/Saga/disconnect'
+)
+export const updateSolutionAction = createAction(
+  'Solution/Saga/updateSolution',
+  (data) => ({ payload: data })
+)
 export const syncSolutionAction = createAction('Solution/Saga/SyncSolution')
 
 export default function* solutionSaga() {
-    yield takeLatest(initSolutionSyncAction.type, solutionSyncListener)
-    yield debounce(1000, syncSolutionAction.type, syncSolution)
+  yield takeLatest(initSolutionSyncAction.type, solutionSyncListener)
+  yield debounce(1000, syncSolutionAction.type, syncSolution)
 }
 
 function* solutionSyncListener() {
-    const lifeSyncConfig = selectors.liveSyncConfig.selectLiveSyncConfig(yield select())
+  const lifeSyncConfig = selectors.liveSyncConfig.selectLiveSyncConfig(
+    yield select()
+  )
 
-    try {
-        // setup SSE for presence topic
-        const mercureUrl = new URL(lifeSyncConfig.mercureEndpoint, document.location.toString())
-        mercureUrl.searchParams.append('topic', lifeSyncConfig.topics.solution)
-        const eventSource = new EventSource(mercureUrl.toString())
-        const eventChannel: EventChannel<EventSource> = yield call(connect, eventSource)
+  try {
+    // setup SSE for presence topic
+    const mercureUrl = new URL(
+      lifeSyncConfig.mercureEndpoint,
+      document.location.toString()
+    )
+    mercureUrl.searchParams.append('topic', lifeSyncConfig.topics.solution)
+    const eventSource = new EventSource(mercureUrl.toString())
+    const eventChannel: EventChannel<EventSource> = yield call(
+      connect,
+      eventSource
+    )
 
-        yield put(initPresenceAction())
+    yield put(initPresenceAction())
 
-        const messageHandler: Task = yield fork(handleMessages, eventChannel)
+    const messageHandler: Task = yield fork(handleMessages, eventChannel)
 
-        // wait for disconnect by user
-        yield take(disconnectSolutionSyncAction)
-        yield cancel(messageHandler)
-    } catch (e) {
-        console.error(e)
-    }
+    // wait for disconnect by user
+    yield take(disconnectSolutionSyncAction)
+    yield cancel(messageHandler)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 function connect(eventSource: EventSource) {
-    return eventChannel((emit) => {
-        // eslint-disable-next-line
-        eventSource.onmessage = (ev) => {
-            emit(updateSolutionAction(ev.data))
-        }
+  return eventChannel((emit) => {
+    // eslint-disable-next-line
+    eventSource.onmessage = (ev) => {
+      emit(updateSolutionAction(ev.data))
+    }
 
-        return () => {
-            eventSource.close()
-        }
-    })
+    return () => {
+      eventSource.close()
+    }
+  })
 }
 
 function* handleMessages(channel: EventChannel<unknown>) {
-    try {
-        while (true) {
-            // FIXME any typing
-            const action: { payload: any } = yield take(channel)
+  try {
+    while (true) {
+      // FIXME any typing
+      const action: { payload: any } = yield take(channel)
 
-            // FIXME any typings
-            // set currentEditor
-            const eventData: { currentEditor: any; data: any } = yield JSON.parse(action.payload)
-            const currentEditor: string = eventData.currentEditor
-            yield put(actions.currentEditor.setCurrentEditorId(currentEditor))
+      // FIXME any typings
+      // set currentEditor
+      const eventData: { currentEditor: any; data: any } = yield JSON.parse(
+        action.payload
+      )
+      const currentEditor: string = eventData.currentEditor
+      yield put(actions.currentEditor.setCurrentEditorId(currentEditor))
 
-            const { data } = eventData
+      const { data } = eventData
 
-            yield put(initData(data))
-        }
-    } finally {
-        channel.close()
+      yield put(initData(data))
     }
+  } finally {
+    channel.close()
+  }
 }
 
 /**
  * Upload solution if user is currentEditor
  */
 function* syncSolution() {
-    const config = selectors.config.selectConfig(yield select())
+  const config = selectors.config.selectConfig(yield select())
 
-    if (!config.readOnly && config.userId === selectors.currentEditor.selectCurrentEditorId(yield select())) {
-        const solutionLists = selectors.selectSolutionLists(yield select())
-        const updateSolutionEndpoint = selectors.config.selectConfig(yield select()).apiEndpoints.updateSolution
+  if (
+    !config.readOnly &&
+    config.userId ===
+      selectors.currentEditor.selectCurrentEditorId(yield select())
+  ) {
+    const solutionLists = selectors.selectSolutionLists(yield select())
+    const updateSolutionEndpoint = selectors.config.selectConfig(yield select())
+      .apiEndpoints.updateSolution
 
-        try {
-            yield Axios.post(updateSolutionEndpoint, solutionLists)
-        } catch (e) {
-            console.warn('>>>>> updateSolution', e)
-        }
+    try {
+      yield Axios.post(updateSolutionEndpoint, solutionLists)
+    } catch (e) {
+      console.warn('>>>>> updateSolution', e)
     }
+  }
 }
