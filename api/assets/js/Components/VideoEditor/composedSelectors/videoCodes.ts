@@ -2,43 +2,59 @@ import { createSelector } from '@reduxjs/toolkit'
 import { selectors as videoCodeSelectors } from '../VideoCodesContext/VideoCodesSlice'
 import { selectors as solutionSelectors } from '../SolutionSlice'
 import { sortByStartTime } from '../utils/time'
+import { MediaItemTypeEnum } from '../types'
 
+/**
+ * Denormalized video codes to be used when sending videoCodes to the backend server
+ */
 const selectDenormalizedCurrentVideoCodes = createSelector(
-    [solutionSelectors.selectCurrentVideoCodeIds, videoCodeSelectors.selectById],
-    (currentIds, byId) => currentIds.map((id) => byId[id])
+  [solutionSelectors.selectCurrentVideoCodeIds, videoCodeSelectors.selectById],
+  (currentIds, byId) => currentIds.map((id) => byId[id])
 )
 
+/**
+ * Denormalized videoCodes which also contain a type property, to easier identify them as media item
+ * of type [MediaItemTypeEnum.videoCode] for further processing
+ */
 const selectCurrentVideoCodes = createSelector(
-    [solutionSelectors.selectCurrentVideoCodeIds, videoCodeSelectors.selectById],
-    (currentIds, byId) => currentIds.map((id) => byId[id])
+  [solutionSelectors.selectCurrentVideoCodeIds, videoCodeSelectors.selectById],
+  (currentIds, byId) =>
+    currentIds.map((id) => ({ ...byId[id], type: MediaItemTypeEnum.videoCode }))
 )
 
-const selectCurrentVideoCodesByStartTime = createSelector([selectCurrentVideoCodes], sortByStartTime)
+const selectCurrentVideoCodesByStartTime = createSelector(
+  [selectCurrentVideoCodes],
+  sortByStartTime
+)
 
 const selectCurrentVideoCodeIdsSortedByStartTime = createSelector(
-    [selectCurrentVideoCodesByStartTime],
-    (videoCodesByStartTime) => videoCodesByStartTime.map((videoCode) => videoCode.id)
+  [selectCurrentVideoCodesByStartTime],
+  (videoCodesByStartTime) =>
+    videoCodesByStartTime.map((videoCode) => videoCode.id)
 )
 
 const selectVideoCodeIsFromCurrentSolution = createSelector(
-    [solutionSelectors.selectCurrentId, videoCodeSelectors.selectVideoCodeById],
-    (currentSolutionId, videoCode) => currentSolutionId && videoCode && currentSolutionId === videoCode.solutionId
+  [solutionSelectors.selectCurrentId, videoCodeSelectors.selectVideoCodeById],
+  (currentSolutionId, videoCode) =>
+    currentSolutionId && videoCode && currentSolutionId === videoCode.solutionId
 )
 
 const selectCreatorNameForVideoCode = createSelector(
-    [solutionSelectors.selectById, videoCodeSelectors.selectVideoCodeById],
-    (solutionsById, videoCode) => {
-        const solution = videoCode.solutionId ? solutionsById[videoCode.solutionId] : undefined
+  [solutionSelectors.selectById, videoCodeSelectors.selectVideoCodeById],
+  (solutionsById, videoCode) => {
+    const solution = videoCode.solutionId
+      ? solutionsById[videoCode.solutionId]
+      : undefined
 
-        return solution?.userName ?? '<Unbekannter Ersteller>'
-    }
+    return solution?.userName ?? '<Unbekannter Ersteller>'
+  }
 )
 
 export const composedVideoCodeSelectors = {
-    selectDenormalizedCurrentVideoCodes,
-    selectCurrentVideoCodesByStartTime,
-    selectCurrentVideoCodeIdsSortedByStartTime,
-    selectCurrentVideoCodes,
-    selectVideoCodeIsFromCurrentSolution,
-    selectCreatorNameForVideoCode,
+  selectDenormalizedCurrentVideoCodes,
+  selectCurrentVideoCodesByStartTime,
+  selectCurrentVideoCodeIdsSortedByStartTime,
+  selectCurrentVideoCodes,
+  selectVideoCodeIsFromCurrentSolution,
+  selectCreatorNameForVideoCode,
 }

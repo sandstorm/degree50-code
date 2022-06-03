@@ -1,11 +1,11 @@
 import React from 'react'
 
 type Props = {
-    end: string
+  end: string
 }
 
 const End = ({ end }: Props) => {
-    return <div>Bis: {end}</div>
+  return <div>Bis: {end}</div>
 }
 
 export default React.memo(End)

@@ -1,94 +1,128 @@
-import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
-import React, { FC, memo } from 'react'
-import { connect } from 'react-redux'
+import {
+  actions,
+  selectors,
+} from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { FC, memo, useCallback } from 'react'
+import { connect, ConnectedProps } from 'react-redux'
 import MenuButton from '../components/MenuButton'
 import MenuItem from '../components/MenuItem'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { useAppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
 
 const prefix = 'CUT'
 
 export const CutOverlayIds = {
-    active: `${prefix}/active`,
-    create: `${prefix}/create`,
-    all: `${prefix}/all`,
-    allByCutOrder: `${prefix}/allByCutOrder`,
-    edit: `${prefix}/edit`,
-    remove: `${prefix}/remove`,
-    cutPreview: `${prefix}/cutPreview`,
+  active: `${prefix}/active`,
+  create: `${prefix}/create`,
+  all: `${prefix}/all`,
+  allByCutOrder: `${prefix}/allByCutOrder`,
+  edit: `${prefix}/edit`,
+  remove: `${prefix}/remove`,
+  cutPreview: `${prefix}/cutPreview`,
 }
 
 const mapStateToProps = (state: AppState) => {
-    const activePhaseType = selectors.config.selectPhaseType(state)
-    const isSolutionView = selectors.config.selectIsSolutionView(state)
-    const userIsCurrentEditor = selectors.selectUserIsCurrentEditor(state)
-    const cutsAreActive = selectors.config.selectCutsAreActive(state)
+  const activePhaseType = selectors.config.selectPhaseType(state)
+  const isSolutionView = selectors.config.selectIsSolutionView(state)
+  const userIsCurrentEditor = selectors.selectUserIsCurrentEditor(state)
+  const cutsAreActive = selectors.config.selectCutsAreActive(state)
 
-    const disableCreate =
-        isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_CUTTING || !userIsCurrentEditor
-    const disabled = !cutsAreActive
+  const disableCreate =
+    isSolutionView ||
+    activePhaseType !== ExercisePhaseTypesEnum.VIDEO_CUTTING ||
+    !userIsCurrentEditor
+  const disabled = !cutsAreActive
 
-    return {
-        allCutsCount: selectors.selectAllCutIdsByStartTime(state).length,
-        activeCutCount: selectors.selectCurrentCutIdsAtCursor(state).length,
-        disableCreate,
-        disabled,
-    }
+  return {
+    allCutsCount: selectors.selectAllCutIdsByStartTime(state).length,
+    activeCutCount: selectors.selectCurrentCutIdsAtCursor(state).length,
+    disableCreate,
+    disabled,
+  }
 }
 
-const mapDispatchToProps = {
-    setOverlay: actions.videoEditor.overlay.setOverlay,
-    setCurrentlyEditedElementIndex: actions.videoEditor.overlay.setCurrentlyEditedElementId,
-}
+const connector = connect(mapStateToProps)
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+type Props = PropsFromRedux
 
 const CutsMenu: FC<Props> = (props) => {
-    const allCutsAriaLabel = `Alle Schnitte (${props.allCutsCount} Schnitte)`
-    const activeCutsAriaLabel = `Aktive Schnitte (${props.activeCutCount} aktive Schnitte)`
-    const allCutsLabel = `Alle Schnitte (${props.allCutsCount})`
-    const activeCutsLabel = `Aktive Schnitte (${props.activeCutCount})`
-    const menuButtonAriaLabel = `Schnitte (${props.activeCutCount} aktive Schnitte)`
+  const dispatch = useAppDispatch()
 
-    return (
-        <div className="video-editor__menu">
-            {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
-            <MenuButton
-                icon={<i className="fas fa-cut" />}
-                ariaLabel={menuButtonAriaLabel}
-                pauseVideo
-                disabled={props.disabled}
-            >
-                <MenuItem
-                    ariaLabel={activeCutsAriaLabel}
-                    label={activeCutsLabel}
-                    onClick={() => props.setOverlay({ overlayId: CutOverlayIds.active, closeOthers: true })}
-                />
-                <MenuItem
-                    ariaLabel="Erstelle Schnitt"
-                    label="Erstelle Schnitt"
-                    onClick={() => props.setOverlay({ overlayId: CutOverlayIds.create, closeOthers: true })}
-                    disabled={props.disableCreate}
-                />
-                <MenuItem
-                    ariaLabel={allCutsAriaLabel}
-                    label={allCutsLabel}
-                    onClick={() => props.setOverlay({ overlayId: CutOverlayIds.all, closeOthers: true })}
-                />
-                <MenuItem
-                    ariaLabel="Schnittreihenfolge"
-                    label="Schnittreihenfolge"
-                    onClick={() => props.setOverlay({ overlayId: CutOverlayIds.allByCutOrder, closeOthers: true })}
-                    disabled={props.disableCreate}
-                />
-                <MenuItem
-                    ariaLabel="Schnitt Vorschau"
-                    label="Schnitt Vorschau"
-                    onClick={() => props.setOverlay({ overlayId: CutOverlayIds.cutPreview, closeOthers: true })}
-                />
-            </MenuButton>
+  const setOverlay = useCallback(
+    (config) => {
+      dispatch(actions.videoEditor.overlay.setOverlay(config))
+    },
+    [dispatch]
+  )
+
+  const allCutsAriaLabel = `Alle Schnitte (${props.allCutsCount} Schnitte)`
+  const activeCutsAriaLabel = `Aktive Schnitte (${props.activeCutCount} aktive Schnitte)`
+  const allCutsLabel = `Alle Schnitte (${props.allCutsCount})`
+  const activeCutsLabel = `Aktive Schnitte (${props.activeCutCount})`
+  const menuButtonAriaLabel = `Schnitte (${props.activeCutCount} aktive Schnitte)`
+
+  return (
+    <div className="video-editor__menu">
+      {props.activeCutCount > 0 && (
+        <div className="video-editor__menu__count-badge">
+          {props.activeCutCount}
         </div>
-    )
+      )}
+      <MenuButton
+        icon={<i className="fas fa-cut" />}
+        ariaLabel={menuButtonAriaLabel}
+        pauseVideo
+        disabled={props.disabled}
+      >
+        <MenuItem
+          ariaLabel={activeCutsAriaLabel}
+          label={activeCutsLabel}
+          onClick={() =>
+            setOverlay({ overlayId: CutOverlayIds.active, closeOthers: true })
+          }
+        />
+        <MenuItem
+          ariaLabel="Erstelle Schnitt"
+          label="Erstelle Schnitt"
+          onClick={() =>
+            setOverlay({ overlayId: CutOverlayIds.create, closeOthers: true })
+          }
+          disabled={props.disableCreate}
+        />
+        <MenuItem
+          ariaLabel={allCutsAriaLabel}
+          label={allCutsLabel}
+          onClick={() =>
+            setOverlay({ overlayId: CutOverlayIds.all, closeOthers: true })
+          }
+        />
+        <MenuItem
+          ariaLabel="Schnittreihenfolge"
+          label="Schnittreihenfolge"
+          onClick={() =>
+            setOverlay({
+              overlayId: CutOverlayIds.allByCutOrder,
+              closeOthers: true,
+            })
+          }
+          disabled={props.disableCreate}
+        />
+        <MenuItem
+          ariaLabel="Schnitt Vorschau"
+          label="Schnitt Vorschau"
+          onClick={() =>
+            setOverlay({
+              overlayId: CutOverlayIds.cutPreview,
+              closeOthers: true,
+            })
+          }
+        />
+      </MenuButton>
+    </div>
+  )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(CutsMenu))
+export default connector(memo(CutsMenu))

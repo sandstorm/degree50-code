@@ -4,43 +4,44 @@ import { overlaySizesEnum } from './Overlay'
 import { ComponentTypesEnum } from 'types'
 
 interface OverlayState {
-    isVisible: boolean
-    component?: ComponentTypesEnum
-    size: string
+  isVisible: boolean
+  component?: ComponentTypesEnum
+  size: string
 }
 
 const initialState: OverlayState = {
-    isVisible: false,
-    component: undefined,
-    size: overlaySizesEnum.DEFAULT,
+  isVisible: false,
+  component: undefined,
+  size: overlaySizesEnum.DEFAULT,
 }
 
 export const overlaySlice = createSlice({
-    name: 'overlay',
-    initialState,
-    reducers: {
-        setOverlayVisibility: (state, action: PayloadAction<boolean>) => {
-            return {
-                ...state,
-                isVisible: action.payload,
-            }
-        },
-        setOverlayComponent: (state, action: PayloadAction<ComponentTypesEnum>) => {
-            return {
-                ...state,
-                component: action.payload,
-            }
-        },
-        setOverlaySize: (state, action: PayloadAction<string>) => {
-            return {
-                ...state,
-                size: action.payload,
-            }
-        },
+  name: 'overlay',
+  initialState,
+  reducers: {
+    setOverlayVisibility: (state, action: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        isVisible: action.payload,
+      }
     },
+    setOverlayComponent: (state, action: PayloadAction<ComponentTypesEnum>) => {
+      return {
+        ...state,
+        component: action.payload,
+      }
+    },
+    setOverlaySize: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        size: action.payload,
+      }
+    },
+  },
 })
 
-export const { setOverlayVisibility, setOverlayComponent, setOverlaySize } = overlaySlice.actions
+export const { setOverlayVisibility, setOverlayComponent, setOverlaySize } =
+  overlaySlice.actions
 
 export const selectIsVisible = (state: AppState) => state.overlay.isVisible
 export const selectComponent = (state: AppState) => state.overlay.component

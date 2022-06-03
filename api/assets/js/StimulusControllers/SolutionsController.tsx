@@ -1,9 +1,11 @@
 import { Controller } from 'stimulus'
 import ReactDOM from 'react-dom'
-import React from 'react'
 import { Provider } from 'react-redux'
-import { store } from './ExerciseAndSolutionStore/Store'
-import { ConfigState, actions as configActions } from './ExercisePhaseApp/Components/Config/ConfigSlice'
+import { store, sagaMiddleWare } from './ExerciseAndSolutionStore/Store'
+import {
+  ConfigState,
+  actions as configActions,
+} from './ExercisePhaseApp/Components/Config/ConfigSlice'
 import { setTranslations, setLocale } from 'react-i18nify'
 import i18n from 'StimulusControllers/i18n'
 import { normalizeFilterData } from './normalizeData'
@@ -13,40 +15,45 @@ import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEdito
 import SolutionsApp from './SolutionsApp'
 import { initData } from 'Components/VideoEditor/initData'
 import { DataState } from './ExerciseAndSolutionStore/DataSlice'
+import rootSaga from './ExerciseAndSolutionStore/rootSaga'
 
 export type SolutionByTeam = Solution & {
-    teamCreator: string
-    teamMembers: Array<string>
-    visible: boolean
-    cutVideo?: Video
+  teamCreator: string
+  teamMembers: Array<string>
+  visible: boolean
+  cutVideo?: Video
 }
 
 setTranslations(i18n)
 setLocale('de')
 
+sagaMiddleWare.run(rootSaga)
+
 class SolutionsController extends Controller {
-    connect() {
-        const propsAsString = this.data.get('props')
-        const props = propsAsString ? JSON.parse(propsAsString) : {}
+  connect() {
+    const propsAsString = this.data.get('props')
+    const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-        const data = props.data as DataState
-        const config = props.config as ConfigState
+    const data = props.data as DataState
+    const config = props.config as ConfigState
 
-        // set initial Redux state
-        store.dispatch(configActions.hydrateConfig(config))
-        store.dispatch(configActions.setIsSolutionView())
+    // set initial Redux state
+    store.dispatch(configActions.hydrateConfig(config))
+    store.dispatch(configActions.setIsSolutionView())
 
-        store.dispatch(initData(data))
+    store.dispatch(initData(data))
 
-        store.dispatch(videoEditorActions.filter.init(normalizeFilterData(config, data)))
+    store.dispatch(
+      videoEditorActions.filter.init(normalizeFilterData(config, data))
+    )
 
-        ReactDOM.render(
-            <Provider store={store}>
-                <SolutionsApp />
-            </Provider>,
-            this.element
-        )
-    }
+    ReactDOM.render(
+      <Provider store={store}>
+        <SolutionsApp />
+      </Provider>,
+      this.element
+    )
+  }
 }
 
 export default SolutionsController

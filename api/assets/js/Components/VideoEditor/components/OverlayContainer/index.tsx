@@ -1,6 +1,10 @@
 import { FocusScope } from '@react-aria/focus'
 import { OverlayContainer as AriaOverlayContainer } from '@react-aria/overlays'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import {
+  actions,
+  selectors,
+  VideoEditorState,
+} from 'Components/VideoEditor/VideoEditorSlice'
 import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../../AnnotationsContext/AnnotationsMenu'
@@ -26,10 +30,14 @@ import DeleteCutOverlay from 'Components/VideoEditor/CuttingContext/Overlays/Del
 import CutlistOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CutlistOverlay'
 import DeleteVideoCodePrototypeOverlay from 'Components/VideoEditor/VideoCodesContext/Overlays/EditVideoCodeOverlay/DeleteVideoCodePrototypeOverlay'
 import CutPreviewOverlay from 'Components/VideoEditor/CuttingContext/Overlays/CutPreviewOverlay'
-import TeamOverlay, { TEAM_OVERLAY_ID } from 'Components/VideoEditor/Team/TeamOverlay'
-import AufgabeOverlay, { AUFGABE_OVERLAY_ID } from 'Components/VideoEditor/Aufgabe/AufgabeOverlay'
+import TeamOverlay, {
+  TEAM_OVERLAY_ID,
+} from 'Components/VideoEditor/Team/TeamOverlay'
+import AufgabeOverlay, {
+  AUFGABE_OVERLAY_ID,
+} from 'Components/VideoEditor/Aufgabe/AufgabeOverlay'
 import ZusatzAttachmentOverlay, {
-    ZUSATZ_ATTACHMENTS_OVERLAY_ID,
+  ZUSATZ_ATTACHMENTS_OVERLAY_ID,
 } from 'Components/VideoEditor/ZusatzAttachment/ZusatzAttachmentOverlay'
 import { SolutionFilterOverlayIds } from 'Components/VideoEditor/FilterContext/FilterMenu'
 import SolutionFilterOverlay from 'Components/VideoEditor/FilterContext/Overlays/SolutionFilterOverlay'
@@ -37,139 +45,143 @@ import { AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { ShortCutsOverlayIds } from '../../ShortCutsContext/ShortCutsMenu'
 import ShortCutsConfigurationOverlay from '../../ShortCutsContext/Overlays/ShortCutsConfigurationOverlay'
 import SetVideoPlayerTimeOverlay, {
-    SetVideoPlayerTimeOverlayId,
+  SetVideoPlayerTimeOverlayId,
 } from '../../SetVideoPlayerTimeContext/Overlays/SetVideoPlayerTimeOverlay'
 import { AllMediaItemsOverlayIds } from 'Components/VideoEditor/AllMediaItemsContext/AllMediaItemsMenu'
 import AllMediaItemsOverlay from 'Components/VideoEditor/AllMediaItemsContext/Overlays/AllMediaItemsOverlay'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
-    switch (id) {
-        // All media items
-        case AllMediaItemsOverlayIds.all: {
-            return <AllMediaItemsOverlay />
-        }
-
-        // Annotations
-        case AnnotationOverlayIds.active: {
-            return <ActiveAnnotationsOverlay itemUpdateCondition={true} />
-        }
-        case AnnotationOverlayIds.create:
-            return <CreateAnnotationOverlay />
-        case AnnotationOverlayIds.all:
-            return <AllAnnotationsOverlay itemUpdateCondition={true} />
-        case AnnotationOverlayIds.edit:
-            return <EditAnnotationOverlay />
-        case AnnotationOverlayIds.remove:
-            return <DeleteAnnotationOverlay />
-
-        // VideoCodes
-        case VideoCodeOverlayIds.list: {
-            return <ListCodesOverlay />
-        }
-        case VideoCodeOverlayIds.editPrototype: {
-            return <EditVideoCodePrototypeOverlay />
-        }
-        case VideoCodeOverlayIds.removePrototype: {
-            return <DeleteVideoCodePrototypeOverlay />
-        }
-        case VideoCodeOverlayIds.active: {
-            return <ActiveVideoCodesOverlay itemUpdateCondition={true} />
-        }
-        case VideoCodeOverlayIds.create:
-            return <CreateVideoCodeOverlay />
-        case VideoCodeOverlayIds.all:
-            return <AllVideoCodesOverlay itemUpdateCondition={true} />
-        case VideoCodeOverlayIds.edit:
-            return <EditVideoCodeOverlay />
-        case VideoCodeOverlayIds.remove:
-            return <DeleteVideoCodeOverlay />
-
-        // Cuts
-        case CutOverlayIds.active: {
-            return <ActiveCutsOverlay itemUpdateCondition={true} />
-        }
-        case CutOverlayIds.create: {
-            return <CreateCutOverlay />
-        }
-        case CutOverlayIds.all: {
-            return <AllCutsOverlay itemUpdateCondition={true} />
-        }
-        case CutOverlayIds.allByCutOrder: {
-            return <CutlistOverlay itemUpdateCondition={true} />
-        }
-        case CutOverlayIds.edit: {
-            return <EditCutOverlay />
-        }
-        case CutOverlayIds.remove: {
-            return <DeleteCutOverlay />
-        }
-        case CutOverlayIds.cutPreview: {
-            return <CutPreviewOverlay />
-        }
-
-        // Others
-        case TEAM_OVERLAY_ID: {
-            return <TeamOverlay />
-        }
-        case AUFGABE_OVERLAY_ID: {
-            return <AufgabeOverlay />
-        }
-        case ZUSATZ_ATTACHMENTS_OVERLAY_ID: {
-            return <ZusatzAttachmentOverlay />
-        }
-
-        // Filter
-        case SolutionFilterOverlayIds.filterSolutions: {
-            return <SolutionFilterOverlay />
-        }
-
-        // ShortCuts
-        case ShortCutsOverlayIds.configureShortCuts: {
-            return <ShortCutsConfigurationOverlay />
-        }
-
-        // SetVideoPlayerTime
-        case SetVideoPlayerTimeOverlayId: {
-            return <SetVideoPlayerTimeOverlay />
-        }
-
-        default:
-            return undefined
+  switch (id) {
+    // All media items
+    case AllMediaItemsOverlayIds.all: {
+      return <AllMediaItemsOverlay />
     }
+
+    // Annotations
+    case AnnotationOverlayIds.active: {
+      return <ActiveAnnotationsOverlay itemUpdateCondition={true} />
+    }
+    case AnnotationOverlayIds.create:
+      return <CreateAnnotationOverlay />
+    case AnnotationOverlayIds.all:
+      return <AllAnnotationsOverlay itemUpdateCondition={true} />
+    case AnnotationOverlayIds.edit:
+      return <EditAnnotationOverlay />
+    case AnnotationOverlayIds.remove:
+      return <DeleteAnnotationOverlay />
+
+    // VideoCodes
+    case VideoCodeOverlayIds.list: {
+      return <ListCodesOverlay />
+    }
+    case VideoCodeOverlayIds.editPrototype: {
+      return <EditVideoCodePrototypeOverlay />
+    }
+    case VideoCodeOverlayIds.removePrototype: {
+      return <DeleteVideoCodePrototypeOverlay />
+    }
+    case VideoCodeOverlayIds.active: {
+      return <ActiveVideoCodesOverlay itemUpdateCondition={true} />
+    }
+    case VideoCodeOverlayIds.create:
+      return <CreateVideoCodeOverlay />
+    case VideoCodeOverlayIds.all:
+      return <AllVideoCodesOverlay itemUpdateCondition={true} />
+    case VideoCodeOverlayIds.edit:
+      return <EditVideoCodeOverlay />
+    case VideoCodeOverlayIds.remove:
+      return <DeleteVideoCodeOverlay />
+
+    // Cuts
+    case CutOverlayIds.active: {
+      return <ActiveCutsOverlay itemUpdateCondition={true} />
+    }
+    case CutOverlayIds.create: {
+      return <CreateCutOverlay />
+    }
+    case CutOverlayIds.all: {
+      return <AllCutsOverlay itemUpdateCondition={true} />
+    }
+    case CutOverlayIds.allByCutOrder: {
+      return <CutlistOverlay itemUpdateCondition={true} />
+    }
+    case CutOverlayIds.edit: {
+      return <EditCutOverlay />
+    }
+    case CutOverlayIds.remove: {
+      return <DeleteCutOverlay />
+    }
+    case CutOverlayIds.cutPreview: {
+      return <CutPreviewOverlay />
+    }
+
+    // Others
+    case TEAM_OVERLAY_ID: {
+      return <TeamOverlay />
+    }
+    case AUFGABE_OVERLAY_ID: {
+      return <AufgabeOverlay />
+    }
+    case ZUSATZ_ATTACHMENTS_OVERLAY_ID: {
+      return <ZusatzAttachmentOverlay />
+    }
+
+    // Filter
+    case SolutionFilterOverlayIds.filterSolutions: {
+      return <SolutionFilterOverlay />
+    }
+
+    // ShortCuts
+    case ShortCutsOverlayIds.configureShortCuts: {
+      return <ShortCutsConfigurationOverlay />
+    }
+
+    // SetVideoPlayerTime
+    case SetVideoPlayerTimeOverlayId: {
+      return <SetVideoPlayerTimeOverlay />
+    }
+
+    default:
+      return undefined
+  }
 }
 
 const mapStateToProps = (state: VideoEditorState) => ({
-    isVisible: selectors.overlay.isVisible(state),
-    overlayIds: selectors.overlay.overlayIds(state),
+  isVisible: selectors.overlay.isVisible(state),
+  overlayIds: selectors.overlay.overlayIds(state),
 })
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    show: () => dispatch(actions.overlay.show()),
+  show: () => dispatch(actions.overlay.show()),
 })
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+type Props = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>
 
 const OverlayContainer: FC<Props> = (props) => {
-    const isOpen = props.isVisible && props.overlayIds.length > 0
+  const isOpen = props.isVisible && props.overlayIds.length > 0
 
-    return (
-        <AriaOverlayContainer
-            style={{
-                display: isOpen ? 'block' : 'none',
-                position: 'absolute',
-                top: 0,
-                height: '100vh',
-                width: '100vw',
-            }}
-        >
-            {isOpen &&
-                props.overlayIds.map((overlayId) => (
-                    <FocusScope autoFocus contain restoreFocus key={overlayId}>
-                        {mapOverlayIdToOverlayContent(overlayId)}
-                    </FocusScope>
-                ))}
-        </AriaOverlayContainer>
-    )
+  return (
+    <AriaOverlayContainer
+      style={{
+        display: isOpen ? 'block' : 'none',
+        position: 'absolute',
+        top: 0,
+        height: '100vh',
+        width: '100vw',
+      }}
+    >
+      {isOpen &&
+        props.overlayIds.map((overlayId) => (
+          <FocusScope autoFocus contain restoreFocus key={overlayId}>
+            {mapOverlayIdToOverlayContent(overlayId)}
+          </FocusScope>
+        ))}
+    </AriaOverlayContainer>
+  )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(OverlayContainer))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(memo(OverlayContainer))

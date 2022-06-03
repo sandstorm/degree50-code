@@ -3,13 +3,20 @@ import { put, takeLatest } from 'redux-saga/effects'
 import { actions } from '../VideoEditorSlice'
 import { SetVideoPlayerTimeOverlayId } from './Overlays/SetVideoPlayerTimeOverlay'
 
-export const setPlayerTimeControlAction = createAction('SAGA/VIDEOJS/CUSTOM__CONTROL_ACTION/SET_PLAYER_TIME')
+export const setPlayerTimeControlAction = createAction(
+  'SAGA/VIDEOJS/CUSTOM__CONTROL_ACTION/SET_PLAYER_TIME'
+)
 
 export function* setPlayerTimeControlSaga() {
-    yield takeLatest(setPlayerTimeControlAction, openSetPlayerTimeControl)
+  yield takeLatest(setPlayerTimeControlAction, openSetPlayerTimeControl)
 }
 
 function* openSetPlayerTimeControl() {
-    yield put(actions.player.setPause(true))
-    yield put(actions.overlay.setOverlay({ overlayId: SetVideoPlayerTimeOverlayId, closeOthers: false }))
+  yield put(actions.player.setPause(true))
+  yield put(
+    actions.overlay.setOverlay({
+      overlayId: SetVideoPlayerTimeOverlayId,
+      closeOthers: false,
+    })
+  )
 }

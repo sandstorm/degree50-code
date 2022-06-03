@@ -7,48 +7,52 @@ import DropdownPopup from './DropdownPopup'
 // TODO fix typing for children. ReactAria awaits an 'CollectionChildren<T>' but this type is not exposed
 // in the @react-stately/collection library
 type DropdownProps = {
-    children: any
-    onAction: (key: React.Key) => void
-    ariaLabel: string
+  children: any
+  onAction: (key: React.Key) => void
+  ariaLabel: string
 }
 
 const Dropdown = (props: DropdownProps) => {
-    const { ariaLabel } = props
+  const { ariaLabel } = props
 
-    // Create state based on the incoming props
-    const state = useMenuTriggerState({ align: 'start', direction: 'bottom', closeOnSelect: true })
+  // Create state based on the incoming props
+  const state = useMenuTriggerState({
+    align: 'start',
+    direction: 'bottom',
+    closeOnSelect: true,
+  })
 
-    // Get props for the menu trigger and menu elements
-    // @ts-ignore
-    const buttonRef: React.RefObject<HTMLButtonElement> = useRef()
-    const { menuTriggerProps, menuProps } = useMenuTrigger({}, state, buttonRef)
+  // Get props for the menu trigger and menu elements
+  // @ts-ignore
+  const buttonRef: React.RefObject<HTMLButtonElement> = useRef()
+  const { menuTriggerProps, menuProps } = useMenuTrigger({}, state, buttonRef)
 
-    // Get props for the button based on the trigger props from useMenuTrigger
-    const { buttonProps } = useButton(menuTriggerProps, buttonRef)
+  // Get props for the button based on the trigger props from useMenuTrigger
+  const { buttonProps } = useButton(menuTriggerProps, buttonRef)
 
-    return (
-        <div className={'dropdown'}>
-            <button
-                {...buttonProps}
-                ref={buttonRef}
-                className={'btn btn-link'}
-                aria-haspopup="true"
-                aria-expanded={state.isOpen}
-                aria-label={ariaLabel}
-            >
-                <i className={'fas fa-ellipsis-h'} />
-            </button>
-            {state.isOpen && (
-                <DropdownPopup
-                    children={props.children}
-                    onAction={props.onAction}
-                    domProps={menuProps}
-                    autoFocus={state.focusStrategy}
-                    onClose={() => state.close()}
-                />
-            )}
-        </div>
-    )
+  return (
+    <div className={'dropdown'}>
+      <button
+        {...buttonProps}
+        ref={buttonRef}
+        className={'btn btn-link'}
+        aria-haspopup="true"
+        aria-expanded={state.isOpen}
+        aria-label={ariaLabel}
+      >
+        <i className={'fas fa-ellipsis-h'} />
+      </button>
+      {state.isOpen && (
+        <DropdownPopup
+          children={props.children}
+          onAction={props.onAction}
+          domProps={menuProps}
+          autoFocus={state.focusStrategy}
+          onClose={() => state.close()}
+        />
+      )}
+    </div>
+  )
 }
 
 export default Dropdown

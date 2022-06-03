@@ -17,17 +17,17 @@
  */
 
 declare module 'ntc-ts' {
-    export type COLOR = Array<string | number>
+  export type COLOR = Array<string | number>
 
-    export const ORIGINAL_COLORS: COLOR[]
+  export const ORIGINAL_COLORS: COLOR[]
 
-    export function initColors(_colors: COLOR[]): void
+  export function initColors(_colors: COLOR[]): void
 
-    export type GetColorNameResult = {
-        exactMatch: boolean
-        name: string
-        rgb: string | null
-    }
+  export type GetColorNameResult = {
+    exactMatch: boolean
+    name: string
+    rgb: string | null
+  }
 
-    export function getColorName(hexValue?: string): GetColorNameResult
+  export function getColorName(hexValue?: string): GetColorNameResult
 }
