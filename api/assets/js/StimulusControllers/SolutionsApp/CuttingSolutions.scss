@@ -17,11 +17,11 @@
     width: 430px;
     height: 100%;
 
+    & + & {
+        margin-left: $theme__spacing--base;
+    }
+
     & h5 {
         margin-bottom: 15px;
     }
-}
-
-.cutting-solution__video {
-    width: 350px;
 }

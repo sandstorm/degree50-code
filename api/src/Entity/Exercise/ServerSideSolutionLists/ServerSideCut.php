@@ -2,21 +2,23 @@
 
 namespace App\Entity\Exercise\ServerSideSolutionLists;
 
+use App\VideoEncoding\TimeCode;
+
 /**
- * Server side represenation of a cut.
+ * Server side representation of a cut.
  *
  * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
 final class ServerSideCut
 {
-    private string $start;
-    private string $end;
-    private string $text;
-    private string $memo;
-    private ?string $color;
-    private string $url;
-    private float $offset;
-    private float $playbackRate;
+    public readonly string $start;
+    public readonly string $end;
+    public readonly string $text;
+    public readonly string $memo;
+    public readonly ?string $color;
+    public readonly string $url;
+    public readonly float $offset;
+    public readonly float $playbackRate;
 
     private function __construct(
         string $start,
@@ -67,44 +69,14 @@ final class ServerSideCut
         ];
     }
 
-    public function getStart(): string
+    /**
+     * Get the duration (length) of the cut in seconds with milliseconds.
+     *
+     * @return float
+     */
+    public function getDuration(): float
     {
-        return $this->start;
-    }
-
-    public function getEnd(): string
-    {
-        return $this->end;
-    }
-
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
-    public function getMemo(): string
-    {
-        return $this->memo;
-    }
-
-    public function getColor(): ?string
-    {
-        return $this->color;
-    }
-
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
-    public function getOffset(): float
-    {
-        return $this->offset;
-    }
-
-    public function getPlaybackRate(): float
-    {
-        return $this->playbackRate;
+        return TimeCode::fromTimeString($this->end)->toFloat() - TimeCode::fromTimeString($this->start)->toFloat();
     }
 }
 

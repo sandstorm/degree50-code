@@ -2,22 +2,22 @@
 
 namespace App\DataExport\Controller;
 
+use App\DataExport\Controller\Dto\TextFileDto;
+use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
+use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideAnnotation;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideCut;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCode;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
+use App\Repository\Exercise\ExercisePhaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Serializer;
-use App\DataExport\Controller\Dto\TextFileDto;
-use App\Entity\Account\Course;
-use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
-use App\Repository\Exercise\ExercisePhaseRepository;
 
 /**
  * This service allows us to aggregate degree data in a way that we can export it to CSV files.
@@ -375,11 +375,11 @@ EOT;
                 return array_merge(
                     [$solution->getId()],
                     [
-                        $serverSideCut->getStart(),
-                        $serverSideCut->getEnd(),
-                        DegreeDataToCsvService::removeLineBreaksFromCellContent($serverSideCut->getText()),
-                        DegreeDataToCsvService::removeLineBreaksFromCellContent($serverSideCut->getMemo()),
-                        $serverSideCut->getColor(),
+                        $serverSideCut->start,
+                        $serverSideCut->end,
+                        DegreeDataToCsvService::removeLineBreaksFromCellContent($serverSideCut->text),
+                        DegreeDataToCsvService::removeLineBreaksFromCellContent($serverSideCut->memo),
+                        $serverSideCut->color,
                     ]
                 );
             }, $cuts);

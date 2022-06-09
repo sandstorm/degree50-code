@@ -11,7 +11,7 @@ const VideoCutSolutionVideo: React.FC<Props> = (props) => {
     return <p>No solution, yet!</p>
   }
 
-  const videoUrl = props.videoConfig?.url?.mp4 || ''
+  const videoUrl = props.videoConfig?.url?.hls || ''
 
   return videoUrl ? (
     <VideoJSPlayer
