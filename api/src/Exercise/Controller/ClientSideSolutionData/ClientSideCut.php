@@ -51,15 +51,15 @@ final class ClientSideCut implements JsonSerializable
     public static function fromServerSideCut(ServerSideCut $cut, string $solutionId, int $index): ClientSideCut
     {
         return new self(
-            $cut->getStart(),
-            $cut->getEnd(),
-            $cut->getText(),
-            $cut->getMemo(),
-            $cut->getColor(),
+            $cut->start,
+            $cut->end,
+            $cut->text,
+            $cut->memo,
+            $cut->color,
             $solutionId,
-            $cut->getUrl(),
-            $cut->getOffset(),
-            $cut->getPlaybackRate(),
+            $cut->url,
+            $cut->offset,
+            $cut->playbackRate,
             $solutionId . '_' . $index
         );
     }

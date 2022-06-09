@@ -68,6 +68,7 @@ COPY api/templates templates/
 COPY api/translations translations/
 COPY api/tests tests/
 COPY api/behat.yml.dist behat.yml.dist
+COPY api/phpunit.xml.dist phpunit.xml.dist
 COPY api/features features/
 COPY api/composer.json api/composer.lock /app/
 

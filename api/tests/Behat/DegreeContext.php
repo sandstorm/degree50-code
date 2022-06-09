@@ -11,13 +11,13 @@ use App\DataExport\Controller\Dto\TextFileDto;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
+use App\Entity\Exercise\Attachment;
 use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Entity\Exercise\Attachment;
 use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
@@ -33,7 +33,6 @@ use App\Repository\Video\VideoRepository;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
@@ -47,7 +46,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
-
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
@@ -1501,9 +1499,7 @@ final class DegreeContext implements Context
                 const element = await vars.page.locator('data-test-id=$testId >> nth=$index')
                 vars.selectedElement = element
 
-                return element
-                 ? true
-                 : false
+                return !!element
             "
         );
 

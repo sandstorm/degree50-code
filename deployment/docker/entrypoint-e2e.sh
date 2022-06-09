@@ -27,11 +27,14 @@ until $(curl --output /dev/null --silent --head --fail http://127.0.0.1:9090); d
 done
 
 echo "------> SUCCESS starting system under test"
-echo "####### Running Tests"
 
+echo "####### Running Unit Tests"
+cd /app && vendor/bin/phpunit --colors=always
+echo "------> SUCCESS finished running Unit tests"
+
+echo "####### Running e2e Tests"
 cd /app && rm -Rf e2e-results && mkdir e2e-results && vendor/bin/behat --format junit --out e2e-results --format pretty --out std
-
-echo "------> SUCCESS finished running tests"
+echo "------> SUCCESS finished running e2e tests"
 
 cp -R /app/e2e-results $CI_PROJECT_DIR/e2e-results
 
