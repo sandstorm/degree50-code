@@ -11,7 +11,8 @@ const VideoCutSolutionVideo: React.FC<Props> = (props) => {
     return <p>No solution, yet!</p>
   }
 
-  const videoUrl = props.videoConfig?.url?.hls || ''
+  const videoUrl =
+    props.videoConfig?.url?.hls || props.videoConfig?.url?.mp4 || ''
 
   return videoUrl ? (
     <VideoJSPlayer
@@ -20,7 +21,7 @@ const VideoCutSolutionVideo: React.FC<Props> = (props) => {
         controls: true,
         sources: [
           {
-            src: videoUrl || '',
+            src: videoUrl,
           },
         ],
       }}
