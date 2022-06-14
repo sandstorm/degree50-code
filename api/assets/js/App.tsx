@@ -23,6 +23,7 @@ import VideosFormController from 'StimulusControllers/VideosFormController'
 import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
 import SidebarController from 'StimulusControllers/SidebarController'
 import { initColors, ORIGINAL_COLORS } from 'ntc-ts'
+import CKEditorController from 'StimulusControllers/CkeditorController'
 
 const application = Application.start()
 
@@ -31,6 +32,7 @@ application.register('subtitleUpload', SubtitlesUploadController)
 application.register('audioDescriptionUpload', AudioDescriptionUploadController)
 application.register('attachmentUpload', AttachmentUploadController)
 application.register('react', ReactController)
+application.register('ckeditor', CKEditorController)
 application.register('exercisePhase', ExercisePhaseController)
 application.register('solutions', SolutionsController)
 application.register('videoCodeForm', VideoCodeFormController)
