@@ -19,7 +19,6 @@
         "doctrine/orm": "^2.11",
         "easycorp/easyadmin-bundle": "3.4.3",
         "firebase/php-jwt": "^5.2",
-        "friendsofsymfony/ckeditor-bundle": "^2.2",
         "guzzlehttp/guzzle": "^6.3",
         "hslavich/oneloginsaml-bundle": "dev-master",
         "liip/imagine-bundle": "^2.3",
@@ -101,7 +100,11 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": false,
+            "symfony/runtime": false
+        }
     },
     "scripts": {
         "auto-scripts": {
