@@ -105,9 +105,9 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                   "description": "",
                   "duration": 0,
                   "url": {
-                    "hls": "/data/encoded_videos/cut-video-1/hls.m3u8",
-                    "mp4": "/data/encoded_videos/cut-video-1/x264.mp4",
-                    "vtt": "/data/encoded_videos/cut-video-1/subtitles.vtt"
+                    "hls": "",
+                    "mp4": "",
+                    "vtt": ""
                   }
                 },
                 "fromGroupPhase": false

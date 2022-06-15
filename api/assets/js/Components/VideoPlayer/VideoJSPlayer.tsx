@@ -103,7 +103,9 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
           onPlay={() => handlePause(false)}
           className="video-js"
         >
-          <track kind="captions" src={vttPath} label="Standard" default />
+          {vttPath && (
+            <track kind="captions" src={vttPath} label="Standard" default />
+          )}
         </video>
       </div>
     </div>
