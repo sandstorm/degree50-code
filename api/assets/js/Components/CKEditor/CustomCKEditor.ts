@@ -13,11 +13,18 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials'
 import Font from '@ckeditor/ckeditor5-font/src/font'
 import Heading from '@ckeditor/ckeditor5-heading/src/heading'
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline'
+import Image from '@ckeditor/ckeditor5-image/src/image'
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption'
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize'
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle'
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar'
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js'
 import Link from '@ckeditor/ckeditor5-link/src/link'
 import List from '@ckeditor/ckeditor5-list/src/list'
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties'
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph'
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice'
+import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter'
 import Table from '@ckeditor/ckeditor5-table/src/table'
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption'
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties'
@@ -37,6 +44,12 @@ ClassicEditor.builtinPlugins = [
   Font,
   Heading,
   HorizontalLine,
+  Image,
+  ImageCaption,
+  ImageResize,
+  ImageStyle,
+  ImageToolbar,
+  ImageUpload,
   Italic,
   Link,
   List,
@@ -53,6 +66,7 @@ ClassicEditor.builtinPlugins = [
   TableProperties,
   TableToolbar,
   Underline,
+  SimpleUploadAdapter,
 ]
 
 // eslint-disable-next-line functional/immutable-data
@@ -80,6 +94,7 @@ ClassicEditor.defaultConfig = {
       'insertTable',
       '|',
       'link',
+      'imageUpload',
       'horizontalLine',
       '|',
       'undo',
@@ -130,6 +145,33 @@ ClassicEditor.defaultConfig = {
       styles: true,
       startIndex: true,
       reversed: true,
+    },
+  },
+  image: {
+    toolbar: [
+      'imageStyle:inline',
+      'imageStyle:block',
+      'imageStyle:side',
+      '|',
+      'toggleImageCaption',
+      'imageTextAlternative',
+    ],
+    upload: {
+      // should match ImageUploadController::SUPPORTED_IMAGE_EXTENSIONS
+      types: ['jpeg', 'png', 'gif', 'bmp', 'webp'],
+    },
+  },
+  simpleUpload: {
+    // The URL that the images are uploaded to.
+    uploadUrl: 'http://localhost:8080/images',
+
+    // Enable the XMLHttpRequest.withCredentials property.
+    withCredentials: true,
+
+    // Headers sent along with the XMLHttpRequest to the upload server.
+    // TODO: Currently no csrf protection in image upload?
+    headers: {
+      'X-CSRF-TOKEN': 'CSRF-Token',
     },
   },
 }
