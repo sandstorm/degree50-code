@@ -11,6 +11,7 @@ const VideoCutSolutionVideo: React.FC<Props> = (props) => {
     return <p>No solution, yet!</p>
   }
 
+  // There are cut videos in mp4 format that have been created before we started to cut to hls as well.
   const videoUrl =
     props.videoConfig?.url?.hls || props.videoConfig?.url?.mp4 || ''
 
