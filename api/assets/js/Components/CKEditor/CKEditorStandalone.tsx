@@ -1,9 +1,11 @@
 import React, { memo, useState } from 'react'
 import CKEditor from '.'
+import CustomCKEditor from 'Components/CKEditor/CustomCKEditor'
 
 type Props = {
   initialValue?: string
   onChange: (value: string) => void
+  onReady: (editor: CustomCKEditor) => void
 }
 
 /**
@@ -17,7 +19,9 @@ const CKEditorStandalone = (props: Props) => {
     props.onChange(value)
   }
 
-  return <CKEditor value={value} onChange={handleChange} />
+  return (
+    <CKEditor value={value} onChange={handleChange} onReady={props.onReady} />
+  )
 }
 
 export default memo(CKEditorStandalone)

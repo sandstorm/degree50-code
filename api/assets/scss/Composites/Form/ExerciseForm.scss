@@ -1,9 +1,8 @@
 .exercise-form {
     margin-bottom: 70px;
 
-    textarea#exercise_description,
-    textarea#video_analysis_task {
-        min-height: 200px;
+    [contenteditable="true"] {
+        min-height: 10em;
     }
 }
 
