@@ -5,6 +5,7 @@ import CustomCKEditor from 'Components/CKEditor/CustomCKEditor'
 type Props = {
   value: string
   onChange: (value: string) => void
+  onReady: (editor: CustomCKEditor) => void
 }
 
 const CKEditor = (props: Props) => {
@@ -17,6 +18,7 @@ const CKEditor = (props: Props) => {
       editor={CustomCKEditor}
       data={props.value}
       onChange={handleChange}
+      onReady={props.onReady}
     />
   )
 }
