@@ -36,16 +36,13 @@ package_app:
     stage: build
     interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
-    tags:
-        - docker
-        - privileged
     script:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         # Also make sure that ./api/VERSION is copied into the docker container (see deployment/docker/Dockerfile)
         - ./scripts/versioning.sh
         # performance improvement for CI
-        - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG || true
-        - docker build --cache-from $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
+        - docker pull $CI_REGISTRY_IMAGE:main || true
+        - docker build --cache-from $CI_REGISTRY_IMAGE:main -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
 
 package_logging_sidecar:
@@ -54,9 +51,6 @@ package_logging_sidecar:
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     only:
         - tags
-    tags:
-        - docker
-        - privileged
     script:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
         - cd deployment/loggingSidecar
@@ -77,9 +71,6 @@ build_e2e_testrunner:
         - docker build --cache-from $CI_REGISTRY_IMAGE:e2e-testrunner -t $CI_REGISTRY_IMAGE:e2e-testrunner .
         - docker push $CI_REGISTRY_IMAGE:e2e-testrunner
         - cd ..
-    tags:
-        - docker
-        - privileged
 
 e2e_test:
     stage: test
