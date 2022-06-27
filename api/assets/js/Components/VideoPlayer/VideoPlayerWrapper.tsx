@@ -77,7 +77,10 @@ const VideoPlayerWrapper: React.FC<Props> = (props) => {
           <header>
             <h4>{activeVideo.name}</h4>
           </header>
-          <VideoPlayer videoJsOptions={videoPlayerOptions} />
+          <VideoPlayer
+            videoJsOptions={videoPlayerOptions}
+            videoMap={activeVideo}
+          />
           {activeVideo.description}
         </div>
       </div>
