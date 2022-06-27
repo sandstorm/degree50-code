@@ -24,11 +24,6 @@ const VideoPlayerWrapper: React.FC<Props> = (props) => {
     () => ({
       autoplay: false,
       controls: true,
-      sources: [
-        {
-          src: activeVideo.url?.hls || '',
-        },
-      ],
     }),
     [activeVideo]
   )

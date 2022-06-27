@@ -21,11 +21,6 @@ const VideoEditor: FC<Props> = (props) => {
         videoJsOptions={{
           autoplay: false,
           controls: true,
-          sources: [
-            {
-              src: firstVideo?.url?.hls || '',
-            },
-          ],
           fluid: false,
           // @ts-ignore
           fill: true,

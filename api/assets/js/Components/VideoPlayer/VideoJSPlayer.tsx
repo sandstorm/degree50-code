@@ -24,6 +24,30 @@ const defaultVideoJsOptions: VideoJsPlayerOptions = {
   language: 'de',
 }
 
+function getVideoSources(video?: Video): VideoJsPlayerOptions['sources'] {
+  if (!video) {
+    return []
+  }
+
+  if (video.url.hls) {
+    return [
+      {
+        src: video.url.hls,
+        type: 'application/x-mpegURL',
+      },
+    ]
+  } else if (video.url.mp4) {
+    return [
+      {
+        src: video.url.mp4,
+        type: 'video/mp4',
+      },
+    ]
+  } else {
+    return []
+  }
+}
+
 const VideoJSPlayer: React.FC<Props> = (props) => {
   const [player, setPlayer] = useState<VideoJsPlayer | undefined>(undefined)
   const videoRef: React.RefObject<HTMLVideoElement> = useRef(null)
@@ -39,6 +63,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
         videojs(videoRef.current, {
           ...defaultVideoJsOptions,
           ...props.videoJsOptions,
+          sources: getVideoSources(props.videoMap),
         })
       )
     }
