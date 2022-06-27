@@ -26,6 +26,7 @@ const VideoCutSolutionVideo: React.FC<Props> = (props) => {
           },
         ],
       }}
+      videoMap={props.videoConfig}
     />
   ) : (
     <p>Das geschnittene Video wird noch gespeichert</p>
