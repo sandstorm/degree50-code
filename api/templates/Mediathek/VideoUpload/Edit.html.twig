@@ -11,7 +11,7 @@
         </header>
 
         {% if video.encodingStatus == 1 %}
-            <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true, sources: [{src: "#{video.encodedVideoDirectory | virtualized_file_url }/hls.m3u8"}] }, videoMap: videoMap } | json_encode|e('html_attr')}}"></div>
+            <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true }, videoMap: videoMap } | json_encode|e('html_attr')}}"></div>
         {% elseif video.encodingStatus == 3 %}
             <div class="alert alert-danger">
                 Video-Encoding fehlgeschlagen...

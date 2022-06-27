@@ -25,11 +25,6 @@ const CuttingSolutions = (props: Props) => {
         videoJsOptions={{
           autoplay: false,
           controls: true,
-          sources: [
-            {
-              src: firstVideo?.url?.hls || '',
-            },
-          ],
           fluid: false,
           // @ts-ignore
           fill: true,
