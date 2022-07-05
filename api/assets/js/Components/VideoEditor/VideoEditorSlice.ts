@@ -13,12 +13,12 @@ import OverlaySlice, {
   actions as overlayActions,
   OverlayState,
   selectors as overlaySelectors,
-} from './components/OverlayContainer/OverlaySlice'
+} from 'Components/ToolbarItems/components/OverlayContainer/OverlaySlice'
 import {
   filterSlice,
   FilterState,
   selectors as filterSelectors,
-} from './FilterContext/FilterSlice'
+} from 'Components/ToolbarItems/FilterContext/FilterSlice'
 
 export default combineReducers({
   filter: filterSlice.reducer,

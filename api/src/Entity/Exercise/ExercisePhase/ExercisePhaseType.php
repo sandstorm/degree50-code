@@ -10,6 +10,7 @@ enum ExercisePhaseType: string {
     case VIDEO_ANALYSIS = 'videoAnalysis';
     case VIDEO_CUT = 'videoCutting';
     case REFLEXION = 'reflexion';
+    case MATERIAL = 'material';
 
     /**
      * @return string[]

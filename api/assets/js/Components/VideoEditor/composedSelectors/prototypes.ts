@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { VideoCodePrototype } from '../types'
 import { selectors as solutionSelectors } from '../SolutionSlice'
-import { selectors as videoCodePrototypeSelectors } from '../VideoCodesContext/VideoCodePrototypesSlice'
+import { selectors as videoCodePrototypeSelectors } from 'Components/ToolbarItems/VideoCodesContext/VideoCodePrototypesSlice'
 
 const prototypesByName = (a: VideoCodePrototype, b: VideoCodePrototype) => {
   if (a.name < b.name) {

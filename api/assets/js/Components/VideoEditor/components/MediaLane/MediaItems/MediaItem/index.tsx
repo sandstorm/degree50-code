@@ -11,12 +11,12 @@ import { actions } from '../../../../PlayerSlice'
 import { useModalHook } from 'Components/Modal/useModalHook'
 import { Handle } from '../types'
 import { clamp } from '../helpers'
-import AnnotationListItem from 'Components/VideoEditor/AnnotationsContext/Overlays/AnnotationListItem'
-import VideoCodeListItem from 'Components/VideoEditor/VideoCodesContext/Overlays/VideoCodeListItem'
-import CutListItem from 'Components/VideoEditor/CuttingContext/Overlays/CutListItem'
 import InfoButton from './MediaItemInfoButton'
 import ItemHandle from './ItemHandle'
 import Body from './Body'
+import AnnotationListItem from 'Components/ToolbarItems/AnnotationsContext/Overlays/AnnotationListItem'
+import CutListItem from 'Components/ToolbarItems/CuttingContext/Overlays/CutListItem'
+import VideoCodeListItem from 'Components/ToolbarItems/VideoCodesContext/Overlays/VideoCodeListItem'
 
 type OwnProps = {
   item: MediaItemClass<MediaItemTypeWithTypeInformation>

@@ -4,18 +4,19 @@ namespace App\Exercise\Controller\ClientSideSolutionData;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideAnnotation;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideCut;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCode;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideAnnotation;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideMaterial;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCode;
 use JsonSerializable;
 
 /**
  * This builder allows to transform server side solution value objects into a normalized
- * datastructure which can be serialized and consumed by the frontend.
+ * data structure which can be serialized and consumed by the frontend.
  *
  * WHY:
- * Our solution model only stores solutionLists as jsonBlob. This is totally fine
+ * Our solution model only stores solutionData as jsonBlob. This is totally fine
  * for the backend side of things. However our frontend treats annotations, videoCodes etc.
  * as entities and therefore wants them to have ids.
  * This builder serves as a single source of truth of the conversion from serverside solution
@@ -66,6 +67,11 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
      */
     private array $previousSolutionIds;
 
+    /**
+     * @var ClientSideMaterial[]
+     */
+    private array $materials;
+
     public function __construct()
     {
         $this->clientSideSolutions = [];
@@ -75,6 +81,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         $this->clientSideVideoCodePrototypes = [];
         $this->currentSolutionId = null;
         $this->previousSolutionIds = [];
+        $this->materials = [];
     }
 
     public function jsonSerialize(): array
@@ -96,21 +103,23 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
             ],
             'videoCodePrototypes' => [
                 'byId' => $this->clientSideVideoCodePrototypes,
+            ],
+            'materials' => [
+                'byId' => $this->materials,
             ]
         ];
     }
 
     public function addCurrentSolution(
-        ServerSideSolutionLists $serverSideSolutionLists,
+        ServerSideSolutionData $serverSideSolutionData,
         ExercisePhaseTeam $exercisePhaseTeam,
         ?ClientSideCutVideo $cutVideo
-    ): static
-    {
+    ): static {
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         $this->addSolution(
-            $serverSideSolutionLists,
+            $serverSideSolutionData,
             $solutionId,
             $exercisePhaseTeam->getCreator(),
             $cutVideo,
@@ -123,61 +132,63 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
     }
 
     public function addPreviousSolution(
-        ServerSideSolutionLists $serverSideSolutionLists,
+        ServerSideSolutionData $serverSideSolutionData,
         string $solutionId,
         User $teamMember,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
-    ): static
-    {
+    ): static {
         $solutionId = $this->addSolution(
-            $serverSideSolutionLists,
+            $serverSideSolutionData,
             $solutionId,
             $teamMember,
             $cutVideo,
             $fromGroupPhase,
         );
 
-        array_push($this->previousSolutionIds, $solutionId);
+        $this->previousSolutionIds[] = $solutionId;
 
         return $this;
     }
 
     private function addSolution(
-        ServerSideSolutionLists $serverSideSolutionLists,
+        ServerSideSolutionData $serverSideSolutionData,
         string $solutionId,
         User $solutionCreator,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
-    ): string
-    {
+    ): string {
         $userName = $solutionCreator->getEmail();
         $userId = $solutionCreator->getId();
 
-        $serverSideAnnotations = $serverSideSolutionLists->getAnnotations();
+        $serverSideMaterial = $serverSideSolutionData->getMaterial();
+        $materialId = $this->addMaterial($serverSideMaterial, $solutionId);
+
+        $serverSideAnnotations = $serverSideSolutionData->getAnnotations();
         $clientSideAnnotationIds = $this->addAnnotations($serverSideAnnotations, $solutionId);
 
-        $serverSideVideoCodes = $serverSideSolutionLists->getVideoCodes();
+        $serverSideVideoCodes = $serverSideSolutionData->getVideoCodes();
         $clientSideVideoCodeIds = $this->addVideoCodes($serverSideVideoCodes, $solutionId);
 
-        $serverSideCutList = $serverSideSolutionLists->getCutList();
+        $serverSideCutList = $serverSideSolutionData->getCutList();
         $clientSideCutIds = $this->addCuts($serverSideCutList, $solutionId);
 
-        $serverSideVideoCodePrototypes = $serverSideSolutionLists->getVideoCodePrototypes();
+        $serverSideVideoCodePrototypes = $serverSideSolutionData->getVideoCodePrototypes();
         $clientSideVideoCodePrototypeIds = $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes);
 
         $this->clientSideSolutions[$solutionId] = ClientSideSolution::create(
-            ClientSideSolutionLists::create(
+            ClientSideSolutionData::create(
                 $clientSideAnnotationIds,
                 $clientSideVideoCodeIds,
                 $clientSideCutIds,
                 $clientSideVideoCodePrototypeIds,
+                $materialId,
             ),
             $solutionId,
             $userName,
             $userId,
             $cutVideo,
-            $fromGroupPhase
+            $fromGroupPhase,
         );
 
         return $solutionId;
@@ -188,23 +199,40 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         $solution = $this->clientSideSolutions[$solutionId];
 
         $this->clientSideSolutions[$solutionId] = ClientSideSolution::create(
-            ClientSideSolutionLists::create(
-                $solution->getClientSideSolutionLists()->getAnnotationIds(),
-                $solution->getClientSideSolutionLists()->getVideoCodeIds(),
-                $solution->getClientSideSolutionLists()->getCutIds(),
+            ClientSideSolutionData::create(
+                $solution->getClientSideSolutionData()->getAnnotationIds(),
+                $solution->getClientSideSolutionData()->getVideoCodeIds(),
+                $solution->getClientSideSolutionData()->getCutIds(),
                 array_unique(array_merge(
-                    $solution->getClientSideSolutionLists()->getVideoCodePrototypeIds(),
+                    $solution->getClientSideSolutionData()->getVideoCodePrototypeIds(),
                     $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes)
-                ))
+                )),
+                $solution->getClientSideSolutionData()->getMaterialId(),
             ),
             $solutionId,
             $solution->getUserName(),
             $solution->getUserId(),
             $solution->getCutVideo(),
-            $solution->getFromGroupPhase()
+            $solution->getFromGroupPhase(),
         );
 
         return $this;
+    }
+
+    /**
+     * @param ServerSideMaterial|null $serverSideMaterial
+     * @param string $solutionId
+     * @return string|null Material Id if it exists.
+     */
+    private function addMaterial(?ServerSideMaterial $serverSideMaterial, string $solutionId): string | null
+    {
+        if (!empty($serverSideMaterial)) {
+            $clientSideMaterial = ClientSideMaterial::fromServerSideMaterial($serverSideMaterial, $solutionId);
+            $this->materials[$clientSideMaterial->getId()] = $clientSideMaterial;
+            return $clientSideMaterial->getId();
+        } else {
+            return null;
+        }
     }
 
     private function addAnnotations(array $serverSideAnnotations, string $solutionId): array

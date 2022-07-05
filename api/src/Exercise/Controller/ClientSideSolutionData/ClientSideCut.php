@@ -2,7 +2,7 @@
 
 namespace App\Exercise\Controller\ClientSideSolutionData;
 
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideCut;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
 use JsonSerializable;
 
 /**

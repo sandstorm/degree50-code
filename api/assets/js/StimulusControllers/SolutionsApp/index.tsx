@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { watchModals } from '@react-aria/aria-modal-polyfill'
 import { OverlayProvider } from '@react-aria/overlays'
 import { I18nProvider } from '@react-aria/i18n'
-import { useDebouncedResizeObserver } from '../../Components/VideoEditor/utils/useDebouncedResizeObserver'
+import { useDebouncedResizeObserver } from 'Components/VideoEditor/utils/useDebouncedResizeObserver'
 import VideoAnalysis from 'StimulusControllers/ExercisePhaseApp/Domain/ExercisePhases/VideoAnalysis'
 import {
   ConfigStateSlice,
@@ -11,6 +11,7 @@ import {
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import CuttingSolutions from './CuttingSolutions'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
+import MaterialSolution from 'StimulusControllers/SolutionsApp/MaterialSolution'
 
 const mapStateToProps = (state: ConfigStateSlice) => ({
   activePhaseType: configSelectors.selectPhaseType(state),
@@ -26,6 +27,8 @@ const getSolutionComponentByPhaseType = (phaseType: ExercisePhaseTypesEnum) => {
       return <VideoAnalysis />
     case ExercisePhaseTypesEnum.VIDEO_CUTTING:
       return <CuttingSolutions />
+    case ExercisePhaseTypesEnum.MATERIAL:
+      return <MaterialSolution />
     default:
       throw new Error(
         `No SolutionApp available for ExercisePhase with type "${phaseType}"`

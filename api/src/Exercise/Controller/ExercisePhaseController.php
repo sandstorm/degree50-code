@@ -8,6 +8,7 @@ use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use App\Entity\Exercise\ExercisePhaseTypes\MaterialPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
@@ -16,7 +17,8 @@ use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use App\Exercise\Form\ExercisePhaseFormType;
+use App\Exercise\Form\MaterialPhaseFormType;
+use App\Exercise\Form\ReflexionPhaseFormType;
 use App\Exercise\Form\VideoAnalysisPhaseFormFormType;
 use App\Exercise\Form\VideoCutPhaseFormFormType;
 use App\Exercise\LiveSync\LiveSyncService;
@@ -183,7 +185,7 @@ class ExercisePhaseController extends AbstractController
         // config for the ui to render the react components
         $config = $this->getConfigWithSolutionApiEndpoints($exercisePhase, $exercisePhaseTeam);
 
-        $this->initiateExercisePhaseTeamWithSolution($exercisePhaseTeam, $user);
+        $this->initiateExercisePhaseTeamWithSolution($exercisePhase, $exercisePhaseTeam, $user);
 
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
@@ -280,6 +282,7 @@ class ExercisePhaseController extends AbstractController
             ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
             ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
             ExercisePhaseType::REFLEXION => new ReflexionPhase(),
+            ExercisePhaseType::MATERIAL => new MaterialPhase(),
             default => throw new \InvalidArgumentException(
                 "ExercisePhaseType has to be one of ["
                     . implode(', ', ExercisePhaseType::getPossibleValues()) .
@@ -392,6 +395,7 @@ class ExercisePhaseController extends AbstractController
     }
 
     private function initiateExercisePhaseTeamWithSolution(
+        ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam,
         User $user
     ) {
@@ -403,13 +407,39 @@ class ExercisePhaseController extends AbstractController
         $this->eventStore->disableEventPublishingForNextFlush();
 
         if (!$exercisePhaseTeam->getSolution()) {
-            $newSolution = new Solution();
-            $exercisePhaseTeam->setSolution($newSolution);
-            $entityManager->persist($newSolution);
+            $this->initNewSolution($exercisePhase, $exercisePhaseTeam);
         }
 
         $entityManager->persist($exercisePhaseTeam);
         $entityManager->flush();
+    }
+
+    private function initNewSolution(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $this->eventStore->disableEventPublishingForNextFlush();
+
+        $newSolution = null;
+
+        // NOTE:
+        // It would be preferable to use a match expression here.
+        // However we would then not be able to use the @var comment with the type
+        // assertion...
+        if ($exercisePhase->getType() == ExercisePhaseType::MATERIAL) {
+            /**
+             * @var MaterialPhase $exercisePhase
+             **/
+            $newSolution = new Solution(
+                null,
+                $exercisePhase->getMaterial()
+            );
+        } else {
+            $newSolution = new Solution();
+        }
+
+        $exercisePhaseTeam->setSolution($newSolution);
+
+        $entityManager->persist($newSolution);
     }
 
     private function getConfigWithSolutionApiEndpoints(
@@ -576,7 +606,8 @@ class ExercisePhaseController extends AbstractController
         return match ($exercisePhase->getType()) {
             ExercisePhaseType::VIDEO_ANALYSIS => $this->createForm(VideoAnalysisPhaseFormFormType::class, $exercisePhase),
             ExercisePhaseType::VIDEO_CUT => $this->createForm(VideoCutPhaseFormFormType::class, $exercisePhase),
-            ExercisePhaseType::REFLEXION => $this->createForm(ExercisePhaseFormType::class, $exercisePhase),
+            ExercisePhaseType::REFLEXION => $this->createForm(ReflexionPhaseFormType::class, $exercisePhase),
+            ExercisePhaseType::MATERIAL => $this->createForm(MaterialPhaseFormType::class, $exercisePhase),
         };
     }
 
@@ -625,6 +656,18 @@ class ExercisePhaseController extends AbstractController
         ]);
     }
 
+    private function addMaterialExercisePhaseEditedEvent(MaterialPhase $phase)
+    {
+        $this->eventStore->addEvent('MaterialExercisePhaseEdited', [
+            'exercisePhaseId' => $phase->getId(),
+            'name' => $phase->getName(),
+            'task' => $phase->getTask(),
+            'isGroupPhase' => $phase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
+            'components' => $phase->getComponents()
+        ]);
+    }
+
     private function addExercisePhaseEditedEvent(ExercisePhase $phase)
     {
         switch ($phase->getType()) {
@@ -639,6 +682,10 @@ class ExercisePhaseController extends AbstractController
             case ExercisePhaseType::REFLEXION:
                 /** @var ReflexionPhase $phase */
                 $this->addReflexionExercisePhaseEditedEvent($phase);
+                break;
+            case ExercisePhaseType::MATERIAL:
+                /** @var MaterialPhase $phase */
+                $this->addMaterialExercisePhaseEditedEvent($phase);
                 break;
         }
     }

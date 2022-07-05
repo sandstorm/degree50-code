@@ -7,7 +7,7 @@ import {
 import CheckboxWithIndeterminate, {
   CheckboxValue,
 } from '../../CheckboxWithIndeterminate'
-import { GlobalSolutionFilter } from 'Components/VideoEditor/FilterContext/FilterSlice'
+import { GlobalSolutionFilter } from 'Components/ToolbarItems/FilterContext/FilterSlice'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mapStateToProps = (state: AppState) => {
@@ -28,7 +28,7 @@ const mapStateToProps = (state: AppState) => {
 }
 
 const mapDispatchToProps = {
-  togglePreviousSolution: actions.videoEditor.filter.togglePreviousSolution,
+  togglePreviousSolution: actions.videoEditor.filter.setPreviousSolution,
   setGlobalSolutionFilter: actions.videoEditor.filter.setGlobalSolutionFilter,
 }
 
@@ -37,7 +37,10 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const ActivePreviousSolutions = (props: Props) => {
   const handleToggle = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      props.togglePreviousSolution(ev.currentTarget.value)
+      props.togglePreviousSolution({
+        id: ev.currentTarget.value,
+        isVisible: ev.currentTarget.checked,
+      })
     },
     [props]
   )

@@ -1,15 +1,17 @@
 import { timeToSecond } from './utils/time'
-import { AnnotationId } from './AnnotationsContext/AnnotationsSlice'
-import { VideoCodeId } from './VideoCodesContext/VideoCodesSlice'
-import { CutId } from './CuttingContext/CuttingSlice'
-import { VideoCodePrototypeId } from './VideoCodesContext/VideoCodePrototypesSlice'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import {
   ANNOTATIONS_API_PROPERTY,
-  VIDEO_CODES_API_PROPERTY,
-  VIDEO_CODE_PROTOTYPE_API_PROPERTY,
   CUTLIST_API_PROPERTY,
-} from '../../StimulusControllers/normalizeData'
+  MATERIAL_API_PROPERTY,
+  VIDEO_CODE_PROTOTYPE_API_PROPERTY,
+  VIDEO_CODES_API_PROPERTY,
+} from 'StimulusControllers/normalizeData'
+import { MaterialId } from 'StimulusControllers/ExerciseAndSolutionStore/MaterialsSlice'
+import { AnnotationId } from 'Components/ToolbarItems/AnnotationsContext/AnnotationsSlice'
+import { CutId } from 'Components/ToolbarItems/CuttingContext/CuttingSlice'
+import { VideoCodePrototypeId } from 'Components/ToolbarItems/VideoCodesContext/VideoCodePrototypesSlice'
+import { VideoCodeId } from 'Components/ToolbarItems/VideoCodesContext/VideoCodesSlice'
 
 export enum MediaItemTypeEnum {
   annotation = 'annotation',
@@ -59,18 +61,19 @@ export type CutList = Array<Cut>
 
 export type SolutionId = string
 
-export type SolutionLists = {
+export type SolutionData = {
   [ANNOTATIONS_API_PROPERTY]: AnnotationId[]
   [VIDEO_CODES_API_PROPERTY]: VideoCodeId[]
   [CUTLIST_API_PROPERTY]: CutId[]
   [VIDEO_CODE_PROTOTYPE_API_PROPERTY]: VideoCodePrototypeId[]
+  [MATERIAL_API_PROPERTY]: MaterialId
 }
 
 export type Solution = {
   id: SolutionId
   userId?: string
   userName?: string
-  solutionLists: SolutionLists
+  solutionData: SolutionData
   cutVideo?: Video
   fromGroupPhase?: boolean
 }

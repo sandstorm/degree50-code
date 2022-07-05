@@ -80,7 +80,7 @@ Feature: When a student solves an exercise they should only be able to access ph
     And I have a team with ID "team1" belonging to exercise phase "analysis1" and creator "test-student@sandstorm.de"
     And User "test-student@sandstorm.de" belongs to "team1"
     And The User "test-student@sandstorm.de" has CourseRole "STUDENT" in Course "course1"
-    And I have a solution with ID "annotationSolution1" belonging to team with ID "team1" with solutionLists as JSON
+    And I have a solution with ID "annotationSolution1" belonging to team with ID "team1" with solutionData as JSON
     """
     {
       "annotations": [

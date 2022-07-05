@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { DataState } from '../../StimulusControllers/ExerciseAndSolutionStore/DataSlice'
+import { DataState } from 'StimulusControllers/ExerciseAndSolutionStore/DataSlice'
 
 // Why isn't this located inside ./DataSlice?
 // => If we locate this inside the slice, we run into circular dependency issues

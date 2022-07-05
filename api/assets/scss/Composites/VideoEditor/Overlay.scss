@@ -35,6 +35,10 @@
     overflow: auto;
 }
 
+.video-editor__overlay__footer {
+    position: sticky;
+}
+
 .video-editor__overlay__wrapper {
     display: grid;
     grid-template-rows: auto 1fr;

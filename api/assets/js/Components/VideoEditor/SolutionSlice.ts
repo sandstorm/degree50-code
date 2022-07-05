@@ -2,45 +2,51 @@
 // STATE //
 ///////////
 
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
-  SolutionId,
-  Solution,
   Annotation,
-  VideoCode,
   Cut,
+  Solution,
+  SolutionId,
+  VideoCode,
   VideoCodePrototype,
 } from './types'
+import { setIn } from 'immutable'
+import {
+  ANNOTATIONS_API_PROPERTY,
+  CUTLIST_API_PROPERTY,
+  VIDEO_CODE_PROTOTYPE_API_PROPERTY,
+  VIDEO_CODES_API_PROPERTY,
+} from 'StimulusControllers/normalizeData'
+import { initData } from './initData'
+import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import MaterialSolutionSlice from 'StimulusControllers/ExerciseAndSolutionStore/MaterialSolutionSlice'
 import {
   annotationsSlice,
   AnnotationId,
-} from './AnnotationsContext/AnnotationsSlice'
-import { setIn } from 'immutable'
+} from 'Components/ToolbarItems/AnnotationsContext/AnnotationsSlice'
 import {
-  videoCodesSlice,
-  VideoCodeId,
-} from './VideoCodesContext/VideoCodesSlice'
-import {
-  ANNOTATIONS_API_PROPERTY,
-  VIDEO_CODES_API_PROPERTY,
-  CUTLIST_API_PROPERTY,
-  VIDEO_CODE_PROTOTYPE_API_PROPERTY,
-} from 'StimulusControllers/normalizeData'
-import { CutId, cuttingSlice } from './CuttingContext/CuttingSlice'
+  CutId,
+  cuttingSlice,
+} from 'Components/ToolbarItems/CuttingContext/CuttingSlice'
 import {
   videoCodePrototypesSlice,
   VideoCodePrototypeId,
-} from './VideoCodesContext/VideoCodePrototypesSlice'
-import { initData } from './initData'
-import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+} from 'Components/ToolbarItems/VideoCodesContext/VideoCodePrototypesSlice'
+import {
+  videoCodesSlice,
+  VideoCodeId,
+} from 'Components/ToolbarItems/VideoCodesContext/VideoCodesSlice'
 
 export type SolutionState = {
+  allIds: Array<SolutionId>
   byId: Record<SolutionId, Solution>
   current?: SolutionId
   previous: SolutionId[]
 }
 
 export const initialState: SolutionState = {
+  allIds: [],
   byId: {},
   current: undefined,
   previous: [],
@@ -60,7 +66,7 @@ export const SolutionSlice = createSlice({
         return state
       }
 
-      const currentCutList = state.byId[state.current].solutionLists.cutList
+      const currentCutList = state.byId[state.current].solutionData.cutList
       const currentIndex = currentCutList.indexOf(action.payload)
       const newIndex = currentIndex - 1
 
@@ -78,7 +84,7 @@ export const SolutionSlice = createSlice({
 
       return setIn(
         state,
-        ['byId', state.current, 'solutionLists', 'cutList'],
+        ['byId', state.current, 'solutionData', 'cutList'],
         newIds
       )
     },
@@ -87,7 +93,7 @@ export const SolutionSlice = createSlice({
         return state
       }
 
-      const currentCutList = state.byId[state.current].solutionLists.cutList
+      const currentCutList = state.byId[state.current].solutionData.cutList
       const currentIndex = currentCutList.indexOf(action.payload)
       const newIndex = currentIndex + 1
 
@@ -105,7 +111,7 @@ export const SolutionSlice = createSlice({
 
       return setIn(
         state,
-        ['byId', state.current, 'solutionLists', 'cutList'],
+        ['byId', state.current, 'solutionData', 'cutList'],
         newIds
       )
     },
@@ -113,8 +119,18 @@ export const SolutionSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(initData, (_, action) => {
-        return action.payload.solutions
+        return {
+          ...action.payload.solutions,
+          allIds: Object.keys(action.payload.solutions.byId),
+        }
       })
+      .addCase(
+        MaterialSolutionSlice.actions.setSelectedSolutionId,
+        (state, action) => ({
+          ...state,
+          current: action.payload,
+        })
+      )
       .addCase(
         annotationsSlice.actions.append,
         (state, action: PayloadAction<Annotation>) => {
@@ -123,7 +139,7 @@ export const SolutionSlice = createSlice({
           }
 
           const currentAnnotationIds =
-            state.byId[state.current].solutionLists.annotations
+            state.byId[state.current].solutionData.annotations
           const updatedAnnotations = [
             ...currentAnnotationIds,
             action.payload.id,
@@ -131,7 +147,7 @@ export const SolutionSlice = createSlice({
 
           return setIn(
             state,
-            ['byId', state.current, 'solutionLists', ANNOTATIONS_API_PROPERTY],
+            ['byId', state.current, 'solutionData', ANNOTATIONS_API_PROPERTY],
             updatedAnnotations
           )
         }
@@ -144,14 +160,14 @@ export const SolutionSlice = createSlice({
           }
 
           const currentAnnotationIds =
-            state.byId[state.current].solutionLists.annotations
+            state.byId[state.current].solutionData.annotations
           const updatedAnnotations = currentAnnotationIds.filter(
             (id) => id !== action.payload
           )
 
           return setIn(
             state,
-            ['byId', state.current, 'solutionLists', ANNOTATIONS_API_PROPERTY],
+            ['byId', state.current, 'solutionData', ANNOTATIONS_API_PROPERTY],
             updatedAnnotations
           )
         }
@@ -164,12 +180,12 @@ export const SolutionSlice = createSlice({
           }
 
           const currentVideoCodeIds =
-            state.byId[state.current].solutionLists.videoCodes
+            state.byId[state.current].solutionData.videoCodes
           const updatedVideoCodes = [...currentVideoCodeIds, action.payload.id]
 
           return setIn(
             state,
-            ['byId', state.current, 'solutionLists', VIDEO_CODES_API_PROPERTY],
+            ['byId', state.current, 'solutionData', VIDEO_CODES_API_PROPERTY],
             updatedVideoCodes
           )
         }
@@ -182,14 +198,14 @@ export const SolutionSlice = createSlice({
           }
 
           const currentVideoCodeIds =
-            state.byId[state.current].solutionLists.videoCodes
+            state.byId[state.current].solutionData.videoCodes
           const updatedVideoCodes = currentVideoCodeIds.filter(
             (id) => id !== action.payload
           )
 
           return setIn(
             state,
-            ['byId', state.current, 'solutionLists', VIDEO_CODES_API_PROPERTY],
+            ['byId', state.current, 'solutionData', VIDEO_CODES_API_PROPERTY],
             updatedVideoCodes
           )
         }
@@ -201,12 +217,12 @@ export const SolutionSlice = createSlice({
             return state
           }
 
-          const currentCutIds = state.byId[state.current].solutionLists.cutList
+          const currentCutIds = state.byId[state.current].solutionData.cutList
           const updatedCuts = [...currentCutIds, action.payload.id]
 
           return setIn(
             state,
-            ['byId', state.current, 'solutionLists', CUTLIST_API_PROPERTY],
+            ['byId', state.current, 'solutionData', CUTLIST_API_PROPERTY],
             updatedCuts
           )
         }
@@ -218,14 +234,14 @@ export const SolutionSlice = createSlice({
             return state
           }
 
-          const currentCutIds = state.byId[state.current].solutionLists.cutList
+          const currentCutIds = state.byId[state.current].solutionData.cutList
           const updatedCuts = currentCutIds.filter(
             (id) => id !== action.payload
           )
 
           return setIn(
             state,
-            ['byId', state.current, 'solutionLists', CUTLIST_API_PROPERTY],
+            ['byId', state.current, 'solutionData', CUTLIST_API_PROPERTY],
             updatedCuts
           )
         }
@@ -238,7 +254,7 @@ export const SolutionSlice = createSlice({
           }
 
           const currentIds =
-            state.byId[state.current].solutionLists.videoCodePrototypes
+            state.byId[state.current].solutionData.videoCodePrototypes
           const updatedPrototypes = [...currentIds, action.payload.id]
 
           return setIn(
@@ -246,7 +262,7 @@ export const SolutionSlice = createSlice({
             [
               'byId',
               state.current,
-              'solutionLists',
+              'solutionData',
               VIDEO_CODE_PROTOTYPE_API_PROPERTY,
             ],
             updatedPrototypes
@@ -271,7 +287,7 @@ export const SolutionSlice = createSlice({
           const allIdsToRemove = [prototypeId, ...childIds]
 
           const currentIds =
-            state.byId[state.current].solutionLists.videoCodePrototypes
+            state.byId[state.current].solutionData.videoCodePrototypes
           const updated = currentIds.filter(
             (id) => !allIdsToRemove.includes(id)
           )
@@ -281,7 +297,7 @@ export const SolutionSlice = createSlice({
             [
               'byId',
               state.current,
-              'solutionLists',
+              'solutionData',
               VIDEO_CODE_PROTOTYPE_API_PROPERTY,
             ],
             updated
@@ -294,7 +310,7 @@ export const SolutionSlice = createSlice({
 ///////////////
 // SELECTORS //
 ///////////////
-
+const selectAllIds = (state: AppState) => state.data.solutions.allIds
 const selectById = (state: AppState) => state.data.solutions.byId
 const selectSolutionById = (state: AppState, props: { solutionId: string }) =>
   state.data.solutions.byId[props.solutionId]
@@ -314,24 +330,24 @@ const selectPreviousSolutions = createSelector(
 const selectCurrentAnnotationIds = createSelector(
   [selectById, selectCurrentId],
   (byId, currentId) =>
-    currentId ? byId[currentId].solutionLists.annotations : []
+    currentId ? byId[currentId].solutionData.annotations : []
 )
 
 const selectCurrentVideoCodeIds = createSelector(
   [selectById, selectCurrentId],
   (byId, currentId) =>
-    currentId ? byId[currentId].solutionLists.videoCodes : []
+    currentId ? byId[currentId].solutionData.videoCodes : []
 )
 
 const selectCurrentCutIds = createSelector(
   [selectById, selectCurrentId],
-  (byId, currentId) => (currentId ? byId[currentId].solutionLists.cutList : [])
+  (byId, currentId) => (currentId ? byId[currentId].solutionData.cutList : [])
 )
 
 const selectCurrentPrototypeIds = createSelector(
   [selectById, selectCurrentId],
   (byId, currentId) =>
-    currentId ? byId[currentId].solutionLists.videoCodePrototypes : []
+    currentId ? byId[currentId].solutionData.videoCodePrototypes : []
 )
 
 const selectCurrentSolutionOwner = createSelector(
@@ -357,7 +373,14 @@ const selectCurrentSolutionFromGroupPhase = createSelector(
   }
 )
 
+const selectCurrentMaterialId = createSelector(
+  [selectById, selectCurrentId],
+  (byId, currentId) =>
+    currentId ? byId[currentId].solutionData.material : undefined
+)
+
 export const selectors = {
+  selectAllIds,
   selectById,
   selectSolutionById,
   selectCurrentId,
@@ -370,4 +393,5 @@ export const selectors = {
   selectCurrentPrototypeIds,
   selectCurrentSolutionOwner,
   selectCurrentSolutionFromGroupPhase,
+  selectCurrentMaterialId,
 }

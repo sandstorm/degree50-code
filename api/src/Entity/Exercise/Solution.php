@@ -4,7 +4,7 @@ namespace App\Entity\Exercise;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
 use App\Entity\Video\Video;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,12 +35,13 @@ class Solution
     /**
      * Solution constructor.
      */
-    public function __construct(string $id = null)
+    public function __construct(string $id = null, string $initialMaterial = null)
     {
         $solutionPrototype = [
             'annotations' => [],
             'videoCodes' => [],
             'cutList' => [],
+            'material' => $initialMaterial,
         ];
         $this->solution = $solutionPrototype;
         $this->generateOrSetId($id);
@@ -48,14 +49,14 @@ class Solution
     }
 
 
-    public function getSolution(): ?ServerSideSolutionLists
+    public function getSolution(): ?ServerSideSolutionData
     {
-        return ServerSideSolutionLists::fromArray($this->solution);
+        return ServerSideSolutionData::fromArray($this->solution);
     }
 
-    public function setSolution(ServerSideSolutionLists $solutionLists): self
+    public function setSolution(ServerSideSolutionData $solutionData): self
     {
-        $this->solution = $solutionLists->toArray();
+        $this->solution = $solutionData->toArray();
 
         return $this;
     }

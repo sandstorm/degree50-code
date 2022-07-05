@@ -1,10 +1,10 @@
-import React, { FC, memo } from 'react'
+import { FC, memo } from 'react'
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import MediaLaneContainer from './components/MediaLaneContainer'
-import OverlayContainer from './components/OverlayContainer'
+import OverlayContainer from 'Components/ToolbarItems/components/OverlayContainer'
 import Toolbar from './components/Toolbar'
-import { useShortCuts } from './ShortCutsContext/useShortCuts'
+import { useShortCuts } from 'Components/ToolbarItems/ShortCutsContext/useShortCuts'
 
 type Props = {
   videos: Array<Video>

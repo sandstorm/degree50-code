@@ -49,6 +49,7 @@ exercisePhase:
         otherSolutionsAreAccessible: 'Studierende können gegenseitig Ergebnisse einsehen'
         name: 'Titel der Phase'
         task: 'Lernauftrag / Beschreibung'
+        material: 'Material'
         videos: 'Videos'
         videosExtended: 'Video für die Aufgabe auswählen'
         videoCodes: 'Video-Codes'
@@ -72,6 +73,9 @@ exercisePhase:
         reflexion:
             label: 'Reflexion'
             iconClass: 'fas fa-book-open'
+        material:
+            label: 'Material'
+            iconClass: 'fas fa-square-quote'
     components:
         videoPlayer:
             label: 'Videoplayer'

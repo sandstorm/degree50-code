@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import { getComponentName } from '../index'
-import { FilterStateSlice } from '../../../FilterContext/FilterSlice'
 import { selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { connect } from 'react-redux'
+import { FilterStateSlice } from 'Components/ToolbarItems/FilterContext/FilterSlice'
 
 const mapStateToProps = (state: FilterStateSlice) => {
   return {

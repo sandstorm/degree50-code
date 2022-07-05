@@ -9,20 +9,20 @@
         background-color: black;
     }
 
-    .video-editor__toolbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-evenly;
-        padding: $theme__spacing--small $theme__spacing--base;
+}
+.video-editor__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: $theme__spacing--small $theme__spacing--base;
 
-        background-color: $theme__color__grey;
+    background-color: $theme__color__grey;
 
-        &__button {
-            position: relative;
-            height: 32px;
-            width: 32px;
-            padding: 0;
-        }
+    &__button {
+        position: relative;
+        height: 32px;
+        width: 32px;
+        padding: 0;
     }
 
     .menu {

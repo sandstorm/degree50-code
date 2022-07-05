@@ -116,3 +116,9 @@
         flex: 1;
     }
 }
+
+.video-editor__media-item-list__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

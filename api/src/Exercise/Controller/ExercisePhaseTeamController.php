@@ -7,23 +7,24 @@ use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
+use App\Entity\Exercise\Solution;
+use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
-use App\Entity\Video\Video;
-use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -315,7 +316,6 @@ class ExercisePhaseTeamController extends AbstractController
         return $video;
     }
 
-
     /**
      * Try to create a new AutosaveSolution and then publish the most recent version of the solution.
      *
@@ -326,15 +326,15 @@ class ExercisePhaseTeamController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $solutionListsFromJson = json_decode($request->getContent(), true);
+        $solutionDataFromJson = json_decode($request->getContent(), true);
 
-        $serverSideSolutionLists = ServerSideSolutionLists::fromClientJSON($solutionListsFromJson);
+        $serverSideSolutionData = ServerSideSolutionData::fromClientJSON($solutionDataFromJson);
 
         // If current user is not current editor && there is a solution -> discard
         if ($user === $exercisePhaseTeam->getCurrentEditor()) {
             $autosaveSolution = new AutosavedSolution();
             $autosaveSolution->setTeam($exercisePhaseTeam);
-            $autosaveSolution->setSolution($serverSideSolutionLists);
+            $autosaveSolution->setSolution($serverSideSolutionData);
             $autosaveSolution->setOwner($user);
 
             $this->eventStore->disableEventPublishingForNextFlush();
@@ -360,6 +360,35 @@ class ExercisePhaseTeamController extends AbstractController
             'data' => $clientSideSolutionDataBuilder,
             'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId()
         ]);
+
+        return $response;
+    }
+
+    /**
+     * Update a solution of a student as Dozent.
+     * This is only possible for MaterialPhases, where the Dozent can edit the material solution of a student
+     * as a review process.
+     *
+     * // TODO Roles?
+     * IsGranted("reviewSolution", subject="solution") --> only a dozent in the course should be able to do this. But via frontend there is no way for an "outside" dozent to do this.
+     * @Route("/exercise-phase/review-solution/{id}", name="exercise-overview__exercise-phase-team--review-solution")
+     */
+    public function reviewSolution(Request $request, Solution $solution): Response
+    {
+
+        $solutionDataFromJson = json_decode($request->getContent(), true);
+
+        $serverSideSolutionData = ServerSideSolutionData::fromClientJSON($solutionDataFromJson);
+
+        $solution->setSolution($serverSideSolutionData);
+        $solution->setUpdateTimestamp(new \DateTimeImmutable());
+
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($solution);
+        $entityManager->flush();
+
+        $response = Response::create('OK');
 
         return $response;
     }

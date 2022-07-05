@@ -6,13 +6,14 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCodePrototype;
 use App\Entity\Exercise\VideoCode;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\Controller\Dto\PreviousSolutionDto;
 use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Twig\AppRuntime;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 
@@ -76,7 +77,7 @@ class SolutionService
          */
         foreach ($previousSolutionDtos as $previousSolutionDto) {
             $clientSideSolutionDataBuilder->addPreviousSolution(
-                $previousSolutionDto->getServerSideSolutionLists(),
+                $previousSolutionDto->getServerSideSolutionData(),
                 $previousSolutionDto->getSolutionId(),
                 $previousSolutionDto->getTeamMember(),
                 $previousSolutionDto->getCutVideo(),
@@ -141,7 +142,7 @@ class SolutionService
          */
         foreach ($previousSolutionDtos as $previousSolutionDto) {
             $clientSideSolutionDataBuilder->addPreviousSolution(
-                $previousSolutionDto->getServerSideSolutionLists(),
+                $previousSolutionDto->getServerSideSolutionData(),
                 $previousSolutionDto->getSolutionId(),
                 $previousSolutionDto->getTeamMember(),
                 $previousSolutionDto->getCutVideo(),
@@ -167,16 +168,23 @@ class SolutionService
                 $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $exercisePhaseDependedOn);
                 $solutionEntity = $teamOfPreviousPhase?->getSolution();
 
-                if (empty($solutionEntity)) {
+                if (is_null($solutionEntity)) {
                     return $carry;
+                }
+
+                $clientSideCutVideo = null;
+
+                try {
+                  $clientSideCutVideo = $solutionEntity->getCutVideo()?->getAsArray($this->appRuntime);
+                } catch (EntityNotFoundException $e) {
+                
                 }
 
                 return array_merge($carry, [PreviousSolutionDto::create(
                     $teamMember,
                     $solutionEntity->getSolution(),
                     $solutionEntity->getId(),
-                    // TODO: parameter type mismatch
-                    $solutionEntity->getCutVideo(),
+                    $clientSideCutVideo,
                     $exercisePhaseDependedOn->isGroupPhase(),
                 )]);
             }, []);

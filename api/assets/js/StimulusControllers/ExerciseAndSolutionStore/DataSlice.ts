@@ -1,33 +1,43 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import {
-  AnnotationsState,
   annotationsSlice,
+  AnnotationsState,
   selectors as annotationSelectors,
-} from '../../Components/VideoEditor/AnnotationsContext/AnnotationsSlice'
+} from 'Components/ToolbarItems/AnnotationsContext/AnnotationsSlice'
 import {
-  cuttingSlice,
   CutsState,
+  cuttingSlice,
   selectors as cutsSelectors,
-} from '../../Components/VideoEditor/CuttingContext/CuttingSlice'
+} from 'Components/ToolbarItems/CuttingContext/CuttingSlice'
 import {
+  selectors as videoCodePrototypeSelectors,
   videoCodePrototypesSlice,
   VideoCodePrototypesState,
-  selectors as videoCodePrototypeSelectors,
-} from '../../Components/VideoEditor/VideoCodesContext/VideoCodePrototypesSlice'
+} from 'Components/ToolbarItems/VideoCodesContext/VideoCodePrototypesSlice'
 import {
+  selectors as videoCodeSelectors,
   videoCodesSlice,
   VideoCodesState,
-  selectors as videoCodeSelectors,
-} from '../../Components/VideoEditor/VideoCodesContext/VideoCodesSlice'
+} from 'Components/ToolbarItems/VideoCodesContext/VideoCodesSlice'
+
+import MaterialsSlice, {
+  MaterialsState,
+  selectors as materialSelectors,
+} from './MaterialsSlice'
+import { composedMaterialSelectors } from 'Components/VideoEditor/composedSelectors/materials'
+import MaterialSolutionSlice, {
+  MaterialSolutionState,
+  selectors as materialSolutionSelectors,
+} from 'StimulusControllers/ExerciseAndSolutionStore/MaterialSolutionSlice'
+import { composedAnnotationSelectors } from 'Components/VideoEditor/composedSelectors/annotations'
+import { composedCutSelectors } from 'Components/VideoEditor/composedSelectors/cuts'
+import { composedPrototypeSelectors } from 'Components/VideoEditor/composedSelectors/prototypes'
+import { composedVideoCodeSelectors } from 'Components/VideoEditor/composedSelectors/videoCodes'
 import {
-  SolutionSlice,
   selectors as solutionSelectors,
   SolutionState,
-} from '../../Components/VideoEditor/SolutionSlice'
-import { composedPrototypeSelectors } from '../../Components/VideoEditor/composedSelectors/prototypes'
-import { composedCutSelectors } from '../../Components/VideoEditor/composedSelectors/cuts'
-import { composedAnnotationSelectors } from '../../Components/VideoEditor/composedSelectors/annotations'
-import { composedVideoCodeSelectors } from '../../Components/VideoEditor/composedSelectors/videoCodes'
+  SolutionSlice,
+} from 'Components/VideoEditor/SolutionSlice'
 
 export type DataState = {
   solutions: SolutionState
@@ -35,6 +45,8 @@ export type DataState = {
   videoCodes: VideoCodesState
   videoCodePrototypes: VideoCodePrototypesState
   cuts: CutsState
+  materials: MaterialsState
+  materialSolution: MaterialSolutionState
 }
 
 export default combineReducers({
@@ -43,6 +55,8 @@ export default combineReducers({
   videoCodes: videoCodesSlice.reducer,
   videoCodePrototypes: videoCodePrototypesSlice.reducer,
   cuts: cuttingSlice.reducer,
+  materials: MaterialsSlice.reducer,
+  materialSolution: MaterialSolutionSlice.reducer,
 })
 
 export const actions = {
@@ -51,6 +65,8 @@ export const actions = {
   videoCodes: videoCodesSlice.actions,
   videoCodePrototypes: videoCodePrototypesSlice.actions,
   cuts: cuttingSlice.actions,
+  materials: MaterialsSlice.actions,
+  materialSolution: MaterialSolutionSlice.actions,
 }
 
 export const selectors = {
@@ -59,9 +75,12 @@ export const selectors = {
   videoCodes: videoCodeSelectors,
   videoCodePrototypes: videoCodePrototypeSelectors,
   cuts: cutsSelectors,
+  materials: materialSelectors,
+  materialSolution: materialSolutionSelectors,
 
   ...composedVideoCodeSelectors,
   ...composedAnnotationSelectors,
   ...composedCutSelectors,
   ...composedPrototypeSelectors,
+  ...composedMaterialSelectors,
 }

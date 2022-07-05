@@ -9,8 +9,8 @@ import MediaLane from '../../MediaLane/index'
 import { Cut, MediaItem } from '../../../types'
 import { solveConflicts } from '../../../utils/solveItemConflicts'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
-import { useCuttingMediaItemHandling } from '../../../CuttingContext/util'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { useCuttingMediaItemHandling } from 'Components/ToolbarItems/CuttingContext/util'
 
 type OwnProps = {
   cuts: Cut[]

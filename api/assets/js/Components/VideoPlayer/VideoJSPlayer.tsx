@@ -6,8 +6,8 @@ import 'video.js/dist/video-js.css'
 import { Video } from './VideoPlayerWrapper'
 import { generate } from 'shortid'
 import { useAddCustomVideoJsComponent } from '../VideoEditor/useCustomVideoJsComponent'
-import { SetPlayerTimeControl } from '../VideoEditor/SetVideoPlayerTimeContext/SetVideoPlayerTimeMenu'
 import { usePatchVideoJsToMakeHotKeysWork } from '../VideoEditor/usePatchVideoJsToMakeHotKeysWork'
+import { SetPlayerTimeControl } from 'Components/ToolbarItems/SetVideoPlayerTimeContext/SetVideoPlayerTimeMenu'
 
 type Props = {
   videoJsOptions: VideoJsPlayerOptions

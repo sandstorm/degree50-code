@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectors as annotationSelectors } from '../AnnotationsContext/AnnotationsSlice'
+import { selectors as annotationSelectors } from 'Components/ToolbarItems/AnnotationsContext/AnnotationsSlice'
 import { selectors as solutionSelectors } from '../SolutionSlice'
-import { MediaItemTypeEnum } from '../types'
+import { Annotation, MediaItemTypeEnum } from '../types'
 import { sortByStartTime } from '../utils/time'
 
 /**
@@ -68,4 +68,16 @@ export const composedAnnotationSelectors = {
   selectCurrentAnnotations,
   selectAnnotationIsFromCurrentSolution,
   selectCreatorNameForAnnotation,
+}
+
+export const annotationWithCreatorNameAsRichtext = (
+  annotation: Annotation & { creatorName: string }
+) => {
+  const description = `Beschreibung: ${annotation.text}`
+  const creatorDescription = `Annotation von: ${annotation.creatorName}`
+  const start = `Von: ${annotation.start}`
+  const end = `Bis: ${annotation.end}`
+  const memo = `${annotation.memo.length > 0 ? `Memo: ${annotation.memo}` : ''}`
+
+  return [description, creatorDescription, start, end, memo].join('\n')
 }

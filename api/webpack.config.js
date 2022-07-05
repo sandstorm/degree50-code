@@ -1,7 +1,7 @@
 const Encore = require('@symfony/webpack-encore')
 const path = require('path')
-const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
-const { styles: ckeditorstyles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
+const {styles: ckeditorstyles} = require('@ckeditor/ckeditor5-dev-utils');
 
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
@@ -16,7 +16,7 @@ Encore
   // public path used by the web server to access the output path
   .setPublicPath('/build')
 
-  .copyFiles([{ from: './assets/images', to: 'images/[path][name].[ext]' }])
+  .copyFiles([{from: './assets/images', to: 'images/[path][name].[ext]'}])
 
   // only needed for CDN's or sub-directory deploy
   //.setManifestKeyPrefix('build/')
@@ -93,7 +93,7 @@ Encore
    *       only change on CKEditor updates/changes. This would speed up dev builds.
    *       We then would have to import the built CustomEditor in our React code.
    */
-  .addPlugin( new CKEditorWebpackPlugin({
+  .addPlugin(new CKEditorWebpackPlugin({
     // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
     language: 'de',
     additionalLanguages: [],
@@ -124,11 +124,11 @@ Encore
     }
   })
 
-  /*
-   * #######################################
-   * END CKEditor specific configuration
-   * #######################################
-   */
+/*
+ * #######################################
+ * END CKEditor specific configuration
+ * #######################################
+ */
 
 
 const config = Encore.getWebpackConfig()

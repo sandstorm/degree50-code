@@ -1,12 +1,12 @@
-import AnnotationsMenu from '../AnnotationsContext/AnnotationsMenu'
-import AufgabeMenu from '../Aufgabe/AufgabeMenu'
-import CuttingMenu from '../CuttingContext/CuttingMenu'
-import TeamMenu from '../Team/TeamMenu'
-import VideoCodesMenu from '../VideoCodesContext/VideoCodesMenu'
-import ZusatzAttachmentMenu from '../ZusatzAttachment/ZusatzAttachmentMenu'
-import FilterMenu from '../FilterContext/FilterMenu'
-import ShortCutsMenu from '../ShortCutsContext/ShortCutsMenu'
-import AllMediaItemsMenu from '../AllMediaItemsContext/AllMediaItemsMenu'
+import AllMediaItemsMenu from 'Components/ToolbarItems/AllMediaItemsContext/AllMediaItemsMenu'
+import AnnotationsMenu from 'Components/ToolbarItems/AnnotationsContext/AnnotationsMenu'
+import AufgabeMenu from 'Components/ToolbarItems/Aufgabe/AufgabeMenu'
+import CuttingMenu from 'Components/ToolbarItems/CuttingContext/CuttingMenu'
+import FilterMenu from 'Components/ToolbarItems/FilterContext/FilterMenu'
+import ShortCutsMenu from 'Components/ToolbarItems/ShortCutsContext/ShortCutsMenu'
+import TeamMenu from 'Components/ToolbarItems/Team/TeamMenu'
+import VideoCodesMenu from 'Components/ToolbarItems/VideoCodesContext/VideoCodesMenu'
+import ZusatzAttachmentMenu from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentMenu'
 
 const Toolbar = () => {
   return (

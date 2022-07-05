@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectors as cutsSelectors } from '../CuttingContext/CuttingSlice'
+import { selectors as cutsSelectors } from 'Components/ToolbarItems/CuttingContext/CuttingSlice'
 import { selectors as solutionSelectors } from '../SolutionSlice'
-import { MediaItemTypeEnum } from '../types'
+import { Cut, MediaItemTypeEnum } from '../types'
 import { sortByStartTime } from '../utils/time'
 
 /**
@@ -54,4 +54,20 @@ export const composedCutSelectors = {
   selectCutIsFromCurrentSolution,
   selectCurrentCuts,
   selectCreatorNameForCut,
+}
+
+export const cutAsRichtext = ({
+  cut,
+  creatorName,
+}: {
+  cut: Cut
+  creatorName: string
+}) => {
+  const creatorDescription = `Schnitt von: ${creatorName}`
+  const description = `Beschreibung: ${cut.text}`
+  const start = `Von: ${cut.start}`
+  const end = `Bis: ${cut.end}`
+  const memo = `${cut.memo.length > 0 ? `Memo: ${cut.memo}` : ''}`
+
+  return [description, creatorDescription, start, end, memo].join('\n')
 }

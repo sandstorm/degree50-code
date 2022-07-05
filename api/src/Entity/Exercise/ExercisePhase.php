@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Entity\Exercise\ExercisePhaseTypes\MaterialPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
@@ -35,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "videoAnalysisPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase",
  *     "videoCutPhase" = "App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase",
  *     "reflexionPhase" = "App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase",
+ *     "materialPhase" = "App\Entity\Exercise\ExercisePhaseTypes\MaterialPhase",
  * })
  */
 abstract class ExercisePhase
@@ -123,6 +125,7 @@ abstract class ExercisePhase
             ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase($id),
             ExercisePhaseType::VIDEO_CUT => new VideoCutPhase($id),
             ExercisePhaseType::REFLEXION => new ReflexionPhase($id),
+            ExercisePhaseType::MATERIAL => new MaterialPhase($id),
         };
     }
 

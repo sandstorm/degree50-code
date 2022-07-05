@@ -18,7 +18,7 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
 use App\Entity\Video\Video;
@@ -100,8 +100,7 @@ final class DegreeContext implements Context
         VideoService $videoService,
         ExerciseService $exerciseService,
         UserPasswordHasherInterface $userPasswordHasher,
-    )
-    {
+    ) {
         $this->minkSession = $minkSession;
         $this->router = $router;
         $this->entityManager = $entityManager;
@@ -135,7 +134,7 @@ final class DegreeContext implements Context
     public function visitUrl(string $url): void
     {
         $this->playwrightConnector->execute($this->playwrightContext, sprintf(
-        // language=JavaScript
+            // language=JavaScript
             '
             if (!vars.page) {
                 vars.page = await context.newPage()
@@ -145,8 +144,9 @@ final class DegreeContext implements Context
 
             // save response in context
             vars.response = response
-            '// language=PHP
-            , $url
+            ' // language=PHP
+            ,
+            $url
         ));
     }
 
@@ -178,7 +178,8 @@ final class DegreeContext implements Context
      */
     public function assertResponseStatus(int $code)
     {
-        $actual = $this->playwrightConnector->execute($this->playwrightContext,
+        $actual = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             '
             return vars.response.status();
@@ -227,7 +228,7 @@ final class DegreeContext implements Context
     public function iAmLoggedInViaBrowserAs($username)
     {
         $this->playwrightConnector->execute($this->playwrightContext, sprintf(
-        // language=JavaScript
+            // language=JavaScript
             '
             vars.page = await context.newPage();
             await vars.page.goto("BASEURL/login");
@@ -239,8 +240,9 @@ final class DegreeContext implements Context
                 vars.page.waitForNavigation(),
                 vars.page.click(`button[type="submit"]`),
             ])
-        '// language=PHP
-            , $username
+        ' // language=PHP
+            ,
+            $username
         ));
     }
 
@@ -326,7 +328,8 @@ final class DegreeContext implements Context
     /**
      * @Given Course :courseId belongs to exercise :exerciseId
      */
-    public function courseWithIdBelongsToExercise($courseId, $exerciseId) {
+    public function courseWithIdBelongsToExercise($courseId, $exerciseId)
+    {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
 
@@ -446,8 +449,7 @@ final class DegreeContext implements Context
     public function iHaveAPredefinedVideocodeprototypeWithIdBelongingToExecisePhaseAndWithProperties(
         $exercisePhaseId,
         TableNode $propertyTable
-    )
-    {
+    ) {
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
 
@@ -466,17 +468,17 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I have a solution with ID :solutionId belonging to team with ID :teamId with solutionLists as JSON
+     * @Given I have a solution with ID :solutionId belonging to team with ID :teamId with solutionData as JSON
      */
-    public function iHaveASolutionWithIdBelongingToTeamWithIdWithSolutionListsAsJson($solutionId, $teamId, PyStringNode $serverSideSolutionListsAsJSON)
+    public function iHaveASolutionWithIdBelongingToTeamWithIdWithSolutionDataAsJson($solutionId, $teamId, PyStringNode $serverSideSolutionDataAsJSON)
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
 
         $solution = new Solution($solutionId);
-        $arrayFromJson = json_decode($serverSideSolutionListsAsJSON->getRaw(), true);
-        $serverSideSolutionLists = ServerSideSolutionLists::fromArray($arrayFromJson);
-        $solution->setSolution($serverSideSolutionLists);
+        $arrayFromJson = json_decode($serverSideSolutionDataAsJSON->getRaw(), true);
+        $serverSideSolutionData = ServerSideSolutionData::fromArray($arrayFromJson);
+        $solution->setSolution($serverSideSolutionData);
         $exercisePhaseTeam->setSolution($solution);
 
         $this->entityManager->persist($solution);
@@ -503,21 +505,20 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I have an auto saved solution with ID :autoSavedSolutionId belonging to team :teamId with solutionLists as JSON
+     * @Given I have an auto saved solution with ID :autoSavedSolutionId belonging to team :teamId with solutionData as JSON
      */
     public function iHaveAnAutoSavedSolutionWithIdBelongingToTeamWithSolutionlistsAsJson(
         $autoSavedSolutionId,
         $teamId,
-        PyStringNode $serverSideSolutionListsAsJSON
-    )
-    {
+        PyStringNode $serverSideSolutionDataAsJSON
+    ) {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
         $autosaveSolution = new AutosavedSolution($autoSavedSolutionId);
         $autosaveSolution->setTeam($exercisePhaseTeam);
-        $solutionListsFromJson = json_decode($serverSideSolutionListsAsJSON->getRaw(), true);
-        $serverSideSolutionLists = ServerSideSolutionLists::fromArray($solutionListsFromJson);
-        $autosaveSolution->setSolution($serverSideSolutionLists);
+        $solutionDataFromJson = json_decode($serverSideSolutionDataAsJSON->getRaw(), true);
+        $serverSideSolutionData = ServerSideSolutionData::fromArray($solutionDataFromJson);
+        $autosaveSolution->setSolution($serverSideSolutionData);
         /** @var TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
         /* @var User $loggedInUser */
@@ -767,8 +768,8 @@ final class DegreeContext implements Context
         if (!in_array($courseRoleRole, CourseRole::ROLES)) {
             throw new InvalidArgumentException(
                 'Invalid CourseRole! Expected one of [' .
-                implode(', ', CourseRole::ROLES) .
-                ']. Given: "' . $courseRoleRole . '".'
+                    implode(', ', CourseRole::ROLES) .
+                    ']. Given: "' . $courseRoleRole . '".'
             );
         }
 
@@ -1112,7 +1113,7 @@ final class DegreeContext implements Context
             // video is not _only_ used in unpublished Exercise
             // If it is used in just a single published Exercise it has to persist
             $notAllExercisesUnpublished = !$video->getExercisePhases()
-                ->forAll(fn($_i, Exercise $exercise) => $exercise->getStatus() === Exercise::EXERCISE_CREATED);
+                ->forAll(fn ($_i, Exercise $exercise) => $exercise->getStatus() === Exercise::EXERCISE_CREATED);
 
             $creatorAnonymized = $video->getCreator()->getUsername() !== $username;
 
@@ -1202,7 +1203,8 @@ final class DegreeContext implements Context
 
     private function getPageContent(): string
     {
-        $content = $this->playwrightConnector->execute($this->playwrightContext,
+        $content = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             '
                 return await vars.page.content();
@@ -1261,7 +1263,8 @@ final class DegreeContext implements Context
      */
     public function iFillOutTheCourseFormAndSubmit()
     {
-        $this->playwrightConnector->execute($this->playwrightContext,
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 await vars.page.fill(`input#course_name`, `Test-Kurs`)
@@ -1276,7 +1279,8 @@ final class DegreeContext implements Context
      */
     public function iClickOn($innerText)
     {
-        $this->playwrightConnector->execute($this->playwrightContext,
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 await vars.page.click(`text=${innerText}`)
@@ -1289,7 +1293,8 @@ final class DegreeContext implements Context
      */
     public function iClickOnFirstElementWith($testId)
     {
-        $this->playwrightConnector->execute($this->playwrightContext,
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 await vars.page.click('data-test-id=$testId')
@@ -1302,7 +1307,8 @@ final class DegreeContext implements Context
      */
     public function iSubmitTheForm()
     {
-        $this->playwrightConnector->execute($this->playwrightContext,
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             '
                 await vars.page.click(`[type="submit"]`)
@@ -1315,7 +1321,8 @@ final class DegreeContext implements Context
      */
     public function iShouldBeAbleToDownloadCsvExport($entityId, $label)
     {
-        $url = $this->playwrightConnector->execute($this->playwrightContext,
+        $url = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 const [ download ] = await Promise.all(
@@ -1338,7 +1345,8 @@ final class DegreeContext implements Context
      */
     public function iFillOutTheExerciseFormAndSubmit()
     {
-        $this->playwrightConnector->execute($this->playwrightContext,
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 await vars.page.fill(`input#exercise_name`, `Test-Aufgabe`)
@@ -1492,8 +1500,10 @@ final class DegreeContext implements Context
     /**
      * @When I select the nth :index element with testId :testId
      */
-    public function iSelectTheNthElementWithTestId(int $index, string $testId) {
-        $hasElement = $this->playwrightConnector->execute($this->playwrightContext,
+    public function iSelectTheNthElementWithTestId(int $index, string $testId)
+    {
+        $hasElement = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 const element = await vars.page.locator('data-test-id=$testId >> nth=$index')
@@ -1509,8 +1519,10 @@ final class DegreeContext implements Context
     /**
      * @Then the selected element should have its attribute :attribute set to value :expectedValue
      */
-    public function theSelectedElementShouldHaveAttributeSetToValue(string $attribute, string $expectedValue) {
-        $actual = $this->playwrightConnector->execute($this->playwrightContext,
+    public function theSelectedElementShouldHaveAttributeSetToValue(string $attribute, string $expectedValue)
+    {
+        $actual = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 return vars.selectedElement.getAttribute('$attribute')
@@ -1523,8 +1535,10 @@ final class DegreeContext implements Context
     /**
      * @Then I click on the selected element
      */
-    public function iClickOnTheSelectedElement() {
-        $this->playwrightConnector->execute($this->playwrightContext,
+    public function iClickOnTheSelectedElement()
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 vars.selectedElement.click()
@@ -1535,8 +1549,10 @@ final class DegreeContext implements Context
     /**
      * @Then :count elements of selectedElement type should exist
      */
-    public function numberOfElementsShouldExist($count) {
-        $actual = $this->playwrightConnector->execute($this->playwrightContext,
+    public function numberOfElementsShouldExist($count)
+    {
+        $actual = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 return vars.selectedElement.count()
@@ -1549,8 +1565,10 @@ final class DegreeContext implements Context
     /**
      * @Then The selected element should have the CSS-class :cssClass
      */
-    public function selectedElementShouldHaveCssClass($cssClass) {
-        $actualClasses = $this->playwrightConnector->execute($this->playwrightContext,
+    public function selectedElementShouldHaveCssClass($cssClass)
+    {
+        $actualClasses = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 return await vars.selectedElement.getAttribute('class')
@@ -1563,8 +1581,10 @@ final class DegreeContext implements Context
     /**
      * @Then The selected element should not have the CSS-class :cssClass
      */
-    public function selectedElementShouldNotHaveCssClass($cssClass) {
-        $actualClasses = $this->playwrightConnector->execute($this->playwrightContext,
+    public function selectedElementShouldNotHaveCssClass($cssClass)
+    {
+        $actualClasses = $this->playwrightConnector->execute(
+            $this->playwrightContext,
             // language=JavaScript
             "
                 return await vars.selectedElement.getAttribute('class')

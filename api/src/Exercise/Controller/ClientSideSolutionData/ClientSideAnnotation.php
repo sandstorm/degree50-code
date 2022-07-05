@@ -2,7 +2,7 @@
 
 namespace App\Exercise\Controller\ClientSideSolutionData;
 
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideAnnotation;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideAnnotation;
 use JsonSerializable;
 
 /**

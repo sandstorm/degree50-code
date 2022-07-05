@@ -3,38 +3,38 @@
 namespace App\Exercise\Controller\Dto;
 
 use App\Entity\Account\User;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideSolutionLists;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideCutVideo;
 
 class PreviousSolutionDto
 {
     private User $teamMember;
-    private ServerSideSolutionLists $serverSideSolutionLists;
+    private ServerSideSolutionData $serverSideSolutionData;
     private string $solutionId;
     private ?ClientSideCutVideo $cutVideo;
     private ?bool $fromGroupPhase;
 
     public static function create(
         User $teamMember,
-        ServerSideSolutionLists $serverSideSolutionLists,
+        ServerSideSolutionData $serverSideSolutionData,
         string $solutionId,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
     ): PreviousSolutionDto
     {
-        return new self($teamMember, $serverSideSolutionLists, $solutionId, $cutVideo, $fromGroupPhase);
+        return new self($teamMember, $serverSideSolutionData, $solutionId, $cutVideo, $fromGroupPhase);
     }
 
     private function __construct(
         User $teamMember,
-        ServerSideSolutionLists $serverSideSolutionLists,
+        ServerSideSolutionData $serverSideSolutionData,
         string $solutionId,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
     )
     {
         $this->teamMember = $teamMember;
-        $this->serverSideSolutionLists = $serverSideSolutionLists;
+        $this->serverSideSolutionData = $serverSideSolutionData;
         $this->solutionId = $solutionId;
         $this->cutVideo = $cutVideo;
         $this->fromGroupPhase = $fromGroupPhase;
@@ -45,9 +45,9 @@ class PreviousSolutionDto
         return $this->teamMember;
     }
 
-    public function getServerSideSolutionLists(): ServerSideSolutionLists
+    public function getServerSideSolutionData(): ServerSideSolutionData
     {
-        return $this->serverSideSolutionLists;
+        return $this->serverSideSolutionData;
     }
 
     public function getSolutionId(): string
