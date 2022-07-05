@@ -17,7 +17,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
             | foo_bar | Foo  | #ffffff |
 
     Scenario: Conversion for general purpose (e.g. exercisePhase/show, exercisePhase/update-solution, exercisePhase/update-currentEditor)
-        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
+        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
               "annotations": [
@@ -86,7 +86,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
           "solutions": {
             "byId": {
               "solution-1": {
-                "solutionLists": {
+                "solutionData": {
                   "annotations": ["solution-1_0"],
                   "videoCodes": ["solution-1_0", "solution-1_1"],
                   "cutList": ["solution-1_0"],
@@ -94,7 +94,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                     "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                     "1605544765106_#ff9300",
                     "foo_bar"
-                  ]
+                  ],
+                  "material": null
                 },
                 "id": "solution-1",
                 "userName": "foo@bar.de",
@@ -205,12 +206,15 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "userCreated": false
               }
             }
+          },
+          "materials": {
+            "byId": []
           }
         }
         """
 
     Scenario: Handle solution which depends on previous phase
-        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
+        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
               "annotations": [
@@ -276,7 +280,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
         Given I have a team with ID "team-2" belonging to exercise phase "ex-p2"
         Given I am a member of "team-1"
         Given I am a member of "team-2"
-        Given I have a solution with ID "previous-solution-1" belonging to team with ID "team-2" with solutionLists as JSON
+        Given I have a solution with ID "previous-solution-1" belonging to team with ID "team-2" with solutionData as JSON
         """
             {
               "annotations": [
@@ -300,7 +304,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
           "solutions": {
             "byId": {
               "solution-1": {
-                "solutionLists": {
+                "solutionData": {
                   "annotations": ["solution-1_0"],
                   "videoCodes": ["solution-1_0", "solution-1_1"],
                   "cutList": ["solution-1_0"],
@@ -308,7 +312,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                     "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                     "1605544765106_#ff9300",
                     "foo_bar"
-                  ]
+                  ],
+                  "material": null
                 },
                 "id": "solution-1",
                 "userName": "foo@bar.de",
@@ -317,11 +322,12 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "fromGroupPhase": false
               },
               "previous-solution-1": {
-                "solutionLists": {
+                "solutionData": {
                   "annotations": ["previous-solution-1_0"],
                   "videoCodes": [],
                   "cutList": [],
-                  "videoCodePrototypes": []
+                  "videoCodePrototypes": [],
+                  "material": null
                 },
                 "id": "previous-solution-1",
                 "userName": "foo@bar.de",
@@ -335,15 +341,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
           },
           "annotations": {
             "byId": {
-              "previous-solution-1_0": {
-                "id": "previous-solution-1_0",
-                "start": "00:01:03.315",
-                "end": "00:01:30.000",
-                "text": "Previous Annotation 1",
-                "memo": "Popel",
-                "color": null,
-                "solutionId": "previous-solution-1"
-              },
               "solution-1_0": {
                 "id": "solution-1_0",
                 "start": "00:01:03.315",
@@ -352,6 +349,15 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "memo": "",
                 "color": null,
                 "solutionId": "solution-1"
+              },
+              "previous-solution-1_0": {
+                "id": "previous-solution-1_0",
+                "start": "00:01:03.315",
+                "end": "00:01:30.000",
+                "text": "Previous Annotation 1",
+                "memo": "Popel",
+                "color": null,
+                "solutionId": "previous-solution-1"
               }
             }
           },
@@ -431,13 +437,16 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "userCreated": false
               }
             }
+          },
+          "materials": {
+            "byId": []
           }
         }
         """
 
     Scenario: Conversion uses last autosavedSolution
         Given I have an empty solution with ID "solution-1" belonging to team "team-1"
-        And I have an auto saved solution with ID "auto-saved-solution-1" belonging to team "team-1" with solutionLists as JSON
+        And I have an auto saved solution with ID "auto-saved-solution-1" belonging to team "team-1" with solutionData as JSON
             """
             {
               "annotations": [
@@ -505,7 +514,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
           "solutions": {
             "byId": {
               "solution-1": {
-                "solutionLists": {
+                "solutionData": {
                   "annotations": ["solution-1_0"],
                   "videoCodes": ["solution-1_0", "solution-1_1"],
                   "cutList": ["solution-1_0"],
@@ -513,7 +522,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                     "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                     "1605544765106_#ff9300",
                     "foo_bar"
-                  ]
+                  ],
+                  "material": null
                 },
                 "id": "solution-1",
                 "userName": "foo@bar.de",
@@ -614,12 +624,15 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "userCreated": false
               }
             }
+          },
+          "materials": {
+            "byId": []
           }
         }
         """
 
     Scenario: Conversion for multiple teams (e.g. for the solution view exercisePhase/show-solutions)
-        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
+        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
               "annotations": [
@@ -681,7 +694,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
             }
             """
         Given I have a team with ID "team-2" belonging to exercise phase "ex-p1"
-        And I have a solution with ID "solution-2" belonging to team with ID "team-2" with solutionLists as JSON
+        And I have a solution with ID "solution-2" belonging to team with ID "team-2" with solutionData as JSON
             """
             {
               "annotations": [
@@ -715,7 +728,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
             }
             """
         Given I have a team with ID "team-3" belonging to exercise phase "ex-p1"
-        And I have a solution with ID "solution-3" belonging to team with ID "team-3" with solutionLists as JSON
+        And I have a solution with ID "solution-3" belonging to team with ID "team-3" with solutionData as JSON
             """
             {
               "annotations": [],
@@ -756,14 +769,15 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
           "solutions": {
             "byId": {
               "solution-1": {
-                "solutionLists": {
+                "solutionData": {
                   "annotations": ["solution-1_0"],
                   "videoCodes": ["solution-1_0", "solution-1_1"],
                   "cutList": ["solution-1_0"],
                   "videoCodePrototypes": [
                     "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                     "1605544765106_#ff9300"
-                  ]
+                  ],
+                  "material": null
                 },
                 "id": "solution-1",
                 "userName": "foo@bar.de",
@@ -772,14 +786,15 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "fromGroupPhase": false
               },
               "solution-2": {
-                "solutionLists": {
+                "solutionData": {
                   "annotations": ["solution-2_0"],
                   "videoCodes": [],
                   "cutList": [],
                   "videoCodePrototypes": [
                     "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                     "1605544765106_#ff9300"
-                  ]
+                  ],
+                  "material": null
                 },
                 "id": "solution-2",
                 "userName": "foo@bar.de",
@@ -788,14 +803,15 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "fromGroupPhase": false
               },
               "solution-3": {
-                "solutionLists": {
+                "solutionData": {
                   "annotations": [],
                   "videoCodes": ["solution-3_0"],
                   "cutList": [],
                   "videoCodePrototypes": [
                     "a9fabe25-081e-47bd-8905-4bd46ed3cadf",
                     "1605544765106_#ff9300"
-                  ]
+                  ],
+                  "material": null
                 },
                 "id": "solution-3",
                 "userName": "foo@bar.de",
@@ -915,6 +931,9 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "userCreated": false
               }
             }
+          },
+          "materials": {
+            "byId": []
           }
         }
         """

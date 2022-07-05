@@ -15,7 +15,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given I have a predefined videoCodePrototype belonging to exercise phase "ex-p1" and with properties
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
-        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
+        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
               "annotations": [
@@ -139,7 +139,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given I have a predefined videoCodePrototype belonging to exercise phase "ex-p1" and with properties
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
-        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionLists as JSON
+        Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
               "annotations": [
@@ -203,7 +203,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
             }
             """
         Given I have a cut video "cut-video-1" belonging to solution "solution-1"
-        Given I have a solution with ID "solution-2" belonging to team with ID "team-2" with solutionLists as JSON
+        Given I have a solution with ID "solution-2" belonging to team with ID "team-2" with solutionData as JSON
             """
             {
               "annotations": [ ],

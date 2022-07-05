@@ -1,8 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectors as videoCodeSelectors } from '../VideoCodesContext/VideoCodesSlice'
+import { selectors as videoCodeSelectors } from 'Components/ToolbarItems/VideoCodesContext/VideoCodesSlice'
 import { selectors as solutionSelectors } from '../SolutionSlice'
 import { sortByStartTime } from '../utils/time'
-import { MediaItemTypeEnum } from '../types'
+import { MediaItemTypeEnum, VideoCode, VideoCodePrototype } from '../types'
+import { getColorName } from 'ntc-ts'
 
 /**
  * Denormalized video codes to be used when sending videoCodes to the backend server
@@ -57,4 +58,47 @@ export const composedVideoCodeSelectors = {
   selectCurrentVideoCodes,
   selectVideoCodeIsFromCurrentSolution,
   selectCreatorNameForVideoCode,
+}
+
+export const videoCodeAsRichtext = ({
+  videoCode,
+  videoCodePrototype,
+  parentVideoCodePrototype,
+  creatorName,
+}: {
+  videoCode: VideoCode
+  videoCodePrototype?: VideoCodePrototype
+  parentVideoCodePrototype?: VideoCodePrototype
+  creatorName: string
+}) => {
+  const code = `Code: ${videoCodePrototype?.name ?? 'Kein Code ausgewählt'}`
+  const color = `Farbe: ${
+    videoCodePrototype?.color ? getColorName(videoCodePrototype.color).name : ''
+  }`
+  const userCreated = `${
+    videoCodePrototype?.userCreated
+      ? 'Selbsterstellter Code'
+      : 'Vordefinierter Code'
+  }`
+  const subCode = `${
+    parentVideoCodePrototype
+      ? `Unter-Code von ${parentVideoCodePrototype.name}`
+      : ''
+  }`
+  const creatorDescription = `Codierung von: ${creatorName}`
+  const start = `Von: ${videoCode.start}`
+  const end = `Bis: ${videoCode.end}`
+  const memo = `${videoCode.memo.length > 0 ? `Memo: ${videoCode.memo}` : ''}`
+
+  // TODO: we might want to remove empty lines? e.g. when subCode not defined
+  return [
+    code,
+    color,
+    userCreated,
+    ...(subCode.length > 0 ? [subCode] : []),
+    creatorDescription,
+    start,
+    end,
+    memo,
+  ].join('\n')
 }

@@ -1,12 +1,12 @@
 import {
   call,
   cancel,
-  debounce,
   fork,
   put,
   select,
   take,
   takeLatest,
+  throttle,
 } from 'redux-saga/effects'
 import { eventChannel, EventChannel, Task } from 'redux-saga'
 import { createAction } from '@reduxjs/toolkit'
@@ -14,8 +14,8 @@ import Axios from 'axios'
 import { initPresenceAction } from '../Presence/PresenceSaga'
 import { initData } from 'Components/VideoEditor/initData'
 import {
-  selectors,
   actions,
+  selectors,
 } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 
 export const initSolutionSyncAction = createAction('Solution/Saga/init')
@@ -27,10 +27,14 @@ export const updateSolutionAction = createAction(
   (data) => ({ payload: data })
 )
 export const syncSolutionAction = createAction('Solution/Saga/SyncSolution')
+export const syncSolutionAsDozentAction = createAction(
+  'Solution/Saga/SyncSolutionAsDozent'
+)
 
 export default function* solutionSaga() {
-  yield takeLatest(initSolutionSyncAction.type, solutionSyncListener)
-  yield debounce(1000, syncSolutionAction.type, syncSolution)
+  yield takeLatest(initSolutionSyncAction, solutionSyncListener)
+  yield throttle(500, syncSolutionAction, syncSolution)
+  yield throttle(500, syncSolutionAsDozentAction, syncSolutionAsDozent)
 }
 
 function* solutionSyncListener() {
@@ -110,14 +114,30 @@ function* syncSolution() {
     config.userId ===
       selectors.currentEditor.selectCurrentEditorId(yield select())
   ) {
-    const solutionLists = selectors.selectSolutionLists(yield select())
+    const solutionData = selectors.selectSolutionData(yield select())
     const updateSolutionEndpoint = selectors.config.selectConfig(yield select())
       .apiEndpoints.updateSolution
 
     try {
-      yield Axios.post(updateSolutionEndpoint, solutionLists)
+      yield Axios.post(updateSolutionEndpoint, solutionData)
     } catch (e) {
       console.warn('>>>>> updateSolution', e)
     }
+  }
+}
+
+function* syncSolutionAsDozent() {
+  // get id of current Solution
+  const currentSolutionId = selectors.data.solutions.selectCurrentId(
+    yield select()
+  )
+  const endpoint = `/exercise-phase/review-solution/${currentSolutionId}`
+  const solutionData = selectors.selectSolutionData(yield select())
+
+  // build request
+  try {
+    yield Axios.post(endpoint, solutionData)
+  } catch (e) {
+    console.warn('>>>>> updateSolution', e)
   }
 }

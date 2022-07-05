@@ -91,7 +91,7 @@ const VideoCodeLaneContainer = (props: Props) => {
   return (
     <>
       {props.previousSolutions.map((solution) => {
-        const videoCodes = solution.solutionLists.videoCodes.map(
+        const videoCodes = solution.solutionData.videoCodes.map(
           (id) => props.videoCodesById[id]
         )
         const mediaItems = mergeCodesAndPrototypesToItems(

@@ -44,6 +44,16 @@ class ExercisePhaseService
             return true;
         }
 
+        // MaterialPhase can depend on VideoAnalysis & VideoCutting
+        if (
+            $dependingPhase->getType() === ExercisePhaseType::MATERIAL && (
+                $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS
+                || $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_CUT
+            )
+        ) {
+            return true;
+        }
+
         // other combinations are invalid
         return false;
     }

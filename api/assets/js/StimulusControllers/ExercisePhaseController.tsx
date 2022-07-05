@@ -14,6 +14,7 @@ import {
   PresenceState,
   TeamMember,
 } from './ExercisePhaseApp/Components/Presence/PresenceSlice'
+import { ExercisePhaseTypesEnum } from './ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 
 class ExercisePhaseController extends Controller {
   connect() {
@@ -56,7 +57,7 @@ class ExercisePhaseController extends Controller {
 
     ReactDOM.render(
       <Provider store={store}>
-        <ExercisePhaseApp />
+        <ExercisePhaseApp type={props.config.type as ExercisePhaseTypesEnum} />
       </Provider>,
       this.element
     )

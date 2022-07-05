@@ -12,7 +12,7 @@ use JsonSerializable;
 final class ClientSideSolution implements JsonSerializable
 {
 
-    private ClientSideSolutionLists $clientSideSolutionLists;
+    private ClientSideSolutionData $clientSideSolutionData;
     private string $id;
     private string $userName;
     private string $userId;
@@ -20,15 +20,15 @@ final class ClientSideSolution implements JsonSerializable
     private ?bool $fromGroupPhase;
 
     private function __construct(
-        ClientSideSolutionLists $clientSideSolutionLists,
+        ClientSideSolutionData $clientSideSolutionData,
         string $id,
         string $userName,
         string $userId,
         ?ClientSideCutVideo $cutVideo,
-        ?bool $fromGroupPhase
+        ?bool $fromGroupPhase,
     )
     {
-        $this->clientSideSolutionLists = $clientSideSolutionLists;
+        $this->clientSideSolutionData = $clientSideSolutionData;
         $this->id = $id;
         $this->userName = $userName;
         $this->userId = $userId;
@@ -37,21 +37,21 @@ final class ClientSideSolution implements JsonSerializable
     }
 
     public static function create(
-        ClientSideSolutionLists $clientSideSolutionLists,
+        ClientSideSolutionData $clientSideSolutionData,
         string $id,
         string $userName,
         string $userId,
         ?ClientSideCutVideo $cutVideo,
-        ?bool $fromGroupPhase
+        ?bool $fromGroupPhase,
     ): ClientSideSolution
     {
-        return new self($clientSideSolutionLists, $id, $userName, $userId, $cutVideo, $fromGroupPhase);
+        return new self($clientSideSolutionData, $id, $userName, $userId, $cutVideo, $fromGroupPhase);
     }
 
     public static function fromArray(array $input): ClientSideSolution
     {
         return new self(
-            ClientSideSolutionLists::fromArray($input['solution']),
+            ClientSideSolutionData::fromArray($input['solution']),
             $input['id'],
             $input['userName'],
             $input['userId'],
@@ -63,21 +63,21 @@ final class ClientSideSolution implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'solutionLists' => $this->clientSideSolutionLists->jsonSerialize(),
+            'solutionData' => $this->clientSideSolutionData->jsonSerialize(),
             'id' => $this->id,
             'userName' => $this->userName,
             'userId' => $this->userId,
             'cutVideo' => $this->cutVideo,
-            'fromGroupPhase' => $this->fromGroupPhase
+            'fromGroupPhase' => $this->fromGroupPhase,
         ];
     }
 
     /**
-     * Get clientSideSolutionLists.
+     * Get clientSideSolutionData.
      */
-    public function getClientSideSolutionLists(): ClientSideSolutionLists
+    public function getClientSideSolutionData(): ClientSideSolutionData
     {
-        return $this->clientSideSolutionLists;
+        return $this->clientSideSolutionData;
     }
 
     /**

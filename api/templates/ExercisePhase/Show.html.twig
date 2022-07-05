@@ -6,6 +6,7 @@
 
 {% block body %}
     {% if exercisePhase.type.value == 'reflexion' %}
+
         <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {data: data, config: config, } |json_encode|e('html_attr') }}">
             <div class="loading-screen">
                 <i class="fas fa-spinner fa-spin"></i>
@@ -16,12 +17,15 @@
             <span class="footer__center">{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
             <a class="btn btn-primary footer_right" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Reflexion beenden</a>
         </footer>
+
     {% else %}
+
         <div class="exercise-phase" data-controller="exercisePhase" data-exercisePhase-props="{{ { data: data, currentEditor: currentEditor, config: config, liveSyncConfig: liveSyncConfig, uploadEndpoint: oneup_uploader_endpoint('uploaded_videos')} |json_encode|e('html_attr') }}">
             <div class="loading-screen">
                 <i class="fas fa-spinner fa-spin"></i>
             </div>
         </div>
+
         <footer class="footer">
             <a class="btn btn-outline-primary footer__left" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Zurück</a>
             <span class="footer__center">{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
@@ -29,5 +33,6 @@
                 <a class="btn btn-primary footer__right" href="{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}">Ergebnis teilen</a>
             {% endif %}
         </footer>
+
     {% endif %}
 {% endblock %}

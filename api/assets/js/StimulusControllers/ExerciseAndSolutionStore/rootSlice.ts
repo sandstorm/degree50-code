@@ -1,6 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit'
+import { combineReducers, createSelector } from '@reduxjs/toolkit'
 import toolbarReducer from '../ExercisePhaseApp/Components/Toolbar/ToolbarSlice'
-import configReducer from '../ExercisePhaseApp/Components/Config/ConfigSlice'
+import configReducer, {
+  actions as configActions,
+  selectors as configSelectors,
+} from '../ExercisePhaseApp/Components/Config/ConfigSlice'
 import liveSyncConfigReducer, {
   actions as liveSyncConfigActions,
   selectors as liveSyncConfigSelectors,
@@ -12,25 +15,19 @@ import presenceReducer, {
   selectors as presenceSelectors,
 } from '../ExercisePhaseApp/Components/Presence/PresenceSlice'
 import currentEditorReducer, {
-  selectors as currentEditorSelectors,
   actions as currentEditorActions,
+  selectors as currentEditorSelectors,
 } from '../ExercisePhaseApp/Components/Presence/CurrentEditorSlice'
-import VideoEditorSlice from 'Components/VideoEditor/VideoEditorSlice'
-import shortCutsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSlice'
-import shortCutSoundOptionsReducer from '../../Components/VideoEditor/ShortCutsContext/ShortCutSoundsSlice'
-import DataSlice, {
-  selectors as dataSelectors,
-  actions as dataActions,
-} from 'StimulusControllers/ExerciseAndSolutionStore/DataSlice'
-import {
-  selectors as configSelectors,
-  actions as configActions,
-} from '../ExercisePhaseApp/Components/Config/ConfigSlice'
-import {
-  selectors as videoEditorSelectors,
+import VideoEditorSlice, {
   actions as videoEditorActions,
+  selectors as videoEditorSelectors,
 } from 'Components/VideoEditor/VideoEditorSlice'
-import { createSelector } from '@reduxjs/toolkit'
+import shortCutsReducer from '../../Components/ToolbarItems/ShortCutsContext/ShortCutsSlice'
+import shortCutSoundOptionsReducer from '../../Components/ToolbarItems/ShortCutsContext/ShortCutSoundsSlice'
+import DataSlice, {
+  actions as dataActions,
+  selectors as dataSelectors,
+} from 'StimulusControllers/ExerciseAndSolutionStore/DataSlice'
 import {
   sortByStartTime,
   timeToSecond,
@@ -41,6 +38,9 @@ import {
   MediaItemTypeEnum,
   VideoCode,
 } from 'Components/VideoEditor/types'
+import { annotationWithCreatorNameAsRichtext } from 'Components/VideoEditor/composedSelectors/annotations'
+import { videoCodeAsRichtext } from 'Components/VideoEditor/composedSelectors/videoCodes'
+import { cutAsRichtext } from 'Components/VideoEditor/composedSelectors/cuts'
 
 export const RootReducer = combineReducers({
   toolbar: toolbarReducer,
@@ -71,7 +71,7 @@ export const actions = {
 
 export const selectUserIsCurrentEditor = createSelector(
   [configSelectors.selectUserId, currentEditorSelectors.selectCurrentEditorId],
-  (userId, editorId) => editorId && userId === editorId
+  (userId, editorId) => editorId !== undefined && userId === editorId
 )
 
 export const selectUserCanEditSolution = createSelector(
@@ -132,18 +132,20 @@ const selectCurrentCutIdsAtCursor = createSelector(
   }
 )
 
-const selectSolutionLists = createSelector(
+const selectSolutionData = createSelector(
   [
     dataSelectors.selectDenormalizedCurrentAnnotations,
     dataSelectors.selectDenormalizedCurrentVideoCodes,
     dataSelectors.selectDenormalizedCurrentCutList,
     dataSelectors.selectCurrentPrototypesList,
+    dataSelectors.selectMaterialOfCurrentSolution,
   ],
-  (annotations, videoCodes, cutList, videoCodePrototypes) => ({
+  (annotations, videoCodes, cutList, videoCodePrototypes, material) => ({
     annotations,
     videoCodes,
     cutList,
     videoCodePrototypes,
+    material,
   })
 )
 
@@ -156,7 +158,7 @@ const selectActiveSolutionsWithAnnotations = createSelector(
   (visibleSolutions, solutionsById, annotationsById) => {
     return visibleSolutions.map((visibleSolution) => {
       const solution = solutionsById[visibleSolution.id]
-      const annotations = solution.solutionLists.annotations.map((id) => ({
+      const annotations = solution.solutionData.annotations.map((id) => ({
         ...annotationsById[id],
         type: MediaItemTypeEnum.annotation,
       }))
@@ -178,7 +180,7 @@ const selectActiveSolutionsWithVideoCodes = createSelector(
   (visibleSolutions, solutionsById, videoCodesById) => {
     return visibleSolutions.map((visibleSolution) => {
       const solution = solutionsById[visibleSolution.id]
-      const videoCodes = solution.solutionLists.videoCodes.map((id) => ({
+      const videoCodes = solution.solutionData.videoCodes.map((id) => ({
         ...videoCodesById[id],
         type: MediaItemTypeEnum.videoCode,
       }))
@@ -200,7 +202,7 @@ const selectActiveSolutionsWithCuts = createSelector(
   (visibleSolutions, solutionsById, cutsById) => {
     return visibleSolutions.map((visibleSolution) => {
       const solution = solutionsById[visibleSolution.id]
-      const cutList = solution.solutionLists.cutList.map((id) => cutsById[id])
+      const cutList = solution.solutionData.cutList.map((id) => cutsById[id])
 
       return {
         ...solution,
@@ -295,6 +297,53 @@ const selectAllMediaItemsByStartTime = createSelector(
   }
 )
 
+const selectAllMediaItemsByStartTimeAsRichtext = createSelector(
+  [
+    selectAllMediaItemsByStartTime,
+    dataSelectors.solutions.selectById,
+    dataSelectors.videoCodes.selectById,
+    dataSelectors.videoCodePrototypes.selectById,
+    dataSelectors.cuts.selectById,
+  ],
+  (mediaItems, solutions, videoCodes, videoCodePrototypes, cuts) =>
+    mediaItems
+      .map((item) => {
+        const solution = item.solutionId
+          ? solutions[item.solutionId]
+          : undefined
+
+        const creatorName = solution?.userName ?? '<Unbekannter Ersteller>'
+
+        switch (item.type) {
+          case MediaItemTypeEnum.annotation: {
+            return annotationWithCreatorNameAsRichtext({ ...item, creatorName })
+          }
+          case MediaItemTypeEnum.videoCode: {
+            const videoCode = videoCodes[item.id]
+            const videoCodePrototype =
+              videoCodePrototypes[videoCode.idFromPrototype]
+            const parentVideoCodePrototype = videoCodePrototype.parentId
+              ? videoCodePrototypes[videoCodePrototype.parentId]
+              : undefined
+
+            return videoCodeAsRichtext({
+              videoCode,
+              videoCodePrototype,
+              parentVideoCodePrototype,
+              creatorName,
+            })
+          }
+          case MediaItemTypeEnum.cut: {
+            return cutAsRichtext({ cut: cuts[item.id], creatorName })
+          }
+          default: {
+            throw new TypeError(`Invalid MediaItemType "${item.type}"`)
+          }
+        }
+      })
+      .join('\n')
+)
+
 const selectAllCutIdsByStartTime = createSelector(
   [selectAllCutsByStartTime],
   (cuts) => cuts.map((c) => c.id)
@@ -346,9 +395,10 @@ export const selectors = {
 
   selectUserIsCurrentEditor,
   selectUserCanEditSolution,
-  selectSolutionLists,
+  selectSolutionData,
 
   selectAllMediaItemsByStartTime,
+  selectAllMediaItemsByStartTimeAsRichtext,
 
   selectVideoCodeIdsAtCursor: selectCurrentVideoCodeIdsAtCursor,
   selectAllVideoCodesByStartTime,

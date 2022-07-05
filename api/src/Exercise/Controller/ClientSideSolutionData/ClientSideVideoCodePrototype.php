@@ -2,7 +2,7 @@
 
 namespace App\Exercise\Controller\ClientSideSolutionData;
 
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCodePrototype;
 use JsonSerializable;
 
 /**

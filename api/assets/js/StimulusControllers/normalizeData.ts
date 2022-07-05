@@ -1,15 +1,15 @@
 import { Solution } from 'Components/VideoEditor/types'
 import { generate } from 'shortid'
 import { ConfigState } from './ExercisePhaseApp/Components/Config/ConfigSlice'
-import {
-  videoComponents,
-  ActiveComponent,
-  FilterState,
-  VideoComponentId,
-  ActivePreviousSolution,
-} from '../Components/VideoEditor/FilterContext/FilterSlice'
 import { TabsTypesEnum } from '../types'
 import { DataState } from 'StimulusControllers/ExerciseAndSolutionStore/DataSlice'
+import {
+  FilterState,
+  videoComponents,
+  VideoComponentId,
+  ActiveComponent,
+  ActivePreviousSolution,
+} from 'Components/ToolbarItems/FilterContext/FilterSlice'
 
 export const addIdsToEntities = <E extends { id?: string }>(
   entities: Array<E>
@@ -19,6 +19,7 @@ export const ANNOTATIONS_API_PROPERTY = 'annotations'
 export const VIDEO_CODES_API_PROPERTY = 'videoCodes'
 export const CUTLIST_API_PROPERTY = 'cutList'
 export const VIDEO_CODE_PROTOTYPE_API_PROPERTY = 'videoCodePrototypes'
+export const MATERIAL_API_PROPERTY = 'material'
 
 export const normalizeFilterData = (config: ConfigState, data: DataState) => {
   const previousSolutions = data.solutions.previous.map(
@@ -41,9 +42,9 @@ export const initializeComponentFilter = (
 ): Pick<FilterState, 'components' | 'componentIds'> => {
   const idsFromPreviousSolutions = previousSolutions.reduce(
     (acc: TabsTypesEnum[], solution) => {
-      const hasCodes = solution.solutionLists.videoCodes.length > 0
-      const hasAnnotations = solution.solutionLists.annotations.length > 0
-      const hasCuts = solution.solutionLists.cutList.length > 0
+      const hasCodes = solution.solutionData.videoCodes.length > 0
+      const hasAnnotations = solution.solutionData.annotations.length > 0
+      const hasCuts = solution.solutionData.cutList.length > 0
 
       return [
         ...acc,

@@ -9,10 +9,10 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideAnnotation;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideCut;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCode;
-use App\Entity\Exercise\ServerSideSolutionLists\ServerSideVideoCodePrototype;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideAnnotation;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCode;
+use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCodePrototype;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
@@ -245,13 +245,13 @@ EOT;
                 return $carry;
             }
 
-            $solutionLists = $solution->getSolution();
-            $videoCodes = $solutionLists->getVideoCodes();
+            $solutionData = $solution->getSolution();
+            $videoCodes = $solutionData->getVideoCodes();
 
             // VideoCodePrototypes may contain child prototypes.
             // To be able to lookup a specific prototype we flatten them into a single list
             // of server side prototypes.
-            $nestedServerSideVideoCodePrototypes = $solutionLists->getVideoCodePrototypes();
+            $nestedServerSideVideoCodePrototypes = $solutionData->getVideoCodePrototypes();
             $flattenedServerSideVideoCodePrototypes = array_reduce($nestedServerSideVideoCodePrototypes, function (array $carry, ServerSideVideoCodePrototype $serverSidePrototype) {
                 $childServerSidePrototypes = $serverSidePrototype->getChildServerSidePrototypes();
                 return array_merge($carry, $childServerSidePrototypes);
@@ -324,8 +324,8 @@ EOT;
                 return $carry;
             }
 
-            $solutionLists = $solution->getSolution();
-            $annotations = $solutionLists->getAnnotations();
+            $solutionData = $solution->getSolution();
+            $annotations = $solutionData->getAnnotations();
 
             $rows = array_map(function (ServerSideAnnotation $serverSideAnnotation) use ($solution) {
                 return array_merge(
@@ -368,8 +368,8 @@ EOT;
                 return $carry;
             }
 
-            $solutionLists = $solution->getSolution();
-            $cuts = $solutionLists->getCutList();
+            $solutionData = $solution->getSolution();
+            $cuts = $solutionData->getCutList();
 
             $rows = array_map(function (ServerSideCut $serverSideCut) use ($solution) {
                 return array_merge(

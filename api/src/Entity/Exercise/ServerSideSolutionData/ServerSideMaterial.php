@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Entity\Exercise\ServerSideSolutionData;
+
+/**
+ * Server side represenation of material.
+ *
+ * @see \App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder
+ **/
+final class ServerSideMaterial
+{
+    private string $material;
+
+    public function toString(): string
+    {
+        return $this->material;
+    }
+
+    private function __construct(string $material)
+    {
+        $this->material = $material;
+    }
+
+    public static function fromArray(array | null $material): ServerSideMaterial
+    {
+        return new self(!is_null($material) && array_key_exists('material', $material) ? $material['material'] : null);
+    }
+
+    public static function fromString(?string $material): ServerSideMaterial
+    {
+        return new self($material ?? '');
+    }
+}

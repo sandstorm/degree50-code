@@ -2,10 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import Toolbar from 'Components/VideoEditor/components/Toolbar'
-import OverlayContainer from 'Components/VideoEditor/components/OverlayContainer'
 import VideoCutSolutionVideo from './VideoCutSolutionVideo'
 import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import OverlayContainer from 'Components/ToolbarItems/components/OverlayContainer'
 
 const mapStateToProps = (state: AppState) => ({
   videos: selectors.config.selectVideos(state),

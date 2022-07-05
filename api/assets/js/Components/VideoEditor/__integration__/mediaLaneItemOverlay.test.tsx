@@ -88,7 +88,7 @@ describe('Medialane item', () => {
           solutions: {
             byId: {
               'test-solution': {
-                solutionLists: {
+                solutionData: {
                   annotations: [itemID],
                   videoCodes: [],
                   cutList: [],
@@ -171,9 +171,9 @@ describe('Medialane item', () => {
           solutions: {
             byId: {
               'test-solution': {
-                solutionLists: {
+                solutionData: {
                   videoCodes: [itemID],
-                  annotaions: [],
+                  annotations: [],
                   cutList: [],
                   videoCodePrototypes: [],
                 },
@@ -257,9 +257,9 @@ describe('Medialane item', () => {
           solutions: {
             byId: {
               'test-solution': {
-                solutionLists: {
+                solutionData: {
                   cuts: [itemID],
-                  annotaions: [],
+                  annotations: [],
                   cutList: [],
                   cutPrototypes: [],
                 },

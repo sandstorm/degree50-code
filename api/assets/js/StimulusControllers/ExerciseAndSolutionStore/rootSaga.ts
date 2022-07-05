@@ -1,12 +1,12 @@
+import { setPlayerTimeControlSaga } from 'Components/ToolbarItems/SetVideoPlayerTimeContext/SetPlayerTimeControlSaga'
+import { openOverlayShortCutSaga } from 'Components/ToolbarItems/ShortCutsContext/shortCutSagas/openOverlayShortCutSaga'
+import { setCurrentTimeAsValueShortCutSaga } from 'Components/ToolbarItems/ShortCutsContext/shortCutSagas/SetCurrentTimeAsValueShortCutSaga'
+import { togglePlayShortCutSaga } from 'Components/ToolbarItems/ShortCutsContext/shortCutSagas/togglePlayShortCutSaga'
+import { shortCutSoundsSaga } from 'Components/ToolbarItems/ShortCutsContext/shortCutSoundsSaga'
+import { shortCutsSaga } from 'Components/ToolbarItems/ShortCutsContext/ShortCutsSaga'
 import { all, call, select, spawn } from 'redux-saga/effects'
 import presenceSaga from '../ExercisePhaseApp/Components/Presence/PresenceSaga'
 import solutionSaga from '../ExercisePhaseApp/Components/Solution/SolutionSaga'
-import { shortCutsSaga } from '../../Components/VideoEditor/ShortCutsContext/ShortCutsSaga'
-import { shortCutSoundsSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSoundsSaga'
-import { setCurrentTimeAsValueShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/SetCurrentTimeAsValueShortCutSaga'
-import { togglePlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/togglePlayShortCutSaga'
-import { openOverlayShortCutSaga } from '../../Components/VideoEditor/ShortCutsContext/shortCutSagas/openOverlayShortCutSaga'
-import { setPlayerTimeControlSaga } from '../../Components/VideoEditor/SetVideoPlayerTimeContext/SetPlayerTimeControlSaga'
 import { AppState } from './Store'
 
 const sagas = [

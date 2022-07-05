@@ -56,6 +56,10 @@
             {{ form_row(form.name) }}
             {{ form_row(form.task) }}
 
+            {% if exercisePhase.type.value == 'material' %}
+                {{ form_row(form.material) }}
+            {% endif %}
+
             <hr/>
             {% if exercisePhase.type.value == 'videoAnalysis' %}
                 <p>Aktive Komponenten zur Lösung der Aufgabe: </p>

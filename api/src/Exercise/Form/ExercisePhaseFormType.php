@@ -6,6 +6,7 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Exercise\Controller\ExercisePhaseService;
 use App\Repository\Exercise\ExercisePhaseRepository;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -71,6 +72,14 @@ class ExercisePhaseFormType extends AbstractType
                     return 'exercisePhase.components.' . $key . '.label';
                 },
                 'choice_translation_domain' => 'forms'
+            ])
+            ->add('isGroupPhase', CheckboxType::class, [
+                'required' => false,
+                'label' => "exercisePhase.labels.isGroupPhase",
+                'disabled' => $exercisePhase->getHasSolutions() || $isReflexionPhase,
+                'translation_domain' => 'forms',
+                'block_prefix' => 'toggleable_button_checkbox',
+                'help' => "exercisePhase.help.isGroupPhase",
             ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             // NOTE: there seems to be a bug inside CKEditor where the editor does not respect the 'required' attribute

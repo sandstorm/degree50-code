@@ -106,7 +106,7 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
     And I have a team with ID "team1" belonging to exercise phase "analysis1" and creator "test-student@sandstorm.de"
     And User "test-student@sandstorm.de" belongs to "team1"
     And The User "test-student@sandstorm.de" has CourseRole "STUDENT" in Course "course1"
-    And I have a solution with ID "annotationSolution1" belonging to team with ID "team1" with solutionLists as JSON
+    And I have a solution with ID "annotationSolution1" belonging to team with ID "team1" with solutionData as JSON
     """
     {
       "annotations": [
@@ -128,7 +128,7 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
     And I have a team with ID "team2" belonging to exercise phase "cutting1" and creator "test-student@sandstorm.de"
     And User "test-student@sandstorm.de" belongs to "team2"
     And The User "test-student@sandstorm.de" has CourseRole "STUDENT" in Course "course1"
-    And I have a solution with ID "cutting1Soution" belonging to team with ID "team2" with solutionLists as JSON
+    And I have a solution with ID "cutting1Soution" belonging to team with ID "team2" with solutionData as JSON
     """
     {
       "annotations": [ ],
