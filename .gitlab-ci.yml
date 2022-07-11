@@ -72,8 +72,43 @@ build_e2e_testrunner:
         - docker push $CI_REGISTRY_IMAGE:e2e-testrunner
         - cd ..
 
+    
+integration_test:
+    stage: test
+    interruptible: true
+    # we're running this job inside the production image we've just built previously
+    image:
+        name: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        # see `scripts` below
+        entrypoint: [ "" ]
+    dependencies: [ ] # we do not need any artifacts from prior steps
+    variables:
+        # service mariadb
+        MYSQL_DATABASE: "test_db"
+        MYSQL_ROOT_PASSWORD: "password"
+
+        # System under Test
+        APP_ENV: test
+        DATABASE_URL: mysql://root:password@mariadb/test_db
+        
+        MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
+        LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
+        JWT_KEY: changeme-test
+    services:
+        - name: mariadb:10.7
+        - name: redis:6.2
+        # here, we make the e2e-testrunner available
+        - name: $CI_REGISTRY_IMAGE:e2e-testrunner
+          alias: e2e-testrunner
+    script:
+        # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
+        # entrypoint and run the script here
+        - /entrypoint-integration.sh
+            
 e2e_test:
     stage: test
+    only: 
+        - main
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:

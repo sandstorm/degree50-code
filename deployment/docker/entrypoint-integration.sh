@@ -32,10 +32,8 @@ echo "####### Running Unit Tests"
 cd /app && vendor/bin/phpunit --colors=always
 echo "------> SUCCESS finished running Unit tests"
 
-echo "####### Running e2e Tests"
-cd /app && rm -Rf e2e-results && mkdir e2e-results && vendor/bin/behat --format junit --out e2e-results --format pretty --out std --tags playwright
-echo "------> SUCCESS finished running e2e tests"
-
-cp -R /app/e2e-results $CI_PROJECT_DIR/e2e-results
+echo "####### Running integration Tests"
+cd /app && vendor/bin/behat --format pretty --out std --tags integration
+echo "------> SUCCESS finished running integration tests"
 
 echo "ALL DONE"

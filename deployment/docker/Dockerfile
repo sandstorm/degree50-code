@@ -26,6 +26,7 @@ COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
 
 # application entrypoint
 ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-e2e.sh /
+ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-integration.sh /
 ADD /deployment/config-files/php.override.ini /usr/local/etc/php/conf.d/php.override.ini
 
 RUN rm -Rf /usr/local/etc/php-fpm.*
