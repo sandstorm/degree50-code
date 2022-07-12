@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 //
 // THIS SCRIPT IS PART OF THE Sandstorm.E2ETestTools PACKAGE.
@@ -61,96 +61,107 @@
  * NOTE: if this all works out as we hope, this should probably become part of a custom PHP package or so.
  */
 
-const { chromium } = require('playwright');
+const { chromium } = require("playwright");
 
-const Hapi = require('@hapi/hapi');
+const Hapi = require("@hapi/hapi");
 
 const init = async () => {
-    const browser = await chromium.launch({headless: true});
+  const browser = await chromium.launch({ headless: true });
 
-    // the "key" is the context identifier (from the URL)
-    // the "value" is an object: {
-    //   playwrightContext: the playwright context object
-    //   script: array of JS strings; concatenated building up the script which has been executed so far.
-    //   vars: {} - context variables between steps
-    // }
-    const currentlyKnownContexts = {};
+  // the "key" is the context identifier (from the URL)
+  // the "value" is an object: {
+  //   playwrightContext: the playwright context object
+  //   script: array of JS strings; concatenated building up the script which has been executed so far.
+  //   vars: {} - context variables between steps
+  // }
+  const currentlyKnownContexts = {};
 
-    const server = Hapi.server({
-        port: 3000,
-        host: '0.0.0.0'
-    });
+  const server = Hapi.server({
+    port: 3000,
+    host: "0.0.0.0",
+  });
 
-    server.route({
-        method: 'POST',
-        path: '/exec/{context}',
-        options: {
-            payload: {
-                parse: false
-            }
-        },
-        handler: async (request, h) => {
-            const contextName = request.params.context;
-            if (!currentlyKnownContexts[contextName]) {
-                console.log(`Creating ${contextName}`);
-                currentlyKnownContexts[contextName] = {
-                    playwrightContext: await browser.newContext(),
-                    vars: {},
-                    script: []
-                };
-                currentlyKnownContexts[contextName].playwrightContext.setDefaultTimeout(15000); // 15 s
-            }
+  server.route({
+    method: "POST",
+    path: "/exec/{context}",
+    options: {
+      payload: {
+        parse: false,
+      },
+    },
+    handler: async (request, h) => {
+      const contextName = request.params.context;
+      if (!currentlyKnownContexts[contextName]) {
+        console.log(`Creating ${contextName}`);
+        currentlyKnownContexts[contextName] = {
+          playwrightContext: await browser.newContext(),
+          vars: {},
+          script: [],
+        };
+        currentlyKnownContexts[contextName].playwrightContext.setDefaultTimeout(
+          15000
+        ); // 15 s
+      }
 
-            const payload = request.payload.toString('utf-8');
-            console.log(`Executing in ${contextName}: `, payload);
+      const payload = request.payload.toString("utf-8");
+      console.log(`Executing in ${contextName}: `, payload);
 
-            currentlyKnownContexts[contextName].script.push(payload);
+      currentlyKnownContexts[contextName].script.push(payload);
 
-            // API towards the script
-            const fn = eval("(async (context, vars) => {\n" + payload + "\n});");
+      // API towards the script
+      const fn = eval("(async (context, vars) => {\n" + payload + "\n});");
 
-            try {
-                const returnValue = await fn(currentlyKnownContexts[contextName].playwrightContext, currentlyKnownContexts[contextName].vars);
-                console.log("Finished execution...");
-                return h.response(JSON.stringify({
-                    error: null,
-                    returnValue: returnValue,
-                    js: wrapForDebug(currentlyKnownContexts[contextName].script)
-                }));
-            } catch (error) {
-                console.log(`ERROR in context ${contextName}: ${error}`)
-                return h.response(JSON.stringify({
-                    error: error.toString(),
-                    returnValue: null,
-                    js: wrapForDebug(currentlyKnownContexts[contextName].script)
-                })).code(500)
-            }
-        }
-    });
+      try {
+        const returnValue = await fn(
+          currentlyKnownContexts[contextName].playwrightContext,
+          currentlyKnownContexts[contextName].vars
+        );
+        console.log("Finished execution...");
+        return h.response(
+          JSON.stringify({
+            error: null,
+            returnValue: returnValue,
+            js: wrapForDebug(currentlyKnownContexts[contextName].script),
+          })
+        );
+      } catch (error) {
+        console.log(`ERROR in context ${contextName}: ${error}`);
+        return h
+          .response(
+            JSON.stringify({
+              error: error.toString(),
+              returnValue: null,
+              js: wrapForDebug(currentlyKnownContexts[contextName].script),
+            })
+          )
+          .code(500);
+      }
+    },
+  });
 
-    server.route({
-        method: 'POST',
-        path: '/stop/{context}',
-        handler: async (request, h) => {
-            const contextName = request.params.context;
-            if (!currentlyKnownContexts[contextName]) {
-                return h.response("Not found").code(404)
-            }
+  server.route({
+    method: "POST",
+    path: "/stop/{context}",
+    handler: async (request, h) => {
+      const contextName = request.params.context;
+      if (!currentlyKnownContexts[contextName]) {
+        return h.response("Not found").code(404);
+      }
 
-            await currentlyKnownContexts[contextName].playwrightContext.close();
-            delete currentlyKnownContexts[contextName];
+      await currentlyKnownContexts[contextName].playwrightContext.close();
+      delete currentlyKnownContexts[contextName];
 
-            return h.response("Deleted").code(200);
-        }
-    });
+      return h.response("Deleted").code(200);
+    },
+  });
 
-    await server.start();
-    console.log('Server running on %s', server.info.uri);
+  await server.start();
+  console.log("Server running on %s", server.info.uri);
 };
 
-process.on('unhandledRejection', (err) => {
-    console.log(err);
-    process.exit(1);
+process.on("unhandledRejection", (err) => {
+  console.log(err);
+  process.exit(1);
 });
 
 init();
@@ -166,21 +177,26 @@ const browser = await chromium.launch({headless: false, slowMo: 100});
 const context = await browser.newContext();
 const vars = {};
 
-`
+`;
 
 const endBlock = `
 })();
 `;
 function wrapForDebug(scriptBlocks) {
-    return beginBlock + scriptBlocks.map(scriptBlock => {
-        if (scriptBlock.includes('return')) {
-            return "\n(async () => {\n" + scriptBlock + "\n})();";
+  return (
+    beginBlock +
+    scriptBlocks
+      .map((scriptBlock) => {
+        if (scriptBlock.includes("return")) {
+          return "\n(async () => {\n" + scriptBlock + "\n})();";
         } else {
-            return "\n" + scriptBlock;
+          return "\n" + scriptBlock;
         }
-    }).join("") + endBlock;
+      })
+      .join("") +
+    endBlock
+  );
 }
-
 
 /**
  *

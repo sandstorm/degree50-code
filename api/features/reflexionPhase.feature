@@ -1,4 +1,4 @@
-@fixtures @playwright
+@fixtures @playwright @only
 Feature: A reflexionPhase should show solutions of the phase it depends on
 
     Background:
@@ -13,7 +13,7 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
             "description": "description of exercise1",
             "creator": "test-admin@sandstorm.de",
             "course": "course1",
-            "status": 1
+            "status": 2
         }
         """
         And Course "course1" belongs to exercise "e1"
