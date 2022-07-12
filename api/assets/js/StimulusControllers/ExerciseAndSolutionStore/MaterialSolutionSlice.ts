@@ -26,7 +26,7 @@ const initialState: MaterialSolutionState = {
 
 const finishReview = createAsyncThunk(
   'MaterialSolution/finishReview',
-  async (solutionId: string, thunkAPI) => {
+  async (solutionId: string) => {
     await fetch(`/exercise-phase-solution/finish-review/${solutionId}`, {
       method: 'POST',
     })
@@ -71,6 +71,12 @@ const MaterialSolutionSlice = createSlice({
             action.payload === 'none' ? undefined : state.selectedSolutionId,
           comparedSolutionId:
             action.payload === 'none' ? undefined : state.comparedSolutionId,
+        }
+      })
+      .addCase(finishReview.fulfilled, (state) => {
+        return {
+          ...state,
+          isReadonly: true,
         }
       })
       .addCase(filterSlice.actions.setPreviousSolution, (state, action) => {
