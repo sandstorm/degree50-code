@@ -14,10 +14,13 @@ services:
     depends_on:
       - db
     environment:
+      # TODO move in .env files
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-dev
+      # TODO move in .env files
       JWT_KEY: changeme-dev
       LOCAL_DEVELOPMENT: 1
-      DATABASE_URL: "mysql://api-platform:!ChangeMe!@db/api"
+      # Used for CLI and for web port :8080
+      # Webport :9090 (testing is using "test" instead -> see "nginx-e2e-test-server.conf")
       APP_ENV: "dev"
     volumes:
       - ./api:/app:rw,cached
