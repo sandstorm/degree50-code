@@ -43,7 +43,7 @@ class ReflexionPhaseFormType extends ExercisePhaseFormType
                 'choice_label' => 'name',
                 'placeholder' => 'Keine',
                 'multiple' => false,
-                'required' => false,
+                'required' => true,
                 'disabled' => $exercisePhase->getSorting() === 0 || $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.labels.dependsOnPreviousPhase",
                 'translation_domain' => 'forms',
@@ -58,5 +58,3 @@ class ReflexionPhaseFormType extends ExercisePhaseFormType
         ]);
     }
 }
-
-
