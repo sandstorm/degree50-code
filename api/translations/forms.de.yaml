@@ -15,6 +15,7 @@ exercise:
         status0: 'Erstellt'
         status1: 'Abgeschlossen'
         status2: 'Veröffentlicht'
+        reviewRequired: "Überprüfung durch dozierende Person erforderlich"
     show:
         title: 'Aufgabe starten'
     test:

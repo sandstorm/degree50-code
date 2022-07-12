@@ -5,6 +5,7 @@ namespace App\Repository\Exercise;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
+use App\Entity\Exercise\Solution;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -41,6 +42,17 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
             ->andWhere('e.exercisePhase = :exercisePhase')
             ->setParameter('member', $member)
             ->setParameter('exercisePhase', $exercisePhase)
+            ->orderBy('e.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findBySolution(Solution $solution): ?ExercisePhaseTeam
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.solution = :solution')
+            ->setParameter('solution', $solution)
             ->orderBy('e.id', 'ASC')
             ->setMaxResults(1)
             ->getQuery()

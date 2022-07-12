@@ -5,11 +5,11 @@ import {
   actions,
   selectors,
 } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
-import { MaterialSolutionMenuOverlayIds } from 'Components/MaterialEditor/Toolbar/MaterialSolutionMenu'
 import RadioGroup from 'Components/RadioGroup/RadioGroup'
 import RadioOption from 'Components/RadioGroup/RadioOption'
 import Checkbox from 'Components/Checkbox'
 import Overlay from 'Components/ToolbarItems/components/Overlay'
+import { MaterialSolutionMenuOverlayIds } from 'Components/ToolbarItems/MaterialSolutionMenu'
 
 const mapStateToProps = (state: AppState) => ({
   visibleSolutions:

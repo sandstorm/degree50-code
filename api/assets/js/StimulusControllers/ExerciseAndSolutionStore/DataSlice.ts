@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit'
+import { combineReducers, createSelector } from '@reduxjs/toolkit'
 import {
   annotationsSlice,
   AnnotationsState,
@@ -27,6 +27,7 @@ import MaterialsSlice, {
 import { composedMaterialSelectors } from 'Components/VideoEditor/composedSelectors/materials'
 import MaterialSolutionSlice, {
   MaterialSolutionState,
+  actions as materialSolutionActions,
   selectors as materialSolutionSelectors,
 } from 'StimulusControllers/ExerciseAndSolutionStore/MaterialSolutionSlice'
 import { composedAnnotationSelectors } from 'Components/VideoEditor/composedSelectors/annotations'
@@ -38,6 +39,7 @@ import {
   SolutionState,
   SolutionSlice,
 } from 'Components/VideoEditor/SolutionSlice'
+import { ExercisePhaseStatus } from 'Components/VideoEditor/types'
 
 export type DataState = {
   solutions: SolutionState
@@ -66,8 +68,20 @@ export const actions = {
   videoCodePrototypes: videoCodePrototypesSlice.actions,
   cuts: cuttingSlice.actions,
   materials: MaterialsSlice.actions,
-  materialSolution: MaterialSolutionSlice.actions,
+  materialSolution: materialSolutionActions,
 }
+
+const selectMaterialSolutionNeedsReview = createSelector(
+  [
+    solutionSelectors.selectById,
+    materialSolutionSelectors.selectSelectedSolutionId,
+  ],
+  (solutionsById, selectedMaterialSolutionId) =>
+    selectedMaterialSolutionId
+      ? solutionsById[selectedMaterialSolutionId]?.status ===
+        ExercisePhaseStatus.IN_REVIEW
+      : false
+)
 
 export const selectors = {
   solutions: solutionSelectors,
@@ -77,6 +91,7 @@ export const selectors = {
   cuts: cutsSelectors,
   materials: materialSelectors,
   materialSolution: materialSolutionSelectors,
+  selectMaterialSolutionNeedsReview,
 
   ...composedVideoCodeSelectors,
   ...composedAnnotationSelectors,

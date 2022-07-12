@@ -69,6 +69,13 @@ export type SolutionData = {
   [MATERIAL_API_PROPERTY]: MaterialId
 }
 
+export enum ExercisePhaseStatus {
+  INITIAL = 'INITIAL',
+  IN_BEARBEITUNG = 'IN_BEARBEITUNG',
+  IN_REVIEW = 'IN_REVIEW',
+  BEENDET = 'BEENDET',
+}
+
 export type Solution = {
   id: SolutionId
   userId?: string
@@ -76,6 +83,7 @@ export type Solution = {
   solutionData: SolutionData
   cutVideo?: Video
   fromGroupPhase?: boolean
+  status: ExercisePhaseStatus
 }
 
 export type VideoListsState = {

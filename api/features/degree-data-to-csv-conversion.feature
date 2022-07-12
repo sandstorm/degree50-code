@@ -1,4 +1,4 @@
-@fixtures @conversionToCSV
+@fixtures @conversionToCSV @integration
 Feature: Degree data (courses, solutions etc.) is converted into csv data
 
     Background:

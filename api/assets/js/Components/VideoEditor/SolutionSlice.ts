@@ -6,6 +6,7 @@ import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
   Annotation,
   Cut,
+  ExercisePhaseStatus,
   Solution,
   SolutionId,
   VideoCode,
@@ -20,7 +21,7 @@ import {
 } from 'StimulusControllers/normalizeData'
 import { initData } from './initData'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
-import MaterialSolutionSlice from 'StimulusControllers/ExerciseAndSolutionStore/MaterialSolutionSlice'
+import { actions as materialSolutionActions } from 'StimulusControllers/ExerciseAndSolutionStore/MaterialSolutionSlice'
 import {
   annotationsSlice,
   AnnotationId,
@@ -125,7 +126,22 @@ export const SolutionSlice = createSlice({
         }
       })
       .addCase(
-        MaterialSolutionSlice.actions.setSelectedSolutionId,
+        materialSolutionActions.finishReview.fulfilled,
+        (state, action) => {
+          return {
+            ...state,
+            byId: {
+              ...state.byId,
+              [action.payload]: {
+                ...state.byId[action.payload],
+                status: ExercisePhaseStatus.BEENDET,
+              },
+            },
+          }
+        }
+      )
+      .addCase(
+        materialSolutionActions.setSelectedSolutionId,
         (state, action) => ({
           ...state,
           current: action.payload,
@@ -316,6 +332,10 @@ const selectSolutionById = (state: AppState, props: { solutionId: string }) =>
   state.data.solutions.byId[props.solutionId]
 const selectCurrentId = (state: AppState) => state.data.solutions.current
 const selectPreviousIds = (state: AppState) => state.data.solutions.previous
+const selectCurrentSolutionStatus = (state: AppState) =>
+  state.data.solutions.current
+    ? state.data.solutions.byId[state.data.solutions.current]?.status
+    : undefined
 
 const selectIsCurrentSolution = (
   state: AppState,
@@ -383,6 +403,7 @@ export const selectors = {
   selectAllIds,
   selectById,
   selectSolutionById,
+  selectCurrentSolutionStatus,
   selectCurrentId,
   selectPreviousIds,
   selectIsCurrentSolution,

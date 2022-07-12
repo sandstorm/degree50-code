@@ -1,22 +1,30 @@
+help:
+	cat Makefile
+
 build-docker:
 	docker-compose pull
 	docker-compose build --pull
 
-import-fixtures:
-	docker-compose exec api php bin/console doctrine:fixtures:load
+test-integration:
+	docker-compose exec \
+		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
+		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
+		--env APP_ENV=test \
+		api ./vendor/bin/behat --tags integration
 
-build-types:
-	cd api && yarn build-types
-	./symfony-console  api:graphql:export > api/assets/api-definitions/schema.graphql
-	cd api && ./node_modules/.bin/apollo client:codegen --target typescript  '--includes=assets/js/**/*.tsx' --localSchemaFile=assets/api-definitions/schema.graphql --tagName=gql --addTypename --globalTypesFile=assets/js/Types/graphql-global-types.ts
+test-e2e:
+	docker-compose exec \
+		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
+		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
+		--env APP_ENV=test \
+		api ./vendor/bin/behat --tags playwright
 
 test:
-	docker-compose exec api vendor/bin/phpat phpat.yaml
-	docker-compose exec api vendor/bin/behat
+	docker-compose exec \
+		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
+		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
+		--env APP_ENV=test \
+		api ./vendor/bin/behat
 
-
-testArchitecture:
-	docker-compose exec api vendor/bin/phpat phpat.yaml
-
-testBehat:
-	docker-compose exec api vendor/bin/behat ${flag}
+import-fixtures:
+	docker-compose exec api php bin/console doctrine:fixtures:load

@@ -26,7 +26,9 @@
                                     path(
                                         'exercise-overview__exercise-phase--show-solutions',
                                         {id: exercise.id, phase_id: item.id}
-                                    )
+                                    ),
+                                    true,
+                                    item.id in phasesWithReviewRequiredIds
                                 )
                             }}
                         {% else %}
@@ -52,7 +54,7 @@
 
 
 
-{% macro sidebarLink(name, doesDependOnExercisePhase, iconClass, href, canView = true)  %}
+{% macro sidebarLink(name, doesDependOnExercisePhase, iconClass, href, canView = true, reviewRequired = false)  %}
     <a
         class="nav-link"
         {% if canView %} href="{{ href }}" {% endif %}
@@ -63,5 +65,8 @@
                title="{% trans %}exercisePhase.labels.dependsOnPreviousPhase{% endtrans %}"></i>
         {% endif %}
         {{ name }}
+        {% if reviewRequired %}
+            <i class="fa-regular fa-circle-exclamation-check" title="{{ 'exercise.labels.reviewRequired' | trans }}"></i>
+        {% endif %}
     </a>
 {% endmacro %}

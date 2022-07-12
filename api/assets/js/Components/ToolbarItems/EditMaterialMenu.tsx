@@ -7,9 +7,14 @@ import {
 } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
-const mapStateToProps = (state: AppState) => ({
-  isReadonly: selectors.data.materialSolution.selectIsReadonly(state),
-})
+const mapStateToProps = (state: AppState) => {
+  const needsReview = selectors.data.selectMaterialSolutionNeedsReview(state)
+
+  return {
+    isReadonly: selectors.data.materialSolution.selectIsReadonly(state),
+    needsReview,
+  }
+}
 
 const mapDispatchToProps = {
   toggleIsReadonly: actions.data.materialSolution.toggleIsReadonly,
@@ -20,7 +25,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps)
 type Props = ConnectedProps<typeof connector>
 
 const EditMaterialMenu = (props: Props) => {
-  const { isReadonly, toggleIsReadonly } = props
+  const { isReadonly, toggleIsReadonly, needsReview } = props
   const iconClassName = isReadonly ? 'fa-pen-slash' : 'fa-pen'
 
   const handlePress = () => {
@@ -37,6 +42,7 @@ const EditMaterialMenu = (props: Props) => {
         title={title}
         className="btn btn-grey btn-sm video-editor__toolbar__button"
         onPress={handlePress}
+        isDisabled={!needsReview}
       >
         <i className={`fas ${iconClassName}`} />
       </Button>

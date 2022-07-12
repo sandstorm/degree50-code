@@ -54,7 +54,7 @@ class ExercisePhaseFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Keine',
                 'multiple' => false,
-                'required' => false,
+                'required' => $isReflexionPhase,
                 'disabled' => $dependsOnPreviousPhaseIsDisabled || $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.labels.dependsOnPreviousPhase",
                 'translation_domain' => 'forms',

@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Tests\Behat;
+
+use App\Entity\Account\User;
+use App\Entity\Exercise\Attachment;
+use App\Entity\Exercise\ExercisePhase;
+
+/**
+ *
+ */
+trait AttachmentContextTrait
+{
+
+    /**
+     * @Given I have an attachment with ID :attachmentId
+     */
+    public function iHaveAnAttachmentWithId($attachmentId)
+    {
+        $attachment = new Attachment($attachmentId);
+        $fileName = tempnam(sys_get_temp_dir(), 'foo');
+        file_put_contents($fileName, 'my file');
+        $attachment->setName($fileName);
+        $attachment->setMimeType('application/pdf');
+
+        /* @var User $user */
+        $user = $this->entityManager->find(User::class, 'foo@bar.de');
+        $attachment->setCreator($user);
+
+        $this->entityManager->persist($attachment);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given An Attachment with Id :attachmentId created by User :username exists for ExercisePhase :exercisePhaseId
+     */
+    public function ensureAttachmentByUserExistsInExercisePhase($attachmentId, $username, $exercisePhaseId)
+    {
+        /** @var User $user */
+        $user = $this->entityManager->find(User::class, $username);
+        /** @var ExercisePhase $exercisePhase */
+        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
+        /** @var Attachment $attachment */
+        $attachment = $this->entityManager->find(Attachment::class, $attachmentId);
+
+        if (!$attachment) {
+            $attachment = new Attachment($attachmentId);
+            $fileName = tempnam(sys_get_temp_dir(), 'foo');
+            file_put_contents($fileName, 'my file');
+            $attachment->setName('TEST_ATTACHMENT_' . $attachmentId);
+            $attachment->setMimeType('application/pdf');
+        }
+
+        $attachment->setCreator($user);
+        $exercisePhase->addAttachment($attachment);
+
+        $this->entityManager->persist($exercisePhase);
+        $this->entityManager->persist($attachment);
+
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+}

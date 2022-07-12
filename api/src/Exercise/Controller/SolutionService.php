@@ -4,6 +4,7 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCodePrototype;
@@ -23,6 +24,7 @@ class SolutionService
     private AutosavedSolutionRepository $autosavedSolutionRepository;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private ManagerRegistry $managerRegistry;
+    private ExercisePhaseService $exercisePhaseService;
     private LoggerInterface $logger;
 
     function __construct(
@@ -30,14 +32,15 @@ class SolutionService
         LoggerInterface $logger,
         AppRuntime $appRuntime,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        ManagerRegistry $managerRegistry
-    )
-    {
+        ManagerRegistry $managerRegistry,
+        ExercisePhaseService $exercisePhaseService,
+    ) {
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->appRuntime = $appRuntime;
         $this->logger = $logger;
         $this->managerRegistry = $managerRegistry;
+        $this->exercisePhaseService = $exercisePhaseService;
     }
 
     /**
@@ -48,8 +51,7 @@ class SolutionService
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
         array $teams
-    ): ClientSideSolutionDataBuilder
-    {
+    ): ClientSideSolutionDataBuilder {
         // FIXME
         // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
         // However it is rather intransparent when and why that happens.
@@ -69,6 +71,7 @@ class SolutionService
                 $solutionEntity->getId(),
                 $clientSideCutVideo,
                 $exercisePhase->isGroupPhase(),
+                $this->exercisePhaseService->getStatusForTeam($exercisePhaseTeam)
             );
         }, $teams);
 
@@ -82,6 +85,7 @@ class SolutionService
                 $previousSolutionDto->getTeamMember(),
                 $previousSolutionDto->getCutVideo(),
                 $previousSolutionDto->getFromGroupPhase(),
+                $previousSolutionDto->getStatus(),
             );
         }
 
@@ -106,8 +110,7 @@ class SolutionService
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
         ExercisePhaseTeam $exercisePhaseTeam,
         ExercisePhase $exercisePhase
-    ): ClientSideSolutionDataBuilder
-    {
+    ): ClientSideSolutionDataBuilder {
         // Note: This might either be an autosaved solution or an actual solution
         // FIXME: we should probably find a better way to handle solutions and autosavedSolutions in general.
         $solutionEntity = $this->autosavedSolutionRepository->getLatestSolutionOfExerciseTeam($exercisePhaseTeam);
@@ -147,6 +150,7 @@ class SolutionService
                 $previousSolutionDto->getTeamMember(),
                 $previousSolutionDto->getCutVideo(),
                 $previousSolutionDto->getFromGroupPhase(),
+                $previousSolutionDto->getStatus(),
             );
         }
 
@@ -156,38 +160,41 @@ class SolutionService
     private function getPreviousSolutionDtosForVideoEditor(
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam = null
-    )
-    {
+    ) {
         // Get the relevant solutions of the previous phase,
         // meaning we get the solutions of each of the members of the current team
         $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();
         if ($exercisePhaseDependedOn !== null && $exercisePhaseTeam != null) {
             // FIXME
             // we can probably retrieve previous phases with a single query instead
-            return array_reduce($exercisePhaseTeam->getMembers()->toArray(), function (array $carry, User $teamMember) use ($exercisePhaseDependedOn) {
-                $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $exercisePhaseDependedOn);
-                $solutionEntity = $teamOfPreviousPhase?->getSolution();
+            return array_reduce(
+                $exercisePhaseTeam->getMembers()->toArray(),
+                function (array $carry, User $teamMember) use ($exercisePhaseDependedOn, $exercisePhaseTeam) {
+                    $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $exercisePhaseDependedOn);
+                    $solutionEntity = $teamOfPreviousPhase?->getSolution();
 
-                if (is_null($solutionEntity)) {
-                    return $carry;
-                }
+                    if (is_null($solutionEntity)) {
+                        return $carry;
+                    }
 
-                $clientSideCutVideo = null;
+                    $clientSideCutVideo = null;
 
-                try {
-                  $clientSideCutVideo = $solutionEntity->getCutVideo()?->getAsArray($this->appRuntime);
-                } catch (EntityNotFoundException $e) {
-                
-                }
+                    try {
+                        $clientSideCutVideo = $solutionEntity->getCutVideo()?->getAsArray($this->appRuntime);
+                    } catch (EntityNotFoundException $e) {
+                    }
 
-                return array_merge($carry, [PreviousSolutionDto::create(
-                    $teamMember,
-                    $solutionEntity->getSolution(),
-                    $solutionEntity->getId(),
-                    $clientSideCutVideo,
-                    $exercisePhaseDependedOn->isGroupPhase(),
-                )]);
-            }, []);
+                    return array_merge($carry, [PreviousSolutionDto::create(
+                        $teamMember,
+                        $solutionEntity->getSolution(),
+                        $solutionEntity->getId(),
+                        $clientSideCutVideo,
+                        $exercisePhaseDependedOn->isGroupPhase(),
+                        $this->exercisePhaseService->getStatusForTeam($exercisePhaseTeam)
+                    )]);
+                },
+                []
+            );
         }
 
         return [];

@@ -109,6 +109,7 @@ e2e_test:
     stage: test
     only: 
         - main
+        - tags
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:

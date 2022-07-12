@@ -7,7 +7,6 @@ import {
 } from 'Components/VideoEditor/VideoEditorSlice'
 import { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { MaterialSolutionMenuOverlayIds } from 'Components/MaterialEditor/Toolbar/MaterialSolutionMenu'
 import PickComparedSolutionOverlay from 'Components/MaterialEditor/Overlays/PickComparedSolutionOverlay'
 import { AllMediaItemsOverlayIds } from 'Components/ToolbarItems/AllMediaItemsContext/AllMediaItemsMenu'
 import AllMediaItemsOverlay from 'Components/ToolbarItems/AllMediaItemsContext/Overlays/AllMediaItemsOverlay'
@@ -51,6 +50,7 @@ import ZusatzAttachmentOverlay, {
   ZUSATZ_ATTACHMENTS_OVERLAY_ID,
 } from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentOverlay'
 import { AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { MaterialSolutionMenuOverlayIds } from 'Components/ToolbarItems/MaterialSolutionMenu'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
   switch (id) {

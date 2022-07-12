@@ -1,4 +1,4 @@
-@fixtures
+@fixtures @integration
 Feature: CRUD operations on the videoRepository
 
     Scenario:

@@ -5,6 +5,7 @@ namespace App\Entity\Exercise;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -53,6 +54,11 @@ class ExercisePhaseTeam
      */
     private User $creator;
 
+    /**
+     * @ORM\Column(type="string", enumType=ExercisePhaseStatus::class)
+     */
+    private ExercisePhaseStatus $status = ExercisePhaseStatus::IN_BEARBEITUNG;
+
     public function __construct(?string $id = null)
     {
         $this->members = new ArrayCollection();
@@ -68,6 +74,7 @@ class ExercisePhaseTeam
     public function setExercisePhase(?ExercisePhase $exercisePhase): self
     {
         $this->exercisePhase = $exercisePhase;
+        $exercisePhase->addTeam($this);
 
         return $this;
     }
@@ -89,9 +96,6 @@ class ExercisePhaseTeam
         return $this;
     }
 
-    /**
-     * @return User[]
-     */
     public function getMembers(): Collection
     {
         return $this->members;
@@ -169,6 +173,16 @@ class ExercisePhaseTeam
         $this->creator = $creator;
 
         return $this;
+    }
+
+    public function getStatus(): ExercisePhaseStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(ExercisePhaseStatus $status): void
+    {
+        $this->status = $status;
     }
 
     public function hasAdminOrDozentMember(): bool

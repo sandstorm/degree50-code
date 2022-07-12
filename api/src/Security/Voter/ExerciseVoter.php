@@ -7,7 +7,8 @@ namespace App\Security\Voter;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\UserExerciseInteraction;
+use App\Entity\Exercise\ExerciseStatus;
+use App\Exercise\Controller\ExerciseService;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -20,6 +21,13 @@ class ExerciseVoter extends Voter
     const DELETE = 'delete';
     const IS_OPENED = 'isOpened';
     const IS_FINISHED = 'isFinished';
+
+    private ExerciseService $exerciseService;
+
+    function __construct(ExerciseService $exerciseService)
+    {
+        $this->exerciseService = $exerciseService;
+    }
 
     protected function supports(string $attribute, $subject): bool
     {
@@ -53,9 +61,9 @@ class ExerciseVoter extends Voter
 
             switch ($attribute) {
                 case self::IS_FINISHED:
-                    return $this->exercisesIsFinished($exercise, $user);
+                    return $this->exerciseHasBeenFinished($exercise, $user);
                 case self::IS_OPENED:
-                    return $this->exercisesIsOpened($exercise, $user);
+                    return $this->exerciseHasBeenStarted($exercise, $user);
                 case self::VIEW:
                     return $this->canView($exercise, $user);
                 case self::EDIT or self::DELETE or self::SHOW_SOLUTION:
@@ -68,14 +76,14 @@ class ExerciseVoter extends Voter
         throw new LogicException('This code should not be reached!');
     }
 
-    private function exercisesIsOpened(Exercise $exercise, User $user): bool
+    private function exerciseHasBeenStarted(Exercise $exercise, User $user): bool
     {
-        return $exercise->getUserExerciseInteractions()->exists(fn($i, UserExerciseInteraction $userExerciseInteraction) => $userExerciseInteraction->isOpened() && $userExerciseInteraction->getUser() === $user);
+        return $this->exerciseService->getExerciseStatusForUser($exercise, $user) === ExerciseStatus::IN_BEARBEITUNG;
     }
 
-    private function exercisesIsFinished(Exercise $exercise, User $user): bool
+    private function exerciseHasBeenFinished(Exercise $exercise, User $user): bool
     {
-        return $exercise->getUserExerciseInteractions()->exists(fn($i, UserExerciseInteraction $userExerciseInteraction) => $userExerciseInteraction->isFinished() && $userExerciseInteraction->getUser() === $user);
+        return $this->exerciseService->getExerciseStatusForUser($exercise, $user) === ExerciseStatus::BEENDET;
     }
 
     private function canView(Exercise $exercise, User $user): bool
@@ -87,7 +95,7 @@ class ExerciseVoter extends Voter
 
         $course = $exercise->getCourse();
         $hasAccessToCourse = $user->getCourseRoles()->exists(
-            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
+            fn ($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
                 $courseRole->getUser() === $user
         );
 
@@ -98,9 +106,7 @@ class ExerciseVoter extends Voter
             }
 
             // everyone else needs to wait for publication
-            $exercisePublished =
-                $exercise->getStatus() == Exercise::EXERCISE_PUBLISHED ||
-                $exercise->getStatus() == Exercise::EXERCISE_FINISHED;
+            $exercisePublished = $exercise->getStatus() == Exercise::EXERCISE_PUBLISHED;
             $exerciseNotEmpty = count($exercise->getPhases()) > 0;
 
             if ($exercisePublished && $exerciseNotEmpty) {
@@ -120,7 +126,7 @@ class ExerciseVoter extends Voter
 
         $course = $exercise->getCourse();
         $isCourseDozent = $user->getCourseRoles()->exists(
-            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
+            fn ($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
                 $courseRole->getUser() === $user &&
                 $courseRole->getName() === CourseRole::DOZENT
         );

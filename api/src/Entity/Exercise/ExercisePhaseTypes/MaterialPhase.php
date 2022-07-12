@@ -13,14 +13,19 @@ class MaterialPhase extends ExercisePhase
 {
     const type = ExercisePhaseType::MATERIAL;
 
-    const PHASE_COMPONENTS = [ ];
+    const PHASE_COMPONENTS = [];
 
-    const PHASE_COMPONENTS_GROUP = [ ];
+    const PHASE_COMPONENTS_GROUP = [];
 
     /**
-     * @ORM\Column(name="material", type="text")
+     * @orm\column(name="material", type="text")
      */
     private string | null $material = '';
+
+    /**
+     * @orm\column(name="reviewRequired", type="boolean")
+     */
+    private bool | null $reviewRequired = false;
 
 
     public function __construct(string $id = null)
@@ -49,5 +54,18 @@ class MaterialPhase extends ExercisePhase
     {
         $this->material = $material;
     }
-}
 
+    public function getReviewRequired(): bool
+    {
+        if (is_null($this->reviewRequired)) {
+            return false;
+        }
+
+        return $this->reviewRequired;
+    }
+
+    public function setReviewRequired(bool $reviewRequired)
+    {
+        $this->reviewRequired = $reviewRequired;
+    }
+}

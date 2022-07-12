@@ -1,4 +1,4 @@
-@fixtures @removalOfUser
+@fixtures @removalOfUser @integration
 Feature: Degree User is removed completely from system
 
     Background:

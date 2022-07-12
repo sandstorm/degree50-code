@@ -24,6 +24,7 @@ use App\Exercise\Form\VideoCutPhaseFormFormType;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
+use App\Repository\Exercise\SolutionRepository;
 use App\Twig\AppRuntime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -56,6 +57,7 @@ class ExercisePhaseController extends AbstractController
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private LoggerInterface $logger;
     private SolutionService $solutionService;
+    private SolutionRepository $solutionRepository;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -67,7 +69,8 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseService $exercisePhaseService,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         LoggerInterface $logger,
-        SolutionService $solutionService
+        SolutionService $solutionService,
+        SolutionRepository $solutionRepository
     ) {
         $this->logger = $logger;
         $this->translator = $translator;
@@ -79,6 +82,7 @@ class ExercisePhaseController extends AbstractController
         $this->exercisePhaseService = $exercisePhaseService;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->solutionService = $solutionService;
+        $this->solutionRepository = $solutionRepository;
     }
 
     /**
@@ -99,7 +103,7 @@ class ExercisePhaseController extends AbstractController
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
 
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
             $clientSideSolutionDataBuilder,
             $exercisePhaseTeam,
@@ -128,6 +132,8 @@ class ExercisePhaseController extends AbstractController
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
     ): Response {
+        $this->exercisePhaseService->openPhase($exercisePhaseTeam);
+
         if ($exercisePhase->getType() === ExercisePhaseType::REFLEXION) {
             return $this->reflectInPhase($exercisePhase, $exercisePhaseTeam);
         } else {
@@ -146,14 +152,14 @@ class ExercisePhaseController extends AbstractController
         // Fix "Aufgabe Testen"
         $user = $this->getUser();
         if ($user === $exercise->getCreator()) {
-            $teamOfCreator = $phaseReflexionDependsOn->getTeams()->filter(fn(ExercisePhaseTeam $team) => $team->getCreator() === $user)->first();
+            $teamOfCreator = $phaseReflexionDependsOn->getTeams()->filter(fn (ExercisePhaseTeam $team) => $team->getCreator() === $user)->first();
 
             if ($teamOfCreator) {
                 $teams[] = $teamOfCreator;
             }
         }
 
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
             $clientSideSolutionDataBuilder,
             $teams
@@ -190,7 +196,7 @@ class ExercisePhaseController extends AbstractController
         $response = new Response();
         $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
 
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
             $clientSideSolutionDataBuilder,
             $exercisePhaseTeam,
@@ -228,7 +234,7 @@ class ExercisePhaseController extends AbstractController
 
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
 
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $data = $exercisePhase->getType() === ExercisePhaseType::REFLEXION
             ? null
             : $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
@@ -239,11 +245,16 @@ class ExercisePhaseController extends AbstractController
         // TODO throws Parameter 'userId' does not exist.... why?
         //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
+        $phasesWithReviewRequiredIds = $exercise->getPhases()->filter(
+            fn (ExercisePhase $phase) => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase)
+        )->map(fn (ExercisePhase $phase) => $phase->getId());
+
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
             'config' => $this->getConfig($exercisePhase, true),
             'data' => $data,
             'exercise' => $exercise,
-            'exercisePhase' => $exercisePhase,
+            'currentExercisePhase' => $exercisePhase,
+            'phasesWithReviewRequiredIds' => $phasesWithReviewRequiredIds,
         ]);
     }
 
@@ -321,6 +332,22 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @IsGranted("reviewSolution", subject="solution")
+     * @Route("/exercise-phase-solution/finish-review/{id}", name="exercise__show-solutions--finish-review", methods={"POST"})
+     */
+    public function finishReview(Request $request, Solution $solution): Response
+    {
+        try {
+            $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findBySolution($solution);
+            $this->exercisePhaseService->finishReview($exercisePhaseTeam);
+
+            return new Response('Successfully finished review', 200);
+        } catch (Exception $error) {
+            return new Response($error, 500);
+        }
     }
 
     /**
@@ -509,7 +536,7 @@ class ExercisePhaseController extends AbstractController
             }, $exercisePhase->getAttachment()->toArray()),
             'videos' => array_map(function (Video $video) {
                 return $video->getAsArray($this->appRuntime);
-            }, $exercisePhase->getVideos()->toArray())
+            }, $exercisePhase->getVideos()->toArray()),
         ];
     }
 

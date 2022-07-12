@@ -2,6 +2,7 @@
 
 namespace App\Exercise\Controller\ClientSideSolutionData;
 
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use JsonSerializable;
 
 /**
@@ -18,6 +19,7 @@ final class ClientSideSolution implements JsonSerializable
     private string $userId;
     private ?ClientSideCutVideo $cutVideo;
     private ?bool $fromGroupPhase;
+    private ?ExercisePhaseStatus $status;
 
     private function __construct(
         ClientSideSolutionData $clientSideSolutionData,
@@ -26,14 +28,15 @@ final class ClientSideSolution implements JsonSerializable
         string $userId,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
-    )
-    {
+        ExercisePhaseStatus $status,
+    ) {
         $this->clientSideSolutionData = $clientSideSolutionData;
         $this->id = $id;
         $this->userName = $userName;
         $this->userId = $userId;
         $this->cutVideo = $cutVideo;
         $this->fromGroupPhase = $fromGroupPhase;
+        $this->status = $status;
     }
 
     public static function create(
@@ -43,9 +46,9 @@ final class ClientSideSolution implements JsonSerializable
         string $userId,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
-    ): ClientSideSolution
-    {
-        return new self($clientSideSolutionData, $id, $userName, $userId, $cutVideo, $fromGroupPhase);
+        ExercisePhaseStatus $status,
+    ): ClientSideSolution {
+        return new self($clientSideSolutionData, $id, $userName, $userId, $cutVideo, $fromGroupPhase, $status);
     }
 
     public static function fromArray(array $input): ClientSideSolution
@@ -57,6 +60,7 @@ final class ClientSideSolution implements JsonSerializable
             $input['userId'],
             ClientSideCutVideo::fromArray($input['cutVideo']),
             $input['fromGroupPhase'],
+            $input['status'],
         );
     }
 
@@ -69,6 +73,7 @@ final class ClientSideSolution implements JsonSerializable
             'userId' => $this->userId,
             'cutVideo' => $this->cutVideo,
             'fromGroupPhase' => $this->fromGroupPhase,
+            'status' => $this->status,
         ];
     }
 
@@ -118,5 +123,10 @@ final class ClientSideSolution implements JsonSerializable
     public function getFromGroupPhase(): ?bool
     {
         return $this->fromGroupPhase;
+    }
+
+    public function getStatus(): ExercisePhaseStatus
+    {
+        return $this->status;
     }
 }
