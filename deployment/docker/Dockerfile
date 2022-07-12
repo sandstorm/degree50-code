@@ -39,9 +39,6 @@ RUN mkdir -p /var/lib/nginx /usr/local/var/log/ && \
 
 WORKDIR /app
 
-# build for production
-ARG APP_ENV=prod
-
 # prevent the reinstallation of vendors at every changes in the source code
 COPY api/composer.json api/composer.lock api/symfony.lock ./
 
@@ -52,6 +49,7 @@ RUN set -eux; \
 	composer clear-cache
 
 # these will be dumped and deleted in entrypoint.sh depending on the APP_ENV
+# This is only used by our CI-image -> in development these are simply mounted
 COPY api/.env ./
 COPY api/.env.test ./
 

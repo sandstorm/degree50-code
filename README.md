@@ -125,7 +125,7 @@ To create and deploy a versioned release follow these steps:
 2. Start e2e-testrunner: `node index.js`
 3. Start docker containers `docker-compose up -d`
 4. Enter `api` container `docker-compose exec api /bin/bash`
-5. execute tests `PLAYWRIGHT_API_URL="http://host.docker.internal:3000" SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" APP_ENV=test DATABASE_URL='mysql://api-platform:!ChangeMe!@db/app_test' ./vendor/bin/behat` 
+5. execute tests `PLAYWRIGHT_API_URL="http://host.docker.internal:3000" SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" APP_ENV=test ./vendor/bin/behat` 
 6. use the `--tags` flag to run specific tests (i.e. `--tags myTest`)
 
 > **NOTE**: We added the DATABASE_URL in point 5 as inline ENV because the .env.test file does not seem to work here anymore.
