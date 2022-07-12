@@ -26,7 +26,7 @@ const initialState: MaterialSolutionState = {
 
 const finishReview = createAsyncThunk(
   'MaterialSolution/finishReview',
-  async (solutionId: string, thunkAPI) => {
+  async (solutionId: string) => {
     await fetch(`/exercise-phase-solution/finish-review/${solutionId}`, {
       method: 'POST',
     })
@@ -73,6 +73,12 @@ const MaterialSolutionSlice = createSlice({
             action.payload === 'none' ? undefined : state.comparedSolutionId,
         }
       })
+      .addCase(finishReview.fulfilled, (state) => {
+        return {
+          ...state,
+          isReadonly: true,
+        }
+      })
       .addCase(filterSlice.actions.setPreviousSolution, (state, action) => {
         const selectedSolutionIdHasBeenToggled =
           action.payload.id === state.selectedSolutionId
@@ -114,12 +120,16 @@ const selectCanSelectNextSolution = createSelector(
   [
     videoEditorSelectors.filter.selectVisiblePreviousSolutionIds,
     selectSelectedSolutionId,
+    selectIsReadonly,
   ],
-  (solutionIds, selectedSolutionId) =>
+  (solutionIds, selectedSolutionId, isReadonly) =>
     Boolean(
       selectedSolutionId &&
         isNotLastElementInArray(solutionIds, selectedSolutionId)
-    )
+      // WHY
+      // If the selected solution is not readonly, it can currently be edited.
+      // The user should not be able to change the selected solution during editing!
+    ) && isReadonly
 )
 
 const selectCanCompareNextSolution = createSelector(
@@ -138,12 +148,16 @@ const selectCanSelectPreviousSolution = createSelector(
   [
     videoEditorSelectors.filter.selectVisiblePreviousSolutionIds,
     selectSelectedSolutionId,
+    selectIsReadonly,
   ],
-  (solutionIds, selectedSolutionId) =>
+  (solutionIds, selectedSolutionId, isReadonly) =>
     Boolean(
       selectedSolutionId &&
         isNotFirstElementInArray(solutionIds, selectedSolutionId)
-    )
+      // WHY
+      // If the selected solution is not readonly, it can currently be edited.
+      // The user should not be able to change the selected solution during editing!
+    ) && isReadonly
 )
 
 const selectCanComparePreviousSolution = createSelector(

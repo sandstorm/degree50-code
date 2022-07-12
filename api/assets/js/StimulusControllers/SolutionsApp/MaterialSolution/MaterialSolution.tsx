@@ -27,7 +27,6 @@ const mapStateToProps = (state: AppState) => ({
     selectors.data.materialSolution.selectCanComparePreviousSolution(state),
   shouldCompare: selectors.data.materialSolution.selectShouldCompare(state),
   isReadonly: selectors.data.materialSolution.selectIsReadonly(state),
-  needsReview: selectors.data.selectMaterialSolutionNeedsReview(state),
 })
 
 const mapDispatchToProps = {
@@ -54,7 +53,6 @@ const MaterialSolution = (props: Props) => {
     canCompareNextSolution,
     canComparePreviousSolution,
     isReadonly,
-    needsReview,
   } = props
 
   useEffect(() => {
@@ -103,7 +101,7 @@ const MaterialSolution = (props: Props) => {
           {selectedSolutionId && (
             <MaterialSolutionEditor
               solutionId={selectedSolutionId}
-              isReadonly={isReadonly || !needsReview}
+              isReadonly={isReadonly}
               renderHeader={(children) => (
                 <MaterialSolutionEditorHeader
                   canSelectNext={canSelectNextSolution}
