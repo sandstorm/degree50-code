@@ -22,9 +22,6 @@ class Exercise
     use IdentityTrait;
 
     const EXERCISE_CREATED = 0;
-    /**
-     * @deprecated This is not used! We derive the "finished" status via ExerciseStatus enum.
-     */
     const EXERCISE_FINISHED = 1;
     const EXERCISE_PUBLISHED = 2;
 
