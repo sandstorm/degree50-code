@@ -10,6 +10,7 @@ use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\Solution;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -17,6 +18,13 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class SolutionVoter extends Voter
 {
     const REVIEW_SOLUTION = 'reviewSolution';
+
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
+
+    public function __construct(ExercisePhaseTeamRepository $exercisePhaseTeamRepository)
+    {
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
+    }
 
     protected function supports(string $attribute, $subject): bool
     {
@@ -65,20 +73,15 @@ class SolutionVoter extends Voter
             return false;
         }
 
+        $course = $this->exercisePhaseTeamRepository
+            ->findBySolution($solution)
+            ->getExercisePhase()
+            ->getBelongsToExercise()
+            ->getCourse();
+
         // check if Dozent has access to course
-        return $user->getCourseRoles()->exists(function($_, CourseRole $courseRole) use ($solution) {
-            if ($courseRole->getName() !== CourseRole::DOZENT) {
-                return false;
-            }
-  
-            // check if this solution is one of this course's -> phases' -> team's solution
-            return $courseRole->getCourse()->getExercises()->exists(function($key, Exercise $exercise) use ($solution) {
-                return $exercise->getPhases()->exists(function($key, ExercisePhase $exercisePhase) use ($solution) {
-                    return $exercisePhase->getTeams()->exists(function($key, ExercisePhaseTeam $team) use ($solution) {
-                        return $team->getSolution()?->getId() === $solution->getId();
-                    });
-                });
-            });
+        return $user->getCourseRoles()->exists(function ($_, CourseRole $courseRole) use ($solution, $course) {
+            return $courseRole->getName() !== CourseRole::DOZENT && $courseRole->getCourse() === $course;
         });
     }
 }

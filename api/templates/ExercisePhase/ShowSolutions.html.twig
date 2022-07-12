@@ -6,12 +6,21 @@
 {% block layoutCssClass %}main--without-scrollbar main--no-padding{% endblock %}
 
 {% block sidebar %}
-    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItemId: exercisePhase.id, showSolution: true}) }}
+    {{ include(
+        'Exercise/PhasesSidebar.html.twig',
+        {
+            sidebarItems: exercise.phases,
+            currentItemId: currentExercisePhase.id,
+            showSolution: true,
+            phasesWithReviewRequiredIds: phasesWithReviewRequiredIds
+        }
+       )
+    }}
 {% endblock %}
 
 {% block body %}
     <div class="solution-app">
-        {% if exercisePhase.type.value == 'reflexion' %}
+        {% if currentExercisePhase.type.value == 'reflexion' %}
             <header class="content-header--center">
                 <h3>{{ exercise.name }}</h3>
             </header>

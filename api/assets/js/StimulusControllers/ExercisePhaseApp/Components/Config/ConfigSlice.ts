@@ -1,5 +1,5 @@
 import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Video } from '../../../../Components/VideoPlayer/VideoPlayerWrapper'
+import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { Attachment } from '../AttachmentViewer/AttachmentViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
 import { ExercisePhaseTypesEnum } from '../../../ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
@@ -75,6 +75,7 @@ const selectUserId = (state: ConfigStateSlice) => state.config.userId
 const selectUserName = (state: ConfigStateSlice) => state.config.userName
 const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 const selectVideos = (state: ConfigStateSlice) => state.config.videos
+const selectApiEndpoits = (state: ConfigStateSlice) => state.config.apiEndpoints
 export const selectComponents = (state: ConfigStateSlice) =>
   state.config.components
 const selectIsGroupPhase = (state: ConfigStateSlice) =>
@@ -109,6 +110,7 @@ export const selectors = {
   selectTitle,
   selectDescription,
   selectDependsOnPreviousPhase,
+  selectApiEndpoits,
 }
 
 export default configSlice.reducer

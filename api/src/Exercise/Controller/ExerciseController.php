@@ -12,7 +12,6 @@ use App\Exercise\Form\CopyExerciseFormType;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Repository\Exercise\UserExerciseInteractionRepository;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,12 +30,10 @@ class ExerciseController extends AbstractController
 {
     private ExercisePhaseRepository $exercisePhaseRepository;
     private ExercisePhaseService $exercisePhaseService;
-    private UserExerciseInteractionRepository $userExerciseInteractionRepository;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private ExerciseService $exerciseService;
-    private UserExerciseInteractionService $userExerciseInteractionService;
     private Security $security;
 
     private LoggerInterface $logger;
@@ -47,21 +44,16 @@ class ExerciseController extends AbstractController
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
         ExerciseService $exerciseService,
-        UserExerciseInteractionRepository $userExerciseInteractionRepository,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        UserExerciseInteractionService $userExerciseInteractionService,
         LoggerInterface $logger,
         Security $security,
-    )
-    {
+    ) {
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->exercisePhaseService = $exercisePhaseService;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
-        $this->userExerciseInteractionRepository = $userExerciseInteractionRepository;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->exerciseService = $exerciseService;
-        $this->userExerciseInteractionService = $userExerciseInteractionService;
         $this->logger = $logger;
         $this->security = $security;
     }
@@ -112,7 +104,8 @@ class ExerciseController extends AbstractController
                 'otherTeams' => $otherTeams,
                 'teamOfCurrentUser' => $teamOfCurrentUser,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
-            ]);
+            ]
+        );
     }
 
     /**
@@ -128,14 +121,6 @@ class ExerciseController extends AbstractController
         $user = $this->getUser();
         $userIsCreator = $user === $exercise->getCreator();
 
-        $userExerciseInteraction = $this
-            ->userExerciseInteractionRepository
-            ->findOneBy(['user' => $user, 'exercise' => $exercise]);
-
-        if (!$userExerciseInteraction) {
-            $this->userExerciseInteractionService->setUserOpenedExercise($user, $exercise);
-        }
-
         $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
 
         return $this->render(
@@ -148,33 +133,9 @@ class ExerciseController extends AbstractController
                 'currentPhaseIndex' => false,
                 'nextExercisePhase' => $nextExercisePhase,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
-            ]);
+            ]
+        );
     }
-
-    /**
-     * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/finish/{id}", name="exercise-overview__exercise--finish")
-     */
-    public function finish(Exercise $exercise): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $userExerciseInteraction = $this->userExerciseInteractionRepository->findOneBy(['user' => $user, 'exercise' => $exercise]);
-
-        $userExerciseInteraction->setFinished(true);
-
-        $this->eventStore->addEvent('UserFinishedExercise', [
-            'exerciseId' => $exercise->getId(),
-            'userId' => $user->getId(),
-        ]);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($userExerciseInteraction);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);
-    }
-
     /**
      * @IsGranted("newExercise", subject="course")
      * @Route("/exercise/new/{id}", name="exercise-overview__exercise--new")
@@ -255,7 +216,7 @@ class ExerciseController extends AbstractController
 
         $exercisePhases = $exercise->getPhases()->toArray();
 
-        $phasesWithAllowedSortingIndication = array_map(function($index, ExercisePhase $phase) use ($exercisePhases) {
+        $phasesWithAllowedSortingIndication = array_map(function ($index, ExercisePhase $phase) use ($exercisePhases) {
             $previousPhase = $index === 0 ? null : $exercisePhases[$index - 1];
             $canMoveUp = $phase->getDependsOnExercisePhase() !== $previousPhase;
 

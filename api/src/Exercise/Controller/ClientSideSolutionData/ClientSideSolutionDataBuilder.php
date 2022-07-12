@@ -3,12 +3,14 @@
 namespace App\Exercise\Controller\ClientSideSolutionData;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideAnnotation;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideMaterial;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCode;
+use App\Exercise\Controller\ExercisePhaseService;
 use JsonSerializable;
 
 /**
@@ -67,12 +69,14 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
      */
     private array $previousSolutionIds;
 
+    private ExercisePhaseService $exercisePhaseService;
+
     /**
      * @var ClientSideMaterial[]
      */
     private array $materials;
 
-    public function __construct()
+    public function __construct(ExercisePhaseService $exercisePhaseService)
     {
         $this->clientSideSolutions = [];
         $this->clientSideAnnotations = [];
@@ -82,6 +86,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         $this->currentSolutionId = null;
         $this->previousSolutionIds = [];
         $this->materials = [];
+        $this->exercisePhaseService = $exercisePhaseService;
     }
 
     public function jsonSerialize(): array
@@ -123,7 +128,8 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
             $solutionId,
             $exercisePhaseTeam->getCreator(),
             $cutVideo,
-            $exercisePhase->isGroupPhase()
+            $exercisePhase->isGroupPhase(),
+            $this->exercisePhaseService->getStatusForTeam($exercisePhaseTeam)
         );
 
         $this->currentSolutionId = $solutionId;
@@ -137,6 +143,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         User $teamMember,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
+        ?ExercisePhaseStatus $status,
     ): static {
         $solutionId = $this->addSolution(
             $serverSideSolutionData,
@@ -144,6 +151,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
             $teamMember,
             $cutVideo,
             $fromGroupPhase,
+            $status,
         );
 
         $this->previousSolutionIds[] = $solutionId;
@@ -157,6 +165,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         User $solutionCreator,
         ?ClientSideCutVideo $cutVideo,
         ?bool $fromGroupPhase,
+        ExercisePhaseStatus $status,
     ): string {
         $userName = $solutionCreator->getEmail();
         $userId = $solutionCreator->getId();
@@ -189,6 +198,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
             $userId,
             $cutVideo,
             $fromGroupPhase,
+            $status,
         );
 
         return $solutionId;
@@ -214,6 +224,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
             $solution->getUserId(),
             $solution->getCutVideo(),
             $solution->getFromGroupPhase(),
+            $solution->getStatus()
         );
 
         return $this;

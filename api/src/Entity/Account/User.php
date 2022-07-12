@@ -2,11 +2,8 @@
 
 namespace App\Entity\Account;
 
-use App\Admin\Controller\UserCrudController;
-use App\Admin\EventSubscriber\EasyAdminSubscriber;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\UserExerciseInteraction;
 use App\Entity\Video\Video;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
@@ -77,13 +74,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $createdVideos;
 
     /**
-     * @var UserExerciseInteraction[]
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\UserExerciseInteraction", mappedBy="user", orphanRemoval=true)
-     */
-    private Collection $userExerciseInteractions;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private bool $dataPrivacyAccepted = false;
@@ -108,7 +98,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->courseRoles = new ArrayCollection();
         $this->createdExercises = new ArrayCollection();
         $this->createdVideos = new ArrayCollection();
-        $this->userExerciseInteractions = new ArrayCollection();
         $this->generateOrSetId($id);
     }
 

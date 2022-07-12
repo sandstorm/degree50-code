@@ -125,7 +125,10 @@ To create and deploy a versioned release follow these steps:
 2. Start e2e-testrunner: `node index.js`
 3. Start docker containers `docker-compose up -d`
 4. Enter `api` container `docker-compose exec api /bin/bash`
-5. execute tests `PLAYWRIGHT_API_URL="http://host.docker.internal:3000" SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" APP_ENV=test ./vendor/bin/behat` 
+5. execute tests
+   1. Integration: `make test-integration`
+   2. End to end: `make test-e2e`
+   3. All tests: `make test`
 6. use the `--tags` flag to run specific tests (i.e. `--tags myTest`)
 
 > **NOTE**: We added the DATABASE_URL in point 5 as inline ENV because the .env.test file does not seem to work here anymore.
@@ -405,6 +408,35 @@ resize2fs /dev/vg00/data
         "data-root": "/data/docker"
     }
     ```
+
+## Environment variable resolution
+
+Degree has three different environment states it could be in:
+
+1. `dev` - our local development environment
+2. `test` - our local test environment as well as the test env for our CI
+3. `prod` - environment for the prod system (deployed to `degree40-test.tu-dortmund.de` or `degree40.tu-dortmund.de`)
+
+The `APP_ENV` variable used by the system is consumed inside `public/index.php`.
+
+### Dev
+The dev environment for our local system running on port `:8080` is initiated by adding the `APP_ENV=dev` variable inside our main `docker-compose.yml`. By specifing `dev` we make sure that our server uses the `.env.dev` environment file for env resolution.
+
+### Test
+
+#### Local
+The testsystem is running inside our dev docker container, but with its own nginx-configuration on port `:9090`. The nginx-configuration sets the `APP_ENV` for all web-based requests to that port to `test`.
+Which in turn makes sure that the `.env.test` file is used for environment resolution.
+To make sure that our e2e- and integrations-tests also use this environment, it needs to be specified inside the test runner cli command (see [Running Behat Tests](#running-behat-tests)).
+
+#### CI
+For local development our `.env`-files are mounted together with the rest of the `app/` directory.
+We also copy `.env` as well as `.env.test` inside our Dockerfile into the image, so that they also work inside the CI (where we can't mount them).
+
+The `APP_ENV=test` environment is set iniside the service configuration for tests in our gitlab-ci.yml.
+
+### Prod
+`APP_ENV`-Prod is being set inside our `docker-compose-prod-tu-dortmund.yml` and `docker-compose-test-tu-dortmund.yml` respectively.
 
 ## Known Issues
 

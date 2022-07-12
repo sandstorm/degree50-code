@@ -1,7 +1,13 @@
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit'
 import { SolutionId } from 'Components/VideoEditor/types'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { selectors as videoEditorSelectors } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors as configSelectors } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { filterSlice } from 'Components/ToolbarItems/FilterContext/FilterSlice'
 
 export type MaterialSolutionState = {
@@ -17,6 +23,17 @@ const initialState: MaterialSolutionState = {
   isReadonly: true,
   shouldCompare: false,
 }
+
+const finishReview = createAsyncThunk(
+  'MaterialSolution/finishReview',
+  async (solutionId: string, thunkAPI) => {
+    await fetch(`/exercise-phase-solution/finish-review/${solutionId}`, {
+      method: 'POST',
+    })
+
+    return solutionId
+  }
+)
 
 const MaterialSolutionSlice = createSlice({
   name: 'MaterialSolution',
@@ -152,4 +169,8 @@ export const selectors = {
   selectShouldCompare,
 }
 
+export const actions = {
+  ...MaterialSolutionSlice.actions,
+  finishReview,
+}
 export default MaterialSolutionSlice

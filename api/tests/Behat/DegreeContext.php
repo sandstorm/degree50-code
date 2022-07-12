@@ -4,40 +4,29 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
-use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Admin\Controller\UserService;
 use App\DataExport\Controller\DegreeDataToCsvService;
 use App\DataExport\Controller\Dto\TextFileDto;
-use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
-use App\Entity\Exercise\Attachment;
-use App\Entity\Exercise\AutosavedSolution;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
-use App\Entity\Exercise\Solution;
-use App\Entity\Exercise\VideoCode;
-use App\Entity\Video\Video;
-use App\Entity\VirtualizedFile;
+use App\Entity\Exercise\ExercisePhaseTypes\MaterialPhase;
+use App\Entity\Exercise\ExerciseStatus;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Exercise\Controller\ExercisePhaseService;
 use App\Exercise\Controller\ExerciseService;
 use App\Exercise\Controller\SolutionService;
 use App\Mediathek\Service\VideoService;
+use App\Repository\Account\UserRepository;
+use App\Repository\Exercise\ExercisePhaseRepository;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
-use App\Repository\Video\VideoRepository;
-use App\Security\Voter\DataPrivacyVoter;
-use App\Security\Voter\TermsOfUseVoter;
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Session;
-use Behat\Mink\WebAssert;
-use DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver;
 use Doctrine\ORM\EntityManagerInterface;
 use Sandstorm\E2ETestTools\Tests\Behavior\Bootstrap\PlaywrightTrait;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -46,14 +35,16 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
-use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
-use function PHPUnit\Framework\assertEqualsCanonicalizing;
-use function PHPUnit\Framework\assertIsObject;
-use function PHPUnit\Framework\assertNotEquals;
-use function PHPUnit\Framework\assertStringContainsString;
-use function PHPUnit\Framework\assertStringNotContainsString;
-use function PHPUnit\Framework\assertTrue;
+
+require_once(__DIR__ . '/AttachmentContextTrait.php');
+require_once(__DIR__ . '/CourseContextTrait.php');
+require_once(__DIR__ . '/CsvContextTrait.php');
+require_once(__DIR__ . '/ExerciseContextTrait.php');
+require_once(__DIR__ . '/ExercisePhaseContextTrait.php');
+require_once(__DIR__ . '/PlaywrightContextTrait.php');
+require_once(__DIR__ . '/UserContextTrait.php');
+require_once(__DIR__ . '/VideoContextTrait.php');
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -67,6 +58,19 @@ final class DegreeContext implements Context
     use DatabaseFixtureContextTrait;
     use PlaywrightTrait;
 
+
+    /*
+     * Subcontexts
+     */
+    use AttachmentContextTrait;
+    use CourseContextTrait;
+    use CsvContextTrait;
+    use ExerciseContextTrait;
+    use ExercisePhaseContextTrait;
+    use PlaywrightContextTrait;
+    use UserContextTrait;
+    use VideoContextTrait;
+
     private Session $minkSession;
     private RouterInterface $router;
     protected EntityManagerInterface $entityManager;
@@ -74,11 +78,16 @@ final class DegreeContext implements Context
     private DoctrineIntegratedEventStore $eventStore;
     private Security $security;
     private SolutionService $solutionService;
+    private ExercisePhaseRepository $exercisePhaseRepository;
+    private ExerciseRepository $exerciseRepository;
     private DegreeDataToCsvService $degreeDataToCSVService;
     private UserService $userService;
     private VideoService $videoService;
     private ExerciseService $exerciseService;
     private UserPasswordHasherInterface $userPasswordHasher;
+    private UserRepository $userRepository;
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
+    private ExercisePhaseService $exercisePhaseService;
 
     private ?string $clientSideJSON;
 
@@ -86,6 +95,13 @@ final class DegreeContext implements Context
     private ?array $csvDtoList;
 
     private ?array $queryResult;
+    private ?ExercisePhase $currentExercisePhase = null;
+    private ?Exercise $currentExercise = null;
+
+    const TEST_STUDENT = "test-student";
+    const TEST_DOZENT = "test-dozent";
+    const TEST_COURSE = "test-course";
+    const TEST_EXERCISE = "test-exercise";
 
     public function __construct(
         Session $minkSession,
@@ -100,6 +116,11 @@ final class DegreeContext implements Context
         VideoService $videoService,
         ExerciseService $exerciseService,
         UserPasswordHasherInterface $userPasswordHasher,
+        ExercisePhaseRepository $exercisePhaseRepository,
+        UserRepository $userRepository,
+        ExerciseRepository $exerciseRepository,
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        ExercisePhaseService $exercisePhaseService,
     ) {
         $this->minkSession = $minkSession;
         $this->router = $router;
@@ -113,97 +134,15 @@ final class DegreeContext implements Context
         $this->videoService = $videoService;
         $this->exerciseService = $exerciseService;
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->exercisePhaseRepository = $exercisePhaseRepository;
+        $this->userRepository = $userRepository;
+        $this->exerciseRepository = $exerciseRepository;
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
+        $this->exercisePhaseService = $exercisePhaseService;
 
         $this->setupPlaywright();
     }
 
-
-    /**
-     * @When I visit route :routeName
-     */
-    public function visitRoute(string $routeName): void
-    {
-        $url = $this->router->generate($routeName);
-
-        $this->visitUrl($url);
-    }
-
-    /**
-     * @When I visit url :routeName
-     */
-    public function visitUrl(string $url): void
-    {
-        $this->playwrightConnector->execute($this->playwrightContext, sprintf(
-            // language=JavaScript
-            '
-            if (!vars.page) {
-                vars.page = await context.newPage()
-            }
-            // TODO write first goto and then waitforNavigation
-            const response = await vars.page.goto(`BASEURL%s`)
-
-            // save response in context
-            vars.response = response
-            ' // language=PHP
-            ,
-            $url
-        ));
-    }
-
-    /**
-     * @When I visit route :routeName with parameters as JSON :jsonParameters
-     */
-    public function visitRouteWithJsonParameters(string $routeName, string $jsonParameters): void
-    {
-        $parameters = [];
-        if (!empty($jsonParameters)) {
-            $parameters = json_decode($jsonParameters, true);
-        }
-
-        $url = $this->router->generate($routeName, $parameters);
-
-        $this->visitUrl($url);
-    }
-
-    /**
-     * @When I visit route :routeName with parameters
-     */
-    public function aDemoScenarioSendsARequestTo(string $routeName): void
-    {
-        $this->minkSession->visit($this->router->generate($routeName));
-    }
-
-    /**
-     * @Then the response status code should be :code
-     */
-    public function assertResponseStatus(int $code)
-    {
-        $actual = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            '
-            return vars.response.status();
-            '
-        );
-
-        assertEquals($code, $actual);
-    }
-
-    /**
-     * @return WebAssert
-     */
-    public function assertSession(): WebAssert
-    {
-        return new WebAssert($this->minkSession);
-    }
-
-    /**
-     * @Then I am redirected to the login page
-     */
-    public function iAmRedirectedToTheLoginPage()
-    {
-        $this->thePageShouldContainTheText('Login mit Uni-Account (SSO)');
-    }
 
     /**
      * @Given I am logged in as :username
@@ -223,30 +162,6 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I am logged in via browser as :username
-     */
-    public function iAmLoggedInViaBrowserAs($username)
-    {
-        $this->playwrightConnector->execute($this->playwrightContext, sprintf(
-            // language=JavaScript
-            '
-            vars.page = await context.newPage();
-            await vars.page.goto("BASEURL/login");
-
-            await vars.page.fill(`[name="email"]`, `%s`);
-            await vars.page.fill(`[name="password"]`, `password`);
-
-            await Promise.all([
-                vars.page.waitForNavigation(),
-                vars.page.click(`button[type="submit"]`),
-            ])
-        ' // language=PHP
-            ,
-            $username
-        ));
-    }
-
-    /**
      * @Given I am not logged in
      */
     public function iAmNotLoggedIn()
@@ -256,1341 +171,447 @@ final class DegreeContext implements Context
         $tokenStorage->setToken(null);
     }
 
-
     /**
-     * @Given I have a video with ID :videoId belonging exercisePhase with ID :exercisePhaseId
-     *
-     * NOTE: The video you are trying to add needs to be available inside the same course, the
-     * exercisePhase belongs to
-     */
-    public function iHaveAVideoWithIdBelongingToExercisePhaseWithId($videoId, $exercisePhaseId)
+     * @Given I am a student in a course with an exercise
+     * */
+    public function iAmACourseStudentWithAnExercise()
     {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
-        /** @var Video $video */
-        $video = $this->entityManager->find(Video::class, $videoId);
+        $this->createUser(self::TEST_STUDENT);
+        $this->ensureCourseExists(self::TEST_COURSE);
+        $this->userHasCourseRole(self::TEST_STUDENT, CourseRole::STUDENT, self::TEST_COURSE);
 
-        $exercisePhase->addVideo($video);
+        // Create exercise
+        $this->createUser(self::TEST_DOZENT);
+        $this->userHasCourseRole(self::TEST_DOZENT, CourseRole::DOZENT, self::TEST_COURSE);
 
-        $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
+        // WHY:
+        // This is a hack, because we currently do have a prePersist hook for exercise creation
+        // (see ExerciseEventListener). That way the exercise creator will always be set to
+        // the user who is currently logged in, no matter what has been set before.
+        $this->iAmLoggedInAs(self::TEST_DOZENT);
+        $this->ensureExerciseByUserInCourseExists(self::TEST_EXERCISE, self::TEST_DOZENT, self::TEST_COURSE);
+
+        // Create phases
+        $this->createExercisePhase([
+            "type" => "videoAnalysis",
+            "id" => "analysis1",
+            "name" => "analysis1",
+            "task" => "description of analysis1",
+            "isGroupPhase" => false,
+            "sorting" => 0,
+            "otherSolutionsAreAccessible" => true,
+            "belongsToExercise" => self::TEST_EXERCISE,
+            "dependsOnPhase" => false,
+            "videoAnnotationsActive" => true,
+            "videoCodesActive" => true
+        ]);
+        $this->createExercisePhase([
+            "type" => "videoCutting",
+            "id" => "cut1",
+            "name" => "cut1",
+            "task" => "description of cut1",
+            "isGroupPhase" => false,
+            "sorting" => 0,
+            "otherSolutionsAreAccessible" => true,
+            "belongsToExercise" => self::TEST_EXERCISE,
+            "dependsOnPhase" => false,
+        ]);
+        $this->createExercisePhase([
+            "type" => "videoCutting",
+            "id" => "groupPhase1",
+            "name" => "groupPhase1",
+            "task" => "groupPhase1",
+            "isGroupPhase" => false,
+            "sorting" => 0,
+            "otherSolutionsAreAccessible" => true,
+            "belongsToExercise" => self::TEST_EXERCISE,
+            "dependsOnPhase" => false,
+        ]);
+        $this->createExercisePhase([
+            "type" => "reflexion",
+            "id" => "reflexion1",
+            "name" => "reflexion1",
+            "task" => "description of reflexion1",
+            "isGroupPhase" => false,
+            "sorting" => 0,
+            "otherSolutionsAreAccessible" => true,
+            "belongsToExercise" => self::TEST_EXERCISE,
+            "dependsOnPhase" => false,
+        ]);
+        $this->createExercisePhase([
+            "type" => "material",
+            "id" => "material1",
+            "name" => "material1",
+            "task" => "description of material1",
+            "isGroupPhase" => false,
+            "sorting" => 0,
+            "otherSolutionsAreAccessible" => true,
+            "belongsToExercise" => self::TEST_EXERCISE,
+            "dependsOnPhase" => false,
+        ]);
+
+        // Log in as the actual user we want to progress further with
+        $this->iAmLoggedInAs(self::TEST_STUDENT);
     }
 
     /**
-     * @Given I have a video with ID :videoId belonging to course :courseId
+     * @When I have not yet started an exercise phase
      */
-    public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId, $courseId)
+    public function iHaveNotYetStartedAnExercisePhase()
     {
-        /** @var Course $course */
-        $course = $this->entityManager->find(Course::class, $courseId);
-        /** @var Video $video */
-        $video = $this->entityManager->find(Video::class, $videoId);
-
-        if (!$video) {
-            $video = new Video($videoId);
-            $video->setDataPrivacyAccepted(true);
-            $video->setDataPrivacyPermissionsAccepted(true);
-            $video->setCreator($this->security->getUser());
-            $video->setTitle('TEST_Video_' . $videoId);
-            $video->setEncodingStatus(Video::ENCODING_FINISHED);
-            $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
-            $video->setEncodedVideoDirectory($outputDirectory);
-        }
-
-        if ($course) {
-            $video->addCourse($course);
-        }
-
-        $this->entityManager->persist($video);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
+        $this->assertExercisePhaseTeamsCreatedByUserDoNotExist(self::TEST_STUDENT);
     }
 
     /**
-     * @Given I have an exercise with ID :exerciseId belonging to course :courseId
+     * @Then The derived exercise phase status of the first phase should be :exercisePhaseStatus
      */
-    public function iHaveAnExercise($exerciseId, $courseId)
+    public function theDerivedExercisePhaseStatusOfTheFirstPhaseShouldBe(string $exercisePhaseStatus)
     {
-        /** @var Course $course */
-        $course = $this->entityManager->find(Course::class, $courseId);
+        $exercise = $this->exerciseRepository->find(self::TEST_EXERCISE);
+        $exercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
+        $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercise = new Exercise($exerciseId);
-        $exercise->setCourse($course);
-        $course->addExercise($exercise);
-
-        $this->entityManager->persist($exercise);
-        $this->entityManager->persist($course);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
+        $actualExercisePhaseStatus = $this->exercisePhaseService->getStatusForUser($exercisePhase, $user);
+        assertEquals($exercisePhaseStatus, $actualExercisePhaseStatus->value);
     }
 
     /**
-     * @Given Course :courseId belongs to exercise :exerciseId
+     * @Then The derived exercise phase status of the group phase should be :exercisePhaseStatus
      */
-    public function courseWithIdBelongsToExercise($courseId, $exerciseId)
+    public function theDerivedExercisePhaseStatusOfTheGroupPhaseShouldBe(string $exercisePhaseStatus)
     {
-        /** @var Course $course */
-        $course = $this->entityManager->find(Course::class, $courseId);
+        $exercisePhase = $this->exercisePhaseRepository->find('groupPhase1');
+        $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        /** @var Exercise $exercise */
-        $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
-
-        $exercise->setCourse($course);
-        $course->addExercise($exercise);
-
-        $this->entityManager->persist($exercise);
-        $this->entityManager->persist($course);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
+        $actualExercisePhaseStatus = $this->exercisePhaseService->getStatusForUser($exercisePhase, $user);
+        assertEquals($exercisePhaseStatus, $actualExercisePhaseStatus->value);
     }
 
     /**
-     * @Given I have a course with ID :courseId
+     * @When I am not part of a group for a group exercise phase
      */
-    public function iHaveACourseWithID($courseId)
+    public function iAmNotPartOfAGroupForAGroupExercisePhase()
     {
-        /* @var User $user */
-        $user = $this->entityManager->find(User::class, 'foo@bar.de');
-
-        $course = new Course($courseId);
-        $courseRole = new CourseRole();
-        $courseRole->setUser($user);
-        $courseRole->setCourse($course);
-        $courseRole->setName(CourseRole::DOZENT);
-
-        $this->entityManager->persist($courseRole);
-
-        $course->addCourseRole($courseRole);
-
-        $this->entityManager->persist($course);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
+        $this->assertExercisePhaseTeamsCreatedByUserDoNotExist(self::TEST_STUDENT);
     }
 
     /**
-     * @Given I have an exercise phase :exercisePhaseId belonging to exercise :exerciseId
+     * @Then My exercise phase status of the group phase should be :exercisePhaseStatus
      */
-    public function iHaveAnExercisePhaseBelongingToExercise($exercisePhaseId, $exerciseId)
+    public function myExercisePhaseStatusOfTheGroupPhaseShouldBe(string $exercisePhaseStatus)
     {
-        /** @var Exercise $exercise */
-        $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
-        $exercise->addPhase(new VideoAnalysisPhase($exercisePhaseId));
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+        $exercisePhase = $this->exercisePhaseRepository->find('groupPhase1');
 
-        $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
+        assertEquals($exercisePhaseStatus, $this->exercisePhaseService->getStatusForUser($exercisePhase, $user)->value);
     }
 
     /**
-     * @Given I have an attachment with ID :attachmentId
+     * @When I enter a group for a group exercise phase
      */
-    public function iHaveAnAttachmentWithId($attachmentId)
+    public function iEnterAGroupForAGroupExercisePhase()
     {
-        $attachment = new Attachment($attachmentId);
-        $fileName = tempnam(sys_get_temp_dir(), 'foo');
-        file_put_contents($fileName, 'my file');
-        $attachment->setName($fileName);
-        $attachment->setMimeType('application/pdf');
+        $exercisePhase = $this->exercisePhaseRepository->find('groupPhase1');
+        $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        /* @var User $user */
-        $user = $this->entityManager->find(User::class, 'foo@bar.de');
-        $attachment->setCreator($user);
-
-        $this->entityManager->persist($attachment);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given I have a team with ID :teamId belonging to exercise phase :exercisePhaseId
-     */
-    public function iHaveATeamWithIdBelongingToExercisePhase($teamId, $exercisePhaseId)
-    {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
-
-        $exercisePhaseTeam = new ExercisePhaseTeam($teamId);
+        $exercisePhaseTeam = new ExercisePhaseTeam();
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
-
-        $exercisePhase->addTeam($exercisePhaseTeam);
-
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given I have a team with ID :teamId belonging to exercise phase :exercisePhaseId and creator :creatorId
-     */
-    public function iHaveATeamWithIdBelongingToExercisePhaseAndCreatorId($teamId, $exercisePhaseId, $creatorId)
-    {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
-        /** @var User $creator */
-        $creator = $this->entityManager->find(User::class, $creatorId);
-
-        $exercisePhaseTeam = new ExercisePhaseTeam($teamId);
-        $exercisePhaseTeam->setCreator($creator);
-        $exercisePhaseTeam->setExercisePhase($exercisePhase);
-
-        $exercisePhase->addTeam($exercisePhaseTeam);
-
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given I have a predefined videoCodePrototype belonging to exercise phase :exercisePhaseId and with properties
-     */
-    public function iHaveAPredefinedVideocodeprototypeWithIdBelongingToExecisePhaseAndWithProperties(
-        $exercisePhaseId,
-        TableNode $propertyTable
-    ) {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
-
-        $data = $propertyTable->getHash()[0];
-        $videoCodePrototype = new VideoCode($data['id']);
-        $videoCodePrototype->setName($data['name']);
-        $videoCodePrototype->setColor($data['color']);
-        $videoCodePrototype->setExercisePhase($exercisePhase);
-
-        $exercisePhase->addVideoCode($videoCodePrototype);
-
-        $this->entityManager->persist($videoCodePrototype);
-        $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given I have a solution with ID :solutionId belonging to team with ID :teamId with solutionData as JSON
-     */
-    public function iHaveASolutionWithIdBelongingToTeamWithIdWithSolutionDataAsJson($solutionId, $teamId, PyStringNode $serverSideSolutionDataAsJSON)
-    {
-        /** @var ExercisePhaseTeam $exercisePhaseTeam */
-        $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-
-        $solution = new Solution($solutionId);
-        $arrayFromJson = json_decode($serverSideSolutionDataAsJSON->getRaw(), true);
-        $serverSideSolutionData = ServerSideSolutionData::fromArray($arrayFromJson);
-        $solution->setSolution($serverSideSolutionData);
-        $exercisePhaseTeam->setSolution($solution);
-
-        $this->entityManager->persist($solution);
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given I have an empty solution with ID :solutionId belonging to team :teamId
-     */
-    public function iHaveAnEmptySolutionWithIdBelongingToTeam($solutionId, $teamId)
-    {
-        /** @var ExercisePhaseTeam $exercisePhaseTeam */
-        $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-
-        $solution = new Solution($solutionId);
-        $exercisePhaseTeam->setSolution($solution);
-
-        $this->entityManager->persist($solution);
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given I have an auto saved solution with ID :autoSavedSolutionId belonging to team :teamId with solutionData as JSON
-     */
-    public function iHaveAnAutoSavedSolutionWithIdBelongingToTeamWithSolutionlistsAsJson(
-        $autoSavedSolutionId,
-        $teamId,
-        PyStringNode $serverSideSolutionDataAsJSON
-    ) {
-        /** @var ExercisePhaseTeam $exercisePhaseTeam */
-        $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        $autosaveSolution = new AutosavedSolution($autoSavedSolutionId);
-        $autosaveSolution->setTeam($exercisePhaseTeam);
-        $solutionDataFromJson = json_decode($serverSideSolutionDataAsJSON->getRaw(), true);
-        $serverSideSolutionData = ServerSideSolutionData::fromArray($solutionDataFromJson);
-        $autosaveSolution->setSolution($serverSideSolutionData);
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        /* @var User $loggedInUser */
-        $loggedInUser = $tokenStorage->getToken()->getUser();
-        $autosaveSolution->setOwner($loggedInUser);
-
-        $this->entityManager->persist($autosaveSolution);
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @When I convert the persisted serverSideSolution for team :teamId to the clientSideSolution
-     */
-    public function iConvertThePersistedServersidesolutionForTeamToTheClientsidesolution($teamId)
-    {
-        /** @var ExercisePhaseTeam $exercisePhaseTeam */
-        $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
-        $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
-            $clientSideSolutionDataBuilder,
-            $exercisePhaseTeam,
-            $exercisePhase
-        );
-
-        $this->clientSideJSON = json_encode($clientSideSolutionDataBuilder);
-    }
-
-    /**
-     * @Then I get normalized client side data as JSON
-     */
-    public function iGetNormalizedClientSideDataAsJson(PyStringNode $expectedJSON)
-    {
-        $expected = json_decode($expectedJSON->getRaw(), true);
-        $actual = json_decode($this->clientSideJSON, true);
-
-        assertEqualsCanonicalizing($expected, $actual);
-    }
-
-    /**
-     * @Given The exercise phase :exercisePhaseId1 depends on the previous phase :exercisePhaseId2
-     */
-    public function theExercisePhaseDependsOnThePreviousPhase($exercisePhaseId1, $exercisePhaseId2)
-    {
-        /** @var ExercisePhase $exercisePhase1 */
-        $exercisePhase1 = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId1);
-        /** @var ExercisePhase $exercisePhase2 */
-        $exercisePhase2 = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId2);
-
-        $exercisePhase1->setDependsOnExercisePhase($exercisePhase2);
-        $exercisePhase1->setSorting(2);
-        $exercisePhase2->setSorting(1);
-
-        $this->entityManager->persist($exercisePhase1);
-        $this->entityManager->persist($exercisePhase2);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given I am a member of :teamId
-     */
-    public function iAmAMemberOf($teamId)
-    {
-        /** @var ExercisePhaseTeam $exercisePhaseTeam */
-        $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        /** @var User $loggedInUser */
-        $loggedInUser = $tokenStorage->getToken()->getUser();
-
-        $exercisePhaseTeam->addMember($loggedInUser);
-    }
-
-    /**
-     * @When I convert the persisted serverSideSolutions for all teams of exercise phase :exercisePhaseId to the client side data
-     */
-    public function iConvertThePersistedServersidesolutionsForAllTeamsOfExercisePhaseToTheClientSideData($exercisePhaseId)
-    {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
-        $exercisePhaseTeams = $exercisePhase->getTeams()->toArray();
-
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
-        $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
-            $clientSideSolutionDataBuilder,
-            $exercisePhaseTeams
-        );
-
-        $this->clientSideJSON = json_encode($clientSideSolutionDataBuilder);
-    }
-
-    /**
-     * @Given I have a cut video :cutVideoId belonging to solution :solutionId
-     */
-    public function iHaveACutVideoBelongingToSolution($cutVideoId, $solutionId)
-    {
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        $loggedInUser = $tokenStorage->getToken()->getUser();
-
-        // NOTE: we do not save a video file here only the wrapping model,
-        // because we do not test for the file itself!
-        $cutVideo = new Video($cutVideoId);
-        $cutVideo->setCreator($loggedInUser);
-        $cutVideo->setDataPrivacyAccepted(true);
-        $cutVideo->setDataPrivacyPermissionsAccepted(true);
-        $cutVideo->setTitle('TEST: CutVideo');
-        $cutVideo->setEncodingStatus(Video::ENCODING_FINISHED);
-        $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $cutVideo->getId());
-        $cutVideo->setEncodedVideoDirectory($outputDirectory);
-
-        /** @var Solution $solution */
-        $solution = $this->entityManager->find(Solution::class, $solutionId);
-
-        $solution->setCutVideo($cutVideo);
-
-        $this->entityManager->persist($cutVideo);
-        $this->entityManager->persist($solution);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @When I convert all data for :courseId to csv
-     */
-    public function iConvertAllDataForCourseToCsv(string $courseId)
-    {
-        /** @var Course $course */
-        $course = $this->entityManager->find(Course::class, $courseId);
-        $this->csvDtoList = $this->degreeDataToCSVService->getAllAsVirtualCSVs($course);
-    }
-
-    /**
-     * @Then I have a CSVDto-list containing a file :fileName with a CSV content string
-     */
-    public function iHaveACsvDtoListContainingAFileWithACsvContentString(string $fileName, PyStringNode $contentString)
-    {
-        /** @var TextFileDto $csvDto */
-        $csvDto = current(array_filter($this->csvDtoList, function (TextFileDto $cSVDto) use ($fileName) {
-            return $cSVDto->getFileName() === $fileName;
-        }));
-
-        $currentDate = new \DateTimeImmutable();
-        $expected = str_replace('{{CREATED_AT_DATE}}', $currentDate->format("d.m.Y"), $contentString->getRaw());
-
-        assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
-        assertEquals($expected, $csvDto->getContentString());
-    }
-
-    /**
-     * @Then I have CSVDto-list containing a file :fileName
-     */
-    public function iHaveCsvdtoListContainingAFile($fileName)
-    {
-        /** @var TextFileDto $csvDto */
-        $csvDto = current(array_filter($this->csvDtoList, function (TextFileDto $cSVDto) use ($fileName) {
-            return $cSVDto->getFileName() === $fileName;
-        }));
-        assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");
-    }
-
-    private function createUser(string $username, string $password = null, bool $acceptPrivacyAndTerms = false): User
-    {
-        $user = new User($username);
-        $user->setEmail($username);
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, $password ?? 'password'));
-
-        // TODO: Put in separate step
-        if ($acceptPrivacyAndTerms) {
-            // accept current Privacy & Terms
-            $user->setDataPrivacyAccepted(true);
-            $user->setDataPrivacyVersion(DataPrivacyVoter::DATA_PRIVACY_VERSION);
-            $user->setTermsOfUseAccepted(true);
-            $user->setTermsOfUseVersion(TermsOfUseVoter::TERMS_OF_USE_VERSION);
-        }
-
-        $this->entityManager->persist($user);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-
-        return $user;
-    }
-
-    /**
-     * @Given A user :username exists
-     */
-    public function aUserExists(string $username)
-    {
-        $user = $this->entityManager->find(User::class, $username);
-        if (!$user) {
-            $this->createUser($username, null, true);
-        }
-    }
-
-    /**
-     * @Given User :username belongs to :teamId
-     */
-    public function userBelongsTo($username, $teamId)
-    {
-        /** @var ExercisePhaseTeam $exercisePhaseTeam */
-        $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-
         $exercisePhaseTeam->addMember($user);
-    }
 
-    /**
-     * @Given A User :username with the role :role exists
-     */
-    public function aUserWithTheRoleExists($username, $role)
-    {
-        // create user if it does not exist
-        $this->aUserExists($username);
+        $this->eventStore->addEvent('MemberAddedToTeam', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'userId' => $user->getId(),
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
 
-        // add the role
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-        $user->setRoles([$role]);
-
-        // persist
-        $this->entityManager->persist($user);
-        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
     }
 
     /**
-     * @When I delete User :username
+     * @Then The exercise phase status should be :exercisePhaseStatus
      */
-    public function iDeleteUser($username)
+    public function theExercisePhaseStatusShouldBe(string $exercisePhaseStatus)
     {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+        $exercisePhase = $this->currentExercisePhase;
 
-        $this->userService->removeUser($user);
+        assertEquals($exercisePhaseStatus, $this->exercisePhaseService->getStatusForUser($exercisePhase, $user)->value);
     }
 
     /**
-     * @Given The User :username has CourseRole :courseRole in Course :courseId
+     * @When I start an exercise phase for the first time
      */
-    public function userHasCourseRole($username, $courseRoleRole, $courseId)
+    public function iStartAnExercisePhaseForTheFirstTime()
     {
-        if (!in_array($courseRoleRole, CourseRole::ROLES)) {
-            throw new InvalidArgumentException(
-                'Invalid CourseRole! Expected one of [' .
-                    implode(', ', CourseRole::ROLES) .
-                    ']. Given: "' . $courseRoleRole . '".'
-            );
+        $this->startExercisePhaseForTheFirstTime(ExercisePhaseType::VIDEO_ANALYSIS->value);
+    }
+
+    private function getTestPhaseByType(string $phaseTypeString)
+    {
+        $phaseType = ExercisePhaseType::from($phaseTypeString);
+
+        return match ($phaseType) {
+            ExercisePhaseType::VIDEO_ANALYSIS => 'analysis1',
+            ExercisePhaseType::VIDEO_CUT => 'cut1',
+            ExercisePhaseType::REFLEXION => 'reflexion1',
+            ExercisePhaseType::MATERIAL => 'material1',
+        };
+    }
+
+    private function startExercisePhaseForTheFirstTime(string $phaseType)
+    {
+        $exercisePhaseId = $this->getTestPhaseByType($phaseType);
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+
+        $exercisePhaseTeam = new ExercisePhaseTeam();
+        $exercisePhaseTeam->setExercisePhase($exercisePhase);
+        $exercisePhaseTeam->addMember($user);
+
+        $this->eventStore->addEvent('MemberAddedToTeam', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'userId' => $user->getId(),
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+
+        $this->currentExercisePhase = $exercisePhase;
+    }
+
+    /**
+     * @When I finish the exercise phase
+     */
+    public function iFinishTheExercisePhase()
+    {
+        $exercisePhase = $this->currentExercisePhase;
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+
+        $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
+    }
+
+    /**
+     * @Given I am working on a phase of type :phaseType where :reviewIsRequired
+     */
+    public function iAmWorkingOnAPhaseOfTypeThatHasTheReviewState(string $phaseType, string $reviewIsRequired)
+    {
+        $exercisePhase = match (ExercisePhaseType::tryFrom($phaseType)) {
+            ExercisePhaseType::VIDEO_ANALYSIS => $this->exercisePhaseRepository->find('analysis1'),
+            ExercisePhaseType::VIDEO_CUT => $this->exercisePhaseRepository->find('cut1'),
+            ExercisePhaseType::REFLEXION => $this->exercisePhaseRepository->find('reflexion1'),
+            ExercisePhaseType::MATERIAL => $this->exercisePhaseRepository->find('material1'),
+            default => throw new \InvalidArgumentException("Invalid ExercisePhaseType '$phaseType'")
+        };
+
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+
+        $exercisePhaseTeam = new ExercisePhaseTeam();
+        $exercisePhaseTeam->setExercisePhase($exercisePhase);
+        $exercisePhaseTeam->addMember($user);
+
+        $this->eventStore->addEvent('MemberAddedToTeam', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'userId' => $user->getId(),
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+
+
+        if ($exercisePhase instanceof MaterialPhase) {
+            $reviewRequired = $reviewIsRequired === 'yes';
+            $exercisePhase->setReviewRequired($reviewRequired);
+
+            $this->eventStore->addEvent('MaterialExercisePhaseEdited', [
+                'exercisePhaseId' => $exercisePhase->getId(),
+                'name' => $exercisePhase->getName(),
+                'task' => $exercisePhase->getTask(),
+                'isGroupPhase' => $exercisePhase->isGroupPhase(),
+                'dependsOnPreviousPhase' => $exercisePhase->getDependsOnExercisePhase() !== null,
+                'components' => $exercisePhase->getComponents(),
+                'reviewRequired' => $reviewRequired,
+            ]);
+
+            $this->entityManager->persist($exercisePhase);
         }
 
-        /* @var Course $course */
-        $course = $this->entityManager->find(Course::class, $courseId);
-
-        /* @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-
-        $courseRole = new CourseRole();
-        $courseRole->setCourse($course);
-        $courseRole->setUser($user);
-        $courseRole->setName($courseRoleRole);
-
-        $user->addCourseRole($courseRole);
-
-        $this->entityManager->persist($courseRole);
-        $this->entityManager->persist($user);
-
-        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
+
+        // WHY: Persist current ExercisePhase that the user is working on in context
+        $this->currentExercisePhase = $exercisePhase;
     }
 
     /**
-     * @Then User :username should not exist
+     * @Given I am a dozent in a course with a material phase to review
      */
-    public function assertUserDoesNotExist($username)
+    public function iAmADozentInACourseWithAMaterialPhaseToReview()
     {
-        assertEquals(null, $this->entityManager->find(User::class, $username));
+        $student = $this->createUser(self::TEST_STUDENT);
+        $this->ensureCourseExists(self::TEST_COURSE);
+        $this->userHasCourseRole(self::TEST_STUDENT, CourseRole::STUDENT, self::TEST_COURSE);
+
+        // Create exercise
+        $this->createUser(self::TEST_DOZENT);
+        $this->userHasCourseRole(self::TEST_DOZENT, CourseRole::DOZENT, self::TEST_COURSE);
+
+        // WHY:
+        // This is a hack, because we currently do have a prePersist hook for exercise creation
+        // (see ExerciseEventListener). That way the exercise creator will always be set to
+        // the user who is currently logged in, no matter what has been set before.
+        $this->iAmLoggedInAs(self::TEST_DOZENT);
+        $this->ensureExerciseByUserInCourseExists(self::TEST_EXERCISE, self::TEST_DOZENT, self::TEST_COURSE);
+
+        // Create phases
+        $exercisePhase = $this->createExercisePhase([
+            "type" => "material",
+            "id" => "material1",
+            "name" => "material1",
+            "task" => "description of material1",
+            "isGroupPhase" => false,
+            "sorting" => 0,
+            "otherSolutionsAreAccessible" => true,
+            "belongsToExercise" => self::TEST_EXERCISE,
+            "dependsOnPhase" => false,
+        ]);
+
+        $exercisePhaseTeam = new ExercisePhaseTeam();
+        $exercisePhaseTeam->setExercisePhase($exercisePhase);
+        $exercisePhaseTeam->addMember($student);
+        $exercisePhaseTeam->setCreator($student);
+
+        $this->eventStore->addEvent('MemberAddedToTeam', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'userId' => $student->getId(),
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+
+
+        if ($exercisePhase instanceof MaterialPhase) {
+            $exercisePhase->setReviewRequired(true);
+        }
+
+        $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+
+        // WHY: Persist current ExercisePhase that the user is working on in context
+        $this->currentExercisePhase = $exercisePhase;
     }
 
     /**
-     * @Then No Exercise created by User :username should exist
-     */
-    public function assertExercisesByUserDoNotExist($username)
+     * @When I finish the review of a solution of a material phase
+     **/
+    public function iFinishTheReviewOfAMaterialPhase()
     {
-        /** @var ExerciseRepository $repository */
-        $repository = $this->entityManager->getRepository(Exercise::class);
+        $phase = $this->currentExercisePhase;
 
-        /**
-         * Why
-         * We want to find _all_ Exercises of the user without doctrine filtering out any of them
-         */
-        $this->entityManager->getFilters()->disable('exercise_doctrine_filter');
-        $exercises = $repository->findAll();
-        $this->entityManager->getFilters()->enable('exercise_doctrine_filter');
-
-        /**
-         * Why
-         * If the user does not exist anymore, we can't compare the Exercise::$creator with it.
-         * That's why we compare the username of the creator with the username we still have.
-         */
-        $exercisesCreatedByUser = array_filter(
-            $exercises,
-            function (Exercise $exercise) use ($username) {
-                return $exercise->getCreator()->getUsername() === $username;
-            }
-        );
-
-        assertEquals(0, count($exercisesCreatedByUser));
+        if ($phase instanceof MaterialPhase) {
+            $student = $this->userRepository->find(self::TEST_STUDENT);
+            $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($student, $phase);
+            $this->exercisePhaseService->finishReview($exercisePhaseTeam);
+        }
     }
 
     /**
-     * @Then No Video created by User :username should exist
+     * @When I open an exercise phase with status :phaseStatus
      */
-    public function assertVideosByUserDoNotExist($username)
+    public function iOpenAnExercisePhaseWithStatus($phaseStatus)
     {
-        /** @var VideoRepository $videoRepository */
-        $videoRepository = $this->entityManager->getRepository(Video::class);
+        $status = ExercisePhase\ExercisePhaseStatus::tryFrom($phaseStatus);
 
-        /**
-         * Why
-         * We want to find _all_ Videos of the user without doctrine filtering out any of them
-         */
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
-        $videos = $videoRepository->findAll();
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
+        $this->iStartAnExercisePhaseForTheFirstTime();
 
-        /**
-         * Why
-         * @see assertExercisesByUserDoNotExist $exercises
-         */
-        $videosCreatedByUser = array_filter(
-            $videos,
-            function (Video $video) use ($username) {
-                return $video->getCreator() === $username;
-            }
-        );
+        $exercisePhase = $this->currentExercisePhase;
+        $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        assertEquals(0, count($videosCreatedByUser));
+        // state setzen
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+        $exercisePhaseTeam->setStatus($status);
+
+        // open
+        $this->exercisePhaseService->openPhase($exercisePhaseTeam);
     }
 
     /**
-     * @Given A Course with ID :courseId exists
+     * @When I am part of a course
      */
-    public function ensureCourseExists($courseId)
+    public function iAmPartOfACourse()
     {
-        /** @var Course $course */
-        $course = $this->entityManager->find(Course::class, $courseId);
+        throw new PendingException();
+    }
 
-        if (!$course) {
-            $course = new Course($courseId);
-            $course->setName($courseId);
+    /**
+     * @When I have started at least one exercise phase
+     */
+    public function iHaveStartedAtLeastOneExercisePhase()
+    {
+        $this->iStartAnExercisePhaseForTheFirstTime();
+    }
 
-            $this->entityManager->persist($course);
-            $this->eventStore->disableEventPublishingForNextFlush();
+    /**
+     * @Then The derived exercise status should be :exerciseStatus
+     */
+    public function theDerivedExerciseStatusShouldBe(string $exerciseStatus)
+    {
+        $status = ExerciseStatus::tryFrom($exerciseStatus);
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+        $exercise = $this->exerciseRepository->find(self::TEST_EXERCISE);
+
+        assertEquals($status, $this->exerciseService->getExerciseStatusForUser($exercise, $user));
+    }
+
+    /**
+     * @When I have finished all phases of an exercise
+     */
+    public function iHaveFinishedAllPhasesOfAnExercise()
+    {
+        $student = $this->userRepository->find(self::TEST_STUDENT);
+
+        $analysisPhase = $this->exercisePhaseRepository->find('analysis1');
+        $cutPhase = $this->exercisePhaseRepository->find('cut1');
+        $reflexionPhase = $this->exercisePhaseRepository->find('reflexion1');
+        $materialPhase = $this->exercisePhaseRepository->find('material1');
+
+        foreach ([$analysisPhase, $cutPhase, $reflexionPhase, $materialPhase] as $exercisePhase) {
+            $exercisePhaseTeam = new ExercisePhaseTeam();
+            $exercisePhaseTeam->setExercisePhase($exercisePhase);
+            $exercisePhaseTeam->addMember($student);
+            $exercisePhaseTeam->setCreator($student);
+
+            $this->eventStore->addEvent('MemberAddedToTeam', [
+                'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+                'userId' => $student->getId(),
+                'exercisePhaseId' => $exercisePhase->getId()
+            ]);
+
+            $this->entityManager->persist($exercisePhaseTeam);
             $this->entityManager->flush();
+
+            $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
         }
     }
 
     /**
-     * @Given An Exercise with ID :exerciseId created by User :username in Course :courseId exists
+     * @When I open a material exercise phase with status :phaseStatus
      */
-    public function ensureExerciseByUserInCourseExists($exerciseId, $username, $courseId)
+    public function iOpenAMaterialExercisePhaseWithStatus(string $phaseStatus)
     {
-        /** @var Exercise $exercise */
-        $exercise = $this->entityManager->getRepository(Exercise::class)->find($exerciseId);
-        /** @var User $user */
-        $user = $this->entityManager->getRepository(User::class)->find($username);
-        /** @var Course $course */
-        $course = $this->entityManager->getRepository(Course::class)->find($courseId);
+        $status = ExercisePhase\ExercisePhaseStatus::tryFrom($phaseStatus);
 
-        if (!$exercise) {
-            $exercise = new Exercise($exerciseId);
-        }
+        $this->startExercisePhaseForTheFirstTime('material');
 
-        $exercise->setName($exerciseId);
+        $exercisePhase = $this->currentExercisePhase;
+        $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercise->setCreator($user);
-        // This also sets the course on the exercise
-        $course->addExercise($exercise);
+        // state setzen
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+        $exercisePhaseTeam->setStatus($status);
 
-        $this->entityManager->persist($course);
-        $this->entityManager->persist($exercise);
-
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-
-        /**
-         * Why
-         *   I had the problem, that the Exercise was not created correctly.
-         *
-         * FIXME: Once the Exercise can be created via ExerciseService use that
-         *        instead. This functionality will be then tested there.
-         */
-        /** @var Exercise $testExercise */
-        $testExercise = $this->entityManager->find(Exercise::class, $exerciseId);
-        assertEquals($username, $testExercise->getCreator()->getId());
-    }
-
-    /**
-     * @Given A Video with ID :videoId created by User :username exists
-     */
-    public function ensureVideoByUserExists($videoId, $username)
-    {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-
-        $video = new Video($videoId);
-        $video->setCreator($user);
-        $video->setDataPrivacyAccepted(true);
-        $video->setDataPrivacyPermissionsAccepted(true);
-        $video->setTitle('TEST: CutVideo');
-        $video->setEncodingStatus(Video::ENCODING_FINISHED);
-        $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
-        $video->setEncodedVideoDirectory($outputDirectory);
-
-        $this->entityManager->persist($video);
-
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given The User :username is member of ExercisePhaseTeam :teamId
-     */
-    public function ensureTheUserIsMemberOfExercisePhaseTeam($username, $teamId)
-    {
-        /** @var ExercisePhaseTeam $team */
-        $team = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-
-        $team->addMember($user);
-        $team->setCreator($user);
-
-        $this->entityManager->persist($team);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given The ExercisePhaseTeam :teamId has a Solution :solutionId
-     */
-    public function ensureTheExercisePhaseTeamHasASolution($teamId, $solutionId)
-    {
-        /** @var ExercisePhaseTeam $team */
-        $team = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var Solution $solution */
-        $solution = $this->entityManager->find(Solution::class, $solutionId);
-
-        if (!$solution) {
-            $solution = new Solution($solutionId);
-            $this->entityManager->persist($solution);
-        }
-
-        $team->setSolution($solution);
-
-        $this->entityManager->persist($team);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given The User :username has created an AutosavedSolution :autosavedSolutionId for ExercisePhaseTeam :teamId
-     */
-    public function ensureTheUserHasCreatedAnAutosavedSolutionForExerciseTeam($username, $autosavedSolutionId, $teamId)
-    {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-        /** @var ExercisePhaseTeam $team */
-        $team = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var AutosavedSolution $autosavedSolution */
-        $autosavedSolution = $this->entityManager->find(AutosavedSolution::class, $autosavedSolutionId);
-
-        if (!$autosavedSolution) {
-            $autosavedSolution = new AutosavedSolution($autosavedSolutionId);
-        }
-
-        $autosavedSolution->setOwner($user);
-        $team->addAutosavedSolution($autosavedSolution);
-
-        $this->entityManager->persist($autosavedSolution);
-        $this->entityManager->persist($team);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Then No ExercisePhaseTeam created by User :username should exist
-     */
-    public function assertExercisePhaseTeamsCreatedByUserDoNotExist($username)
-    {
-        $allTeams = $this->entityManager->getRepository(ExercisePhaseTeam::class)->findAll();
-        $teamsCreatedByUser = array_filter($allTeams, function (ExercisePhaseTeam $team) use ($username) {
-            return $team->getCreator()->getUsername() === $username;
-        });
-
-        assertEquals(0, count($teamsCreatedByUser));
-    }
-
-    /**
-     * @Then No AutosavedSolution of User :username does exist
-     */
-    public function assertAutosavedSolutionsOfUserDoNotExist($username)
-    {
-        $allAutosavedSolutions = $this->entityManager->getRepository(AutosavedSolution::class)->findAll();
-        $autosavedSolutionsOfUser = array_filter($allAutosavedSolutions, function (AutosavedSolution $autosavedSolution) use ($username) {
-            return $autosavedSolution->getOwner()->getUsername() === $username;
-        });
-
-        assertEquals(0, count($autosavedSolutionsOfUser));
-    }
-
-    /**
-     * @Then No CourseRole of User :username exists
-     *
-     * TODO: userId vs userName? It's the same string but not the same meaning.
-     */
-    public function assertNoCourseRoleOfUserExists($username)
-    {
-        /** @var CourseRole[] $allCourseRoles */
-        $allCourseRoles = $this->entityManager->getRepository(CourseRole::class)->findAll();
-        $courseRolesOfUser = array_filter($allCourseRoles, function (CourseRole $courseRole) use ($username) {
-            return $courseRole->getUser()->getUsername() === $username;
-        });
-
-        assertEquals(0, count($courseRolesOfUser));
-    }
-
-    /**
-     * @Given An Attachment with Id :attachmentId created by User :username exists for ExercisePhase :exercisePhaseId
-     */
-    public function ensureAttachmentByUserExistsInExercisePhase($attachmentId, $username, $exercisePhaseId)
-    {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
-        /** @var Attachment $attachment */
-        $attachment = $this->entityManager->find(Attachment::class, $attachmentId);
-
-        if (!$attachment) {
-            $attachment = new Attachment($attachmentId);
-            $fileName = tempnam(sys_get_temp_dir(), 'foo');
-            file_put_contents($fileName, 'my file');
-            $attachment->setName('TEST_ATTACHMENT_' . $attachmentId);
-            $attachment->setMimeType('application/pdf');
-        }
-
-        $attachment->setCreator($user);
-        $exercisePhase->addAttachment($attachment);
-
-        $this->entityManager->persist($exercisePhase);
-        $this->entityManager->persist($attachment);
-
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Then The User :username is anonymized and their unused content removed
-     */
-    public function assertUserIsAnonymizedAndUnusedContentIsRemoved($username)
-    {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-
-        /**
-         * Why
-         *   We check the User's username to verify that the user is correctly anonymized
-         */
-        assertNotEquals($username, $user->getUsername(), "Username should be anonymized.");
-
-        // attachment
-        $attachmentByUser = $this->entityManager->getRepository(Attachment::class)->findBy(['creator' => $user]);
-        $attachmentNotCorrectlyRemoved = array_filter($attachmentByUser, function (Attachment $attachment) use ($username) {
-            // attachment is not used in unpublished Exercise
-            $notUnpublished = $attachment->getExercisePhase()->getBelongsToExercise()->getStatus() !== Exercise::EXERCISE_CREATED;
-            // attachment user is not $username
-            $usernameIsAnonymized = $attachment->getCreator()->getUsername() !== $username;
-
-            return !($notUnpublished || $usernameIsAnonymized);
-        });
-
-        assertEquals(0, count($attachmentNotCorrectlyRemoved), "Unused Attachment should be removed.");
-
-        // videos
-        $videos = $this->videoService->getVideosCreatedByUserWithoutFilters($user);
-        $videosNotCorrectlyRemoved = array_filter($videos, function (Video $video) use ($username) {
-            // video is not _only_ used in unpublished Exercise
-            // If it is used in just a single published Exercise it has to persist
-            $notAllExercisesUnpublished = !$video->getExercisePhases()
-                ->forAll(fn ($_i, Exercise $exercise) => $exercise->getStatus() === Exercise::EXERCISE_CREATED);
-
-            $creatorAnonymized = $video->getCreator()->getUsername() !== $username;
-
-            return !($notAllExercisesUnpublished || $creatorAnonymized);
-        });
-
-        assertEquals(0, count($videosNotCorrectlyRemoved), "Unused Videos should be removed.");
-
-        // courseRoles
-        $courseRolesWithUser = $this->entityManager->getRepository(CourseRole::class)->findBy(['user' => $user]);
-        assertEquals(0, count($courseRolesWithUser), "User should not have CourseRoles.");
-        assertEquals(0, $user->getCourseRoles()->count(), "User should not have CourseRoles.");
-
-        // exercises (unpublished)
-        $exercises = $this->exerciseService->getExercisesCreatedByUserWithoutFilters($user);
-        $exercisesNotUnpublishedAndAnonymized =
-            count(
-                array_filter($exercises, function (Exercise $exercise) use ($username) {
-                    $published = $exercise->getStatus() !== Exercise::EXERCISE_CREATED;
-                    $usernameAnonymized = $exercise->getCreator()->getUsername() !== $username;
-
-                    return !($published || $usernameAnonymized);
-                })
-            ) === 0;
-
-        assertEquals(true, $exercisesNotUnpublishedAndAnonymized, "No unpublished Exercises should remain.");
-
-        // teams
-        $teams = $this->entityManager->getRepository(ExercisePhaseTeam::class)->findAll();
-        $teamsWithUser = array_filter($teams, function (ExercisePhaseTeam $team) use ($user, $username) {
-            $userIsCreator = $team->getCreator() === $user;
-            $userIsMember = $team->getMembers()->contains($user);
-
-            return $userIsCreator || $userIsMember;
-        });
-
-        assertEquals(0, count($teamsWithUser), "User should not be in any ExercisePhaseTeam.");
-    }
-
-    /**
-     * TODO: setting status is only possible when the Exercise has at least one ExercisePhase (via UI)
-     * @Given Exercise :exerciseId is published
-     */
-    public function ensureExerciseIsPublished($exerciseId)
-    {
-        /** @var Exercise $exercise */
-        $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
-        $exercise->setStatus(Exercise::EXERCISE_PUBLISHED);
-
-        $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @When I find videos by creator :userId without cut videos
-     */
-    public function iFindVideosByCreatorWithoutCutVideos($userId)
-    {
-        /** @var VideoRepository $videoRepository */
-        $videoRepository = $this->entityManager->getRepository(Video::class);
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $userId);
-
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
-        $this->queryResult = $videoRepository->findByCreatorWithoutCutVideos($user);
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
-    }
-
-    /**
-     * @Then I only receive the regular video :videoId and not the cut video :cutVideoId
-     */
-    public function iOnlyReceiveTheRegularVideoAndNotTheCutVideo($videoId, $cutVideoId)
-    {
-        assert(!empty($this->queryResult), 'Query result is empty!');
-
-        $filteredByCutId = array_filter($this->queryResult, function ($video) use ($cutVideoId) {
-            return $video->getId() === $cutVideoId;
-        });
-
-        assertEmpty($filteredByCutId, 'Cut video was found. (Should not be part of result!)');
-
-        /** @var Video $firstVideo */
-        $firstVideo = current($this->queryResult);
-        assertEquals($videoId, $firstVideo->getId());
-    }
-
-    private function getPageContent(): string
-    {
-        $content = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            '
-                return await vars.page.content();
-            '
-        );
-
-        return $content;
-    }
-
-    /**
-     * @Then the page should contain the text :text
-     */
-    public function thePageShouldContainTheText($text)
-    {
-        $content = $this->getPageContent();
-
-        assertStringContainsString($text, $content);
-    }
-
-    /**
-     * @Then the page should not contain the text :text
-     */
-    public function thePageShouldNotContainTheText($text)
-    {
-        $content = $this->getPageContent();
-
-        assertStringNotContainsString($text, $content);
-    }
-
-    /**
-     * @Then the page contains all the following texts:
-     */
-    public function thePageContainsAllTheFollowingTexts(TableNode $tableNode)
-    {
-        $content = $this->getPageContent();
-
-        foreach ($tableNode->getColumn(0) as $text) {
-            assertStringContainsString($text, $content);
-        }
-    }
-
-    /**
-     * @Then the page contains none of the following texts:
-     */
-    public function thePageContainsNoneTheFollowingTexts(TableNode $tableNode)
-    {
-        $content = $this->getPageContent();
-
-        foreach ($tableNode->getColumn(0) as $text) {
-            assertStringNotContainsString($text, $content);
-        }
-    }
-
-    /**
-     * @Given I fill out the course form and submit
-     */
-    public function iFillOutTheCourseFormAndSubmit()
-    {
-        $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                await vars.page.fill(`input#course_name`, `Test-Kurs`)
-                await vars.page.selectOption(`select#course_users`, { index: 0 })
-                await vars.page.click(`button#course_save`)
-            "
-        );
-    }
-
-    /**
-     * @Given I click on :innerText
-     */
-    public function iClickOn($innerText)
-    {
-        $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                await vars.page.click(`text=${innerText}`)
-            "
-        );
-    }
-
-    /**
-     * @When I click on first element with testId :testId
-     */
-    public function iClickOnFirstElementWith($testId)
-    {
-        $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                await vars.page.click('data-test-id=$testId')
-            "
-        );
-    }
-
-    /**
-     * @Given I submit the form
-     */
-    public function iSubmitTheForm()
-    {
-        $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            '
-                await vars.page.click(`[type="submit"]`)
-            '
-        );
-    }
-
-    /**
-     * @Then I should be able to download the CSV export for :entityId when clicking on :label
-     */
-    public function iShouldBeAbleToDownloadCsvExport($entityId, $label)
-    {
-        $url = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                const [ download ] = await Promise.all(
-                    [
-                        vars.page.waitForEvent('download'),
-                        vars.page.click(`[role='button']:has-text('{$label}'), button:has-text('{$label}'), .btn:has-text('{$label}'), a:has-text('{$label}')`)
-                    ]
-                )
-                const path = await download.url()
-
-                return path
-            "
-        );
-
-        assertStringContainsString($entityId, $url);
-    }
-
-    /**
-     * @Given I fill out the exercise form and submit
-     */
-    public function iFillOutTheExerciseFormAndSubmit()
-    {
-        $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                await vars.page.fill(`input#exercise_name`, `Test-Aufgabe`)
-                // here we have to use this way to navigate to the description field because we use ckeditor
-                await vars.page.keyboard.press('Tab')
-                await vars.page.keyboard.type('Test-Aufgaben-Beschreibung')
-
-                await vars.page.click(`button#exercise_save`)
-            "
-        );
-    }
-
-    /**
-     * @Given An Exercise with the following data exists:
-     */
-    public function assureAnExerciseWithTheFollowingDataExists(TableNode $tableNode)
-    {
-        $exerciseData = $tableNode->getHash()[0];
-        /** @var Course $course */
-        $course = $this->entityManager->find(Course::class, $exerciseData['course']);
-        /** @var User $creator */
-        $creator = $this->entityManager->find(User::class, $exerciseData['creator']);
-
-        $exercise = new Exercise($exerciseData['id']);
-        $exercise->setName($exerciseData['name']);
-        $exercise->setDescription($exerciseData['description']);
-        $exercise->setCreator($creator);
-        $exercise->setCourse($course);
-
-        $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given An Exercise with the following json-data exists:
-     *
-     * This is just another way to use the step above, because oftentimes configuring
-     * the step via JSON is much more convenient and easier to read for large data sets.
-     */
-    public function assureAnExerciseWithTheFollowingJsonDataExists(PyStringNode $exerciseDataJson)
-    {
-        $exerciseData = json_decode($exerciseDataJson->getRaw(), true);
-        /** @var Course $course */
-        $course = $this->entityManager->find(Course::class, $exerciseData['course']);
-        /** @var User $creator */
-        $creator = $this->entityManager->find(User::class, $exerciseData['creator']);
-
-        $exercise = new Exercise($exerciseData['id']);
-        $exercise->setName($exerciseData['name']);
-        $exercise->setDescription($exerciseData['description']);
-        $exercise->setCreator($creator);
-        $exercise->setCourse($course);
-        $exercise->setStatus($exerciseData['status']);
-
-        $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given An ExercisePhase with the following data exists:
-     */
-    public function assureAnExercisePhaseWithTheFollowingDataExists(TableNode $tableNode)
-    {
-        foreach ($tableNode->getHash() as $phaseData) {
-            $phaseType = ExercisePhaseType::from($phaseData['type']);
-
-            $phase = ExercisePhase::byType($phaseType, $phaseData['id']);
-
-            $phase->setName($phaseData['name']);
-            $phase->setTask($phaseData['task']);
-            $phase->setIsGroupPhase((boolval($phaseData['isGroupPhase'])));
-            $phase->setSorting(intval($phaseData['sorting']));
-            $phase->setOtherSolutionsAreAccessible(boolval($phaseData['otherSolutionsAreAccessible']));
-
-            /** @var Exercise $exercise */
-            $exercise = $this->entityManager->find(Exercise::class, $phaseData['belongsToExercise']);
-            $phase->setBelongsToExercise($exercise);
-
-            if ($phaseData['dependsOnPhase'] !== null) {
-                /** @var ExercisePhase $phaseDependingOn */
-                $phaseDependingOn = $this->entityManager->find(ExercisePhase::class, $phaseData['dependsOnPhase']);
-                $phase->setDependsOnExercisePhase($phaseDependingOn);
-            }
-
-            // phase type specific
-            switch ($phaseType) {
-                case ExercisePhaseType::VIDEO_ANALYSIS:
-                    $phase->setVideoAnnotationsActive(boolval($phaseData['videoAnnotationsActive']));
-                    $phase->setVideoCodesActive(boolval($phaseData['videoCodesActive']));
-                    break;
-                case ExercisePhaseType::VIDEO_CUT:
-                case ExercisePhaseType::REFLEXION:
-                    break;
-            }
-
-            $this->entityManager->persist($phase);
-            $this->eventStore->disableEventPublishingForNextFlush();
-            $this->entityManager->flush();
-        }
-    }
-
-    /**
-     * @Given An ExercisePhase with the following json-data exists:
-     *
-     * This is just another way to use the step above, because oftentimes configuring
-     * the step via JSON is much more convenient and easier to read for large data sets.
-     */
-    public function assureAnExercisePhaseWithTheFollowingJsonDataExists(PyStringNode $exercisePhaseDataJson)
-    {
-        $phases = json_decode($exercisePhaseDataJson->getRaw(), true);
-        foreach ($phases as $phaseData) {
-            $phaseType = ExercisePhaseType::from($phaseData['type']);
-
-            $phase = ExercisePhase::byType($phaseType, $phaseData['id']);
-
-            $phase->setName($phaseData['name']);
-            $phase->setTask($phaseData['task']);
-            $phase->setIsGroupPhase((boolval($phaseData['isGroupPhase'])));
-            $phase->setSorting(intval($phaseData['sorting']));
-            $phase->setOtherSolutionsAreAccessible(boolval($phaseData['otherSolutionsAreAccessible']));
-
-            /** @var Exercise $exercise */
-            $exercise = $this->entityManager->find(Exercise::class, $phaseData['belongsToExercise']);
-            $phase->setBelongsToExercise($exercise);
-
-            if ($phaseData['dependsOnPhase'] !== null) {
-                /** @var ExercisePhase $phaseDependingOn */
-                $phaseDependingOn = $this->entityManager->find(ExercisePhase::class, $phaseData['dependsOnPhase']);
-                $phase->setDependsOnExercisePhase($phaseDependingOn);
-            }
-
-            // phase type specific
-            switch ($phaseType) {
-                case ExercisePhaseType::VIDEO_ANALYSIS:
-                    $phase->setVideoAnnotationsActive(boolval($phaseData['videoAnnotationsActive']));
-                    $phase->setVideoCodesActive(boolval($phaseData['videoCodesActive']));
-                    break;
-                case ExercisePhaseType::VIDEO_CUT:
-                case ExercisePhaseType::REFLEXION:
-                    break;
-            }
-
-            $this->entityManager->persist($phase);
-            $this->eventStore->disableEventPublishingForNextFlush();
-            $this->entityManager->flush();
-        }
-    }
-
-    /**
-     * @When I select the nth :index element with testId :testId
-     */
-    public function iSelectTheNthElementWithTestId(int $index, string $testId)
-    {
-        $hasElement = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                const element = await vars.page.locator('data-test-id=$testId >> nth=$index')
-                vars.selectedElement = element
-
-                return !!element
-            "
-        );
-
-        assertTrue($hasElement);
-    }
-
-    /**
-     * @Then the selected element should have its attribute :attribute set to value :expectedValue
-     */
-    public function theSelectedElementShouldHaveAttributeSetToValue(string $attribute, string $expectedValue)
-    {
-        $actual = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                return vars.selectedElement.getAttribute('$attribute')
-            "
-        );
-
-        assertEquals($actual, $expectedValue);
-    }
-
-    /**
-     * @Then I click on the selected element
-     */
-    public function iClickOnTheSelectedElement()
-    {
-        $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                vars.selectedElement.click()
-            "
-        );
-    }
-
-    /**
-     * @Then :count elements of selectedElement type should exist
-     */
-    public function numberOfElementsShouldExist($count)
-    {
-        $actual = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                return vars.selectedElement.count()
-            "
-        );
-
-        assertEquals($count, $actual);
-    }
-
-    /**
-     * @Then The selected element should have the CSS-class :cssClass
-     */
-    public function selectedElementShouldHaveCssClass($cssClass)
-    {
-        $actualClasses = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                return await vars.selectedElement.getAttribute('class')
-            "
-        );
-
-        assertTrue(str_contains($actualClasses, $cssClass));
-    }
-
-    /**
-     * @Then The selected element should not have the CSS-class :cssClass
-     */
-    public function selectedElementShouldNotHaveCssClass($cssClass)
-    {
-        $actualClasses = $this->playwrightConnector->execute(
-            $this->playwrightContext,
-            // language=JavaScript
-            "
-                return await vars.selectedElement.getAttribute('class')
-            "
-        );
-
-        assertTrue(!str_contains($actualClasses, $cssClass));
+        // open
+        $this->exercisePhaseService->openPhase($exercisePhaseTeam);
     }
 }

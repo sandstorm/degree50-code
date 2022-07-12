@@ -5,6 +5,10 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
+use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
+use App\Entity\Exercise\ExercisePhaseTeam;
+use App\Entity\Exercise\ExerciseStatus;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Exercise\ExerciseRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,14 +18,20 @@ class ExerciseService
     private EntityManagerInterface $entityManager;
     private DoctrineIntegratedEventStore $eventStore;
     private ExerciseRepository $exerciseRepository;
+    private ExercisePhaseService $exercisePhaseService;
 
     const EXERCISE_DOCTRINE_FILTER_NAME = 'exercise_doctrine_filter';
 
-    public function __construct(EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, ExerciseRepository $exerciseRepository)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        DoctrineIntegratedEventStore $eventStore,
+        ExerciseRepository $exerciseRepository,
+        ExercisePhaseService $exercisePhaseService,
+    ) {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->exerciseRepository = $exerciseRepository;
+        $this->exercisePhaseService = $exercisePhaseService;
     }
 
     /**
@@ -44,6 +54,36 @@ class ExerciseService
         foreach ($exercises as $exercise) {
             $this->deleteExercise($exercise);
         }
+    }
+
+    /*
+     * The "needsReview" status is derived from all phases and their teams.
+     * So if there is at least one phase that has the "reviewRequired" flag set to true and
+     * where the ExercisePhaseStatus of the team is "IN_REVIEW" the "needsReview" status of this Dto
+     * will be set to true.
+     */
+    public function needsReview(Exercise $exercise): bool
+    {
+        return $exercise->getPhases()->exists(
+            fn ($_key, ExercisePhase $exercisePhase) =>
+            $exercisePhase->getTeams()->exists(fn ($_key, ExercisePhaseTeam $team) => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW)
+        );
+    }
+
+    public function getExerciseStatusForUser(Exercise $exercise, User $user): ExerciseStatus
+    {
+        $teams = $exercise->getPhases()->map(
+            fn (ExercisePhase $phase) => $phase->getTeams()->filter(
+                fn (ExercisePhaseTeam $team) => $team->getMembers()->contains($user)
+            )->first()
+            // Why "mixed": Collection filter returns false if collection is empty o.O
+        )->filter(fn (mixed $team) => $team instanceof ExercisePhaseTeam);
+
+        return match (true) {
+            $teams->isEmpty() => ExerciseStatus::NEU,
+            $teams->exists(fn ($_key, ExercisePhaseTeam $team) => $team->getStatus() === ExercisePhaseStatus::IN_BEARBEITUNG) => ExerciseStatus::IN_BEARBEITUNG,
+            default => ExerciseStatus::BEENDET
+        };
     }
 
     public function deleteExercise(Exercise $exercise): void

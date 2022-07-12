@@ -40,6 +40,7 @@ class ExercisePhaseTeamController extends AbstractController
     private LiveSyncService $liveSyncService;
     private MessageBusInterface $messageBus;
     private SolutionService $solutionService;
+    private ExercisePhaseService $exercisePhaseService;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -48,9 +49,9 @@ class ExercisePhaseTeamController extends AbstractController
         LiveSyncService $liveSyncService,
         MessageBusInterface $messageBus,
         SolutionService $solutionService,
-        LoggerInterface $logger
-    )
-    {
+        LoggerInterface $logger,
+        ExercisePhaseService $exercisePhaseService,
+    ) {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
@@ -58,6 +59,7 @@ class ExercisePhaseTeamController extends AbstractController
         $this->messageBus = $messageBus;
         $this->solutionService = $solutionService;
         $this->logger = $logger;
+        $this->exercisePhaseService = $exercisePhaseService;
     }
 
     /**
@@ -89,6 +91,8 @@ class ExercisePhaseTeamController extends AbstractController
             }
         }
 
+        // TODO
+        // extract into service
         $exercisePhaseTeam = new ExercisePhaseTeam();
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
@@ -266,10 +270,40 @@ class ExercisePhaseTeamController extends AbstractController
             'solutionId' => $solution->getId()
         ]);
 
+        $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
+
         $entityManager->persist($solution);
+        $entityManager->persist($exercisePhaseTeam);
         $entityManager->flush();
 
         $this->dispatchCutListEncodingTask($exercisePhaseTeam);
+
+        return $this->redirectToRoute(
+            'exercise-overview__exercise--show-phase-overview',
+            [
+                'id' => $exercisePhase->getBelongsToExercise()->getId(),
+                'phaseId' => $exercisePhase->getId()
+            ]
+        );
+    }
+
+    /**
+     * @Route("/exercise-phase/finish-reflexion/{id}", name="exercise-overview__exercise-phase-team--finish-reflexion")
+     */
+    public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
+
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+        $this->eventStore->addEvent('ReflexionFinished', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+        ]);
+
+        $entityManager->persist($exercisePhaseTeam);
+        $entityManager->flush();
 
         return $this->redirectToRoute(
             'exercise-overview__exercise--show-phase-overview',
@@ -348,7 +382,7 @@ class ExercisePhaseTeamController extends AbstractController
         }
 
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
             $clientSideSolutionDataBuilder,
             $exercisePhaseTeam,
@@ -369,13 +403,11 @@ class ExercisePhaseTeamController extends AbstractController
      * This is only possible for MaterialPhases, where the Dozent can edit the material solution of a student
      * as a review process.
      *
-     * // TODO Roles?
-     * IsGranted("reviewSolution", subject="solution") --> only a dozent in the course should be able to do this. But via frontend there is no way for an "outside" dozent to do this.
+     * @IsGranted("reviewSolution", subject="solution")
      * @Route("/exercise-phase/review-solution/{id}", name="exercise-overview__exercise-phase-team--review-solution")
      */
     public function reviewSolution(Request $request, Solution $solution): Response
     {
-
         $solutionDataFromJson = json_decode($request->getContent(), true);
 
         $serverSideSolutionData = ServerSideSolutionData::fromClientJSON($solutionDataFromJson);
@@ -436,7 +468,7 @@ class ExercisePhaseTeamController extends AbstractController
 
             $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
-            $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder();
+            $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
             $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
                 $clientSideSolutionDataBuilder,
                 $exercisePhaseTeam,

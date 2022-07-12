@@ -17,6 +17,9 @@
     "dependsOnPreviousPhase": {
       "type": "boolean"
     },
+    "reviewRequired": {
+      "type": "boolean"
+    },
     "components": {
       "type": "array",
       "items": {

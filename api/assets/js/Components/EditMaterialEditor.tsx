@@ -10,13 +10,23 @@ import {
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { Material } from 'StimulusControllers/ExerciseAndSolutionStore/MaterialsSlice'
 import MaterialEditor from './MaterialEditor'
+import { ExercisePhaseStatus } from './VideoEditor/types'
 
 const EditMaterialEditor = () => {
   const material = useAppSelector(
     selectors.data.selectMaterialOfCurrentSolution
   )
 
-  const isReadonly = !useAppSelector(selectors.selectUserIsCurrentEditor)
+  const userIsCurrentEditor = useAppSelector(
+    selectors.selectUserIsCurrentEditor
+  )
+  const currentSolutionStatus = useAppSelector(
+    selectors.data.solutions.selectCurrentSolutionStatus
+  )
+
+  const isReadonly =
+    !userIsCurrentEditor ||
+    currentSolutionStatus !== ExercisePhaseStatus.IN_BEARBEITUNG
 
   const initialMaterial = useRef(material?.material ?? '')
 

@@ -5,8 +5,10 @@ namespace App\Exercise\Controller;
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
+use App\Exercise\Controller\GroupedExercisesBuilder;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
+use ExerciseWithReviewStatusDto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,15 +30,20 @@ class ExerciseOverviewController extends AbstractController
 {
     private CourseRepository $courseRepository;
     private ExerciseRepository $exerciseRepository;
+    private ExerciseService $exerciseService;
 
     /**
      * @param CourseRepository $courseRepository
      * @param ExerciseRepository $exerciseRepository
      */
-    public function __construct(CourseRepository $courseRepository, ExerciseRepository $exerciseRepository)
-    {
+    public function __construct(
+        CourseRepository $courseRepository,
+        ExerciseRepository $exerciseRepository,
+        ExerciseService $exerciseService,
+    ) {
         $this->courseRepository = $courseRepository;
         $this->exerciseRepository = $exerciseRepository;
+        $this->exerciseService = $exerciseService;
     }
 
     /**
@@ -68,7 +75,7 @@ class ExerciseOverviewController extends AbstractController
         return $this->render('ExerciseOverview/Index.html.twig', [
             'sidebarItems' => $this->getSideBarItems(),
             'course' => $course,
-            'courseId' => $course ? $course->getId() : null,
+            'courseId' => $course?->getId(),
             'activeFilter' => $statusFilter,
             'groupedExercises' => $groupedExercises,
         ]);
@@ -76,31 +83,21 @@ class ExerciseOverviewController extends AbstractController
 
     private function getExercisesGrouped(array $exercises): array
     {
-        $ownExercises = [
-            'id' => 'ownExercises',
-            'exercises' => []
-        ];
-        $otherExercises = [
-            'id' => 'otherExercises',
-            'exercises' => []
-        ];
-
         /** @var User $user */
         $user = $this->getUser();
 
-        /** @var $exercise Exercise */
-        foreach ($exercises as $exercise) {
+        $groupedExercisesBuilder = new GroupedExercisesBuilder($this->exerciseService);
+
+        foreach ($exercises as $_key => $exercise) {
+            /** @var Exercise $exercise */
             if ($exercise->getCreator() === $user) {
-                array_push($ownExercises['exercises'], $exercise);
+                $groupedExercisesBuilder->addOwnExercise($exercise);
             } else {
-                array_push($otherExercises['exercises'], $exercise);
+                $groupedExercisesBuilder->addOtherExercise($exercise);
             }
         }
 
-        return [
-            $ownExercises,
-            $otherExercises
-        ];
+        return $groupedExercisesBuilder->create();
     }
 
     /**
@@ -116,7 +113,7 @@ class ExerciseOverviewController extends AbstractController
             if (!array_key_exists($creationDateYear, $sidebarItems)) {
                 $sidebarItems[$creationDateYear] = ['label' => $creationDateYear, 'courses' => []];
             }
-            array_push($sidebarItems[$creationDateYear]['courses'], $course);
+            $sidebarItems[$creationDateYear]['courses'][] = $course;
         }
 
         // WHY: We want to sort the years DESC in the sidebar

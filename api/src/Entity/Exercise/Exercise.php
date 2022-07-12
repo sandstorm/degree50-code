@@ -22,8 +22,11 @@ class Exercise
     use IdentityTrait;
 
     const EXERCISE_CREATED = 0;
-    const EXERCISE_PUBLISHED = 2;
+    /**
+     * @deprecated This is not used! We derive the "finished" status via ExerciseStatus enum.
+     */
     const EXERCISE_FINISHED = 1;
+    const EXERCISE_PUBLISHED = 2;
 
     /**
      * @ORM\Column
@@ -71,17 +74,9 @@ class Exercise
      */
     private int $status = self::EXERCISE_CREATED;
 
-    /**
-     * @var UserExerciseInteraction[]
-     *
-     * @ORM\OneToMany(targetEntity="UserExerciseInteraction", mappedBy="exercise",  cascade={"remove"})
-     */
-    private Collection $userExerciseInteractions;
-
     public function __construct(string $id = null)
     {
         $this->phases = new ArrayCollection();
-        $this->userExerciseInteractions = new ArrayCollection();
         $this->generateOrSetId($id);
     }
 
@@ -98,9 +93,6 @@ class Exercise
         return $this->name;
     }
 
-    /**
-     * @return Exercise[]
-     */
     public function getPhases(): Collection
     {
         return $this->phases;
@@ -184,14 +176,6 @@ class Exercise
     public function setStatus(int $status): void
     {
         $this->status = $status;
-    }
-
-    /**
-     * @return UserExerciseInteraction[]
-     */
-    public function getUserExerciseInteractions(): Collection
-    {
-        return $this->userExerciseInteractions;
     }
 
     public function getPhaseAtSortingPosition(int $position): ?ExercisePhase

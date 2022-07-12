@@ -45,7 +45,7 @@ Feature: Copy Exercises
         And I have a video with ID 'video1' belonging to course 'course1'
 
         And An Exercise with the following data exists:
-            | id          | name      | description              | creator                 | course  |
+            | id   | name      | description              | creator                 | course  |
             | e1ID | exercise1 | description of exercise1 | test-admin@sandstorm.de | course1 |
 
         And An ExercisePhase with the following data exists:

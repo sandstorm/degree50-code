@@ -88,10 +88,12 @@ abstract class ExercisePhase
      */
     private Collection $teams;
 
+    // FIXME
+    // why is this type so broad although we expect only an optional array later on?
     /**
      * @ORM\Column(type="simple_array", nullable=TRUE)
      */
-    public string|array|null $components = '';
+    public string|array|null $components = [];
 
     /**
      * @var Attachment[]
@@ -119,7 +121,7 @@ abstract class ExercisePhase
      */
     private bool $otherSolutionsAreAccessible = false;
 
-    public static function byType(ExercisePhaseType $type, string $id = null): VideoAnalysisPhase | VideoCutPhase | ReflexionPhase
+    public static function byType(ExercisePhaseType $type, string $id = null): VideoAnalysisPhase | VideoCutPhase | ReflexionPhase | MaterialPhase
     {
         return match ($type) {
             ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase($id),
@@ -152,9 +154,6 @@ abstract class ExercisePhase
         return $this::type;
     }
 
-    /**
-     * @return ExercisePhaseTeam[]
-     */
     public function getTeams(): Collection
     {
         return $this->teams;

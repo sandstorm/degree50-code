@@ -26,9 +26,9 @@
         <header class="content-header">
             <h3>{% trans %}exercisePhase.edit.title{% endtrans %}</h3>
             {% if exercisePhase.hasSolutions %}
-            <div class="alert alert-warning">
-                Achtung: Phase wird/wurde schon von Studierenden bearbeitet.
-            </div>
+                <div class="alert alert-warning">
+                    Achtung: Phase wird/wurde schon von Studierenden bearbeitet.
+                </div>
             {% endif %}
         </header>
 
@@ -49,9 +49,12 @@
             {% if exercisePhase.type.value != 'reflexion' %}
                 <div class="row">
                     <div class="col-md-6">{{ form_row(form.otherSolutionsAreAccessible) }}</div>
+                    {% if exercisePhase.type.value == 'material' %}
+                        <div class="col-md-6">{{ form_row(form.reviewRequired) }}</div>
+                    {% endif %}
                 </div>
             {% endif %}
-            <hr />
+            <hr/>
 
             {{ form_row(form.name) }}
             {{ form_row(form.task) }}
@@ -72,7 +75,7 @@
             {% if exercisePhase.type.value == 'videoAnalysis' or exercisePhase.type.value == 'videoCutting' %}
                 <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
                 <div data-controller="videosForm">
-                    {{  form_row(form.videos) }}
+                    {{ form_row(form.videos) }}
                 </div>
                 <hr/>
             {% endif %}
@@ -112,7 +115,8 @@
             {% endif %}
 
             <h4>{% trans %}exercisePhase.labels.attachments{% endtrans %}</h4>
-            <p>Anhang hochladen, der zur Lösung der Aufgabe bereit steht <span class="color-alert">(Achten Sie unbedingt darauf, dass die Dokumente barrierefrei sind.)</span> </p>
+            <p>Anhang hochladen, der zur Lösung der Aufgabe bereit steht <span class="color-alert">(Achten Sie unbedingt darauf, dass die Dokumente barrierefrei sind.)</span>
+            </p>
             <div class="dropzone" data-controller="attachmentUpload"
                  data-attachmentUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_attachment') }}"
                  data-attachmentUpload-remove-endpoint="{{ path('exercise-overview__attachment--delete-ajax') }}"
@@ -139,7 +143,7 @@
             {{ form_row(form.save) }}
         </div>
     </footer>
-{{ form_end(form) }}
+    {{ form_end(form) }}
 
 {% endblock %}
 
