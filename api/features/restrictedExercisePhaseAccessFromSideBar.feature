@@ -13,7 +13,7 @@ Feature: When a student solves an exercise they should only be able to access ph
             "description": "description of exercise1",
             "creator": "test-admin@sandstorm.de",
             "course": "course1",
-            "status": 1
+            "status": 2
         }
         """
         And Course "course1" belongs to exercise "e1"
