@@ -81,7 +81,7 @@ class SolutionVoter extends Voter
 
         // check if Dozent has access to course
         return $user->getCourseRoles()->exists(function ($_, CourseRole $courseRole) use ($solution, $course) {
-            return $courseRole->getName() !== CourseRole::DOZENT && $courseRole->getCourse() === $course;
+            return $courseRole->getName() === CourseRole::DOZENT && $courseRole->getCourse() === $course;
         });
     }
 }
