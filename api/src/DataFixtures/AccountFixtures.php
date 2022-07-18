@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
+use App\Entity\Fachbereich;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -26,8 +27,12 @@ class AccountFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $course = $this->createCourse($manager, 'Seminar Mathe 1');
-        $course2 = $this->createCourse($manager, 'Seminar Mathe 2');
+        $fachbereich = $this->createFachbereich($manager, 'Fachbereich Mathematik');
+
+        $course = $this->createCourse($manager, 'Seminar Mathe 1', $fachbereich);
+        $course->setFachbereich($fachbereich);
+        $course2 = $this->createCourse($manager, 'Seminar Mathe 2', $fachbereich);
+        $course2->setFachbereich($fachbereich);
 
         // other fixtures can get this object using the AccountFixtures::COURSE_REFERENCE constant
         $this->addReference(self::COURSE_REFERENCE, $course);
@@ -61,7 +66,7 @@ class AccountFixtures extends Fixture
         return $account;
     }
 
-    private function createCourse(ObjectManager $manager, string $name): Course
+    private function createCourse(ObjectManager $manager, string $name, Fachbereich $fachbereich): Course
     {
         $course = new Course();
         $course->setName($name);
@@ -79,5 +84,15 @@ class AccountFixtures extends Fixture
         $manager->persist($courseRole);
 
         return $courseRole;
+    }
+
+    private function createFachbereich(ObjectManager $manager, string $name): Fachbereich
+    {
+        $fachbereich = new Fachbereich();
+        $fachbereich->setName($name);
+
+        $manager->persist($fachbereich);
+
+        return $fachbereich;
     }
 }

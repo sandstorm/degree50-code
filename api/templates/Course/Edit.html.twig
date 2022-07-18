@@ -26,6 +26,7 @@
             {{ form_errors(form) }}
 
             {{ form_row(form.name) }}
+            {{ form_row(form.fachbereich) }}
             {{ form_row(form.users) }}
 
             <h5>{% trans %}course.labels.currentMembers{% endtrans %} ({{ tutors.count }} {% trans %}course.labels.tutors{% endtrans %})</h5>

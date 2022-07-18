@@ -5,6 +5,7 @@ namespace App\Entity\Account;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
+use App\Entity\Fachbereich;
 use App\Entity\Video\Video;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -53,6 +54,12 @@ class Course
      * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="courses")
      */
     private Collection $videos;
+
+    /**
+     * @var Fachbereich | null
+     * @ORM\ManyToOne(targetEntity=Fachbereich::class)
+     */
+    private ?Fachbereich $fachbereich;
 
     public function __construct($id = null)
     {
@@ -177,4 +184,22 @@ class Course
 
         return $this;
     }
+
+    /**
+     * @return Fachbereich|null
+     */
+    public function getFachbereich(): ?Fachbereich
+    {
+        return $this->fachbereich;
+    }
+
+    /**
+     * @param Fachbereich|null $fachbereich
+     */
+    public function setFachbereich(?Fachbereich $fachbereich): void
+    {
+        $this->fachbereich = $fachbereich;
+    }
+
+
 }
