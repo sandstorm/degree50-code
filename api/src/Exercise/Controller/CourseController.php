@@ -7,7 +7,7 @@ use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Form\CourseMembersType;
-use App\Exercise\Form\CourseType;
+use App\Exercise\Form\CourseFormType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -187,7 +187,7 @@ class CourseController extends AbstractController
     {
         $course = new Course();
 
-        $form = $this->createForm(CourseType::class, $course);
+        $form = $this->createForm(CourseFormType::class, $course);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -247,7 +247,7 @@ class CourseController extends AbstractController
      */
     public function edit(Request $request, Course $course): Response
     {
-        $form = $this->createForm(CourseType::class, $course);
+        $form = $this->createForm(CourseFormType::class, $course);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

@@ -5,6 +5,7 @@ namespace App\Exercise\Form;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
+use App\Entity\Fachbereich;
 use App\Repository\Account\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -13,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CourseType extends AbstractType
+class CourseFormType extends AbstractType
 {
     private UserRepository $userRepository;
 
@@ -42,6 +43,13 @@ class CourseType extends AbstractType
 
         $builder
             ->add('name', TextType::class, ['label' => "course.labels.name", 'translation_domain' => 'forms'])
+            ->add('fachbereich', EntityType::class, [
+                'label' => 'zu Fachbereich hinzufügen',
+                'required' => false,
+                'class' => Fachbereich::class,
+                'choice_label' => 'name',
+                'multiple' => false,
+            ])
             ->add('users', EntityType::class, [
                 'class' => User::class,
                 'choices' => $userChoices,
