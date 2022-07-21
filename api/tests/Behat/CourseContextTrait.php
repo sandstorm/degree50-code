@@ -51,5 +51,7 @@ trait CourseContextTrait
             $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         }
+
+        return $course;
     }
 }

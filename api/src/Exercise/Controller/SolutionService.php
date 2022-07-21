@@ -170,7 +170,7 @@ class SolutionService
             return array_reduce(
                 $exercisePhaseTeam->getMembers()->toArray(),
                 function (array $carry, User $teamMember) use ($exercisePhaseDependedOn, $exercisePhaseTeam) {
-                    $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMember($teamMember, $exercisePhaseDependedOn);
+                    $teamOfPreviousPhase = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($teamMember, $exercisePhaseDependedOn);
                     $solutionEntity = $teamOfPreviousPhase?->getSolution();
 
                     if (is_null($solutionEntity)) {

@@ -11,6 +11,7 @@ use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ExerciseService;
+use App\Mediathek\Service\VideoFavouritesService;
 use App\Mediathek\Service\VideoService;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
@@ -34,15 +35,29 @@ class UserService
     private DoctrineIntegratedEventStore $eventStore;
     private VideoService $videoService;
     private ExerciseService $exerciseService;
+    private VideoFavouritesService $videoFavoritesService;
     private Security $security;
 
-    public function __construct(Security $security, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, VideoService $videoService, ExerciseService $exerciseService)
-    {
+    public function __construct(
+        Security $security,
+        EntityManagerInterface $entityManager,
+        DoctrineIntegratedEventStore $eventStore,
+        VideoService $videoService,
+        ExerciseService $exerciseService,
+        VideoFavouritesService $videoFavoritesService,
+    ) {
         $this->security = $security;
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->videoService = $videoService;
         $this->exerciseService = $exerciseService;
+        $this->videoFavoritesService = $videoFavoritesService;
+    }
+
+    public function getLoggendInUser(): User
+    {
+        // Type mismatch is ok
+        return $this->security->getUser();
     }
 
     public function removeUser(User $user): void
@@ -104,7 +119,7 @@ class UserService
          * Why
          *   Removal of CourseRoles is cascaded when removing a User but here we do _not_ remove the user.
          */
-        $user->getCourseRoles()->map(fn(CourseRole $courseRole) => $this->entityManager->remove($courseRole));
+        $user->getCourseRoles()->map(fn (CourseRole $courseRole) => $this->entityManager->remove($courseRole));
 
         $this->eventStore->addEvent('UserDeleted', [
             'userId' => $user->getId(),
@@ -120,6 +135,7 @@ class UserService
         // remove created Exercises, Videos and Interactions
         $this->videoService->deleteVideosCreatedByUser($user);
         $this->exerciseService->deleteExercisesCreatedByUser($user);
+        $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
         $this->removeFromExerciseTeams($user);
 
         $this->eventStore->addEvent('UserDeleted', [
@@ -156,7 +172,7 @@ class UserService
                 $team->removeMember($user);
                 $team->getAutosavedSolutions()->filter(function (AutosavedSolution $autosavedSolution) use ($user) {
                     return $autosavedSolution->getOwner() === $user;
-                })->forAll(fn($_i, AutosavedSolution $autosavedSolution) => $this->entityManager->remove($autosavedSolution));
+                })->forAll(fn ($_i, AutosavedSolution $autosavedSolution) => $this->entityManager->remove($autosavedSolution));
                 $this->entityManager->persist($team);
 
                 $this->eventStore->addEvent('MemberRemovedFromTeam', [

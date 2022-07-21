@@ -1,0 +1,11 @@
+{% extends 'Base.html.twig' %}
+
+{% block title %}Aufgaben Übersicht{% endblock %}
+
+{% block body %}
+    <div class="schreibtisch-container" data-controller="schreibtisch" data-schreibtisch-props="{{ { todo: 'data hydration' } |json_encode|e('html_attr') }}">
+        <div class="loading-screen">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </div>
+{% endblock %}

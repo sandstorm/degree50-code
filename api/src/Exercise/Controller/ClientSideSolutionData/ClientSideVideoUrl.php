@@ -14,16 +14,18 @@ final class ClientSideVideoUrl implements JsonSerializable
     private string $hls;
     private string $mp4;
     private string $vtt;
+    private string $thumbnail;
 
     private function __construct(
         string $hls,
         string $mp4,
-        string $vtt
-    )
-    {
+        string $vtt,
+        string $thumbnail,
+    ) {
         $this->hls = $hls;
         $this->mp4 = $mp4;
         $this->vtt = $vtt;
+        $this->thumbnail = $thumbnail;
     }
 
     public function jsonSerialize(): array
@@ -37,6 +39,7 @@ final class ClientSideVideoUrl implements JsonSerializable
             'hls' => $this->hls,
             'mp4' => $this->mp4,
             'vtt' => $this->vtt,
+            'thumbnail' => $this->thumbnail,
         ];
     }
 
@@ -59,15 +62,18 @@ final class ClientSideVideoUrl implements JsonSerializable
         $hlsPath = "$videoDirectoryPathOnFileSystem/hls.m3u8";
         $mp4Path = "$videoDirectoryPathOnFileSystem/x264.mp4";
         $vttPath = "$videoDirectoryPathOnFileSystem/subtitles.vtt";
+        $thumbnailPath = "$videoDirectoryPathOnFileSystem/thumbnail.jpg";
 
         $hlsUrl = file_exists($hlsPath) ? $baseUrl . '/hls.m3u8' : '';
         $mp4Url = file_exists($mp4Path) ? $baseUrl . '/x264.mp4' : '';
         $vttUrl = file_exists($vttPath) ? $baseUrl . '/subtitles.vtt' : '';
+        $thumbnailUrl = file_exists($thumbnailPath) ? $baseUrl . '/thumbnail.jpg' : '';
 
         return new self(
             $hlsUrl,
             $mp4Url,
             $vttUrl,
+            $thumbnailUrl,
         );
     }
 }

@@ -35,7 +35,7 @@ class LiveSyncService
     {
         // !!! taking only the team for the current phase prohibits the user from editing two phases
         // in two browser windows at the same time !!!
-        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
 
         $exercisePhaseTeamTopicIdentifiers = [];
         $exercisePhaseTeamTopicIdentifiers[] = self::buildMercureTopicIdentifier($exercisePhaseTeam);

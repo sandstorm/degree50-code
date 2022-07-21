@@ -6,8 +6,9 @@ export type Video = {
   id: string
   name: string
   description: string
-  url: { hls?: string; mp4?: string; vtt?: string }
+  url: { hls?: string; mp4?: string; vtt?: string; thumbnail?: string }
   duration: number
+  isFavorite?: boolean
 }
 
 type Props = {

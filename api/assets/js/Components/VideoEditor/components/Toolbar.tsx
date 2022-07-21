@@ -5,6 +5,7 @@ import CuttingMenu from 'Components/ToolbarItems/CuttingContext/CuttingMenu'
 import FilterMenu from 'Components/ToolbarItems/FilterContext/FilterMenu'
 import ShortCutsMenu from 'Components/ToolbarItems/ShortCutsContext/ShortCutsMenu'
 import TeamMenu from 'Components/ToolbarItems/Team/TeamMenu'
+import ToggleVideoFavorite from 'Components/ToolbarItems/ToggleVideoFavorite'
 import VideoCodesMenu from 'Components/ToolbarItems/VideoCodesContext/VideoCodesMenu'
 import ZusatzAttachmentMenu from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentMenu'
 
@@ -19,6 +20,7 @@ const Toolbar = () => {
       <ZusatzAttachmentMenu />
       <TeamMenu />
       <FilterMenu />
+      <ToggleVideoFavorite />
       <ShortCutsMenu />
     </div>
   )

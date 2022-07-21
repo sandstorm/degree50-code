@@ -3,6 +3,7 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
@@ -10,6 +11,8 @@ use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExerciseStatus;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Repository\Account\CourseRoleRepository;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -27,7 +30,8 @@ class ExerciseService
         DoctrineIntegratedEventStore $eventStore,
         ExerciseRepository $exerciseRepository,
         ExercisePhaseService $exercisePhaseService,
-    ) {
+    )
+    {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->exerciseRepository = $exerciseRepository;
@@ -45,6 +49,24 @@ class ExerciseService
         $this->entityManager->getFilters()->enable(self::EXERCISE_DOCTRINE_FILTER_NAME);
 
         return $exercises;
+    }
+
+    /**
+     * @param User $user
+     * @return Exercise[]
+     */
+    public function getExercisesForUser(User $user): array
+    {
+        /** @var Exercise[] $result */
+        $result = [];
+
+        foreach ($user->getCourseRoles()->getValues() as $courseRole) {
+            $result = [...$result, ...$courseRole->getCourse()->getExercises()];
+        };
+
+        $visibleExercises = array_filter($result, fn(Exercise $exercise) => $exercise->getStatus() !== 0);
+
+        return $visibleExercises;
     }
 
     public function deleteExercisesCreatedByUser(User $user): void
@@ -65,25 +87,35 @@ class ExerciseService
     public function needsReview(Exercise $exercise): bool
     {
         return $exercise->getPhases()->exists(
-            fn ($_key, ExercisePhase $exercisePhase) =>
-            $exercisePhase->getTeams()->exists(fn ($_key, ExercisePhaseTeam $team) => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW)
+            fn($_key, ExercisePhase $exercisePhase) => $exercisePhase->getTeams()->exists(fn($_key, ExercisePhaseTeam $team) => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW)
         );
     }
 
     public function getExerciseStatusForUser(Exercise $exercise, User $user): ExerciseStatus
     {
+        $exercisePhases = $exercise->getPhases();
         $teams = $exercise->getPhases()->map(
-            fn (ExercisePhase $phase) => $phase->getTeams()->filter(
-                fn (ExercisePhaseTeam $team) => $team->getMembers()->contains($user)
+            fn(ExercisePhase $phase) => $phase->getTeams()->filter(
+                fn(ExercisePhaseTeam $team) => $team->getMembers()->contains($user)
             )->first()
-            // Why "mixed": Collection filter returns false if collection is empty o.O
-        )->filter(fn (mixed $team) => $team instanceof ExercisePhaseTeam);
+        // Why "mixed": Collection filter returns false if collection is empty o.O
+        )->filter(fn(mixed $team) => $team instanceof ExercisePhaseTeam);
 
-        return match (true) {
-            $teams->isEmpty() => ExerciseStatus::NEU,
-            $teams->exists(fn ($_key, ExercisePhaseTeam $team) => $team->getStatus() === ExercisePhaseStatus::IN_BEARBEITUNG) => ExerciseStatus::IN_BEARBEITUNG,
-            default => ExerciseStatus::BEENDET
-        };
+        // no phase started yet
+        if ($teams->isEmpty()) {
+            return ExerciseStatus::NEU;
+        }
+
+        if (
+            // at least one phase not started yet
+            $teams->count() < $exercisePhases->count()
+            // at least one phase in BEARBEITUNG
+            || $teams->exists(fn($_key, ExercisePhaseTeam $team) => $team->getStatus() === ExercisePhaseStatus::IN_BEARBEITUNG)
+        ) {
+            return ExerciseStatus::IN_BEARBEITUNG;
+        }
+
+        return ExerciseStatus::BEENDET;
     }
 
     public function deleteExercise(Exercise $exercise): void

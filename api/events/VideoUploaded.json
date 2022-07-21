@@ -9,9 +9,6 @@
       "type": "string"
     }
   },
-  "required": [
-    "videoId",
-    "uploadedVideoFile"
-  ],
+  "required": ["videoId", "uploadedVideoFile"],
   "additionalProperties": false
 }

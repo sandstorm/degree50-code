@@ -27,7 +27,7 @@ Feature: Track phase and exercise status through editing process
 
     Scenario Outline: The student finishes a phase
         Given I am a student in a course with an exercise
-        And I am working on a phase of type "<phaseType>" where <reviewIsRequired>
+        And I am working on a phase of type "<phaseType>" where a review is required: <reviewIsRequired>
         When I finish the exercise phase
         Then The exercise phase status should be "<phaseStatus>"
 
@@ -39,10 +39,18 @@ Feature: Track phase and exercise status through editing process
             | material      | BEENDET     | no               |
             | material      | IN_REVIEW   | yes              |
 
+    Scenario: A student finishes a material phase which does need no review
+        Given I am a student in a course with an exercise
+        And I am working on a phase of type "material" where a review is required: "no"
+        When I finish the exercise phase
+        Then The exercise phase status should be "BEENDET"
+        And A copy of the material should be added to the "Schreibtisch" of each user who was part of the Group which created the solution
+
     Scenario: A dozent finishes the review of a material phase
         Given I am a dozent in a course with a material phase to review
         When I finish the review of a solution of a material phase
         Then The exercise phase status should be "BEENDET"
+        And A copy of the material should be added to the "Schreibtisch" of each user who was part of the Group which created the solution
 
     Scenario: A student re-visits an already finished exercise phase
         Given I am a student in a course with an exercise
@@ -59,7 +67,6 @@ Feature: Track phase and exercise status through editing process
         When I open a material exercise phase with status "IN_REVIEW"
         Then The exercise phase status should be "IN_REVIEW"
 
-
         ############
         # Exercise #
         ############
@@ -72,6 +79,11 @@ Feature: Track phase and exercise status through editing process
     Scenario: The student has at least one phase of an exercise "IN_BEARBEITUNG"
         Given I am a student in a course with an exercise
         When I have started at least one exercise phase
+        Then The derived exercise status should be "IN_BEARBEITUNG"
+
+    Scenario: The student has one finished phase but the others are still unopened
+        Given I am a student in a course with an exercise
+        When I have finished one exercise phase
         Then The derived exercise status should be "IN_BEARBEITUNG"
 
     Scenario: The student has finished all phases of an exercise

@@ -78,7 +78,7 @@ class ExerciseController extends AbstractController
         $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
         $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
 
-        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
         $otherTeams = array_filter($this->exercisePhaseTeamRepository->findByExercisePhase($exercisePhase), function ($team) use ($teamOfCurrentUser) {
             // filter out team of current user
             if ($team === $teamOfCurrentUser) {

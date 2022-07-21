@@ -16,6 +16,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
 
+
     Scenario: Conversion for general purpose (e.g. exercisePhase/show, exercisePhase/update-solution, exercisePhase/update-currentEditor)
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
@@ -108,7 +109,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                   "url": {
                     "hls": "",
                     "mp4": "",
-                    "vtt": ""
+                    "vtt": "",
+                    "thumbnail": ""
                   }
                 },
                 "fromGroupPhase": false,

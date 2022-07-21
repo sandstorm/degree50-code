@@ -66,7 +66,19 @@ const { chromium } = require("playwright");
 const Hapi = require("@hapi/hapi");
 
 const init = async () => {
-  const browser = await chromium.launch({ headless: true });
+  // This is just a small hack to easily switch between headless and non-headless
+  // Run it with 'node index.js 'false', to run in browser mode.
+  // The first two arguments are our node path as well as the path to this script.
+  // Therefore we access our additional argument on index 2.
+  //
+  // NOTE: If we need more sophisticated arg parsing in the future this will no longer
+  // suffice. Make sure to replace it with proper argument handling then.
+  const headless = process.argv[2] !== "false";
+  console.log({
+    headless,
+    args: process.argv,
+  });
+  const browser = await chromium.launch({ headless });
 
   // the "key" is the context identifier (from the URL)
   // the "value" is an object: {

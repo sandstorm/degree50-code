@@ -9,11 +9,17 @@
         </button>
         <div class="navigation__inner collapse" id="navigation">
             <ul class="navigation__items">
+                {% if app.user.isStudent %}
+                    <li class="navigation__item {{ 'schreibtisch' in route ? 'navigation__item--active' }}">
+                        <a data-test-id="header-menu-schreibtisch" href="{{ path('schreibtisch') }}">Schreibtisch</a>
+                    </li>
+                {% endif %}
+
                 <li class="navigation__item {{ 'exercise-overview' in route ? 'navigation__item--active' }}">
                     <a href="{{ path('exercise-overview') }}">Kurs-Übersicht</a>
                 </li>
                 <li class="navigation__item {{ 'mediathek' in route ? 'navigation__item--active' }}">
-                    <a href="{{ path('mediathek--index') }}">Mediathek</a>
+                    <a data-test-id="header-menu-mediathek" href="{{ path('mediathek--index') }}">Mediathek</a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
                     <li class="navigation__item">

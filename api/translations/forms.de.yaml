@@ -132,6 +132,10 @@ video:
             success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
     show:
         title: 'Video abspielen'
+    favor:
+        title: 'Favorisieren'
+    unfavor:
+        title: 'Entfavorisieren'
     edit:
         title: 'Video bearbeiten'
         messages:
