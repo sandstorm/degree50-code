@@ -20,11 +20,21 @@ use function PHPUnit\Framework\assertNotEquals;
  */
 trait UserContextTrait
 {
-    private function createUser(string $username, string $password = null, bool $acceptPrivacyAndTerms = false): User
-    {
+    private function createUser(
+        string $username,
+        string $password = null,
+        bool $acceptPrivacyAndTerms = false,
+        bool $isStudent = false,
+    ): User {
         $user = new User($username);
         $user->setEmail($username);
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $password ?? 'password'));
+
+        if ($isStudent) {
+            $user->setIsStudent(true);
+        } else {
+            $user->setIsDozent(true);
+        }
 
         // TODO: Put in separate step
         if ($acceptPrivacyAndTerms) {

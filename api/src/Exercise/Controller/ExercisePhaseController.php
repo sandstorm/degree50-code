@@ -22,6 +22,7 @@ use App\Exercise\Form\ReflexionPhaseFormType;
 use App\Exercise\Form\VideoAnalysisPhaseFormFormType;
 use App\Exercise\Form\VideoCutPhaseFormFormType;
 use App\Exercise\LiveSync\LiveSyncService;
+use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\SolutionRepository;
@@ -58,6 +59,7 @@ class ExercisePhaseController extends AbstractController
     private LoggerInterface $logger;
     private SolutionService $solutionService;
     private SolutionRepository $solutionRepository;
+    private VideoFavouritesService $videoFavouritesService;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -70,7 +72,8 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         LoggerInterface $logger,
         SolutionService $solutionService,
-        SolutionRepository $solutionRepository
+        SolutionRepository $solutionRepository,
+        VideoFavouritesService $videoFavouritesService,
     ) {
         $this->logger = $logger;
         $this->translator = $translator;
@@ -83,6 +86,7 @@ class ExercisePhaseController extends AbstractController
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->solutionService = $solutionService;
         $this->solutionRepository = $solutionRepository;
+        $this->videoFavouritesService = $videoFavouritesService;
     }
 
     /**
@@ -523,6 +527,7 @@ class ExercisePhaseController extends AbstractController
             'components' => $components,
             'userId' => $user->getId(),
             'userName' => $user->getEmail(),
+            'isStudent' => $user->isStudent(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'dependsOnPreviousPhase' => $dependsOnPreviousPhase,
             'readOnly' => $readOnly,
@@ -534,8 +539,10 @@ class ExercisePhaseController extends AbstractController
                     'url' => $this->generateUrl('exercise-overview__attachment--download', ['id' => $entry->getId()])
                 ];
             }, $exercisePhase->getAttachment()->toArray()),
-            'videos' => array_map(function (Video $video) {
-                return $video->getAsArray($this->appRuntime);
+            'videos' => array_map(function (Video $video) use ($user) {
+                return array_merge($video->getAsArray($this->appRuntime)->toArray(), [
+                    'isFavorite' => $this->videoFavouritesService->videoIsFavorite($video, $user)
+                ]);
             }, $exercisePhase->getVideos()->toArray()),
         ];
     }

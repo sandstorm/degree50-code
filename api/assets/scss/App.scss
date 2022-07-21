@@ -22,6 +22,7 @@
 @import 'Components/Image/Image';
 @import 'Components/Input/Input';
 @import 'Components/Link/Link';
+@import 'Components/Meter/Meter';
 @import 'Components/Ribbon/Ribbon';
 @import 'Components/SidebarItem/SidebarItem';
 @import 'Components/StripedBanner/StripedBanner';
@@ -90,6 +91,8 @@
 @import '../js/Components/VideoEditor/components/MultiLane/MultiLane';
 @import '../js/Components/VideoEditor/components/MediaLane/MediaItems/MediaItems';
 @import '../js/StimulusControllers/SolutionsApp/CuttingSolutions';
+
+@import '../js/StimulusControllers/Schreibtisch/Schreibtisch';
 
 ///////////////////////////////////////////////
 // Styles for server side rendered templates //

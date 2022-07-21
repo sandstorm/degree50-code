@@ -1,3 +1,10 @@
+controllers_schreibtisch:
+    resource: ../../src/Schreibtisch/Controller/
+    type: annotation
+    prefix:
+        en: '/en'
+        de: '/'
+
 controllers_mediathek:
     resource: ../../src/Mediathek/Controller/
     type: annotation

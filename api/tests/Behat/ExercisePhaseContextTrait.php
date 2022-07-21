@@ -402,7 +402,7 @@ trait ExercisePhaseContextTrait
 
     public function assertExercisePhaseTeamForUserExists(User $user, ExercisePhase $exercisePhase)
     {
-        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
 
         assertNotNull($exercisePhaseTeam);
     }

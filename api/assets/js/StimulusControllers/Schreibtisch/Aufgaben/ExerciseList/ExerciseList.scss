@@ -1,0 +1,20 @@
+.exercise-list {
+    th,
+    td {
+        padding: $theme__spacing--small;
+    }
+
+    tr {
+        border-spacing: $theme__spacing--small;
+    }
+
+    tbody tr {
+        border: 1px solid transparent;
+
+        &:focus,
+        &:focus-within,
+        &:hover {
+            border-color: $theme__color__secondary;
+        }
+    }
+}

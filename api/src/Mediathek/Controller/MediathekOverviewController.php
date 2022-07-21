@@ -5,6 +5,7 @@ namespace App\Mediathek\Controller;
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Video\Video;
+use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Video\VideoRepository;
 use Psr\Log\LoggerInterface;
@@ -12,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -22,16 +24,21 @@ class MediathekOverviewController extends AbstractController
 {
     private VideoRepository $videoRepository;
     private CourseRepository $courseRepository;
+    private VideoFavouritesService $videoFavouritesService;
+    private Security $security;
     private LoggerInterface $logger;
 
     public function __construct(
         VideoRepository $videoRepository,
         CourseRepository $courseRepository,
+        VideoFavouritesService $videoFavouritesService,
+        Security $security,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->videoRepository = $videoRepository;
         $this->courseRepository = $courseRepository;
+        $this->videoFavouritesService = $videoFavouritesService;
+        $this->security = $security;
         $this->logger = $logger;
     }
 
@@ -54,42 +61,52 @@ class MediathekOverviewController extends AbstractController
     }
 
     /**
-     * @param Video[] $videos
+     * @IsGranted("favor", subject="video")
+     * @Route("/mediathek/favor/{id?}", name="mediathek__video--favor")
+     */
+    public function toggleFavorVideo(Video $video): Response
+    {
+        $user = $this->security->getUser();
+
+        $this->videoFavouritesService->toggleFavorite($video, $user);
+
+        return $this->redirectToRoute('mediathek--index');
+    }
+
+    /**
+     * @param Video[] $otherVideos
      * @return array[]
      */
-    private function getVideosGrouped(array $videos): array
+    private function getVideosGrouped(array $otherVideos): array
     {
         /** @var User $user */
         $user = $this->getUser();
 
+        $groupedVideosBuilder = new GroupedVideosBuilder($this->videoFavouritesService, $user);
+        $groupedVideosBuilder->setUser($user);
+
         // we need all the videos, also the private ones that dont belong to any course
         $this->getDoctrine()->getManager()->getFilters()->disable('video_doctrine_filter');
-        $ownVideos = [
-            'id' => 'ownVideos',
-            'videos' => $this->videoRepository->findByCreatorWithoutCutVideos($user)
-        ];
+
+        $ownVideos = $this->videoRepository->findByCreatorWithoutCutVideos($user);
+
+        foreach ($ownVideos as $_key => $ownVideo) {
+            $groupedVideosBuilder->addOwnVideo($ownVideo);
+        }
 
         $this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
-
-        $otherVideos = [
-            'id' => 'otherVideos',
-            'videos' => []
-        ];
 
         // TODO
         // We should filter cut videos or make it possible to actually play them back.
         // Currently cut videos by other creators are not playable inside the mediathek, but are shown anyway.
 
-        foreach ($videos as $video) {
+        foreach ($otherVideos as $video) {
             if ($video->getCreator() !== $user) {
-                array_push($otherVideos['videos'], $video);
+                $groupedVideosBuilder->addOtherVideo($video);
             }
         }
 
-        return [
-            $ownVideos,
-            $otherVideos
-        ];
+        return $groupedVideosBuilder->create();
     }
 
     /**

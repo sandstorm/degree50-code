@@ -1,0 +1,18 @@
+.meter {
+    width: 100%;
+}
+
+.meter__label {
+    display: flex;
+    justify-content: space-between;
+}
+
+.meter__bar {
+    height: $theme__spacing--base;
+    background: $theme__color__grey--light;
+
+    > div {
+        height: $theme__spacing--base;
+        background: $theme__color__primary;
+    }
+}

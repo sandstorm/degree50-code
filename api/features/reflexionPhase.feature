@@ -1,4 +1,4 @@
-@fixtures @playwright @only
+@fixtures @playwright
 Feature: A reflexionPhase should show solutions of the phase it depends on
 
     Background:

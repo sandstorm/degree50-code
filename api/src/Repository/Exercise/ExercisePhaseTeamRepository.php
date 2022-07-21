@@ -35,7 +35,7 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByMember(User $member, ExercisePhase $exercisePhase): ?ExercisePhaseTeam
+    public function findByMemberAndExercisePhase(User $member, ExercisePhase $exercisePhase): ?ExercisePhaseTeam
     {
         return $this->createQueryBuilder('e')
             ->andWhere(':member MEMBER OF e.members')

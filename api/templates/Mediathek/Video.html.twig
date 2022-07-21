@@ -1,38 +1,73 @@
 {% trans_default_domain 'forms' %}
 
-{% if is_granted('edit', video) %}
-    <div tabindex="0" class="video-tile" title="{{ video.description }}">
-        <input id="{{ video.id }}" type="checkbox" />
-        <label for="{{ video.id }}" class="video-tile__content">
-            <div class="video-tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
-            <span class="tile__date">{{ video.createdAt|date("d.m.Y") }}</span>
+{# NOTE: There's also a matching react component 'VideoTile.tsx' which maybe used in the context of a React app/widget! #}
+
+{% if is_granted('edit', video.data) %}
+    <div
+        tabindex="0"
+        class="video-tile"
+        title="{{ video.data.description }}"
+        data-test-id="video-tile--{{ video.data.id }}"
+    >
+        <input id="{{ video.data.id }}" type="checkbox" />
+        <label for="{{ video.data.id }}" class="video-tile__content">
+            <div class="video-tile__image" role="img" style="background-image: url({{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <span class="tile__date">{{ video.data.createdAt|date("d.m.Y") }}</span>
             <span class="tile__title">
-                {% if video.courses | length == 0 %}
+                {% if video.data.courses | length == 0 %}
                     <i class="fas fa-eye-slash" title="Video ist privat"></i>
                 {% endif %}
-                {{ video.title }}
+                {{ video.data.title }}
             </span>
             <i class="tile__action-icon fas fa-arrow-down"></i>
         </label>
         <div class="tile__actions">
-            <a href="{{ path('mediathek__video--player', {id: video.id}) }}">
+            <a href="{{ path('mediathek__video--player', {id: video.data.id}) }}">
                 <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
             </a>
-            <a href="{{ path('mediathek__video--edit', {id: video.id}) }}">
+            <a href="{{ path('mediathek__video--edit', {id: video.data.id}) }}">
                 <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
             </a>
-            <a href="{{ path('mediathek__video--delete', {id: video.id}) }}" class="color-alert">
+            <a href="{{ path('mediathek__video--delete', {id: video.data.id}) }}" class="color-alert">
                 <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
             </a>
         </div>
     </div>
 {% else %}
-    <a href="{{ path('mediathek__video--player', {id: video.id}) }}" class="video-tile" title="{{ video.description }}">
-        <div class="video-tile__content">
-            <div class="video-tile__image" role="img" style="background-image: url({{ video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
-            <span class="tile__date">{{ video.createdAt|date("d.m.Y") }}</span>
-            <span class="tile__title">{{ video.title }}</span>
-            <i class="tile__action-icon  fas fa-arrow-right"></i>
+    <div
+        tabindex="0"
+        class="video-tile"
+        title="{{ video.data.description }}"
+        data-test-id="video-tile--{{ video.data.id }}"
+    >
+        <input id="{{ video.data.id }}" type="checkbox" />
+
+        <label for="{{ video.data.id }}" class="video-tile__content">
+            <div class="video-tile__image" role="img" style="background-image: url({{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <span class="tile__date">{{ video.data.createdAt|date("d.m.Y") }}</span>
+            <span class="tile__title">
+                {% if video.data.courses | length == 0 %}
+                    <i class="fas fa-eye-slash" title="Video ist privat"></i>
+                {% endif %}
+                {{ video.data.title }}
+            </span>
+            <i class="tile__action-icon fas fa-arrow-down"></i>
+        </label>
+
+        <div class="tile__actions">
+            <a href="{{ path('mediathek__video--player', {id: video.data.id}) }}">
+                <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
+            </a>
+
+            {% if is_granted('favor', video.data) %}
+                <a href="{{ path('mediathek__video--favor', {id: video.data.id}) }}">
+                    {% if video.isFavorite %}
+                        <i class="fa-solid fa-star" data-test-id="remove-video-from-favorites--{{ video.data.id }}"></i> {% trans %}video.unfavor.title{% endtrans %}
+                    {% else %}
+                        <i class="fa-regular fa-star" data-test-id="add-video-to-favorites--{{ video.data.id }}"></i> {% trans %}video.favor.title{% endtrans %}
+                    {% endif %}
+                </a>
+            {% endif %}
         </div>
-    </a>
+    </div>
 {% endif %}

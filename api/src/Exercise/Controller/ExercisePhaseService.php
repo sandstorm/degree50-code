@@ -240,7 +240,7 @@ class ExercisePhaseService
      * */
     public function getStatusForUser(ExercisePhase $exercisePhase, User $user): ExercisePhaseStatus
     {
-        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMember($user, $exercisePhase);
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
 
         return $this->getStatusForTeam($exercisePhaseTeam);
     }

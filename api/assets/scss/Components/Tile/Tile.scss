@@ -199,15 +199,23 @@ $tileHeight--small: 150px;
         text-align: center;
     }
 
-    a {
+    a, button {
         display: block;
         width: 100%;
         padding: 5px;
 
         text-decoration: none;
         text-overflow: ellipsis;
+        text-align: left;
         white-space: nowrap;
         font-size: 0.9rem;
+        border: none;
+        color: $theme__color__primary;
+        background-color: $theme__color__white;
+
+        &:hover {
+            color: $theme__color__primary--dark;
+        }
     }
 }
 

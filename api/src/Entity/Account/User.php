@@ -5,6 +5,7 @@ namespace App\Entity\Account;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Video\Video;
+use App\Entity\Video\VideoFavorite;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -74,6 +75,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $createdVideos;
 
     /**
+     * @var VideoFavorite[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Video\VideoFavorite", mappedBy="user")
+     */
+    private Collection $favoriteVideos;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private bool $dataPrivacyAccepted = false;
@@ -98,6 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->courseRoles = new ArrayCollection();
         $this->createdExercises = new ArrayCollection();
         $this->createdVideos = new ArrayCollection();
+        $this->favoriteVideos = new ArrayCollection();
         $this->generateOrSetId($id);
     }
 

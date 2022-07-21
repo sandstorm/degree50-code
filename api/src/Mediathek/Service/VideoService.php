@@ -36,8 +36,7 @@ class VideoService
         AppRuntime $appRuntime,
         KernelInterface $kernel,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->videoRepository = $videoRepository;
@@ -140,9 +139,8 @@ class VideoService
     public function persistUploadedVideoFile(
         Video $video,
         VirtualizedFile $uploadedVideoFile,
-        User $user
-    )
-    {
+        User $user,
+    ) {
         $video->setCreator($user);
         $video->setUploadedVideoFile($uploadedVideoFile);
         $video->setDataPrivacyAccepted(false);
@@ -155,6 +153,8 @@ class VideoService
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
+
+        return $video;
     }
 
     /**
@@ -166,8 +166,7 @@ class VideoService
         Video $video,
         VirtualizedFile $uploadedSubtitleFile,
         User $user
-    )
-    {
+    ) {
         $video->setCreator($user);
         $video->setUploadedSubtitleFile($uploadedSubtitleFile);
         $video->setDataPrivacyAccepted(false);
@@ -199,8 +198,7 @@ class VideoService
         ?Video $video,
         VirtualizedFile $uploadedAudioDescriptionFile,
         User $user
-    )
-    {
+    ) {
         $video->setCreator($user);
         $video->setUploadedAudioDescriptionFile($uploadedAudioDescriptionFile);
         $video->setDataPrivacyAccepted(false);

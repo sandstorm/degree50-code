@@ -1,4 +1,9 @@
-import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import {
+  Action,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { Attachment } from '../AttachmentViewer/AttachmentViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
@@ -17,6 +22,7 @@ export interface ConfigState {
   type: ExercisePhaseTypesEnum
   userId: string
   userName: string
+  isStudent?: boolean
   isGroupPhase: boolean
   dependsOnPreviousPhase: boolean
   readOnly: boolean
@@ -26,6 +32,17 @@ export interface ConfigState {
   apiEndpoints: ApiEndpoints
   isSolutionView: boolean
 }
+
+const toggleVideoFavorite = createAsyncThunk(
+  'config/toggleVideoFavorite',
+  async (videoId: string) => {
+    await fetch(`/schreibtisch/video-favorites/toggle/${videoId}`, {
+      method: 'POST',
+    })
+
+    return videoId
+  }
+)
 
 const initialState: ConfigState = {
   title: '',
@@ -62,10 +79,26 @@ export const configSlice = createSlice({
       isSolutionView: true,
     }),
   },
+  extraReducers: (builder) => {
+    builder.addCase(toggleVideoFavorite.fulfilled, (state, _action) => {
+      return {
+        ...state,
+        videos: [
+          {
+            ...state.videos[0],
+            isFavorite: !state.videos[0]?.isFavorite,
+          },
+        ],
+      }
+    })
+  },
 })
 
 export const { hydrateConfig } = configSlice.actions
-export const { actions } = configSlice
+export const actions = {
+  ...configSlice.actions,
+  toggleVideoFavorite,
+}
 
 export type ConfigStateSlice = { config: ConfigState }
 
@@ -76,6 +109,9 @@ const selectUserName = (state: ConfigStateSlice) => state.config.userName
 const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 const selectVideos = (state: ConfigStateSlice) => state.config.videos
 const selectApiEndpoits = (state: ConfigStateSlice) => state.config.apiEndpoints
+const selectIsStudent = (state: ConfigStateSlice) =>
+  state.config.isStudent ?? false
+
 export const selectComponents = (state: ConfigStateSlice) =>
   state.config.components
 const selectIsGroupPhase = (state: ConfigStateSlice) =>
@@ -111,6 +147,7 @@ export const selectors = {
   selectDescription,
   selectDependsOnPreviousPhase,
   selectApiEndpoits,
+  selectIsStudent,
 }
 
 export default configSlice.reducer

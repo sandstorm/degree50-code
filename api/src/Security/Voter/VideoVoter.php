@@ -16,12 +16,13 @@ class VideoVoter extends Voter
 {
 
     const VIEW = 'view';
+    const FAVOR = 'favor';
     const EDIT = 'edit';
     const DELETE = 'delete';
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE])) {
+        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::FAVOR])) {
             return false;
         }
 
@@ -50,9 +51,18 @@ class VideoVoter extends Voter
                 return $this->canEdit($video, $user);
             case self::DELETE:
                 return $this->canDelete($video, $user);
+            case self::FAVOR:
+                return $this->canFavor($user);
         }
 
         throw new LogicException('This code should not be reached!');
+    }
+
+    private function canFavor(User $user): bool
+    {
+        // Currently only students do have a "Schreibtisch" and are therefore able
+        // to add videos to their favorites.
+        return $user->isStudent();
     }
 
     private function canView(Video $video, User $user): bool

@@ -122,10 +122,24 @@ trait PlaywrightContextTrait
      */
     public function thePageContainsAllTheFollowingTexts(TableNode $tableNode)
     {
+        $this->pageContainsTexts($tableNode->getColumn(0));
+    }
+
+    private function pageContainsTexts(array $texts)
+    {
         $content = $this->getPageContent();
 
-        foreach ($tableNode->getColumn(0) as $text) {
+        foreach ($texts as $text) {
             assertStringContainsString($text, $content);
+        }
+    }
+
+    private function pageNotContainTexts(array $texts)
+    {
+        $content = $this->getPageContent();
+
+        foreach ($texts as $text) {
+            assertStringNotContainsString($text, $content);
         }
     }
 
@@ -134,11 +148,7 @@ trait PlaywrightContextTrait
      */
     public function thePageContainsNoneTheFollowingTexts(TableNode $tableNode)
     {
-        $content = $this->getPageContent();
-
-        foreach ($tableNode->getColumn(0) as $text) {
-            assertStringNotContainsString($text, $content);
-        }
+        $this->pageNotContainTexts($tableNode->getColumn(0));
     }
 
     /**
@@ -153,6 +163,17 @@ trait PlaywrightContextTrait
                 await vars.page.fill(`input#course_name`, `Test-Kurs`)
                 await vars.page.selectOption(`select#course_users`, { index: 0 })
                 await vars.page.click(`button#course_save`)
+            "
+        );
+    }
+
+    public function waitForSelector($selector)
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            // language=JavaScript
+            "
+                await vars.page.waitForSelector('data-test-id=${selector}')
             "
         );
     }
@@ -174,7 +195,7 @@ trait PlaywrightContextTrait
     /**
      * @When I click on first element with testId :testId
      */
-    public function iClickOnFirstElementWith($testId)
+    public function iClickOnFirstElementWithTestId($testId)
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,

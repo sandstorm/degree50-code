@@ -1,0 +1,28 @@
+.schreibtisch-container {
+    height: 100%;
+}
+.schreibtisch {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr;
+
+    & > nav {
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        padding-right: $theme__spacing--base;
+
+        border-right: 2px solid $theme__color__grey--light;
+    }
+
+    & > main {
+        margin-left: $theme__spacing--base;
+        height: 100%;
+    }
+}
+
+// TODO: Why can we not use relative import?
+@import './assets/js/StimulusControllers/Schreibtisch/Aufgaben/ExerciseList/ExerciseList';
+@import './assets/js/StimulusControllers/Schreibtisch/VideoFavoriten/VideoFavorites/VideoFavorites';

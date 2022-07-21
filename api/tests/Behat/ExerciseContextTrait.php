@@ -97,6 +97,8 @@ trait ExerciseContextTrait
 
         $exercise->setCreator($user);
 
+        $exercise->setStatus(2);
+
         // This also sets the course on the exercise
         $course->addExercise($exercise);
 
