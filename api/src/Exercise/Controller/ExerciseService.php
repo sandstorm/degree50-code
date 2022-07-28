@@ -14,6 +14,7 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Account\CourseRoleRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ExerciseService
@@ -121,6 +122,27 @@ class ExerciseService
         foreach ($exercises as $exercise) {
             $this->deleteExercise($exercise);
         }
+    }
+
+    /**
+     * Checks the most current edit date by one of the users exercisePhaseTeams
+     * of the exercise.
+     * If no teams are found, null is returned.
+     * */
+    public function getLastEditDateByUser(Exercise $exercise, User $user): ?DateTimeImmutable
+    {
+        $phases = $exercise->getPhases()->toArray();
+
+        return array_reduce($phases, function ($maybeDate, $phase) use ($user) {
+            /** @var ExercisePhase $phase */
+            $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
+
+            if (is_null($team)) {
+                return $maybeDate;
+            }
+
+            return $team->getPhaseLastOpenedAt() > $maybeDate ? $team->getPhaseLastOpenedAt() : $maybeDate;
+        }, null);
     }
 
     /*

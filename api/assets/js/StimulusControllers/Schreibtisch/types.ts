@@ -8,6 +8,7 @@ export type Exercise = {
   status: 'IN_BEARBEITUNG' | 'IN_REVIEW' | 'NEU' | 'BEENDET'
   phaseCount: number
   completedPhases: number
+  lastEditedAt?: { date: string }
 }
 
 export type VideoFavoriteId = string
@@ -25,4 +26,5 @@ export type Material = {
   originalExercisePhaseName: string
   originalExercisePhaseUrl: string
   createdAt: { date: string }
+  lastUpdatedAt?: { date: string }
 }

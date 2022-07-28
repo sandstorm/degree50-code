@@ -55,6 +55,7 @@ export const SchreibtischApi = createApi({
 
         body: { material: material.material },
       }),
+      invalidatesTags: ['Material'],
     }),
   }),
 })
