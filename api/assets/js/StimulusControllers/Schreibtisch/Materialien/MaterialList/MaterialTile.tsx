@@ -12,6 +12,9 @@ const MaterialTile = (props: Props) => {
   const { material } = props
 
   const createdAt = format(new Date(material.createdAt.date), 'dd.MM.yyyy')
+  const lastUpdatedAt = material.lastUpdatedAt
+    ? format(new Date(material.lastUpdatedAt?.date), 'dd.MM.yyyy')
+    : undefined
 
   return (
     <NavLink
@@ -22,8 +25,16 @@ const MaterialTile = (props: Props) => {
     >
       <div className="tile__content">
         <i className="tile__icon fas fa-square-quote"></i>
-        Material von Phase: "{material.originalExercisePhaseName}"
-        <p>Erstellt am: {createdAt}</p>
+        <p className="material-tile__phase-name">
+          {material.originalExercisePhaseName}
+        </p>
+        {lastUpdatedAt ? (
+          <p className="material-tile__date">
+            Zuletzt geändert: {lastUpdatedAt}
+          </p>
+        ) : (
+          <p className="material-tile__date">Erstellt am: {createdAt}</p>
+        )}
       </div>
     </NavLink>
   )

@@ -34,6 +34,11 @@ class Material
     private ?DateTimeImmutable $createdAt;
 
     /**
+     * @ORM\Column(name="last_updated_at", type="datetimetz_immutable", nullable=true)
+     */
+    private ?DateTimeImmutable $lastUpdatedAt = null;
+
+    /**
      * @var ExercisePhaseTeam
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhaseTeam")
@@ -83,5 +88,15 @@ class Material
     public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getLastUpdatedAt()
+    {
+        return $this->lastUpdatedAt;
+    }
+
+    public function setLastUpdatedAt($lastUpdatedAt)
+    {
+        $this->lastUpdatedAt = $lastUpdatedAt;
     }
 }

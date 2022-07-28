@@ -156,6 +156,7 @@
             href="{{ path('mediathek__video--favor', {id: video.data.id}) }}"
             class="video-tile__favor-button"
             title="{% trans %}video.unfavor.title{% endtrans %}"
+            data-test-id="video-tile__favor-button-{{ video.data.id }}"
         >
             <i class="fa-solid fa-star-sharp" data-test-id="remove-video-from-favorites--{{ video.data.id }}"></i>
         </a>
@@ -165,6 +166,7 @@
             id="favor-button--{{ video.data.id }}"
             href="{{ path('mediathek__video--favor', {id: video.data.id}) }}"
             class="video-tile__favor-button"
+            data-test-id="video-tile__favor-button-{{ video.data.id }}"
             title="{% trans %}video.favor.title{% endtrans %}"
         >
             <i class="fa-regular fa-star-sharp" data-test-id="add-video-to-favorites--{{ video.data.id }}"></i>

@@ -40,6 +40,7 @@ class UserMaterialService
     public function updateMaterial(Material $material, string $newValue)
     {
         $material->setMaterial($newValue);
+        $material->setLastUpdatedAt(new DateTimeImmutable());
 
         $this->eventStore->addEvent('MaterialUpdated', [
             'materialId' => $material->getId(),

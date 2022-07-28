@@ -17,6 +17,7 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Service\UserMaterialService;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -313,6 +314,7 @@ class ExercisePhaseService
             // a user might re-enter the phase after the status has already been set to "BEENDET".
             // In that case we want the phase to reflect that, by having the "IN_BEARBEITUNG" status again.
             $exercisePhaseTeam->setStatus(ExercisePhase\ExercisePhaseStatus::IN_BEARBEITUNG);
+            $exercisePhaseTeam->setPhaseLastOpenedAt(new DateTimeImmutable());
 
             $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [
                 'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),

@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -58,6 +59,11 @@ class ExercisePhaseTeam
      * @ORM\Column(type="string", enumType=ExercisePhaseStatus::class)
      */
     private ExercisePhaseStatus $status = ExercisePhaseStatus::IN_BEARBEITUNG;
+
+    /**
+     * @ORM\Column(name="phase_last_opened_at", type="datetimetz_immutable", nullable=true)
+     */
+    private ?DateTimeImmutable $phaseLastOpenedAt = null;
 
     public function __construct(?string $id = null)
     {
@@ -192,5 +198,15 @@ class ExercisePhaseTeam
                 return $member->isDozent() || $member->isAdmin();
             }
         );
+    }
+
+    public function getPhaseLastOpenedAt()
+    {
+        return $this->phaseLastOpenedAt;
+    }
+
+    public function setPhaseLastOpenedAt($phaseLastOpenedAt)
+    {
+        $this->phaseLastOpenedAt = $phaseLastOpenedAt;
     }
 }

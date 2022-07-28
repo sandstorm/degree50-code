@@ -901,10 +901,8 @@ final class DegreeContext implements Context
 
         // navigate to video page in Mediathek
         $this->iClickOnFirstElementWithTestId('header-menu-mediathek');
-        // open tile menu
-        $this->iClickOnFirstElementWithTestId('video-tile--video3');
         // click "zu Favoriten hinzufügen" button
-        $this->iClickOnFirstElementWithTestId('add-video-to-favorites--video3');
+        $this->iClickOnFirstElementWithTestId('video-tile__favor-button-video3');
     }
 
     /**
@@ -942,10 +940,8 @@ final class DegreeContext implements Context
 
         // navigate to video page in Mediathek
         $this->iClickOnFirstElementWithTestId('header-menu-mediathek');
-        // open tile menu
-        $this->iClickOnFirstElementWithTestId('video-tile--video1');
-        // click "zu Favoriten hinzufügen" button
-        $this->iClickOnFirstElementWithTestId('remove-video-from-favorites--video1');
+        // Remove from favorites
+        $this->iClickOnFirstElementWithTestId('video-tile__favor-button-video1');
     }
 
     /**

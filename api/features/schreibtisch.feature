@@ -40,7 +40,7 @@ Feature: Students can access their available videos, exercises and materials via
     @integration @material
     Scenario: A student can access their finished materials in "Materialien"
         Given I am a student
-        And I have a "Material"
+        And I have a "Material" "material1"
         When I access "Meine Materialien"
         Then My Material is shown
 
