@@ -762,6 +762,7 @@ final class DegreeContext implements Context
      */
     public function iGetAccessToSchreibtisch()
     {
+        $this->waitForSelector('schreibtisch-navigation');
         $this->pageContainsTexts(["Meine Aufgaben", "Meine Videofavoriten", "Meine Materialien"]);
     }
 

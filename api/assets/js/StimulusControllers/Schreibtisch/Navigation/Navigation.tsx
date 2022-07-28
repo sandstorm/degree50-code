@@ -8,7 +8,10 @@ import NavElement from './NavElement'
 
 const Navigation = () => {
   return (
-    <nav className="sidebar-navigation sidebar">
+    <nav
+      className="sidebar-navigation sidebar"
+      data-test-id="schreibtisch-navigation"
+    >
       <div className="sidebar__content">
         <div className="sidebar__group">
           <div className="sidebar__group-body">
