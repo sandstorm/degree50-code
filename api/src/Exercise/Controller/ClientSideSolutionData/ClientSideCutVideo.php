@@ -25,8 +25,7 @@ final class ClientSideCutVideo implements JsonSerializable
         ?string $description,
         ?float $duration,
         ClientSideVideoUrl $url
-    )
-    {
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;

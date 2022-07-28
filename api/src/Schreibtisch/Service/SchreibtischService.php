@@ -6,11 +6,14 @@ use App\Admin\Controller\UserService;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
+use App\Entity\Material\Material;
 use App\Entity\Video\VideoFavorite;
 use App\Exercise\Controller\ExercisePhaseService;
 use App\Exercise\Controller\ExerciseService;
 use App\Mediathek\Service\VideoFavouritesService;
+use App\Service\UserMaterialService;
 use App\Twig\AppRuntime;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SchreibtischService
 {
@@ -18,6 +21,8 @@ class SchreibtischService
     private UserService $userService;
     private ExercisePhaseService $exercisePhaseService;
     private VideoFavouritesService $videoFavouritesService;
+    private UserMaterialService $materialService;
+    private UrlGeneratorInterface $router;
     private AppRuntime $appRuntime;
 
     public function __construct(
@@ -25,13 +30,17 @@ class SchreibtischService
         UserService $userService,
         ExercisePhaseService $exercisePhaseService,
         VideoFavouritesService $videoFavouritesService,
+        UserMaterialService $materialService,
         AppRuntime $appRuntime,
+        UrlGeneratorInterface $router,
     ) {
         $this->exerciseService = $exerciseService;
         $this->userService = $userService;
         $this->exercisePhaseService = $exercisePhaseService;
         $this->videoFavouritesService = $videoFavouritesService;
         $this->appRuntime = $appRuntime;
+        $this->materialService = $materialService;
+        $this->router = $router;
     }
 
     public function getExercisesApiResponse(): array
@@ -61,7 +70,40 @@ class SchreibtischService
 
         return array_map(fn (VideoFavorite $videoFavorite) => [
             'id' => $videoFavorite->getId(),
-            'video' => $videoFavorite->getVideo()->getAsArray($this->appRuntime)
+            'video' => array_merge(
+                $videoFavorite->getVideo()->getAsClientSideVideo($this->appRuntime)->toArray(),
+                [
+                    'userIsCreator' => $user === $videoFavorite->getVideo()->getCreator()
+                ]
+            )
         ], $videoFavorites);
+    }
+
+    public function getMaterialResponse(): array
+    {
+        $user = $this->userService->getLoggendInUser();
+        $materialList = $this->materialService->getMaterialsForUser($user);
+
+        return array_map(function (Material $material) {
+            $originalExercisePhaseTeam = $material->getOriginalPhaseTeam();
+            $originalExercisePhase = $originalExercisePhaseTeam->getExercisePhase();
+            $originalExercise = $originalExercisePhase->getBelongsToExercise();
+
+            return [
+                'id' => $material->getId(),
+                'material' => $material->getMaterial(),
+                'owner' => $material->getOwner()->getUsername(),
+                'originalExercisePhaseTeamId' => $originalExercisePhaseTeam->getId(),
+                'originalExercisePhaseName' => $originalExercisePhase->getName(),
+                'originalExercisePhaseUrl' => $this->router->generate(
+                    "exercise-overview__exercise--show-phase-overview",
+                    [
+                        "id" => $originalExercise->getId(),
+                        "phaseId" => $originalExercisePhase->getId()
+                    ]
+                ),
+                'createdAt' => $material->getCreatedAt(),
+            ];
+        }, $materialList);
     }
 }

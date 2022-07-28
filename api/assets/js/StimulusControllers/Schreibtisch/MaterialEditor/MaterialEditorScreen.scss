@@ -1,0 +1,29 @@
+.material-editor__wrapper {
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    .material-editor {
+        height: auto;
+        flex: 1 0 auto;
+    }
+
+    .material-editor__footer {
+        flex: 0 0 auto;
+        height: $theme__spacing__huge;
+        width: 100%;
+
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+
+        padding-bottom: $theme__spacing__base;
+    }
+}
+
+.material-editor__save-button {
+    width: 102px;
+}

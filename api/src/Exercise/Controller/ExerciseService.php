@@ -22,6 +22,7 @@ class ExerciseService
     private DoctrineIntegratedEventStore $eventStore;
     private ExerciseRepository $exerciseRepository;
     private ExercisePhaseService $exercisePhaseService;
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
     const EXERCISE_DOCTRINE_FILTER_NAME = 'exercise_doctrine_filter';
 
@@ -30,12 +31,13 @@ class ExerciseService
         DoctrineIntegratedEventStore $eventStore,
         ExerciseRepository $exerciseRepository,
         ExercisePhaseService $exercisePhaseService,
-    )
-    {
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+    ) {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->exerciseRepository = $exerciseRepository;
         $this->exercisePhaseService = $exercisePhaseService;
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
     }
 
     /**
@@ -64,9 +66,52 @@ class ExerciseService
             $result = [...$result, ...$courseRole->getCourse()->getExercises()];
         };
 
-        $visibleExercises = array_filter($result, fn(Exercise $exercise) => $exercise->getStatus() !== 0);
+        $visibleExercises = array_filter($result, fn (Exercise $exercise) => $exercise->getStatus() !== 0);
 
         return $visibleExercises;
+    }
+
+    public function getPhasesWithStatusMetadata(Exercise $exercise, User $user)
+    {
+        $isStudent = $user->isStudent();
+
+        $phases = $exercise->getPhases();
+
+        return $phases->map(function ($phase) use ($isStudent, $user) {
+            if ($isStudent) {
+                return $this->getPhaseWithStatusMetadataForStudent($phase, $user);
+            } else {
+                return $this->getPhaseWithStatusMetadataForDozent($phase);
+            }
+        });
+    }
+
+    private function getPhaseWithStatusMetadataForStudent(ExercisePhase $phase, User $user)
+    {
+        $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
+
+        // TODO
+        // Refactor this in to Dtos
+        return [
+            'phase' => $phase,
+            'metadata' => [
+                'needsReview' => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW,
+                'isDone' => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::BEENDET
+            ]
+        ];
+    }
+
+    private function getPhaseWithStatusMetadataForDozent(ExercisePhase $phase)
+    {
+        // TODO
+        // Refactor this in to Dtos
+        return [
+            'phase' => $phase,
+            'metadata' => [
+                'needsReview' => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase),
+                'isDone' => false, // not relevant for dozenten, but needed inside the twig template
+            ]
+        ];
     }
 
     public function deleteExercisesCreatedByUser(User $user): void
@@ -87,7 +132,7 @@ class ExerciseService
     public function needsReview(Exercise $exercise): bool
     {
         return $exercise->getPhases()->exists(
-            fn($_key, ExercisePhase $exercisePhase) => $exercisePhase->getTeams()->exists(fn($_key, ExercisePhaseTeam $team) => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW)
+            fn ($_key, ExercisePhase $exercisePhase) => $exercisePhase->getTeams()->exists(fn ($_key, ExercisePhaseTeam $team) => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW)
         );
     }
 
@@ -95,11 +140,11 @@ class ExerciseService
     {
         $exercisePhases = $exercise->getPhases();
         $teams = $exercise->getPhases()->map(
-            fn(ExercisePhase $phase) => $phase->getTeams()->filter(
-                fn(ExercisePhaseTeam $team) => $team->getMembers()->contains($user)
+            fn (ExercisePhase $phase) => $phase->getTeams()->filter(
+                fn (ExercisePhaseTeam $team) => $team->getMembers()->contains($user)
             )->first()
-        // Why "mixed": Collection filter returns false if collection is empty o.O
-        )->filter(fn(mixed $team) => $team instanceof ExercisePhaseTeam);
+            // Why "mixed": Collection filter returns false if collection is empty o.O
+        )->filter(fn (mixed $team) => $team instanceof ExercisePhaseTeam);
 
         // no phase started yet
         if ($teams->isEmpty()) {
@@ -110,7 +155,10 @@ class ExerciseService
             // at least one phase not started yet
             $teams->count() < $exercisePhases->count()
             // at least one phase in BEARBEITUNG
-            || $teams->exists(fn($_key, ExercisePhaseTeam $team) => $team->getStatus() === ExercisePhaseStatus::IN_BEARBEITUNG)
+            || $teams->exists(
+                fn ($_key, ExercisePhaseTeam $team) => $team->getStatus() === ExercisePhaseStatus::IN_BEARBEITUNG
+                    || $team->getStatus() === ExercisePhaseStatus::IN_REVIEW
+            )
         ) {
             return ExerciseStatus::IN_BEARBEITUNG;
         }

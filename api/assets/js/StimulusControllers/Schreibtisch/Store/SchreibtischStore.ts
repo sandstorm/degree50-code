@@ -13,7 +13,7 @@ export const store = configureStore({
     SchreibtischApi.middleware,
   ],
   devTools: {
-    name: 'ExercisePhaseApp',
+    name: 'SchreibtischApp',
   },
 })
 

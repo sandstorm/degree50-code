@@ -34,14 +34,25 @@
                     {% if exercisePhaseTeam.status.value == 'BEENDET' or exercisePhaseTeam.status.value == 'IN_REVIEW' %}
                         <button id="finish-phase" class="btn btn-primary footer__right" disabled="disabled">Phase Abschließen</button>
                     {% else %}
-                        <script type="application/javascript">
-                            const confirmFinishPhaseText = 'Nach Abschluss einer Material-Phase kann das Ergebnis nicht mehr angepasst werden. Zum Zwischenspeichern des Ergebnisses bitte auf "Speichern und Zurück" klicken.\n\n Fortfahren?'
-                            const finishReview = () => {
-                                if (window.confirm(confirmFinishPhaseText)) {
-                                    window.location.assign("{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}")
+                        {% if exercisePhase.reviewRequired %}
+                            <script type="application/javascript">
+                                const confirmFinishPhaseText = 'Nach Abschluss dieser Material-Phase kann das Ergebnis nicht mehr angepasst werden. Das Material wird dann von einer dozierenden Person begutachtet. Zum Zwischenspeichern des Ergebnisses bitte auf "Speichern und Zurück" klicken.\n\n Fortfahren?'
+                                const finishReview = () => {
+                                    if (window.confirm(confirmFinishPhaseText)) {
+                                        window.location.assign("{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}")
+                                    }
                                 }
-                            }
-                        </script>
+                            </script>
+                        {% else %}
+                            <script type="application/javascript">
+                                const confirmFinishPhaseText = 'Nach Abschluss einer Material-Phase kann das Ergebnis nicht mehr angepasst werden. Zum Zwischenspeichern des Ergebnisses bitte auf "Speichern und Zurück" klicken.\n\n Fortfahren?'
+                                const finishReview = () => {
+                                    if (window.confirm(confirmFinishPhaseText)) {
+                                        window.location.assign("{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}")
+                                    }
+                                }
+                            </script>
+                        {% endif %}
                         <button id="finish-phase" class="btn btn-primary footer__right" onclick="finishReview()">Phase Abschließen</button>
                     {% endif %}
                 {% else %}

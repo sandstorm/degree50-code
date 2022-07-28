@@ -6,6 +6,26 @@ type Props = {
   exercise: Exercise
 }
 
+const prettyConvertPhaseStatus = (backendStatus: Exercise['status']) => {
+  switch (backendStatus) {
+    case 'IN_BEARBEITUNG': {
+      return 'In Bearbeitung'
+    }
+
+    case 'IN_REVIEW': {
+      return 'Wird von Dozent geprüft'
+    }
+
+    case 'NEU': {
+      return 'Neu'
+    }
+
+    case 'BEENDET': {
+      return 'Beendet'
+    }
+  }
+}
+
 const ExerciseListItem = (props: Props) => {
   const { exercise } = props
 
@@ -13,7 +33,7 @@ const ExerciseListItem = (props: Props) => {
   const ariaLabel = 'TODO'
 
   return (
-    <tr tabIndex={0} aria-label={ariaLabel}>
+    <tr aria-label={ariaLabel}>
       <td>"Fachbereich"</td>
       <td>{exercise.course}</td>
       <td>
@@ -25,7 +45,9 @@ const ExerciseListItem = (props: Props) => {
           phaseCount={exercise.phaseCount}
         />
       </td>
-      <td>{exercise.status}</td>
+      <td className="exercise-status">
+        {prettyConvertPhaseStatus(exercise.status)}
+      </td>
     </tr>
   )
 }

@@ -160,9 +160,9 @@ trait PlaywrightContextTrait
             $this->playwrightContext,
             // language=JavaScript
             "
-                await vars.page.fill(`input#course_name`, `Test-Kurs`)
-                await vars.page.selectOption(`select#course_users`, { index: 0 })
-                await vars.page.click(`button#course_save`)
+                await vars.page.fill(`input#course_form_name`, `Test-Kurs`)
+                await vars.page.selectOption(`select#course_form_users`, { index: 0 })
+                await vars.page.click(`button#course_form_save`)
             "
         );
     }

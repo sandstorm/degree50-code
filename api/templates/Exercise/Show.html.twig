@@ -3,7 +3,7 @@
 {% block title %}{{ exercise.name }}{% endblock %}
 
 {% block sidebar %}
-    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: exercise.phases, currentItemId: exercisePhase.id, showSolution: false}) }}
+    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: phases, currentItemId: exercisePhase.id, showSolution: false}) }}
 {% endblock %}
 
 {% block layoutCssClass %}main--with-footer{% endblock %}

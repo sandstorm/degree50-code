@@ -17,6 +17,10 @@ import { togglePlayShortCutAction } from './shortCutSagas/togglePlayShortCutSaga
 import { openOverlayAction } from './shortCutSagas/openOverlayShortCutSaga'
 import { initializeSoundOptionsAction } from './shortCutSoundsSaga'
 import { SetVideoPlayerTimeOverlayId } from '../SetVideoPlayerTimeContext/Overlays/SetVideoPlayerTimeOverlay'
+import {
+  selectors,
+  actions,
+} from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 
 export const useShortCuts = () => {
   const dispatch = useAppDispatch()
@@ -138,6 +142,26 @@ export const useShortCuts = () => {
     setVideoPlayerTimeHotKey,
     (keyboardEvent) => {
       dispatch(openOverlayAction(SetVideoPlayerTimeOverlayId))
+
+      keyboardEvent.preventDefault()
+      keyboardEvent.stopPropagation()
+    },
+    { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'] },
+    [dispatch]
+  )
+
+  // toggleVideoFavorite
+  const toggleVideoFavoriteHotkey = useAppSelector((state) =>
+    selectHotKeyByShortCutId(state, ShortCutId.TOGGLE_VIDEO_FAVORITE)
+  )
+  const video = useAppSelector(selectors.config.selectVideos)[0]
+
+  useHotkeys(
+    toggleVideoFavoriteHotkey,
+    (keyboardEvent) => {
+      if (video) {
+        dispatch(actions.config.toggleVideoFavorite(video.id))
+      }
 
       keyboardEvent.preventDefault()
       keyboardEvent.stopPropagation()

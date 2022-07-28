@@ -37,22 +37,22 @@ Feature: Students can access their available videos, exercises and materials via
         When I remove a video from my favorites
         Then I no longer see this video in "Meine Videofavoriten"
 
-    @integration
+    @integration @material
     Scenario: A student can access their finished materials in "Materialien"
         Given I am a student
         And I have a "Material"
         When I access "Meine Materialien"
         Then My Material is shown
 
-    @playwright
+    @playwright @material
     Scenario: A student can edit their finished materials without altering the original solution
         Given I am a student logged in via browser
-        And I have a "Material"
-        When I access a material from "Meine Materialien"
-        And Edit this material
-        Then My changes are persisted
-        And The original solution remains untouched
-
+        And I have a "Material" "material1"
+        When I access "material1" from "Meine Materialien"
+        And I edit material "material1" and change it to "updated material"
+        And Save this material
+        Then The material "material1" should be "updated material" after a page reload
+        And The original solution of phase "material1" remains untouched
 
     #############
     # Filtering #

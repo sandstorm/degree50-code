@@ -1,3 +1,11 @@
 .video-favorites {
     list-style: none;
+
+    margin-top: $theme__spacing__large;
+
+    .tile__title:focus,
+    .tile__title:active,
+    .tile__title:hover {
+        color: $theme__color__secondary;
+    }
 }

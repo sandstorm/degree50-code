@@ -305,7 +305,7 @@ class Video
         return $this->createdAt;
     }
 
-    public function getAsArray(AppRuntime $appRuntime): ClientSideCutVideo
+    public function getAsClientSideVideo(AppRuntime $appRuntime): ClientSideCutVideo
     {
         $videoUrl = $appRuntime->virtualizedFileUrl($this->getEncodedVideoDirectory());
 

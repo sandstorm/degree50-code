@@ -1,5 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Exercise, VideoFavorite, VideoFavoriteId } from '../types'
+import {
+  Exercise,
+  Material,
+  MaterialId,
+  VideoFavorite,
+  VideoFavoriteId,
+} from '../types'
 
 export const BASE_URL = `${window.location.origin.toString()}`
 export const SERVER_BASE_URL = `${BASE_URL}/schreibtisch`
@@ -33,6 +39,23 @@ export const SchreibtischApi = createApi({
       }),
       invalidatesTags: ['Videos'],
     }),
+
+    material: build.query<Array<Material>, void>({
+      query: () => 'material',
+      providesTags: ['Material'],
+    }),
+
+    updateMaterial: build.mutation<void, { material: string; id: MaterialId }>({
+      query: (material) => ({
+        url: `material/update/${material.id}`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        body: { material: material.material },
+      }),
+    }),
   }),
 })
 
@@ -44,4 +67,6 @@ export const {
   useExercisesQuery,
   useVideoFavoritesQuery,
   useToggleVideoFavoriteMutation,
+  useMaterialQuery,
+  useUpdateMaterialMutation,
 } = SchreibtischApi

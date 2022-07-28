@@ -1,11 +1,17 @@
-{% extends 'Base.html.twig' %}
+{% extends 'Layouts/Default.html.twig' %}
+{% block title %}Schreibtisch{% endblock %}
+{% block main %}
+    {{ include('Partials/Header.html.twig') }}
 
-{% block title %}Aufgaben Übersicht{% endblock %}
+    <main class="main main--with-header {% block layoutCssClass %}{% endblock %}">
+        <div class="main-inner">
+            {{ include('Partials/FlashMessages.html.twig') }}
 
-{% block body %}
-    <div class="schreibtisch-container" data-controller="schreibtisch" data-schreibtisch-props="{{ { todo: 'data hydration' } |json_encode|e('html_attr') }}">
-        <div class="loading-screen">
-            <i class="fas fa-spinner fa-spin"></i>
+            <div class="schreibtisch-container" data-controller="schreibtisch" data-schreibtisch-props="{{ { todo: 'data hydration' } |json_encode|e('html_attr') }}">
+                <div class="loading-screen">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 {% endblock %}
