@@ -11,6 +11,7 @@ class ExerciseWithReviewStatusDTO
 {
     private Exercise $exercise;
     private bool $needsReview;
+    private bool $isDone;
 
     public static function create(Exercise $exercise, bool $needsReview)
     {

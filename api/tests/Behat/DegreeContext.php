@@ -11,11 +11,13 @@ use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\MaterialPhase;
 use App\Entity\Exercise\ExerciseStatus;
 use App\Entity\Exercise\Solution;
+use App\Entity\Material\Material;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoFavorite;
 use App\Entity\VirtualizedFile;
@@ -29,9 +31,11 @@ use App\Repository\Account\UserRepository;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
+use App\Repository\Material\MaterialRepository;
 use App\Service\UserMaterialService;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
+use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
 use Doctrine\ORM\EntityManagerInterface;
 use Sandstorm\E2ETestTools\Tests\Behavior\Bootstrap\PlaywrightTrait;
@@ -42,6 +46,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
 use function PHPUnit\Framework\assertContains;
+use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertTrue;
 
@@ -98,6 +103,7 @@ final class DegreeContext implements Context
     private ExercisePhaseService $exercisePhaseService;
     private VideoFavouritesService $videoFavouritesService;
     private UserMaterialService $materialService;
+    private MaterialRepository $materialRepository;
 
     private ?string $clientSideJSON;
 
@@ -143,6 +149,7 @@ final class DegreeContext implements Context
         ExercisePhaseService $exercisePhaseService,
         VideoFavouritesService $videoFavouritesService,
         UserMaterialService $materialService,
+        MaterialRepository $materialRepository,
     ) {
         $this->minkSession = $minkSession;
         $this->router = $router;
@@ -163,6 +170,7 @@ final class DegreeContext implements Context
         $this->exercisePhaseService = $exercisePhaseService;
         $this->videoFavouritesService = $videoFavouritesService;
         $this->materialService = $materialService;
+        $this->materialRepository = $materialRepository;
 
         $this->setupPlaywright();
     }
@@ -202,15 +210,6 @@ final class DegreeContext implements Context
         return $exerciseId . '_' . $courseId . '_' . $baseId;
     }
 
-    private function createExercisePhaseIdForExercise1InCourse1(ExercisePhaseType $exercisePhaseType)
-    {
-        return $this->createExercisePhaseId(
-            self::TEST_EXERCISE_1,
-            self::TEST_COURSE_1,
-            $this->getTestPhaseIdByType($exercisePhaseType)
-        );
-    }
-
     private function createPhaseOfTypeInExercise(
         string $phaseId,
         string $exerciseId,
@@ -246,63 +245,67 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I am a student in a course with an exercise
+     * @Given an exercise with id :id in course :courseId exists
      * */
-    public function iAmACourseStudentWithAnExercise()
+    public function anExerciseWithIdExistsInCourse(string $id, string $courseId)
+    {
+        $testDozent = $this->createUser(self::TEST_DOZENT);
+        $this->userHasCourseRole($testDozent, CourseRole::DOZENT, $courseId);
+
+        $this->createExerciseInCourseByUser($id, $courseId, $testDozent);
+    }
+
+    /**
+     * @Given The exercise :exerciseId has these phases:
+     */
+    public function theExerciseHasThesePhases(string $exerciseId, TableNode $phases)
+    {
+        foreach ($phases as $_key => $phase) {
+            $phaseId = $phase['id'];
+            $type = ExercisePhaseType::from($phase['type']);
+            $isGroupPhase = $phase['isGroupPhase'] === 'yes' ? true : false;
+
+            $this->createPhaseOfTypeInExercise(
+                $phaseId,
+                $exerciseId,
+                $type,
+                $isGroupPhase
+            );
+        }
+    }
+    /**
+     * @Given I am a student working on :exerciseId
+     * */
+    public function iAmAStudentWorkingOnExercise($exerciseId)
     {
         $this->createUser(self::TEST_STUDENT, null, false, true);
-        $this->ensureCourseExists(self::TEST_COURSE_1);
-        $this->userHasCourseRole(self::TEST_STUDENT, CourseRole::STUDENT, self::TEST_COURSE_1);
-
-        $testDozent = $this->createUser(self::TEST_DOZENT);
-        $this->userHasCourseRole($testDozent, CourseRole::DOZENT, self::TEST_COURSE_1);
-
-        $this->createExerciseInCourseByUser(self::TEST_EXERCISE_1, self::TEST_COURSE_1, $testDozent);
-
-        // Create phases
-        $this->createPhaseOfTypeInExercise(
-            $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::ANALYSIS_PHASE_BASE_ID),
-            self::TEST_EXERCISE_1,
-            ExercisePhaseType::VIDEO_ANALYSIS
-        );
-
-        $this->createPhaseOfTypeInExercise(
-            $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::CUT_PHASE_BASE_ID),
-            self::TEST_EXERCISE_1,
-            ExercisePhaseType::VIDEO_CUT
-        );
-
-        $this->createPhaseOfTypeInExercise(
-            $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::GROUP_PHASE_BASE_ID),
-            self::TEST_EXERCISE_1,
-            ExercisePhaseType::VIDEO_CUT,
-            true
-        );
-
-        $this->createPhaseOfTypeInExercise(
-            $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::REFLEXION_PHASE_BASE_ID),
-            self::TEST_EXERCISE_1,
-            ExercisePhaseType::REFLEXION
-        );
-
-        $this->createPhaseOfTypeInExercise(
-            $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::MATERIAL_PHASE_BASE_ID),
-            self::TEST_EXERCISE_1,
-            ExercisePhaseType::MATERIAL
-        );
+        $exericse = $this->exerciseRepository->find($exerciseId);
+        $course = $exericse->getCourse();
+        $this->userHasCourseRole(self::TEST_STUDENT, CourseRole::STUDENT, $course->getId());
 
         // Log in as the actual user we want to progress further with
         $this->iAmLoggedInAs(self::TEST_STUDENT);
     }
 
     /**
-     * @When I have not yet started an exercise phase
+     * @When I have not yet started an exercise phase of :exerciseId
      */
-    public function iHaveNotYetStartedAnExercisePhase()
+    public function iHaveNotYetStartedAnExercisePhase($exerciseId)
     {
         $this->assertExercisePhaseTeamsCreatedByUserDoNotExist(self::TEST_STUDENT);
     }
 
+    /**
+     * @Then The derived exercise phase status of :phaseId should be :phaseStatus for the student
+     */
+    public function theDerivedExercisePhaseStatusOfShouldBe(string $phaseId, string $phaseStatus)
+    {
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+
+        $actualExercisePhaseStatus = $this->exercisePhaseService->getStatusForUser($exercisePhase, $user);
+        assertEquals($phaseStatus, $actualExercisePhaseStatus->value);
+    }
     /**
      * @Then The derived exercise phase status of the first phase should be :exercisePhaseStatus
      */
@@ -348,25 +351,36 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @When I enter a group for a group exercise phase
+     * @Then The students exercise phase status of :phaseId should be :status
      */
-    public function iEnterAGroupForAGroupExercisePhase()
+    public function theStudentsExercisePhaseStatusOfShouldBe(string $phaseId, string $phaseStatus)
     {
-        $exercisePhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::GROUP_PHASE_BASE_ID));
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+        assertEquals($phaseStatus, $this->exercisePhaseService->getStatusForUser($exercisePhase, $user)->value);
+    }
+
+    /**
+     * @When I enter a group in :phaseId
+     */
+    public function iEnterAGroupIn($phaseId)
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercisePhaseTeam = new ExercisePhaseTeam();
-        $exercisePhaseTeam->setExercisePhase($exercisePhase);
-        $exercisePhaseTeam->addMember($user);
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
+    }
 
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
+    /**
+     * @Then The phase status of :phaseId should be :status
+     */
+    public function thePhaseStatusOfPhaseShouldBe($phaseId, $status)
+    {
+        $user = $this->userRepository->find(self::TEST_STUDENT);
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
 
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->flush();
+        assertEquals($status, $this->exercisePhaseService->getStatusForUser($exercisePhase, $user)->value);
     }
 
     /**
@@ -381,77 +395,46 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @When I start an exercise phase for the first time
+     * @When I start :phaseId for the first time
      */
-    public function iStartAnExercisePhaseForTheFirstTime()
+    public function iStartAnExercisePhaseForTheFirstTime(string $phaseId)
     {
-        $this->startExercisePhaseForTheFirstTime(ExercisePhaseType::VIDEO_ANALYSIS->value);
-    }
-
-    private function getTestPhaseIdByType(ExercisePhaseType $phaseType)
-    {
-        return match ($phaseType) {
-            ExercisePhaseType::VIDEO_ANALYSIS => $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::ANALYSIS_PHASE_BASE_ID),
-            ExercisePhaseType::VIDEO_CUT => $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::CUT_PHASE_BASE_ID),
-            ExercisePhaseType::REFLEXION => $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::REFLEXION_PHASE_BASE_ID),
-            ExercisePhaseType::MATERIAL => $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::MATERIAL_PHASE_BASE_ID),
-        };
-    }
-
-    private function startExercisePhaseForTheFirstTime(string $phaseType)
-    {
-        $exercisePhaseId = $this->getTestPhaseIdByType(ExercisePhaseType::from($phaseType));
-        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercisePhaseTeam = new ExercisePhaseTeam();
-        $exercisePhaseTeam->setExercisePhase($exercisePhase);
-        $exercisePhaseTeam->addMember($user);
-
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->flush();
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
 
         $this->currentExercisePhase = $exercisePhase;
+        return $exercisePhase;
     }
 
     /**
-     * @When I finish the exercise phase
+     * @When I finish phase :phaseId
      */
-    public function iFinishTheExercisePhase()
+    public function iFinishTheExercisePhase(string $phaseId)
     {
-        $exercisePhase = $this->currentExercisePhase;
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
         $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
+
+        $this->createDummySolution($exercisePhaseTeam, 'solution1', '<p>Material</p>');
 
         $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
     }
 
     /**
-     * @Given I am working on a phase of type :phaseType where a review is required: :reviewIsRequired
+     * @Given I am working on a phase :phaseId where a review is required: :reviewIsRequired
      */
-    public function iAmWorkingOnAPhaseOfTypeThatHasTheReviewState(string $phaseType, string $reviewIsRequired)
+    public function iAmWorkingOnAPhaseThatHasTheReviewState(string $phaseId, string $reviewIsRequired)
     {
-        $exercisePhaseId = $this->getTestPhaseIdByType(ExercisePhaseType::from($phaseType));
-        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
 
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercisePhaseTeam = new ExercisePhaseTeam();
-        $exercisePhaseTeam->setExercisePhase($exercisePhase);
-        $exercisePhaseTeam->addMember($user);
-
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
 
 
         if ($exercisePhase instanceof MaterialPhase) {
@@ -479,87 +462,41 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I am a dozent in a course with a material phase to review
+     * @Given I am a dozent in course :coursId
      */
-    public function iAmADozentInACourseWithAMaterialPhaseToReview()
+    public function iAmADozentInCourse($courseId)
     {
-        $student = $this->createUser(self::TEST_STUDENT);
-        $this->ensureCourseExists(self::TEST_COURSE_1);
-        $this->userHasCourseRole(self::TEST_STUDENT, CourseRole::STUDENT, self::TEST_COURSE_1);
-
-        // Create exercise
-        $this->createUser(self::TEST_DOZENT);
-        $this->userHasCourseRole(self::TEST_DOZENT, CourseRole::DOZENT, self::TEST_COURSE_1);
-
-        // WHY:
-        // This is a hack, because we currently do have a prePersist hook for exercise creation
-        // (see ExerciseEventListener). That way the exercise creator will always be set to
-        // the user who is currently logged in, no matter what has been set before.
-        $this->iAmLoggedInAs(self::TEST_DOZENT);
-        $this->ensureExerciseByUserInCourseExists(self::TEST_EXERCISE_1, self::TEST_DOZENT, self::TEST_COURSE_1);
-
-        // Create phases
-        $exercisePhase = $this->createExercisePhase([
-            "type" => "material",
-            "id" => self::MATERIAL_PHASE_BASE_ID,
-            "name" => self::MATERIAL_PHASE_BASE_ID,
-            "task" => "description of material1",
-            "isGroupPhase" => false,
-            "sorting" => 0,
-            "otherSolutionsAreAccessible" => true,
-            "belongsToExercise" => self::TEST_EXERCISE_1,
-            "dependsOnPhase" => false,
-        ]);
-
-        $exercisePhaseTeam = new ExercisePhaseTeam();
-        $exercisePhaseTeam->setExercisePhase($exercisePhase);
-        $exercisePhaseTeam->addMember($student);
-        $exercisePhaseTeam->setCreator($student);
-
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $student->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
-
-        if ($exercisePhase instanceof MaterialPhase) {
-            $exercisePhase->setReviewRequired(true);
+        $dozent = $this->userRepository->find(self::TEST_DOZENT);
+        if (is_null($dozent)) {
+            $this->createUser(self::TEST_DOZENT);
+            $this->userHasCourseRole(self::TEST_DOZENT, CourseRole::DOZENT, $courseId);
         }
-
-        $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
-
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->flush();
-
-        // WHY: Persist current ExercisePhase that the user is working on in context
-        $this->currentExercisePhase = $exercisePhase;
     }
 
     /**
-     * @When I finish the review of a solution of a material phase
+     * @When I finish the review of a solution of a material phase :phaseId
      **/
-    public function iFinishTheReviewOfAMaterialPhase()
+    public function iFinishTheReviewOfAMaterialPhase($phaseId)
     {
-        $phase = $this->currentExercisePhase;
+        $phase = $this->exercisePhaseRepository->find($phaseId);
 
         if ($phase instanceof MaterialPhase) {
             $student = $this->userRepository->find(self::TEST_STUDENT);
             $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($student, $phase);
+            $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
             $this->exercisePhaseService->finishReview($exercisePhaseTeam);
         }
     }
 
     /**
-     * @When I open an exercise phase with status :phaseStatus
+     * @When I open an exercise phase :phaseId with status :phaseStatus
      */
-    public function iOpenAnExercisePhaseWithStatus($phaseStatus)
+    public function iOpenAnExercisePhaseWithStatus($phaseId, $phaseStatus)
     {
         $status = ExercisePhase\ExercisePhaseStatus::tryFrom($phaseStatus);
 
-        $this->iStartAnExercisePhaseForTheFirstTime();
+        $exercisePhase = $this->iStartAnExercisePhaseForTheFirstTime($phaseId);
 
-        $exercisePhase = $this->currentExercisePhase;
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
         // state setzen
@@ -579,21 +516,13 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @When I have started at least one exercise phase
+     * @Then The derived exercise status of :exerciseId should be :exerciseStatus
      */
-    public function iHaveStartedAtLeastOneExercisePhase()
-    {
-        $this->iStartAnExercisePhaseForTheFirstTime();
-    }
-
-    /**
-     * @Then The derived exercise status should be :exerciseStatus
-     */
-    public function theDerivedExerciseStatusShouldBe(string $exerciseStatus)
+    public function theDerivedExerciseStatusShouldBe($exerciseId, string $exerciseStatus)
     {
         $status = ExerciseStatus::tryFrom($exerciseStatus);
         $user = $this->userRepository->find(self::TEST_STUDENT);
-        $exercise = $this->exerciseRepository->find(self::TEST_EXERCISE_1);
+        $exercise = $this->exerciseRepository->find($exerciseId);
 
         assertEquals($status, $this->exerciseService->getExerciseStatusForUser($exercise, $user));
     }
@@ -618,53 +547,16 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @When I have finished one exercise phase
+     * @When I have finished all phases of exercise :exerciseId
      */
-    public function iHaveFinishedOneExercisePhases()
+    public function iHaveFinishedAllPhasesOfAnExercise($exerciseId)
     {
         $student = $this->userRepository->find(self::TEST_STUDENT);
+        $exercise = $this->exerciseRepository->find($exerciseId);
 
-        $analysisPhase = $this->exercisePhaseRepository->find($this->getTestPhaseIdByType(ExercisePhaseType::VIDEO_ANALYSIS));
-
-        $this->finishPhase($analysisPhase, $student);
-    }
-
-    /**
-     * @When I have finished all phases of an exercise
-     */
-    public function iHaveFinishedAllPhasesOfAnExercise()
-    {
-        $student = $this->userRepository->find(self::TEST_STUDENT);
-
-        $analysisPhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::ANALYSIS_PHASE_BASE_ID));
-        $cutPhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::CUT_PHASE_BASE_ID));
-        $groupPhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::GROUP_PHASE_BASE_ID));
-        $reflexionPhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::REFLEXION_PHASE_BASE_ID));
-        $materialPhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::MATERIAL_PHASE_BASE_ID));
-
-        foreach ([$analysisPhase, $cutPhase, $groupPhase, $reflexionPhase, $materialPhase] as $exercisePhase) {
-            $this->finishPhase($exercisePhase, $student);
+        foreach ($exercise->getPhases() as $_key => $phase) {
+            $this->finishPhase($phase, $student);
         }
-    }
-
-    /**
-     * @When I open a material exercise phase with status :phaseStatus
-     */
-    public function iOpenAMaterialExercisePhaseWithStatus(string $phaseStatus)
-    {
-        $status = ExercisePhase\ExercisePhaseStatus::tryFrom($phaseStatus);
-
-        $this->startExercisePhaseForTheFirstTime('material');
-
-        $exercisePhase = $this->currentExercisePhase;
-        $user = $this->userRepository->find(self::TEST_STUDENT);
-
-        // state setzen
-        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
-        $exercisePhaseTeam->setStatus($status);
-
-        // open
-        $this->exercisePhaseService->openPhase($exercisePhaseTeam);
     }
 
     /**
@@ -1072,10 +964,34 @@ final class DegreeContext implements Context
         ]);
     }
 
+    private function createDummySolution(
+        ExercisePhaseTeam $exercisePhaseTeam,
+        string $id,
+        string $content,
+    ) {
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+
+        // create solution
+        $solution = new Solution($id, $content);
+
+        // add solution to team
+        $exercisePhaseTeam->setSolution($solution);
+
+        $this->eventStore->addEvent('SolutionShared', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'solutionId' => $solution->getId()
+        ]);
+
+        $this->entityManager->persist($solution);
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+    }
+
     /**
-     * @Given I have a "Material"
+     * @Given I have a "Material" :materialId
      */
-    public function iHaveAMaterial()
+    public function iHaveAMaterial($materialId)
     {
         $user = $this->currentUser;
         $testDozent = $this->createUser(self::TEST_DOZENT);
@@ -1090,7 +1006,7 @@ final class DegreeContext implements Context
 
         // material phase
         $materialPhase = $this->createPhaseOfTypeInExercise(
-            $this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::MATERIAL_PHASE_BASE_ID),
+            $materialId,
             self::TEST_EXERCISE_1,
             ExercisePhaseType::MATERIAL
         );
@@ -1101,23 +1017,9 @@ final class DegreeContext implements Context
 
         $exercisePhaseTeam = $this->ensureAnExerciseTeamForUserAndPhaseExists($user, $materialPhase);
 
-        // create solution
-        $solution = new Solution('solution1', '<p>test material</p>');
+        $this->createDummySolution($exercisePhaseTeam, 'solution1', '<p>Material</p>');
 
-        // add solution to team
-        $exercisePhaseTeam->setSolution($solution);
-
-        $this->eventStore->addEvent('SolutionShared', [
-            'exercisePhaseId' => $materialPhase->getId(),
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'solutionId' => $solution->getId()
-        ]);
-
-        $this->entityManager->persist($solution);
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->flush();
-
-        $this->materialService->createMaterialForUser($user, $exercisePhaseTeam, 'material1');
+        $this->materialService->createMaterialForUser($user, $exercisePhaseTeam, $materialId);
     }
 
     /**
@@ -1141,64 +1043,150 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @When I access a material from "Meine Materialien"
+     * @When I access :materialId from "Meine Materialien"
      */
-    public function iAccessAMaterialFrom()
+    public function iAccessAMaterialFrom($materialId)
     {
         $this->iNavigateToSchreibtisch();
-        $this->iClickOnFirstElementWithTestId('meine-materialien');
+        $this->iClickOn('Meine Materialien');
+
+        $originalExercisePhaseId = $materialId;
+        $originalExercisePhase = $this->exercisePhaseRepository->find($originalExercisePhaseId);
+        $this->iClickOn($originalExercisePhase->getName());
     }
 
     /**
-     * @When Edit this material
+     * @When I edit material :materialId and change it to :materialValue
      */
-    public function editThisMaterial()
+    public function editThisMaterial($materialId, $materialValue)
     {
-        // open editor
-        $this->iClickOnFirstElementWithTestId('edit--material1');
         // edit material
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             // language=JavaScript
             "
-                await vars.page.fill('data-test-id=edit-content', '<p>updated material</p>')
-                await vars.page.click('data-test-id=save-material')
+                await vars.page.fill('.ck-content', '{$materialValue}')
+                await Promise.all([
+                    vars.page.click('text=Speichern'),
+                    vars.page.waitForRequest('**/schreibtisch/material/update/{$materialId}')
+                ])
             "
         );
     }
 
     /**
-     * @Then My changes are persisted
+     * @Then The material :materialId should be :materialValue after a page reload
      */
-    public function myChangesArePersisted()
+    public function materialShouldBe($materialId, $materialValue)
     {
-        // we already reloaded by clicking the "Speicher" button
-        $this->pageContainsTexts([
-            '<p>updated material</p>',
-        ]);
-
-        $this->pageNotContainTexts([
-            '<p>test material</p>',
-        ]);
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            // language=JavaScript
+            "
+                await vars.page.reload()
+                await vars.page.waitForSelector('text={$materialValue}')
+            "
+        );
     }
 
     /**
-     * @Then The original solution remains untouched
+     * @Then The original solution of phase :phaseId remains untouched
      */
-    public function theOriginalSolutionRemainsUntouched()
+    public function theOriginalSolutionRemainsUntouched($phaseId)
     {
         // get team's solution
-        $exercisePhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(
-            self::TEST_EXERCISE_1,
-            self::TEST_COURSE_1,
-            self::MATERIAL_PHASE_BASE_ID,
-        ));
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
 
         $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($this->currentUser, $exercisePhase);
         $actual = $exercisePhaseTeam->getSolution()->getSolution()->getMaterial()->toString();
 
-        $expected = '<p>test material</p>';
+        $expected = '<p>Material</p>';
 
         assertEquals($expected, $actual);
+    }
+
+    /**
+     * @Then A copy of the material from :phaseId should be added to the "Schreibtisch" of each user who was part of the Group which created the solution
+     */
+    public function aCopyOfTheMaterialShouldBeAddedToTheOfEachUserWhoWasPartOfTheGroupWhichCreatedTheSolution($phaseId)
+    {
+        $student = $this->userRepository->find(self::TEST_STUDENT);
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($student, $exercisePhase);
+
+        $materials = $this->materialService->getMaterialsForUser($student);
+        $materialForExercise = array_filter($materials, function (Material $material) use ($exercisePhaseTeam) {
+            return $material->getOriginalPhaseTeam() === $exercisePhaseTeam;
+        });
+
+        // We just assert, that we receive the correct amount of materials after filtering (which is one, because a single user
+        // can always only have a single material per exercisePhase).
+        // Asserting the materialID would not work, because its set randomly and it would not make sense to dilute the
+        // API of our finishPhase() method, just to be able to inject a custom ID in tests.
+        assertCount(1, $materialForExercise);
+    }
+
+    /**
+     * @When the material phase :phaseId is "IN_REVIEW"
+     */
+    public function theMaterialPhaseIs($phaseId)
+    {
+        $materialPhase = $this->exercisePhaseRepository->find($phaseId);
+
+        $phaseTeam = $this->exercisePhaseTeamRepository->findByExercisePhase($materialPhase)[0];
+
+        $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
+        $this->entityManager->persist($phaseTeam);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @When Save this material
+     */
+    public function saveThisMaterial()
+    {
+        // edit material
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            // language=JavaScript
+            "
+                await vars.page.click('text=Speichern')
+            "
+        );
+    }
+
+    /**
+     * @Given material phase :phaseId requires a review: :reviewRequired
+     */
+    public function materialPhaseRequiresAReview($phaseId, $reviewRequired)
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+
+        if ($exercisePhase instanceof MaterialPhase) {
+            $reviewRequired = $reviewRequired === 'yes';
+            $exercisePhase->setReviewRequired($reviewRequired);
+
+            $this->eventStore->addEvent('MaterialExercisePhaseEdited', [
+                'exercisePhaseId' => $exercisePhase->getId(),
+                'name' => $exercisePhase->getName(),
+                'task' => $exercisePhase->getTask(),
+                'isGroupPhase' => $exercisePhase->isGroupPhase(),
+                'dependsOnPreviousPhase' => $exercisePhase->getDependsOnExercisePhase() !== null,
+                'components' => $exercisePhase->getComponents(),
+                'reviewRequired' => $reviewRequired,
+            ]);
+
+            $this->entityManager->persist($exercisePhase);
+            $this->entityManager->flush();
+        }
+
+        $user = $this->createUser(self::TEST_STUDENT, null, false, true);
+        $course = $exercisePhase->getBelongsToExercise()->getCourse();
+        $this->userHasCourseRole(self::TEST_STUDENT, CourseRole::STUDENT, $course->getId());
+
+        $exercisePhaseTeam = $this->ensureAnExerciseTeamForUserAndPhaseExists($user, $exercisePhase);
+
+        $this->createDummySolution($exercisePhaseTeam, 'solution1', '<p>Material</p>');
     }
 }

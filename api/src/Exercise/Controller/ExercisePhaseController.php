@@ -55,6 +55,7 @@ class ExercisePhaseController extends AbstractController
     private RouterInterface $router;
     private ExercisePhaseRepository $exercisePhaseRepository;
     private ExercisePhaseService $exercisePhaseService;
+    private ExerciseService $exerciseService;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private LoggerInterface $logger;
     private SolutionService $solutionService;
@@ -74,6 +75,7 @@ class ExercisePhaseController extends AbstractController
         SolutionService $solutionService,
         SolutionRepository $solutionRepository,
         VideoFavouritesService $videoFavouritesService,
+        ExerciseService $exerciseService,
     ) {
         $this->logger = $logger;
         $this->translator = $translator;
@@ -87,6 +89,7 @@ class ExercisePhaseController extends AbstractController
         $this->solutionService = $solutionService;
         $this->solutionRepository = $solutionRepository;
         $this->videoFavouritesService = $videoFavouritesService;
+        $this->exerciseService = $exerciseService;
     }
 
     /**
@@ -115,13 +118,15 @@ class ExercisePhaseController extends AbstractController
         );
 
         $template = 'ExercisePhase/ShowSolution.html.twig';
+        $exercise = $exercisePhase->getBelongsToExercise();
 
         return $this->render($template, [
             'config' => $config,
             'data' => $clientSideSolutionDataBuilder,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
-            'exercise' => $exercisePhase->getBelongsToExercise(),
+            'exercise' => $exercise,
+            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'currentEditor' => null,
         ], $response);
@@ -180,6 +185,7 @@ class ExercisePhaseController extends AbstractController
             ]),
             'data' => $clientSideSolutionDataBuilder,
             'exercise' => $exercise,
+            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'exercisePhase' => $reflexionPhase,
         ]);
@@ -208,13 +214,15 @@ class ExercisePhaseController extends AbstractController
         );
 
         $template = 'ExercisePhase/Show.html.twig';
+        $exercise = $exercisePhase->getBelongsToExercise();
 
         return $this->render($template, [
             'config' => $config,
             'data' => $clientSideSolutionDataBuilder,
             'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
             'exercisePhase' => $exercisePhase,
-            'exercise' => $exercisePhase->getBelongsToExercise(),
+            'exercise' => $exercise,
+            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId(),
         ], $response);
@@ -253,12 +261,16 @@ class ExercisePhaseController extends AbstractController
             fn (ExercisePhase $phase) => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase)
         )->map(fn (ExercisePhase $phase) => $phase->getId());
 
+        $user = $this->getUser();
+        $phases = $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user);
+
         return $this->render('ExercisePhase/ShowSolutions.html.twig', [
             'config' => $this->getConfig($exercisePhase, true),
             'data' => $data,
             'exercise' => $exercise,
+            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
+            'phases' => $phases,
             'currentExercisePhase' => $exercisePhase,
-            'phasesWithReviewRequiredIds' => $phasesWithReviewRequiredIds,
         ]);
     }
 
@@ -540,7 +552,7 @@ class ExercisePhaseController extends AbstractController
                 ];
             }, $exercisePhase->getAttachment()->toArray()),
             'videos' => array_map(function (Video $video) use ($user) {
-                return array_merge($video->getAsArray($this->appRuntime)->toArray(), [
+                return array_merge($video->getAsClientSideVideo($this->appRuntime)->toArray(), [
                     'isFavorite' => $this->videoFavouritesService->videoIsFavorite($video, $user)
                 ]);
             }, $exercisePhase->getVideos()->toArray()),

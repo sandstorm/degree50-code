@@ -14,7 +14,9 @@ use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
+use App\Service\UserMaterialService;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -23,15 +25,21 @@ class ExercisePhaseService
     private DoctrineIntegratedEventStore $eventStore;
     private EntityManagerInterface $entityManager;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
+    private UserMaterialService $materialService;
+    private AutosavedSolutionRepository $autosavedSolutionRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         DoctrineIntegratedEventStore $eventStore,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        UserMaterialService $materialService,
+        AutosavedSolutionRepository $autosavedSolutionRepository,
     ) {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
+        $this->materialService = $materialService;
+        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
     }
 
     /**
@@ -80,6 +88,7 @@ class ExercisePhaseService
                     ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase(),
                     ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
                     ExercisePhaseType::REFLEXION => new ReflexionPhase(),
+                    ExercisePhaseType::MATERIAL => new MaterialPhase(),
                 };
 
                 switch ($originalPhase->getType()) {
@@ -100,6 +109,14 @@ class ExercisePhaseService
                             };
                             break;
                         }
+
+                    case ExercisePhaseType::MATERIAL: {
+                            /** @var MaterialPhase $newPhase */
+                            /** @var MaterialPhase $originalPhase */
+                            $newPhase->setMaterial($originalPhase->getMaterial());
+                            $newPhase->setReviewRequired($originalPhase->getReviewRequired());
+                        }
+
                     case ExercisePhaseType::VIDEO_CUT:
                     case ExercisePhaseType::REFLEXION:
                         break;
@@ -153,32 +170,21 @@ class ExercisePhaseService
         return $newPhases;
     }
 
-    public static function finishPhase(ExercisePhaseTeam $phaseTeam): void
+    public function finishPhase(ExercisePhaseTeam $phaseTeam): void
     {
         $exercisePhase = $phaseTeam->getExercisePhase();
 
         switch ($exercisePhase->getType()) {
             case ExercisePhaseType::MATERIAL:
-                /** @var MaterialPhase $materialPhase */
-                $materialPhase = $exercisePhase;
-
-                if ($phaseTeam->getStatus() !== ExercisePhaseStatus::IN_BEARBEITUNG) {
-                    return;
-                }
-
-                if ($materialPhase->getReviewRequired()) {
-                    $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
-                } else {
-                    $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
-                }
+                $this->finishMaterialPhase($phaseTeam);
                 break;
             default:
-                $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
+                $this->finishRegularPhase($phaseTeam);
                 break;
         }
     }
 
-    public function finishReview(ExercisePhaseTeam $phaseTeam): void
+    private function finishRegularPhase(ExercisePhaseTeam $phaseTeam)
     {
         $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
 
@@ -189,6 +195,101 @@ class ExercisePhaseService
 
         $this->entityManager->persist($phaseTeam);
         $this->entityManager->flush();
+    }
+
+    /**
+     * Sets the status to "Beendet" for an exercisePhaseTeam of a material phase and
+     * also creates a copy of the material for each individual member of the team.
+     * */
+    private function finishMaterialPhase(ExercisePhaseTeam $phaseTeam)
+    {
+        $exercisePhase = $phaseTeam->getExercisePhase();
+        /** @var MaterialPhase $materialPhase */
+        $materialPhase = $exercisePhase;
+
+        if (
+            $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_BEARBEITUNG
+            && $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_REVIEW
+        ) {
+            return;
+        }
+
+        if (
+            $materialPhase->getReviewRequired()
+            && $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_REVIEW
+        ) {
+            $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
+
+            $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [
+                'exercisePhaseTeamId' => $phaseTeam->getId(),
+                'status' => ExercisePhaseStatus::IN_REVIEW
+            ]);
+        } else {
+            $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
+            $this->materialService->createMaterialsForExercisePhaseTeamMembers($phaseTeam);
+
+            $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [
+                'exercisePhaseTeamId' => $phaseTeam->getId(),
+                'status' => ExercisePhaseStatus::BEENDET
+            ]);
+        }
+
+        $this->entityManager->flush();
+        $this->entityManager->persist($phaseTeam);
+    }
+
+    /**
+     * Finds the last autosaved solution by an exercisePhaseTeam and
+     * Creates a solution entity using its contents.
+     * */
+    public function promoteLastAutosavedSolutionToRealSolution(ExercisePhaseTeam $exercisePhaseTeam)
+    {
+        $solution = $exercisePhaseTeam->getSolution();
+
+        // use solution of the latest autosaved one
+        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(
+            ['team' => $exercisePhaseTeam],
+            ['update_timestamp' => 'desc']
+        );
+
+        if ($latestAutosavedSolution) {
+            $solution->setSolution($latestAutosavedSolution->getSolution());
+            $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
+        }
+
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+
+        $this->eventStore->addEvent('SolutionUpdated', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'solutionId' => $solution->getId()
+        ]);
+
+        $this->entityManager->persist($solution);
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Removes autosaved solutions by an exercisePhaseTeam.
+     * */
+    public function cleanupAutosavedSolutions(ExercisePhaseTeam $exercisePhaseTeam)
+    {
+        $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();
+        foreach ($autosavedSolutions as $autosavedSolution) {
+            $this->entityManager->remove($autosavedSolution);
+        }
+
+        $this->eventStore->addEvent('AutosavedSolutionsRemoved', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+        ]);
+
+        $this->entityManager->flush();
+    }
+
+    public function finishReview(ExercisePhaseTeam $phaseTeam): void
+    {
+        $this->finishMaterialPhase($phaseTeam);
     }
 
     public function openPhase(ExercisePhaseTeam $exercisePhaseTeam): void
@@ -256,5 +357,35 @@ class ExercisePhaseService
         return $exercisePhaseTeams->exists(
             fn ($_key, $team) => $this->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW
         );
+    }
+
+    public function createPhaseTeam(ExercisePhase $exercisePhase)
+    {
+        $exercisePhaseTeam = new ExercisePhaseTeam();
+        $exercisePhaseTeam->setExercisePhase($exercisePhase);
+
+        $this->eventStore->addEvent('TeamCreated', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+
+        return $exercisePhaseTeam;
+    }
+
+    public function addMemberToPhaseTeam(ExercisePhaseTeam $exercisePhaseTeam, User $user)
+    {
+        $exercisePhaseTeam->addMember($user);
+
+        $this->eventStore->addEvent('MemberAddedToTeam', [
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+            'userId' => $user->getId(),
+            'exercisePhaseId' => $exercisePhaseTeam->getExercisePhase()->getId()
+        ]);
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
     }
 }

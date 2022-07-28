@@ -1,10 +1,65 @@
 .exercise-list {
+    margin-left: $theme__spacing__huge;
+    margin-top: $theme__spacing__large;
+
+    table-layout: fixed;
+    width: 80%;
+    border-collapse: collapse;
+
+    tbody td {
+        text-align: center;
+    }
+
+    thead th {
+        text-align: center;
+        padding-bottom: $theme__spacing__large;
+        border-bottom: 1px solid $theme__color__grey;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: $theme__color__white;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: $theme__color__grey--light;
+    }
+
+
     th,
     td {
         padding: $theme__spacing--small;
     }
 
+    th {
+        letter-spacing: 2;
+    }
+
+    td {
+        letter-spacing: 1;
+    }
+
+    thead th:nth-child(1) {
+      width: 15%;
+    }
+
+    thead th:nth-child(2) {
+      width: 15%;
+    }
+
+    thead th:nth-child(3) {
+      width: 30%;
+    }
+
+    thead th:nth-child(4) {
+      width: 15%;
+    }
+
+    thead th:nth-child(5) {
+      width: 25%;
+    }
+
     tr {
+        width: 100%;
         border-spacing: $theme__spacing--small;
     }
 
@@ -14,7 +69,12 @@
         &:focus,
         &:focus-within,
         &:hover {
-            border-color: $theme__color__secondary;
+            color: $theme__color__white;
+            background-color: $theme__color__secondary;
+
+            a {
+                color: $theme__color__primary--light;
+            }
         }
     }
 }

@@ -16,32 +16,35 @@
         <div class="sidebar__group-body">
             <ul class="list">
                 {% for item in sidebarItems %}
-                    <li class="sidebar-item {{ (item.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item) ? "" : "sidebar-item--disabled" }}" data-test-id="exercisePhaseSidebarItem">
+                    <li class="sidebar-item {{ (item.phase.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item.phase) ? "" : "sidebar-item--disabled" }}" data-test-id="exercisePhaseSidebarItem">
                         {% if showSolution %}
                             {{
                                 _self.sidebarLink(
-                                    item.name,
-                                    item.dependsOnExercisePhase != null,
-                                    item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
+                                    item.phase.name,
+                                    item.phase.dependsOnExercisePhase != null,
+                                    item.phase.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
                                         'exercise-overview__exercise-phase--show-solutions',
-                                        {id: exercise.id, phase_id: item.id}
+                                        {id: exercise.id, phase_id: item.phase.id}
                                     ),
                                     true,
-                                    item.id in phasesWithReviewRequiredIds
+                                    item.metadata.isDone,
+                                    item.metadata.needsReview,
                                 )
                             }}
                         {% else %}
                             {{
                                 _self.sidebarLink(
-                                    item.name,
-                                    item.dependsOnExercisePhase != null,
-                                    item.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
+                                    item.phase.name,
+                                    item.phase.dependsOnExercisePhase != null,
+                                    item.phase.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
                                         'exercise-overview__exercise--show-phase-overview',
-                                        {id: exercise.id, phaseId: item.id}
+                                        {id: exercise.id, phaseId: item.phase.id}
                                     ),
-                                    is_granted('viewExercisePhase', item)
+                                    is_granted('viewExercisePhase', item.phase),
+                                    item.metadata.isDone,
+                                    item.metadata.needsReview
                                 )
                             }}
                         {% endif %}
@@ -54,7 +57,7 @@
 
 
 
-{% macro sidebarLink(name, doesDependOnExercisePhase, iconClass, href, canView = true, reviewRequired = false)  %}
+{% macro sidebarLink(name, doesDependOnExercisePhase, iconClass, href, canView = true, isDone = false, reviewRequired = false)  %}
     <a
         class="nav-link"
         {% if canView %} href="{{ href }}" {% endif %}
@@ -66,7 +69,9 @@
         {% endif %}
         {{ name }}
         {% if reviewRequired %}
-            <i class="fa-regular fa-circle-exclamation-check" title="{{ 'exercise.labels.reviewRequired' | trans }}"></i>
+            <i class="fa-regular fa-circle-exclamation" title="{{ 'exercise.labels.reviewRequired' | trans }}"></i>
+        {% elseif isDone %}
+            <i class="fa-regular fa-check" title="{{ 'exercise.labels.reviewRequired' | trans }}"></i>
         {% endif %}
     </a>
 {% endmacro %}

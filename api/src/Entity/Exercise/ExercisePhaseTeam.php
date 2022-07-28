@@ -27,7 +27,7 @@ class ExercisePhaseTeam
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Exercise\Solution", cascade={"remove"})
      */
-    private ?Solution $solution;
+    private ?Solution $solution = null;
 
     /**
      * @var User[]

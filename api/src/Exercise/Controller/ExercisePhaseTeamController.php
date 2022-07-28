@@ -13,7 +13,6 @@ use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\LiveSync\LiveSyncService;
-use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -36,7 +35,6 @@ class ExercisePhaseTeamController extends AbstractController
     private LoggerInterface $logger;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
-    private AutosavedSolutionRepository $autosavedSolutionRepository;
     private LiveSyncService $liveSyncService;
     private MessageBusInterface $messageBus;
     private SolutionService $solutionService;
@@ -45,7 +43,6 @@ class ExercisePhaseTeamController extends AbstractController
     public function __construct(
         TranslatorInterface $translator,
         DoctrineIntegratedEventStore $eventStore,
-        AutosavedSolutionRepository $autosavedSolutionRepository,
         LiveSyncService $liveSyncService,
         MessageBusInterface $messageBus,
         SolutionService $solutionService,
@@ -54,7 +51,6 @@ class ExercisePhaseTeamController extends AbstractController
     ) {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
-        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
         $this->liveSyncService = $liveSyncService;
         $this->messageBus = $messageBus;
         $this->solutionService = $solutionService;
@@ -91,20 +87,8 @@ class ExercisePhaseTeamController extends AbstractController
             }
         }
 
-        // TODO
-        // extract into service
-        $exercisePhaseTeam = new ExercisePhaseTeam();
-        $exercisePhaseTeam->setExercisePhase($exercisePhase);
-        $exercisePhaseTeam->addMember($user);
-
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
-        $entityManager->persist($exercisePhaseTeam);
-        $entityManager->flush();
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
 
         if ($exercisePhase->isGroupPhase()) {
             $this->addFlash(
@@ -140,17 +124,7 @@ class ExercisePhaseTeamController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $exercisePhaseTeam->addMember($user);
-
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($exercisePhaseTeam);
-        $entityManager->flush();
+        $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
 
         $this->addFlash(
             'success',
@@ -242,42 +216,13 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function shareResult(ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $solution = $exercisePhaseTeam->getSolution();
-
-        // use solution of the latest autosaved one
-        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(
-            ['team' => $exercisePhaseTeam],
-            ['update_timestamp' => 'desc']
-        );
-
-        if ($latestAutosavedSolution) {
-            $solution->setSolution($latestAutosavedSolution->getSolution());
-            $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
-        }
-
-        // remove autosaved solutions
-        $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();
-        foreach ($autosavedSolutions as $autosavedSolution) {
-            $entityManager->remove($autosavedSolution);
-        }
-
-        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-        $this->eventStore->addEvent('SolutionShared', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'solutionId' => $solution->getId()
-        ]);
-
+        $this->exercisePhaseService->promoteLastAutosavedSolutionToRealSolution($exercisePhaseTeam);
+        $this->exercisePhaseService->cleanupAutosavedSolutions($exercisePhaseTeam);
         $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
-
-        $entityManager->persist($solution);
-        $entityManager->persist($exercisePhaseTeam);
-        $entityManager->flush();
 
         $this->dispatchCutListEncodingTask($exercisePhaseTeam);
 
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
         return $this->redirectToRoute(
             'exercise-overview__exercise--show-phase-overview',
             [
@@ -292,6 +237,9 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam): Response
     {
+        // TODO
+        // We might refactor this, so that this can be part of share_result instead and we
+        // no longer have the distinction inside the template (and also would not need this route anymore)
         $entityManager = $this->getDoctrine()->getManager();
 
         $this->exercisePhaseService->finishPhase($exercisePhaseTeam);

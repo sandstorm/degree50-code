@@ -6,7 +6,11 @@ const VideoFavorites = () => {
   const { data, isFetching, error } = useVideoFavoritesQuery()
 
   if (isFetching) {
-    return <p>...loading</p>
+    return (
+      <div className="loading-screen">
+        <i className="fas fa-spinner fa-spin"></i>
+      </div>
+    )
   }
 
   if (error || data === undefined) {
@@ -15,7 +19,7 @@ const VideoFavorites = () => {
   }
 
   if (data.length === 0) {
-    return <p>Keine Videos favorisiert</p>
+    return <p className="video-favorites">Keine Videos favorisiert</p>
   }
 
   // TODO: a11y

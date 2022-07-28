@@ -9,10 +9,9 @@
     {{ include(
         'Exercise/PhasesSidebar.html.twig',
         {
-            sidebarItems: exercise.phases,
+            sidebarItems: phases,
             currentItemId: currentExercisePhase.id,
             showSolution: true,
-            phasesWithReviewRequiredIds: phasesWithReviewRequiredIds
         }
        )
     }}

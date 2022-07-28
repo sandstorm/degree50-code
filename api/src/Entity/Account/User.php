@@ -82,6 +82,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $favoriteVideos;
 
     /**
+     * @var Material[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Material\Material", mappedBy="owner")
+     */
+    private Collection $materials;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private bool $dataPrivacyAccepted = false;

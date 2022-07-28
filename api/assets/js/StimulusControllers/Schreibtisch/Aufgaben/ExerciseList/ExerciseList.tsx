@@ -6,7 +6,11 @@ const ExerciseList = () => {
   const { data, isFetching, error } = useExercisesQuery()
 
   if (isFetching) {
-    return <p>...loading</p>
+    return (
+      <div className="loading-screen">
+        <i className="fas fa-spinner fa-spin"></i>
+      </div>
+    )
   }
 
   if (error || data === undefined) {

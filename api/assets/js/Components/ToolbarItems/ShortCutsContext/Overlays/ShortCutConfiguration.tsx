@@ -30,6 +30,8 @@ const shortCutIdToLabelMap: Record<ShortCutId, string> = {
   [ShortCutId.CREATE_VIDEO_CODE]: 'Neue Codierung erstellen',
   [ShortCutId.CREATE_VIDEO_CUT]: 'Neuen Schnitt erstellen',
   [ShortCutId.SET_VIDEO_PLAYER_TIME]: 'Zu bestimmter Zeit im Video Springen',
+  [ShortCutId.TOGGLE_VIDEO_FAVORITE]:
+    'Video zu/von Favoriten hinzufügen/entfernen',
 }
 
 type OwnProps = {

@@ -58,8 +58,7 @@ class VideoUploadController extends AbstractController
         VideoRepository $videoRepository,
         VideoService $videoService,
         AppRuntime $appRuntime,
-    )
-    {
+    ) {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->messageBus = $messageBus;
@@ -174,7 +173,7 @@ class VideoUploadController extends AbstractController
 
         return $this->render('Mediathek/VideoUpload/Edit.html.twig', [
             'video' => $video,
-            'videoMap' => $video->getAsArray($this->appRuntime),
+            'videoMap' => $video->getAsClientSideVideo($this->appRuntime),
             'form' => $form->createView(),
         ]);
     }

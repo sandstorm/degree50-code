@@ -34,7 +34,7 @@ class VideoPlayerController extends AbstractController
     {
         return $this->render('Mediathek/VideoUpload/VideoPlayer.html.twig', [
             'video' => $video,
-            'videoMap' => $video->getAsArray($this->appRuntime)
+            'videoMap' => $video->getAsClientSideVideo($this->appRuntime)
         ]);
     }
 }

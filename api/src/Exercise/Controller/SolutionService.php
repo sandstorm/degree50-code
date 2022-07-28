@@ -134,7 +134,7 @@ class SolutionService
         $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
         $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
 
-        $clientSideCutVideo = $cutVideo?->getAsArray($this->appRuntime);
+        $clientSideCutVideo = $cutVideo?->getAsClientSideVideo($this->appRuntime);
 
         $clientSideSolutionDataBuilder
             ->addCurrentSolution($solutionEntity->getSolution(), $exercisePhaseTeam, $clientSideCutVideo)
@@ -180,7 +180,7 @@ class SolutionService
                     $clientSideCutVideo = null;
 
                     try {
-                        $clientSideCutVideo = $solutionEntity->getCutVideo()?->getAsArray($this->appRuntime);
+                        $clientSideCutVideo = $solutionEntity->getCutVideo()?->getAsClientSideVideo($this->appRuntime);
                     } catch (EntityNotFoundException $e) {
                     }
 

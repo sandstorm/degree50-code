@@ -12,10 +12,6 @@
       "type": "string"
     }
   },
-  "required": [
-    "exercisePhaseTeamId",
-    "userId",
-    "exercisePhaseId"
-  ],
+  "required": ["exercisePhaseTeamId", "userId", "exercisePhaseId"],
   "additionalProperties": false
 }

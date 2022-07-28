@@ -2,15 +2,61 @@
 
 {# NOTE: There's also a matching react component 'VideoTile.tsx' which maybe used in the context of a React app/widget! #}
 
+{#
+    A11y + action handling concept:
+    -------------------------------
+
+    Unfortunately this template is quite complex.
+    Therefore I am trying to give a small rundown on how most things work in here,
+    to make it easier to get a grasp of this video tile.
+
+    We have two basic differences:
+    a) The user can be the creator of the video
+    b) The user just has access to the video.
+
+    Our goals for case b) are:
+    * The whole tile should be clickable and lead to the video player
+    * The favor button should work correctly
+    * Both elements should be reachable via tab presses
+    * Pressing enter when these elements are in focus should trigger their respective
+      action
+
+    Case a)
+    -------
+    The tile has a drop down menu providing edit, delete and play actions.
+    It also has the favor button in the top right edge of the tile.
+    The actions panel is triggered by toggling a css class via javascript.
+    The tile also has the favor button
+
+    Case b)
+    -------
+    This tile does not have the actions dropdown menu. Instead it only has a
+    title linking to the video player as well as the favor button.
+    The whole tile itself is also clickable and leads to the video player.
+
+    How does the favor button work?
+    -------------------------------
+    The favor button consists of multiple things:
+    1. The favor button is a link (so favoring triggers a full page reload). We also added some JS to
+       prevent the default click behavior of the parent tile (by stopping propagation)
+
+    How does the click on the tile work?
+    ------------------------------------
+    We attach a click and an on keypress handler via JS to the tile itself.
+    In both events we programmatically click the title link.
+    If a user tabs, they will directly land on the title link and will therefore be able
+    to press enter to navigate to the video player.
+#}
+
 {% if is_granted('edit', video.data) %}
     <div
         tabindex="0"
+        id="tile-{{ video.data.id }}"
         class="video-tile"
         title="{{ video.data.description }}"
         data-test-id="video-tile--{{ video.data.id }}"
     >
-        <input id="{{ video.data.id }}" type="checkbox" />
-        <label for="{{ video.data.id }}" class="video-tile__content">
+        <div for="{{ video.data.id }}" class="video-tile__content">
             <div class="video-tile__image" role="img" style="background-image: url({{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
             <span class="tile__date">{{ video.data.createdAt|date("d.m.Y") }}</span>
             <span class="tile__title">
@@ -20,12 +66,20 @@
                 {{ video.data.title }}
             </span>
             <i class="tile__action-icon fas fa-arrow-down"></i>
-        </label>
+            {% if app.user.isStudent %}
+                {{
+                    _self.favorButton(
+                        video
+                    )
+                }}
+            {% endif %}
+        </div>
+
         <div class="tile__actions">
-            <a href="{{ path('mediathek__video--player', {id: video.data.id}) }}">
+            <a href="{{ path('mediathek__video--player', {id: video.data.id}) }}" class="color-alert">
                 <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
             </a>
-            <a href="{{ path('mediathek__video--edit', {id: video.data.id}) }}">
+            <a href="{{ path('mediathek__video--edit', {id: video.data.id}) }}" class="color-alert">
                 <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
             </a>
             <a href="{{ path('mediathek__video--delete', {id: video.data.id}) }}" class="color-alert">
@@ -33,41 +87,98 @@
             </a>
         </div>
     </div>
+
+    <script>
+        const tileId = 'tile-{{ video.data.id }}';
+        const tile = document.getElementById(tileId);
+
+        tile.addEventListener('click', (e) => {
+            tile.classList.toggle('video-tile--show-actions')
+        })
+    </script>
 {% else %}
     <div
-        tabindex="0"
         class="video-tile"
+        id="tile-{{ video.data.id }}"
         title="{{ video.data.description }}"
-        data-test-id="video-tile--{{ video.data.id }}"
+        data-location="{{ path("mediathek__video--player", {id: video.data.id}) }}"
     >
-        <input id="{{ video.data.id }}" type="checkbox" />
+        <div class="video-tile__content">
+            {{
+                _self.favorButton(
+                    video
+                )
+            }}
 
-        <label for="{{ video.data.id }}" class="video-tile__content">
             <div class="video-tile__image" role="img" style="background-image: url({{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
-            <span class="tile__date">{{ video.data.createdAt|date("d.m.Y") }}</span>
-            <span class="tile__title">
-                {% if video.data.courses | length == 0 %}
-                    <i class="fas fa-eye-slash" title="Video ist privat"></i>
-                {% endif %}
-                {{ video.data.title }}
-            </span>
-            <i class="tile__action-icon fas fa-arrow-down"></i>
-        </label>
 
-        <div class="tile__actions">
-            <a href="{{ path('mediathek__video--player', {id: video.data.id}) }}">
-                <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
+            <span class="tile__date">{{ video.data.createdAt|date("d.m.Y") }}</span>
+
+            <a
+                tabindex="0"
+                id="tile__title-{{ video.data.id }}"
+                href="{{ path("mediathek__video--player", {id: video.data.id}) }}"
+                class="tile__title">
+                {{ video.data.title }}
             </a>
 
-            {% if is_granted('favor', video.data) %}
-                <a href="{{ path('mediathek__video--favor', {id: video.data.id}) }}">
-                    {% if video.isFavorite %}
-                        <i class="fa-solid fa-star" data-test-id="remove-video-from-favorites--{{ video.data.id }}"></i> {% trans %}video.unfavor.title{% endtrans %}
-                    {% else %}
-                        <i class="fa-regular fa-star" data-test-id="add-video-to-favorites--{{ video.data.id }}"></i> {% trans %}video.favor.title{% endtrans %}
-                    {% endif %}
-                </a>
-            {% endif %}
+            <i class="tile__action-icon  fas fa-arrow-right"></i>
         </div>
     </div>
+
+    <script type="application/javascript">
+        (() => {
+            const tileId = 'tile-{{ video.data.id }}';
+            const tile = document.getElementById(tileId);
+            const videoLocation = tile.dataset.location
+
+            tile.addEventListener("click", (event) => {
+                const titleLinkId = 'tile__title-{{ video.data.id }}'
+                const title = document.getElementById(titleLinkId)
+                title.click()
+            })
+
+            tile.addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    tile.click();
+                }
+            });
+        })()
+    </script>
 {% endif %}
+
+{% macro favorButton(video)  %}
+    {% if video.isFavorite %}
+        <a
+            tabindex="0"
+            id="favor-button--{{ video.data.id }}"
+            href="{{ path('mediathek__video--favor', {id: video.data.id}) }}"
+            class="video-tile__favor-button"
+            title="{% trans %}video.unfavor.title{% endtrans %}"
+        >
+            <i class="fa-solid fa-star-sharp" data-test-id="remove-video-from-favorites--{{ video.data.id }}"></i>
+        </a>
+    {% else %}
+        <a
+            tabindex="0"
+            id="favor-button--{{ video.data.id }}"
+            href="{{ path('mediathek__video--favor', {id: video.data.id}) }}"
+            class="video-tile__favor-button"
+            title="{% trans %}video.favor.title{% endtrans %}"
+        >
+            <i class="fa-regular fa-star-sharp" data-test-id="add-video-to-favorites--{{ video.data.id }}"></i>
+        </a>
+    {% endif %}
+
+    <script type="application/javascript">
+        (() => {
+            const favorLinkId = 'favor-button--{{ video.data.id }}'
+            const favorLink = document.getElementById(favorLinkId)
+
+            favorLink.addEventListener('click', (e) => {
+                e.stopPropagation()
+            })
+        })()
+    </script>
+{% endmacro %}
