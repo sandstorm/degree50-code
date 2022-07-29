@@ -19,7 +19,7 @@ const ListCodesOverlay = React.memo((props: Props) => {
   }
 
   return (
-    <Overlay closeCallback={close} title="Code-Liste">
+    <Overlay closeCallback={close} title="Codesystem">
       <VideoCodePrototypes />
     </Overlay>
   )

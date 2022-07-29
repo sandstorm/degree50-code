@@ -58,7 +58,7 @@ const TeamMembersListItem: React.FC<Props> = (props) => {
         }
     `
 
-  const buttonLabel = `Bearbeitender werden`
+  const buttonLabel = `Bearbeiter*innenkrone übernehmen`
 
   return (
     <li className={className}>
