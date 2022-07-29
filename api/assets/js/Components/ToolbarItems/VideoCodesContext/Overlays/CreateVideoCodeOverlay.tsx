@@ -95,7 +95,7 @@ const CreateVideoCodeOverlay: FC<Props> = (props) => {
   }
 
   return (
-    <Overlay closeCallback={close} title="Neuer VideoCode">
+    <Overlay closeCallback={close} title="Neue Codierung">
       <div className="time-input-wrapper">
         <TimeInput
           label="Start"
