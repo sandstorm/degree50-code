@@ -51,7 +51,14 @@ class ExerciseOverviewController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->redirectToRoute('exercise-overview');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($user->isStudent()) {
+            return $this->redirectToRoute('schreibtisch');
+        } else {
+            return $this->redirectToRoute('exercise-overview');
+        };
     }
 
     /**
