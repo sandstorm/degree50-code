@@ -30,6 +30,30 @@ export default class extends Controller {
 
         this.element.classList.add('dropzone')
 
+        // found on https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+        const allowedMimeTypes = [
+          'image/*',
+          'application/pdf',
+          // .doc
+          'application/msword',
+          // .docx
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          // .odp
+          'application/vnd.oasis.opendocument.presentation',
+          // .ods
+          'application/vnd.oasis.opendocument.spreadsheet',
+          // .odt
+          'application/vnd.oasis.opendocument.text',
+          // .ppt
+          'application/vnd.ms-powerpoint',
+          // .pptx
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+          // .xls
+          'application/vnd.ms-excel',
+          // .xlsx
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ].join(',')
+
         new Dropzone(this.element, {
             url: endpoint,
             timeout: 2 * 60 * 1000, // 2 minutes
@@ -39,7 +63,7 @@ export default class extends Controller {
             dictDefaultMessage: uploadLabel,
             maxFiles: 20,
             maxFilesize: 10000, // 10 GB
-            acceptedFiles: 'image/*,application/pdf',
+            acceptedFiles: allowedMimeTypes,
             addRemoveLinks: true,
             params: function params(files, xhr, chunk) {
                 if (chunk) {
