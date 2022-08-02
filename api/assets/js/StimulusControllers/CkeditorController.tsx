@@ -8,7 +8,7 @@ class CKEditorController extends Controller {
     /**
      * WHY: We use a form field to pass the value of CKEditor to symfony forms.
      *
-     * HINT: The required attribute will still fire, because we do not "remove" the original form field from
+     * HINT: The 'required' attribute will still fire, because we do not "remove" the original form field from
      *       DOM or "sight" (e.g. via "visibility: hidden;", "display: none;" or "height: 0;").
      *       The original element will still be responsible for validation this way, but the UX will suggest
      *       to the user, that it is actually the CKEditor.

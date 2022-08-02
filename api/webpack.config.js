@@ -106,9 +106,15 @@ Encore
     loader: 'raw-loader'
   })
 
-  // Configure other image loaders to exclude CKEditor 5 SVG files.
+  // Use raw-loader for Fontawesome raw SVG files.
+  .addRule({
+    test: /fortawesome\/fontawesome-pro\/svgs\//,
+    loader: 'raw-loader'
+  })
+
+  // Configure other image loaders to exclude CKEditor 5 and Fontawesome raw SVG files.
   .configureLoaderRule('images', loader => {
-    loader.exclude = /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/;
+    loader.exclude = /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$|fortawesome\/fontawesome-pro\/svgs\//;
   })
 
   // Configure PostCSS loader.
