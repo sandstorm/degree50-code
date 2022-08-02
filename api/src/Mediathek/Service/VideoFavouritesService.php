@@ -91,4 +91,9 @@ class VideoFavouritesService
         $this->entityManager->persist($newFavorite);
         $this->entityManager->flush();
     }
+
+    public function removeVideoFavoritesOfVideo(Video $video): void
+    {
+        $this->videoFavoritesRepository->removeAllWithVideo($video);
+    }
 }

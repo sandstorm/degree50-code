@@ -11,6 +11,7 @@ use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\EventListener\UploadListener;
 use App\Mediathek\Form\VideoType;
+use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
 use App\VideoEncoding\Message\WebEncodingTask;
@@ -50,6 +51,7 @@ class VideoUploadController extends AbstractController
     private VideoRepository $videoRepository;
     private VideoService $videoService;
     private AppRuntime $appRuntime;
+    private VideoFavouritesService $videoFavouritesService;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -58,6 +60,7 @@ class VideoUploadController extends AbstractController
         VideoRepository $videoRepository,
         VideoService $videoService,
         AppRuntime $appRuntime,
+        VideoFavouritesService $videoFavouritesService,
     ) {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -65,6 +68,7 @@ class VideoUploadController extends AbstractController
         $this->videoRepository = $videoRepository;
         $this->videoService = $videoService;
         $this->appRuntime = $appRuntime;
+        $this->videoFavouritesService = $videoFavouritesService;
     }
 
     /**
@@ -195,6 +199,9 @@ class VideoUploadController extends AbstractController
                 );
                 return $this->redirectToRoute('mediathek--index');
             }
+
+            // remove VideoFavourites first
+            $this->videoFavouritesService->removeVideoFavoritesOfVideo($video);
 
             $this->videoService->deleteVideo($video);
 
