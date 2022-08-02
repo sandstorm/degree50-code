@@ -31,6 +31,8 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize'
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties'
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar'
+// custom plugins
+import CKEditorPrintPlugin from 'Components/CKEditor/CustomPlugins/CKEditorPrintPlugin/CKEditorPrintPlugin'
 
 export default class CustomCKEditor extends ClassicEditor {}
 
@@ -67,6 +69,7 @@ ClassicEditor.builtinPlugins = [
   TableToolbar,
   Underline,
   SimpleUploadAdapter,
+  CKEditorPrintPlugin,
 ]
 
 // eslint-disable-next-line functional/immutable-data
@@ -99,6 +102,8 @@ ClassicEditor.defaultConfig = {
       '|',
       'undo',
       'redo',
+      '|',
+      'print',
     ],
   },
   language: 'de',
