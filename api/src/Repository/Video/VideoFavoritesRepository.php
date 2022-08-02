@@ -48,4 +48,14 @@ class VideoFavoritesRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function removeAllWithVideo(Video $video): void
+    {
+        $this->createQueryBuilder('videoFavorite')
+            ->delete()
+            ->where('videoFavorite.video = :video')
+            ->setParameter('video', $video)
+            ->getQuery()
+            ->execute();
+    }
 }

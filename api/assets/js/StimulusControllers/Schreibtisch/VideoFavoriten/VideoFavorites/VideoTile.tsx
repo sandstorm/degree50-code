@@ -29,20 +29,24 @@ const VideoTile = (props: Props) => {
       onClick={(e) => {
         if (video.userIsCreator) {
           e.currentTarget.classList.toggle('video-tile--show-actions')
+        } else {
+          e.currentTarget
+            .querySelector<HTMLAnchorElement>(`#tile__title--${video.id}`)
+            ?.click()
         }
       }}
     >
       <label htmlFor={video.id} className="video-tile__content">
         <button
           tabIndex={0}
-          id="favor-button--{{ video.data.id }}"
+          id={`favor-button--${video.id}`}
           onClick={unfavorVideo}
           className="video-tile__favor-button"
           title="Entfavorisieren"
         >
           <i
             className="fa-solid fa-star-sharp"
-            data-test-id="remove-video-from-favorites--{{ video.data.id }}"
+            data-test-id={`remove-video-from-favorites--${video.id}`}
           ></i>
         </button>
 
@@ -54,7 +58,7 @@ const VideoTile = (props: Props) => {
 
         <a
           tabIndex={0}
-          id="tile__title-{{ video.data.id }}"
+          id={`tile__title--${video.id}`}
           href={`video/play/${video.id}`}
           className="tile__title"
           onClick={(e) => e.stopPropagation()}
