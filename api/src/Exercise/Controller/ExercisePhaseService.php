@@ -43,6 +43,56 @@ class ExercisePhaseService
         $this->autosavedSolutionRepository = $autosavedSolutionRepository;
     }
 
+    public function getPhaseTypeTitle(ExercisePhaseType $exercisePhaseType)
+    {
+        switch ($exercisePhaseType) {
+            case ExercisePhaseType::VIDEO_ANALYSIS: {
+                    return "Videoanalyse";
+                }
+
+            case ExercisePhaseType::REFLEXION: {
+                    return "ReflexionPhase";
+                }
+
+            case ExercisePhaseType::VIDEO_CUT: {
+                    return "Schnittphase";
+                }
+
+            case ExercisePhaseType::MATERIAL: {
+                    return "Materialphase";
+                }
+
+            default: {
+                    return "";
+                }
+        }
+    }
+
+    public function getPhaseTypeIconClasses(ExercisePhaseType $exercisePhaseType)
+    {
+        switch ($exercisePhaseType) {
+            case ExercisePhaseType::VIDEO_ANALYSIS: {
+                    return "fas fa-film";
+                }
+
+            case ExercisePhaseType::REFLEXION: {
+                    return "fas fa-book-open";
+                }
+
+            case ExercisePhaseType::VIDEO_CUT: {
+                    return "fas fa-cut";
+                }
+
+            case ExercisePhaseType::MATERIAL: {
+                    return "fas fa-square-quote";
+                }
+
+            default: {
+                    return "";
+                }
+        }
+    }
+
     /**
      * Check if the combination of ExercisePhase "depending on" and the "depending" ExercisePhase is valid.
      */

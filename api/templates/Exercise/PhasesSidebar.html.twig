@@ -30,6 +30,8 @@
                                     true,
                                     item.metadata.isDone,
                                     item.metadata.needsReview,
+                                    item.metadata.iconClass,
+                                    item.metadata.phaseTitle,
                                 )
                             }}
                         {% else %}
@@ -44,7 +46,9 @@
                                     ),
                                     is_granted('viewExercisePhase', item.phase),
                                     item.metadata.isDone,
-                                    item.metadata.needsReview
+                                    item.metadata.needsReview,
+                                    item.metadata.iconClass,
+                                    item.metadata.phaseTitle,
                                 )
                             }}
                         {% endif %}
@@ -57,11 +61,22 @@
 
 
 
-{% macro sidebarLink(name, doesDependOnExercisePhase, iconClass, href, canView = true, isDone = false, reviewRequired = false)  %}
+{% macro sidebarLink(
+    name,
+    doesDependOnExercisePhase,
+    iconClass,
+    href,
+    canView = true,
+    isDone = false,
+    reviewRequired = false,
+    phaseIconClass = "",
+    phaseTitle = "",
+)  %}
     <a
         class="nav-link"
         {% if canView %} href="{{ href }}" {% endif %}
     >
+        <i class="{{ phaseIconClass }}" title="{{ phaseTitle }}"></i>
         <i class="{{ iconClass }}"></i>
         {% if doesDependOnExercisePhase %}
             <i class="fas fa-arrow-up"

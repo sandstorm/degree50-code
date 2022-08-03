@@ -97,7 +97,9 @@ class ExerciseService
             'phase' => $phase,
             'metadata' => [
                 'needsReview' => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW,
-                'isDone' => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::BEENDET
+                'isDone' => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::BEENDET,
+                'phaseTitle' => $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
+                'iconClass' => $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType()),
             ]
         ];
     }
@@ -111,6 +113,8 @@ class ExerciseService
             'metadata' => [
                 'needsReview' => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase),
                 'isDone' => false, // not relevant for dozenten, but needed inside the twig template
+                'phaseTitle' => $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
+                'iconClass' => $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType()),
             ]
         ];
     }
