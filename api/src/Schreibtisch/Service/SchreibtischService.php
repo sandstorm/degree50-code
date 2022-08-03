@@ -8,6 +8,7 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExerciseStatus;
 use App\Entity\Material\Material;
+use App\Entity\Video\Video;
 use App\Entity\Video\VideoFavorite;
 use App\Exercise\Controller\ExercisePhaseService;
 use App\Exercise\Controller\ExerciseService;
@@ -15,6 +16,7 @@ use App\Mediathek\Service\VideoFavouritesService;
 use App\Service\UserMaterialService;
 use App\Twig\AppRuntime;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SchreibtischService
@@ -114,15 +116,30 @@ class SchreibtischService
         $user = $this->userService->getLoggendInUser();
         $videoFavorites = $this->videoFavouritesService->getFavouriteVideosForUser($user);
 
-        return array_map(fn (VideoFavorite $videoFavorite) => [
-            'id' => $videoFavorite->getId(),
-            'video' => array_merge(
-                $videoFavorite->getVideo()->getAsClientSideVideo($this->appRuntime)->toArray(),
-                [
-                    'userIsCreator' => $user === $videoFavorite->getVideo()->getCreator()
-                ]
-            )
-        ], $videoFavorites);
+        return array_reduce($videoFavorites, function ($acc, VideoFavorite $videoFavorite) use ($user) {
+            $video = $videoFavorite->getVideo();
+
+            try {
+                $clientSideVideo = $video->getAsClientSideVideo($this->appRuntime);
+
+                return [...$acc, [
+                    'id' => $videoFavorite->getId(),
+                    'video' => array_merge(
+                        $clientSideVideo->toArray(),
+                        [
+                            'userIsCreator' => $user === $videoFavorite->getVideo()->getCreator()
+                        ]
+                    )
+                ]];
+            } catch (EntityNotFoundException $exception) {
+                // WHY:
+                // We want to handle missing videos gracefully and make sure that all other favorites are still being
+                // shown correctly. Usually favorites should also get deleted, if a video is being deleted, but we already
+                // have broken videos on our prod and test systems (these all seem to be some test videos), so technically
+                // this scenario can occur. (e.g. if someone accidentally favors one of these broken videos)
+                return $acc;
+            }
+        }, []);
     }
 
     public function getMaterialResponse(): array
