@@ -131,8 +131,17 @@ class SchreibtischService
         $materialList = $this->materialService->getMaterialsForUser($user);
 
         $mateiralListCopy = [...$materialList];
+
         usort($mateiralListCopy, function (Material $materialA, Material $materialB) {
-            return $this->sortByDateTimeImmutable($materialA->getLastUpdatedAt(), $materialB->getLastUpdatedAt());
+            if (is_null($materialA->getLastUpdatedAt()) && is_null($materialB->getLastUpdatedAt())) {
+                return $this->sortByDateTimeImmutable($materialA->getCreatedAt(), $materialB->getCreatedAt());
+            } else if (is_null($materialA->getLastUpdatedAt()) && !is_null($materialB->getLastUpdatedAt())) {
+                return -1;
+            } else if (!is_null($materialA->getLastUpdatedAt()) && is_null(($materialB->getLastUpdatedAt()))) {
+                return 1;
+            } else {
+                return $this->sortByDateTimeImmutable($materialA->getLastUpdatedAt(), $materialB->getLastUpdatedAt());
+            }
         });
 
         return array_map(function (Material $material) {
