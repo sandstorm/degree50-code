@@ -16,6 +16,7 @@ exercise:
         status1: 'Abgeschlossen'
         status2: 'Veröffentlicht'
         reviewRequired: "Überprüfung durch dozierende Person erforderlich"
+        phaseDone: 'Phase abgeschlossen'
     show:
         title: 'Aufgabe starten'
     test:
