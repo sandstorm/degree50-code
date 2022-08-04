@@ -30,12 +30,13 @@ const ExerciseListItem = (props: Props) => {
   const { exercise } = props
 
   const url = `/exercise/show-overview/${exercise.id}`
-  const ariaLabel = 'TODO'
+  // TODO
+  const ariaLabel = undefined
 
   return (
     <tr aria-label={ariaLabel}>
-      <td>"Fachbereich"</td>
-      <td>{exercise.course}</td>
+      <td>{exercise.fachbereich.name}</td>
+      <td>{exercise.course.name}</td>
       <td>
         <a href={url}>{exercise.name}</a>
       </td>
