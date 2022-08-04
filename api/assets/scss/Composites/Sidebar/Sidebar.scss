@@ -3,7 +3,6 @@
     left: 0;
     width: 300px;
     height: 100%;
-    padding-right: 20px;
 
     background-color: $theme__color__grey--lighter;
 
@@ -47,10 +46,10 @@
     height: 100%;
     width: 100%;
     padding: 10px;
-    padding-right: 5px;
+    padding-right: 30px;
 
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     .card-header {
         .btn {

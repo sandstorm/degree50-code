@@ -4,14 +4,12 @@
 }
 .schreibtisch {
     height: 100%;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: 1fr;
 
     & > main {
-        padding-left: $theme__spacing--base;
-        padding-top: $theme__spacing--large;
+        padding: $theme__spacing--base;
+        margin-left: 300px;
         height: 100%;
+        overflow: auto;
     }
 }
 

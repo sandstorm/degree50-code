@@ -52,29 +52,33 @@ const MaterialEditor = () => {
         ) : (
           <div>Es ist kein Material hinterlegt...</div>
         )}
+        <footer className="material-editor__footer">
+          <NavLink
+            to={ROUTE_MATERIALIEN}
+            className="btn btn-link btn-outline-primary"
+          >
+            Zurück
+          </NavLink>
+
+          <a
+            href={material?.originalExercisePhaseUrl}
+            className="btn btn-link btn-outline-primary"
+          >
+            Zur ursprünglichen Phase
+          </a>
+
+          <Button
+            className="btn btn-primary material-editor__save-button"
+            onPress={saveMaterial}
+          >
+            {isLoading ? (
+              <i className="fas fa-spinner fa-spin"></i>
+            ) : (
+              'Speichern'
+            )}
+          </Button>
+        </footer>
       </div>
-      <footer className="material-editor__footer">
-        <NavLink
-          to={ROUTE_MATERIALIEN}
-          className="btn btn-link btn-outline-primary"
-        >
-          Zurück
-        </NavLink>
-
-        <a
-          href={material?.originalExercisePhaseUrl}
-          className="btn btn-link btn-outline-primary"
-        >
-          Zur ursprünglichen Phase
-        </a>
-
-        <Button
-          className="btn btn-primary material-editor__save-button"
-          onPress={saveMaterial}
-        >
-          {isLoading ? <i className="fas fa-spinner fa-spin"></i> : 'Speichern'}
-        </Button>
-      </footer>
     </div>
   )
 }
