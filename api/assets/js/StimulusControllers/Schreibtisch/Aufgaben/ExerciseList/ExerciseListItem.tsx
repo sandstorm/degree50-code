@@ -35,7 +35,7 @@ const ExerciseListItem = (props: Props) => {
 
   return (
     <tr aria-label={ariaLabel}>
-      <td>{exercise.fachbereich.name}</td>
+      <td>{exercise.fachbereich?.name ?? '-'}</td>
       <td>{exercise.course.name}</td>
       <td>
         <a href={url}>{exercise.name}</a>

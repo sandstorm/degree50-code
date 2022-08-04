@@ -14,7 +14,7 @@ export type ExerciseId = string
 export type Exercise = {
   id: ExerciseId
   name: string
-  fachbereich: Fachbereich
+  fachbereich?: Fachbereich
   course: Course
   status: 'IN_BEARBEITUNG' | 'IN_REVIEW' | 'NEU' | 'BEENDET'
   phaseCount: number
@@ -41,6 +41,6 @@ export type Material = {
   originalExercisePhaseUrl: string
   createdAt: { date: string }
   lastUpdatedAt?: { date: string }
-  fachbereich: Fachbereich
-  course: Course
+  fachbereich?: Fachbereich
+  course?: Course
 }

@@ -38,7 +38,8 @@ class SchreibtischService
         UserMaterialService $materialService,
         AppRuntime $appRuntime,
         UrlGeneratorInterface $router,
-    ) {
+    )
+    {
         $this->exerciseService = $exerciseService;
         $this->userService = $userService;
         $this->exercisePhaseService = $exercisePhaseService;
@@ -96,27 +97,31 @@ class SchreibtischService
             return $this->sortByDateTimeImmutable($lastEditDateA, $lastEditDateB);
         });
 
-        return array_map(fn (Exercise $exercise) => [
-            'id' => $exercise->getId(),
-            'name' => $exercise->getName(),
-            'fachbereich' => [
-                'id' => $exercise->getCourse()->getFachbereich()->getId(),
-                'name' => $exercise->getCourse()->getFachbereich()->getName(),
-            ],
-            'course' => [
-                'id' => $exercise->getCourse()->getId(),
-                'name' => $exercise->getCourse()->getName(),
-            ],
-            'status' => $this->exerciseService->getExerciseStatusForUser($exercise, $user)->value,
-            'phaseCount' => $exercise->getPhases()->count(),
-            'completedPhases' => $exercise->getPhases()
-                ->filter(
-                    fn (ExercisePhase $exercisePhase) =>
-                    $this->exercisePhaseService->getStatusForUser($exercisePhase, $user) === ExercisePhaseStatus::BEENDET
-                )
-                ->count(),
-            'lastEditedAt' => $this->exerciseService->getLastEditDateByUser($exercise, $user)
-        ], $exercisesCopy);
+        return array_map(function (Exercise $exercise) use ($user) {
+            $fachbereich = $exercise->getCourse()->getFachbereich();
+
+            return [
+                'id' => $exercise->getId(),
+                'name' => $exercise->getName(),
+                'fachbereich' => $fachbereich ?
+                    [
+                        'id' => $fachbereich->getId(),
+                        'name' => $fachbereich->getName(),
+                    ] : null,
+                'course' => [
+                    'id' => $exercise->getCourse()->getId(),
+                    'name' => $exercise->getCourse()->getName(),
+                ],
+                'status' => $this->exerciseService->getExerciseStatusForUser($exercise, $user)->value,
+                'phaseCount' => $exercise->getPhases()->count(),
+                'completedPhases' => $exercise->getPhases()
+                    ->filter(
+                        fn(ExercisePhase $exercisePhase) => $this->exercisePhaseService->getStatusForUser($exercisePhase, $user) === ExercisePhaseStatus::BEENDET
+                    )
+                    ->count(),
+                'lastEditedAt' => $this->exerciseService->getLastEditDateByUser($exercise, $user)
+            ];
+        }, $exercisesCopy);
     }
 
     public function getVideoFavoritesResponse(): array
@@ -136,15 +141,17 @@ class SchreibtischService
                         $clientSideVideo->toArray(),
                         [
                             'userIsCreator' => $user === $videoFavorite->getVideo()->getCreator(),
-                            'courses' => $video->getCourses()->map(fn (Course $course) => [
+                            'courses' => $video->getCourses()->map(fn(Course $course) => [
                                 'id' => $course->getId(),
                                 'name' => $course->getName(),
                             ])->toArray(),
                             // TODO: filter out duplicates?
-                            'fachbereiche' => $video->getCourses()->map(fn (Course $course) => [
-                                'id' => $course->getFachbereich()->getId(),
-                                'name' => $course->getFachbereich()->getName(),
-                            ])->toArray(),
+                            'fachbereiche' => $video->getCourses()->map(function (Course $course) {
+                                return $course->getFachbereich() ? [
+                                    'id' => $course->getFachbereich()->getId(),
+                                    'name' => $course->getFachbereich()->getName(),
+                                ] : null;
+                            })->filter(fn (Course|null $course) => !is_null($course))->toArray(),
                         ]
                     )
                 ]];
@@ -182,8 +189,8 @@ class SchreibtischService
             $originalExercisePhaseTeam = $material->getOriginalPhaseTeam();
             $originalExercisePhase = $originalExercisePhaseTeam->getExercisePhase();
             $originalExercise = $originalExercisePhase->getBelongsToExercise();
-            $course = $material->getOriginalPhaseTeam()->getExercisePhase()->getBelongsToExercise()->getCourse();
-            $fachbereich = $material->getOriginalPhaseTeam()->getExercisePhase()->getBelongsToExercise()->getCourse()->getFachbereich();
+            $course = $material->getOriginalPhaseTeam()?->getExercisePhase()->getBelongsToExercise()->getCourse();
+            $fachbereich = $material->getOriginalPhaseTeam()?->getExercisePhase()->getBelongsToExercise()->getCourse()->getFachbereich();
 
             return [
                 'id' => $material->getId(),
@@ -200,14 +207,14 @@ class SchreibtischService
                 ),
                 'createdAt' => $material->getCreatedAt(),
                 'lastUpdatedAt' => $material->getLastUpdatedAt(),
-                'fachbereich' => [
+                'fachbereich' => $fachbereich ? [
                     'id' => $fachbereich->getId(),
                     'name' => $fachbereich->getName(),
-                ],
-                'course' => [
+                ] : null,
+                'course' => $course ? [
                     'id' => $course->getId(),
                     'name' => $course->getName(),
-                ],
+                ] : null,
             ];
         }, $mateiralListCopy);
     }

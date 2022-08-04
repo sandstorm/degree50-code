@@ -17,6 +17,7 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\MaterialPhase;
 use App\Entity\Exercise\ExerciseStatus;
 use App\Entity\Exercise\Solution;
+use App\Entity\Fachbereich;
 use App\Entity\Material\Material;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoFavorite;
@@ -128,6 +129,7 @@ final class DegreeContext implements Context
     const REFLEXION_PHASE_BASE_ID = 'reflexion1';
     const MATERIAL_PHASE_BASE_ID = 'material1';
     const GROUP_PHASE_BASE_ID = 'groupPhase1';
+    const TEST_FACHBEREICH_1 = 'fachbereich1';
 
     public function __construct(
         Session $minkSession,
@@ -601,8 +603,12 @@ final class DegreeContext implements Context
         $testDozent = $this->createUser(self::TEST_DOZENT);
 
         // course 1
-        $this->ensureCourseExists(self::TEST_COURSE_1);
+        $course = $this->ensureCourseExists(self::TEST_COURSE_1);
         $this->userHasCourseRole($previouslyLoggedInUser, CourseRole::STUDENT, self::TEST_COURSE_1);
+
+        // add course to fachbereich
+        $fachbereich = $this->ensureFachbereichExists(self::TEST_FACHBEREICH_1);
+        $course->setFachbereich($fachbereich);
 
         // exercise 1
         $this->createExerciseInCourseByUser(self::TEST_EXERCISE_1, self::TEST_COURSE_1, $testDozent);
@@ -1185,5 +1191,22 @@ final class DegreeContext implements Context
         $exercisePhaseTeam = $this->ensureAnExerciseTeamForUserAndPhaseExists($user, $exercisePhase);
 
         $this->createDummySolution($exercisePhaseTeam, 'solution1', '<p>Material</p>');
+    }
+
+    private function ensureFachbereichExists(string $fachbereichId): Fachbereich
+    {
+        /** @var Fachbereich $fachbereich */
+        $fachbereich = $this->entityManager->find(Fachbereich::class, $fachbereichId);
+
+        if (!$fachbereich) {
+            $fachbereich = new Fachbereich($fachbereichId);
+            $fachbereich->setName($fachbereichId);
+
+            $this->entityManager->persist($fachbereich);
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $this->entityManager->flush();
+        }
+
+        return $fachbereich;
     }
 }
