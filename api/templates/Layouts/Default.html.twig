@@ -9,6 +9,18 @@
     {% endblock %}
 </head>
 <body>
+    {% if userExpirationService.isUserExpiringSoon() %}
+        <div class="user-expire-notice">
+            <div class="user-expire-notice--message">
+                Dein Nutzer-Account läuft bald ab und wird am {{ userExpirationService.getExpirationDate() }} automatisch gelöscht.
+                Wenn du weiterhin Zugriff zu deinen Daten haben möchtest, klicke auf Verlängern.
+                Klicke auf Ignorieren, um diese Nachricht bis zum nächsten Login zu verstecken.
+            </div>
+            <div class="user-expire-notice--actions">
+                <a class="btn btn-primary" aria-label="Account um 1 Jahr verlängern" href="{{ path('user-expiration-increase') }}">Verlängern</a>
+            </div>
+        </div>
+    {% endif %}
     {% block main %}{% endblock %}
 
     {% block javascripts %}

@@ -26,6 +26,7 @@ class VideoService
     private AppRuntime $appRuntime;
     private KernelInterface $kernel;
     private LoggerInterface $logger;
+    private VideoFavouritesService $videoFavouritesService;
 
     const VIDEO_DOCTRINE_FILTER_NAME = 'video_doctrine_filter';
 
@@ -35,7 +36,8 @@ class VideoService
         VideoRepository $videoRepository,
         AppRuntime $appRuntime,
         KernelInterface $kernel,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        VideoFavouritesService $videoFavouritesService,
     ) {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
@@ -43,6 +45,7 @@ class VideoService
         $this->appRuntime = $appRuntime;
         $this->kernel = $kernel;
         $this->logger = $logger;
+        $this->videoFavouritesService = $videoFavouritesService;
     }
 
     /**
@@ -72,6 +75,9 @@ class VideoService
      */
     public function deleteVideo(Video $video)
     {
+        // remove VideoFavourites
+        $this->videoFavouritesService->removeVideoFavoritesOfVideo($video);
+
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
         $this->removeVideoFile($fileUrl);
 

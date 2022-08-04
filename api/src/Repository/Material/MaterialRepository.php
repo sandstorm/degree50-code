@@ -35,4 +35,14 @@ class MaterialRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function removeAllMaterialsOfUser(User $user): void
+    {
+        $this->createQueryBuilder('material')
+            ->delete()
+            ->where('material.owner = :owner')
+            ->setParameter('owner', $user)
+            ->getQuery()
+            ->execute();
+    }
 }
