@@ -3,6 +3,7 @@
 namespace App\Schreibtisch\Service;
 
 use App\Admin\Controller\UserService;
+use App\Entity\Account\Course;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
@@ -98,7 +99,14 @@ class SchreibtischService
         return array_map(fn (Exercise $exercise) => [
             'id' => $exercise->getId(),
             'name' => $exercise->getName(),
-            'course' => $exercise->getCourse()->getName(),
+            'fachbereich' => [
+                'id' => $exercise->getCourse()->getFachbereich()->getId(),
+                'name' => $exercise->getCourse()->getFachbereich()->getName(),
+            ],
+            'course' => [
+                'id' => $exercise->getCourse()->getId(),
+                'name' => $exercise->getCourse()->getName(),
+            ],
             'status' => $this->exerciseService->getExerciseStatusForUser($exercise, $user)->value,
             'phaseCount' => $exercise->getPhases()->count(),
             'completedPhases' => $exercise->getPhases()
@@ -127,7 +135,16 @@ class SchreibtischService
                     'video' => array_merge(
                         $clientSideVideo->toArray(),
                         [
-                            'userIsCreator' => $user === $videoFavorite->getVideo()->getCreator()
+                            'userIsCreator' => $user === $videoFavorite->getVideo()->getCreator(),
+                            'courses' => $video->getCourses()->map(fn (Course $course) => [
+                                'id' => $course->getId(),
+                                'name' => $course->getName(),
+                            ])->toArray(),
+                            // TODO: filter out duplicates?
+                            'fachbereiche' => $video->getCourses()->map(fn (Course $course) => [
+                                'id' => $course->getFachbereich()->getId(),
+                                'name' => $course->getFachbereich()->getName(),
+                            ])->toArray(),
                         ]
                     )
                 ]];
@@ -165,6 +182,8 @@ class SchreibtischService
             $originalExercisePhaseTeam = $material->getOriginalPhaseTeam();
             $originalExercisePhase = $originalExercisePhaseTeam->getExercisePhase();
             $originalExercise = $originalExercisePhase->getBelongsToExercise();
+            $course = $material->getOriginalPhaseTeam()->getExercisePhase()->getBelongsToExercise()->getCourse();
+            $fachbereich = $material->getOriginalPhaseTeam()->getExercisePhase()->getBelongsToExercise()->getCourse()->getFachbereich();
 
             return [
                 'id' => $material->getId(),
@@ -180,7 +199,15 @@ class SchreibtischService
                     ]
                 ),
                 'createdAt' => $material->getCreatedAt(),
-                'lastUpdatedAt' => $material->getLastUpdatedAt()
+                'lastUpdatedAt' => $material->getLastUpdatedAt(),
+                'fachbereich' => [
+                    'id' => $fachbereich->getId(),
+                    'name' => $fachbereich->getName(),
+                ],
+                'course' => [
+                    'id' => $course->getId(),
+                    'name' => $course->getName(),
+                ],
             ];
         }, $mateiralListCopy);
     }
