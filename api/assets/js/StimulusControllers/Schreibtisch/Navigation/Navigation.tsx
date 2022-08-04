@@ -9,7 +9,7 @@ import NavElement from './NavElement'
 const Navigation = () => {
   return (
     <nav
-      className="sidebar-navigation sidebar"
+      className="sidebar sidebar-navigation"
       data-test-id="schreibtisch-navigation"
     >
       <div className="sidebar__content">
