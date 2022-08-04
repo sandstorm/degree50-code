@@ -95,4 +95,9 @@ class UserMaterialService
         $this->entityManager->persist($newMaterial);
         $this->entityManager->flush();
     }
+
+    public function deleteMaterialsOfUser(User $user): void
+    {
+        $this->materialRepository->removeAllMaterialsOfUser($user);
+    }
 }

@@ -30,6 +30,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     const ROLE_DOZENT = 'ROLE_DOZENT';
     const ROLE_SSO_USER = 'ROLE_SSO_USER';
 
+    const EXPIRATION_DURATION_STRING = '5 years';
+    const DB_DATE_FORMAT = 'Y-m-d H:i:s';
+    const EXPIRATION_NOTICE_DURATION_STRING = '6 months';
+
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
@@ -108,6 +112,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private int $termsOfUseVersion = 0;
 
+    /**
+     * TODO: migration -> set to a specific date (now, or last year) for existing users
+     * @ORM\Column(name="created_at", type="datetimetz_immutable")
+     */
+    private \DateTimeImmutable $createdAt;
+
+    /**
+     * * TODO: migration -> set for existing users
+     * @ORM\Column(name="expiration_date", type="datetimetz_immutable")
+     */
+    private \DateTimeImmutable $expirationDate;
+
     public function __construct(?string $id = null)
     {
         $this->courseRoles = new ArrayCollection();
@@ -115,6 +131,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdVideos = new ArrayCollection();
         $this->favoriteVideos = new ArrayCollection();
         $this->generateOrSetId($id);
+        $this->createdAt = new \DateTimeImmutable();
+        $this->expirationDate = $this->createdAt->add(\DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING));
     }
 
     public function getUserIdentifier(): string
@@ -342,5 +360,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getExpirationDate(): \DateTimeImmutable
+    {
+        return $this->expirationDate;
+    }
+
+    public function setExpirationDate(\DateTimeImmutable $expirationDate): void
+    {
+        $this->expirationDate = $expirationDate;
     }
 }

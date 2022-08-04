@@ -1,3 +1,6 @@
 twig:
   default_path: '%kernel.project_dir%/templates'
   form_themes: ['Form/CustomFormTheme.html.twig']
+  globals:
+    # add UserExpirationService to each twig template
+    userExpirationService: '@App\Admin\Controller\UserExpirationService'

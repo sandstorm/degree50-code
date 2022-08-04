@@ -42,4 +42,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->persist($user);
         $this->_em->flush();
     }
+
+    /**
+     * @return User[]
+     */
+    public function findAllExpiredUsers(): array
+    {
+        $now = new \DateTimeImmutable();
+        return $this->createQueryBuilder('user')
+            ->where('user.expirationDate < :now')
+            ->setParameter('now', $now->format(User::DB_DATE_FORMAT))
+            ->getQuery()
+            ->getResult();
+    }
 }

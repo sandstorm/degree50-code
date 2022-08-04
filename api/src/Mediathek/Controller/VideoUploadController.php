@@ -51,7 +51,6 @@ class VideoUploadController extends AbstractController
     private VideoRepository $videoRepository;
     private VideoService $videoService;
     private AppRuntime $appRuntime;
-    private VideoFavouritesService $videoFavouritesService;
 
     public function __construct(
         TranslatorInterface $translator,
@@ -60,7 +59,6 @@ class VideoUploadController extends AbstractController
         VideoRepository $videoRepository,
         VideoService $videoService,
         AppRuntime $appRuntime,
-        VideoFavouritesService $videoFavouritesService,
     ) {
         $this->translator = $translator;
         $this->eventStore = $eventStore;
@@ -68,7 +66,6 @@ class VideoUploadController extends AbstractController
         $this->videoRepository = $videoRepository;
         $this->videoService = $videoService;
         $this->appRuntime = $appRuntime;
-        $this->videoFavouritesService = $videoFavouritesService;
     }
 
     /**
@@ -199,9 +196,6 @@ class VideoUploadController extends AbstractController
                 );
                 return $this->redirectToRoute('mediathek--index');
             }
-
-            // remove VideoFavourites first
-            $this->videoFavouritesService->removeVideoFavoritesOfVideo($video);
 
             $this->videoService->deleteVideo($video);
 

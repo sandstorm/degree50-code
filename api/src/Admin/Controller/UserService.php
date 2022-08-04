@@ -13,6 +13,8 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ExerciseService;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Mediathek\Service\VideoService;
+use App\Repository\Account\UserRepository;
+use App\Service\UserMaterialService;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -36,6 +38,8 @@ class UserService
     private VideoService $videoService;
     private ExerciseService $exerciseService;
     private VideoFavouritesService $videoFavoritesService;
+    private UserMaterialService $userMaterialService;
+    private UserRepository $userRepository;
     private Security $security;
 
     public function __construct(
@@ -45,19 +49,42 @@ class UserService
         VideoService $videoService,
         ExerciseService $exerciseService,
         VideoFavouritesService $videoFavoritesService,
-    ) {
+        UserMaterialService $userMaterialService,
+        UserRepository $userRepository,
+    )
+    {
         $this->security = $security;
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->videoService = $videoService;
         $this->exerciseService = $exerciseService;
         $this->videoFavoritesService = $videoFavoritesService;
+        $this->userMaterialService = $userMaterialService;
+        $this->userRepository = $userRepository;
     }
 
-    public function getLoggendInUser(): User
+    public function getLoggendInUser(): User|null
     {
         // Type mismatch is ok
         return $this->security->getUser();
+    }
+
+    /**
+     * @return string[] emails of deleted users
+     */
+    public function removeAllExpiredUsers(): array
+    {
+        // get expired users
+        $expiredUsers = $this->userRepository->findAllExpiredUsers();
+        $expiredStudents = array_filter($expiredUsers, fn(User $user) => !$user->isAdmin() && !$user->isDozent());
+        $expiredStudentEmails = array_map(fn(User $user) => $user->getEmail(), $expiredStudents);
+
+        foreach ($expiredStudents as $user) {
+            $this->deleteStudentOrAdmin($user);
+            // TODO: Logging
+        }
+
+        return $expiredStudentEmails;
     }
 
     public function removeUser(User $user): void
@@ -80,6 +107,23 @@ class UserService
         } else {
             $this->deleteStudentOrAdmin($user);
         }
+    }
+
+    public function increaseUserExpirationDateByOneYear(User $user): void
+    {
+        $oldExpirationDate = $user->getExpirationDate();
+        $newExpirationDate = $oldExpirationDate->add(\DateInterval::createFromDateString('1 year'));
+
+        $user->setExpirationDate($newExpirationDate);
+
+        $this->eventStore->addEvent('UserExpirationDateIncreased', [
+            'user' => $user->getEmail(),
+            'oldDate' => $oldExpirationDate->format(User::DB_DATE_FORMAT),
+            'newDate' => $newExpirationDate->format(User::DB_DATE_FORMAT),
+        ]);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 
     /**
@@ -119,7 +163,7 @@ class UserService
          * Why
          *   Removal of CourseRoles is cascaded when removing a User but here we do _not_ remove the user.
          */
-        $user->getCourseRoles()->map(fn (CourseRole $courseRole) => $this->entityManager->remove($courseRole));
+        $user->getCourseRoles()->map(fn(CourseRole $courseRole) => $this->entityManager->remove($courseRole));
 
         $this->eventStore->addEvent('UserDeleted', [
             'userId' => $user->getId(),
@@ -136,6 +180,7 @@ class UserService
         $this->videoService->deleteVideosCreatedByUser($user);
         $this->exerciseService->deleteExercisesCreatedByUser($user);
         $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
+        $this->userMaterialService->deleteMaterialsOfUser($user);
         $this->removeFromExerciseTeams($user);
 
         $this->eventStore->addEvent('UserDeleted', [
@@ -170,9 +215,12 @@ class UserService
             /** @var ExercisePhaseTeam $team */
             if ($team->getMembers()->count() > 1) {
                 $team->removeMember($user);
-                $team->getAutosavedSolutions()->filter(function (AutosavedSolution $autosavedSolution) use ($user) {
-                    return $autosavedSolution->getOwner() === $user;
-                })->forAll(fn ($_i, AutosavedSolution $autosavedSolution) => $this->entityManager->remove($autosavedSolution));
+                $team->getAutosavedSolutions()
+                    ->filter(function (AutosavedSolution $autosavedSolution) use ($user) {
+                        return $autosavedSolution->getOwner() === $user;
+                    })
+                    ->forAll(fn ($_i, AutosavedSolution $autosavedSolution) => $this->entityManager->remove($autosavedSolution));
+
                 $this->entityManager->persist($team);
 
                 $this->eventStore->addEvent('MemberRemovedFromTeam', [

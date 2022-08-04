@@ -3,7 +3,7 @@ FROM php:8.1-fpm-bullseye
 
 # Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips, zip
 RUN apt-get update -y && \
-    apt-get install --no-install-recommends -y libzip-dev zip libicu-dev libxslt1-dev nginx-light libvips libvips-dev supervisor procps redis unzip git acl libpq-dev ffmpeg && \
+    apt-get install --no-install-recommends -y libzip-dev zip libicu-dev libxslt1-dev nginx-light libvips libvips-dev supervisor procps redis unzip git acl libpq-dev ffmpeg cron && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* && \
     docker-php-ext-install intl bcmath pdo pdo_mysql mysqli xsl zip && \
@@ -87,6 +87,13 @@ COPY --from=fluent/fluent-bit:1.4 /fluent-bit/bin/fluent-bit /usr/bin/fluent-bit
 COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
 COPY /deployment/config-files/fluentbit.conf /etc/fluentbit.conf
 
+COPY /deployment/docker/degree_crontab /etc/cron.d/degree_crontab
+# Give execution rights on the cron tab
+RUN chmod 0644 /etc/cron.d/degree_crontab
+# Create the log file to be able to run tail
+RUN touch /app/var/log/cron.log
+# Apply cron tab
+RUN crontab /etc/cron.d/degree_crontab
 
 COPY deployment/docker/entrypoint.sh /entrypoint.sh
 
