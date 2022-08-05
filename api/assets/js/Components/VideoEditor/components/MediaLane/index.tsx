@@ -100,10 +100,17 @@ const MediaLane = (props: Props) => {
     (
       item: MediaItem<any>,
       updatedValues: { start?: string; end?: string; memo?: string },
-      newStartTime: number
+      newStartTime: number,
+      newEndTime?: number
     ) => {
       updateMediaItem(item, updatedValues)
-      setPlayPosition(newStartTime)
+
+      if (updatedValues.start !== undefined) {
+        setPlayPosition(newStartTime + 0.001)
+      } else if (updatedValues.end !== undefined && newEndTime !== undefined) {
+        // WHY '-0.001': This makes sure the item is still marked as active item in player
+        setPlayPosition(newEndTime - 0.001)
+      }
     },
     [updateMediaItem]
   )

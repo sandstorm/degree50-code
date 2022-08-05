@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react'
+import React, { useCallback, useRef, useEffect, MouseEventHandler } from 'react'
 import { connect } from 'react-redux'
 import {
   MediaItem as MediaItemClass,
@@ -63,21 +63,21 @@ export const MediaItem = ({
     (event) => {
       onItemMouseDown(event, item, 'left')
     },
-    [item, onItemMouseDown]
+    [item, onItemMouseDown, setPause]
   )
 
   const handleRightHandleMouseDown = useCallback(
     (event) => {
       onItemMouseDown(event, item, 'right')
     },
-    [item, onItemMouseDown]
+    [item, onItemMouseDown, setPause]
   )
 
   const handleItemCenterMouseDown = useCallback(
     (event) => {
       onItemMouseDown(event, item, 'center')
     },
-    [item, onItemMouseDown]
+    [item, onItemMouseDown, setPause]
   )
 
   const mediaItemHeight = 100 / (amountOfLanes + 1)
@@ -165,6 +165,13 @@ export const MediaItem = ({
     }
   })()
 
+  const handleItemHandleClick: MouseEventHandler<HTMLDivElement> = (ev) => {
+    // Why: We stop event propagation here to prevent the click handler of MediaItem to overwrite the player time
+    //      in order to be able to set the end time with the ItemHandle.
+    ev.stopPropagation()
+    setPause(true)
+  }
+
   return (
     <div
       ref={itemRef}
@@ -195,6 +202,7 @@ export const MediaItem = ({
         side="left"
         width={laneItemHandleWidth}
         onMouseDown={handleLeftHandleMouseDown}
+        onClick={handleItemHandleClick}
       />
 
       <Body
@@ -207,6 +215,7 @@ export const MediaItem = ({
         side="right"
         width={laneItemHandleWidth}
         onMouseDown={handleRightHandleMouseDown}
+        onClick={handleItemHandleClick}
       />
 
       {modalBody && (
