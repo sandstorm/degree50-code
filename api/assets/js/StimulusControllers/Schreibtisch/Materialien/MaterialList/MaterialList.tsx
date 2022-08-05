@@ -1,9 +1,47 @@
 import React from 'react'
 import { useMaterialQuery } from 'StimulusControllers/Schreibtisch/Store/SchreibtischApi'
 import MaterialTile from './MaterialTile'
+import {
+  Course,
+  Fachbereich,
+  Material,
+} from 'StimulusControllers/Schreibtisch/types'
+import { useSelector } from 'react-redux'
+import { selectActiveCourseFilters } from 'StimulusControllers/Schreibtisch/Store/CourseFilterSlice'
+import { selectActiveFachbereichFilters } from 'StimulusControllers/Schreibtisch/Store/FachbereichFilterSlice'
+
+const filterMaterialByFachbereichAndCourseFilters = (
+  materials: Array<Material>,
+  fachbereichFilters: Array<Fachbereich['id']>,
+  courseFilters: Array<Course['id']>
+) => {
+  const filteredByFachbereich =
+    (fachbereichFilters.length > 0
+      ? materials.filter((material) => {
+          if (material.fachbereich) {
+            return fachbereichFilters.includes(material.fachbereich.id)
+          }
+          return false
+        })
+      : materials) ?? []
+
+  const filteredByCourse =
+    courseFilters.length > 0
+      ? filteredByFachbereich.filter((material) => {
+          if (material.course) {
+            return courseFilters.includes(material.course.id)
+          }
+          return false
+        })
+      : filteredByFachbereich
+
+  return filteredByCourse
+}
 
 const MaterialList = () => {
   const { data, isFetching, error } = useMaterialQuery()
+  const activeCourseFilters = useSelector(selectActiveCourseFilters)
+  const activeFachbereichFilters = useSelector(selectActiveFachbereichFilters)
 
   if (isFetching) {
     return (
@@ -22,10 +60,16 @@ const MaterialList = () => {
     return <p>Keine Materialien vorhanden</p>
   }
 
+  const filteredMaterials = filterMaterialByFachbereichAndCourseFilters(
+    data,
+    activeFachbereichFilters,
+    activeCourseFilters
+  )
+
   // TODO a11y
   return (
     <ul data-test-id="material" className="tiles material">
-      {data.map((material) => (
+      {filteredMaterials.map((material) => (
         <li key={material.id} className="tile">
           <MaterialTile material={material} />
         </li>

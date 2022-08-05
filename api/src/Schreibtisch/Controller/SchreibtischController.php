@@ -97,4 +97,28 @@ class SchreibtischController extends AbstractController
 
         return new Response();
     }
+
+    /**
+     * @Route("/schreibtisch/fachbereiche", name="schreibtisch-fachbereiche-api")
+     * @return Response
+     */
+    public function getFachbereiche(): Response
+    {
+        $user = $this->getUser();
+        $responseData = json_encode($this->schreibtischService->getFachbereicheResponse($user));
+
+        return new Response($responseData, 200);
+    }
+
+    /**
+     * @Route("/schreibtisch/courses", name="schreibtisch-courses-api")
+     * @return Response
+     */
+    public function getCourses(): Response
+    {
+        $user = $this->getUser();
+        $responseData = json_encode($this->schreibtischService->getCoursesResponse($user));
+
+        return new Response($responseData, 200);
+    }
 }
