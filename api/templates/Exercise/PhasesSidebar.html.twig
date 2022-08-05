@@ -21,7 +21,7 @@
                             {{
                                 _self.sidebarLink(
                                     item.phase.name,
-                                    item.phase.dependsOnExercisePhase != null,
+                                    item.phase.dependsOnExercisePhase,
                                     item.phase.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
                                         'exercise-overview__exercise-phase--show-solutions',
@@ -38,7 +38,7 @@
                             {{
                                 _self.sidebarLink(
                                     item.phase.name,
-                                    item.phase.dependsOnExercisePhase != null,
+                                    item.phase.dependsOnExercisePhase,
                                     item.phase.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
                                         'exercise-overview__exercise--show-phase-overview',
@@ -63,7 +63,7 @@
 
 {% macro sidebarLink(
     name,
-    doesDependOnExercisePhase,
+    dependsOnExercisePhase,
     iconClass,
     href,
     canView = true,
@@ -78,9 +78,9 @@
     >
         <i class="{{ phaseIconClass }}" title="{{ phaseTitle }}"></i>
         <i class="{{ iconClass }}"></i>
-        {% if doesDependOnExercisePhase %}
+        {% if dependsOnExercisePhase %}
             <i class="fas fa-arrow-up"
-               title="{% trans %}exercisePhase.labels.dependsOnPreviousPhase{% endtrans %}"></i>
+               title="Nutzt Ergebnis von Phase '{{ dependsOnExercisePhase.name }}'"></i>
         {% endif %}
         {{ name }}
         {% if reviewRequired %}
