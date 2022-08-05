@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
+  Course,
   Exercise,
+  Fachbereich,
   Material,
   MaterialId,
   VideoFavorite,
@@ -20,7 +22,7 @@ export const SchreibtischApi = createApi({
     credentials: 'include',
   }),
   reducerPath: 'schreibtischApi',
-  tagTypes: ['Exercises', 'Videos', 'Material'],
+  tagTypes: ['Exercises', 'Videos', 'Material', 'Fachbereich', 'Course'],
   endpoints: (build) => ({
     exercises: build.query<Array<Exercise>, void>({
       query: () => 'exercises',
@@ -57,6 +59,16 @@ export const SchreibtischApi = createApi({
       }),
       invalidatesTags: ['Material'],
     }),
+
+    fachbereich: build.query<Record<Fachbereich['id'], Fachbereich>, void>({
+      query: () => 'fachbereiche',
+      providesTags: ['Fachbereich'],
+    }),
+
+    course: build.query<Record<Course['id'], Course>, void>({
+      query: () => 'courses',
+      providesTags: ['Course'],
+    }),
   }),
 })
 
@@ -70,4 +82,6 @@ export const {
   useToggleVideoFavoriteMutation,
   useMaterialQuery,
   useUpdateMaterialMutation,
+  useFachbereichQuery,
+  useCourseQuery,
 } = SchreibtischApi

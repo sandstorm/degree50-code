@@ -4,10 +4,13 @@ namespace App\Schreibtisch\Service;
 
 use App\Admin\Controller\UserService;
 use App\Entity\Account\Course;
+use App\Entity\Account\CourseRole;
+use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExerciseStatus;
+use App\Entity\Fachbereich;
 use App\Entity\Material\Material;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoFavorite;
@@ -151,7 +154,7 @@ class SchreibtischService
                                     'id' => $course->getFachbereich()->getId(),
                                     'name' => $course->getFachbereich()->getName(),
                                 ] : null;
-                            })->filter(fn (Course|null $course) => !is_null($course))->toArray(),
+                            })->filter(fn(array|null $course) => !is_null($course))->toArray(),
                         ]
                     )
                 ]];
@@ -217,5 +220,43 @@ class SchreibtischService
                 ] : null,
             ];
         }, $mateiralListCopy);
+    }
+
+    public function getFachbereicheResponse(User $user): array
+    {
+        $result = [];
+        /** @var Fachbereich[] $fachbereiche */
+        $fachbereiche = $user->getCourseRoles()->map(
+            fn(CourseRole $courseRole) => $courseRole->getCourse()->getFachbereich()
+        )->toArray();
+
+        foreach ($fachbereiche as $fachbereich) {
+            if (is_null($fachbereich)) {
+                continue;
+            }
+
+            $result[$fachbereich->getId()] = [
+                'id' => $fachbereich->getId(),
+                'name' => $fachbereich->getName(),
+            ];
+        }
+
+        return $result;
+    }
+
+    public function getCoursesResponse(User $user)
+    {
+        /** @var Course[] $courses */
+        $courses = $user->getCourseRoles()->map(fn (CourseRole $courseRole) => $courseRole->getCourse())->toArray();
+        $result = [];
+
+        foreach ($courses as $course) {
+            $result[$course->getId()] = [
+                'id' => $course->getId(),
+                'name' => $course->getName(),
+            ];
+        }
+
+        return $result;
     }
 }

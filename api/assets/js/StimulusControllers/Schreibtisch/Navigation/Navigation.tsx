@@ -5,6 +5,7 @@ import {
   ROUTE_MATERIALIEN,
 } from '../Schreibtisch'
 import NavElement from './NavElement'
+import Filter from 'StimulusControllers/Schreibtisch/Filter/Filter'
 
 const Navigation = () => {
   return (
@@ -31,6 +32,11 @@ const Navigation = () => {
                 Meine Materialien
               </NavElement>
             </ul>
+          </div>
+        </div>
+        <div className="sidebar__group">
+          <div className="sidebar__group-body">
+            <Filter />
           </div>
         </div>
       </div>
