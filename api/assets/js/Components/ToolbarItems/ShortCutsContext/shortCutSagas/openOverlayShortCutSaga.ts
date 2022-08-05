@@ -6,9 +6,9 @@ import {
   playShortCutTriggerSoundAction,
 } from '../shortCutSoundsSaga'
 import { actions as PlayerActions } from 'Components/VideoEditor/PlayerSlice'
-import { selectComponents } from '../../../../StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
+import { selectComponents } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { AnnotationOverlayIds } from '../../AnnotationsContext/AnnotationsMenu'
-import { TabsTypesEnum } from '../../../../types'
+import { TabsTypesEnum } from 'types'
 import { VideoCodeOverlayIds } from '../../VideoCodesContext/VideoCodesMenu'
 import { CutOverlayIds } from '../../CuttingContext/CuttingMenu'
 import { selectState } from 'StimulusControllers/ExerciseAndSolutionStore/rootSaga'
