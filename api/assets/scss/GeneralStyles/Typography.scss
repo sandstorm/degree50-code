@@ -7,10 +7,6 @@ body {
     color: $theme__color__text;
 }
 
-i {
-    font-style: normal;
-}
-
 h1,
 h2,
 h3,
@@ -54,6 +50,11 @@ h6 {
     font-size: 16px;
     font-weight: $theme__heading__fontWeight;
     line-height: $base__heading__lineHeight;
+}
+
+strong,
+b {
+    font-family: $theme__font__akkurat--bold;
 }
 
 .color-success {
