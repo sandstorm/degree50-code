@@ -39,6 +39,12 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
       })
     : undefined
 
+  const isFromGroupPhase =
+    selectors.data.solutions.selectSolutionFromGroupPhase(
+      state,
+      item.solutionId
+    )
+
   return {
     item,
     canEdit,
@@ -50,6 +56,7 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
     ),
     creatorName: selectors.data.selectCreatorNameForVideoCode(state, ownProps),
     phaseType: selectors.config.selectPhaseType(state),
+    isFromGroupPhase,
   }
 }
 
@@ -73,6 +80,7 @@ const VideoCodeListItem = (props: Props) => {
     index,
     parentVideoCodePrototype,
     phaseType,
+    isFromGroupPhase,
   } = props
 
   const handleRemove = () => {
@@ -112,7 +120,9 @@ const VideoCodeListItem = (props: Props) => {
             : ''
         }
   `
-  const creatorDescription = `Codierung von: ${props.creatorName}`
+  const creatorDescription = `Codierung von: ${
+    isFromGroupPhase ? 'Gruppe von ' : ''
+  }${props.creatorName}`
   const start = `Von: ${item.start}`
   const end = `Bis: ${item.end}`
   const memo = `${item.memo.length > 0 ? `Memo: ${item.memo}` : ''}`
