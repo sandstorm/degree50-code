@@ -22,7 +22,8 @@ export const useItemInteraction = <T>(
   updateMediaItem: (
     item: MediaItem<T>,
     updatedValues: { start?: string; end?: string },
-    newStartTime: number
+    newStartTime: number,
+    newEndTime?: number
   ) => void
 ) => {
   const [isDraging, setIsDraging] = useState(false)
@@ -137,7 +138,12 @@ export const useItemInteraction = <T>(
         if (newEndTime >= 0 && newEndTime > (lastClickedItem?.startTime || 0)) {
           const end = d2t(newEndTime.toFixed(3))
 
-          updateMediaItem(lastClickedItem, { end }, lastClickedItem.startTime) // start time should not've changed here
+          updateMediaItem(
+            lastClickedItem,
+            { end },
+            lastClickedItem.startTime, // start time should not've changed here
+            newEndTime
+          )
         } else {
           // eslint-disable-next-line
           lastTargetNode.style.width = `${lastTargetNodeWidth}px`

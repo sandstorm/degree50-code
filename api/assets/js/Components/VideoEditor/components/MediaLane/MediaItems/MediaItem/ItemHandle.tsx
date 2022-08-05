@@ -4,10 +4,11 @@ type Props = {
   side: 'left' | 'right'
   width: number
   onMouseDown: (event: any) => void
+  onClick: React.MouseEventHandler<HTMLDivElement>
 }
 
 const ItemHandle = (props: Props) => {
-  const { side, width, onMouseDown } = props
+  const { side, width, onMouseDown, onClick } = props
 
   return (
     <div
@@ -17,6 +18,7 @@ const ItemHandle = (props: Props) => {
         width,
       }}
       onMouseDown={onMouseDown}
+      onClick={onClick}
     />
   )
 }
