@@ -383,6 +383,16 @@ const selectCurrentSolutionOwner = createSelector(
   }
 )
 
+const selectSolutionFromGroupPhase = createSelector(
+  [selectById, (_, id?: SolutionId) => id],
+  (byId, solutionId) => {
+    if (!solutionId) return false
+
+    const solution = byId[solutionId]
+    return solution.fromGroupPhase
+  }
+)
+
 const selectCurrentSolutionFromGroupPhase = createSelector(
   [selectById, selectCurrentId],
   (byId, currentId) => {
@@ -413,6 +423,7 @@ export const selectors = {
   selectCurrentCutIds,
   selectCurrentPrototypeIds,
   selectCurrentSolutionOwner,
+  selectSolutionFromGroupPhase,
   selectCurrentSolutionFromGroupPhase,
   selectCurrentMaterialId,
 }

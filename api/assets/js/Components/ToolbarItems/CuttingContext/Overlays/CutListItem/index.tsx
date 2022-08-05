@@ -29,11 +29,18 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
     solutionId: item.solutionId,
   })
 
+  const isFromGroupPhase =
+    selectors.data.solutions.selectSolutionFromGroupPhase(
+      state,
+      item.solutionId
+    )
+
   return {
     item,
     canEdit,
     creatorName: selectors.data.selectCreatorNameForCut(state, ownProps),
     phaseType: selectors.config.selectPhaseType(state),
+    isFromGroupPhase,
   }
 }
 
@@ -52,7 +59,7 @@ type Props = OwnProps &
   typeof mapDispatchToProps
 
 const CutListItem: FC<Props> = (props) => {
-  const { item, phaseType, index } = props
+  const { item, phaseType, index, isFromGroupPhase } = props
 
   const handleRemove = () => {
     props.setCurrentlyEditedElementId(item.id)
@@ -79,7 +86,9 @@ const CutListItem: FC<Props> = (props) => {
   }
 
   const element = `${index + 1}. Element`
-  const creatorDescription = `Schnitt von: ${props.creatorName}`
+  const creatorDescription = `Schnitt von: ${
+    isFromGroupPhase ? 'Gruppe von ' : ''
+  }${props.creatorName}`
   const description = `Beschreibung: ${item.text}`
   const start = `Von: ${item.start}`
   const end = `Bis: ${item.end}`

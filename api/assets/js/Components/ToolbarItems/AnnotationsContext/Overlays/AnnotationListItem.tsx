@@ -25,6 +25,11 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
   const canEdit = selectors.selectUserCanEditSolution(state, {
     solutionId: item.solutionId,
   })
+  const isFromGroupPhase =
+    selectors.data.solutions.selectSolutionFromGroupPhase(
+      state,
+      item.solutionId
+    )
 
   return {
     item,
@@ -35,6 +40,7 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
     ),
     creatorName: selectors.data.selectCreatorNameForAnnotation(state, ownProps),
     phaseType: selectors.config.selectPhaseType(state),
+    isFromGroupPhase,
   }
 }
 
@@ -52,8 +58,14 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux & OwnProps
 
 const AnnotationListItem = (props: Props) => {
-  const { item, index, setCurrentlyEditedElementId, setOverlay, phaseType } =
-    props
+  const {
+    item,
+    index,
+    setCurrentlyEditedElementId,
+    setOverlay,
+    phaseType,
+    isFromGroupPhase,
+  } = props
 
   const handleRemove = () => {
     setCurrentlyEditedElementId(item.id)
@@ -71,7 +83,9 @@ const AnnotationListItem = (props: Props) => {
 
   const element = `${index + 1}. Element`
   const description = `Beschreibung: ${item.text}`
-  const creatorDescription = `Annotation von: ${props.creatorName}`
+  const creatorDescription = `Annotation von: ${
+    isFromGroupPhase ? 'Gruppe von ' : ''
+  }${props.creatorName}`
   const start = `Von: ${item.start}`
   const end = `Bis: ${item.end}`
   const memo = `${item.memo.length > 0 ? `Memo: ${item.memo}` : ''}`
