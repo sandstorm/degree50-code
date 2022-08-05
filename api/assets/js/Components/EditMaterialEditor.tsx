@@ -11,8 +11,11 @@ import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Compone
 import { Material } from 'StimulusControllers/ExerciseAndSolutionStore/MaterialsSlice'
 import MaterialEditor from './MaterialEditor'
 import { ExercisePhaseStatus } from './VideoEditor/types'
+import { useShortCuts } from 'Components/ToolbarItems/ShortCutsContext/useShortCuts'
 
 const EditMaterialEditor = () => {
+  useShortCuts()
+
   const material = useAppSelector(
     selectors.data.selectMaterialOfCurrentSolution
   )

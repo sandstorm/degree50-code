@@ -28,6 +28,7 @@ export enum ShortCutId {
   CREATE_VIDEO_CUT = 'createVideoCut',
   SET_VIDEO_PLAYER_TIME = 'setVideoPlayerTime',
   TOGGLE_VIDEO_FAVORITE = 'toggleVideoFavorite',
+  SHOW_GESAMTLISTE = 'showGesamtliste',
 }
 
 export const shortCutIds = Object.values(ShortCutId)
@@ -99,6 +100,11 @@ const initialState: ShortCutsState = {
   [ShortCutId.TOGGLE_VIDEO_FAVORITE]: {
     shortCutId: ShortCutId.TOGGLE_VIDEO_FAVORITE,
     key: 'v',
+    modifiers: defaultModifiers,
+  },
+  [ShortCutId.SHOW_GESAMTLISTE]: {
+    shortCutId: ShortCutId.SHOW_GESAMTLISTE,
+    key: 'g',
     modifiers: defaultModifiers,
   },
 }

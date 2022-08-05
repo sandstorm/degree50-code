@@ -2,7 +2,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import {
   useAppDispatch,
   useAppSelector,
-} from '../../../StimulusControllers/ExerciseAndSolutionStore/hooks'
+} from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
 import { initializeShortCuts } from './ShortCutsSaga'
 import { useEffect } from 'react'
 import { selectHotKeyByShortCutId, ShortCutId } from './ShortCutsSlice'
@@ -21,6 +21,7 @@ import {
   selectors,
   actions,
 } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { AllMediaItemsOverlayIds } from 'Components/ToolbarItems/AllMediaItemsContext/AllMediaItemsMenu'
 
 export const useShortCuts = () => {
   const dispatch = useAppDispatch()
@@ -162,6 +163,22 @@ export const useShortCuts = () => {
       if (video) {
         dispatch(actions.config.toggleVideoFavorite(video.id))
       }
+
+      keyboardEvent.preventDefault()
+      keyboardEvent.stopPropagation()
+    },
+    { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'] },
+    [dispatch]
+  )
+
+  // createVideoCode
+  const showGesamtlisteHotKey = useAppSelector((state) =>
+    selectHotKeyByShortCutId(state, ShortCutId.SHOW_GESAMTLISTE)
+  )
+  useHotkeys(
+    showGesamtlisteHotKey,
+    (keyboardEvent) => {
+      dispatch(openOverlayAction(AllMediaItemsOverlayIds.all))
 
       keyboardEvent.preventDefault()
       keyboardEvent.stopPropagation()
