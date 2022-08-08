@@ -11,9 +11,6 @@ services:
       - 9090:9090
       # if you add a hosts entry for "degree40.tu-dortmund.de 127.0.0.1", you can test the SAML authentication locally
       - 443:443
-    extra_hosts:
-      # Why: this supposedly makes DNS lookups a lot faster
-      - "host.docker.internal:host-gateway"
     depends_on:
       - db
     environment:
