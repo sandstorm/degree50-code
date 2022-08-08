@@ -89,12 +89,15 @@
     </div>
 
     <script>
-        const tileId = 'tile-{{ video.data.id }}';
-        const tile = document.getElementById(tileId);
+        (() => {
+            const tileId = 'tile-{{ video.data.id }}';
+            const tile = document.getElementById(tileId);
 
-        tile.addEventListener('click', (e) => {
-            tile.classList.toggle('video-tile--show-actions')
-        })
+            tile.addEventListener('click', (e) => {
+                tile.classList.toggle('video-tile--show-actions')
+            })
+
+        })()
     </script>
 {% else %}
     <div
