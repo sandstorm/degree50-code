@@ -20,6 +20,7 @@ use App\Mediathek\Service\VideoFavouritesService;
 use App\Service\UserMaterialService;
 use App\Twig\AppRuntime;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -32,6 +33,7 @@ class SchreibtischService
     private UserMaterialService $materialService;
     private UrlGeneratorInterface $router;
     private AppRuntime $appRuntime;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
         ExerciseService $exerciseService,
@@ -41,6 +43,7 @@ class SchreibtischService
         UserMaterialService $materialService,
         AppRuntime $appRuntime,
         UrlGeneratorInterface $router,
+        EntityManagerInterface $entityManager,
     )
     {
         $this->exerciseService = $exerciseService;
@@ -50,6 +53,7 @@ class SchreibtischService
         $this->appRuntime = $appRuntime;
         $this->materialService = $materialService;
         $this->router = $router;
+        $this->entityManager = $entityManager;
     }
 
     private function sortByExerciseStatus(ExerciseStatus $statusA, ExerciseStatus $statusB)
@@ -130,43 +134,41 @@ class SchreibtischService
     public function getVideoFavoritesResponse(): array
     {
         $user = $this->userService->getLoggendInUser();
+
+        $this->entityManager->getFilters()->disable('video_doctrine_filter');
+
         $videoFavorites = $this->videoFavouritesService->getFavouriteVideosForUser($user);
 
-        return array_reduce($videoFavorites, function ($acc, VideoFavorite $videoFavorite) use ($user) {
+        $response = array_reduce($videoFavorites, function ($acc, VideoFavorite $videoFavorite) use ($user) {
             $video = $videoFavorite->getVideo();
 
-            try {
-                $clientSideVideo = $video->getAsClientSideVideo($this->appRuntime);
+            $clientSideVideo = $video->getAsClientSideVideo($this->appRuntime);
 
-                return [...$acc, [
-                    'id' => $videoFavorite->getId(),
-                    'video' => array_merge(
-                        $clientSideVideo->toArray(),
-                        [
-                            'userIsCreator' => $user === $videoFavorite->getVideo()->getCreator(),
-                            'courses' => $video->getCourses()->map(fn(Course $course) => [
-                                'id' => $course->getId(),
-                                'name' => $course->getName(),
-                            ])->toArray(),
-                            // TODO: filter out duplicates?
-                            'fachbereiche' => $video->getCourses()->map(function (Course $course) {
-                                return $course->getFachbereich() ? [
-                                    'id' => $course->getFachbereich()->getId(),
-                                    'name' => $course->getFachbereich()->getName(),
-                                ] : null;
-                            })->filter(fn(array|null $course) => !is_null($course))->toArray(),
-                        ]
-                    )
-                ]];
-            } catch (EntityNotFoundException $exception) {
-                // WHY:
-                // We want to handle missing videos gracefully and make sure that all other favorites are still being
-                // shown correctly. Usually favorites should also get deleted, if a video is being deleted, but we already
-                // have broken videos on our prod and test systems (these all seem to be some test videos), so technically
-                // this scenario can occur. (e.g. if someone accidentally favors one of these broken videos)
-                return $acc;
-            }
+            return [...$acc, [
+                'id' => $videoFavorite->getId(),
+                'video' => array_merge(
+                    $clientSideVideo->toArray(),
+                    [
+                        'userIsCreator' => $user === $video->getCreator(),
+                        'courses' => $video->getCourses()->map(fn(Course $course) => [
+                            'id' => $course->getId(),
+                            'name' => $course->getName(),
+                        ])->toArray(),
+                        // TODO: filter out duplicates?
+                        'fachbereiche' => $video->getCourses()->map(function (Course $course) {
+                            return $course->getFachbereich() ? [
+                                'id' => $course->getFachbereich()->getId(),
+                                'name' => $course->getFachbereich()->getName(),
+                            ] : null;
+                        })->filter(fn(array|null $course) => !is_null($course))->toArray(),
+                    ]
+                )
+            ]];
         }, []);
+
+        $this->entityManager->getFilters()->enable('video_doctrine_filter');
+
+        return $response;
     }
 
     public function getMaterialResponse(): array
