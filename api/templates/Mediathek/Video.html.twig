@@ -89,12 +89,15 @@
     </div>
 
     <script>
-        const tileId = 'tile-{{ video.data.id }}';
-        const tile = document.getElementById(tileId);
+        (() => {
+            const tileId = 'tile-{{ video.data.id }}';
+            const tile = document.getElementById(tileId);
 
-        tile.addEventListener('click', (e) => {
-            tile.classList.toggle('video-tile--show-actions')
-        })
+            tile.addEventListener('click', (e) => {
+                tile.classList.toggle('video-tile--show-actions')
+            })
+
+        })()
     </script>
 {% else %}
     <div
@@ -104,11 +107,13 @@
         data-location="{{ path("mediathek__video--player", {id: video.data.id}) }}"
     >
         <div class="video-tile__content">
-            {{
-                _self.favorButton(
-                    video
-                )
-            }}
+            {% if app.user.isStudent %}
+                {{
+                    _self.favorButton(
+                        video
+                    )
+                }}
+            {% endif %}
 
             <div class="video-tile__image" role="img" style="background-image: url({{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
 
