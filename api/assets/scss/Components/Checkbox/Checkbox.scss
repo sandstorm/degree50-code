@@ -1,6 +1,7 @@
 .checkbox__label {
-    display: flex;
+    display: grid;
     align-items: center;
+    grid-template-columns: auto 1fr;
 
     .checkbox__input--has-focus,
     &:focus-within,
