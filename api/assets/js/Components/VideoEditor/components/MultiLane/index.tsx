@@ -97,10 +97,7 @@ const MultiLane = (props: Props) => {
   const firstVideoDuration = firstVideo.duration
 
   return (
-    <div
-      className="video-editor-timeline"
-      style={{ height: MEDIA_LANE_HEIGHT }}
-    >
+    <div className="video-editor-timeline">
       <Toolbar
         handleTimeLineAction={handleMediaLaneClick}
         renderConfig={props.mediaLaneRenderConfig}
@@ -111,10 +108,7 @@ const MultiLane = (props: Props) => {
           <LaneHeightMenu />
         </MediaLaneToolbarItem>
       </Toolbar>
-      <div
-        className="video-editor-timeline__entries multilane"
-        style={{ height: MEDIA_LANE_HEIGHT - MEDIA_LANE_TOOLBAR_HEIGHT }}
-      >
+      <div className="video-editor-timeline__entries multilane">
         <Filter />
 
         <div className="multilane__content">

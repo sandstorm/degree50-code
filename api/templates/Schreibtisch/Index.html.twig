@@ -4,8 +4,8 @@
     {{ include('Partials/Header.html.twig') }}
 
     <main class="main main--with-header {% block layoutCssClass %}{% endblock %}">
+        {{ include('Partials/FlashMessages.html.twig') }}
         <div class="main-inner">
-            {{ include('Partials/FlashMessages.html.twig') }}
 
             <div class="schreibtisch-container" data-controller="schreibtisch" data-schreibtisch-props="{{ { todo: 'data hydration' } |json_encode|e('html_attr') }}">
                 <div class="loading-screen">

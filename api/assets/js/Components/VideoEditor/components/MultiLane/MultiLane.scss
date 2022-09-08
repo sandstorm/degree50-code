@@ -14,21 +14,19 @@
 }
 
 .multilane-filter-container {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: auto 1fr;
 
-    width: content;
+    overflow: auto;
 }
 
 .multilane-filter-container__toggle {
     height: 100%;
-    width: content;
 }
 
 .multilane-filter__content {
     width: 400px;
-    overflow: hidden;
+    overflow: auto;
     > * {
         padding-left: $theme__spacing--base;
         padding-right: $theme__spacing--base;

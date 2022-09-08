@@ -51,6 +51,9 @@ body {
     height: 100%;
     width: 100%;
 
+    display: grid;
+    grid-template-rows: 1fr auto;
+
     overflow: hidden;
     overflow-y: scroll;
 

@@ -1,3 +1,10 @@
+.video-editor-timeline {
+    height: min(350px, 30vh);
+
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
 .video-editor-timeline__entries {
     overflow-y: scroll;
 }
