@@ -63,7 +63,7 @@ class SolutionService
             $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
             $cutVideo = $solutionEntity->getCutVideo();
-            $clientSideCutVideo = $cutVideo?->getAsArray($this->appRuntime);
+            $clientSideCutVideo = $cutVideo?->getAsClientSideVideo($this->appRuntime);
 
             return PreviousSolutionDto::create(
                 $exercisePhaseTeam->getCreator(),
