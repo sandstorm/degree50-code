@@ -33,9 +33,9 @@ final class TimeCode
          */
         $timeStringAsArray = array_reverse(explode(":", $timeString));
 
-        $seconds = $timeStringAsArray[0];
-        $minutes = $timeStringAsArray[1] ?? 0;
-        $hours = $timeStringAsArray[2] ?? 0;
+        $seconds = array_key_exists(0, $timeStringAsArray) ? intval($timeStringAsArray[0]) : 0;
+        $minutes = array_key_exists(1, $timeStringAsArray) ? intval($timeStringAsArray[1]) : 0;
+        $hours = array_key_exists(2, $timeStringAsArray) ? intval($timeStringAsArray[2]) : 0;
 
         $unixTimeStamp = $hours * 3600 + $minutes * 60 + intval($seconds);
 
@@ -64,11 +64,11 @@ final class TimeCode
     {
         $dateString = date("H:i:s", $this->unixTimeStamp);
 
-        $millisecondsAsString = strval($this->milliseconds);
+        $millisecondsAsString = str_split(strval($this->milliseconds));
 
-        $hundredths = $millisecondsAsString[0] ?? 0;
-        $thousandths = $millisecondsAsString[1] ?? 0;
-        $millis = $millisecondsAsString[2] ?? 0;
+        $hundredths = array_key_exists(0, $millisecondsAsString) ? $millisecondsAsString[0] : "0";
+        $thousandths = array_key_exists(1, $millisecondsAsString) ? $millisecondsAsString[1] : "0";
+        $millis = array_key_exists(2, $millisecondsAsString) ? $millisecondsAsString[2] : "0";
 
         return "$dateString.$hundredths$thousandths$millis";
     }

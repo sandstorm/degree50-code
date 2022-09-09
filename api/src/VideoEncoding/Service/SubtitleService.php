@@ -46,7 +46,7 @@ class SubtitleService
             return $subtitleEntry->block;
         }, $metadataSubtitleEntries);
 
-        return implode(PHP_EOL.PHP_EOL, [...$metadataBlocks, ...$resultSubtitleBlocks]);
+        return implode("\n\n", [...$metadataBlocks, ...$resultSubtitleBlocks]);
     }
 
     /**
@@ -55,28 +55,33 @@ class SubtitleService
      */
     public function parseSubtitleEntryListFromVttString(string $vtt): array
     {
-        // remove multiple empty lines with (find with regex /\n\n+/ and replace with "\n\n")
-        // We use PHP_EOL for system compatibility
-        $fileContentWithoutMultipleNewLines = preg_replace("/".PHP_EOL.PHP_EOL."+/", PHP_EOL.PHP_EOL, $vtt);
+        // normalize line endings to LF
+        $fileContentWithLF = preg_replace("/(\r\n|\r|\n)/", "\n", $vtt);
+
+        // remove multiple empty lines with (find with regex /\n\n+/ (more than 2 LF) and replace with "\n\n" (exactly 2 LF)
+        $fileContentWithoutMultipleNewLines = preg_replace("/\n\n+/", "\n\n", $fileContentWithLF);
 
         // trim white space
         $fileContentTrimmed = trim($fileContentWithoutMultipleNewLines);
 
         // individual blocks are separated by a newline
-        $blocks = explode(PHP_EOL.PHP_EOL, $fileContentTrimmed);
+        $blocks = explode("\n\n", $fileContentTrimmed);
 
         return array_map(function (string $block) {
             // If the block has an arrow (" --> "), then it's a text track block.
             // We ignore all other blocks ('STYLE', 'NOTE', etc).
             if (str_contains($block, " --> ")) {
-                $lines = explode(PHP_EOL, $block);
+                $lines = explode("\n", $block);
                 // can only be first or second line
                 $lineIndexWithTime = str_contains($lines[0], " --> ") ? 0 : 1;
 
                 // get start and end from '00:00:03.000 --> 00:00:06.500 position:90% align:right size:35%'
-                $times = explode(" ", $lines[$lineIndexWithTime]);
-                $startTimeStamp = $times[0];
-                $endTimeStamp = $times[2];
+                $times = explode(" --> ", $lines[$lineIndexWithTime]);
+                if (count($times) < 2) {
+                    die($block);
+                }
+                $startTimeStamp = trim($times[0]);
+                $endTimeStamp = trim($times[1]);
 
                 return new SubtitleEntry($block, $lineIndexWithTime, $startTimeStamp, $endTimeStamp);
             }
@@ -132,7 +137,7 @@ class SubtitleService
             $newEnd = TimeCode::fromSeconds(min($subtitleEnd, $timeFrameEnd) - $timeFrameStart + $offset)->toTimeString();
 
             // update time stamps in block
-            $lines = explode(PHP_EOL, $subtitleEntry->block);
+            $lines = explode("\n", $subtitleEntry->block);
             $lineWithTime = $lines[$subtitleEntry->indexOfLineTimeEntryInBlock];
             $lineWithTimeAsArray = explode(" ", $lineWithTime);
             $restOfLine = array_slice($lineWithTimeAsArray, 3);
@@ -143,7 +148,7 @@ class SubtitleService
             // replace line
             $lines[$subtitleEntry->indexOfLineTimeEntryInBlock] = $newLineWithTime;
 
-            return implode(PHP_EOL, $lines);
+            return implode("\n", $lines);
         }, $subtitleEntries);
     }
 }
