@@ -16,26 +16,39 @@ class SubtitleService
     {
         $subtitleEntries = $this->parseSubtitleEntryListFromVttString($originalVtt);
 
-        $resultSubtitleBlocks = array_reduce($cutList, function (array $resultAndPositionInCutVideo, ServerSideCut $cut) use ($subtitleEntries) {
-            // get subs for cut
-            $cutStartInVideo = $cut->offset;
-            $cutEndInVideo = $cut->offset + $cut->getDuration();
-            $cutStartInCutVideo = $resultAndPositionInCutVideo['positionInCutVideo'];
+        $resultSubtitleBlocks = array_reduce(
+            $cutList,
+            function (array $resultAndPositionInCutVideo, ServerSideCut $cut) use ($subtitleEntries) {
+                // get subs for cut
+                $cutStartInVideo = $cut->offset;
+                $cutEndInVideo = $cut->offset + $cut->getDuration();
+                $cutStartInCutVideo = $resultAndPositionInCutVideo['positionInCutVideo'];
 
-            $relevantSubtitleEntriesForCut = $this->getRelevantSubtitlesForTimeFrame($subtitleEntries, $cutStartInVideo, $cutEndInVideo);
+                $relevantSubtitleEntriesForCut = $this->getRelevantSubtitlesForTimeFrame(
+                    $subtitleEntries,
+                    $cutStartInVideo,
+                    $cutEndInVideo
+                );
 
-            // change start and end of subs according to cut
-            $subtitleBlocksWithUpdatedTimeStamps = $this->getSubtitleBlocksWithUpdatedTimeStampsBasedOnTimeFrameAndOffset($relevantSubtitleEntriesForCut, $cutStartInVideo, $cutEndInVideo, $cutStartInCutVideo);
+                // change start and end of subs according to cut
+                $subtitleBlocksWithUpdatedTimeStamps = $this
+                    ->getSubtitleBlocksWithUpdatedTimeStampsBasedOnTimeFrameAndOffset(
+                        $relevantSubtitleEntriesForCut,
+                        $cutStartInVideo,
+                        $cutEndInVideo,
+                        $cutStartInCutVideo
+                    );
 
-            return [
-                "result" => [...$resultAndPositionInCutVideo["result"], ...$subtitleBlocksWithUpdatedTimeStamps],
-                "positionInCutVideo" => $cutStartInCutVideo + $cut->getDuration(),
-            ];
-        },
-        [
-            "result" => [],
-            "positionInCutVideo" => 0,
-        ])["result"];
+                return [
+                    "result" => [...$resultAndPositionInCutVideo["result"], ...$subtitleBlocksWithUpdatedTimeStamps],
+                    "positionInCutVideo" => $cutStartInCutVideo + $cut->getDuration(),
+                ];
+            },
+            [
+                "result" => [],
+                "positionInCutVideo" => 0,
+            ]
+        )["result"];
 
         // We still want to keep meta data & comments, so we copy them over
         $metadataSubtitleEntries = array_filter($subtitleEntries, function (SubtitleEntry $subtitleEntry) {
@@ -58,7 +71,8 @@ class SubtitleService
         // normalize line endings to LF
         $fileContentWithLF = preg_replace("/(\r\n|\r|\n)/", "\n", $vtt);
 
-        // remove multiple empty lines with (find with regex /\n\n+/ (more than 2 LF) and replace with "\n\n" (exactly 2 LF)
+        // remove multiple empty lines with (find with regex /\n\n+/
+        // (more than 2 LF) and replace with "\n\n" (exactly 2 LF)
         $fileContentWithoutMultipleNewLines = preg_replace("/\n\n+/", "\n\n", $fileContentWithLF);
 
         // trim white space
@@ -99,24 +113,32 @@ class SubtitleService
      *
      * @return SubtitleEntry[]
      */
-    private function getRelevantSubtitlesForTimeFrame(array $subtitleEntries, float $timeFrameStart, float $timeFrameEnd): array
+    private function getRelevantSubtitlesForTimeFrame(
+        array $subtitleEntries,
+        float $timeFrameStart,
+        float $timeFrameEnd
+    ): array
     {
-        return array_filter($subtitleEntries, function (SubtitleEntry $subtitleEntry) use ($timeFrameStart, $timeFrameEnd) {
-            // subEntry is a metadata block (e.g. WEBVTT header, 'NOTE' or 'STYLE')
-            if ($subtitleEntry->start === null) {
-                return false;
+        return array_filter(
+            $subtitleEntries,
+            function (SubtitleEntry $subtitleEntry) use ($timeFrameStart, $timeFrameEnd) {
+                // subEntry is a metadata block (e.g. WEBVTT header, 'NOTE' or 'STYLE')
+                if ($subtitleEntry->start === null) {
+                    return false;
+                }
+
+                $subtitleStart = TimeCode::fromTimeString($subtitleEntry->start)->toFloat();
+                $subtitleEnd = TimeCode::fromTimeString($subtitleEntry->end)->toFloat();
+
+                // subEntry is not relevant for time frame
+                // (ends before time frame starts OR starts after time frame ends)
+                if ($timeFrameStart > $subtitleEnd || $subtitleStart > $timeFrameEnd) {
+                    return false;
+                }
+
+                return true;
             }
-
-            $subtitleStart = TimeCode::fromTimeString($subtitleEntry->start)->toFloat();
-            $subtitleEnd = TimeCode::fromTimeString($subtitleEntry->end)->toFloat();
-
-            // subEntry is not relevant for time frame (ends before time frame starts OR starts after time frame ends)
-            if ($timeFrameStart > $subtitleEnd || $subtitleStart > $timeFrameEnd) {
-                return false;
-            }
-
-            return true;
-        });
+        );
     }
 
     /**
@@ -127,14 +149,21 @@ class SubtitleService
      *
      * @return string[] new blocks
      */
-    private function getSubtitleBlocksWithUpdatedTimeStampsBasedOnTimeFrameAndOffset(array $subtitleEntries, float $timeFrameStart, float $timeFrameEnd, float $offset): array
+    private function getSubtitleBlocksWithUpdatedTimeStampsBasedOnTimeFrameAndOffset(
+        array $subtitleEntries,
+        float $timeFrameStart,
+        float $timeFrameEnd,
+        float $offset
+    ): array
     {
         return array_map(function (SubtitleEntry $subtitleEntry) use ($timeFrameStart, $timeFrameEnd, $offset) {
             $subtitleStart = TimeCode::fromTimeString($subtitleEntry->start)->toFloat();
             $subtitleEnd = TimeCode::fromTimeString($subtitleEntry->end)->toFloat();
 
-            $newStart = TimeCode::fromSeconds(max($subtitleStart, $timeFrameStart) - $timeFrameStart + $offset)->toTimeString();
-            $newEnd = TimeCode::fromSeconds(min($subtitleEnd, $timeFrameEnd) - $timeFrameStart + $offset)->toTimeString();
+            $newStart = TimeCode::fromSeconds(max($subtitleStart, $timeFrameStart) - $timeFrameStart + $offset)
+                ->toTimeString();
+            $newEnd = TimeCode::fromSeconds(min($subtitleEnd, $timeFrameEnd) - $timeFrameStart + $offset)
+                ->toTimeString();
 
             // update time stamps in block
             $lines = explode("\n", $subtitleEntry->block);

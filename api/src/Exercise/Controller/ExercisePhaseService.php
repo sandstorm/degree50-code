@@ -27,70 +27,40 @@ class ExercisePhaseService
     private EntityManagerInterface $entityManager;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private UserMaterialService $materialService;
-    private AutosavedSolutionRepository $autosavedSolutionRepository;
+    private AutosavedSolutionRepository $autoSavedSolutionRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         DoctrineIntegratedEventStore $eventStore,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         UserMaterialService $materialService,
-        AutosavedSolutionRepository $autosavedSolutionRepository,
+        AutosavedSolutionRepository $autoSavedSolutionRepository,
     ) {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->materialService = $materialService;
-        $this->autosavedSolutionRepository = $autosavedSolutionRepository;
+        $this->autoSavedSolutionRepository = $autoSavedSolutionRepository;
     }
 
-    public function getPhaseTypeTitle(ExercisePhaseType $exercisePhaseType)
+    public function getPhaseTypeTitle(ExercisePhaseType $exercisePhaseType): string
     {
-        switch ($exercisePhaseType) {
-            case ExercisePhaseType::VIDEO_ANALYSIS: {
-                    return "Videoanalyse";
-                }
-
-            case ExercisePhaseType::REFLEXION: {
-                    return "ReflexionPhase";
-                }
-
-            case ExercisePhaseType::VIDEO_CUT: {
-                    return "Schnittphase";
-                }
-
-            case ExercisePhaseType::MATERIAL: {
-                    return "Materialphase";
-                }
-
-            default: {
-                    return "";
-                }
-        }
+        return match($exercisePhaseType) {
+            ExercisePhaseType::VIDEO_ANALYSIS => "Videoanalyse",
+            ExercisePhaseType::VIDEO_CUT => "ReflexionPhase",
+            ExercisePhaseType::REFLEXION => "Schnittphase",
+            ExercisePhaseType::MATERIAL => "Materialphase",
+        };
     }
 
-    public function getPhaseTypeIconClasses(ExercisePhaseType $exercisePhaseType)
+    public function getPhaseTypeIconClasses(ExercisePhaseType $exercisePhaseType): string
     {
-        switch ($exercisePhaseType) {
-            case ExercisePhaseType::VIDEO_ANALYSIS: {
-                    return "fas fa-film";
-                }
-
-            case ExercisePhaseType::REFLEXION: {
-                    return "fas fa-book-open";
-                }
-
-            case ExercisePhaseType::VIDEO_CUT: {
-                    return "fas fa-cut";
-                }
-
-            case ExercisePhaseType::MATERIAL: {
-                    return "fas fa-square-quote";
-                }
-
-            default: {
-                    return "";
-                }
-        }
+        return match($exercisePhaseType) {
+            ExercisePhaseType::VIDEO_ANALYSIS => "fas fa-film",
+            ExercisePhaseType::REFLEXION => "fas fa-book-open",
+            ExercisePhaseType::VIDEO_CUT => "fas fa-cut",
+            ExercisePhaseType::MATERIAL => "fas fa-square-quote",
+        };
     }
 
     /**
@@ -144,29 +114,32 @@ class ExercisePhaseService
 
                 switch ($originalPhase->getType()) {
                     case ExercisePhaseType::VIDEO_ANALYSIS: {
-                            /** @var VideoAnalysisPhase $newPhase */
-                            /** @var VideoAnalysisPhase $originalPhase */
-                            $newPhase->setVideoAnnotationsActive($originalPhase->getVideoAnnotationsActive());
-                            $newPhase->setVideoCodesActive($originalPhase->getVideoCodesActive());
+                        /** @var VideoAnalysisPhase $newPhase */
+                        /** @var VideoAnalysisPhase $originalPhase */
+                        $newPhase->setVideoAnnotationsActive($originalPhase->getVideoAnnotationsActive());
+                        $newPhase->setVideoCodesActive($originalPhase->getVideoCodesActive());
 
-                            // create new VideoCodes from original VideoCodes
-                            foreach ($originalPhase->getVideoCodes() as $_key => $videoCode) {
-                                $newVideoCode = new VideoCode();
-                                $newVideoCode->setName($videoCode->getName());
-                                $newVideoCode->setColor($videoCode->getColor());
+                        // create new VideoCodes from original VideoCodes
+                        foreach ($originalPhase->getVideoCodes() as $_key => $videoCode) {
+                            $newVideoCode = new VideoCode();
+                            $newVideoCode->setName($videoCode->getName());
+                            $newVideoCode->setColor($videoCode->getColor());
 
-                                $newVideoCode->setExercisePhase($newPhase);
-                                $newPhase->addVideoCode($newVideoCode);
-                            };
-                            break;
+                            $newVideoCode->setExercisePhase($newPhase);
+                            $newPhase->addVideoCode($newVideoCode);
                         }
+
+                        break;
+                    }
 
                     case ExercisePhaseType::MATERIAL: {
-                            /** @var MaterialPhase $newPhase */
-                            /** @var MaterialPhase $originalPhase */
-                            $newPhase->setMaterial($originalPhase->getMaterial());
-                            $newPhase->setReviewRequired($originalPhase->getReviewRequired());
-                        }
+                        /** @var MaterialPhase $newPhase */
+                        /** @var MaterialPhase $originalPhase */
+                        $newPhase->setMaterial($originalPhase->getMaterial());
+                        $newPhase->setReviewRequired($originalPhase->getReviewRequired());
+
+                        break;
+                    }
 
                     case ExercisePhaseType::VIDEO_CUT:
                     case ExercisePhaseType::REFLEXION:
@@ -223,19 +196,14 @@ class ExercisePhaseService
 
     public function finishPhase(ExercisePhaseTeam $phaseTeam): void
     {
-        $exercisePhase = $phaseTeam->getExercisePhase();
-
-        switch ($exercisePhase->getType()) {
-            case ExercisePhaseType::MATERIAL:
-                $this->finishMaterialPhase($phaseTeam);
-                break;
-            default:
-                $this->finishRegularPhase($phaseTeam);
-                break;
+        if ($phaseTeam->getExercisePhase()->getType() == ExercisePhaseType::MATERIAL) {
+            $this->finishMaterialPhase($phaseTeam);
+        } else {
+            $this->finishRegularPhase($phaseTeam);
         }
     }
 
-    private function finishRegularPhase(ExercisePhaseTeam $phaseTeam)
+    private function finishRegularPhase(ExercisePhaseTeam $phaseTeam): void
     {
         $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
 
@@ -252,7 +220,7 @@ class ExercisePhaseService
      * Sets the status to "Beendet" for an exercisePhaseTeam of a material phase and
      * also creates a copy of the material for each individual member of the team.
      * */
-    private function finishMaterialPhase(ExercisePhaseTeam $phaseTeam)
+    private function finishMaterialPhase(ExercisePhaseTeam $phaseTeam): void
     {
         $exercisePhase = $phaseTeam->getExercisePhase();
         /** @var MaterialPhase $materialPhase */
@@ -290,22 +258,22 @@ class ExercisePhaseService
     }
 
     /**
-     * Finds the last autosaved solution by an exercisePhaseTeam and
+     * Finds the last auto saved solution by an exercisePhaseTeam and
      * Creates a solution entity using its contents.
      * */
-    public function promoteLastAutosavedSolutionToRealSolution(ExercisePhaseTeam $exercisePhaseTeam)
+    public function promoteLastAutoSavedSolutionToRealSolution(ExercisePhaseTeam $exercisePhaseTeam): void
     {
         $solution = $exercisePhaseTeam->getSolution();
 
-        // use solution of the latest autosaved one
-        $latestAutosavedSolution = $this->autosavedSolutionRepository->findOneBy(
+        // use solution of the latest auto saved one
+        $latestAutoSavedSolution = $this->autoSavedSolutionRepository->findOneBy(
             ['team' => $exercisePhaseTeam],
             ['update_timestamp' => 'desc']
         );
 
-        if ($latestAutosavedSolution) {
-            $solution->setSolution($latestAutosavedSolution->getSolution());
-            $solution->setUpdateTimestamp($latestAutosavedSolution->getUpdateTimestamp());
+        if ($latestAutoSavedSolution) {
+            $solution->setSolution($latestAutoSavedSolution->getSolution());
+            $solution->setUpdateTimestamp($latestAutoSavedSolution->getUpdateTimestamp());
         }
 
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
@@ -322,16 +290,16 @@ class ExercisePhaseService
     }
 
     /**
-     * Removes autosaved solutions by an exercisePhaseTeam.
+     * Removes auto saved solutions by an exercisePhaseTeam.
      * */
-    public function cleanupAutosavedSolutions(ExercisePhaseTeam $exercisePhaseTeam)
+    public function cleanupAutoSavedSolutions(ExercisePhaseTeam $exercisePhaseTeam): void
     {
-        $autosavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();
-        foreach ($autosavedSolutions as $autosavedSolution) {
-            $this->entityManager->remove($autosavedSolution);
+        $autoSavedSolutions = $exercisePhaseTeam->getAutosavedSolutions();
+        foreach ($autoSavedSolutions as $autoSavedSolution) {
+            $this->entityManager->remove($autoSavedSolution);
         }
 
-        $this->eventStore->addEvent('AutosavedSolutionsRemoved', [
+        $this->eventStore->addEvent('AutoSavedSolutionsRemoved', [
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
         ]);
 
@@ -360,7 +328,7 @@ class ExercisePhaseService
             return; // NoOp
         } else {
             // WHY:
-            // While we set the status to "IN_BEARBEITUNG" when we initally create the phase,
+            // While we set the status to "IN_BEARBEITUNG" when we initially create the phase,
             // a user might re-enter the phase after the status has already been set to "BEENDET".
             // In that case we want the phase to reflect that, by having the "IN_BEARBEITUNG" status again.
             $exercisePhaseTeam->setStatus(ExercisePhase\ExercisePhaseStatus::IN_BEARBEITUNG);
@@ -411,7 +379,7 @@ class ExercisePhaseService
         );
     }
 
-    public function createPhaseTeam(ExercisePhase $exercisePhase)
+    public function createPhaseTeam(ExercisePhase $exercisePhase): ExercisePhaseTeam
     {
         $exercisePhaseTeam = new ExercisePhaseTeam();
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
@@ -427,7 +395,7 @@ class ExercisePhaseService
         return $exercisePhaseTeam;
     }
 
-    public function addMemberToPhaseTeam(ExercisePhaseTeam $exercisePhaseTeam, User $user)
+    public function addMemberToPhaseTeam(ExercisePhaseTeam $exercisePhaseTeam, User $user): void
     {
         $exercisePhaseTeam->addMember($user);
 

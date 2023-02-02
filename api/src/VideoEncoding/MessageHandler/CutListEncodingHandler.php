@@ -48,8 +48,17 @@ class CutListEncodingHandler implements MessageHandlerInterface
     private SubtitleService $subtitleService;
     private ParameterBagInterface $parameterBag;
 
-    public function __construct(LoggerInterface $logger, FileSystemService $fileSystemService, VideoRepository $videoRepository, EntityManagerInterface $entityManager, DoctrineIntegratedEventStore $eventStore, ExercisePhaseTeamRepository $exercisePhaseTeamRepository, EncodingService $encodingService, SubtitleService $subtitleService, ParameterBagInterface $parameterBag)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        FileSystemService $fileSystemService,
+        VideoRepository $videoRepository,
+        EntityManagerInterface $entityManager,
+        DoctrineIntegratedEventStore $eventStore,
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        EncodingService $encodingService,
+        SubtitleService $subtitleService,
+        ParameterBagInterface $parameterBag
+    ) {
         $this->logger = $logger;
         $this->fileSystemService = $fileSystemService;
         $this->videoRepository = $videoRepository;
