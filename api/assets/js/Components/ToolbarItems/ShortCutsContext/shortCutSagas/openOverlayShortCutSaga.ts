@@ -42,7 +42,7 @@ function* openOverlay(action: ReturnType<typeof openOverlayAction>) {
     yield put(playShortCutTriggerSoundAction())
   } else {
     yield put(PlayerActions.setPause(true))
-    yield put(OverlayActions.setOverlay({ overlayId, closeOthers: true }))
+    yield put(OverlayActions.setOverlay({ overlayId, closeOthers: false }))
 
     yield put(playShortCutSuccessSoundAction())
   }
