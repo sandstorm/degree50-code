@@ -216,8 +216,8 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function shareResult(ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        $this->exercisePhaseService->promoteLastAutosavedSolutionToRealSolution($exercisePhaseTeam);
-        $this->exercisePhaseService->cleanupAutosavedSolutions($exercisePhaseTeam);
+        $this->exercisePhaseService->promoteLastAutoSavedSolutionToRealSolution($exercisePhaseTeam);
+        $this->exercisePhaseService->cleanupAutoSavedSolutions($exercisePhaseTeam);
         $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
 
         $this->dispatchCutListEncodingTask($exercisePhaseTeam);
