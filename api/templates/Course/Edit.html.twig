@@ -29,11 +29,11 @@
             {{ form_row(form.fachbereich) }}
             {{ form_row(form.users) }}
 
-            <h5>{% trans %}course.labels.currentMembers{% endtrans %} ({{ tutors.count }} {% trans %}course.labels.tutors{% endtrans %})</h5>
+            <h5>{% trans %}course.labels.currentTutors{% endtrans %} ({{ tutors.count }} {% trans %}course.labels.tutors{% endtrans %})</h5>
             <table class="table table-sm">
                 <thead>
                 <tr>
-                    <th>{% trans %}course.labels.user{% endtrans %}</th>
+                    <th>{% trans %}course.labels.tutor{% endtrans %}</th>
                     <th>{% trans %}course.labels.role{% endtrans %}</th>
                     <th></th>
                 </tr>
@@ -42,7 +42,7 @@
                     {% if tutor.name == 'DOZENT' %}
                         <tr>
                             <td>{{ tutor.user.userName }}</td>
-                            <td>{{ tutor.name }}</td>
+                            <td>{% trans %}course.labels.tutor{% endtrans %}</td>
                             <td class="text-right">
                                 <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: tutor.id, redirectToEdit: true}) }}"
                                    class="btn btn-danger btn-sm">{% trans %}course.removeMember.title{% endtrans %}</a>
