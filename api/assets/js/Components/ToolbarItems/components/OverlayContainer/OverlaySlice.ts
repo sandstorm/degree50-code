@@ -29,17 +29,12 @@ const OverlaySlice = createSlice({
       action: PayloadAction<{ overlayId: string; closeOthers: boolean }>
     ): OverlayState => {
       const { closeOthers, overlayId } = action.payload
-      const currentOverlayIds = (() => {
-        if (closeOthers) {
-          return [overlayId]
-        }
-
-        if (state.currentOverlayIds.includes(overlayId)) {
-          return state.currentOverlayIds.filter((id) => id !== overlayId)
-        }
-
-        return [...state.currentOverlayIds, overlayId]
-      })()
+      const currentOverlayIds = closeOthers
+        ? [overlayId]
+        : [
+            ...state.currentOverlayIds.filter((id) => id !== overlayId),
+            overlayId,
+          ]
 
       return {
         ...state,

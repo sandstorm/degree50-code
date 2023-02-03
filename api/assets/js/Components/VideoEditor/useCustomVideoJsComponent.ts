@@ -1,7 +1,7 @@
 import { VideoJsPlayer } from 'video.js'
 import { useEffect, useState } from 'react'
 import { AnyAction } from '@reduxjs/toolkit'
-import { useAppDispatch } from '../../StimulusControllers/ExerciseAndSolutionStore/hooks'
+import { useAppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
 
 export type CustomVideoControlConfig = {
   controlText: string
