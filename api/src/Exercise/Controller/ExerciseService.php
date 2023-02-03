@@ -91,8 +91,7 @@ class ExerciseService
     {
         $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
 
-        // TODO
-        // Refactor this in to Dtos
+        // TODO: Refactor this in to Dtos
         return [
             'phase' => $phase,
             'metadata' => [
@@ -106,8 +105,7 @@ class ExerciseService
 
     private function getPhaseWithStatusMetadataForDozent(ExercisePhase $phase)
     {
-        // TODO
-        // Refactor this in to Dtos
+        // TODO: Refactor this in to Dtos
         return [
             'phase' => $phase,
             'metadata' => [
@@ -194,6 +192,12 @@ class ExerciseService
 
     public function deleteExercise(Exercise $exercise): void
     {
+        // Remove phases in reverse order to prevent foreign key exception when removing a phase that is
+        // referenced by another phase (e.g. phase depending on other phase, using solution of another phase).
+        foreach (array_reverse($exercise->getPhases()->toArray()) as $phase) {
+            $this->entityManager->remove($phase);
+        }
+
         $this->eventStore->addEvent('ExerciseDeleted', [
             'exerciseId' => $exercise->getId(),
             'courseId' => $exercise->getCourse()->getId(),
