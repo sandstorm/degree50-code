@@ -145,14 +145,14 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     ### Verwalten (edit, delete, export CSV, and "Mitglieder Verwalten")
     #########################
     ## Admin
-    Scenario Outline: As admin I can edit "Kursmitglieder" for all courses
+    Scenario Outline: As admin I can edit "Lernende" for all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
         When I visit url "/exercise-overview/<courseId>"
         And I click on "Kurs verwalten"
-        And I click on "Kursmitglieder verwalten"
-        And I click on "Kursmitglieder speichern"
+        And I click on "Lernende verwalten"
+        And I click on "Lernende speichern"
         Then the response status code should be 200
-        And the page should contain the text "Kursmitglieder erfolgreich gespeichert!"
+        And the page should contain the text "Lernende erfolgreich gespeichert!"
 
         Examples:
             | courseId |
@@ -208,16 +208,16 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | course2  |
 
     ## Dozent
-    Scenario: As dozent I can edit "Kursmitglieder" for assigned courses
+    Scenario: As dozent I can edit "Lernende" for assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit url "/exercise-overview/course1"
         And I click on "Kurs verwalten"
-        And I click on "Kursmitglieder verwalten"
-        And I click on "Kursmitglieder speichern"
+        And I click on "Lernende verwalten"
+        And I click on "Lernende speichern"
         Then the response status code should be 200
-        And the page should contain the text "Kursmitglieder erfolgreich gespeichert!"
+        And the page should contain the text "Lernende erfolgreich gespeichert!"
 
-    Scenario: As dozent I can not edit "Kursmitglieder" for unassigned courses
+    Scenario: As dozent I can not edit "Lernende" for unassigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         # we can't navigate to the course via mouse as it shouldn't even be visible to us
         When I visit url "/exercise-overview/course2/course-members"
@@ -285,7 +285,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Then the response status code should be 200
         And the page should not contain the text "Kurs verwalten"
 
-    Scenario Outline: As student I can not edit "Kursmitglieder" for any courses
+    Scenario Outline: As student I can not edit "Lernende" for any courses
         Given I am logged in via browser as "test-student@sandstorm.de"
         # we can't navigate to the page via mouse as it shouldn't even be visible to us
         When I visit url "/exercise-overview/<courseId>/course-members"
