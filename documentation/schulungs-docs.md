@@ -103,7 +103,7 @@
     -   Öffentlich -> filtert nach öffentlichen Aufgaben
     -   Abgeschlossen -> **TODO**
 -   Erstellung von Aufgaben
--   Zuweisung von Studierenden und Dozent:innen zu Kurs ("Kursmitglieder verwalten")
+-   Zuweisung von Studierenden und Dozent:innen zu Kurs ("Lernende verwalten")
 
 ### Wie wird eine Aufgabe erstellt?
 
@@ -296,7 +296,7 @@
 ### Kursmitglieder-Verwaltung
 
 -   Aktuell können nur Admins Kurse verwalten (#84)
--   Bei Rolle wird derzeit immer **Student** angezeigt, auch wenn es sich um einen Nutzer mit der Rolle **Dozent** handelt! (#131)
+-   Bei Rolle wird derzeit immer **Lernender** angezeigt, auch wenn es sich um einen Nutzer mit der Rolle **Dozent** handelt! (#131)
 
 ### Aufgabenerstellung
 

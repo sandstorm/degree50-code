@@ -62,7 +62,7 @@ const ExerciseList = () => {
 
   // TODO: a11y
   return (
-    <table className="exercise-list">
+    <table className="exercise-list" data-test-id="exercise-list">
       <thead>
         <tr>
           <th>Fachbereich</th>

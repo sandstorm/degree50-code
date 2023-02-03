@@ -257,6 +257,7 @@ class ExercisePhaseController extends AbstractController
         // TODO throws Parameter 'userId' does not exist.... why?
         //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
 
+        // TODO: obsolete/unused?
         $phasesWithReviewRequiredIds = $exercise->getPhases()->filter(
             fn (ExercisePhase $phase) => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase)
         )->map(fn (ExercisePhase $phase) => $phase->getId());
@@ -268,7 +269,6 @@ class ExercisePhaseController extends AbstractController
             'config' => $this->getConfig($exercisePhase, true),
             'data' => $data,
             'exercise' => $exercise,
-            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
             'phases' => $phases,
             'currentExercisePhase' => $exercisePhase,
         ]);

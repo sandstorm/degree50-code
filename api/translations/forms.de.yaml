@@ -15,7 +15,7 @@ exercise:
         status0: 'Erstellt'
         status1: 'Abgeschlossen'
         status2: 'Veröffentlicht'
-        reviewRequired: "Überprüfung durch dozierende Person erforderlich"
+        reviewRequired: "Überprüfung durch lehrende Person erforderlich"
         phaseDone: 'Phase abgeschlossen'
     show:
         title: 'Aufgabe starten'
@@ -48,7 +48,7 @@ exercisePhase:
         isGroupPhase: 'Ist eine Gruppenarbeit'
         dependsOnPreviousPhase: 'Nutzt Ergebnis von Phase'
         dependsOnPhaseName: 'Nutzt Ergebnis von Phase'
-        otherSolutionsAreAccessible: 'Studierende können gegenseitig Ergebnisse einsehen'
+        otherSolutionsAreAccessible: 'Lernende können gegenseitig Ergebnisse einsehen'
         name: 'Titel der Phase'
         task: 'Lernauftrag / Beschreibung'
         material: 'Material'
@@ -62,9 +62,9 @@ exercisePhase:
     help:
         isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
         dependsOnPreviousPhase:
-            regular: 'Wenn aktiv, können Studierende beim Bearbeiten ihr Ergebnis dieser Phase einsehen und verwenden.'
-            reflexion: 'Bestimmt die Phase, welche innerhalb der Reflexionsphase reflektiert wird.'
-        otherSolutionsAreAccessible: 'Wenn aktiv, können die Studierenden für diese Phase die Ergebnisse ihrer Mitstudierenden einsehen.'
+            regular: 'Wenn aktiv, können Lernende beim Bearbeiten ihr Ergebnis dieser Phase einsehen und verwenden.'
+            reflexion: 'Bestimmt die Phase, welche innerhalb der Vergleichsphase begutachtet wird.'
+        otherSolutionsAreAccessible: 'Wenn aktiv, können die Lernenden für diese Phase die Ergebnisse ihrer Mitlernenden einsehen.'
     types:
         videoAnalysis:
             label: 'Videoanalyse'
@@ -73,10 +73,10 @@ exercisePhase:
             label: 'Videoschnitt'
             iconClass: 'fas fa-cut'
         reflexion:
-            label: 'Reflexion'
+            label: 'Vergleich'
             iconClass: 'fas fa-book-open'
         material:
-            label: 'Material'
+            label: 'Dokumentation'
             iconClass: 'fas fa-square-quote'
     components:
         videoPlayer:
@@ -122,13 +122,13 @@ video:
         dataPrivacyPermissionsAccepted: 'Ich bestätige, dass die datenschutzrechtliche Einwilligung der betroffenen Personen schriftlich eingeholt wurde, bei minderjährigen Betroffenen von deren gesetzlichen Vertretern, und wirksam vorliegt. Die Betroffenen wurden über ihre Rechte im Rahmen der Datenschutzgrundverordnung informiert. Weiterhin bestätige ich, dass die hochgeladenen Inhalte (insbesondere Videos) mit pseudonymisierten Informationen über die abgebildeten oder zu hörenden Personen versehen wurden.'
         submit: 'Video speichern'
     help:
-        courses: 'Das Video kann nur von den jeweiligen Kursmitgliedern angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
+        courses: 'Das Video kann nur von den jeweiligen Lernenden des Kurses angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
         visiblePersons: 'Bitte alle Personen auflisten (Vor- und Nachname) die im Video zu sehen sind. Dieses Feld ist aus Datenschutzgründen relevant.'
     upload:
         title: 'Video hochladen'
         back: 'Zurück zur Übersicht'
         subtitleUploadTitle: 'Untertitel hochladen (WebVTT)'
-        audioDescriptionUploadTitle: 'Audio Description hochladen (mp3)'
+        audioDescriptionUploadTitle: 'Audiodeskription hochladen (mp3)'
         messages:
             success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
     show:
@@ -185,22 +185,23 @@ course:
     exportCSV:
         title: 'CSV exportieren'
     editMembers:
-        title: 'Kursmitglieder verwalten'
+        title: 'Lernende verwalten'
         messages:
-            success: 'Kursmitglieder erfolgreich gespeichert!'
+            success: 'Lernende erfolgreich gespeichert!'
     labels:
-        members: 'Kursmitglieder'
-        currentMembers: 'Aktuelle Kursmitglieder'
         name: 'Name'
-        user: 'Nutzer'
         role: 'Rolle'
         submit: 'Kurs speichern'
-        addMember: 'Kursmitglieder speichern'
-        students: 'Studierende'
-        tutors: 'Dozenten'
+        addMember: 'Lernende speichern'
+        student: 'Lernende:r'
+        students: 'Lernende'
+        currentStudents: 'Aktuelle Lernende'
+        tutor: 'Lehrende:r'
+        tutors: 'Lehrende'
+        currentTutors: 'Aktuelle Lehrende'
     help:
-        students: 'Hier können Studierende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
-        tutors: 'Hier können Dozenten ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
+        students: 'Hier können Lernende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
+        tutors: 'Hier können Lehrende ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
     upgradeMember:
         title: 'Darf Aufgabe erstellen'
     downgradeMember:
@@ -208,7 +209,7 @@ course:
     removeMember:
         title: 'Entfernen'
         messages:
-            notPossible: 'Nicht möglich: Es muss mindestens einen Dozenten pro Kurs geben!'
+            notPossible: 'Nicht möglich: Es muss mindestens eine:n Lehrende:n pro Kurs geben!'
     delete:
         title: 'Kurs löschen'
         messages:

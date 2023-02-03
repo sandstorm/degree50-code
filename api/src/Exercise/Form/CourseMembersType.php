@@ -49,7 +49,7 @@ class CourseMembersType extends AbstractType
                 'choice_label' => 'userName',
                 'multiple' => true,
                 'expanded' => false,
-                'label' => 'course.labels.user',
+                'label' => 'course.labels.students',
                 'help' => 'course.help.students',
                 'translation_domain' => 'forms',
                 'mapped' => false

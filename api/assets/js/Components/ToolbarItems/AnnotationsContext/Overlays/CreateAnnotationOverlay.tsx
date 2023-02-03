@@ -128,7 +128,7 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
         </Button>
       </div>
       <hr />
-      <label htmlFor="text">Beschreibung</label>
+      <label htmlFor="text">Annotationstext</label>
       <TextField
         id="text"
         text={transientAnnotation.text}

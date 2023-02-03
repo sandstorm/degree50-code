@@ -36,9 +36,9 @@ class MaterialPhaseFormType extends ExercisePhaseFormType
             ])
             ->add('reviewRequired', CheckboxType::class, [
                 'required' => false,
-                'label' => "Muss von Dozent:in überprüft werden",
+                'label' => "Muss von Ersteller:in überprüft werden",
                 'block_prefix' => 'toggleable_button_checkbox',
-                'help' => "Wenn aktiv, dann muss die Materialphase erst von einer dozierenden Person überprüft werden, bevor die Phase beendet werden kann und das Material auf dem Schreibtisch der Studierenden erscheint.",
+                'help' => "Wenn aktiv, dann muss die Dokumentationsphase erst von einer lehrenden Person überprüft werden, bevor die Phase beendet werden kann und das Material auf dem Schreibtisch der Lernenden erscheint.",
             ])
             ;
     }

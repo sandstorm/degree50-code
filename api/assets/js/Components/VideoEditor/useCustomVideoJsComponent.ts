@@ -11,6 +11,13 @@ export type CustomVideoControlConfig = {
   indexPosition: number
 }
 
+// TODO: Create real Plugins for Custom VideoJS Components
+// Use the platform (VideoJS) instead of this VideoJS - Redux hybrid
+// e.g. Updating the time can be done in VideoJS only and then the Video Player itself updates the time for Redux
+// because we observe the currentTime event from the Player
+// Main Reason: The "SetPlayerTimeControl" Component uses and sets the time of the "main" Player of the page,
+// not the player it was used in!
+
 export const useAddCustomVideoJsComponent = (
   config: CustomVideoControlConfig,
   player?: VideoJsPlayer
