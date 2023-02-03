@@ -19,8 +19,8 @@ const FachbereichFilter = () => {
 
   if (error) {
     return (
-      <div>
-        <h4>Fachbereich</h4>
+      <div className="schreibtisch-filter">
+        <h6 className="schreibtisch-filter__label">Fachbereich:</h6>
         <p>Fehler!</p>
       </div>
     )
@@ -28,11 +28,9 @@ const FachbereichFilter = () => {
 
   if (isFetching) {
     return (
-      <div>
-        <h4>Fachbereich</h4>
-        <div className="loading-screen">
-          <i className="fas fa-spinner fa-spin"></i>
-        </div>
+      <div className="schreibtisch-filter">
+        <h6 className="schreibtisch-filter__label">Fachbereich:</h6>
+        <i className="fas fa-spinner fa-spin"></i>
       </div>
     )
   }

@@ -777,6 +777,7 @@ final class DegreeContext implements Context
      */
     public function seeMyAvailableExercisesByDefault()
     {
+        $this->waitForSelector('exercise-list');
         $this->pageContainsTexts([
             self::TEST_EXERCISE_1,
             self::TEST_EXERCISE_2,
