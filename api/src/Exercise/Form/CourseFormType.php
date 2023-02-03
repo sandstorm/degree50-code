@@ -57,7 +57,7 @@ class CourseFormType extends AbstractType
                 'choice_label' => 'userName',
                 'multiple' => true,
                 'expanded' => false,
-                'label' => 'course.labels.user',
+                'label' => 'course.labels.tutors',
                 'help' => 'course.help.tutors',
                 'translation_domain' => 'forms',
                 'mapped' => false

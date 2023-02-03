@@ -82,7 +82,7 @@ const AnnotationListItem = (props: Props) => {
   }
 
   const element = `${index + 1}. Element`
-  const description = `Beschreibung: ${item.text}`
+  const description = `Annotationstext: ${item.text}`
   const creatorDescription = `Annotation von: ${
     isFromGroupPhase ? 'Gruppe von ' : ''
   }${props.creatorName}`
@@ -94,7 +94,7 @@ const AnnotationListItem = (props: Props) => {
         ${element}
 
         ${description}
-        Beschreibung zu Ende.
+        Annotationstext zu Ende.
 
         ${creatorDescription}
 
@@ -116,7 +116,7 @@ const AnnotationListItem = (props: Props) => {
       aria-label={ariaLabel}
       data-focus-id={item.id}
     >
-      <p>Beschreibung: {item.text}</p>
+      <p>Annotationstext: {item.text}</p>
       <p>{creatorDescription}</p>
       <Start start={item.start} />
       <End end={item.end} />

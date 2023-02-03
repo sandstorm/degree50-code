@@ -47,9 +47,9 @@ class ExercisePhaseService
     {
         return match($exercisePhaseType) {
             ExercisePhaseType::VIDEO_ANALYSIS => "Videoanalyse",
-            ExercisePhaseType::VIDEO_CUT => "ReflexionPhase",
-            ExercisePhaseType::REFLEXION => "Schnittphase",
-            ExercisePhaseType::MATERIAL => "Materialphase",
+            ExercisePhaseType::REFLEXION => "Vergleichsphase",
+            ExercisePhaseType::VIDEO_CUT => "Schnittphase",
+            ExercisePhaseType::MATERIAL => "Dokumentationsphase",
         };
     }
 

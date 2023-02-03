@@ -13,7 +13,7 @@ const prettyConvertPhaseStatus = (backendStatus: Exercise['status']) => {
     }
 
     case 'IN_REVIEW': {
-      return 'Wird von Dozent geprüft'
+      return 'Wird geprüft'
     }
 
     case 'NEU': {
