@@ -158,12 +158,20 @@ class ExercisePhaseController extends AbstractController
         $exercise = $reflexionPhase->getBelongsToExercise();
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $phaseReflexionDependsOn);
 
+        // HOTFIX: It's possible to create a team without solutions right now, e.g. when a user creates a team in a
+        // group phase and does not start the phase for this group at least once.
+        // This leads to an 500 Error down the line, when the cut video of the solution is accessed. (can't get a
+        // cut video from a solution that does not exist).
+        // This is a quick fix and should be addressed with more insight later.
+        $teams = array_filter($teams, fn ($team) => $team->getSolution() !== null);
+
         // Fix "Aufgabe Testen"
         $user = $this->getUser();
         if ($user === $exercise->getCreator()) {
+            /* @var ExercisePhaseTeam|null $teamOfCreator */
             $teamOfCreator = $phaseReflexionDependsOn->getTeams()->filter(fn (ExercisePhaseTeam $team) => $team->getCreator() === $user)->first();
 
-            if ($teamOfCreator) {
+            if ($teamOfCreator && $teamOfCreator->getSolution() !== null) {
                 $teams[] = $teamOfCreator;
             }
         }
@@ -244,7 +252,15 @@ class ExercisePhaseController extends AbstractController
             ? $this->exercisePhaseRepository->find($phaseId)
             : $exercise->getPhases()->first();
 
+        // TODO: is this correct? user = exercise creator?
         $teams = $this->exercisePhaseTeamRepository->findAllCreatedByOtherUsers($exercise->getCreator(), $exercise->getCreator(), $exercisePhase);
+
+        // HOTFIX: It's possible to create a team without solutions right now, e.g. when a user creates a team in a
+        // group phase and does not start the phase for this group at least once.
+        // This leads to an 500 Error down the line, when the cut video of the solution is accessed. (can't get a
+        // cut video from a solution that does not exist).
+        // This is a quick fix and should be addressed with more insight later.
+        $teams = array_filter($teams, fn ($team) => $team->getSolution() !== null);
 
         $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $data = $exercisePhase->getType() === ExercisePhaseType::REFLEXION
