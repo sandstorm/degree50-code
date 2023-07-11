@@ -63,6 +63,10 @@ build_e2e_testrunner:
     stage: build
     interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
+    rules:
+        - changes:
+              - api/**/*
+              - e2e-testrunner/**/*
     script:
         - cd e2e-testrunner
         - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -81,6 +85,10 @@ integration_test:
         name: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
         # see `scripts` below
         entrypoint: [ "" ]
+    rules:
+        - changes: 
+              - api/**/*
+    
     dependencies: [ ] # we do not need any artifacts from prior steps
     variables:
         # service mariadb
@@ -111,6 +119,9 @@ e2e_test:
         - main
         - tags
     interruptible: true
+    rules:
+        - changes:
+              - api/**/*
     # we're running this job inside the production image we've just built previously
     image:
         name: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
