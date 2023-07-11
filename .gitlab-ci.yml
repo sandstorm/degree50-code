@@ -37,13 +37,13 @@ package_app:
     interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     script:
-        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
         # Also make sure that ./api/VERSION is copied into the docker container (see deployment/docker/Dockerfile)
         - ./scripts/versioning.sh
         # performance improvement for CI
         - docker pull $CI_REGISTRY_IMAGE:main || true
-        - docker build --cache-from $CI_REGISTRY_IMAGE:main -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG -f deployment/docker/Dockerfile .
-        - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        - docker build --cache-from $CI_REGISTRY_IMAGE:main -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f deployment/docker/Dockerfile .
+        - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 package_logging_sidecar:
     stage: build
@@ -52,12 +52,12 @@ package_logging_sidecar:
     only:
         - tags
     script:
-        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
         - cd deployment/loggingSidecar
         # performance improvement for CI
         - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:main || true
-        - docker build --cache-from $CI_REGISTRY_IMAGE/logging-sidecar:main -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG .
-        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG
+        - docker build --cache-from $CI_REGISTRY_IMAGE/logging-sidecar:main -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG .
+        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG
 
 build_e2e_testrunner:
     stage: build
@@ -65,7 +65,7 @@ build_e2e_testrunner:
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     script:
         - cd e2e-testrunner
-        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
         # performance improvement for CI
         - docker pull $CI_REGISTRY_IMAGE:e2e-testrunner || true
         - docker build --cache-from $CI_REGISTRY_IMAGE:e2e-testrunner -t $CI_REGISTRY_IMAGE:e2e-testrunner .
@@ -78,7 +78,7 @@ integration_test:
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:
-        name: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        name: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
         # see `scripts` below
         entrypoint: [ "" ]
     dependencies: [ ] # we do not need any artifacts from prior steps
@@ -113,7 +113,7 @@ e2e_test:
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:
-        name: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+        name: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
         # see `scripts` below
         entrypoint: [ "" ]
     dependencies: [ ] # we do not need any artifacts from prior steps
@@ -159,12 +159,12 @@ deploy-prod:
         - jumphost
     script:
         # pull the image of this branch and tag it as "main"
-        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-        - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE:main
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+        - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE:main
         - docker push $CI_REGISTRY_IMAGE:main
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:main
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:main
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:main
 
         - eval $(ssh-agent -s)
@@ -173,7 +173,7 @@ deploy-prod:
         - mkdir -p ~/.ssh
         - ssh-keyscan -H degree40.tu-dortmund.de >> ~/.ssh/known_hosts
         - scp docker-compose-prod-tu-dortmund.yml deployment@degree40.tu-dortmund.de:~/docker-compose.yml
-        - ssh deployment@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"
+        - ssh deployment@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"
 
 # manual deploy to degree40-test
 deploy-test:
@@ -186,12 +186,12 @@ deploy-test:
         - jumphost
     script:
         # pull the image of this branch and tag it as "test-stage"
-        - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-        - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE:test-stage
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+        - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE:test-stage
         - docker push $CI_REGISTRY_IMAGE:test-stage
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_BUILD_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
+        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
         - docker push $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
 
         - eval $(ssh-agent -s)
@@ -200,4 +200,4 @@ deploy-test:
         - mkdir -p ~/.ssh
         - ssh-keyscan -H degree40-test.tu-dortmund.de >> ~/.ssh/known_hosts
         - scp docker-compose-test-tu-dortmund.yml deployment@degree40-test.tu-dortmund.de:~/docker-compose.yml
-        - ssh deployment@degree40-test.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"
+        - ssh deployment@degree40-test.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"
