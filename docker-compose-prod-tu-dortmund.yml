@@ -112,6 +112,9 @@ services:
       LOGGING_CUSTOMER_PROJECT: degree40.prod
       LOGGING_HOST_NAME: degree40.tu-dortmund.de
       LOGGING_HOST_GROUP: tu-dortmund.de
+      NATS_TARGET_SERVER_ADDRESS: tls://natsv1.cloud.sandstorm.de:32222
+      NATS_TARGET_SUBJECT: logs.default.customer_degree40.prod
+      NATS_CREDENTIALS_FILE: /secrets/nats.creds
 
   cadvisor:
     # port 8080 /metrics
