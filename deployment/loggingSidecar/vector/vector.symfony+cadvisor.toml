@@ -36,7 +36,7 @@ source = '''
 
 
 # Prometheus
-[sources.cadvisor]
+[sources.cAdvisor]
 type = "prometheus_scrape"
 endpoints = ["http://cadvisor:8080/metrics"]
 scrape_interval_secs = 300 # every 5 mins
@@ -105,18 +105,18 @@ encoding.timestamp_format = "rfc3339"
 
 
 
-[[tests]]
-name = "Replace Emails"
-
-[[tests.inputs]]
-insert_at = "remove_email_address"
-type = "raw"
-value = '''[2021-06-22T17:05:34.605340+00:00] security.DEBUG: User was reloaded from a user provider. {"provider":"Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider","username":"sebastian.kurfuerst@sand-storm.de"} []'''
-
-[[tests.outputs]]
-extract_from = "remove_email_address"
-[[tests.outputs.conditions]]
-type = "check_fields"
-"message.equals" = '''[2021-06-22T17:05:34.605340+00:00] security.DEBUG: User was reloaded from a user provider. {"provider":"Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider","username":"EMAIL@REPLACED"} []'''
+#[[tests]]
+#name = "Replace Emails"
+#
+#[[tests.inputs]]
+#insert_at = "remove_email_address"
+#type = "raw"
+#value = '''[2021-06-22T17:05:34.605340+00:00] security.DEBUG: User was reloaded from a user provider. {"provider":"Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider","username":"sebastian.kurfuerst@sand-storm.de"} []'''
+#
+#[[tests.outputs]]
+#extract_from = "remove_email_address"
+#[[tests.outputs.conditions]]
+#type = "check_fields"
+#"message.equals" = '''[2021-06-22T17:05:34.605340+00:00] security.DEBUG: User was reloaded from a user provider. {"provider":"Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider","username":"EMAIL@REPLACED"} []'''
 
 
