@@ -1,0 +1,130 @@
+data_dir = "./tmp"
+
+[log_schema]
+host_key = "host_name" # default "host"
+timestamp_key = "timestamp_rfc3339"
+# API only on localhost, so you can run "vector tap" and "vector top" for analyzing
+[api]
+enabled = true
+address = "127.0.0.1:8686"
+
+# Symfony Logs Pipeline
+[sources.symfony_logs]
+type         = "file"
+include      = ["/app/var/log/*.log"]
+
+# we do not care about totally old exceptions
+#ignore_older = 86400                         # 1 day
+
+[transforms.remove_email_address]
+inputs = [ "symfony_logs" ]
+type = "remap"
+source = '''
+    replaced, err = replace(.message, pattern: r'([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})', with: "EMAIL@REPLACED", count: -1)
+    if err == null {
+        .message = replaced
+    }
+  '''
+
+[transforms.add_sandstorm_metadata__STORE]
+inputs = [ "remove_email_address" ]
+type = "remap"
+source = '''
+    .event_module = "symfony"
+    .event_dataset = "symfony.logs"
+  '''
+
+
+
+# Host Metrics
+
+[sources.host_metrics]
+type = "host_metrics"
+# every 2 mins
+scrape_interval_secs = 60
+# for K8S, we do NOT add "cgroups" here. For NON-K8S, we include cgroup monitoring here.
+# These are for the USE metrics on the dashboard
+collectors = [ "filesystem", "cpu", "load", "memory", "disk", "host", "network", "cgroups" ]
+# workaround for in-docker usage
+filesystem.devices.excludes = ["binfmt_misc"]
+filesystem.filesystems.excludes = ["binfmt_misc"]
+filesystem.mountpoints.excludes = ["*/proc/sys/fs/binfmt_misc"]
+
+[transforms.host_metrics_step2]
+type = "metric_to_log"
+inputs       = ["host_metrics"]
+
+[transforms.host_metrics_step3__STORE]
+inputs = [ "host_metrics_step2" ]
+type = "remap"
+source = '''
+    .event_module = "vector"
+    .event_dataset = "vector.host_metrics"
+  '''
+
+
+# Sinks
+[transforms.final_logs_including_sandstorm_metadata]
+inputs = [ "*__STORE" ]
+type = "remap"
+source = '''
+    .heritage = "vector"
+    .customer_tenant = "${LOGGING_CUSTOMER_TENANT:?LOGGING_CUSTOMER_TENANT must be specified}"
+    .customer_project = "${LOGGING_CUSTOMER_PROJECT:?LOGGING_CUSTOMER_PROJECT must be specified}"
+    .host_name = "${LOGGING_HOST_NAME:?LOGGING_HOST_NAME must be specified}"
+    .host_group = "${LOGGING_HOST_GROUP:?LOGGING_HOST_GROUP must be specified}"
+  '''
+
+[sinks.sandstorm_aggregation]
+inputs       = ["final_logs_including_sandstorm_metadata"]
+type         = "nats"
+url          = "${NATS_TARGET_SERVER_ADDRESS:?NATS_TARGET_SERVER_ADDRESS env must be specified, f.e. nats://demo.nats.io}"
+subject      = "${NATS_TARGET_SUBJECT:?NATS_TARGET_SUBJECT env must be specified, f.e. logs.default.system.primary}"
+connection_name = "vector"
+auth.strategy = "credentials_file"
+auth.credentials_file.path = "${NATS_CREDENTIALS_FILE:?NATS_CREDENTIALS_FILE env must be specified}"
+encoding.codec = "json"
+encoding.timestamp_format = "rfc3339"
+
+
+
+
+#[sinks.console_debug]
+#inputs       = ["cadvisor_add_sandstorm_metadata"]
+#type         = "console"
+#encoding     = "json"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#[[tests]]
+#name = "Replace Emails"
+#
+#[[tests.inputs]]
+#insert_at = "remove_email_address"
+#type = "raw"
+#value = '''[2021-06-22T17:05:34.605340+00:00] security.DEBUG: User was reloaded from a user provider. {"provider":"Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider","username":"sebastian.kurfuerst@sand-storm.de"} []'''
+#
+#[[tests.outputs]]
+#extract_from = "remove_email_address"
+#[[tests.outputs.conditions]]
+#type = "check_fields"
+#"message.equals" = '''[2021-06-22T17:05:34.605340+00:00] security.DEBUG: User was reloaded from a user provider. {"provider":"Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider","username":"EMAIL@REPLACED"} []'''
+
+

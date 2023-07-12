@@ -1,9 +1,7 @@
-FROM timberio/vector:0.14.X-debian
-
-COPY --from=hairyhenderson/gomplate:v3.9.0 /gomplate /bin/gomplate
+FROM timberio/vector:0.31.X-debian
 
 ADD entrypoint.sh /entrypoint.sh
-ADD ./certificates/ /certificates/
-ADD ./vector_template/ /etc/vector_template/
+ADD ./secrets/ /secrets/
+ADD ./vector/ /etc/vector/
 
 ENTRYPOINT [ "/entrypoint.sh" ]
