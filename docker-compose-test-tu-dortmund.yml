@@ -106,8 +106,10 @@ services:
     image: docker-hub.sandstorm.de/degree-4.0/code/logging-sidecar:test-stage
     volumes:
       - /home/deployment/data/app/var:/app/var
+      - /proc:/proc
+      - /sys:/sys
     environment:
-      VECTOR_CONFIG_FILE_NAME: vector.symfony+cadvisor.toml
+      VECTOR_CONFIG_FILE_NAME: vector.symfony.toml
       LOGGING_CUSTOMER_TENANT: degree40
       LOGGING_CUSTOMER_PROJECT: degree40.test
       LOGGING_HOST_NAME: degree40-test.tu-dortmund.de
@@ -116,18 +118,6 @@ services:
       NATS_TARGET_SUBJECT: logs.default.customer_degree40.test
       NATS_CREDENTIALS_FILE: /secrets/nats.creds
 
-  cadvisor:
-    # port 8080 /metrics
-    image: gcr.io/cadvisor/cadvisor:v0.37.5
-    privileged: true
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    devices:
-      - /dev/kmsg
 
 networks:
   default:

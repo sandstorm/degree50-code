@@ -35,23 +35,31 @@ source = '''
   '''
 
 
-# Prometheus
-[sources.cAdvisor]
-type = "prometheus_scrape"
-endpoints = ["http://cadvisor:8080/metrics"]
-scrape_interval_secs = 300 # every 5 mins
 
-[transforms.cAdvisor_step2]
+# Host Metrics
+
+[sources.host_metrics]
+type = "host_metrics"
+# every 2 mins
+scrape_interval_secs = 60
+# for K8S, we do NOT add "cgroups" here. For NON-K8S, we include cgroup monitoring here.
+# These are for the USE metrics on the dashboard
+collectors = [ "filesystem", "cpu", "load", "memory", "disk", "host", "network", "cgroups" ]
+# workaround for in-docker usage
+filesystem.devices.excludes = ["binfmt_misc"]
+filesystem.filesystems.excludes = ["binfmt_misc"]
+filesystem.mountpoints.excludes = ["*/proc/sys/fs/binfmt_misc"]
+
+[transforms.host_metrics_step2]
 type = "metric_to_log"
-inputs = [ "cAdvisor" ]
+inputs       = ["host_metrics"]
 
-
-[transforms.cAdvisor_step3__STORE]
-inputs = [ "cAdvisor_step2" ]
+[transforms.host_metrics_step3__STORE]
+inputs = [ "host_metrics_step2" ]
 type = "remap"
 source = '''
-    .event_module = "cAdvisor"
-    .event_dataset = "cAdvisor.metrics"
+    .event_module = "vector"
+    .event_dataset = "vector.host_metrics"
   '''
 
 
