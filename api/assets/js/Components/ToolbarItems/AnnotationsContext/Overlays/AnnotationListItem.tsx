@@ -131,7 +131,7 @@ const AnnotationListItem = (props: Props) => {
           }}
         >
           <Button
-            className="btn btn-primary"
+            className="button button--type-primary"
             title="In Zwischenablage kopieren"
           >
             In Zwischenablage kopieren
@@ -139,7 +139,7 @@ const AnnotationListItem = (props: Props) => {
         </CopyToClipboard>
       ) : (
         <Button
-          className="btn btn-primary"
+          className="button button--type-primary"
           onPress={handleJumpToPosition}
           title="Springe zu Position im Video"
         >
@@ -150,14 +150,14 @@ const AnnotationListItem = (props: Props) => {
       {props.isFromCurrentSolution && (
         <>
           <Button
-            className="btn btn-secondary"
+            className="button button--type-secondary"
             onPress={handleRemove}
             title="Annotation Löschen"
           >
             Löschen
           </Button>
           <Button
-            className="btn btn-primary"
+            className="button button--type-primary"
             onPress={handleEdit}
             title="Annotation Bearbeiten"
           >

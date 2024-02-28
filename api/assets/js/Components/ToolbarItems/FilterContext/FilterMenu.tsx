@@ -33,7 +33,7 @@ const FilterMenu = (props: Props) => {
     <div className="video-editor__menu">
       <Button
         title={solutionsFilterLabel}
-        className="btn btn-grey btn-sm video-editor__toolbar__button"
+        className="button button--type-primary button--size-small video-editor__toolbar__button"
         isDisabled={props.hasNoPreviousSolutions}
         onPress={() =>
           props.setOverlay({

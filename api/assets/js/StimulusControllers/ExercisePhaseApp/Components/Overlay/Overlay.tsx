@@ -73,7 +73,7 @@ const Overlay: React.FC<OverlayProps> = (props) => {
   return (
     <div className={className + ' ' + sizeClass}>
       <button
-        className={'overlay__close btn'}
+        className={'overlay__close button'}
         type="button"
         onClick={handleVisibilityToggle}
       >

@@ -80,8 +80,8 @@ To create and deploy a versioned release follow these steps:
 ### Get Started with Development
 
 - Initially, run `make build-docker` to build the docker container
-- run `docker-compose up -d`
-- check installation with `docker-compose logs -f api`
+- run `make start`
+- check installation with `make logs-api`
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
     - Run the assets build (locally) using `cd api && nvm use && yarn` 

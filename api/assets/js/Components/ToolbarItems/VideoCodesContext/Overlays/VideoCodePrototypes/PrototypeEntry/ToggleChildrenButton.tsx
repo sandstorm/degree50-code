@@ -10,7 +10,7 @@ const ToggleChildrenButton = ({ onClick, showChildren, title }: Props) => {
   return (
     <button
       type="button"
-      className={'btn btn-outline-primary btn-sm'}
+      className={'button button--type-outline-primary button--size-small'}
       onClick={onClick}
       title={title}
       aria-label={title}

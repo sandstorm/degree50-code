@@ -42,13 +42,13 @@
                     <td class="text-right">
                         {% if student.name == 'STUDENT' %}
                             <a href="{{ path('exercise-overview__course--upgrade-role', {id: course.id, userRole_id: student.id}) }}"
-                               class="btn btn-outline-primary btn-sm">{% trans %}course.upgradeMember.title{% endtrans %}</a>
+                               class="button button--type-outline-primary button--size-small">{% trans %}course.upgradeMember.title{% endtrans %}</a>
                         {% else %}
                             <a href="{{ path('exercise-overview__course--downgrade-role', {id: course.id, userRole_id: student.id}) }}"
-                               class="btn btn-outline-primary btn-sm">{% trans %}course.downgradeMember.title{% endtrans %}</a>
+                               class="button button--type-outline-primary button--size-small">{% trans %}course.downgradeMember.title{% endtrans %}</a>
                         {% endif %}
                         <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: student.id}) }}"
-                           class="btn btn-danger btn-sm">{% trans %}course.removeMember.title{% endtrans %}</a>
+                           class="button button--type-danger button--size-small">{% trans %}course.removeMember.title{% endtrans %}</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -56,7 +56,7 @@
     </div>
 
     <footer class="footer">
-        <a class="btn btn-outline-primary"
+        <a class="button button--type-outline-primary"
            href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}course.new.back{% endtrans %}</a>
         {{ form_row(form.save) }}
     </footer>

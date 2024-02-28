@@ -15,6 +15,7 @@ const VideoEditor: FC<Props> = (props) => {
 
   useShortCuts()
 
+  // todo toggle medial lane from toolbar
   return (
     <div className="video-editor" data-test-id="videoEditor">
       <ConnectedVideoJSPlayer

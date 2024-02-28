@@ -13,10 +13,11 @@
 .video-editor__toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: $theme__spacing--huge;
     padding: $theme__spacing--small $theme__spacing--base;
 
-    background-color: $theme__color__grey;
+    background-color: $theme__color__grey--light;
 
     &__button {
         position: relative;

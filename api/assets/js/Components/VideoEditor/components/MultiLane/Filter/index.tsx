@@ -18,7 +18,7 @@ const Filter = () => {
       )}
 
       <button
-        className="btn btn-grey btn-sm multilane-filter-container__toggle"
+        className="button button--type-grey button--size-small multilane-filter-container__toggle"
         onClick={toggleShowFilter}
       >
         <i

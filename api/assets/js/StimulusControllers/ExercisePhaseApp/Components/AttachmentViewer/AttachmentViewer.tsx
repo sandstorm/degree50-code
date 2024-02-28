@@ -63,7 +63,7 @@ const AttachmentViewer: React.FC<Props> = (props) => {
     return (
       <button
         key={attachment.id}
-        className={'btn tile tile--small'}
+        className={'button tile tile--small'}
         title={attachment.name}
         aria-label={attachment.name}
         onClick={() => props.setActiveAttachment(attachment)}
@@ -90,7 +90,7 @@ const AttachmentViewer: React.FC<Props> = (props) => {
 
           <div className={'attachment-viewer__actions'}>
             <Button
-              className={'btn btn-sm btn-outline-primary'}
+              className={'button button--size-small button--type-outline-primary'}
               title="Zurück zur Attachment-Übersicht"
               onPress={() => props.setActiveAttachment(undefined)}
             >
@@ -98,7 +98,7 @@ const AttachmentViewer: React.FC<Props> = (props) => {
               <span>Zurück</span>
             </Button>
             <a
-              className={'btn btn-sm btn-primary'}
+              className={'button button--size-small button--type-primary'}
               href={props.activeAttachment.url}
               aria-label="Download"
               title="Download"
@@ -131,10 +131,10 @@ const AttachmentViewer: React.FC<Props> = (props) => {
               navigation={{
                 css: {
                   navbarWrapper: 'pdf-viewer__navbar',
-                  previousPageBtn:
-                    'btn btn-sm btn-primary pdf-viewer__prev-page',
+                  previousPagebutton:
+                    'button button--size-small button--type-primary pdf-viewer__prev-page',
                   pageIndicator: 'pdf-viewer__pages',
-                  nextPageBtn: 'btn btn-sm btn-primary pdf-viewer__next-page',
+                  nextPagebutton: 'button button--size-small button--type-primary pdf-viewer__next-page',
                 },
               }}
             />

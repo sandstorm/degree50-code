@@ -43,7 +43,7 @@ const DeleteVideoCodePrototypeOverlay: FC<Props> = (props) => {
   return (
     <Overlay closeCallback={close} title="Codierung wirklich löschen?">
       <Button
-        className="btn btn-grey"
+        className="button button--type-grey"
         onPress={close}
         title="Löschvorgang Abbrechen"
       >
@@ -51,7 +51,7 @@ const DeleteVideoCodePrototypeOverlay: FC<Props> = (props) => {
         <span>Abbrechen</span>
       </Button>
       <Button
-        className="btn btn-primary"
+        className="button button--type-primary"
         onPress={handleRemove}
         title="Löschvorgang Bestätigen"
       >

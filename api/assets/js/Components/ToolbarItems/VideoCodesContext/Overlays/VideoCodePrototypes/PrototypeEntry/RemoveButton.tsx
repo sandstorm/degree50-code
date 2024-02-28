@@ -8,7 +8,7 @@ type Props = {
 const RemoveButton = ({ onClick }: Props) => {
   return (
     <Button
-      className={'btn btn-outline-danger btn-sm'}
+      className={'button button--type-outline-danger button--size-small'}
       title={'Code löschen'}
       onPress={onClick}
     >

@@ -86,7 +86,7 @@ const Toolbar = ({
         <MediaLaneToolbarItem>
           <button
             tabIndex={1}
-            className={'btn btn-primary btn-sm'}
+            className={'button button--type-primary button--size-small'}
             disabled={leftInteractionAreaIsDisabled}
             title={'Timeline nach links verschieben'}
             onClick={() => {
@@ -99,7 +99,7 @@ const Toolbar = ({
         <MediaLaneToolbarItem>
           <button
             tabIndex={1}
-            className={'btn btn-primary btn-sm'}
+            className={'button button--type-primary button--size-small'}
             disabled={rightInteractionAreaIsDisabled}
             title={'Timeline nach rechts verschieben'}
             onClick={() => {

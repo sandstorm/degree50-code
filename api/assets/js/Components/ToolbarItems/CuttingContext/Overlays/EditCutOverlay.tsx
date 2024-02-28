@@ -92,7 +92,7 @@ const EditCutOverlay: FC<Props> = (props) => {
           onChange={handleStartTimeChange}
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-outline-primary"
           onPress={handleUseCurrentTimeForStartValue}
           title={'Aktuelle Zeit als Startzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
@@ -112,7 +112,7 @@ const EditCutOverlay: FC<Props> = (props) => {
           onChange={handleEndTimeChange}
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-outline-primary"
           onPress={handleUseCurrentTimeForEndValue}
           title={'Aktuelle Zeit als Endzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
@@ -128,14 +128,14 @@ const EditCutOverlay: FC<Props> = (props) => {
       <TextField id="memo" text={transientCut.memo} updateText={updateMemo} />
       <hr />
       <Button
-        className="btn btn-secondary"
+        className="button button--type-outline-primary"
         onPress={close}
         title="Änderungen Verwerfen"
       >
         Verwerfen
       </Button>
       <Button
-        className="btn btn-primary"
+        className="button button--type-primary"
         onPress={handleSave}
         title="Änderungen Speichern"
       >

@@ -35,7 +35,7 @@ const AllMediaItemsMenu = (props: Props) => {
     <div className="vide-editor__menu">
       <Button
         title="Zeige Liste aller Elemente"
-        className="btn btn-grey btn-sm video-editor__toolbar__button"
+        className="button button--type-primary button--size-small video-editor__toolbar__button"
         onPress={handleClick}
       >
         <i className="fas fa-list" />

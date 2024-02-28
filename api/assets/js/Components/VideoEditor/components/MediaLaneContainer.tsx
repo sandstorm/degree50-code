@@ -8,7 +8,7 @@ const MediaLaneContainer = () => {
   return (
     <div className="media-lane-container" key="">
       <button
-        className="btn btn-grey btn-sm media-lane-container__toggle"
+        className="button button--type-grey button--size-small media-lane-container__toggle"
         title="Zeitleiste anzeigen/verbergen"
         aria-label={
           showMediaLane ? 'Zeitleiste verbergen' : 'Zeitleiste anzeigen'

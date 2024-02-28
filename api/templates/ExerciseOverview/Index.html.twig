@@ -12,10 +12,10 @@
         {% if course %}
             <h3>{{ course.name }} - Alle Aufgaben</h3>
             {% if is_granted('edit', course) or is_granted('newExercise', course) %}
-                <div class="btn-group">
+                <div class="button-group">
                     {% if is_granted('edit', course) %}
                         <div class="dropdown">
-                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                            <button class="button button--type-link dropdown-toggle" type="button" id="dropdownMenuButton"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Kurs verwalten
                             </button>
@@ -52,7 +52,7 @@
                     {% endif %}
                     {% if is_granted('newExercise', course) %}
                         <a href="{{ path('exercise-overview__exercise--new', {id: course.id}) }}"
-                           class="btn btn-primary">
+                           class="button button--type-primary">
                             <i class="fas fa-plus-circle"></i> {% trans %}exercise.new.title{% endtrans %}
                         </a>
                     {% endif %}
@@ -64,7 +64,7 @@
     </header>
     {% if is_granted('ROLE_DOZENT') %}
         <div class="overview-filter">
-            <div class="btn-group" role="group" aria-label="Aufgaben filtern nach Status">
+            <div class="button-group" role="group" aria-label="Aufgaben filtern nach Status">
                 <div class="input-group-prepend">
                     <div class="input-group-text">Filter</div>
                 </div>
@@ -80,9 +80,9 @@
 
 {% macro filter(courseId, filter, activeFilter, label) %}
     {% if filter == activeFilter and activeFilter is not null %}
-        <a href="{{ path('exercise-overview', {id: courseId, status: null}) }}" class="btn btn-primary">{{ label }}</a>
+        <a href="{{ path('exercise-overview', {id: courseId, status: null}) }}" class="button button--type-primary">{{ label }}</a>
     {% else %}
         <a href="{{ path('exercise-overview', {id: courseId, status: filter}) }}"
-           class="btn btn-outline-primary">{{ label }}</a>
+           class="button button--type-outline-primary">{{ label }}</a>
     {% endif %}
 {% endmacro %}

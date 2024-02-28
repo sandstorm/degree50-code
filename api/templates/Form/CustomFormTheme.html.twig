@@ -25,7 +25,7 @@
         {% endif %}
 
         {% if download_uri %}
-            <a class="btn btn-outline-primary btn-sm"
+            <a class="button button--type-outline-primary button--size-small"
                href="{{ download_uri }}">{{ translation_domain is same as(false) ? download_label : download_label|trans({}, translation_domain) }}</a>
         {% endif %}
     </div>
@@ -55,6 +55,6 @@
             {% if value is defined %} value="{{ value }}"{% endif %}
             {% if checked %} checked="checked"{% endif %}
         />
-        <label class="btn btn-outline-primary" for="{{ id }}"><i class="fas fa-times"></i><i class="fas fa-check"></i> {{- label|trans(label_translation_parameters, translation_domain) -}}</label>
+        <label class="button button--type-outline-primary" for="{{ id }}"><i class="fas fa-times"></i><i class="fas fa-check"></i> {{- label|trans(label_translation_parameters, translation_domain) -}}</label>
     </div>
 {% endblock %}

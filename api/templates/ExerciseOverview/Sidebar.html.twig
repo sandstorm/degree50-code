@@ -1,8 +1,8 @@
 {% trans_default_domain 'forms' %}
 
-<a class="btn btn-primary btn-block" href="{{ path('exercise-overview') }}">Alle Kurse</a>
+<a class="button button--type-primary button--block" href="{{ path('exercise-overview') }}">Alle Kurse</a>
 {% if is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN') %}
-    <a class="btn btn-outline-primary btn-block" href="{{ path('exercise-overview__course--new') }}"><i class="fas fa-plus"></i> {% trans %}course.new.title{% endtrans %}</a>
+    <a class="button button--type-outline-primary button--block" href="{{ path('exercise-overview__course--new') }}"><i class="fas fa-plus"></i> {% trans %}course.new.title{% endtrans %}</a>
 {% endif %}
 <hr />
 
@@ -10,7 +10,7 @@
     <div class="sidebar__group">
         <header id="heading{{ loop.index }}">
             <h5>
-                <button class="sidebar__group-toggle btn collapsed" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                <button class="sidebar__group-toggle button button--type-primary collapsed" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
                     {{ item.label }} <i class="fas fa-chevron-up"></i><i class="fas fa-chevron-down"></i>
                 </button>
             </h5>

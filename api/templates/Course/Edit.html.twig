@@ -45,7 +45,7 @@
                             <td>{% trans %}course.labels.tutor{% endtrans %}</td>
                             <td class="text-right">
                                 <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: tutor.id, redirectToEdit: true}) }}"
-                                   class="btn btn-danger btn-sm">{% trans %}course.removeMember.title{% endtrans %}</a>
+                                   class="button button--type-danger button--size-small">{% trans %}course.removeMember.title{% endtrans %}</a>
                             </td>
                         </tr>
                     {% endif %}
@@ -55,7 +55,7 @@
     </div>
 
     <footer class="footer">
-        <a class="btn btn-outline-primary"
+        <a class="button button--type-outline-primary"
            href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}course.new.back{% endtrans %}</a>
         {{ form_row(form.save) }}
     </footer>

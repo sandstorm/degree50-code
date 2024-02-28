@@ -5,8 +5,8 @@
     align-items: center;
     justify-content: space-between;
 
-    margin-top: $theme__spacing--huge;
-    margin-bottom: $theme__spacing--huge;
+    margin-top: $theme__spacing--large;
+    margin-bottom: $theme__spacing--large;
 
     .number-field input {
         border: none;
@@ -27,8 +27,5 @@
 .time-input-wrapper {
     display: flex;
     align-items: center;
-
-    > * + * {
-        margin-left: $theme__spacing--small;
-    }
+    gap: $theme__spacing--base;
 }

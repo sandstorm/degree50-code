@@ -134,7 +134,7 @@ const CutListItem: FC<Props> = (props) => {
           }}
         >
           <Button
-            className="btn btn-primary"
+            className="button button--type-primary"
             title="In Zwischenablage kopieren"
           >
             In Zwischenablage kopieren
@@ -142,7 +142,7 @@ const CutListItem: FC<Props> = (props) => {
         </CopyToClipboard>
       ) : (
         <Button
-          className="btn btn-primary"
+          className="button button--type-primary"
           onPress={handleJumpToPosition}
           title="Springe zu Position im Video"
         >
@@ -157,14 +157,14 @@ const CutListItem: FC<Props> = (props) => {
       {props.canEdit && (
         <>
           <Button
-            className="btn btn-secondary"
+            className="button button--type-secondary"
             onPress={handleRemove}
             title="Schnitt Löschen"
           >
             Löschen
           </Button>
           <Button
-            className="btn btn-primary"
+            className="button button--type-primary"
             onPress={handleEdit}
             title="Schnitt Bearbeiten"
           >

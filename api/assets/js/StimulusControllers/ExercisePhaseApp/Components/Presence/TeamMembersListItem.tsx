@@ -68,7 +68,7 @@ const TeamMembersListItem: React.FC<Props> = (props) => {
       </span>
       {props.teamMemberId === props.userId && !isCurrentEditor && (
         <button
-          className={'btn btn-outline-primary btn-sm'}
+          className={'button button--type-outline-primary button--size-small'}
           onClick={handleClick}
           title={buttonLabel}
           aria-label={buttonLabel}

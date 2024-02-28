@@ -55,20 +55,20 @@ const MaterialEditor = () => {
         <footer className="material-editor__footer">
           <NavLink
             to={ROUTE_MATERIALIEN}
-            className="btn btn-link btn-outline-primary"
+            className="button button--type-link button--type-outline-primary"
           >
             Zurück
           </NavLink>
 
           <a
             href={material?.originalExercisePhaseUrl}
-            className="btn btn-link btn-outline-primary"
+            className="button button--type-link button--type-outline-primary"
           >
             Zur ursprünglichen Phase
           </a>
 
           <Button
-            className="btn btn-primary material-editor__save-button"
+            className="button button--type-primary material-editor__save-button"
             onPress={saveMaterial}
           >
             {isLoading ? (
