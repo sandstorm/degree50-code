@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, {useState, useCallback, useEffect, SyntheticEvent} from 'react'
 import { d2t } from 'duration-time-conversion'
 import { MediaItem } from '../../../types'
 import { RenderConfig } from '../MediaTrack'
@@ -41,14 +41,18 @@ export const useItemInteraction = <T>(
 
   const onItemMouseDown = useCallback(
     (
-      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      event, // TODO fix type
       item: MediaItem<T>,
       side: Handle
     ) => {
+      let pageX = event.pageX
+      if (event.type === 'touchstart') {
+        pageX = event.touches[0].pageX
+      }
       setIsDraging(true)
       setLastClickedItem(item)
       setLastClickedItemSide(side)
-      setLastPageX(event.pageX)
+      setLastPageX(pageX)
 
       const currentlyVisibleItems = getVisibleItems(
         mediaItems,
@@ -86,8 +90,12 @@ export const useItemInteraction = <T>(
   const onMouseMove = useCallback(
     (event) => {
       if (isDraging && lastTargetNode) {
-        console.log("mouse move")
-        const lastDiffX = event.pageX - lastPageX
+        let pageX = event.pageX
+        if (event.type === 'touchmove') {
+          pageX = event.touches[0].pageX
+        }
+
+        const lastDiffX = pageX - lastPageX
         setLastDiffX(lastDiffX)
 
         if (lastClickedItemSide === 'left') {
@@ -201,13 +209,16 @@ export const useItemInteraction = <T>(
   ])
 
   useEffect(() => {
-    console.log("use effect")
     document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('touchmove', onMouseMove)
     document.addEventListener('mouseup', onMouseUp)
+    document.addEventListener('touchend', onMouseUp)
 
     return () => {
       document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('touchmove', onMouseMove)
       document.removeEventListener('mouseup', onMouseUp)
+      document.removeEventListener('touchend', onMouseUp)
     }
   }, [onMouseMove, onMouseUp])
 
