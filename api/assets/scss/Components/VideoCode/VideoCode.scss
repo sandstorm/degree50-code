@@ -12,23 +12,11 @@
 }
 
 .video-code {
-    padding: 5px 10px;
-    color: $theme__color__text;
-    background-color: $theme__color__white;
+    padding: $theme__spacing--small $theme__spacing--base;
 
-    &:focus-within {
-        background-color: $theme__color__grey--light !important;
-        border-color: $theme__color__grey--light !important;
-        box-shadow: none !important;
-        outline: none !important;
-    }
-
-    &:focus {
-        color: $theme__color__white !important;
-        background-color: $theme__color__secondary--dark !important;
-        border-color: $theme__color__secondary--dark !important;
-        box-shadow: none !important;
-        outline: none !important;
+    &:focus, &:focus-within {
+        outline: 2px solid $theme__color__grey--dark;
+        outline-offset: 2px;
     }
 
     .video-editor__video-codes {
@@ -37,22 +25,11 @@
 
     .new-video-code {
         display: flex;
-        padding: 5px 10px;
-        background-color: $theme__color__white;
+        padding: $theme__spacing--small $theme__spacing--base;
 
-        &:focus-within {
-            background-color: $theme__color__grey--light !important;
-            border-color: $theme__color__grey--light !important;
-            box-shadow: none !important;
-            outline: none !important;
-        }
-
-        &:focus {
-            color: $theme__color__white !important;
-            background-color: $theme__color__secondary--dark !important;
-            border-color: $theme__color__secondary--dark !important;
-            box-shadow: none !important;
-            outline: none !important;
+        &:focus, &:focus-within {
+            outline: 2px solid $theme__color__grey--dark;
+            outline-offset: 2px;
         }
 
         input {
@@ -61,7 +38,7 @@
     }
     .video-editor__video-codes {
         display: block;
-        margin-top: 5px;
+        margin-top: $theme__spacing--small;
     }
 }
 
@@ -86,10 +63,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    > * + * {
-        margin-left: 5px;
-    }
+    gap: $theme__spacing--small;
 
     button,
     .button {
@@ -106,12 +80,11 @@
 .video-code__color {
     width: 20px;
     height: 20px;
-    margin-right: 5px;
     flex-shrink: 0;
 
     &:focus-within {
+        outline: 2px solid $theme__color__grey--dark;
         outline-offset: 2px;
-        outline: $theme__color__secondary--dark solid 3px;
     }
 }
 

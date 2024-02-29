@@ -56,7 +56,8 @@ $theme__spacing--large: 20px;
 $theme__spacing--huge: 40px;
 
 // z-indices
-$theme__z-index--overlay: 1000;
+$theme__z-index--overlay: 9000;
+$theme__z-index--modal: 8000;
 $theme__z-index--menu: 100;
 $theme__z-index--media-lane-toolbar: 10;
 

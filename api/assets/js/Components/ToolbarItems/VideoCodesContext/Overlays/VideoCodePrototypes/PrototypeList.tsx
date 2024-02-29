@@ -64,17 +64,16 @@ const PrototypeList = (props: Props) => {
       ) : null}
 
       {!props.isSolutionView && (
-        <div className="video-code">
-          <Button
-            title={`Neuen ${
-              props.parentPrototype ? 'Untercode' : 'Code'
-            } erstellen`}
-            className={'button button--type-outline-primary button--block button--size-small'}
-            onPress={handleAdd}
-          >
-            <i className="fas fa-plus" />
-          </Button>
-        </div>
+        <Button
+          title={`Neuen ${
+            props.parentPrototype ? 'Untercode' : 'Code'
+          } erstellen`}
+          className={'button button--type-outline-primary button--block button--size-small'}
+          onPress={handleAdd}
+        >
+          <i className="fas fa-plus" />
+          {`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
+        </Button>
       )}
     </>
   )

@@ -85,8 +85,27 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
     handleEndTimeChange(secondToTime(currentTime))
   }
 
+  const footerContent = (
+    <>
+      <Button
+        className="button button--type-outline-primary"
+        onPress={close}
+        title="Annotation Verwerfen"
+      >
+        Verwerfen
+      </Button>
+      <Button
+        className="button button--type-primary"
+        onPress={handleSave}
+        title="Annotation Speichern"
+      >
+        Speichern
+      </Button>
+    </>
+  )
+
   return (
-    <Overlay closeCallback={close} title="Neue Annotation">
+    <Overlay closeCallback={close} title="Neue Annotation" footerContent={footerContent}>
       <div className="time-input-wrapper">
         <TimeInput
           label="Start"
@@ -99,12 +118,12 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
           secondsLabel="Start Sekunden"
         />
         <Button
-          className="button button--type-outline-primary"
+          className="button button--type-link"
           onPress={handleUseCurrentTimeForStartValue}
           title={'Aktuelle Zeit als Startzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
         >
-          <i className="fas fa-stopwatch" />
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Startzeit übernehmen
         </Button>
       </div>
       <div className="time-input-wrapper">
@@ -119,12 +138,12 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
           secondsLabel="Ende Sekunden"
         />
         <Button
-          className="button button--type-outline-primary"
+          className="button button--type-link"
           onPress={handleUseCurrentTimeForEndValue}
           title={'Aktuelle Zeit als Endzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
         >
-          <i className="fas fa-stopwatch" />
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Endzeit übernehmen
         </Button>
       </div>
       <hr />
@@ -141,21 +160,6 @@ const CreateAnnotationOverlay: FC<Props> = (props) => {
         text={transientAnnotation.memo}
         updateText={updateMemo}
       />
-      <hr />
-      <Button
-        className="button button--type-outline-primary"
-        onPress={close}
-        title="Annotation Verwerfen"
-      >
-        Verwerfen
-      </Button>
-      <Button
-        className="button button--type-primary"
-        onPress={handleSave}
-        title="Annotation Speichern"
-      >
-        Speichern
-      </Button>
     </Overlay>
   )
 }

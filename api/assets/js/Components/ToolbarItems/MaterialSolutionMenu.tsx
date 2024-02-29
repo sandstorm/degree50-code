@@ -33,7 +33,7 @@ const MaterialSolutionMenu = (props: Props) => {
     <div className="video-editor__menu">
       <Button
         title={menuButtonAriaLabel}
-        className="button button--type-primary button--size-small video-editor__toolbar__button"
+        className="button button--type-primary video-editor__toolbar__button"
         onPress={() =>
           setOverlay({
             overlayId: MaterialSolutionMenuOverlayIds.compare,

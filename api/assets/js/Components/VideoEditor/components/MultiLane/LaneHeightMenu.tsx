@@ -36,7 +36,7 @@ const LaneHeightMenu = (props: Props) => {
         label={menuButtonLabel}
         ariaLabel={menuButtonLabel}
         pauseVideo
-        className="video-editor-toolbar__menu-button"
+        className="media-lane-toolbar__menu-button"
         closeMenuOnItemSelect
       >
         <MenuItem

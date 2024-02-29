@@ -18,6 +18,7 @@ const ItemHandle = (props: Props) => {
         width,
       }}
       onMouseDown={onMouseDown}
+      onTouchStart={onMouseDown}
       onClick={onClick}
     />
   )

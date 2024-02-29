@@ -51,14 +51,6 @@ const MenuButton: FC<Props> = ({
     setIsOpen(false)
   }, [])
 
-  const handleClose = (event: React.MouseEvent<HTMLElement>) => {
-    // if event target has class .menu-backdrop, close the menu
-    console.log(event.target)
-    if (event.target instanceof HTMLElement && event.target.classList.contains('menu-backdrop')) {
-      close()
-    }
-  }
-
   const toggleMenu = useCallback(() => {
     if (pauseVideo) {
       setPauseVideo(true)
@@ -70,6 +62,12 @@ const MenuButton: FC<Props> = ({
       open()
     }
   }, [isOpen, close, open, pauseVideo, setPauseVideo])
+
+  const handleToggleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault()
+    event.stopPropagation()
+    toggleMenu()
+  }
 
   const handleKeyDown = useCallback(
     (ev: React.KeyboardEvent<HTMLElement>) => {
@@ -105,10 +103,10 @@ const MenuButton: FC<Props> = ({
 
   return (
     <div className="menu-wrapper">
-      <Button className={classes} onPress={toggleMenu} title={ariaLabel}>
+      <Button className={classes} onClick={handleToggleMenu} title={ariaLabel}>
         {icon} {label}
       </Button>
-      {isOpen && <div className="menu-backdrop" onClick={handleClose} />}
+      {isOpen && <div className="menu-backdrop" onClick={close} />}
       {isOpen && (
         <FocusScope autoFocus contain restoreFocus key={focusScopeKey}>
           <div

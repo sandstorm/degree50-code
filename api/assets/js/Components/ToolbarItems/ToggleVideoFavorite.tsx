@@ -31,7 +31,7 @@ const ToggleVideoFavorite = () => {
     <div className="video-editor__menu">
       <Button
         title={isFavorite ? 'Video entfavorisieren' : 'Video favorisieren'}
-        className="button button--type-primary button--size-small video-editor__toolbar__button"
+        className="button button--type-primary video-editor__toolbar__button"
         onPress={toggleVideoFavorite}
         isDisabled={!isStudent || !isAnalysisPhase}
         data-testid="toggle-video-favorite"

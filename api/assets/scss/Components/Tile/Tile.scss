@@ -3,10 +3,8 @@ $tileHeight--small: 150px;
 
 .tile {
     flex-grow: 0;
-
+    padding: 0;
     position: relative;
-    margin-right: 20px;
-    margin-bottom: 20px;
 
     input[type='checkbox'] {
         display: none;

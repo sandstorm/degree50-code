@@ -1,28 +1,15 @@
-import React, { memo, useState } from 'react'
+import React, { memo, FC } from 'react'
 import MultiLane from './MultiLane'
 
-const MediaLaneContainer = () => {
-  const [showMediaLane, toggleShowMediaLane] = useState(false)
-  const handleMediaLaneToggle = () => toggleShowMediaLane(!showMediaLane)
+type OwnProps = {
+  showMediaLane: boolean
+}
+
+const MediaLaneContainer: FC<OwnProps> = (props) => {
 
   return (
     <div className="media-lane-container" key="">
-      <button
-        className="button button--type-grey button--size-small media-lane-container__toggle"
-        title="Zeitleiste anzeigen/verbergen"
-        aria-label={
-          showMediaLane ? 'Zeitleiste verbergen' : 'Zeitleiste anzeigen'
-        }
-        onClick={handleMediaLaneToggle}
-      >
-        <i
-          className={
-            showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'
-          }
-        />
-      </button>
-
-      {showMediaLane && <MultiLane />}
+      {props.showMediaLane && <MultiLane />}
     </div>
   )
 }

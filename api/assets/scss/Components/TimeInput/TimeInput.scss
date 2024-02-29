@@ -1,12 +1,12 @@
 @import "NumberField.scss";
 
-.time-input {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-top: $theme__spacing--large;
+.time-input-wrapper {
     margin-bottom: $theme__spacing--large;
+}
+
+.time-input {
+    margin-top: $theme__spacing--base;
+    margin-bottom: $theme__spacing--small;
 
     .number-field input {
         border: none;
@@ -20,12 +20,6 @@
 }
 
 .time-input__label {
-    margin-right: $theme__spacing--base;
+    margin-bottom: $theme__spacing--small;
 }
 
-// integration code - no component styling
-.time-input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: $theme__spacing--base;
-}

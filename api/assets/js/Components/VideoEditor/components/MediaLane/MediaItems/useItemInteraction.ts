@@ -86,6 +86,7 @@ export const useItemInteraction = <T>(
   const onMouseMove = useCallback(
     (event) => {
       if (isDraging && lastTargetNode) {
+        console.log("mouse move")
         const lastDiffX = event.pageX - lastPageX
         setLastDiffX(lastDiffX)
 
@@ -200,6 +201,7 @@ export const useItemInteraction = <T>(
   ])
 
   useEffect(() => {
+    console.log("use effect")
     document.addEventListener('mousemove', onMouseMove)
     document.addEventListener('mouseup', onMouseUp)
 

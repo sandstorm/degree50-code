@@ -188,60 +188,62 @@ const VideoCodeListItem = (props: Props) => {
 
   return (
     <li tabIndex={0} aria-label={ariaLabel}>
-      <PrototypeInformation videoCodePrototype={videoCodePrototype} />
+      <PrototypeInformation videoCodePrototype={videoCodePrototype}/>
       <p>{creatorDescription}</p>
-      <Start start={item.start} />
-      <End end={item.end} />
+      <Start start={item.start}/>
+      <End end={item.end}/>
       {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
 
-      {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
-        <CopyToClipboard
-          text={asRichtext}
-          options={{
-            format: 'text/plain',
-          }}
-        >
-          <Button
-            className="button button--type-primary"
-            title="In Zwischenablage kopieren"
+      <div className="button-group">
+        {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
+          <CopyToClipboard
+            text={asRichtext}
+            options={{
+              format: 'text/plain',
+            }}
           >
-            In Zwischenablage kopieren
+            <Button
+              className="button button--type-outline-primary button--size-small"
+              title="In Zwischenablage kopieren"
+            >
+              In Zwischenablage kopieren
+            </Button>
+          </CopyToClipboard>
+        ) : (
+          <Button
+            className="button button--type-outline-primary button--size-small"
+            onPress={handleJumpToPosition}
+            title="Springe zu Position im Video"
+          >
+            Springe zu Position
           </Button>
-        </CopyToClipboard>
-      ) : (
-        <Button
-          className="button button--type-primary"
-          onPress={handleJumpToPosition}
-          title="Springe zu Position im Video"
-        >
-          Springe zu Position
-        </Button>
-      )}
+        )}
 
-      {props.isFromCurrentSolution && (
-        <>
-          <Button
-            className="button button--type-secondary"
-            onPress={handleRemove}
-            title="Codierung Löschen"
-          >
-            Löschen
-          </Button>
+        {props.isFromCurrentSolution && (
+          <>
+            <Button
+              className="button button--type-danger button--size-small"
+              onPress={handleRemove}
+              title="Codierung Löschen"
+            >
+              Löschen
+            </Button>
 
-          <Button
-            className="button button--type-primary"
-            onPress={handleEdit}
-            title="Codierung Bearbeiten"
-          >
-            Bearbeiten
-          </Button>
-        </>
-      )}
+            <Button
+              className="button button--type-primary button--size-small"
+              onPress={handleEdit}
+              title="Codierung Bearbeiten"
+            >
+              Bearbeiten
+            </Button>
+          </>
+        )}
+      </div>
     </li>
-  )
+)
 }
 
 export default connect(
-  mapStateToProps,
+mapStateToProps,
   mapDispatchToProps
 )(memo(VideoCodeListItem))

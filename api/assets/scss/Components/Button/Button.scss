@@ -41,6 +41,9 @@
 }
 
 .button--type-link {
+    padding: 0;
+    display: inline;
+
     border: none;
 
     color: $theme__color__primary;

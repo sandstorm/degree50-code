@@ -64,10 +64,10 @@ const Toolbar = ({
 
   return (
     <div
-      className="video-editor-toolbar"
+      className="media-lane-toolbar"
       style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}
     >
-      <div className="video-editor-toolbar__item-group">
+      <div className="media-lane-toolbar__item-group">
         <MediaLaneToolbarItem>
           <label htmlFor="timeline-zoom-handler">
             <Translate value="zoom" />
@@ -111,7 +111,7 @@ const Toolbar = ({
         </MediaLaneToolbarItem>
       </div>
       {children && (
-        <div className="video-editor-toolbar__item-group">{children}</div>
+        <div className="media-lane-toolbar__item-group">{children}</div>
       )}
     </div>
   )

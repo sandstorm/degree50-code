@@ -63,7 +63,7 @@ const AttachmentViewer: React.FC<Props> = (props) => {
     return (
       <button
         key={attachment.id}
-        className={'button tile tile--small'}
+        className={'button button--type-primary tile tile--small'}
         title={attachment.name}
         aria-label={attachment.name}
         onClick={() => props.setActiveAttachment(attachment)}

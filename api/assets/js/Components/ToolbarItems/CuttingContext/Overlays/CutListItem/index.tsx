@@ -121,59 +121,61 @@ const CutListItem: FC<Props> = (props) => {
     >
       <p>Beschreibung: {item.text}</p>
       <p>{creatorDescription}</p>
-      <Start start={item.start} />
-      <End end={item.end} />
-      <br />
+      <Start start={item.start}/>
+      <End end={item.end}/>
+      <br/>
       {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
 
-      {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
-        <CopyToClipboard
-          text={asRichtext}
-          options={{
-            format: 'text/plain',
-          }}
-        >
-          <Button
-            className="button button--type-primary"
-            title="In Zwischenablage kopieren"
+      <div className="button-group">
+        {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
+          <CopyToClipboard
+            text={asRichtext}
+            options={{
+              format: 'text/plain',
+            }}
           >
-            In Zwischenablage kopieren
+            <Button
+              className="button button--type-outline-primary button--size-small"
+              title="In Zwischenablage kopieren"
+            >
+              In Zwischenablage kopieren
+            </Button>
+          </CopyToClipboard>
+        ) : (
+          <Button
+            className="button button--type-outline-primary button--size-small"
+            onPress={handleJumpToPosition}
+            title="Springe zu Position im Video"
+          >
+            Springe zu Position
           </Button>
-        </CopyToClipboard>
-      ) : (
-        <Button
-          className="button button--type-primary"
-          onPress={handleJumpToPosition}
-          title="Springe zu Position im Video"
-        >
-          Springe zu Position
-        </Button>
-      )}
+        )}
 
-      {props.showPositionControls && (
-        <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />
-      )}
+        {props.showPositionControls && (
+          <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown}/>
+        )}
 
-      {props.canEdit && (
-        <>
-          <Button
-            className="button button--type-secondary"
-            onPress={handleRemove}
-            title="Schnitt Löschen"
-          >
-            Löschen
-          </Button>
-          <Button
-            className="button button--type-primary"
-            onPress={handleEdit}
-            title="Schnitt Bearbeiten"
-          >
-            Bearbeiten
-          </Button>
-        </>
-      )}
+        {props.canEdit && (
+          <>
+            <Button
+              className="button button--type-danger button--size-small"
+              onPress={handleRemove}
+              title="Schnitt Löschen"
+            >
+              Löschen
+            </Button>
+            <Button
+              className="button button--type-primary button--size-small"
+              onPress={handleEdit}
+              title="Schnitt Bearbeiten"
+            >
+              Bearbeiten
+            </Button>
+          </>
+        )}
+      </div>
     </li>
-  )
+)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(memo(CutListItem))

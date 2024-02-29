@@ -37,10 +37,10 @@ const EditMaterialMenu = (props: Props) => {
     : 'Material nicht mehr bearbeiten'
 
   return (
-    <div className="vide-editor__menu">
+    <div className="video-editor__menu">
       <Button
         title={title}
-        className="button button--type-primary button--size-small video-editor__toolbar__button"
+        className="button button--type-primary video-editor__toolbar__button"
         onPress={handlePress}
         isDisabled={!needsReview}
       >

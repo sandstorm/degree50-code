@@ -8,20 +8,26 @@ import TeamMenu from 'Components/ToolbarItems/Team/TeamMenu'
 import ToggleVideoFavorite from 'Components/ToolbarItems/ToggleVideoFavorite'
 import VideoCodesMenu from 'Components/ToolbarItems/VideoCodesContext/VideoCodesMenu'
 import ZusatzAttachmentMenu from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentMenu'
+import React, {FC, ReactNode} from "react";
 
-const Toolbar = () => {
+type OwnProps = {
+  children?: ReactNode
+}
+
+const Toolbar: FC<OwnProps> = (props) => {
   return (
     <div className="video-editor__toolbar">
-      <AllMediaItemsMenu />
-      <AnnotationsMenu />
-      <VideoCodesMenu />
-      <CuttingMenu />
-      <AufgabeMenu />
-      <ZusatzAttachmentMenu />
-      <TeamMenu />
-      <FilterMenu />
-      <ToggleVideoFavorite />
-      <ShortCutsMenu />
+      <AllMediaItemsMenu/>
+      <AnnotationsMenu/>
+      <VideoCodesMenu/>
+      <CuttingMenu/>
+      <AufgabeMenu/>
+      <ZusatzAttachmentMenu/>
+      <TeamMenu/>
+      <FilterMenu/>
+      <ToggleVideoFavorite/>
+      <ShortCutsMenu/>
+      {props.children}
     </div>
   )
 }

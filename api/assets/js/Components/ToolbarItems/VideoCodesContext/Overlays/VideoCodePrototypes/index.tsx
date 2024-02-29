@@ -56,15 +56,13 @@ const VideoCodePrototypes = (props: Props) => {
         </div>
 
         {!props.isSolutionView && (
-          <div className="video-code">
-            <Button
-              className={'button button--type-outline-primary button--block button--size-small'}
-              onPress={handleAdd}
-              title="Neuen Code Erstellen"
-            >
-              <i className="fas fa-plus" />
-            </Button>
-          </div>
+          <Button
+            className={'button button--type-outline-primary button--block button--size-small'}
+            onPress={handleAdd}
+            title="Neuen Code Erstellen"
+          >
+            <i className="fas fa-plus" /> Neuen Code erstellen
+          </Button>
         )}
       </div>
     )

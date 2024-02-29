@@ -91,55 +91,8 @@ const CreateCutOverlay: FC<Props> = (props) => {
     handleEndTimeChange(secondToTime(props.currentTime))
   }
 
-  return (
-    <Overlay closeCallback={close} title="Neuer Schnitt">
-      <div className="time-input-wrapper">
-        <TimeInput
-          label="Start"
-          hoursLabel="Start Stunden"
-          minutesLabel="Start Minuten"
-          secondsLabel="Start Sekunden"
-          value={transientCut.start}
-          min={minAllowedStartTime}
-          max={maxAllowedStartTime}
-          onChange={handleStartTimeChange}
-        />
-        <Button
-          className="button button--type-outline-primary"
-          onPress={handleUseCurrentTimeForStartValue}
-          title={'Aktuelle Zeit als Startzeit übernehmen'}
-          data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
-        >
-          <i className="fas fa-stopwatch" />
-        </Button>
-      </div>
-      <div className="time-input-wrapper">
-        <TimeInput
-          label="Ende"
-          hoursLabel="Ende Stunden"
-          minutesLabel="End Minuten"
-          secondsLabel="Ende Sekunden"
-          value={transientCut.end}
-          min={minAllowedEndTime}
-          max={maxAllowedEndTime}
-          onChange={handleEndTimeChange}
-        />
-        <Button
-          className="button button--type-outline-primary"
-          onPress={handleUseCurrentTimeForEndValue}
-          title={'Aktuelle Zeit als Endzeit übernehmen'}
-          data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
-        >
-          <i className="fas fa-stopwatch" />
-        </Button>
-      </div>
-      <hr />
-      <label htmlFor="text">Beschreibung</label>
-      <TextField id="text" text={transientCut.text} updateText={updateText} />
-      <br />
-      <label htmlFor="memo">Memo</label>
-      <TextField id="memo" text={transientCut.memo} updateText={updateMemo} />
-      <hr />
+  const footerContent = (
+    <>
       <Button
         className="button button--type-outline-primary"
         onPress={close}
@@ -154,6 +107,57 @@ const CreateCutOverlay: FC<Props> = (props) => {
       >
         Speichern
       </Button>
+    </>
+  )
+
+  return (
+    <Overlay closeCallback={close} title="Neuer Schnitt" footerContent={footerContent}>
+      <div className="time-input-wrapper">
+        <TimeInput
+          label="Start"
+          hoursLabel="Start Stunden"
+          minutesLabel="Start Minuten"
+          secondsLabel="Start Sekunden"
+          value={transientCut.start}
+          min={minAllowedStartTime}
+          max={maxAllowedStartTime}
+          onChange={handleStartTimeChange}
+        />
+        <Button
+          className="button button--type-link"
+          onPress={handleUseCurrentTimeForStartValue}
+          title={'Aktuelle Zeit als Startzeit übernehmen'}
+          data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
+        >
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Startzeit übernehmen
+        </Button>
+      </div>
+      <div className="time-input-wrapper">
+        <TimeInput
+          label="Ende"
+          hoursLabel="Ende Stunden"
+          minutesLabel="End Minuten"
+          secondsLabel="Ende Sekunden"
+          value={transientCut.end}
+          min={minAllowedEndTime}
+          max={maxAllowedEndTime}
+          onChange={handleEndTimeChange}
+        />
+        <Button
+          className="button button--type-link"
+          onPress={handleUseCurrentTimeForEndValue}
+          title={'Aktuelle Zeit als Endzeit übernehmen'}
+          data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
+        >
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Endzeit übernehmen
+        </Button>
+      </div>
+      <hr />
+      <label htmlFor="text">Beschreibung</label>
+      <TextField id="text" text={transientCut.text} updateText={updateText} />
+      <br />
+      <label htmlFor="memo">Memo</label>
+      <TextField id="memo" text={transientCut.memo} updateText={updateMemo} />
     </Overlay>
   )
 }

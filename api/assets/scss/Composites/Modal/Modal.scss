@@ -10,58 +10,44 @@ $modalHeaderHeight: 50px;
 
     background-color: transparentize($theme__color__black, 0.5);
 
-    z-index: 9999;
+    z-index: $theme__z-index--modal;
 }
 
 .modal__inner {
-    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
     width: 500px;
-    min-height: 400px;
     max-height: 90vh;
 
     background-color: $theme__color__white;
     border: 1px solid $theme__color__grey;
 }
 
-.modal__footer,
 .modal__header {
-    position: absolute;
-    height: $modalHeaderHeight;
-    width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: $theme__spacing--base;
+    padding: $theme__spacing--base $theme__spacing--large;
 
-    > * {
+    border-bottom: 1px solid $theme__color__grey--light;
+
+    h3 {
         margin: 0;
     }
 }
 
-.modal__header {
-    border-bottom: 1px solid $theme__color__grey--light;
-}
-
 .modal__footer {
-    bottom: 0;
-    justify-content: space-between;
-
-    background-color: $theme__color__grey--lighter;
-}
-
-.modal__content-wrapper {
-    position: absolute;
-    padding-top: $modalHeaderHeight;
-    padding-bottom: $modalHeaderHeight;
-    height: 100%;
-    width: 100%;
+    position: sticky;
+    padding: $theme__spacing--base $theme__spacing--large;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: $theme__spacing--base;
 }
 
 .modal__content {
-    height: 100%;
-    width: 100%;
-    padding: 10px;
-
-    overflow: hidden;
-    overflow-y: scroll;
+    overflow: auto;
+    padding: $theme__spacing--base $theme__spacing--large;
 }

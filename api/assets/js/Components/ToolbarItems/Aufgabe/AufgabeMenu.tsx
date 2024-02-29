@@ -22,7 +22,7 @@ const AufgabeMenu: FC<Props> = (props) => {
     <div className="video-editor__menu">
       <Button
         title="Aufgabe"
-        className="button button--type-primary button--size-small video-editor__toolbar__button"
+        className="button button--type-primary video-editor__toolbar__button"
         onPress={handleClick}
       >
         <i className="fas fa-clipboard" />

@@ -84,8 +84,8 @@ const VideoCodesMenu: FC<Props> = (props) => {
           }
         />
         <MenuItem
-          ariaLabel="Setze Codierung"
-          label="Setze Codierung"
+          ariaLabel="Setze neue Codierung"
+          label="Setze neue Codierung"
           onClick={() =>
             props.setOverlay({
               overlayId: VideoCodeOverlayIds.create,

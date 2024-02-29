@@ -7,48 +7,6 @@
     width: 100%;
 
     z-index: $theme__z-index--overlay + 1;
-
-    button + button {
-        margin-left: $theme__spacing--base;
-    }
-}
-
-.video-editor__overlay__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    h3 {
-        margin: 0;
-    }
-}
-
-.video-editor__overlay__content {
-    overflow: auto;
-}
-
-.video-editor__overlay__footer {
-    position: sticky;
-}
-
-.video-editor__overlay__wrapper {
-    display: grid;
-    grid-template-rows: auto 1fr;
-
-    overflow: hidden;
-
-    padding: $theme__spacing--large;
-    min-width: 500px;
-    max-width: 95%;
-    max-height: 80%;
-
-    background-color: $theme__color__white;
-
-    z-index: $theme__z-index--overlay;
-
-    &--fullWidth {
-        width: 95%;
-    }
 }
 
 .video-editor__overlay__backdrop {
@@ -62,4 +20,31 @@
     height: 100%;
 
     z-index: $theme__z-index--overlay - 1;
+}
+
+
+.video-editor__overlay__wrapper {
+    @extend .modal__inner;
+    width: auto;
+    min-width: 500px;
+    max-width: 900px;
+    max-height: 80%;
+
+    z-index: $theme__z-index--overlay;
+
+    &--fullWidth {
+        width: 95%;
+    }
+}
+
+.video-editor__overlay__header {
+    @extend .modal__header;
+}
+
+.video-editor__overlay__content {
+    @extend .modal__content;
+}
+
+.video-editor__overlay__footer {
+    @extend .modal__footer;
 }
