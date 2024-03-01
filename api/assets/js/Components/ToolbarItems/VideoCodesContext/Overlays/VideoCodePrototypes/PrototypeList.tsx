@@ -68,7 +68,9 @@ const PrototypeList = (props: Props) => {
           title={`Neuen ${
             props.parentPrototype ? 'Untercode' : 'Code'
           } erstellen`}
-          className={'button button--type-outline-primary button--block button--size-small'}
+          className={
+            'button button--type-outline-primary button--block button--size-small'
+          }
           onPress={handleAdd}
         >
           <i className="fas fa-plus" />

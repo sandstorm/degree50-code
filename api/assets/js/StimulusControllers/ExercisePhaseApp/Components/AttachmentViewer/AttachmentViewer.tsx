@@ -90,7 +90,9 @@ const AttachmentViewer: React.FC<Props> = (props) => {
 
           <div className={'attachment-viewer__actions'}>
             <Button
-              className={'button button--size-small button--type-outline-primary'}
+              className={
+                'button button--size-small button--type-outline-primary'
+              }
               title="Zurück zur Attachment-Übersicht"
               onPress={() => props.setActiveAttachment(undefined)}
             >
@@ -134,7 +136,8 @@ const AttachmentViewer: React.FC<Props> = (props) => {
                   previousPagebutton:
                     'button button--size-small button--type-primary pdf-viewer__prev-page',
                   pageIndicator: 'pdf-viewer__pages',
-                  nextPagebutton: 'button button--size-small button--type-primary pdf-viewer__next-page',
+                  nextPagebutton:
+                    'button button--size-small button--type-primary pdf-viewer__next-page',
                 },
               }}
             />

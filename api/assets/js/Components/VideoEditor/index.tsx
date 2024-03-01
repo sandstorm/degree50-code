@@ -1,4 +1,4 @@
-import React, {FC, memo, useState} from 'react'
+import React, { FC, memo, useState } from 'react'
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import MediaLaneContainer from './components/MediaLaneContainer'
@@ -41,13 +41,17 @@ const VideoEditor: FC<Props> = (props) => {
             }
             onClick={handleMediaLaneToggle}
           >
-            <i className={showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'}/>
+            <i
+              className={
+                showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'
+              }
+            />
             {showMediaLane ? 'Zeitleiste verbergen' : 'Zeitleiste anzeigen'}
           </button>
         </div>
       </Toolbar>
-      <OverlayContainer/>
-      <MediaLaneContainer showMediaLane={showMediaLane}/>
+      <OverlayContainer />
+      <MediaLaneContainer showMediaLane={showMediaLane} />
     </div>
   )
 }

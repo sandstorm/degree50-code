@@ -98,7 +98,11 @@ const EditCutOverlay: FC<Props> = (props) => {
   )
 
   return (
-    <Overlay closeCallback={close} title="Schnitt bearbeiten" footerContent={footerContent}>
+    <Overlay
+      closeCallback={close}
+      title="Schnitt bearbeiten"
+      footerContent={footerContent}
+    >
       <div className="time-input-wrapper">
         <TimeInput
           label="Start"
@@ -116,7 +120,8 @@ const EditCutOverlay: FC<Props> = (props) => {
           title={'Aktuelle Zeit als Startzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
         >
-          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Startzeit übernehmen
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Startzeit
+          übernehmen
         </Button>
       </div>
       <div className="time-input-wrapper">
@@ -136,7 +141,8 @@ const EditCutOverlay: FC<Props> = (props) => {
           title={'Aktuelle Zeit als Endzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
         >
-          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Endzeit übernehmen
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Endzeit
+          übernehmen
         </Button>
       </div>
       <hr />

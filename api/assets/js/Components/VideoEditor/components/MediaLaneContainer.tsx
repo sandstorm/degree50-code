@@ -6,7 +6,6 @@ type OwnProps = {
 }
 
 const MediaLaneContainer: FC<OwnProps> = (props) => {
-
   return (
     <div className="media-lane-container" key="">
       {props.showMediaLane && <MultiLane />}

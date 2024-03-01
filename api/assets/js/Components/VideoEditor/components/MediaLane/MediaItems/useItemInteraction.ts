@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, SyntheticEvent} from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { d2t } from 'duration-time-conversion'
 import { MediaItem } from '../../../types'
 import { RenderConfig } from '../MediaTrack'
@@ -45,10 +45,8 @@ export const useItemInteraction = <T>(
       item: MediaItem<T>,
       side: Handle
     ) => {
-      let pageX = event.pageX
-      if (event.type === 'touchstart') {
-        pageX = event.touches[0].pageX
-      }
+      const pageX =
+        event.type === 'touchstart' ? event.touches[0].pageX : event.pageX
       setIsDraging(true)
       setLastClickedItem(item)
       setLastClickedItemSide(side)
@@ -90,11 +88,8 @@ export const useItemInteraction = <T>(
   const onMouseMove = useCallback(
     (event) => {
       if (isDraging && lastTargetNode) {
-        let pageX = event.pageX
-        if (event.type === 'touchmove') {
-          pageX = event.touches[0].pageX
-        }
-
+        const pageX =
+          event.type === 'touchmove' ? event.touches[0].pageX : event.pageX
         const lastDiffX = pageX - lastPageX
         setLastDiffX(lastDiffX)
 

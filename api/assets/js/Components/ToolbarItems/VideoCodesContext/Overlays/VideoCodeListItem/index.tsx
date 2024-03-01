@@ -188,10 +188,10 @@ const VideoCodeListItem = (props: Props) => {
 
   return (
     <li tabIndex={0} aria-label={ariaLabel}>
-      <PrototypeInformation videoCodePrototype={videoCodePrototype}/>
+      <PrototypeInformation videoCodePrototype={videoCodePrototype} />
       <p>{creatorDescription}</p>
-      <Start start={item.start}/>
-      <End end={item.end}/>
+      <Start start={item.start} />
+      <End end={item.end} />
       {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
 
       <div className="button-group">
@@ -240,10 +240,10 @@ const VideoCodeListItem = (props: Props) => {
         )}
       </div>
     </li>
-)
+  )
 }
 
 export default connect(
-mapStateToProps,
+  mapStateToProps,
   mapDispatchToProps
 )(memo(VideoCodeListItem))

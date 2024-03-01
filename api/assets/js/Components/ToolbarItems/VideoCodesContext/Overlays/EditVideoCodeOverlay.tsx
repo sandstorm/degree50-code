@@ -102,7 +102,11 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
   )
 
   return (
-    <Overlay closeCallback={close} title="Codierung bearbeiten" footerContent={footerContent}>
+    <Overlay
+      closeCallback={close}
+      title="Codierung bearbeiten"
+      footerContent={footerContent}
+    >
       <div className="time-input-wrapper">
         <TimeInput
           label="Start"

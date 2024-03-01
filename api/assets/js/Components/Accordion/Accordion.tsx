@@ -21,7 +21,6 @@ const Accordion = (props: Props) => {
 
   const labelId = useMemo(() => shortid(), [])
   const regionId = useMemo(() => shortid(), [])
-  const toggleId = useMemo(() => shortid(), [])
 
   return (
     <div className={className}>

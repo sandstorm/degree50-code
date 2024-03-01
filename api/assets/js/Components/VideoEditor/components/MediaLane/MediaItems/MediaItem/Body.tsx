@@ -15,7 +15,11 @@ const Body = (props: Props) => {
   const { onMouseDown, item, showTextInMediaItems } = props
 
   return (
-    <div className="video-editor__media-items__text" onTouchStart={onMouseDown} onMouseDown={onMouseDown}>
+    <div
+      className="video-editor__media-items__text"
+      onTouchStart={onMouseDown}
+      onMouseDown={onMouseDown}
+    >
       <MediaItemLabel item={item} showTextInMediaItems={showTextInMediaItems} />
     </div>
   )

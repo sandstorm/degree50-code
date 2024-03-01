@@ -121,9 +121,9 @@ const CutListItem: FC<Props> = (props) => {
     >
       <p>Beschreibung: {item.text}</p>
       <p>{creatorDescription}</p>
-      <Start start={item.start}/>
-      <End end={item.end}/>
-      <br/>
+      <Start start={item.start} />
+      <End end={item.end} />
+      <br />
       {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
 
       <div className="button-group">
@@ -152,7 +152,7 @@ const CutListItem: FC<Props> = (props) => {
         )}
 
         {props.showPositionControls && (
-          <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown}/>
+          <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />
         )}
 
         {props.canEdit && (
@@ -175,7 +175,7 @@ const CutListItem: FC<Props> = (props) => {
         )}
       </div>
     </li>
-)
+  )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(memo(CutListItem))

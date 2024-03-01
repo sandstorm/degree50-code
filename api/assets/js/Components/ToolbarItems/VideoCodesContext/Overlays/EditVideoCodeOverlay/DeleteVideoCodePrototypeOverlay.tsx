@@ -48,7 +48,7 @@ const DeleteVideoCodePrototypeOverlay: FC<Props> = (props) => {
           onPress={close}
           title="Löschvorgang Abbrechen"
         >
-          <i className="fas fa-times"/>
+          <i className="fas fa-times" />
           <span>Abbrechen</span>
         </Button>
         <Button
@@ -56,12 +56,12 @@ const DeleteVideoCodePrototypeOverlay: FC<Props> = (props) => {
           onPress={handleRemove}
           title="Löschvorgang Bestätigen"
         >
-          <i className="fas fa-check"/>
+          <i className="fas fa-check" />
           <span>Löschen</span>
         </Button>
       </div>
     </Overlay>
-)
+  )
 }
 
 export default connect(

@@ -56,7 +56,11 @@ const SetVideoPlayerTimeOverlay = (props: Props) => {
         showMs={false}
       />
       <hr />
-      <Button className="button button--type-secondary" onPress={close} title="Abbrechen">
+      <Button
+        className="button button--type-secondary"
+        onPress={close}
+        title="Abbrechen"
+      >
         Abbrechen
       </Button>
       <Button

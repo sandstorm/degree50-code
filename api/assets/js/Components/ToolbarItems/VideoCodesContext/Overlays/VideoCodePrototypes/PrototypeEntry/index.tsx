@@ -117,7 +117,9 @@ const PrototypeEntry: FC<Props> = (props) => {
         {props.videoCodePrototype.userCreated ? (
           <>
             <Button
-              className={'button button--type-outline-primary button--size-small'}
+              className={
+                'button button--type-outline-primary button--size-small'
+              }
               title={'Code Bearbeiten'}
               onPress={handleEdit}
             >
