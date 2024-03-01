@@ -6,6 +6,8 @@ stages:
 
 compile_and_test_frontend:
     stage: compile_resources
+    rules:
+        -   when: always
     interruptible: true
     image: node:16.13.1-bullseye-slim
     script:
@@ -31,9 +33,11 @@ compile_and_test_frontend:
         paths:
             - api/node_modules
             - .yarn
-                
+
 package_app:
     stage: build
+    rules:
+        -   when: always
     interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     script:
@@ -47,10 +51,12 @@ package_app:
 
 package_logging_sidecar:
     stage: build
+    # run this job only on tag pipelines
+    rules:
+        -   if: '$CI_COMMIT_TAG'
+            when: always
     interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
-    only:
-        - tags
     script:
         - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
         - cd deployment/loggingSidecar
@@ -61,6 +67,9 @@ package_logging_sidecar:
 
 build_e2e_testrunner:
     stage: build
+    # run this job on every pipeline
+    rules:
+        -   when: always
     interruptible: true
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     script:
@@ -72,9 +81,10 @@ build_e2e_testrunner:
         - docker push $CI_REGISTRY_IMAGE:e2e-testrunner
         - cd ..
 
-    
 integration_test:
     stage: test
+    rules:
+        -   when: always
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:
@@ -96,28 +106,33 @@ integration_test:
         LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
         JWT_KEY: changeme-test
     services:
-        - name: mariadb:10.7
-        - name: redis:6.2
+        -   name: mariadb:10.7
+        -   name: redis:6.2
         # here, we make the e2e-testrunner available
-        - name: $CI_REGISTRY_IMAGE:e2e-testrunner
-          alias: e2e-testrunner
+        -   name: $CI_REGISTRY_IMAGE:e2e-testrunner
+            alias: e2e-testrunner
     script:
         # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
         # entrypoint and run the script here
         - /entrypoint-integration.sh
-            
+
 e2e_test:
     stage: test
-    only: 
-        - main
-        - tags
+    # rules: 
+    # - run on merge_requests when triggered manually as part of the pipeline
+    # - always run on main branch pipelines and tag pipelines
+    rules:
+        -   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_OPEN_MERGE_REQUESTS'
+            when: manual
+        -   if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_TAG'
+            when: always
+            
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:
         name: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
         # see `scripts` below
         entrypoint: [ "" ]
-    dependencies: [ ] # we do not need any artifacts from prior steps
     variables:
         # service mariadb
         MYSQL_DATABASE: "test_db"
@@ -131,11 +146,11 @@ e2e_test:
         LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
         JWT_KEY: changeme-test
     services:
-        - name: mariadb:10.7
-        - name: redis:6.2
+        -   name: mariadb:10.7
+        -   name: redis:6.2
         # here, we make the e2e-testrunner available
-        - name: $CI_REGISTRY_IMAGE:e2e-testrunner
-          alias: e2e-testrunner
+        -   name: $CI_REGISTRY_IMAGE:e2e-testrunner
+            alias: e2e-testrunner
     script:
         # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
         # entrypoint and run the script here
@@ -153,9 +168,9 @@ e2e_test:
 deploy-prod:
     stage: deploy
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
-    only:
-        - tags
-    when: manual
+    rules:
+        -   if: '$CI_COMMIT_TAG'
+            when: manual
     tags:
         - jumphost
     script:
@@ -180,9 +195,9 @@ deploy-prod:
 deploy-test:
     stage: deploy
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
-    only:
-        - tags
-    when: manual
+    rules:
+        -   if: '$CI_COMMIT_TAG'
+            when: manual
     tags:
         - jumphost
     script:
