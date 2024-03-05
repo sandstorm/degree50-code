@@ -1,9 +1,7 @@
 .exercise-list {
-    margin-left: $theme__spacing__huge;
-    margin-top: $theme__spacing__large;
+    width: 100%;
 
     table-layout: fixed;
-    width: 80%;
     border-collapse: collapse;
 
     tbody td {
@@ -17,16 +15,15 @@
     }
 
     tbody tr:nth-child(odd) {
-      background-color: $theme__color__white;
+        background-color: $theme__color__white;
     }
 
     tbody tr:nth-child(even) {
-      background-color: $theme__color__grey--light;
+        background-color: $theme__color__grey--light;
     }
 
 
-    th,
-    td {
+    th, td {
         padding: $theme__spacing--small;
     }
 
@@ -39,23 +36,23 @@
     }
 
     thead th:nth-child(1) {
-      width: 15%;
+        width: 15%;
     }
 
     thead th:nth-child(2) {
-      width: 15%;
+        width: 15%;
     }
 
     thead th:nth-child(3) {
-      width: 30%;
+        width: 30%;
     }
 
     thead th:nth-child(4) {
-      width: 15%;
+        width: 15%;
     }
 
     thead th:nth-child(5) {
-      width: 25%;
+        width: 25%;
     }
 
     tr {
@@ -66,15 +63,13 @@
     tbody tr {
         border: 1px solid transparent;
 
-        &:focus,
-        &:focus-within,
-        &:hover {
-            color: $theme__color__white;
-            background-color: $theme__color__secondary;
+        &:hover, &:focus, &:focus-within {
+            background-color: $theme__color__primary--lighter;
+        }
 
-            a {
-                color: $theme__color__primary--light;
-            }
+        &:focus {
+            outline: 2px solid $theme__color__grey--dark;
+            outline-offset: 2px;
         }
     }
 }

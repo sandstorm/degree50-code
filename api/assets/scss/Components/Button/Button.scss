@@ -48,7 +48,7 @@
 
     color: $theme__color__primary;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
         color: $theme__color__primary--dark;
     }
 
@@ -63,7 +63,7 @@
     background-color: $theme__color__primary;
     border-color: $theme__color__primary;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
         color: $theme__color__white;
         background-color: $theme__color__primary--dark;
         border-color: $theme__color__primary--dark;
@@ -75,7 +75,7 @@
     background-color: $theme__color__white;
     border-color: $theme__color__primary;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
         color: $theme__color__white;
         background-color: $theme__color__primary--dark;
         border-color: $theme__color__primary--dark;
@@ -87,7 +87,7 @@
     background-color: $theme__color__secondary;
     border-color: $theme__color__secondary;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
         color: $theme__color__white;
         background-color: $theme__color__secondary--dark;
         border-color: $theme__color__secondary--dark;
@@ -99,7 +99,7 @@
     background-color: $theme__color__grey;
     border-color: $theme__color__grey;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
         color: $theme__color__white;
         background-color: $theme__color__grey--dark;
         border-color: $theme__color__grey--dark;
@@ -111,7 +111,7 @@
     background-color: $theme__color__red;
     border-color: $theme__color__red;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
         color: $theme__color__white;
         background-color: $theme__color__red--dark;
         border-color: $theme__color__red--dark;
@@ -123,7 +123,7 @@
     background-color: $theme__color__white;
     border-color: $theme__color__red;
 
-    &:hover, &:active {
+    &:hover, &:active, &:focus {
         color: $theme__color__white;
         background-color: $theme__color__red;
         border-color: $theme__color__red;
