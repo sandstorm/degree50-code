@@ -1,4 +1,4 @@
-import React, {FC, ReactNode} from 'react'
+import React, { FC, ReactNode } from 'react'
 import CloseButton from './OverlayContainer/CloseButton'
 
 type Props = {
@@ -30,10 +30,7 @@ const Overlay: FC<Props> = (props) => {
       onKeyDown={handleKeyDown}
       aria-labelledby="overlay-title"
     >
-      <div
-        className="video-editor__overlay__backdrop"
-        onClick={handleClose}
-      />
+      <div className="video-editor__overlay__backdrop" onClick={handleClose} />
       <div
         className={`video-editor__overlay__wrapper ${
           props.fullWidth ? 'video-editor__overlay__wrapper--fullWidth' : ''

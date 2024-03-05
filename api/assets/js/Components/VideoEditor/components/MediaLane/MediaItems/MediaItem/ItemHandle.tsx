@@ -21,7 +21,7 @@ const ItemHandle = (props: Props) => {
       onTouchStart={onMouseDown}
       onClick={onClick}
     >
-      <i className={"fa fa-chevron-" + props.side}></i>
+      <i className={'fa fa-chevron-' + props.side}></i>
     </div>
   )
 }
