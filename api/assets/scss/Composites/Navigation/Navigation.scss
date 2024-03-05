@@ -100,6 +100,10 @@
             span {
                 outline: 2px solid $theme__color__grey--dark;
                 outline-offset: 2px;
+
+                &:focus:not(:focus-visible) {
+                    outline: none;
+                }
             }
         }
     }

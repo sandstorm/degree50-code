@@ -40,11 +40,7 @@ export const useItemInteraction = <T>(
   const [lastDiffX, setLastDiffX] = useState<number>(0)
 
   const onItemMouseDown = useCallback(
-    (
-      event, // TODO fix type
-      item: MediaItem<T>,
-      side: Handle
-    ) => {
+    (event, item: MediaItem<T>, side: Handle) => {
       const pageX =
         event.type === 'touchstart' ? event.touches[0].pageX : event.pageX
       setIsDraging(true)

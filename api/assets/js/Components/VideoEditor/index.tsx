@@ -18,7 +18,6 @@ const VideoEditor: FC<Props> = (props) => {
   const [showMediaLane, toggleShowMediaLane] = useState(false)
   const handleMediaLaneToggle = () => toggleShowMediaLane(!showMediaLane)
 
-  // todo toggle medial lane from toolbar
   return (
     <div className="video-editor" data-test-id="videoEditor">
       <ConnectedVideoJSPlayer

@@ -17,23 +17,8 @@
         width: 100%;
     }
 
-    &:hover {
-        color: $theme__color__white;
-        background-color: $theme__color__primary--dark;
-    }
-
-    &:focus-within,
-    &:focus {
-        color: $theme__color__white;
-        background-color: $theme__color__secondary--dark;
-    }
-
-    &:active {
-        color: $theme__color__white;
-        background-color: $theme__color__grey--dark;
-    }
-
-    &--active {
+    &:hover, &:active, &--active,
+    &:focus, &:focus-within {
         color: $theme__color__white;
         background-color: $theme__color__primary;
     }

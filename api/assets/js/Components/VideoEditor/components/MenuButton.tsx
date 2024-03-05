@@ -63,6 +63,13 @@ const MenuButton: FC<Props> = ({
     }
   }, [isOpen, close, open, pauseVideo, setPauseVideo])
 
+  /**
+   * WHY stopPropagation and preventDefault:
+   *   Touch fires an additional click after a small delay.
+   *   To prevent that from happening we immediately prevent the event from bubbling.
+   *   This is probably due to browser implementation of secondary touch (long touch)
+   *   where after the timeout for long-touch a click is triggered.
+   */
   const handleToggleMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
     event.stopPropagation()
