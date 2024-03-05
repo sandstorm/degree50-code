@@ -109,7 +109,7 @@ export const MediaItem = ({
   }, [itemRef, item])
 
   // WHY: Clamp width of lane item drag handle between min and max value
-  const laneItemHandleWidth = clamp(renderConfig.gridGap, 8, 12)
+  const laneItemHandleWidth = clamp(renderConfig.gridGap, 10, 14)
 
   const modalTitle = (() => {
     switch (item.originalData.type) {

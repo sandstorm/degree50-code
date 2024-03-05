@@ -20,7 +20,9 @@ const ItemHandle = (props: Props) => {
       onMouseDown={onMouseDown}
       onTouchStart={onMouseDown}
       onClick={onClick}
-    />
+    >
+      <i className={"fa fa-chevron-" + props.side}></i>
+    </div>
   )
 }
 

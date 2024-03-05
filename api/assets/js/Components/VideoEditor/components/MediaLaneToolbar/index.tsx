@@ -9,6 +9,7 @@ import {
 } from 'Components/VideoEditor/VideoEditorSlice'
 import { MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLaneRendering'
 import MediaLaneToolbarItem from './MediaLaneToolbarItem'
+import {secondsToTimeString} from "Components/VideoEditor/utils/time";
 
 type OwnProps = {
   updateZoom: (value: number) => void
@@ -45,13 +46,11 @@ const Toolbar = ({
 
   const onClick = (direction: string) => {
     if (direction === 'right') {
-      handleTimeLineAction(
-        renderConfig.timelineStartTime + renderConfig.duration
-      )
+      const newTime = renderConfig.timelineStartTime + renderConfig.duration
+      handleTimeLineAction(newTime)
     } else {
-      handleTimeLineAction(
-        renderConfig.timelineStartTime - renderConfig.duration
-      )
+      const newTime = renderConfig.timelineStartTime - renderConfig.duration
+      handleTimeLineAction(newTime)
     }
   }
 
@@ -68,6 +67,9 @@ const Toolbar = ({
       style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}
     >
       <div className="media-lane-toolbar__item-group">
+        <MediaLaneToolbarItem>
+          {secondsToTimeString(renderConfig.timelineStartTime)} - {secondsToTimeString(renderConfig.timelineStartTime + renderConfig.duration)} / {secondsToTimeString(videoDuration)}
+        </MediaLaneToolbarItem>
         <MediaLaneToolbarItem>
           <label htmlFor="timeline-zoom-handler">
             <Translate value="zoom" />

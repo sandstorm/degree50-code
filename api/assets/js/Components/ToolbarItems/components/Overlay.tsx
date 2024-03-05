@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react'
+import React, {FC, ReactNode} from 'react'
 import CloseButton from './OverlayContainer/CloseButton'
 
 type Props = {
@@ -18,6 +18,12 @@ const Overlay: FC<Props> = (props) => {
     }
   }
 
+  const handleClose = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    event.preventDefault()
+    props.closeCallback()
+  }
+
   return (
     <div
       className="video-editor__overlay"
@@ -26,7 +32,7 @@ const Overlay: FC<Props> = (props) => {
     >
       <div
         className="video-editor__overlay__backdrop"
-        onClick={props.closeCallback}
+        onClick={handleClose}
       />
       <div
         className={`video-editor__overlay__wrapper ${

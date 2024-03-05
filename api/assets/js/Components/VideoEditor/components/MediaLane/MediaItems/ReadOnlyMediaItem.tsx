@@ -4,7 +4,6 @@ import { RenderConfig } from '../MediaTrack'
 import { useModalHook } from 'Components/Modal/useModalHook'
 import Button from 'Components/Button/Button'
 import MediaItemLabel from './MediaItem/MediaItemLabel'
-import { clamp } from './helpers'
 
 type OwnProps = {
   item: MediaItemClass<MediaItemType>
@@ -40,9 +39,6 @@ const MediaItem = ({
 
   const width = (item.endTime - item.startTime) * renderConfig.gridGap * 10
 
-  // WHY: Clamp width of lane item drag handle between min and max value
-  const laneItemHandleWidth = clamp(renderConfig.gridGap, 8, 12)
-
   return (
     <div
       ref={itemRef}
@@ -72,28 +68,12 @@ const MediaItem = ({
         </Button>
       ) : null}
 
-      <div
-        className="video-editor__media-item__handle"
-        style={{
-          left: 0,
-          width: laneItemHandleWidth,
-        }}
-      />
-
       <div className="video-editor__media-items__text">
         <MediaItemLabel
           item={item}
           showTextInMediaItems={showTextInMediaItems}
         />
       </div>
-
-      <div
-        className="video-editor__media-item__handle"
-        style={{
-          right: 0,
-          width: laneItemHandleWidth,
-        }}
-      />
 
       <RenderMemoModal title={'Memo'}>{item.memo}</RenderMemoModal>
     </div>

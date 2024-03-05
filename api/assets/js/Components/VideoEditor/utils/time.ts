@@ -86,6 +86,14 @@ export type TimeValues = {
   ms: number
 }
 
+export const secondsToTimeString = (timeInSeconds: number): string => {
+  return [
+    HoursStringFormatter.format(getHoursFromTimeSeconds(timeInSeconds)),
+    MinutesStringFormatter.format(getMinutesFromTimeSeconds(timeInSeconds)),
+    SecondsStringFormatter.format(getSecondsFromTimeSeconds(timeInSeconds)),
+  ].join(':')
+}
+
 /**
  * Get TimeString in format 'hh:mm:ss.ms' from hours, minutes and seconds values.
  */
