@@ -1,27 +1,8 @@
 .video-editor__overlay {
-    display: grid;
-    place-items: center;
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
+    @extend .modal;
 
     z-index: $theme__z-index--overlay + 1;
 }
-
-.video-editor__overlay__backdrop {
-    position: fixed;
-    background: rgba(0, 0, 0, 0.42);
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
-
-    z-index: $theme__z-index--overlay - 1;
-}
-
 
 .video-editor__overlay__wrapper {
     @extend .modal__inner;
@@ -29,8 +10,6 @@
     min-width: 500px;
     max-width: 900px;
     max-height: 80%;
-
-    z-index: $theme__z-index--overlay;
 
     &--fullWidth {
         width: 95%;
