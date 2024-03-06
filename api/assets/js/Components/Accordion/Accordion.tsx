@@ -21,7 +21,6 @@ const Accordion = (props: Props) => {
 
   const labelId = useMemo(() => shortid(), [])
   const regionId = useMemo(() => shortid(), [])
-  const toggleId = useMemo(() => shortid(), [])
 
   return (
     <div className={className}>
@@ -31,7 +30,7 @@ const Accordion = (props: Props) => {
       >
         <span id={labelId}>{props.title}</span>
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-outline-primary"
           title={isOpen ? props.buttonTitleClose : props.buttonTitleOpen}
           onPress={handleClick}
           aria-expanded={isOpen}

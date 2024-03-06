@@ -194,49 +194,51 @@ const VideoCodeListItem = (props: Props) => {
       <End end={item.end} />
       {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
 
-      {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
-        <CopyToClipboard
-          text={asRichtext}
-          options={{
-            format: 'text/plain',
-          }}
-        >
-          <Button
-            className="btn btn-primary"
-            title="In Zwischenablage kopieren"
+      <div className="button-group">
+        {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
+          <CopyToClipboard
+            text={asRichtext}
+            options={{
+              format: 'text/plain',
+            }}
           >
-            In Zwischenablage kopieren
+            <Button
+              className="button button--type-outline-primary button--size-small"
+              title="In Zwischenablage kopieren"
+            >
+              In Zwischenablage kopieren
+            </Button>
+          </CopyToClipboard>
+        ) : (
+          <Button
+            className="button button--type-outline-primary button--size-small"
+            onPress={handleJumpToPosition}
+            title="Springe zu Position im Video"
+          >
+            Springe zu Position
           </Button>
-        </CopyToClipboard>
-      ) : (
-        <Button
-          className="btn btn-primary"
-          onPress={handleJumpToPosition}
-          title="Springe zu Position im Video"
-        >
-          Springe zu Position
-        </Button>
-      )}
+        )}
 
-      {props.isFromCurrentSolution && (
-        <>
-          <Button
-            className="btn btn-secondary"
-            onPress={handleRemove}
-            title="Codierung Löschen"
-          >
-            Löschen
-          </Button>
+        {props.isFromCurrentSolution && (
+          <>
+            <Button
+              className="button button--type-danger button--size-small"
+              onPress={handleRemove}
+              title="Codierung Löschen"
+            >
+              Löschen
+            </Button>
 
-          <Button
-            className="btn btn-primary"
-            onPress={handleEdit}
-            title="Codierung Bearbeiten"
-          >
-            Bearbeiten
-          </Button>
-        </>
-      )}
+            <Button
+              className="button button--type-primary button--size-small"
+              onPress={handleEdit}
+              title="Codierung Bearbeiten"
+            >
+              Bearbeiten
+            </Button>
+          </>
+        )}
+      </div>
     </li>
   )
 }

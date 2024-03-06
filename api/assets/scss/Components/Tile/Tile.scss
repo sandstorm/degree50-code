@@ -3,10 +3,8 @@ $tileHeight--small: 150px;
 
 .tile {
     flex-grow: 0;
-
+    padding: 0;
     position: relative;
-    margin-right: 20px;
-    margin-bottom: 20px;
 
     input[type='checkbox'] {
         display: none;
@@ -18,29 +16,21 @@ $tileHeight--small: 150px;
 
             transform: scaleY(1) !important;
         }
-
-        .tile__content {
-            color: $theme__color__secondary--dark;
-            border-color: $theme__color__secondary--dark;
-        }
     }
 
     &:hover {
         text-decoration: none;
     }
 
-    &:hover .tile__content {
-        border-color: $theme__color__primary--dark;
-
-        text-decoration: none;
+    &:focus .tile__content,
+    &:focus-within .tile__content {
+        outline: 2px solid $theme__color__grey--dark;
+        outline-offset: 2px;
     }
 
-    &:focus .tile__content {
-        color: $theme__color__secondary--dark;
-        border-color: $theme__color__secondary--dark;
-    }
-
-    &--active {
+    &:hover,
+    &:active, &--active,
+    &:focus, &:focus-within {
         .tile__content {
             background-color: $theme__color__primary;
             border-color: $theme__color__primary;
@@ -48,14 +38,13 @@ $tileHeight--small: 150px;
             color: $theme__color__white;
         }
 
+        .tile__action-icon {
+            color: $theme__color__white;
+        }
+
         .tile__extension {
             border-color: $theme__color__primary;
         }
-    }
-
-    &:active .tile__content {
-        color: $theme__color__grey--dark !important;
-        border-color: $theme__color__grey--dark !important;
     }
 
     &--disabled {
@@ -179,6 +168,54 @@ $tileHeight--small: 150px;
     font-size: 4em;
 }
 
+.tile__image {
+    height: $tileHeight * 0.6;
+    width: 100%;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+a.tile__favor-button,
+button.tile__favor-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 40px;
+    height: 40px;
+
+    color: $theme__color__gold;
+
+    background: $theme__color__grey;
+    border: none;
+    border-radius: 50%;
+
+    z-index: 1000;
+
+    i {
+        font-size: 1.2rem;
+
+        @include transition(transform .5s);
+        transform-style: preserve-3d;
+    }
+
+    &:focus {
+        outline: 2px solid $theme__color__grey--dark;
+        outline-offset: 2px;
+    }
+
+    &:hover, &:focus, &:active {
+        color: $theme__color__gold;
+
+        i {
+            // rotate icon on toggle
+            transform: rotateY(180deg);
+        }
+    }
+}
+
 .tile__actions {
     position: absolute;
     height: auto;
@@ -209,13 +246,13 @@ $tileHeight--small: 150px;
         text-align: left;
         white-space: nowrap;
         font-size: 0.9rem;
-        border: none;
-        color: $theme__color__primary;
-        background-color: $theme__color__white;
+    }
 
-        &:hover {
-            color: $theme__color__secondary;
-        }
+    button {
+        background-color: $theme__color__white;
+        border: none;
+
+        color: $theme__color__primary;
     }
 }
 

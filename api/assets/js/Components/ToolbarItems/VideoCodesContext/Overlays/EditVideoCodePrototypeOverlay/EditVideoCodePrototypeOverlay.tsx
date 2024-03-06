@@ -89,7 +89,7 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
         <button
           title={'Verwerfen'}
           aria-label={'Verwerfen'}
-          className={'btn btn-grey btn-sm'}
+          className={'button button--type-grey button--size-small'}
           onClick={close}
         >
           <i className={'fas fa-times'} />
@@ -97,7 +97,7 @@ const EditVideoCodePrototypeOverlay: FC<Props> = (props) => {
         <button
           title={'Speichern'}
           aria-label={'Speichern'}
-          className={'btn btn-primary btn-sm'}
+          className={'button button--type-primary button--size-small'}
           onClick={submit}
           disabled={transientVideoCodePrototype.name === ''}
         >

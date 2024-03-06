@@ -7,7 +7,6 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Material\Material;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Material\MaterialRepository;
-use Behat\Behat\Tester\Exception\PendingException;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 

@@ -50,14 +50,14 @@ const VideoPlayerWrapper: React.FC<Props> = (props) => {
     return (
       <div className={'video-player-wrapper__actions'}>
         <button
-          className={'btn btn-primary'}
+          className={'button button--type-primary'}
           disabled={!hasPreviousVideo}
           onClick={handlePrevious}
         >
           Vorheriges Video
         </button>
         <button
-          className={'btn btn-primary'}
+          className={'button button--type-primary'}
           disabled={!hasNextVideo}
           onClick={handleNext}
         >

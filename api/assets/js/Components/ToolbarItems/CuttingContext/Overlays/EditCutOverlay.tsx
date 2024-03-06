@@ -78,8 +78,31 @@ const EditCutOverlay: FC<Props> = (props) => {
     handleEndTimeChange(secondToTime(props.currentTime))
   }
 
+  const footerContent = (
+    <>
+      <Button
+        className="button button--type-outline-primary"
+        onPress={close}
+        title="Änderungen Verwerfen"
+      >
+        Verwerfen
+      </Button>
+      <Button
+        className="button button--type-primary"
+        onPress={handleSave}
+        title="Änderungen Speichern"
+      >
+        Speichern
+      </Button>
+    </>
+  )
+
   return (
-    <Overlay closeCallback={close} title="Schnitt bearbeiten">
+    <Overlay
+      closeCallback={close}
+      title="Schnitt bearbeiten"
+      footerContent={footerContent}
+    >
       <div className="time-input-wrapper">
         <TimeInput
           label="Start"
@@ -92,12 +115,13 @@ const EditCutOverlay: FC<Props> = (props) => {
           onChange={handleStartTimeChange}
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-link"
           onPress={handleUseCurrentTimeForStartValue}
           title={'Aktuelle Zeit als Startzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
         >
-          <i className="fas fa-stopwatch" />
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Startzeit
+          übernehmen
         </Button>
       </div>
       <div className="time-input-wrapper">
@@ -112,12 +136,13 @@ const EditCutOverlay: FC<Props> = (props) => {
           onChange={handleEndTimeChange}
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-link"
           onPress={handleUseCurrentTimeForEndValue}
           title={'Aktuelle Zeit als Endzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
         >
-          <i className="fas fa-stopwatch" />
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Endzeit
+          übernehmen
         </Button>
       </div>
       <hr />
@@ -126,21 +151,6 @@ const EditCutOverlay: FC<Props> = (props) => {
       <br />
       <label htmlFor="memo">Memo</label>
       <TextField id="memo" text={transientCut.memo} updateText={updateMemo} />
-      <hr />
-      <Button
-        className="btn btn-secondary"
-        onPress={close}
-        title="Änderungen Verwerfen"
-      >
-        Verwerfen
-      </Button>
-      <Button
-        className="btn btn-primary"
-        onPress={handleSave}
-        title="Änderungen Speichern"
-      >
-        Speichern
-      </Button>
     </Overlay>
   )
 }

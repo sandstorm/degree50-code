@@ -14,7 +14,7 @@
 
             <br/>
             <a
-                class="btn btn-lg btn-primary btn-block"
+                class="button button--size-large button--type-primary button--block"
                 role="link"
                 href="{{ path('saml_login') }}"
                 aria-label="Klicken, um dich mit deinem Uni-Account (SSO) einzuloggen."
@@ -54,7 +54,7 @@
                    value="{{ csrf_token('authenticate') }}"
             >
             <button
-                class="btn btn-lg btn-outline-primary btn-block"
+                class="button button--size-large button--type-outline-primary button--block"
                 type="submit"
                 role="button"
             >
@@ -64,9 +64,9 @@
     </div>
     <footer class="footer footer--center">
         {{ include('Version.html.twig') }}
-        <a class="btn btn-link" href="{{ path('imprint') }}" role="link">Impressum</a>
-        <a class="btn btn-link" href="{{ path('data-privacy') }}" role="link">Datenschutz</a>
-        <a class="btn btn-link" href="{{ path('terms-of-use') }}" role="link">Nutzungsbedingungen</a>
+        <a class="button button--type-link" href="{{ path('imprint') }}" role="link">Impressum</a>
+        <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">Datenschutz</a>
+        <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">Nutzungsbedingungen</a>
     </footer>
 
     {# show notification when browser is out of date (https://browser-update.org/) #}

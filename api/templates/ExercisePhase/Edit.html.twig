@@ -102,7 +102,7 @@
                         placeholder="Name des Video-Codes"
                         aria-describedby="code-name-label"
                     />
-                    <button id="add-new-video-code" type="button" class="btn btn-primary"><i class="fas fa-plus"></i>
+                    <button id="add-new-video-code" type="button" class="button button--type-primary"><i class="fas fa-plus"></i>
                         Video-Code hinzufügen
                     </button>
                 </div>
@@ -137,7 +137,7 @@
         </div>
     </div>
     <footer class="footer">
-        <a class="btn btn-outline-primary footer__left"
+        <a class="button button--type-outline-primary footer__left"
            href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
         <div class="footer__right">
             {{ form_row(form.save) }}

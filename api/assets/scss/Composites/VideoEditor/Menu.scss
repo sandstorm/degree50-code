@@ -1,5 +1,13 @@
 .video-editor__menu {
     position: relative;
+
+    &--right {
+        margin-left: $theme__spacing--huge;
+
+        @include mq(xmedium) {
+            margin-left: auto;
+        }
+    }
 }
 
 .video-editor__menu__count-badge {

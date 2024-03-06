@@ -17,7 +17,7 @@ export function PresenceToolbarItem({
 
   return (
     <button
-      className={'toolbar-item btn btn-primary'}
+      className={'toolbar-item button button--type-primary'}
       title={component.label}
       aria-label={component.label}
       onClick={() => toggleComponent(component)}

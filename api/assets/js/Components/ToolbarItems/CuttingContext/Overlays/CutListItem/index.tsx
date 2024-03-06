@@ -126,52 +126,54 @@ const CutListItem: FC<Props> = (props) => {
       <br />
       {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
 
-      {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
-        <CopyToClipboard
-          text={asRichtext}
-          options={{
-            format: 'text/plain',
-          }}
-        >
-          <Button
-            className="btn btn-primary"
-            title="In Zwischenablage kopieren"
+      <div className="button-group">
+        {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
+          <CopyToClipboard
+            text={asRichtext}
+            options={{
+              format: 'text/plain',
+            }}
           >
-            In Zwischenablage kopieren
+            <Button
+              className="button button--type-outline-primary button--size-small"
+              title="In Zwischenablage kopieren"
+            >
+              In Zwischenablage kopieren
+            </Button>
+          </CopyToClipboard>
+        ) : (
+          <Button
+            className="button button--type-outline-primary button--size-small"
+            onPress={handleJumpToPosition}
+            title="Springe zu Position im Video"
+          >
+            Springe zu Position
           </Button>
-        </CopyToClipboard>
-      ) : (
-        <Button
-          className="btn btn-primary"
-          onPress={handleJumpToPosition}
-          title="Springe zu Position im Video"
-        >
-          Springe zu Position
-        </Button>
-      )}
+        )}
 
-      {props.showPositionControls && (
-        <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />
-      )}
+        {props.showPositionControls && (
+          <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />
+        )}
 
-      {props.canEdit && (
-        <>
-          <Button
-            className="btn btn-secondary"
-            onPress={handleRemove}
-            title="Schnitt Löschen"
-          >
-            Löschen
-          </Button>
-          <Button
-            className="btn btn-primary"
-            onPress={handleEdit}
-            title="Schnitt Bearbeiten"
-          >
-            Bearbeiten
-          </Button>
-        </>
-      )}
+        {props.canEdit && (
+          <>
+            <Button
+              className="button button--type-danger button--size-small"
+              onPress={handleRemove}
+              title="Schnitt Löschen"
+            >
+              Löschen
+            </Button>
+            <Button
+              className="button button--type-primary button--size-small"
+              onPress={handleEdit}
+              title="Schnitt Bearbeiten"
+            >
+              Bearbeiten
+            </Button>
+          </>
+        )}
+      </div>
     </li>
   )
 }

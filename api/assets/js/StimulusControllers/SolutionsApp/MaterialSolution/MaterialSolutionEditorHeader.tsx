@@ -15,7 +15,7 @@ const MaterialSolutionEditorHeader = (props: Props) => {
   return (
     <div className="material-solution__solution-header">
       <Button
-        className="btn btn-primary"
+        className="button button--type-primary"
         onPress={props.onPrev}
         isDisabled={!props.canSelectPrev}
         title={props.prevLabel}
@@ -24,7 +24,7 @@ const MaterialSolutionEditorHeader = (props: Props) => {
       </Button>
       {props.children}
       <Button
-        className="btn btn-primary"
+        className="button button--type-primary"
         onPress={props.onNext}
         isDisabled={!props.canSelectNext}
         title={props.nextLabel}

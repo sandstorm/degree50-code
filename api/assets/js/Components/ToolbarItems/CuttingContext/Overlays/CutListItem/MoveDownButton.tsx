@@ -9,7 +9,7 @@ const MoveDownButton = ({ moveDown }: Props) => {
   return (
     <Button
       title="Schnitt nach hinten schieben"
-      className="btn btn-primary btn-sm"
+      className="button button--type-primary button--size-small"
       onPress={moveDown}
     >
       <i className="fas fa-caret-down" />

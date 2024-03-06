@@ -1,4 +1,4 @@
-import { FC, memo } from 'react'
+import React, { FC, memo, useState } from 'react'
 import ConnectedVideoJSPlayer from 'Components/VideoPlayer/ConnectedVideoJSPlayer'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import MediaLaneContainer from './components/MediaLaneContainer'
@@ -15,6 +15,9 @@ const VideoEditor: FC<Props> = (props) => {
 
   useShortCuts()
 
+  const [showMediaLane, toggleShowMediaLane] = useState(false)
+  const handleMediaLaneToggle = () => toggleShowMediaLane(!showMediaLane)
+
   return (
     <div className="video-editor" data-test-id="videoEditor">
       <ConnectedVideoJSPlayer
@@ -27,9 +30,27 @@ const VideoEditor: FC<Props> = (props) => {
         }}
         videoMap={firstVideo}
       />
-      <Toolbar />
+      <Toolbar>
+        <div className="video-editor__menu video-editor__menu--right">
+          <button
+            className="button button--type-primary video-editor__toolbar__button video-editor__toolbar__button--with-text"
+            title="Zeitleiste anzeigen/verbergen"
+            aria-label={
+              showMediaLane ? 'Zeitleiste verbergen' : 'Zeitleiste anzeigen'
+            }
+            onClick={handleMediaLaneToggle}
+          >
+            <i
+              className={
+                showMediaLane ? 'fas fa-chevron-down' : 'fas fa-chevron-up'
+              }
+            />
+            {showMediaLane ? 'Zeitleiste verbergen' : 'Zeitleiste anzeigen'}
+          </button>
+        </div>
+      </Toolbar>
       <OverlayContainer />
-      <MediaLaneContainer />
+      <MediaLaneContainer showMediaLane={showMediaLane} />
     </div>
   )
 }

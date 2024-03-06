@@ -82,8 +82,31 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
     handleEndTimeChange(secondToTime(props.currentTime))
   }
 
+  const footerContent = (
+    <>
+      <Button
+        className="button button--type-outline-primary"
+        onPress={close}
+        title="Änderungen Verwerfen"
+      >
+        Verwerfen
+      </Button>
+      <Button
+        className="button button--type-primary"
+        onPress={handleSave}
+        title="Änderungen Speichern"
+      >
+        Speichern
+      </Button>
+    </>
+  )
+
   return (
-    <Overlay closeCallback={close} title="Codierung bearbeiten">
+    <Overlay
+      closeCallback={close}
+      title="Codierung bearbeiten"
+      footerContent={footerContent}
+    >
       <div className="time-input-wrapper">
         <TimeInput
           label="Start"
@@ -96,7 +119,7 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
           onChange={handleStartTimeChange}
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-outline-primary"
           onPress={handleUseCurrentTimeForStartValue}
           title={'Aktuelle Zeit als Startzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
@@ -116,7 +139,7 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
           onChange={handleEndTimeChange}
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-outline-primary"
           onPress={handleUseCurrentTimeForEndValue}
           title={'Aktuelle Zeit als Endzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
@@ -138,22 +161,6 @@ const EditVideoCodeOverlay: FC<Props> = (props) => {
         text={transientVideoCode.memo}
         updateText={handleMemoChange}
       />
-      <hr />
-
-      <Button
-        className="btn btn-secondary"
-        onPress={close}
-        title="Änderungen Verwerfen"
-      >
-        Verwerfen
-      </Button>
-      <Button
-        className="btn btn-primary"
-        onPress={handleSave}
-        title="Änderungen Speichern"
-      >
-        Speichern
-      </Button>
     </Overlay>
   )
 }

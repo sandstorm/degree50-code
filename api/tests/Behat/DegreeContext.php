@@ -910,7 +910,7 @@ final class DegreeContext implements Context
         // navigate to video page in Mediathek
         $this->iClickOnFirstElementWithTestId('header-menu-mediathek');
         // click "zu Favoriten hinzufügen" button
-        $this->iClickOnFirstElementWithTestId('video-tile__favor-button-video3');
+        $this->iClickOnFirstElementWithTestId('tile__favor-button-video3');
     }
 
     /**
@@ -949,7 +949,7 @@ final class DegreeContext implements Context
         // navigate to video page in Mediathek
         $this->iClickOnFirstElementWithTestId('header-menu-mediathek');
         // Remove from favorites
-        $this->iClickOnFirstElementWithTestId('video-tile__favor-button-video1');
+        $this->iClickOnFirstElementWithTestId('tile__favor-button-video1');
     }
 
     /**
@@ -1039,7 +1039,7 @@ final class DegreeContext implements Context
      */
     public function myMaterialIsShown()
     {
-        /** @var UserMaterial $result */
+        /** @var Material $result */
         $result = array_map(fn ($material) => $material->getId(), $this->queryResult)[0];
         $expected = 'material1';
 

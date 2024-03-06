@@ -35,7 +35,7 @@ const Dropdown = (props: DropdownProps) => {
       <button
         {...buttonProps}
         ref={buttonRef}
-        className={'btn btn-link'}
+        className={'button button--type-link'}
         aria-haspopup="true"
         aria-expanded={state.isOpen}
         aria-label={ariaLabel}

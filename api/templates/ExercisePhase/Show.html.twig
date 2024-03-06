@@ -13,9 +13,9 @@
             </div>
         </div>
         <footer class="footer">
-            <a class="btn btn-outline-primary footer_left" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Zurück</a>
+            <a class="button button--type-outline-primary footer_left" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">Zurück</a>
             <span class="footer__center">{{ exercise.course.name }} / {{ exercise.name }} / Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
-            <a class="btn btn-primary footer_right" href="{{ path('exercise-overview__exercise-phase-team--finish-reflexion', {id: exercisePhaseTeam.id}) }}">Phase abschließen</a>
+            <a class="button button--type-primary footer_right" href="{{ path('exercise-overview__exercise-phase-team--finish-reflexion', {id: exercisePhaseTeam.id}) }}">Phase abschließen</a>
         </footer>
 
     {% else %}
@@ -27,7 +27,7 @@
         </div>
 
         <footer class="footer">
-            <a class="btn btn-outline-primary footer__left" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">
+            <a class="button button--type-outline-primary footer__left button--size-small" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">
                 {% if is_granted('updateSolution', exercisePhaseTeam) %}
                     Speichern und Zurück
                 {% else %}
@@ -38,7 +38,7 @@
             {% if is_granted('updateSolution', exercisePhaseTeam) %}
                 {% if exercisePhase.type.value == 'material' %}
                     {% if exercisePhaseTeam.status.value == 'BEENDET' or exercisePhaseTeam.status.value == 'IN_REVIEW' %}
-                        <button id="finish-phase" class="btn btn-primary footer__right" disabled="disabled">Phase abschließen</button>
+                        <button id="finish-phase" class="button button--type-primary button--size-small footer__right" disabled="disabled">Phase abschließen</button>
                     {% else %}
                         {% if exercisePhase.reviewRequired %}
                             <script type="application/javascript">
@@ -59,10 +59,10 @@
                                 }
                             </script>
                         {% endif %}
-                        <button id="finish-phase" class="btn btn-primary footer__right" onclick="finishReview()">Phase abschließen</button>
+                        <button id="finish-phase" class="button button--type-primary button--size-small footer__right" onclick="finishReview()">Phase abschließen</button>
                     {% endif %}
                 {% else %}
-                    <a class="btn btn-primary footer__right" href="{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}">Phase abschließen</a>
+                    <a class="button button--type-primary button--size-small footer__right" href="{{ path('exercise-overview__exercise-phase-team--share-result', {id: exercisePhaseTeam.id}) }}">Phase abschließen</a>
                 {% endif %}
             {% endif %}
         </footer>

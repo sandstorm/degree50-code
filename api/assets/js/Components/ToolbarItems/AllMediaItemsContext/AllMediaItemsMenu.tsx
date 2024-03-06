@@ -32,10 +32,10 @@ const AllMediaItemsMenu = (props: Props) => {
   }
 
   return (
-    <div className="vide-editor__menu">
+    <div className="video-editor__menu">
       <Button
         title="Zeige Liste aller Elemente"
-        className="btn btn-grey btn-sm video-editor__toolbar__button"
+        className="button button--type-primary video-editor__toolbar__button"
         onPress={handleClick}
       >
         <i className="fas fa-list" />

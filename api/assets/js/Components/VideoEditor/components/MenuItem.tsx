@@ -9,7 +9,7 @@ type Props = {
 
 const MenuItem = (props: Props) => {
   const className = [
-    'btn btn-grey menu-item',
+    'button button--type-grey menu-item',
     ...(props.disabled ? ['disabled'] : []),
   ].join(' ')
 

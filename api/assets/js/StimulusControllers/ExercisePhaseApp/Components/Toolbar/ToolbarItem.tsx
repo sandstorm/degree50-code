@@ -12,7 +12,7 @@ export function ToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
     <Button
       onPress={() => toggleComponent(component)}
       aria-label={component.label}
-      className={'toolbar-item btn btn-primary'}
+      className={'toolbar-item button button--type-primary'}
     >
       <i className={component.icon} />
     </Button>

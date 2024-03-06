@@ -9,6 +9,7 @@ import {
 } from 'Components/VideoEditor/VideoEditorSlice'
 import { MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLaneRendering'
 import MediaLaneToolbarItem from './MediaLaneToolbarItem'
+import { secondsToTimeString } from 'Components/VideoEditor/utils/time'
 
 type OwnProps = {
   updateZoom: (value: number) => void
@@ -45,13 +46,11 @@ const Toolbar = ({
 
   const onClick = (direction: string) => {
     if (direction === 'right') {
-      handleTimeLineAction(
-        renderConfig.timelineStartTime + renderConfig.duration
-      )
+      const newTime = renderConfig.timelineStartTime + renderConfig.duration
+      handleTimeLineAction(newTime)
     } else {
-      handleTimeLineAction(
-        renderConfig.timelineStartTime - renderConfig.duration
-      )
+      const newTime = renderConfig.timelineStartTime - renderConfig.duration
+      handleTimeLineAction(newTime)
     }
   }
 
@@ -64,10 +63,17 @@ const Toolbar = ({
 
   return (
     <div
-      className="video-editor-toolbar"
+      className="media-lane-toolbar"
       style={{ height: MEDIA_LANE_TOOLBAR_HEIGHT }}
     >
-      <div className="video-editor-toolbar__item-group">
+      <div className="media-lane-toolbar__item-group">
+        <MediaLaneToolbarItem>
+          {secondsToTimeString(renderConfig.timelineStartTime)} -{' '}
+          {secondsToTimeString(
+            renderConfig.timelineStartTime + renderConfig.duration
+          )}{' '}
+          / {secondsToTimeString(videoDuration)}
+        </MediaLaneToolbarItem>
         <MediaLaneToolbarItem>
           <label htmlFor="timeline-zoom-handler">
             <Translate value="zoom" />
@@ -86,7 +92,7 @@ const Toolbar = ({
         <MediaLaneToolbarItem>
           <button
             tabIndex={1}
-            className={'btn btn-primary btn-sm'}
+            className={'button button--type-primary button--size-small'}
             disabled={leftInteractionAreaIsDisabled}
             title={'Timeline nach links verschieben'}
             onClick={() => {
@@ -99,7 +105,7 @@ const Toolbar = ({
         <MediaLaneToolbarItem>
           <button
             tabIndex={1}
-            className={'btn btn-primary btn-sm'}
+            className={'button button--type-primary button--size-small'}
             disabled={rightInteractionAreaIsDisabled}
             title={'Timeline nach rechts verschieben'}
             onClick={() => {
@@ -111,7 +117,7 @@ const Toolbar = ({
         </MediaLaneToolbarItem>
       </div>
       {children && (
-        <div className="video-editor-toolbar__item-group">{children}</div>
+        <div className="media-lane-toolbar__item-group">{children}</div>
       )}
     </div>
   )

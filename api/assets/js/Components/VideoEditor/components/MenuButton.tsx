@@ -47,7 +47,10 @@ const MenuButton: FC<Props> = ({
   const [isOpen, setIsOpen] = useState(false)
 
   const open = useCallback(() => setIsOpen(true), [])
-  const close = useCallback(() => setIsOpen(false), [])
+  const close = useCallback(() => {
+    setIsOpen(false)
+  }, [])
+
   const toggleMenu = useCallback(() => {
     if (pauseVideo) {
       setPauseVideo(true)
@@ -59,6 +62,19 @@ const MenuButton: FC<Props> = ({
       open()
     }
   }, [isOpen, close, open, pauseVideo, setPauseVideo])
+
+  /**
+   * WHY stopPropagation and preventDefault:
+   *   Touch fires an additional click after a small delay.
+   *   To prevent that from happening we immediately prevent the event from bubbling.
+   *   This is probably due to browser implementation of secondary touch (long touch)
+   *   where after the timeout for long-touch a click is triggered.
+   */
+  const handleToggleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault()
+    event.stopPropagation()
+    toggleMenu()
+  }
 
   const handleKeyDown = useCallback(
     (ev: React.KeyboardEvent<HTMLElement>) => {
@@ -74,10 +90,10 @@ const MenuButton: FC<Props> = ({
     [close]
   )
 
-  const classes = `btn btn-grey ${
+  const classes = `button button--type-primary ${
     disabled ? 'disabled' : ``
   } menu-button video-editor__toolbar__button ${
-    small ? 'btn-sm' : ''
+    small ? 'button--size-small' : ''
   } ${className}`
 
   const focusScopeKey = useMemo(() => key ?? generate(), [key])
@@ -94,7 +110,7 @@ const MenuButton: FC<Props> = ({
 
   return (
     <div className="menu-wrapper">
-      <Button className={classes} onPress={toggleMenu} title={ariaLabel}>
+      <Button className={classes} onClick={handleToggleMenu} title={ariaLabel}>
         {icon} {label}
       </Button>
       {isOpen && <div className="menu-backdrop" onClick={close} />}

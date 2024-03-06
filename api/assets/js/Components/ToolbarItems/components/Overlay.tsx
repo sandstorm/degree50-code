@@ -18,16 +18,19 @@ const Overlay: FC<Props> = (props) => {
     }
   }
 
+  const handleClose = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    event.preventDefault()
+    props.closeCallback()
+  }
+
   return (
     <div
       className="video-editor__overlay"
       onKeyDown={handleKeyDown}
       aria-labelledby="overlay-title"
     >
-      <div
-        className="video-editor__overlay__backdrop"
-        onClick={props.closeCallback}
-      />
+      <div className="video-editor__overlay__backdrop" onClick={handleClose} />
       <div
         className={`video-editor__overlay__wrapper ${
           props.fullWidth ? 'video-editor__overlay__wrapper--fullWidth' : ''

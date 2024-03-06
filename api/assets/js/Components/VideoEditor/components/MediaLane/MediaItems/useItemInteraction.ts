@@ -40,15 +40,13 @@ export const useItemInteraction = <T>(
   const [lastDiffX, setLastDiffX] = useState<number>(0)
 
   const onItemMouseDown = useCallback(
-    (
-      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-      item: MediaItem<T>,
-      side: Handle
-    ) => {
+    (event, item: MediaItem<T>, side: Handle) => {
+      const pageX =
+        event.type === 'touchstart' ? event.touches[0].pageX : event.pageX
       setIsDraging(true)
       setLastClickedItem(item)
       setLastClickedItemSide(side)
-      setLastPageX(event.pageX)
+      setLastPageX(pageX)
 
       const currentlyVisibleItems = getVisibleItems(
         mediaItems,
@@ -86,7 +84,9 @@ export const useItemInteraction = <T>(
   const onMouseMove = useCallback(
     (event) => {
       if (isDraging && lastTargetNode) {
-        const lastDiffX = event.pageX - lastPageX
+        const pageX =
+          event.type === 'touchmove' ? event.touches[0].pageX : event.pageX
+        const lastDiffX = pageX - lastPageX
         setLastDiffX(lastDiffX)
 
         if (lastClickedItemSide === 'left') {
@@ -201,11 +201,15 @@ export const useItemInteraction = <T>(
 
   useEffect(() => {
     document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('touchmove', onMouseMove)
     document.addEventListener('mouseup', onMouseUp)
+    document.addEventListener('touchend', onMouseUp)
 
     return () => {
       document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('touchmove', onMouseMove)
       document.removeEventListener('mouseup', onMouseUp)
+      document.removeEventListener('touchend', onMouseUp)
     }
   }, [onMouseMove, onMouseUp])
 

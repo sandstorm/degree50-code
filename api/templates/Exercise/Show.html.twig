@@ -69,30 +69,30 @@
                                 </div>
                                 <div class="tile__extension-actions">
                                     {% if is_granted('join', team) %}
-                                        <a class="btn btn-primary btn-sm"
+                                        <a class="button button--type-primary button--size-small"
                                            href="{{ path('exercise-overview__exercise-phase-team--join', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
                                             beitreten</a>
                                     {% endif %}
                                     {% if is_granted('leave', team) %}
-                                        <a class="btn btn-outline-primary btn-sm"
+                                        <a class="button button--type-outline-primary button--size-small"
                                            href="{{ path('exercise-overview__exercise-phase-team--leave', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
                                             verlassen</a>
                                     {% endif %}
                                     {% if is_granted('delete', team) %}
-                                        <a class="btn btn-danger btn-sm"
+                                        <a class="button button--type-danger button--size-small"
                                            href="{{ path('exercise-overview__exercise-phase-team--delete', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
                                             löschen</a>
                                     {% endif %}
                                     {% if is_granted('show', team) %}
                                         <a
-                                           class="btn btn-primary btn-sm"
+                                           class="button button--type-primary button--size-small"
                                            href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}"
                                            data-test-id="startPhaseButtonGroup"
                                        ><i class="fas fa-play"></i> Phase starten
                                        </a>
                                     {% else %}
                                         {% if is_granted('viewOtherSolutions', exercisePhase) %}
-                                            <a class="btn btn-outline-primary btn-sm"
+                                            <a class="button button--type-outline-primary button--size-small"
                                                href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis
                                                 ansehen</a>
                                         {% endif %}
@@ -107,7 +107,7 @@
     {% else %}
         <div class="text-center">
             {% if teamOfCurrentUser %}
-                <a class="btn btn-lg btn-primary"
+                <a class="button button--size-large button--type-primary"
                    href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': teamOfCurrentUser.id }) }}">
                     <i class="fas fa-play"></i>
                     Mein Ergebnis
@@ -115,7 +115,7 @@
             {% else %}
                 {% if is_granted('createTeam', exercisePhase) %}
                     <a
-                       class="btn btn-lg btn-primary"
+                       class="button button--size-large button--type-primary"
                        href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}"
                        data-test-id="startPhaseButtonSingle"
                    >

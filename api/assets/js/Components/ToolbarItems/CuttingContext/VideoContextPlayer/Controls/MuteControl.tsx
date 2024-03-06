@@ -12,7 +12,7 @@ const MuteControl: FC<Props> = (props) => {
 
   return (
     <Button
-      className="btn btn-grey menu-button btn-sm"
+      className="button button--type-grey menu-button button--size-small"
       title={muteButtonLabel}
       onPress={props.toggleIsMuted}
     >

@@ -1,17 +1,13 @@
-a,
-a.nav-link {
+a, a.nav-link {
     color: $theme__color__primary;
 
-    &:hover {
-        color: $theme__color__primary--dark;
-    }
-
-    &:active {
-        color: $theme__color__grey--dark !important;
-    }
-
     &:focus {
-        color: $theme__color__secondary--dark;
+        outline: 2px solid $theme__color__grey--dark;
+        outline-offset: 2px;
+    }
+
+    &:hover, &:active, &:focus {
+        color: $theme__color__primary--dark;
     }
 
     i {
@@ -19,16 +15,14 @@ a.nav-link {
     }
 }
 
+a:focus:not(:focus-visible) {
+    outline: none;
+}
+
 a.color-alert {
-    &:hover {
+    color: $theme__color__red;
+
+    &:hover, &:active, &:focus {
         color: darken($theme__color__red, 20%);
-    }
-
-    &:active {
-        color: $theme__color__grey--dark !important;
-    }
-
-    &:focus {
-        color: $theme__color__secondary--dark;
     }
 }

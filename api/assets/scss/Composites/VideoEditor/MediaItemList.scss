@@ -16,8 +16,8 @@
 
         &:focus,
         &:focus-within {
-            background-color: $theme__color__secondary--dark;
-            color: $theme__color__white;
+            outline: 2px solid $theme__color__grey--dark;
+            outline-offset: 2px;
         }
 
         & .video-code-prototype-information {
@@ -82,7 +82,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 5px 5px;
+    padding: $theme__spacing--small 0;
 
     color: $theme__color__text;
 

@@ -63,7 +63,7 @@ const AllMediaItemsOverlay = (props: Props) => {
               onCopy={handleClose}
             >
               <Button
-                className="btn btn-outline-primary"
+                className="button button--type-outline-primary"
                 title="Alle Elemente in Zwischenablage kopieren"
               >
                 Alle Elemente in Zwischenablage kopieren

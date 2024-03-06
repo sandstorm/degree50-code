@@ -117,12 +117,18 @@
     top: 0;
     bottom: 0;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     cursor: col-resize;
-    user-select: none;
+    background-color: transparentize($theme__color__white, 0.3);
+
+    font-size: .9rem;
+    text-shadow: none !important;
 
     &:hover {
-        background-color: transparentize($theme__color__white, 0.1);
+        background-color: $theme__color__white;
     }
 }
 

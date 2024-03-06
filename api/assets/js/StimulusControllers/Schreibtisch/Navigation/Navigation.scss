@@ -16,11 +16,7 @@
 }
 
 .nav-link {
-    display: block;
-    height: 100%;
-}
-
-.nav-link > i {
-    text-align: center;
-    margin-right: $theme__spacing__small;
+    display: flex;
+    gap: $theme__spacing__small;
+    padding: $theme__spacing--base;
 }

@@ -12,7 +12,7 @@ const CloseButton = ({ onClick, tabIndex = 1 }: Props) => {
       title="Schließen"
       tabIndex={tabIndex}
       type="button"
-      className="btn btn-outline-primary"
+      className="button button--type-outline-primary"
       onClick={onClick}
       data-focus-id="close-button"
     >

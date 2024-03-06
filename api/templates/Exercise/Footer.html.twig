@@ -3,9 +3,9 @@
 <footer class="footer">
     <div class="footer__left">
     {% if previousExercisePhase %}
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercise.id, phaseId: previousExercisePhase.id}) }}">Vorherige Phase</a>
+        <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercise.id, phaseId: previousExercisePhase.id}) }}">Vorherige Phase</a>
     {% else %}
-        <a class="btn btn-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+        <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
     {% endif %}
     </div>
 
@@ -14,9 +14,9 @@
     <div class="footer__right">
     {% if nextExercisePhase %}
         {% if is_granted('viewExercisePhase', nextExercisePhase) %}
-            <a class="btn btn-primary" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Nächste Phase</a>
+            <a class="button button--type-primary button--size-small" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">Nächste Phase</a>
         {% else %}
-            <button type="button" class="btn btn-primary disabled" disabled="disabled">Nächste Phase</button>
+            <button type="button" class="button button--type-primary button--size-small disabled" disabled="disabled">Nächste Phase</button>
         {% endif %}
     {% endif %}
     </div>

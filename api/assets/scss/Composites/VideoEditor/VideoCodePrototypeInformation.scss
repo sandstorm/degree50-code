@@ -1,25 +1,6 @@
 .video-code-prototype-information {
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
     align-items: center;
-
-    margin: 10px 0;
-
-    // Lock icon
-    & > i {
-        margin-left: 10px;
-        width: 25px;
-        height: 25px;
-    }
-
-    // Color div
-    & > div {
-        margin-right: 0;
-    }
-
-    // Prototype label
-    & > label {
-        margin-left: 10px;
-    }
+    gap: $theme__spacing--small;
+    margin: $theme__spacing--base 0;
 }

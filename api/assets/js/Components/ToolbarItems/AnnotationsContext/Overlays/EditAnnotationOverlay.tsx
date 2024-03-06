@@ -2,7 +2,7 @@ import {
   actions,
   selectors,
 } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
-import { FC, memo } from 'react'
+import React, { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import { AnnotationOverlayIds } from '../AnnotationsMenu'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
@@ -11,9 +11,9 @@ import { useAnnotationEdit } from './useAnnotationEdit'
 import Overlay from '../../components/Overlay'
 import TextField from 'Components/VideoEditor/components/TextField'
 import Button from 'Components/Button/Button'
-import { ShortCutId } from '../../ShortCutsContext/ShortCutsSlice'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { secondToTime } from 'Components/VideoEditor/utils/time'
+import { ShortCutId } from 'Components/ToolbarItems/ShortCutsContext/ShortCutsSlice'
 
 const mapStateToProps = (state: AppState) => {
   const currentlyEditedElementId =
@@ -77,8 +77,31 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
     handleEndTimeChange(secondToTime(props.currentTime))
   }
 
+  const footerContent = (
+    <>
+      <Button
+        className="button button--type-outline-primary"
+        onPress={close}
+        title="Änderungen Verwerfen"
+      >
+        Verwerfen
+      </Button>
+      <Button
+        className="button button--type-primary"
+        onPress={handleSave}
+        title="Änderungen Speichern"
+      >
+        Speichern
+      </Button>
+    </>
+  )
+
   return (
-    <Overlay closeCallback={close} title="Annotation bearbeiten">
+    <Overlay
+      closeCallback={close}
+      title="Annotation bearbeiten"
+      footerContent={footerContent}
+    >
       <div className="time-input-wrapper">
         <TimeInput
           label="Start"
@@ -91,12 +114,13 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
           secondsLabel="Start Sekunden"
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-link"
           onPress={handleUseCurrentTimeForStartValue}
           title={'Aktuelle Zeit als Startzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_START_VALUE}
         >
-          <i className="fas fa-stopwatch" />
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Startzeit
+          übernehmen
         </Button>
       </div>
       <div className="time-input-wrapper">
@@ -111,12 +135,13 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
           secondsLabel="Ende Sekunden"
         />
         <Button
-          className="btn btn-outline-primary"
+          className="button button--type-link"
           onPress={handleUseCurrentTimeForEndValue}
           title={'Aktuelle Zeit als Endzeit übernehmen'}
           data-short-cut-id={ShortCutId.SET_CURRENT_TIME_AS_END_VALUE}
         >
-          <i className="fas fa-stopwatch" />
+          <i className="fas fa-stopwatch" /> Aktuelle Zeit als Endzeit
+          übernehmen
         </Button>
       </div>
       <hr />
@@ -133,21 +158,6 @@ const EditAnnotationOverlay: FC<Props> = (props) => {
         text={transientAnnotation.memo}
         updateText={updateMemo}
       />
-      <hr />
-      <Button
-        className="btn btn-secondary"
-        onPress={close}
-        title="Änderungen Verwerfen"
-      >
-        Verwerfen
-      </Button>
-      <Button
-        className="btn btn-primary"
-        onPress={handleSave}
-        title="Änderungen Speichern"
-      >
-        Speichern
-      </Button>
     </Overlay>
   )
 }

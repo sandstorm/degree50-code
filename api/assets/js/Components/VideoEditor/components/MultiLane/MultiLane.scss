@@ -22,11 +22,13 @@
 
 .multilane-filter-container__toggle {
     height: 100%;
+    padding: $theme__spacing--small;
 }
 
 .multilane-filter__content {
     width: 400px;
     overflow: auto;
+
     > * {
         padding-left: $theme__spacing--base;
         padding-right: $theme__spacing--base;

@@ -9,7 +9,7 @@ const MoveUpButton = ({ moveUp }: Props) => {
   return (
     <Button
       title="Schnitt nach vorn schieben"
-      className="btn btn-primary btn-sm"
+      className="button button--type-primary button--size-small"
       onPress={moveUp}
     >
       <i className="fas fa-caret-up" />

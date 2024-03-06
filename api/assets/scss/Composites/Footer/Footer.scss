@@ -1,7 +1,3 @@
-.solution-fullscreen .footer {
-    position: relative;
-}
-
 .footer {
     position: fixed;
     bottom: 0;
@@ -11,27 +7,18 @@
     grid-template-rows: 100%;
     grid-template-areas: 'left center right';
     grid-gap: 20px;
+    align-items: center;
 
-    padding: 10px;
+    padding: $theme__spacing--base;
 
     background-color: $theme__color__grey--lighter;
     border-top: 1px solid $theme__color__grey--light;
 
     z-index: 8000;
 
-    & .footer__left {
-        grid-area: left;
-    }
-
-    & .footer__center {
-        grid-area: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    & .footer__right {
-        grid-area: right;
+    @include mq(xmedium) {
+        padding: $theme__spacing--small $theme__spacing--base;
+        grid-gap: $theme__spacing--base;
     }
 
     .form-group {
@@ -45,4 +32,32 @@
     &--center {
         justify-content: center;
     }
+}
+
+.solution-fullscreen .footer {
+    position: relative;
+}
+
+.footer__left {
+    grid-area: left;
+}
+
+.footer__center {
+    grid-area: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.solution-fullscreen .footer__center {
+    display: inline-block;
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+.footer__right {
+    grid-area: right;
 }

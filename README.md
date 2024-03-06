@@ -80,8 +80,8 @@ To create and deploy a versioned release follow these steps:
 ### Get Started with Development
 
 - Initially, run `make build-docker` to build the docker container
-- run `docker-compose up -d`
-- check installation with `docker-compose logs -f api`
+- run `make start`
+- check installation with `make logs-api`
 - When the container is running:
     - import fixtures by running `make import-fixtures` (dummy data)
     - Run the assets build (locally) using `cd api && nvm use && yarn` 
@@ -89,6 +89,7 @@ To create and deploy a versioned release follow these steps:
     - Run frontend build using `cd api && yarn dev`
     - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
     - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
+    - Or to login as student use: `student@sandstorm.de / password` or `student2@sandstorm.de / password`
     - The Symfony Console can be executed via `./symfony-console`
 
 ### Connect with database

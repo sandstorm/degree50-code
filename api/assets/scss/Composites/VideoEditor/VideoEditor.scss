@@ -1,7 +1,6 @@
 .video-editor {
     display: grid;
     grid-template-rows: 1fr 40px auto;
-
     height: 100%;
 
     .video-container {
@@ -13,17 +12,11 @@
 .video-editor__toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: $theme__spacing--huge;
     padding: $theme__spacing--small $theme__spacing--base;
 
-    background-color: $theme__color__grey;
-
-    &__button {
-        position: relative;
-        height: 32px;
-        width: 32px;
-        padding: 0;
-    }
+    background-color: $theme__color__grey--light;
 
     .menu {
         z-index: $theme__z-index--menu;
@@ -54,5 +47,17 @@
         width: 100%;
 
         z-index: $theme__z-index--menu - 1;
+    }
+}
+
+.video-editor__toolbar__button {
+    position: relative;
+    height: 32px;
+    width: 32px;
+    padding: 0;
+
+    &--with-text {
+        width: auto;
+        padding: 0 $theme__spacing--base;
     }
 }
