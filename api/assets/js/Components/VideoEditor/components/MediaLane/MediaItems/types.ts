@@ -1,1 +1,1 @@
-export type Handle = 'left' | 'center' | 'right'
+export type HandleSide = 'left' | 'center' | 'right'

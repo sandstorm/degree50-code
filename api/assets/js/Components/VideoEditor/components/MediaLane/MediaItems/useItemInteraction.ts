@@ -3,7 +3,7 @@ import { d2t } from 'duration-time-conversion'
 import { MediaItem } from '../../../types'
 import { RenderConfig } from '../MediaTrack'
 import { itemIsVisible } from './helpers'
-import { Handle } from './types'
+import { HandleSide } from 'Components/VideoEditor/components/MediaLane/MediaItems/types'
 
 const getVisibleItems = <T>(
   items: MediaItem<T>[],
@@ -39,10 +39,8 @@ export const useItemInteraction = <T>(
   const [lastPageX, setLastPageX] = useState<number>(0)
   const [lastDiffX, setLastDiffX] = useState<number>(0)
 
-  const onItemMouseDown = useCallback(
-    (event, item: MediaItem<T>, side: Handle) => {
-      const pageX =
-        event.type === 'touchstart' ? event.touches[0].pageX : event.pageX
+  const onItemMouseDownOrTouchStart = useCallback(
+    (pageX: number, item: MediaItem<T>, side: HandleSide) => {
       setIsDraging(true)
       setLastClickedItem(item)
       setLastClickedItemSide(side)
@@ -79,6 +77,20 @@ export const useItemInteraction = <T>(
       mediaItems,
       $mediaItemsRef,
     ]
+  )
+
+  const onItemTouchStart = useCallback(
+    (event: React.TouchEvent, item: MediaItem<T>, side: HandleSide) => {
+      onItemMouseDownOrTouchStart(event.touches[0].pageX, item, side)
+    },
+    [onItemMouseDownOrTouchStart]
+  )
+
+  const onItemMouseDown = useCallback(
+    (event: React.MouseEvent, item: MediaItem<T>, side: HandleSide) => {
+      onItemMouseDownOrTouchStart(event.pageX, item, side)
+    },
+    [onItemMouseDownOrTouchStart]
   )
 
   const onMouseMove = useCallback(
@@ -214,6 +226,7 @@ export const useItemInteraction = <T>(
   }, [onMouseMove, onMouseUp])
 
   return {
+    onItemTouchStart,
     onItemMouseDown,
   }
 }

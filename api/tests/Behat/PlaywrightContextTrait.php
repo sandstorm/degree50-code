@@ -76,7 +76,7 @@ trait PlaywrightContextTrait
 
             await Promise.all([
                 vars.page.waitForNavigation(),
-                vars.page.click(`button[type="submit"]`),
+                vars.page.click(`button[type="submit"]`)
             ])
         ' // language=PHP
             ,
@@ -199,10 +199,9 @@ trait PlaywrightContextTrait
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 await vars.page.click('data-test-id=$testId')
-            "
+            JS
         );
     }
 
@@ -383,5 +382,18 @@ trait PlaywrightContextTrait
         $url = $this->router->generate($routeName, $parameters);
 
         $this->visitUrl($url);
+    }
+
+    /**
+     * @When /^I pause for debugging$/
+     */
+    public function iPauseForDebugging()
+    {
+        return $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.pause();
+            JS
+        );
     }
 }

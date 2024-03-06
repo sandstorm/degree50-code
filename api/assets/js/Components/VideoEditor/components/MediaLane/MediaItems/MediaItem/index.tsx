@@ -9,7 +9,6 @@ import {
 import { RenderConfig } from '../../MediaTrack'
 import { actions } from '../../../../PlayerSlice'
 import { useModalHook } from 'Components/Modal/useModalHook'
-import { Handle } from '../types'
 import { clamp } from '../helpers'
 import InfoButton from './MediaItemInfoButton'
 import ItemHandle from './ItemHandle'
@@ -17,6 +16,7 @@ import Body from './Body'
 import AnnotationListItem from 'Components/ToolbarItems/AnnotationsContext/Overlays/AnnotationListItem'
 import CutListItem from 'Components/ToolbarItems/CuttingContext/Overlays/CutListItem'
 import VideoCodeListItem from 'Components/ToolbarItems/VideoCodesContext/Overlays/VideoCodeListItem'
+import { HandleSide } from 'Components/VideoEditor/components/MediaLane/MediaItems/types'
 
 type OwnProps = {
   item: MediaItemClass<MediaItemTypeWithTypeInformation>
@@ -25,9 +25,14 @@ type OwnProps = {
   isPlayedBack?: boolean
   checkMediaItem: (item: MediaItemClass<any>) => boolean
   onItemMouseDown: (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    event: React.MouseEvent,
     item: MediaItemClass<MediaItemTypeWithTypeInformation>,
-    side: Handle
+    side: HandleSide
+  ) => void
+  onItemTouchStart: (
+    event: React.TouchEvent,
+    item: MediaItemClass<MediaItemTypeWithTypeInformation>,
+    side: HandleSide
   ) => void
   updateMediaItem: (
     item: MediaItemClass<MediaItemType>,
@@ -51,6 +56,7 @@ export const MediaItem = ({
   renderConfig,
   checkMediaItem,
   onItemMouseDown,
+  onItemTouchStart,
   isPlayedBack,
   amountOfLanes = 0,
   showTextInMediaItems = true,
@@ -59,25 +65,20 @@ export const MediaItem = ({
 }: Props) => {
   const itemRef = useRef<HTMLDivElement>(null)
 
-  const handleLeftHandleMouseDown = useCallback(
-    (event) => {
-      onItemMouseDown(event, item, 'left')
+  const handleMouseDown = useCallback(
+    (event: React.MouseEvent, side: HandleSide) => {
+      setPause(true)
+      onItemMouseDown(event, item, side)
     },
     [item, onItemMouseDown, setPause]
   )
 
-  const handleRightHandleMouseDown = useCallback(
-    (event) => {
-      onItemMouseDown(event, item, 'right')
+  const handleTouchStart = useCallback(
+    (event: React.TouchEvent, side: HandleSide) => {
+      setPause(true)
+      onItemTouchStart(event, item, side)
     },
-    [item, onItemMouseDown, setPause]
-  )
-
-  const handleItemCenterMouseDown = useCallback(
-    (event) => {
-      onItemMouseDown(event, item, 'center')
-    },
-    [item, onItemMouseDown, setPause]
+    [item, onItemTouchStart, setPause]
   )
 
   const mediaItemHeight = 100 / (amountOfLanes + 1)
@@ -109,7 +110,7 @@ export const MediaItem = ({
   }, [itemRef, item])
 
   // WHY: Clamp width of lane item drag handle between min and max value
-  const laneItemHandleWidth = clamp(renderConfig.gridGap, 10, 14)
+  const laneItemHandleWidth = clamp(renderConfig.gridGap, 10, 20)
 
   const modalTitle = (() => {
     switch (item.originalData.type) {
@@ -201,12 +202,14 @@ export const MediaItem = ({
       <ItemHandle
         side="left"
         width={laneItemHandleWidth}
-        onMouseDown={handleLeftHandleMouseDown}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onClick={handleItemHandleClick}
       />
 
       <Body
-        onMouseDown={handleItemCenterMouseDown}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         item={item}
         showTextInMediaItems={showTextInMediaItems}
       />
@@ -214,7 +217,8 @@ export const MediaItem = ({
       <ItemHandle
         side="right"
         width={laneItemHandleWidth}
-        onMouseDown={handleRightHandleMouseDown}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onClick={handleItemHandleClick}
       />
 

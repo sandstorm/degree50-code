@@ -42,22 +42,10 @@ const SetVideoPlayerTimeOverlay = (props: Props) => {
     close()
   }
 
-  return (
-    <Overlay closeCallback={close} title="Zu Zeitstempel springen">
-      <TimeInput
-        label="Zeiteingabe"
-        value={time}
-        onChange={setTime}
-        max={maxAllowedTime}
-        min={minAllowedTime}
-        hoursLabel="Stunden"
-        minutesLabel="Minuten"
-        secondsLabel="Sekunden"
-        showMs={false}
-      />
-      <hr />
+  const footer = (
+    <>
       <Button
-        className="button button--type-secondary"
+        className="button button--type-outline-primary"
         onPress={close}
         title="Abbrechen"
       >
@@ -70,6 +58,26 @@ const SetVideoPlayerTimeOverlay = (props: Props) => {
       >
         Zu Zeit Springen
       </Button>
+    </>
+  )
+
+  return (
+    <Overlay
+      closeCallback={close}
+      title="Zu Zeitstempel springen"
+      footerContent={footer}
+    >
+      <TimeInput
+        label="Zeiteingabe"
+        value={time}
+        onChange={setTime}
+        max={maxAllowedTime}
+        min={minAllowedTime}
+        hoursLabel="Stunden"
+        minutesLabel="Minuten"
+        secondsLabel="Sekunden"
+        showMs={false}
+      />
     </Overlay>
   )
 }

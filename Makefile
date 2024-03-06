@@ -34,6 +34,13 @@ test-e2e:
 		--env APP_ENV=test \
 		api ./vendor/bin/behat --tags e2e
 
+test-e2e-debug:
+	docker-compose exec \
+		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
+		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
+		--env APP_ENV=test \
+		api ./vendor/bin/behat --tags debug
+
 test:
 	docker-compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
