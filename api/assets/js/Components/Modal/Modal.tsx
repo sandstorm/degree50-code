@@ -21,7 +21,11 @@ const Modal = (props: Props) => {
   // the Escape key to close the modal.
   const modalRef: React.RefObject<HTMLDivElement> = React.useRef(null)
   const { overlayProps } = useOverlay(
-    { isOpen: props.isVisible, isDismissable: true, onClose: props.closeModal },
+    {
+      isOpen: props.isVisible,
+      isDismissable: true,
+      onClose: props.closeModal,
+    },
     modalRef
   )
 
@@ -29,12 +33,12 @@ const Modal = (props: Props) => {
   // outside the modal from screen readers.
   usePreventScroll()
   const { modalProps } = useModal()
-  const { dialogProps, titleProps } = useDialog({ role: 'dialog' }, modalRef)
+  const { dialogProps } = useDialog({ role: 'dialog' }, modalRef)
 
   // react-aria places the modal at the bottom of the body
   return (
     <OverlayContainer>
-      <div className="modal">
+      <div className="modal" aria-labelledby="modal-title">
         <FocusScope contain restoreFocus autoFocus>
           <div
             className={'modal__inner'}
@@ -44,7 +48,7 @@ const Modal = (props: Props) => {
             {...modalProps}
           >
             <header className={'modal__header'}>
-              <h3 {...titleProps}>{props.title}</h3>
+              <h3 id="modal-title">{props.title}</h3>
             </header>
             <div className={'modal__content'}>{props.children}</div>
             <footer className={'modal__footer'}>
