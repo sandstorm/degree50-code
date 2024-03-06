@@ -172,13 +172,11 @@ $tileHeight--small: 150px;
     height: $tileHeight * 0.6;
     width: 100%;
     margin-bottom: 10px;
-
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+    object-fit: cover;
 }
 
-a.tile__favor-button {
+a.tile__favor-button,
+button.tile__favor-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -191,13 +189,21 @@ a.tile__favor-button {
     color: $theme__color__gold;
 
     background: $theme__color__grey;
+    border: none;
     border-radius: 50%;
+
+    z-index: 1000;
 
     i {
         font-size: 1.2rem;
 
         @include transition(transform .5s);
         transform-style: preserve-3d;
+    }
+
+    &:focus {
+        outline: 2px solid $theme__color__grey--dark;
+        outline-offset: 2px;
     }
 
     &:hover, &:focus, &:active {

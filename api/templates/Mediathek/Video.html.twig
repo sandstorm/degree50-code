@@ -58,7 +58,7 @@
     >
         <input id="{{ video.data.id }}" type="checkbox" />
         <label for="{{ video.data.id }}" class="tile__content">
-            <div class="tile__image" role="img" style="background-image: url({{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <img alt="Vorschaubild" class="tile__image" src="{{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg"/>
             <span class="tile__date">{{ video.data.createdAt|date("d.m.Y") }}</span>
             <span class="tile__title">
                 {% if video.data.courses | length == 0 %}
@@ -85,13 +85,14 @@
     </div>
 {% else %}
     <div
+        tabindex="0"
         class="tile"
         id="tile-{{ video.data.id }}"
         title="{{ video.data.description }}"
         data-location="{{ path("mediathek__video--player", {id: video.data.id}) }}"
     >
         <a tabindex="0" href="{{ path("mediathek__video--player", {id: video.data.id}) }}" class="tile__content">
-            <div class="tile__image" role="img" style="background-image: url({{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <img alt="Vorschaubild" class="tile__image" src="{{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg"/>
             <span class="tile__date">{{ video.data.createdAt|date("d.m.Y") }}</span>
             <span class="tile__title">{{ video.data.title }}</span>
             <i class="tile__action-icon fas fa-arrow-right"></i>

@@ -3,6 +3,8 @@
     align-items: center;
     grid-template-columns: auto 1fr;
 
+    cursor: pointer;
+
     .checkbox__input--has-focus,
     &:focus-within,
     &:focus {
