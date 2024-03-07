@@ -57,6 +57,10 @@ export const useAddCustomVideoJsComponent = (
         button.on('click', () => {
           dispatch(config.action)
         })
+        // add touch handler
+        button.on('touchend', () => {
+          dispatch(config.action)
+        })
       }
     }
   }, [

@@ -36,6 +36,7 @@ exercise:
             success: 'Aufgabe erfolgreich gespeichert!'
     delete:
         title: 'Aufgabe löschen'
+        confirm: 'Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?'
         messages:
             success: 'Aufgabe erfolgreich gelöscht!'
     copy:
@@ -105,6 +106,7 @@ exercisePhase:
     delete:
         title: 'Phase löschen'
         button: 'Löschen'
+        confirm: 'Sind Sie sicher, dass Sie diese Phase löschen möchten?'
         messages:
             success: 'Phase erfolgreich gelöscht!'
 
@@ -143,6 +145,7 @@ video:
             success: 'Video erfolgreich gespeichert!'
     delete:
         title: 'Video löschen'
+        confirm: 'Sind Sie sicher, dass Sie dieses Video löschen möchten?'
         messages:
             success: 'Video erfolgreich gelöscht!'
             isCurrentlyUsed: 'Das Video kann nicht gelöscht werden: Es wird in einer oder mehreren Phasen genutzt!'
