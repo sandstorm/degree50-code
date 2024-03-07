@@ -90,6 +90,7 @@ To create and deploy a versioned release follow these steps:
     - Run the assets watcher (locally) using `cd api && nvm use && yarn encore dev --watch`
     - After installation is successful, go to `http://localhost:8080/login` and log in with `admin@sandstorm.de / password`
     - Or to login as student use: `student@sandstorm.de / password` or `student2@sandstorm.de / password`
+    - Or to login as dozent use: `dozent@sandstorm.de / password`
     - The Symfony Console can be executed via `./symfony-console`
 
 ### Connect with database

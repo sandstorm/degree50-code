@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Mediathek\Service;
-
 
 use App\Entity\Account\User;
 use App\Entity\Video\Video;
@@ -11,7 +9,6 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -25,7 +22,6 @@ class VideoService
     private VideoRepository $videoRepository;
     private AppRuntime $appRuntime;
     private KernelInterface $kernel;
-    private LoggerInterface $logger;
     private VideoFavouritesService $videoFavouritesService;
 
     const VIDEO_DOCTRINE_FILTER_NAME = 'video_doctrine_filter';
@@ -36,7 +32,6 @@ class VideoService
         VideoRepository $videoRepository,
         AppRuntime $appRuntime,
         KernelInterface $kernel,
-        LoggerInterface $logger,
         VideoFavouritesService $videoFavouritesService,
     ) {
         $this->entityManager = $entityManager;
@@ -44,7 +39,6 @@ class VideoService
         $this->videoRepository = $videoRepository;
         $this->appRuntime = $appRuntime;
         $this->kernel = $kernel;
-        $this->logger = $logger;
         $this->videoFavouritesService = $videoFavouritesService;
     }
 
@@ -73,7 +67,7 @@ class VideoService
     /**
      * Removes a video entity along with its encoded video directory.
      */
-    public function deleteVideo(Video $video)
+    public function deleteVideo(Video $video): void
     {
         // remove VideoFavourites
         $this->videoFavouritesService->removeVideoFavoritesOfVideo($video);
@@ -96,7 +90,7 @@ class VideoService
      *
      * @see {App\Mediathek\Controller\VideoUploadController}
      */
-    public function removeOriginalVideoFile(Video $video)
+    public function removeOriginalVideoFile(Video $video): void
     {
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedVideoFile());
         $filesystem = new Filesystem();
@@ -120,7 +114,7 @@ class VideoService
      *
      * @see {App\Mediathek\Controller\VideoUploadController}
      */
-    public function removeOriginalSubtitleFile(Video $video)
+    public function removeOriginalSubtitleFile(Video $video): void
     {
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedSubtitleFile());
         $filesystem = new Filesystem();
@@ -146,7 +140,8 @@ class VideoService
         Video $video,
         VirtualizedFile $uploadedVideoFile,
         User $user,
-    ) {
+    ): Video
+    {
         $video->setCreator($user);
         $video->setUploadedVideoFile($uploadedVideoFile);
         $video->setDataPrivacyAccepted(false);
@@ -172,7 +167,8 @@ class VideoService
         Video $video,
         VirtualizedFile $uploadedSubtitleFile,
         User $user
-    ) {
+    ): void
+    {
         $video->setCreator($user);
         $video->setUploadedSubtitleFile($uploadedSubtitleFile);
         $video->setDataPrivacyAccepted(false);
@@ -204,7 +200,8 @@ class VideoService
         ?Video $video,
         VirtualizedFile $uploadedAudioDescriptionFile,
         User $user
-    ) {
+    ): void
+    {
         $video->setCreator($user);
         $video->setUploadedAudioDescriptionFile($uploadedAudioDescriptionFile);
         $video->setDataPrivacyAccepted(false);
@@ -224,7 +221,7 @@ class VideoService
      *
      * @see {App\Mediathek\Controller\VideoUploadController}
      */
-    public function removeOriginalAudioDescriptionFile(Video $video)
+    public function removeOriginalAudioDescriptionFile(Video $video): void
     {
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedAudioDescriptionFile());
         $filesystem = new Filesystem();

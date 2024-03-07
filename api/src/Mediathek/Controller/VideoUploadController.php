@@ -73,12 +73,12 @@ class VideoUploadController extends AbstractController
      * After a successful submit a WebEncodingTask is being dispatched, so that the original video gets encoded.
      * @see WebEncodingHandler
      *
+     * @IsGranted("create")
      * @Route("/video/uploads/{id?}", name="mediathek__video--upload")
      * @see WebEncodingTask
      */
     public function showVideoUploadForm(Request $request, Course $course = null): Response
     {
-        // TODO refactor!
         $videoUuid = $request->query->get('videoUuid');
 
         if (!$videoUuid) {

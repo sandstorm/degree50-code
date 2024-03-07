@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
-use App\Admin\Controller\UserService;
+use App\Admin\Service\UserService;
 use App\DataExport\Controller\DegreeDataToCsvService;
 use App\DataExport\Controller\Dto\TextFileDto;
 use App\Entity\Account\CourseRole;

@@ -3,4 +3,5 @@ twig:
   form_themes: ['Form/CustomFormTheme.html.twig']
   globals:
     # add UserExpirationService to each twig template
-    userExpirationService: '@App\Admin\Controller\UserExpirationService'
+    userExpirationService: '@App\Admin\Service\UserExpirationService'
+    userService: '@App\Admin\Service\UserService'

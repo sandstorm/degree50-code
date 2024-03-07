@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Admin\Controller;
+namespace App\Admin\Service;
 
 
 use App\Entity\Account\CourseRole;
@@ -65,7 +65,7 @@ class UserService
 
     public function getLoggendInUser(): User|null
     {
-        // Type mismatch is ok
+        /** @var User */
         return $this->security->getUser();
     }
 
@@ -263,5 +263,26 @@ class UserService
         foreach ($unUsedVideosOfUser as $video) {
             $this->videoService->deleteVideo($video);
         }
+    }
+
+    public function userCanUploadVideo(): bool
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        return $this->canUploadVideo($user);
+    }
+
+    public function canUploadVideo(User $user): bool
+    {
+        if ($user->isAdmin() || $user->isDozent()) {
+            return true;
+        }
+
+        // check if student is assigned to a course
+        $userCourses = $user->getCourseRoles()->map(function (CourseRole $courseRole) {
+            return $courseRole->getCourse();
+        });
+
+        return $userCourses->count() > 0;
     }
 }

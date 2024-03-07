@@ -2,7 +2,7 @@
 
 namespace App\Schreibtisch\Service;
 
-use App\Admin\Controller\UserService;
+use App\Admin\Service\UserService;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
@@ -12,7 +12,6 @@ use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExerciseStatus;
 use App\Entity\Fachbereich;
 use App\Entity\Material\Material;
-use App\Entity\Video\Video;
 use App\Entity\Video\VideoFavorite;
 use App\Exercise\Controller\ExercisePhaseService;
 use App\Exercise\Controller\ExerciseService;
@@ -21,7 +20,6 @@ use App\Service\UserMaterialService;
 use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SchreibtischService
