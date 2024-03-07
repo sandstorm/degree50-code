@@ -85,8 +85,11 @@
                                             <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
                                         </a>
                                     {% else %}
-                                        <a class="button button--type-outline-danger button--size-small"
-                                           href="{{ path('exercise-overview__exercise-phase--delete', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}">
+                                        <a
+                                            class="button button--type-outline-danger button--size-small"
+                                            href="{{ path('exercise-overview__exercise-phase--delete', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}"
+                                            onclick="return confirm('{% trans %}exercisePhase.delete.confirm{% endtrans %}');"
+                                        >
                                             <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
                                         </a>
                                     {% endif %}

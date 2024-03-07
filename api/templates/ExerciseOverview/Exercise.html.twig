@@ -41,7 +41,11 @@
                 <a href="{{ path('exercise-overview__exercise--copy', {id: exercise.exercise.id}) }}">
                     <i class="fas fa-clone"></i> {% trans %}exercise.copy.title{% endtrans %}
                 </a>
-                <a href="{{ path('exercise-overview__exercise--delete', {id: exercise.exercise.id}) }}" class="color-alert">
+                <a
+                    href="{{ path('exercise-overview__exercise--delete', {id: exercise.exercise.id}) }}"
+                    class="color-alert"
+                    onclick="return confirm('{% trans %}exercise.delete.confirm{% endtrans %}');"
+                >
                     <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
                 </a>
             {% endif %}
