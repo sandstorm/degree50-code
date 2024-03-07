@@ -25,6 +25,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Given A User "test-admin@sandstorm.de" with the role "ROLE_ADMIN" exists
         And A User "test-dozent@sandstorm.de" with the role "ROLE_DOZENT" exists
         And A User "test-student@sandstorm.de" with the role "ROLE_STUDENT" exists
+        And A User "student-without-course@sandstorm.de" with the role "ROLE_STUDENT" exists
 
         And A Course with ID "course1" exists
         And A Course with ID "course2" exists
@@ -160,6 +161,11 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Then the response status code should be 200
         Then the page contains all the following texts:
             | course1 |
+
+    Scenario: As student without any assigned courses I can not create videos
+        Given I am logged in via browser as "student-without-course@sandstorm.de"
+        When I visit route "mediathek__video--upload"
+        Then the response status code should be 403
 
     #########################
     ### Edit

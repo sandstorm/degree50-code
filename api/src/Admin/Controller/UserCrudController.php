@@ -3,6 +3,7 @@
 namespace App\Admin\Controller;
 
 use App\Admin\EventSubscriber\EasyAdminSubscriber;
+use App\Admin\Service\UserService;
 use App\Entity\Account\User;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;

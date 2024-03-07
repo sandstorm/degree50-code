@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Controller;
+namespace App\Admin\Service;
 
 use App\Entity\Account\User;
 

@@ -8,15 +8,9 @@
 
 {% block body %}
     <header class="content-header">
-        {% if course %}
-            <h3>Alle Videos für {{ course.name }}</h3>
-            <a href="{{ path('mediathek__video--upload', {id: course.id}) }}" class="button button--type-primary">
-                <i class="fas fa-plus-circle"></i>
-                Neues Video
-            </a>
-        {% else %}
-            <h3>Alle Videos</h3>
-            <a href="{{ path('mediathek__video--upload') }}" class="button button--type-primary">
+        <h3>Alle Videos {{ course ? 'für '~course.name : '' }}</h3>
+        {% if userService.userCanUploadVideo() %}
+            <a href="{{ path('mediathek__video--upload', {id: course ? course.id : null}) }}" class="button button--type-primary">
                 <i class="fas fa-plus-circle"></i>
                 Neues Video
             </a>

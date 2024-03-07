@@ -4,6 +4,7 @@
 namespace App\Security\Voter;
 
 
+use App\Admin\Service\UserService;
 use App\Entity\Account\Course;
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
@@ -14,19 +15,28 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class VideoVoter extends Voter
 {
-
     const VIEW = 'view';
     const FAVOR = 'favor';
     const EDIT = 'edit';
     const DELETE = 'delete';
+    const CREATE = 'create';
+
+    private UserService $userService;
+
+    function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::FAVOR])) {
+        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::FAVOR, self::CREATE])) {
             return false;
         }
 
-        if (!$subject instanceof Video) {
+        // only vote on Video objects inside this voter
+        // exclude the CREATE attribute from this check, as we want to allow the creation of videos where no subject is given
+        if (!$subject instanceof Video && $attribute !== self::CREATE) {
             return false;
         }
 
@@ -45,6 +55,8 @@ class VideoVoter extends Voter
         $video = $subject;
 
         switch ($attribute) {
+            case self::CREATE:
+                return $this->canCreate($user);
             case self::VIEW:
                 return $this->canView($video, $user);
             case self::EDIT:
@@ -106,5 +118,10 @@ class VideoVoter extends Voter
             return true;
         }
         return $user === $video->getCreator();
+    }
+
+    private function canCreate(User $user): bool
+    {
+        return $this->userService->canUploadVideo($user);
     }
 }

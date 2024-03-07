@@ -8,7 +8,6 @@ use App\Entity\Video\Video;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Video\VideoRepository;
-use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,20 +25,17 @@ class MediathekOverviewController extends AbstractController
     private CourseRepository $courseRepository;
     private VideoFavouritesService $videoFavouritesService;
     private Security $security;
-    private LoggerInterface $logger;
 
     public function __construct(
         VideoRepository $videoRepository,
         CourseRepository $courseRepository,
         VideoFavouritesService $videoFavouritesService,
         Security $security,
-        LoggerInterface $logger
     ) {
         $this->videoRepository = $videoRepository;
         $this->courseRepository = $courseRepository;
         $this->videoFavouritesService = $videoFavouritesService;
         $this->security = $security;
-        $this->logger = $logger;
     }
 
     /**
@@ -66,6 +62,7 @@ class MediathekOverviewController extends AbstractController
      */
     public function toggleFavorVideo(Video $video): Response
     {
+        /** @var User $user */
         $user = $this->security->getUser();
 
         $this->videoFavouritesService->toggleFavorite($video, $user);
@@ -80,7 +77,7 @@ class MediathekOverviewController extends AbstractController
     private function getVideosGrouped(array $otherVideos): array
     {
         /** @var User $user */
-        $user = $this->getUser();
+        $user = $this->security->getUser();
 
         $groupedVideosBuilder = new GroupedVideosBuilder($this->videoFavouritesService, $user);
         $groupedVideosBuilder->setUser($user);
