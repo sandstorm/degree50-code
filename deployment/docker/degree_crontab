@@ -1,1 +1,1 @@
-* 03 * * * /usr/local/bin/php /app/bin/console app:remove-expired-users >> /app/var/log/cron.log 2>&1
+0 3 * * * BASH_ENV=/root/.cron.env /bin/bash -c "/usr/local/bin/php /app/bin/console app:remove-expired-users >> /app/var/log/cron.log 2>&1"
