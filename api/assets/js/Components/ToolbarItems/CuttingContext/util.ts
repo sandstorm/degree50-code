@@ -2,7 +2,7 @@ import { RefObject, useState, useCallback, useEffect } from 'react'
 import VideoContext from 'videocontext'
 import { t } from 'react-i18nify'
 import { d2t, t2d } from 'duration-time-conversion'
-import { Handle } from 'Components/VideoEditor/components/MediaLane/MediaItems/types'
+import { HandleSide } from 'Components/VideoEditor/components/MediaLane/MediaItems/types'
 import { MediaItem, Cut, CutList } from 'Components/VideoEditor/types'
 import { notify } from 'Components/VideoEditor/utils'
 import { useMediaItemHandling } from 'Components/VideoEditor/utils/useMediaItemHandling'
@@ -151,7 +151,7 @@ export const useCuttingMediaItemHandling = ({
 export const determineDraggedHandle = (updatedValues: {
   start?: string
   end?: string
-}): Handle => {
+}): HandleSide => {
   if (updatedValues.start && !updatedValues.end) {
     return 'left'
   } else if (!updatedValues.start && updatedValues.end) {

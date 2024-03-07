@@ -10,6 +10,7 @@ import { RenderConfig } from '../MediaTrack'
 import { useItemInteraction } from './useItemInteraction'
 import { itemIsVisible } from './helpers'
 import ReadOnlyMediaItem from './ReadOnlyMediaItem'
+import { HandleSide } from 'Components/VideoEditor/components/MediaLane/MediaItems/types'
 
 const renderItems = (config: {
   mediaItems: MediaItemClass<MediaItemTypeWithTypeInformation>[]
@@ -18,9 +19,14 @@ const renderItems = (config: {
   checkMediaItem: (item: MediaItemClass<any>) => boolean
   handlers: {
     onItemMouseDown: (
-      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      event: React.MouseEvent,
       item: MediaItemClass<MediaItemTypeWithTypeInformation>,
-      side: 'left' | 'right' | 'center'
+      side: HandleSide
+    ) => void
+    onItemTouchStart: (
+      event: React.TouchEvent,
+      item: MediaItemClass<MediaItemTypeWithTypeInformation>,
+      side: HandleSide
     ) => void
   }
   updateMediaItem: (
@@ -104,7 +110,7 @@ const MediaItems = (props: Props) => {
   } = props
 
   const $mediaItemsRef: React.RefObject<HTMLDivElement> = useRef(null)
-  const { onItemMouseDown } = useItemInteraction(
+  const { onItemMouseDown, onItemTouchStart } = useItemInteraction(
     mediaItems,
     renderConfig,
     $mediaItemsRef,
@@ -131,6 +137,7 @@ const MediaItems = (props: Props) => {
               checkMediaItem,
               handlers: {
                 onItemMouseDown,
+                onItemTouchStart,
               },
               updateMediaItem,
               showTextInMediaItems,

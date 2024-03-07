@@ -124,13 +124,12 @@ To create and deploy a versioned release follow these steps:
 
 1. Install e2e-testrunner dependencies: `cd e2e-testrunner && npm install`
 2. Start e2e-testrunner: `node index.js`
-3. Start docker containers `docker-compose up -d`
-4. Enter `api` container `docker-compose exec api /bin/bash`
-5. execute tests
+3. Start docker containers `make start`
+4. execute tests
    1. Integration: `make test-integration`
    2. End to end: `make test-e2e`
    3. All tests: `make test`
-6. use the `--tags` flag to run specific tests (i.e. `--tags myTest`)
+5. use the `--tags` flag to run specific tests (i.e. `--tags myTest`)
 
 > **NOTE**: We added the DATABASE_URL in point 5 as inline ENV because the .env.test file does not seem to work here anymore.
 > We should fix this but we don't have the time right now.

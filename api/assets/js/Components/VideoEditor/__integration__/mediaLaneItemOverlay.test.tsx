@@ -62,6 +62,7 @@ describe('Medialane item', () => {
     setPlayPosition: () => undefined,
     checkMediaItem: () => false,
     onItemMouseDown: () => undefined,
+    onItemTouchStart: () => undefined,
   }
 
   const modalRoot = document.createElement('div')

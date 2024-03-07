@@ -33,21 +33,17 @@
         <div class="row">
             <div class="col-3">
                 {% if is_granted('createTeam', exercisePhase) %}
-                    <div class="tile">
-                        <a
-                           class="tile__content"
-                           href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}"
-                           data-test-id="createGroupButton"
-                       >
+                    <a class="tile" href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}" data-test-id="createGroupButton">
+                        <div class="tile__content">
                             <i class="tile__icon fas fa-plus-circle"></i>
-                            <h5>Neue Gruppe anlegen</h5>
-                        </a>
-                    </div>
+                            <span>Neue Gruppe anlegen</span>
+                        </div>
+                    </a>
                 {% else %}
                     <div class="tile tile--disabled">
                         <div class="tile__content">
                             <i class="tile__icon fas fa-plus-circle"></i>
-                            <h5>Neue Gruppe anlegen</h5>
+                            <span>Neue Gruppe anlegen</span>
                         </div>
                     </div>
                 {% endif %}
