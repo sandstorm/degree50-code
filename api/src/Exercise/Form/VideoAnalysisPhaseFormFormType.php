@@ -17,13 +17,17 @@ class VideoAnalysisPhaseFormFormType extends ExercisePhaseFormType
 {
     private VideoRepository $videoRepository;
 
-    public function __construct(ExercisePhaseRepository $exercisePhaseRepository, ExercisePhaseService $exercisePhaseService, VideoRepository $videoRepository)
+    public function __construct(
+        ExercisePhaseRepository $exercisePhaseRepository,
+        ExercisePhaseService $exercisePhaseService,
+        VideoRepository $videoRepository,
+    )
     {
         parent::__construct($exercisePhaseRepository, $exercisePhaseService);
         $this->videoRepository = $videoRepository;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -57,30 +61,10 @@ class VideoAnalysisPhaseFormFormType extends ExercisePhaseFormType
                 'expanded' => true,
                 'label' => false,
                 'block_prefix' => 'video_entity'
-            ])
-            ->add('dependsOnExercisePhase', EntityType::class, [
-                'class' => ExercisePhase::class,
-                'choices' => [],
-                'choice_label' => 'name',
-                'placeholder' => 'Keine',
-                'multiple' => false,
-                'required' => false,
-                'disabled' => true,
-                'label' => "exercisePhase.labels.dependsOnPreviousPhase",
-                'translation_domain' => 'forms',
-                'help' => "exercisePhase.help.dependsOnPreviousPhase.regular",
-            ])
-            ->add('otherSolutionsAreAccessible', CheckboxType::class, [
-                'required' => false,
-                'disabled' => false,
-                'label' => "exercisePhase.labels.otherSolutionsAreAccessible",
-                'translation_domain' => 'forms',
-                'block_prefix' => 'toggleable_button_checkbox',
-                'help' => "exercisePhase.help.otherSolutionsAreAccessible",
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => VideoAnalysisPhase::class,

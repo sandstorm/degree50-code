@@ -18,7 +18,7 @@ import Overlay from 'Components/ToolbarItems/components/Overlay'
 const mapStateToProps = (state: AppState) => ({
     currentTime: selectors.videoEditor.player.selectSyncPlayPosition(state),
     duration: selectors.config.selectVideos(state)[0].duration,
-    prototypes: selectors.data.selectAllPrototypesFlattened(state),
+    prototypes: selectors.data.selectVideoCodePrototypesOfCurrentSolutionFlattened(state),
     currentSolutionId: selectors.data.solutions.selectCurrentId(state),
 })
 

@@ -15,8 +15,8 @@ const VideoEditor: FC<Props> = (props) => {
 
     useShortCuts()
 
-    const [showMediaLane, toggleShowMediaLane] = useState(false)
-    const handleMediaLaneToggle = () => toggleShowMediaLane(!showMediaLane)
+    const [showMediaLane, setShowMediaLane] = useState(false)
+    const handleMediaLaneToggle = () => setShowMediaLane(!showMediaLane)
 
     return (
         <div className="video-editor" data-test-id="videoEditor">

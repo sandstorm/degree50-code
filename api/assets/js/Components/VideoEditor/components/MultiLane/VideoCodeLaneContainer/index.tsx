@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
-import { getComponentName } from '../index'
 import { TabsTypesEnum } from 'types'
-import VideoCodesMedialane from 'Components/VideoEditor/components/MultiLane/VideoCodeLaneContainer/VideoCodesMedialane'
+import VideoCodesMediaLane from 'Components/VideoEditor/components/MultiLane/VideoCodeLaneContainer/VideoCodesMedialane'
 import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { MediaItem, VideoCode, VideoCodePrototype } from 'Components/VideoEditor/types'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import MediaLaneDescription from '../MediaLaneDescription'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import getComponentName from 'Components/VideoEditor/components/MultiLane/getComponentName'
 
 const mergeCodesAndPrototypesToItems = (videoCodes: VideoCode[], prototypes: Record<string, VideoCodePrototype>) => {
     return videoCodes.map((videoCode) => {
@@ -48,29 +48,40 @@ const mapDispatchToProps = {}
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
+const componentName = getComponentName(TabsTypesEnum.VIDEO_CODES)
+
 const VideoCodeLaneContainer = (props: Props) => {
-    const componentName = getComponentName(TabsTypesEnum.VIDEO_CODES)
+    const renderExercisePhaseEditorMediaLane = useMemo(() => {
+        if (!props.isSolutionView && props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
+            const mediaItems = mergeCodesAndPrototypesToItems(props.videoCodes, props.prototypes)
 
-    if (!props.isSolutionView && props.exercisePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS) {
-        const mediaItems = mergeCodesAndPrototypesToItems(props.videoCodes, props.prototypes)
-        const ownerName = props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
+            return (
+                <div>
+                    <MediaLaneDescription
+                        componentName={componentName}
+                        itemCount={mediaItems.length}
+                        userName={props.currentSolutionOwner.userName}
+                        fromGroupPhase={props.currentIsFromGroupPhase}
+                    />
+                    <VideoCodesMediaLane mediaItems={mediaItems} readOnly={props.isReadonly} />
+                </div>
+            )
+        }
 
-        return (
-            <div>
-                <MediaLaneDescription
-                    componentName={getComponentName(TabsTypesEnum.VIDEO_CODES)}
-                    itemCount={mediaItems.length}
-                    userName={ownerName}
-                    isCurrent={true}
-                    fromGroupPhase={props.currentIsFromGroupPhase}
-                />
-                <VideoCodesMedialane mediaItems={mediaItems} readOnly={props.isReadonly} />
-            </div>
-        )
-    }
+        return null
+    }, [
+        props.currentIsFromGroupPhase,
+        props.currentSolutionOwner.userName,
+        props.exercisePhaseType,
+        props.isReadonly,
+        props.isSolutionView,
+        props.prototypes,
+        props.videoCodes,
+    ])
 
     return (
         <>
+            {renderExercisePhaseEditorMediaLane}
             {props.previousSolutions.map((solution) => {
                 const videoCodes = solution.solutionData.videoCodes.map((id) => props.videoCodesById[id])
                 const mediaItems = mergeCodesAndPrototypesToItems(videoCodes, props.prototypes)
@@ -83,7 +94,7 @@ const VideoCodeLaneContainer = (props: Props) => {
                             userName={solution.userName}
                             fromGroupPhase={solution.fromGroupPhase}
                         />
-                        <VideoCodesMedialane mediaItems={mediaItems} readOnly />
+                        <VideoCodesMediaLane mediaItems={mediaItems} readOnly />
                     </div>
                 )
             })}

@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { VideoEditorState, selectors as videoEditorSelectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import Filter from './Filter'
 import Toolbar from '../MediaLaneToolbar'
-import { MEDIA_LANE_HEIGHT, MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLaneRendering'
 import { TabsTypesEnum } from 'types'
 import {
     ComponentId,
@@ -16,26 +15,6 @@ import CutLaneContainer from './CutLaneContainer'
 import { useMediaLaneClick } from '../MediaLane/useMediaLaneClick'
 import MediaLaneToolbarItem from '../MediaLaneToolbar/MediaLaneToolbarItem'
 import LaneHeightMenu from './LaneHeightMenu'
-
-export const getComponentName = (componentId: ComponentId) => {
-    switch (componentId) {
-        case TabsTypesEnum.VIDEO_CODES: {
-            return 'Codierungen'
-        }
-
-        case TabsTypesEnum.VIDEO_ANNOTATIONS: {
-            return 'Annotationen'
-        }
-
-        case TabsTypesEnum.VIDEO_CUTTING: {
-            return 'Schnitte'
-        }
-
-        default: {
-            return '<Unbekannte Komponente>'
-        }
-    }
-}
 
 const getMediaLaneContainerComponentById = (componentId: ComponentId) => {
     switch (componentId) {

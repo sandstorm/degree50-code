@@ -36,6 +36,30 @@ const selectAllPrototypesList = createSelector([selectDenormalizedPrototypes], (
     }, [])
 })
 
+const selectAllVideoCodePrototypesOfCurrentSolution = createSelector(
+    [selectDenormalizedCurrentPrototypes],
+    (prototypes) => {
+        return prototypes.reduce((allPrototypes: VideoCodePrototype[], prototype) => {
+            if (prototype.parentId) {
+                return allPrototypes
+            }
+
+            const childCodes = prototypes.filter((p) => p.parentId === prototype.id)
+
+            return [...allPrototypes, { ...prototype, videoCodes: childCodes }]
+        }, [])
+    }
+)
+
+const selectVideoCodePrototypesOfCurrentSolutionFlattened = createSelector(
+    [selectAllVideoCodePrototypesOfCurrentSolution],
+    (prototypes) => {
+        return prototypes.reduce((allPrototypes: VideoCodePrototype[], prototype) => {
+            return [...allPrototypes, prototype, ...prototype.videoCodes]
+        }, [])
+    }
+)
+
 const selectAllPrototypesFlattened = createSelector([selectAllPrototypesList], (prototypes) => {
     return prototypes.reduce((allFlattenedPrototypes: VideoCodePrototype[], prototype) => {
         return [...allFlattenedPrototypes, prototype, ...prototype.videoCodes]
@@ -59,4 +83,5 @@ export const composedPrototypeSelectors = {
     selectAllPrototypesList,
     selectAllPrototypesFlattened,
     selectDenormalizedCurrentPrototypes,
+    selectVideoCodePrototypesOfCurrentSolutionFlattened,
 }

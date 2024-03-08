@@ -53,7 +53,7 @@ const Overlay: React.FC<OverlayProps> = (props) => {
     }
 
     const sizeClass = 'overlay--' + props.size
-    const className = props.isVisible === true ? 'overlay overlay--is-visible' : 'overlay'
+    const className = props.isVisible ? 'overlay overlay--is-visible' : 'overlay'
     return (
         <div className={className + ' ' + sizeClass}>
             <button className={'overlay__close button'} type="button" onClick={handleVisibilityToggle}>
