@@ -9,6 +9,8 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     # dozent & student can
     #   * view, edit, delete videos of himself
     #   * create videos for all assigned courses
+    # student without course can
+    #   * view, edit, delete videos of himself
     #
     #   ┌──────────┬────────────────────┬────────────────────┬───────────┬───────────┐
     #   │  Action  │        View        │       Create       │  Edit     │  Delete   │

@@ -8,18 +8,18 @@ import TeamMenu from 'Components/ToolbarItems/Team/TeamMenu'
 import ZusatzAttachmentMenu from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentMenu'
 
 const MaterialSolutionToolbar = () => {
-  return (
-    <div className="video-editor__toolbar">
-      <EditMaterialMenu />
-      <FinishReviewMenu />
-      <MaterialSolutionMenu />
-      <AufgabeMenu />
-      <ZusatzAttachmentMenu />
-      <TeamMenu />
-      <FilterMenu />
-      <ShortCutsMenu />
-    </div>
-  )
+    return (
+        <div className="video-editor__toolbar">
+            <EditMaterialMenu />
+            <FinishReviewMenu />
+            <MaterialSolutionMenu />
+            <AufgabeMenu />
+            <ZusatzAttachmentMenu />
+            <TeamMenu />
+            <FilterMenu />
+            <ShortCutsMenu />
+        </div>
+    )
 }
 
 export default MaterialSolutionToolbar

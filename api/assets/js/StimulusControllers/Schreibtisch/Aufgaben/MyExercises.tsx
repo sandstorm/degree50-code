@@ -4,20 +4,20 @@ import { ROUTE_AUFGABEN } from '../Schreibtisch'
 import ExerciseList from './ExerciseList/ExerciseList'
 
 const MyExercises = () => {
-  const { pathname } = useLocation()
+    const { pathname } = useLocation()
 
-  useEffect(() => {
-    if (pathname.includes(ROUTE_AUFGABEN)) {
-      // eslint-disable-next-line functional/immutable-data
-      document.title = 'Schreibtisch - Aufgaben'
-    }
-  }, [pathname])
+    useEffect(() => {
+        if (pathname.includes(ROUTE_AUFGABEN)) {
+            // eslint-disable-next-line functional/immutable-data
+            document.title = 'Schreibtisch - Aufgaben'
+        }
+    }, [pathname])
 
-  return (
-    <>
-      <ExerciseList />
-    </>
-  )
+    return (
+        <>
+            <ExerciseList />
+        </>
+    )
 }
 
 export default MyExercises

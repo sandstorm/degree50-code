@@ -2,8 +2,8 @@ import { MediaItem, MediaItemType } from '../types'
 import { hasConflictWithItem } from '../components/MediaLane/MediaItems/helpers'
 
 type ItemWithId = {
-  id: number
-  item: MediaItem<MediaItemType>
+    id: number
+    item: MediaItem<MediaItemType>
 }
 
 /**
@@ -12,52 +12,42 @@ type ItemWithId = {
  */
 // eslint-disable-next-line
 const trampoline = (f: Function) => {
-  return function trampolined(...args: unknown[]) {
-    // eslint-disable-next-line
+    return function trampolined(...args: unknown[]) {
+        // eslint-disable-next-line
     let result = f.bind(null, ...args)
 
-    while (typeof result === 'function') result = result()
+        while (typeof result === 'function') result = result()
 
-    return result
-  }
+        return result
+    }
 }
 
 /**
  * Finds all items in a list that do have no overlap any other item of the list or with an additional item which can optionally be given as another argument.
  */
 export const findNonOverlappingItemsRecursively = trampoline(
-  (
-    mediaItemsWithIds: ItemWithId[],
-    additionalItemToCompareWith?: ItemWithId,
-    acc: ItemWithId[] = []
-  ) => {
-    if (mediaItemsWithIds.length < 1) {
-      return acc
+    (mediaItemsWithIds: ItemWithId[], additionalItemToCompareWith?: ItemWithId, acc: ItemWithId[] = []) => {
+        if (mediaItemsWithIds.length < 1) {
+            return acc
+        }
+
+        const [head, ...tail] = mediaItemsWithIds
+
+        const hasConflictWithAdditionalItem =
+            additionalItemToCompareWith && head
+                ? hasConflictWithItem(additionalItemToCompareWith.item, head.item)
+                : false
+
+        const hasConflictWithFollowingItem = tail.reduce((acc, item) => {
+            return acc || hasConflictWithItem(head.item, item.item)
+        }, false)
+
+        const hasConflict = hasConflictWithFollowingItem || hasConflictWithAdditionalItem
+
+        const newAcc = [...acc, ...(hasConflict ? [] : [head])]
+
+        return () => findNonOverlappingItemsRecursively(tail, additionalItemToCompareWith, newAcc)
     }
-
-    const [head, ...tail] = mediaItemsWithIds
-
-    const hasConflictWithAdditionalItem =
-      additionalItemToCompareWith && head
-        ? hasConflictWithItem(additionalItemToCompareWith.item, head.item)
-        : false
-
-    const hasConflictWithFollowingItem = tail.reduce((acc, item) => {
-      return acc || hasConflictWithItem(head.item, item.item)
-    }, false)
-
-    const hasConflict =
-      hasConflictWithFollowingItem || hasConflictWithAdditionalItem
-
-    const newAcc = [...acc, ...(hasConflict ? [] : [head])]
-
-    return () =>
-      findNonOverlappingItemsRecursively(
-        tail,
-        additionalItemToCompareWith,
-        newAcc
-      )
-  }
 )
 
 /**
@@ -69,59 +59,52 @@ export const findNonOverlappingItemsRecursively = trampoline(
  *
  * NOTE: This still does not work perfectly, as the way items are placed is not transparent to the user and feels random (bad UX)
  */
-export const solveConflicts = (
-  mediaItems: MediaItem<MediaItemType>[]
-): MediaItem<MediaItemType>[] => {
-  const sortedMediaItems = [...mediaItems].sort(
-    (a: MediaItem<MediaItemType>, b: MediaItem<MediaItemType>) => {
-      if (a.startTime < b.startTime) {
-        return -1
-      } else if (a.startTime > b.startTime) {
-        return 1
-      }
-      return 0
-    }
-  )
+export const solveConflicts = (mediaItems: MediaItem<MediaItemType>[]): MediaItem<MediaItemType>[] => {
+    const sortedMediaItems = [...mediaItems].sort((a: MediaItem<MediaItemType>, b: MediaItem<MediaItemType>) => {
+        if (a.startTime < b.startTime) {
+            return -1
+        } else if (a.startTime > b.startTime) {
+            return 1
+        }
+        return 0
+    })
 
-  // FIXME as soon as all items have an id by default, remove the temporary ids and use
-  // the actual ones
-  const itemsWithTemporaryIds = sortedMediaItems.map((item, index) => ({
-    id: index,
-    item,
-  }))
+    // FIXME as soon as all items have an id by default, remove the temporary ids and use
+    // the actual ones
+    const itemsWithTemporaryIds = sortedMediaItems.map((item, index) => ({
+        id: index,
+        item,
+    }))
 
-  const assignmentResult = itemsWithTemporaryIds.reduce(
-    (acc, _, index) => {
-      if (!acc.itemsToProcess.length) {
-        return acc
-      }
+    const assignmentResult = itemsWithTemporaryIds.reduce(
+        (acc, _, index) => {
+            if (!acc.itemsToProcess.length) {
+                return acc
+            }
 
-      const [head, ...tail] = acc.itemsToProcess
+            const [head, ...tail] = acc.itemsToProcess
 
-      const nonOverlappingItems = [
-        head,
-        ...findNonOverlappingItemsRecursively(tail, head),
-      ]
+            const nonOverlappingItems = [head, ...findNonOverlappingItemsRecursively(tail, head)]
 
-      const newAssignedItems = nonOverlappingItems.map((item) => ({
-        ...item,
-        item: new MediaItem({
-          ...item.item,
-          lane: index,
-        }),
-      }))
+            const newAssignedItems = nonOverlappingItems.map((item) => ({
+                ...item,
+                item: new MediaItem({
+                    ...item.item,
+                    lane: index,
+                }),
+            }))
 
-      const remainingItemsToProcess = acc.itemsToProcess.filter(
-        (item) => !newAssignedItems.find((assigned) => assigned.id === item.id)
-      )
+            const remainingItemsToProcess = acc.itemsToProcess.filter(
+                (item) => !newAssignedItems.find((assigned) => assigned.id === item.id)
+            )
 
-      return {
-        assignedItems: [...acc.assignedItems, ...newAssignedItems],
-        itemsToProcess: remainingItemsToProcess,
-      }
-    },
-    { assignedItems: [] as ItemWithId[], itemsToProcess: itemsWithTemporaryIds }
-  )
+            return {
+                assignedItems: [...acc.assignedItems, ...newAssignedItems],
+                itemsToProcess: remainingItemsToProcess,
+            }
+        },
+        { assignedItems: [] as ItemWithId[], itemsToProcess: itemsWithTemporaryIds }
+    )
 
-  return assignmentResult.assignedItems.map((item) => item.item)
+    return assignmentResult.assignedItems.map((item) => item.item)
 }

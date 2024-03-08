@@ -7,15 +7,15 @@ import Button from 'Components/Button/Button'
 export const prefix = 'MATERIAL_SOLUTION'
 
 export const MaterialSolutionMenuOverlayIds = {
-  compare: `${prefix}/compare`,
+    compare: `${prefix}/compare`,
 }
 
 const mapStateToProps = (state: AppState) => {
-  return {}
+    return {}
 }
 
 const mapDispatchToProps = {
-  setOverlay: actions.videoEditor.overlay.setOverlay,
+    setOverlay: actions.videoEditor.overlay.setOverlay,
 }
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
@@ -27,24 +27,24 @@ type Props = PropsFromRedux
 const menuButtonAriaLabel = 'Lösung Auswählen und Vergleichen'
 
 const MaterialSolutionMenu = (props: Props) => {
-  const { setOverlay } = props
+    const { setOverlay } = props
 
-  return (
-    <div className="video-editor__menu">
-      <Button
-        title={menuButtonAriaLabel}
-        className="button button--type-primary video-editor__toolbar__button"
-        onPress={() =>
-          setOverlay({
-            overlayId: MaterialSolutionMenuOverlayIds.compare,
-            closeOthers: true,
-          })
-        }
-      >
-        <i className="fa-solid fa-eye" />
-      </Button>
-    </div>
-  )
+    return (
+        <div className="video-editor__menu">
+            <Button
+                title={menuButtonAriaLabel}
+                className="button button--type-primary video-editor__toolbar__button"
+                onPress={() =>
+                    setOverlay({
+                        overlayId: MaterialSolutionMenuOverlayIds.compare,
+                        closeOthers: true,
+                    })
+                }
+            >
+                <i className="fa-solid fa-eye" />
+            </Button>
+        </div>
+    )
 }
 
 export default connector(React.memo(MaterialSolutionMenu))

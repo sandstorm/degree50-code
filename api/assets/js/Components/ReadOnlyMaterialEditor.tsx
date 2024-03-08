@@ -5,13 +5,11 @@ import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlic
 import { useShortCuts } from 'Components/ToolbarItems/ShortCutsContext/useShortCuts'
 
 const ReadOnlyMaterialEditor = () => {
-  useShortCuts()
+    useShortCuts()
 
-  const material = useAppSelector(
-    selectors.data.selectMaterialOfCurrentSolution
-  )
+    const material = useAppSelector(selectors.data.selectMaterialOfCurrentSolution)
 
-  return <MaterialEditor material={material?.material} readonly />
+    return <MaterialEditor material={material?.material} readonly />
 }
 
 export default React.memo(ReadOnlyMaterialEditor)

@@ -4,9 +4,9 @@ import FachbereichFilterSlice from 'StimulusControllers/Schreibtisch/Store/Fachb
 import CourseFilterSlice from 'StimulusControllers/Schreibtisch/Store/CourseFilterSlice'
 
 export const RootSlice = combineReducers({
-  [SchreibtischApi.reducerPath]: SchreibtischApi.reducer,
-  filters: combineReducers({
-    fachbereich: FachbereichFilterSlice.reducer,
-    course: CourseFilterSlice.reducer,
-  }),
+    [SchreibtischApi.reducerPath]: SchreibtischApi.reducer,
+    filters: combineReducers({
+        fachbereich: FachbereichFilterSlice.reducer,
+        course: CourseFilterSlice.reducer,
+    }),
 })

@@ -7,81 +7,70 @@ import { VideoCodePrototype } from 'Components/VideoEditor/types'
 import Button from 'Components/Button/Button'
 import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 import {
-  ConfigStateSlice,
-  selectors as configSelectors,
+    ConfigStateSlice,
+    selectors as configSelectors,
 } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 
 type OwnProps = {
-  videoCodePrototypes: VideoCodePrototype[]
-  parentPrototype?: VideoCodePrototype
+    videoCodePrototypes: VideoCodePrototype[]
+    parentPrototype?: VideoCodePrototype
 }
 
 const mapStateToProps = (state: ConfigStateSlice) => {
-  const isSolutionView = configSelectors.selectIsSolutionView(state)
+    const isSolutionView = configSelectors.selectIsSolutionView(state)
 
-  return {
-    isSolutionView,
-  }
+    return {
+        isSolutionView,
+    }
 }
 
 const mapDispatchToProps = {
-  createVideoCodePrototype: actions.data.videoCodePrototypes.append,
-  removeVideoCodePrototype: actions.data.videoCodePrototypes.remove,
-  syncSolution: syncSolutionAction,
-  openOverlay: actions.videoEditor.overlay.setOverlay,
-  setCurrentlyEditedElementId:
-    actions.videoEditor.overlay.setCurrentlyEditedElementId,
-  setCurrentlyEditedElementParentId:
-    actions.videoEditor.overlay.setCurrentlyEditedElementParentId,
+    createVideoCodePrototype: actions.data.videoCodePrototypes.append,
+    removeVideoCodePrototype: actions.data.videoCodePrototypes.remove,
+    syncSolution: syncSolutionAction,
+    openOverlay: actions.videoEditor.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.videoEditor.overlay.setCurrentlyEditedElementId,
+    setCurrentlyEditedElementParentId: actions.videoEditor.overlay.setCurrentlyEditedElementParentId,
 }
 
-type Props = ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps &
-  OwnProps
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const PrototypeList = (props: Props) => {
-  const handleAdd = () => {
-    props.setCurrentlyEditedElementId(undefined)
-    props.setCurrentlyEditedElementParentId(props.parentPrototype?.id)
-    props.openOverlay({
-      overlayId: VideoCodeOverlayIds.editPrototype,
-      closeOthers: false,
-    })
-  }
+    const handleAdd = () => {
+        props.setCurrentlyEditedElementId(undefined)
+        props.setCurrentlyEditedElementParentId(props.parentPrototype?.id)
+        props.openOverlay({
+            overlayId: VideoCodeOverlayIds.editPrototype,
+            closeOthers: false,
+        })
+    }
 
-  return (
-    <>
-      {props.videoCodePrototypes?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
-        <ul className="video-editor__video-codes">
-          {props.videoCodePrototypes.map((prototype) => (
-            <PrototypeEntry
-              key={prototype.id}
-              videoCodePrototype={prototype}
-              parentPrototype={props.parentPrototype}
-            />
-          ))}
-        </ul>
-      ) : null}
+    return (
+        <>
+            {props.videoCodePrototypes?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
+                <ul className="video-editor__video-codes">
+                    {props.videoCodePrototypes.map((prototype) => (
+                        <PrototypeEntry
+                            key={prototype.id}
+                            videoCodePrototype={prototype}
+                            parentPrototype={props.parentPrototype}
+                        />
+                    ))}
+                </ul>
+            ) : null}
 
-      {!props.isSolutionView && (
-        <Button
-          title={`Neuen ${
-            props.parentPrototype ? 'Untercode' : 'Code'
-          } erstellen`}
-          className={
-            'button button--type-outline-primary button--block button--size-small'
-          }
-          onPress={handleAdd}
-        >
-          <i className="fas fa-plus" />
-          {`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
-        </Button>
-      )}
-    </>
-  )
+            {!props.isSolutionView && (
+                <Button
+                    title={`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
+                    className={'button button--type-outline-primary button--block button--size-small'}
+                    onPress={handleAdd}
+                >
+                    <i className="fas fa-plus" />
+                    {`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
+                </Button>
+            )}
+        </>
+    )
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(React.memo(PrototypeList))
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(PrototypeList))

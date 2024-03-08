@@ -1,12 +1,6 @@
 import React, { useRef } from 'react'
-import {
-  useAppDispatch,
-  useAppSelector,
-} from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
-import {
-  actions,
-  selectors,
-} from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { useAppDispatch, useAppSelector } from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { syncSolutionAction } from 'StimulusControllers/ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { Material } from 'StimulusControllers/ExerciseAndSolutionStore/MaterialsSlice'
 import MaterialEditor from './MaterialEditor'
@@ -14,48 +8,32 @@ import { ExercisePhaseStatus } from './VideoEditor/types'
 import { useShortCuts } from 'Components/ToolbarItems/ShortCutsContext/useShortCuts'
 
 const EditMaterialEditor = () => {
-  useShortCuts()
+    useShortCuts()
 
-  const material = useAppSelector(
-    selectors.data.selectMaterialOfCurrentSolution
-  )
+    const material = useAppSelector(selectors.data.selectMaterialOfCurrentSolution)
 
-  const userIsCurrentEditor = useAppSelector(
-    selectors.selectUserIsCurrentEditor
-  )
-  const currentSolutionStatus = useAppSelector(
-    selectors.data.solutions.selectCurrentSolutionStatus
-  )
+    const userIsCurrentEditor = useAppSelector(selectors.selectUserIsCurrentEditor)
+    const currentSolutionStatus = useAppSelector(selectors.data.solutions.selectCurrentSolutionStatus)
 
-  const isReadonly =
-    !userIsCurrentEditor ||
-    currentSolutionStatus !== ExercisePhaseStatus.IN_BEARBEITUNG
+    const isReadonly = !userIsCurrentEditor || currentSolutionStatus !== ExercisePhaseStatus.IN_BEARBEITUNG
 
-  const initialMaterial = useRef(material?.material ?? '')
+    const initialMaterial = useRef(material?.material ?? '')
 
-  const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch()
 
-  const handleChange = (newValue: string) => {
-    if (material !== undefined) {
-      const updatedMaterial: Material = {
-        ...material,
-        material: newValue,
-      }
+    const handleChange = (newValue: string) => {
+        if (material !== undefined) {
+            const updatedMaterial: Material = {
+                ...material,
+                material: newValue,
+            }
 
-      dispatch(
-        actions.data.materials.updateMaterial({ material: updatedMaterial })
-      )
-      dispatch(syncSolutionAction())
+            dispatch(actions.data.materials.updateMaterial({ material: updatedMaterial }))
+            dispatch(syncSolutionAction())
+        }
     }
-  }
 
-  return (
-    <MaterialEditor
-      material={initialMaterial.current}
-      onChange={handleChange}
-      readonly={isReadonly}
-    />
-  )
+    return <MaterialEditor material={initialMaterial.current} onChange={handleChange} readonly={isReadonly} />
 }
 
 export default React.memo(EditMaterialEditor)

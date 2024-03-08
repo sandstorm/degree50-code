@@ -10,30 +10,24 @@ import Modal from './Modal'
 // Otherwise your modals will share their visibility state which might lead
 // to overlapping and unclosable elements.
 export const useModalHook = () => {
-  const state = useOverlayTriggerState({})
+    const state = useOverlayTriggerState({})
 
-  const showModal = () => state.open()
-  const hideModal = () => state.close()
+    const showModal = () => state.open()
+    const hideModal = () => state.close()
 
-  const RenderModal = ({
-    children,
-    title,
-  }: {
-    children: React.ReactChild
-    title: string
-  }) => (
-    <React.Fragment>
-      {state.isOpen && (
-        <Modal closeModal={hideModal} isVisible title={title}>
-          {children}
-        </Modal>
-      )}
-    </React.Fragment>
-  )
+    const RenderModal = ({ children, title }: { children: React.ReactChild; title: string }) => (
+        <React.Fragment>
+            {state.isOpen && (
+                <Modal closeModal={hideModal} isVisible title={title}>
+                    {children}
+                </Modal>
+            )}
+        </React.Fragment>
+    )
 
-  return {
-    showModal,
-    hideModal,
-    RenderModal,
-  }
+    return {
+        showModal,
+        hideModal,
+        RenderModal,
+    }
 }

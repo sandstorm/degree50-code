@@ -11,41 +11,41 @@ import { useAppSelector } from 'StimulusControllers/ExerciseAndSolutionStore/hoo
 import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 
 type Props = {
-  type: ExercisePhaseTypesEnum
+    type: ExercisePhaseTypesEnum
 }
 
 export const ExercisePhaseApp = (props: Props) => {
-  // react-aria-modal watches a container element for aria-modal nodes and
-  // hides the rest of the dom from screen readers with aria-hidden when one is open.
-  watchModals()
+    // react-aria-modal watches a container element for aria-modal nodes and
+    // hides the rest of the dom from screen readers with aria-hidden when one is open.
+    watchModals()
 
-  const isCurrentEditor = useAppSelector(selectors.selectUserIsCurrentEditor)
+    const isCurrentEditor = useAppSelector(selectors.selectUserIsCurrentEditor)
 
-  const ref: React.RefObject<HTMLDivElement> = useRef(null)
+    const ref: React.RefObject<HTMLDivElement> = useRef(null)
 
-  // FIXME
-  // We are currently unsure if we still need this.
-  // Therefore we should properly test if it works without this observer and if
-  // so remove it.
-  const { height } = useDebouncedResizeObserver(ref, 500)
+    // FIXME
+    // We are currently unsure if we still need this.
+    // Therefore we should properly test if it works without this observer and if
+    // so remove it.
+    const { height } = useDebouncedResizeObserver(ref, 500)
 
-  const PhaseComponent = useMemo(
-    () =>
-      props.type === ExercisePhaseTypesEnum.MATERIAL
-        ? isCurrentEditor
-          ? EditMaterialEditor
-          : ReadOnlyMaterialEditor
-        : VideoAnalysis,
-    [props.type, isCurrentEditor]
-  )
+    const PhaseComponent = useMemo(
+        () =>
+            props.type === ExercisePhaseTypesEnum.MATERIAL
+                ? isCurrentEditor
+                    ? EditMaterialEditor
+                    : ReadOnlyMaterialEditor
+                : VideoAnalysis,
+        [props.type, isCurrentEditor]
+    )
 
-  return (
-    <I18nProvider locale="de-DE">
-      <OverlayProvider className={'exercise-phase__inner solutions-container'}>
-        <div className={'exercise-phase__content'} ref={ref}>
-          {height > 0 && <PhaseComponent />}
-        </div>
-      </OverlayProvider>
-    </I18nProvider>
-  )
+    return (
+        <I18nProvider locale="de-DE">
+            <OverlayProvider className={'exercise-phase__inner solutions-container'}>
+                <div className={'exercise-phase__content'} ref={ref}>
+                    {height > 0 && <PhaseComponent />}
+                </div>
+            </OverlayProvider>
+        </I18nProvider>
+    )
 }

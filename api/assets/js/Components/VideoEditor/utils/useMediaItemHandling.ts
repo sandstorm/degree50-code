@@ -6,14 +6,11 @@ import { notify } from '.'
 import { secondToTime } from './time'
 import { MediaItem } from '../types'
 
-export const getNewMediaItemStartAndEnd = (
-  currentTime: number,
-  duration: number
-) => {
-  const start = secondToTime(currentTime)
-  const end = secondToTime(Math.ceil(currentTime + duration / 10))
+export const getNewMediaItemStartAndEnd = (currentTime: number, duration: number) => {
+    const start = secondToTime(currentTime)
+    const end = secondToTime(Math.ceil(currentTime + duration / 10))
 
-  return { start, end }
+    return { start, end }
 }
 
 // TODO refactor this and:
@@ -26,128 +23,112 @@ export const getNewMediaItemStartAndEnd = (
 // is rather going to upload subtitle files themselves.
 
 export const useMediaItemHandling = <T>({
-  mediaItems,
-  setMediaItems,
-  updateCallback,
-  updateCondition,
-  worker,
+    mediaItems,
+    setMediaItems,
+    updateCallback,
+    updateCondition,
+    worker,
 }: {
-  mediaItems: Array<MediaItem<T>>
-  setMediaItems: (mediaItems: Array<T>) => void
-  updateCallback: () => void
-  updateCondition: boolean
-  worker?: Worker
+    mediaItems: Array<MediaItem<T>>
+    setMediaItems: (mediaItems: Array<T>) => void
+    updateCallback: () => void
+    updateCondition: boolean
+    worker?: Worker
 }) => {
-  // MediaItem currently playing index
-  const [currentIndex, setCurrentIndex] = useState(-1)
+    // MediaItem currently playing index
+    const [currentIndex, setCurrentIndex] = useState(-1)
 
-  // MediaItem currently playing time
-  const [currentTimeForMediaItems, setCurrentTimeForMediaItems] = useState(0)
+    // MediaItem currently playing time
+    const [currentTimeForMediaItems, setCurrentTimeForMediaItems] = useState(0)
 
-  // Only way to update all mediaItems
-  const updateMediaItems = (items: Array<MediaItem<T>>, force = false) => {
-    const notEqualToPreviousItems = !isEqual(items, mediaItems)
+    // Only way to update all mediaItems
+    const updateMediaItems = (items: Array<MediaItem<T>>, force = false) => {
+        const notEqualToPreviousItems = !isEqual(items, mediaItems)
 
-    if (force || (updateCondition && notEqualToPreviousItems)) {
-      const updatedItems = JSON.parse(JSON.stringify(items))
+        if (force || (updateCondition && notEqualToPreviousItems)) {
+            const updatedItems = JSON.parse(JSON.stringify(items))
 
-      // This makes sure that all properties from the original item will be written back to the store
-      // E.g. the 'url' property of a cut
-      const convertedToOriginalStructure = updatedItems.map(
-        (item: MediaItem<T>): T => {
-          const { originalData, ...rest } = item
+            // This makes sure that all properties from the original item will be written back to the store
+            // E.g. the 'url' property of a cut
+            const convertedToOriginalStructure = updatedItems.map((item: MediaItem<T>): T => {
+                const { originalData, ...rest } = item
 
-          return {
-            ...originalData,
-            ...rest,
-          }
+                return {
+                    ...originalData,
+                    ...rest,
+                }
+            })
+
+            setMediaItems(convertedToOriginalStructure)
+            updateCallback()
+
+            if (worker) {
+                worker.postMessage(items)
+            }
         }
-      )
-
-      setMediaItems(convertedToOriginalStructure)
-      updateCallback()
-
-      if (worker) {
-        worker.postMessage(items)
-      }
     }
-  }
 
-  useEffect(() => {
-    setCurrentIndex(
-      mediaItems.findIndex(
-        (item) =>
-          item.startTime <= currentTimeForMediaItems &&
-          item.endTime > currentTimeForMediaItems
-      )
-    )
+    useEffect(() => {
+        setCurrentIndex(
+            mediaItems.findIndex(
+                (item) => item.startTime <= currentTimeForMediaItems && item.endTime > currentTimeForMediaItems
+            )
+        )
 
-    if (worker) {
-      // Takes care of the mediaItems which overlay the video
-      worker.postMessage(mediaItems)
-    }
-  }, [worker])
+        if (worker) {
+            // Takes care of the mediaItems which overlay the video
+            worker.postMessage(mediaItems)
+        }
+    }, [worker])
 
-  // Update current index from current time
-  useMemo(() => {
-    setCurrentIndex(
-      mediaItems.findIndex(
-        (item) =>
-          item.startTime <= currentTimeForMediaItems &&
-          item.endTime > currentTimeForMediaItems
-      )
-    )
-  }, [currentTimeForMediaItems, setCurrentIndex])
+    // Update current index from current time
+    useMemo(() => {
+        setCurrentIndex(
+            mediaItems.findIndex(
+                (item) => item.startTime <= currentTimeForMediaItems && item.endTime > currentTimeForMediaItems
+            )
+        )
+    }, [currentTimeForMediaItems, setCurrentIndex])
 
-  // Detect if the mediaItem exists (referential check)
-  const hasMediaItem = useCallback(
-    (item) => mediaItems.indexOf(item),
-    [mediaItems]
-  )
+    // Detect if the mediaItem exists (referential check)
+    const hasMediaItem = useCallback((item) => mediaItems.indexOf(item), [mediaItems])
 
-  // Copy all mediaItems
-  const copyMediaItems = useCallback(
-    () => mediaItems.map((item) => item.clone),
-    [mediaItems]
-  )
+    // Copy all mediaItems
+    const copyMediaItems = useCallback(() => mediaItems.map((item) => item.clone), [mediaItems])
 
-  /**
-   * @deprecated
-   * update a single mediaItem
-   */
-  const updateMediaItem = useCallback(
-    (item: MediaItem<T>, updatedValues: Record<string, unknown>) => {
-      const index = hasMediaItem(item)
+    /**
+     * @deprecated
+     * update a single mediaItem
+     */
+    const updateMediaItem = useCallback(
+        (item: MediaItem<T>, updatedValues: Record<string, unknown>) => {
+            const index = hasMediaItem(item)
 
-      if (index < 0) return
+            if (index < 0) return
 
-      const copiedItems = copyMediaItems()
-      const { clone } = item
+            const copiedItems = copyMediaItems()
+            const { clone } = item
 
-      // eslint-disable-next-line
+            // eslint-disable-next-line
       Object.assign(clone, updatedValues)
 
-      if (clone.check) {
-        updateMediaItems([
-          ...copiedItems.slice(0, index),
-          clone,
-          ...copiedItems.slice(index + 1),
-        ])
-      } else {
-        notify(t('parameter-error'), 'error')
-      }
-    },
-    [hasMediaItem, copyMediaItems, updateMediaItems]
-  )
+            if (clone.check) {
+                updateMediaItems([...copiedItems.slice(0, index), clone, ...copiedItems.slice(index + 1)])
+            } else {
+                notify(t('parameter-error'), 'error')
+            }
+        },
+        [hasMediaItem, copyMediaItems, updateMediaItems]
+    )
 
-  return {
-    currentIndex,
-    currentTimeForMediaItems,
-    setCurrentIndex,
-    setCurrentTimeForMediaItems,
-    updateMediaItem,
-    hasMediaItem,
-    updateMediaItems,
-    copyMediaItems,
-  }
+    return {
+        currentIndex,
+        currentTimeForMediaItems,
+        setCurrentIndex,
+        setCurrentTimeForMediaItems,
+        updateMediaItem,
+        hasMediaItem,
+        updateMediaItems,
+        copyMediaItems,
+    }
 }

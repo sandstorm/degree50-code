@@ -5,48 +5,48 @@ import { AppState } from './Store'
 export type MaterialId = string
 
 export type Material = {
-  id: string
-  material: string
-  solutionId: string
+    id: string
+    material: string
+    solutionId: string
 }
 
 export type MaterialsState = {
-  allIds: Array<MaterialId>
-  byId: Record<MaterialId, Material>
+    allIds: Array<MaterialId>
+    byId: Record<MaterialId, Material>
 }
 
 export const initialState: MaterialsState = {
-  allIds: [],
-  byId: {},
+    allIds: [],
+    byId: {},
 }
 
 const MaterialsSlice = createSlice({
-  name: 'materials',
-  initialState,
-  reducers: {
-    updateMaterial: (state, action: PayloadAction<{ material: Material }>) => {
-      const { material } = action.payload
+    name: 'materials',
+    initialState,
+    reducers: {
+        updateMaterial: (state, action: PayloadAction<{ material: Material }>) => {
+            const { material } = action.payload
 
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [material.id]: material,
+            return {
+                ...state,
+                byId: {
+                    ...state.byId,
+                    [material.id]: material,
+                },
+            }
         },
-      }
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(initData, (_, action) => {
-      return action.payload.materials
-    })
-  },
+    extraReducers: (builder) => {
+        builder.addCase(initData, (_, action) => {
+            return action.payload.materials
+        })
+    },
 })
 
 const byId = (state: AppState) => state.data.materials.byId
 
 export const selectors = {
-  byId,
+    byId,
 }
 
 export default MaterialsSlice

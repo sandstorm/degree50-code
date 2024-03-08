@@ -11,25 +11,25 @@ import ZusatzAttachmentMenu from 'Components/ToolbarItems/ZusatzAttachment/Zusat
 import React, { FC, ReactNode } from 'react'
 
 type OwnProps = {
-  children?: ReactNode
+    children?: ReactNode
 }
 
 const Toolbar: FC<OwnProps> = (props) => {
-  return (
-    <div className="video-editor__toolbar">
-      <AllMediaItemsMenu />
-      <AnnotationsMenu />
-      <VideoCodesMenu />
-      <CuttingMenu />
-      <AufgabeMenu />
-      <ZusatzAttachmentMenu />
-      <TeamMenu />
-      <FilterMenu />
-      <ToggleVideoFavorite />
-      <ShortCutsMenu />
-      {props.children}
-    </div>
-  )
+    return (
+        <div className="video-editor__toolbar">
+            <AllMediaItemsMenu />
+            <AnnotationsMenu />
+            <VideoCodesMenu />
+            <CuttingMenu />
+            <AufgabeMenu />
+            <ZusatzAttachmentMenu />
+            <TeamMenu />
+            <FilterMenu />
+            <ToggleVideoFavorite />
+            <ShortCutsMenu />
+            {props.children}
+        </div>
+    )
 }
 
 export default Toolbar
