@@ -66,6 +66,7 @@ const AnnotationLaneContainer = (props: Props) => {
                         itemCount={solution.annotations.length}
                         userName={solution.userName}
                         fromGroupPhase={solution.fromGroupPhase}
+                        isPreviousSolution={true}
                     />
                     <AnnotationLane annotations={solution.annotations} readOnly />
                 </div>

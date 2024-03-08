@@ -93,6 +93,7 @@ const VideoCodeLaneContainer = (props: Props) => {
                             itemCount={mediaItems.length}
                             userName={solution.userName}
                             fromGroupPhase={solution.fromGroupPhase}
+                            isPreviousSolution={true}
                         />
                         <VideoCodesMediaLane mediaItems={mediaItems} readOnly />
                     </div>
