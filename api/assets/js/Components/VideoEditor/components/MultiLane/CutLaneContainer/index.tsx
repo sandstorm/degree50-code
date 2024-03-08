@@ -8,19 +8,17 @@ import MediaLaneDescription from '../MediaLaneDescription'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mapStateToProps = (state: AppState) => {
-  const currentSolutionId = selectors.data.solutions.selectCurrentId(state)
-  const isReadonly = !selectors.selectUserCanEditSolution(state, {
-    solutionId: currentSolutionId,
-  })
+    const currentSolutionId = selectors.data.solutions.selectCurrentId(state)
+    const isReadonly = !selectors.selectUserCanEditSolution(state, {
+        solutionId: currentSolutionId,
+    })
 
-  return {
-    cuts: selectors.data.selectCurrentCutListByStartTime(state),
-    currentSolutionOwner:
-      selectors.data.solutions.selectCurrentSolutionOwner(state),
-    currentIsFromGroupPhase:
-      selectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
-    isReadonly,
-  }
+    return {
+        cuts: selectors.data.selectCurrentCutListByStartTime(state),
+        currentSolutionOwner: selectors.data.solutions.selectCurrentSolutionOwner(state),
+        currentIsFromGroupPhase: selectors.data.solutions.selectCurrentSolutionFromGroupPhase(state),
+        isReadonly,
+    }
 }
 
 const mapDispatchToProps = {}
@@ -28,25 +26,21 @@ const mapDispatchToProps = {}
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const CutLaneContainer = (props: Props) => {
-  const ownerName =
-    props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
-  return (
-    <>
-      <div>
-        <MediaLaneDescription
-          componentName={getComponentName(TabsTypesEnum.VIDEO_CUTTING)}
-          itemCount={props.cuts.length}
-          userName={ownerName}
-          isCurrent={true}
-          fromGroupPhase={props.currentIsFromGroupPhase}
-        />
-        <VideoCutMedialane cuts={props.cuts} readOnly={props.isReadonly} />
-      </div>
-    </>
-  )
+    const ownerName = props.currentSolutionOwner.userName ?? '<Unbekannter Nutzer>'
+    return (
+        <>
+            <div>
+                <MediaLaneDescription
+                    componentName={getComponentName(TabsTypesEnum.VIDEO_CUTTING)}
+                    itemCount={props.cuts.length}
+                    userName={ownerName}
+                    isCurrent={true}
+                    fromGroupPhase={props.currentIsFromGroupPhase}
+                />
+                <VideoCutMedialane cuts={props.cuts} readOnly={props.isReadonly} />
+            </div>
+        </>
+    )
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(React.memo(CutLaneContainer))
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(CutLaneContainer))

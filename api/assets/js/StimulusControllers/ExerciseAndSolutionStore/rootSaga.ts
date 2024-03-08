@@ -10,31 +10,31 @@ import solutionSaga from '../ExercisePhaseApp/Components/Solution/SolutionSaga'
 import { AppState } from './Store'
 
 const sagas = [
-  presenceSaga,
-  solutionSaga,
-  shortCutsSaga,
-  setCurrentTimeAsValueShortCutSaga,
-  shortCutSoundsSaga,
-  togglePlayShortCutSaga,
-  openOverlayShortCutSaga,
-  setPlayerTimeControlSaga,
+    presenceSaga,
+    solutionSaga,
+    shortCutsSaga,
+    setCurrentTimeAsValueShortCutSaga,
+    shortCutSoundsSaga,
+    togglePlayShortCutSaga,
+    openOverlayShortCutSaga,
+    setPlayerTimeControlSaga,
 ]
 
 export default function* rootSaga() {
-  yield all(
-    sagas.map((saga) =>
-      spawn(function* () {
-        while (true) {
-          try {
-            yield call(saga)
-            break
-          } catch (e) {
-            console.error(e)
-          }
-        }
-      })
+    yield all(
+        sagas.map((saga) =>
+            spawn(function* () {
+                while (true) {
+                    try {
+                        yield call(saga)
+                        break
+                    } catch (e) {
+                        console.error(e)
+                    }
+                }
+            })
+        )
     )
-  )
 }
 
 /**
@@ -47,6 +47,6 @@ export default function* rootSaga() {
  *  const mercureEndpoint = selectMercureEndpoint(yield* selectState()) // mercureEndpoint: string
  */
 export function* selectState() {
-  const state: AppState = yield select()
-  return state
+    const state: AppState = yield select()
+    return state
 }

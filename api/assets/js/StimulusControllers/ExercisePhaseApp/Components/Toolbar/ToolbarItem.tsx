@@ -3,18 +3,18 @@ import { Component } from './Toolbar'
 import Button from 'Components/Button/Button'
 
 type ToolbarItemProps = {
-  component: Component
-  toggleComponent: (component: Component) => void
+    component: Component
+    toggleComponent: (component: Component) => void
 }
 
 export function ToolbarItem({ component, toggleComponent }: ToolbarItemProps) {
-  return (
-    <Button
-      onPress={() => toggleComponent(component)}
-      aria-label={component.label}
-      className={'toolbar-item button button--type-primary'}
-    >
-      <i className={component.icon} />
-    </Button>
-  )
+    return (
+        <Button
+            onPress={() => toggleComponent(component)}
+            aria-label={component.label}
+            className={'toolbar-item button button--type-primary'}
+        >
+            <i className={component.icon} />
+        </Button>
+    )
 }

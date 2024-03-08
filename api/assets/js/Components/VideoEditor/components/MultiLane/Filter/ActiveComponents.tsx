@@ -5,47 +5,44 @@ import { connect } from 'react-redux'
 import { FilterStateSlice } from 'Components/ToolbarItems/FilterContext/FilterSlice'
 
 const mapStateToProps = (state: FilterStateSlice) => {
-  return {
-    components: selectors.filter.selectComponents(state),
-  }
+    return {
+        components: selectors.filter.selectComponents(state),
+    }
 }
 
 const mapDispatchToProps = {
-  toggleComponent: actions.filter.toggleComponent,
+    toggleComponent: actions.filter.toggleComponent,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const ActiveComponents = (props: Props) => {
-  const handleToggle = useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
-      props.toggleComponent(ev.currentTarget.value)
-    },
-    [props.toggleComponent]
-  )
+    const handleToggle = useCallback(
+        (ev: React.ChangeEvent<HTMLInputElement>) => {
+            props.toggleComponent(ev.currentTarget.value)
+        },
+        [props.toggleComponent]
+    )
 
-  return (
-    <ul className="filter-list">
-      {props.components.map((c) => (
-        <li key={c.id}>
-          <label htmlFor={c.id}>
-            <input
-              id={c.id}
-              type="checkbox"
-              key={c.id}
-              checked={c.isVisible}
-              onChange={handleToggle}
-              value={c.id}
-            />
-            {getComponentName(c.id)}
-          </label>
-        </li>
-      ))}
-    </ul>
-  )
+    return (
+        <ul className="filter-list">
+            {props.components.map((c) => (
+                <li key={c.id}>
+                    <label htmlFor={c.id}>
+                        <input
+                            id={c.id}
+                            type="checkbox"
+                            key={c.id}
+                            checked={c.isVisible}
+                            onChange={handleToggle}
+                            value={c.id}
+                        />
+                        {getComponentName(c.id)}
+                    </label>
+                </li>
+            ))}
+        </ul>
+    )
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(React.memo(ActiveComponents))
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ActiveComponents))

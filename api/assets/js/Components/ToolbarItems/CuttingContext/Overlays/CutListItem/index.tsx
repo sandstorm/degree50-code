@@ -1,8 +1,5 @@
 import Button from 'Components/Button/Button'
-import {
-  actions,
-  selectors,
-} from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
+import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import PositionControls from './PositionControls'
@@ -18,83 +15,74 @@ import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionS
 import { cutAsRichtext } from 'Components/VideoEditor/composedSelectors/cuts'
 
 type OwnProps = {
-  cutId: CutId
-  index: number
-  showPositionControls?: boolean
+    cutId: CutId
+    index: number
+    showPositionControls?: boolean
 }
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
-  const item = selectors.data.cuts.selectCutById(state, ownProps)
-  const canEdit = selectors.selectUserCanEditSolution(state, {
-    solutionId: item.solutionId,
-  })
+    const item = selectors.data.cuts.selectCutById(state, ownProps)
+    const canEdit = selectors.selectUserCanEditSolution(state, {
+        solutionId: item.solutionId,
+    })
 
-  const isFromGroupPhase =
-    selectors.data.solutions.selectSolutionFromGroupPhase(
-      state,
-      item.solutionId
-    )
+    const isFromGroupPhase = selectors.data.solutions.selectSolutionFromGroupPhase(state, item.solutionId)
 
-  return {
-    item,
-    canEdit,
-    creatorName: selectors.data.selectCreatorNameForCut(state, ownProps),
-    phaseType: selectors.config.selectPhaseType(state),
-    isFromGroupPhase,
-  }
+    return {
+        item,
+        canEdit,
+        creatorName: selectors.data.selectCreatorNameForCut(state, ownProps),
+        phaseType: selectors.config.selectPhaseType(state),
+        isFromGroupPhase,
+    }
 }
 
 const mapDispatchToProps = {
-  moveUp: actions.data.solutions.moveCutUp,
-  moveDown: actions.data.solutions.moveCutDown,
-  setOverlay: actions.videoEditor.overlay.setOverlay,
-  setCurrentlyEditedElementId:
-    actions.videoEditor.overlay.setCurrentlyEditedElementId,
-  syncSolution: syncSolutionAction,
-  setPlayPosition: actions.videoEditor.player.setPlayPosition,
+    moveUp: actions.data.solutions.moveCutUp,
+    moveDown: actions.data.solutions.moveCutDown,
+    setOverlay: actions.videoEditor.overlay.setOverlay,
+    setCurrentlyEditedElementId: actions.videoEditor.overlay.setCurrentlyEditedElementId,
+    syncSolution: syncSolutionAction,
+    setPlayPosition: actions.videoEditor.player.setPlayPosition,
 }
 
-type Props = OwnProps &
-  ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const CutListItem: FC<Props> = (props) => {
-  const { item, phaseType, index, isFromGroupPhase } = props
+    const { item, phaseType, index, isFromGroupPhase } = props
 
-  const handleRemove = () => {
-    props.setCurrentlyEditedElementId(item.id)
-    props.setOverlay({ overlayId: CutOverlayIds.remove, closeOthers: false })
-  }
+    const handleRemove = () => {
+        props.setCurrentlyEditedElementId(item.id)
+        props.setOverlay({ overlayId: CutOverlayIds.remove, closeOthers: false })
+    }
 
-  const handleEdit = () => {
-    props.setCurrentlyEditedElementId(item.id)
-    props.setOverlay({ overlayId: CutOverlayIds.edit, closeOthers: false })
-  }
+    const handleEdit = () => {
+        props.setCurrentlyEditedElementId(item.id)
+        props.setOverlay({ overlayId: CutOverlayIds.edit, closeOthers: false })
+    }
 
-  const handleMoveUp = () => {
-    props.moveUp(item.id)
-    props.syncSolution()
-  }
+    const handleMoveUp = () => {
+        props.moveUp(item.id)
+        props.syncSolution()
+    }
 
-  const handleMoveDown = () => {
-    props.moveDown(item.id)
-    props.syncSolution()
-  }
+    const handleMoveDown = () => {
+        props.moveDown(item.id)
+        props.syncSolution()
+    }
 
-  const handleJumpToPosition = () => {
-    props.setPlayPosition(t2d(item.start))
-  }
+    const handleJumpToPosition = () => {
+        props.setPlayPosition(t2d(item.start))
+    }
 
-  const element = `${index + 1}. Element`
-  const creatorDescription = `Schnitt von: ${
-    isFromGroupPhase ? 'Gruppe von ' : ''
-  }${props.creatorName}`
-  const description = `Beschreibung: ${item.text}`
-  const start = `Von: ${item.start}`
-  const end = `Bis: ${item.end}`
-  const memo = `${item.memo.length > 0 ? `Memo: ${item.memo}` : ''}`
+    const element = `${index + 1}. Element`
+    const creatorDescription = `Schnitt von: ${isFromGroupPhase ? 'Gruppe von ' : ''}${props.creatorName}`
+    const description = `Beschreibung: ${item.text}`
+    const start = `Von: ${item.start}`
+    const end = `Bis: ${item.end}`
+    const memo = `${item.memo.length > 0 ? `Memo: ${item.memo}` : ''}`
 
-  const ariaLabel = `
+    const ariaLabel = `
     ${element}
 
     ${description}
@@ -107,75 +95,68 @@ const CutListItem: FC<Props> = (props) => {
     ${memo}
   `
 
-  const asRichtext = cutAsRichtext({
-    cut: item,
-    creatorName: props.creatorName,
-  })
+    const asRichtext = cutAsRichtext({
+        cut: item,
+        creatorName: props.creatorName,
+    })
 
-  return (
-    <li
-      className="cut-list-item"
-      tabIndex={0}
-      aria-label={ariaLabel}
-      data-focus-id={item.id}
-    >
-      <p>Beschreibung: {item.text}</p>
-      <p>{creatorDescription}</p>
-      <Start start={item.start} />
-      <End end={item.end} />
-      <br />
-      {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
+    return (
+        <li className="cut-list-item" tabIndex={0} aria-label={ariaLabel} data-focus-id={item.id}>
+            <p>Beschreibung: {item.text}</p>
+            <p>{creatorDescription}</p>
+            <Start start={item.start} />
+            <End end={item.end} />
+            <br />
+            {item.memo.length > 0 && <p>Memo: {item.memo}</p>}
 
-      <div className="button-group">
-        {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
-          <CopyToClipboard
-            text={asRichtext}
-            options={{
-              format: 'text/plain',
-            }}
-          >
-            <Button
-              className="button button--type-outline-primary button--size-small"
-              title="In Zwischenablage kopieren"
-            >
-              In Zwischenablage kopieren
-            </Button>
-          </CopyToClipboard>
-        ) : (
-          <Button
-            className="button button--type-outline-primary button--size-small"
-            onPress={handleJumpToPosition}
-            title="Springe zu Position im Video"
-          >
-            Springe zu Position
-          </Button>
-        )}
+            <div className="button-group">
+                {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
+                    <CopyToClipboard
+                        text={asRichtext}
+                        options={{
+                            format: 'text/plain',
+                        }}
+                    >
+                        <Button
+                            className="button button--type-outline-primary button--size-small"
+                            title="In Zwischenablage kopieren"
+                        >
+                            In Zwischenablage kopieren
+                        </Button>
+                    </CopyToClipboard>
+                ) : (
+                    <Button
+                        className="button button--type-outline-primary button--size-small"
+                        onPress={handleJumpToPosition}
+                        title="Springe zu Position im Video"
+                    >
+                        Springe zu Position
+                    </Button>
+                )}
 
-        {props.showPositionControls && (
-          <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />
-        )}
+                {props.showPositionControls && <PositionControls moveUp={handleMoveUp} moveDown={handleMoveDown} />}
 
-        {props.canEdit && (
-          <>
-            <Button
-              className="button button--type-danger button--size-small"
-              onPress={handleRemove}
-              title="Schnitt Löschen"
-            >
-              Löschen
-            </Button>
-            <Button
-              className="button button--type-primary button--size-small"
-              onPress={handleEdit}
-              title="Schnitt Bearbeiten"
-            >
-              Bearbeiten
-            </Button>
-          </>
-        )}
-      </div>
-    </li>
-  )
+                {props.canEdit && (
+                    <>
+                        <Button
+                            className="button button--type-danger button--size-small"
+                            onPress={handleRemove}
+                            title="Schnitt Löschen"
+                        >
+                            Löschen
+                        </Button>
+                        <Button
+                            className="button button--type-primary button--size-small"
+                            onPress={handleEdit}
+                            title="Schnitt Bearbeiten"
+                        >
+                            Bearbeiten
+                        </Button>
+                    </>
+                )}
+            </div>
+        </li>
+    )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(memo(CutListItem))

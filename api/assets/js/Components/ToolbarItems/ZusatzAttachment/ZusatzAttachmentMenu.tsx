@@ -7,33 +7,30 @@ import { ZUSATZ_ATTACHMENTS_OVERLAY_ID } from './ZusatzAttachmentOverlay'
 const mapStateToProps = () => ({})
 
 const mapDispatchToProps = {
-  setOverlay: actions.overlay.setOverlay,
+    setOverlay: actions.overlay.setOverlay,
 }
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const ZusatzAttachmentMenu: FC<Props> = (props) => {
-  const handleClick = () => {
-    props.setOverlay({
-      overlayId: ZUSATZ_ATTACHMENTS_OVERLAY_ID,
-      closeOthers: true,
-    })
-  }
+    const handleClick = () => {
+        props.setOverlay({
+            overlayId: ZUSATZ_ATTACHMENTS_OVERLAY_ID,
+            closeOthers: true,
+        })
+    }
 
-  return (
-    <div className="video-editor__menu">
-      <Button
-        title="Zusätzliche Anhänge"
-        className="button button--type-primary video-editor__toolbar__button"
-        onPress={handleClick}
-      >
-        <i className="fas fa-folder-open" />
-      </Button>
-    </div>
-  )
+    return (
+        <div className="video-editor__menu">
+            <Button
+                title="Zusätzliche Anhänge"
+                className="button button--type-primary video-editor__toolbar__button"
+                onPress={handleClick}
+            >
+                <i className="fas fa-folder-open" />
+            </Button>
+        </div>
+    )
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(memo(ZusatzAttachmentMenu))
+export default connect(mapStateToProps, mapDispatchToProps)(memo(ZusatzAttachmentMenu))

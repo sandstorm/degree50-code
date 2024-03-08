@@ -4,20 +4,20 @@ import { ROUTE_MATERIALIEN } from '../Schreibtisch'
 import MaterialList from './MaterialList/MaterialList'
 
 const MyMaterials = () => {
-  const { pathname } = useLocation()
+    const { pathname } = useLocation()
 
-  useEffect(() => {
-    if (pathname.includes(ROUTE_MATERIALIEN)) {
-      // eslint-disable-next-line functional/immutable-data
-      document.title = 'Schreibtisch - Materialien'
-    }
-  }, [pathname])
+    useEffect(() => {
+        if (pathname.includes(ROUTE_MATERIALIEN)) {
+            // eslint-disable-next-line functional/immutable-data
+            document.title = 'Schreibtisch - Materialien'
+        }
+    }, [pathname])
 
-  return (
-    <>
-      <MaterialList />
-    </>
-  )
+    return (
+        <>
+            <MaterialList />
+        </>
+    )
 }
 
 export default React.memo(MyMaterials)

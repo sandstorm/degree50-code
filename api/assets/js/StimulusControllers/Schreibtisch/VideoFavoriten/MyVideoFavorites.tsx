@@ -4,20 +4,20 @@ import { ROUTE_VIDEO_FAVORITEN } from '../Schreibtisch'
 import VideoFavorites from './VideoFavorites/VideoFavorites'
 
 const MyVideoFavorites = () => {
-  const { pathname } = useLocation()
+    const { pathname } = useLocation()
 
-  useEffect(() => {
-    if (pathname.includes(ROUTE_VIDEO_FAVORITEN)) {
-      // eslint-disable-next-line functional/immutable-data
-      document.title = 'Schreibtisch - Videofavoriten'
-    }
-  }, [pathname])
+    useEffect(() => {
+        if (pathname.includes(ROUTE_VIDEO_FAVORITEN)) {
+            // eslint-disable-next-line functional/immutable-data
+            document.title = 'Schreibtisch - Videofavoriten'
+        }
+    }, [pathname])
 
-  return (
-    <>
-      <VideoFavorites />
-    </>
-  )
+    return (
+        <>
+            <VideoFavorites />
+        </>
+    )
 }
 
 export default React.memo(MyVideoFavorites)

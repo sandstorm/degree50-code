@@ -6,17 +6,17 @@ import { store } from './Store/SchreibtischStore'
 import Schreibtisch from 'StimulusControllers/Schreibtisch/Schreibtisch'
 
 class SchreibtischController extends Controller {
-  connect() {
-    const propsAsString = this.data.get('props')
-    const props = propsAsString ? JSON.parse(propsAsString) : {}
+    connect() {
+        const propsAsString = this.data.get('props')
+        const props = propsAsString ? JSON.parse(propsAsString) : {}
 
-    ReactDOM.render(
-      <Provider store={store}>
-        <Schreibtisch />
-      </Provider>,
-      this.element
-    )
-  }
+        ReactDOM.render(
+            <Provider store={store}>
+                <Schreibtisch />
+            </Provider>,
+            this.element
+        )
+    }
 }
 
 export default SchreibtischController
