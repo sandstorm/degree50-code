@@ -110,7 +110,7 @@ const selectSolutionData = createSelector(
         dataSelectors.selectDenormalizedCurrentAnnotations,
         dataSelectors.selectDenormalizedCurrentVideoCodes,
         dataSelectors.selectDenormalizedCurrentCutList,
-        dataSelectors.selectCurrentPrototypesList,
+        dataSelectors.selectCurrentSolutionVideoCodePrototypesList,
         dataSelectors.selectMaterialOfCurrentSolution,
     ],
     (annotations, videoCodes, cutList, videoCodePrototypes, material) => ({
@@ -250,17 +250,19 @@ const selectAllMediaItemsByStartTimeAsRichtext = createSelector(
         dataSelectors.videoCodes.selectById,
         dataSelectors.videoCodePrototypes.selectById,
         dataSelectors.cuts.selectById,
+        dataSelectors.solutions.selectCurrentId,
     ],
-    (mediaItems, solutions, videoCodes, videoCodePrototypes, cuts) =>
+    (mediaItems, solutions, videoCodes, videoCodePrototypes, cuts, currentSolutionId) =>
         mediaItems
             .map((item) => {
                 const solution = item.solutionId ? solutions[item.solutionId] : undefined
+                const isFromPreviousSolution = Boolean(item.solutionId && item.solutionId !== currentSolutionId)
 
                 const creatorName = solution?.userName ?? '<Unbekannter Ersteller>'
 
                 switch (item.type) {
                     case MediaItemTypeEnum.annotation: {
-                        return annotationWithCreatorNameAsRichtext({ ...item, creatorName })
+                        return annotationWithCreatorNameAsRichtext({ ...item, creatorName, isFromPreviousSolution })
                     }
                     case MediaItemTypeEnum.videoCode: {
                         const videoCode = videoCodes[item.id]
@@ -274,10 +276,11 @@ const selectAllMediaItemsByStartTimeAsRichtext = createSelector(
                             videoCodePrototype,
                             parentVideoCodePrototype,
                             creatorName,
+                            isFromPreviousSolution,
                         })
                     }
                     case MediaItemTypeEnum.cut: {
-                        return cutAsRichtext({ cut: cuts[item.id], creatorName })
+                        return cutAsRichtext({ cut: cuts[item.id], creatorName, isFromPreviousSolution })
                     }
                     default: {
                         throw new TypeError(`Invalid MediaItemType "${item.type}"`)

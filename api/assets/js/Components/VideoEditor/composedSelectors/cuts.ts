@@ -50,8 +50,16 @@ export const composedCutSelectors = {
     selectCreatorNameForCut,
 }
 
-export const cutAsRichtext = ({ cut, creatorName }: { cut: Cut; creatorName: string }) => {
-    const creatorDescription = `Schnitt von: ${creatorName}`
+export const cutAsRichtext = ({
+    cut,
+    creatorName,
+    isFromPreviousSolution,
+}: {
+    cut: Cut
+    creatorName: string
+    isFromPreviousSolution: boolean
+}) => {
+    const creatorDescription = `Schnitt ${isFromPreviousSolution ? 'aus Lösung' : ''} von: ${creatorName}`
     const description = `Beschreibung: ${cut.text}`
     const start = `Von: ${cut.start}`
     const end = `Bis: ${cut.end}`

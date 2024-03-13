@@ -267,8 +267,13 @@ const selectCurrentCutIds = createSelector([selectById, selectCurrentId], (byId,
     currentId ? byId[currentId].solutionData.cutList : []
 )
 
-const selectCurrentPrototypeIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
+const selectCurrentSolutionVideoCodePrototypeIds = createSelector([selectById, selectCurrentId], (byId, currentId) =>
     currentId ? byId[currentId].solutionData.videoCodePrototypes : []
+)
+
+const selectPreviousSolutionsVideoCodePrototypeIds = createSelector(
+    [selectById, selectPreviousIds],
+    (byId, previousSolutionIds) => previousSolutionIds.flatMap((id) => byId[id].solutionData.videoCodePrototypes)
 )
 
 const selectCurrentSolutionOwner = createSelector([selectById, selectCurrentId], (byId, currentId) => {
@@ -311,7 +316,8 @@ export const selectors = {
     selectCurrentAnnotationIds,
     selectCurrentVideoCodeIds,
     selectCurrentCutIds,
-    selectCurrentPrototypeIds,
+    selectCurrentSolutionVideoCodePrototypeIds,
+    selectPreviousSolutionsVideoCodePrototypeIds,
     selectCurrentSolutionOwner,
     selectSolutionFromGroupPhase,
     selectCurrentSolutionFromGroupPhase,

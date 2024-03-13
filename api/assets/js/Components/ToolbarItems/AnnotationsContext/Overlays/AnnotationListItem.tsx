@@ -49,6 +49,8 @@ type Props = PropsFromRedux & OwnProps
 const AnnotationListItem = (props: Props) => {
     const { item, index, setCurrentlyEditedElementId, setOverlay, phaseType, isFromGroupPhase } = props
 
+    const isFromPreviousSolution = !props.isFromCurrentSolution
+
     const handleRemove = () => {
         setCurrentlyEditedElementId(item.id)
         setOverlay({ overlayId: AnnotationOverlayIds.remove, closeOthers: false })
@@ -65,7 +67,9 @@ const AnnotationListItem = (props: Props) => {
 
     const element = `${index + 1}. Element`
     const description = `Annotationstext: ${item.text}`
-    const creatorDescription = `Annotation von: ${isFromGroupPhase ? 'Gruppe von ' : ''}${props.creatorName}`
+    const creatorDescription = `Annotation ${isFromPreviousSolution ? 'aus Lösung' : ''} von: ${
+        isFromGroupPhase ? 'Gruppe von ' : ''
+    }${props.creatorName}`
     const start = `Von: ${item.start}`
     const end = `Bis: ${item.end}`
     const memo = `${item.memo.length > 0 ? `Memo: ${item.memo}` : ''}`
@@ -87,6 +91,7 @@ const AnnotationListItem = (props: Props) => {
     const asRichtext = annotationWithCreatorNameAsRichtext({
         ...item,
         creatorName: props.creatorName,
+        isFromPreviousSolution,
     })
 
     return (

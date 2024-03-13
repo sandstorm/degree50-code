@@ -1,6 +1,5 @@
-import { useState, useCallback, FC, memo } from 'react'
+import { useState, useCallback, FC, memo, ReactNode } from 'react'
 import { connect } from 'react-redux'
-import PrototypeList from '../PrototypeList'
 import ToggleChildrenButton from './ToggleChildrenButton'
 import PrototypeName from './PrototypeName'
 import Color from './Color'
@@ -13,10 +12,6 @@ import PredefinedCodeLock from '../../PredefinedCodeLock'
 import { getColorName } from 'ntc-ts'
 import { VideoCodeOverlayIds } from 'Components/ToolbarItems/VideoCodesContext/VideoCodesMenu'
 
-// FIXME
-// We should probably find a way to remove the circular dependency between
-// the prototypeList and entry, because it's rather confusing to read.
-
 const mapDispatchToProps = {
     openOverlay: actions.overlay.setOverlay,
     setCurrentlyEditedElementId: actions.overlay.setCurrentlyEditedElementId,
@@ -26,6 +21,8 @@ const mapDispatchToProps = {
 export type OwnProps = {
     videoCodePrototype: VideoCodePrototype
     parentPrototype?: VideoCodePrototype
+    readonly?: boolean
+    children?: ReactNode
 }
 
 type Props = OwnProps & typeof mapDispatchToProps
@@ -98,7 +95,7 @@ const PrototypeEntry: FC<Props> = (props) => {
                     <ChildPrototypeCount count={props.videoCodePrototype.videoCodes.length} />
                 )}
 
-                {props.videoCodePrototype.userCreated ? (
+                {props.videoCodePrototype.userCreated && !props.readonly ? (
                     <>
                         <Button
                             className={'button button--type-outline-primary button--size-small'}
@@ -124,12 +121,7 @@ const PrototypeEntry: FC<Props> = (props) => {
                 ) : null}
             </div>
 
-            {showChildren ? (
-                <PrototypeList
-                    videoCodePrototypes={props.videoCodePrototype.videoCodes}
-                    parentPrototype={props.videoCodePrototype}
-                />
-            ) : null}
+            {showChildren ? props.children : null}
         </li>
     )
 }

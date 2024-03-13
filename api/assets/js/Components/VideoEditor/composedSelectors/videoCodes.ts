@@ -57,30 +57,27 @@ export const videoCodeAsRichtext = ({
     videoCodePrototype,
     parentVideoCodePrototype,
     creatorName,
+    isFromPreviousSolution,
 }: {
     videoCode: VideoCode
     videoCodePrototype?: VideoCodePrototype
     parentVideoCodePrototype?: VideoCodePrototype
     creatorName: string
+    isFromPreviousSolution: boolean
 }) => {
     const code = `Code: ${videoCodePrototype?.name ?? 'Kein Code ausgewählt'}`
     const color = `Farbe: ${videoCodePrototype?.color ? getColorName(videoCodePrototype.color).name : ''}`
     const userCreated = `${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}`
     const subCode = `${parentVideoCodePrototype ? `Unter-Code von ${parentVideoCodePrototype.name}` : ''}`
-    const creatorDescription = `Codierung von: ${creatorName}`
+    const creatorDescription = `Codierung ${isFromPreviousSolution ? 'aus Lösung' : ''} von: ${creatorName}`
     const start = `Von: ${videoCode.start}`
     const end = `Bis: ${videoCode.end}`
     const memo = `${videoCode.memo.length > 0 ? `Memo: ${videoCode.memo}` : ''}`
 
-    // TODO: we might want to remove empty lines? e.g. when subCode not defined
-    return [
-        code,
-        color,
-        userCreated,
-        ...(subCode.length > 0 ? [subCode] : []),
-        creatorDescription,
-        start,
-        end,
-        memo,
-    ].join('\n')
+    return (
+        [code, color, userCreated, ...(subCode.length > 0 ? [subCode] : []), creatorDescription, start, end, memo]
+            // Filter out empty lines
+            .filter((line) => line === '')
+            .join('\n')
+    )
 }

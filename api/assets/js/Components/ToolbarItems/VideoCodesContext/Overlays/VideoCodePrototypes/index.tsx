@@ -2,20 +2,21 @@ import { connect } from 'react-redux'
 import React from 'react'
 import PrototypeList from './PrototypeList'
 import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
-import Button from 'Components/Button/Button'
-import { VideoCodeOverlayIds } from '../../VideoCodesMenu'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
+import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 
 const mapStateToProps = (state: AppState) => {
     const isSolutionView = selectors.config.selectIsSolutionView(state)
 
-    const videoCodePrototypes = isSolutionView
-        ? selectors.data.selectAllPrototypesList(state)
-        : selectors.data.selectCurrentPrototypesList(state)
+    const videoCodePrototypesOfCurrentSolution = selectors.data.selectCurrentSolutionVideoCodePrototypesList(state)
+    const videoCodePrototypesOfPreviousSolutions = selectors.data.selectPreviousSolutionsVideoCodePrototypesList(state)
+    const isVideoAnalysisPhase = selectors.config.selectPhaseType(state) === ExercisePhaseTypesEnum.VIDEO_ANALYSIS
 
     return {
-        videoCodePrototypes,
+        videoCodePrototypesOfCurrentSolution,
+        videoCodePrototypesOfPreviousSolutions,
         isSolutionView,
+        isVideoAnalysisPhase,
     }
 }
 
@@ -32,38 +33,25 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 // Be pressing the add button on these codes, students can add them
 // to the media track, to arrange them.
 const VideoCodePrototypes = (props: Props) => {
-    const hasNoVideoCodes = props.videoCodePrototypes.length === 0
-
-    const handleAdd = () => {
-        props.setCurrentlyEditedElementId(undefined)
-        props.setCurrentlyEditedElementParentId(undefined)
-        props.openOverlay({
-            overlayId: VideoCodeOverlayIds.editPrototype,
-            closeOthers: false,
-        })
-    }
-
-    if (hasNoVideoCodes) {
-        return (
-            <div className="video-editor__video-codes">
-                <div className={'video-code'} style={{ backgroundColor: '#ccc' }}>
-                    <span>Es stehen keine Video-Codes zur Auswahl für diese Aufgabe</span>
-                </div>
-
-                {!props.isSolutionView && (
-                    <Button
-                        className={'button button--type-outline-primary button--block button--size-small'}
-                        onPress={handleAdd}
-                        title="Neuen Code Erstellen"
-                    >
-                        <i className="fas fa-plus" /> Neuen Code erstellen
-                    </Button>
-                )}
-            </div>
-        )
-    }
-
-    return <PrototypeList videoCodePrototypes={props.videoCodePrototypes} />
+    return (
+        <>
+            {props.videoCodePrototypesOfPreviousSolutions.length > 0 ? (
+                <>
+                    <h4>Code-System vorheriger Lösungen</h4>
+                    <PrototypeList videoCodePrototypes={props.videoCodePrototypesOfPreviousSolutions} readonly={true} />
+                </>
+            ) : null}
+            {props.isVideoAnalysisPhase ? (
+                <>
+                    <h4>Code-System dieser Lösung</h4>
+                    <PrototypeList
+                        videoCodePrototypes={props.videoCodePrototypesOfCurrentSolution}
+                        emptyMessage="Es stehen aktuell keine Video-Codes zur Auswahl"
+                    />
+                </>
+            ) : null}
+        </>
+    )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(VideoCodePrototypes))

@@ -47,6 +47,7 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
         creatorName: selectors.data.selectCreatorNameForVideoCode(state, ownProps),
         phaseType: selectors.config.selectPhaseType(state),
         isFromGroupPhase,
+        currentSolutionId: selectors.data.solutions.selectCurrentId(state),
     }
 }
 
@@ -68,7 +69,10 @@ const VideoCodeListItem = (props: Props) => {
         parentVideoCodePrototype,
         phaseType,
         isFromGroupPhase,
+        currentSolutionId,
     } = props
+
+    const isFromPreviousSolution = item.solutionId !== currentSolutionId
 
     const handleRemove = () => {
         setCurrentlyEditedElementId(item.id)
@@ -86,16 +90,12 @@ const VideoCodeListItem = (props: Props) => {
 
     const element = `${index + 1}. Element`
     const code = `Code: ${videoCodePrototype?.name ?? 'Kein Code ausgewählt'}`
-    const color = `
-        Farbe: ${videoCodePrototype?.color ? getColorName(videoCodePrototype.color).name : ''}
-  `
-    const userCreated = `
-        ${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}
-  `
-    const subCode = `
-        ${parentVideoCodePrototype ? `Unter-Code von ${parentVideoCodePrototype.name}` : ''}
-  `
-    const creatorDescription = `Codierung von: ${isFromGroupPhase ? 'Gruppe von ' : ''}${props.creatorName}`
+    const color = `Farbe: ${videoCodePrototype?.color ? getColorName(videoCodePrototype.color).name : ''}`
+    const userCreated = `${videoCodePrototype?.userCreated ? 'Selbsterstellter Code' : 'Vordefinierter Code'}`
+    const subCode = `${parentVideoCodePrototype ? `Unter-Code von: ${parentVideoCodePrototype.name}` : ''}`
+    const creatorDescription = `Codierung ${isFromPreviousSolution ? 'aus Lösung' : ''} von: ${
+        isFromGroupPhase ? 'Gruppe von ' : ''
+    }${props.creatorName}`
     const start = `Von: ${item.start}`
     const end = `Bis: ${item.end}`
     const memo = `${item.memo.length > 0 ? `Memo: ${item.memo}` : ''}`
@@ -152,11 +152,12 @@ const VideoCodeListItem = (props: Props) => {
         ${memo}
     `
 
-    const asRichtext = videoCodeAsRichtext({
+    const asRichText = videoCodeAsRichtext({
         videoCode: item,
         videoCodePrototype,
         parentVideoCodePrototype,
         creatorName: props.creatorName,
+        isFromPreviousSolution: !props.isFromCurrentSolution,
     })
 
     return (
@@ -170,7 +171,7 @@ const VideoCodeListItem = (props: Props) => {
             <div className="button-group">
                 {phaseType === ExercisePhaseTypesEnum.MATERIAL ? (
                     <CopyToClipboard
-                        text={asRichtext}
+                        text={asRichText}
                         options={{
                             format: 'text/plain',
                         }}
