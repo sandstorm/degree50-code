@@ -47,9 +47,6 @@ abstract class ExercisePhase
 
     // components for phases
     const VIDEO_PLAYER = 'videoPlayer';
-    const DOCUMENT_UPLOAD = 'documentUpload';
-    const CHAT = 'chat';
-    const SHARED_DOCUMENT = 'sharedDocument';
     const VIDEO_CODE = 'videoCode';
     const VIDEO_CUTTING = 'videoCutting';
     const VIDEO_ANNOTATION = 'videoAnnotation';
@@ -98,7 +95,7 @@ abstract class ExercisePhase
     /**
      * @var Attachment[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Attachment", mappedBy="exercisePhase", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Exercise\Attachment", mappedBy="exercisePhase", cascade={"all"})
      * @ORM\OrderBy({"uploadAt" = "DESC"})
      */
     private Collection $attachment;
@@ -111,8 +108,10 @@ abstract class ExercisePhase
     private Collection $videos;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Exercise\ExercisePhase")
-     * @JoinColumn(referencedColumnName="id", nullable=true)
+     * @var ExercisePhase|null
+     *
+     * @ORM\ManyToOne(targetEntity="ExercisePhase")
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private ?ExercisePhase $dependsOnExercisePhase = null;
 
@@ -137,6 +136,7 @@ abstract class ExercisePhase
         $this->teams = new ArrayCollection();
         $this->attachment = new ArrayCollection();
         $this->videos = new ArrayCollection();
+        $this->phasesDependentOnThis = new ArrayCollection();
         $this->isGroupPhase = false;
     }
 
@@ -280,6 +280,9 @@ abstract class ExercisePhase
     {
         if (!$this->videos->contains($video)) {
             $this->videos[] = $video;
+            // Also add the phase to the video.
+            // Persisting of the video is done by symfony.
+            $video->addExercisePhase($this);
         }
 
         return $this;

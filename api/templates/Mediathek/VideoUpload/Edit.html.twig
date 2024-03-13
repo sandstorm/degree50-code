@@ -34,7 +34,7 @@
                 <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmungen</a> | <a href="{{ path('terms-of-use') }}" target="_blank">Nutzungsbedingungen</a>
             </div>
             <hr />
-            <h4>Video wird in folgenden Aufgaben/Phasen verwendet</h4>
+            <h4>Das Video wird in folgenden Aufgaben/Phasen verwendet</h4>
             <ul class="list">
                 {% for phase in video.exercisePhases %}
                     <li>{{ phase.belongsToExercise.name }} / {{ phase.name }}</li>
@@ -42,6 +42,13 @@
                     <li>Bisher in keiner Phase verwendet</li>
                 {% endfor %}
             </ul>
+            <hr />
+            <a
+                href="{{ path('mediathek__video--delete', {id: video.id}) }}"
+                class="button button--type-outline-danger"
+            >
+                Video löschen
+            </a>
         </div>
 
         <footer class="footer">

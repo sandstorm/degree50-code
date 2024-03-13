@@ -15,13 +15,9 @@ class VideoCutPhase extends ExercisePhase
 
     const PHASE_COMPONENTS = [
         ExercisePhase::VIDEO_PLAYER,
-        //ExercisePhase::DOCUMENT_UPLOAD,
     ];
 
-    const PHASE_COMPONENTS_GROUP = [
-        //ExercisePhase::CHAT,
-        //ExercisePhase::SHARED_DOCUMENT,
-    ];
+    const PHASE_COMPONENTS_GROUP = [];
 
     public function __construct(string $id = null)
     {

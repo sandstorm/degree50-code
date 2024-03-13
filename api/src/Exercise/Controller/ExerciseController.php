@@ -12,13 +12,11 @@ use App\Exercise\Form\CopyExerciseFormType;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -34,9 +32,6 @@ class ExerciseController extends AbstractController
     private DoctrineIntegratedEventStore $eventStore;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private ExerciseService $exerciseService;
-    private Security $security;
-
-    private LoggerInterface $logger;
 
     public function __construct(
         ExercisePhaseRepository $exercisePhaseRepository,
@@ -45,8 +40,6 @@ class ExerciseController extends AbstractController
         DoctrineIntegratedEventStore $eventStore,
         ExerciseService $exerciseService,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        LoggerInterface $logger,
-        Security $security,
     ) {
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->exercisePhaseService = $exercisePhaseService;
@@ -54,8 +47,6 @@ class ExerciseController extends AbstractController
         $this->eventStore = $eventStore;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->exerciseService = $exerciseService;
-        $this->logger = $logger;
-        $this->security = $security;
     }
 
     /**
@@ -146,6 +137,9 @@ class ExerciseController extends AbstractController
     {
         $exercise = new Exercise();
         $exercise->setCourse($course);
+        /** @var User $user */
+        $user = $this->getUser();
+        $exercise->setCreator($user);
 
         $form = $this->createForm(ExerciseType::class, $exercise);
 
@@ -314,7 +308,7 @@ class ExerciseController extends AbstractController
             $formDto = $form->getData();
 
             /** @var User $user */
-            $user = $this->security->getUser();
+            $user = $this->getUser();
 
             /**
              * The new copy of the exercise that will be persisted

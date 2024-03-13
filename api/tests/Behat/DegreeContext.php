@@ -32,7 +32,9 @@ use App\Repository\Account\UserRepository;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
+use App\Repository\Exercise\SolutionRepository;
 use App\Repository\Material\MaterialRepository;
+use App\Repository\Video\VideoRepository;
 use App\Service\UserMaterialService;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
@@ -105,6 +107,8 @@ final class DegreeContext implements Context
     private VideoFavouritesService $videoFavouritesService;
     private UserMaterialService $materialService;
     private MaterialRepository $materialRepository;
+    private VideoRepository $videoRepository;
+    private SolutionRepository $solutionRepository;
 
     private ?string $clientSideJSON;
 
@@ -152,6 +156,8 @@ final class DegreeContext implements Context
         VideoFavouritesService $videoFavouritesService,
         UserMaterialService $materialService,
         MaterialRepository $materialRepository,
+        VideoRepository $videoRepository,
+        SolutionRepository $solutionRepository
     ) {
         $this->minkSession = $minkSession;
         $this->router = $router;
@@ -173,6 +179,8 @@ final class DegreeContext implements Context
         $this->videoFavouritesService = $videoFavouritesService;
         $this->materialService = $materialService;
         $this->materialRepository = $materialRepository;
+        $this->videoRepository = $videoRepository;
+        $this->solutionRepository = $solutionRepository;
 
         $this->setupPlaywright();
     }
@@ -217,7 +225,11 @@ final class DegreeContext implements Context
         string $exerciseId,
         ExercisePhaseType $exercisePhaseType,
         bool $isGroupPhase = false,
+        ?string $dependsOnPhase = null
     ): ExercisePhase {
+        if ($dependsOnPhase === "") {
+            $dependsOnPhase = null;
+        }
         return $this->createExercisePhase([
             "type" => $exercisePhaseType->value,
             "id" => $phaseId,
@@ -227,33 +239,35 @@ final class DegreeContext implements Context
             "sorting" => 0,
             "otherSolutionsAreAccessible" => true,
             "belongsToExercise" => $exerciseId,
-            "dependsOnPhase" => false,
+            "dependsOnPhase" => $dependsOnPhase,
             "videoAnnotationsActive" => true,
             "videoCodesActive" => true
         ]);
     }
 
+    /**
+     * Create an exercise with the given ID and adds a course role "DOZENT" for a mocked dozent
+     *
+     * @param string $exerciseId
+     * @param string $courseId
+     * @param User $user
+     * @return void
+     */
     private function createExerciseInCourseByUser(string $exerciseId, string $courseId, User $user)
     {
-        // Create exercise
+        // ensure user has course role dozent for the given course
         $this->userHasCourseRole($user, CourseRole::DOZENT, $courseId);
-
-        // WHY:
-        // This is a hack, because we currently do have a prePersist hook for exercise creation
-        // (see ExerciseEventListener). That way the exercise creator will always be set to
-        // the user who is currently logged in, no matter what has been set before.
-        $this->iAmLoggedInAs($user);
         $this->ensureExerciseByUserInCourseExists($exerciseId, $user, $courseId);
     }
 
     /**
+     * Creates an exercise with the given ID and adds a course role "DOZENT" for a mocked dozent
+     *
      * @Given an exercise with id :id in course :courseId exists
-     * */
+     */
     public function anExerciseWithIdExistsInCourse(string $id, string $courseId)
     {
         $testDozent = $this->createUser(self::TEST_DOZENT);
-        $this->userHasCourseRole($testDozent, CourseRole::DOZENT, $courseId);
-
         $this->createExerciseInCourseByUser($id, $courseId, $testDozent);
     }
 
@@ -265,13 +279,15 @@ final class DegreeContext implements Context
         foreach ($phases as $_key => $phase) {
             $phaseId = $phase['id'];
             $type = ExercisePhaseType::from($phase['type']);
-            $isGroupPhase = $phase['isGroupPhase'] === 'yes' ? true : false;
+            $isGroupPhase = $phase['isGroupPhase'] === 'yes';
+            $dependsOnPhase = $phase['dependsOn'] ?? null;
 
             $this->createPhaseOfTypeInExercise(
                 $phaseId,
                 $exerciseId,
                 $type,
-                $isGroupPhase
+                $isGroupPhase,
+                $dependsOnPhase
             );
         }
     }
@@ -370,7 +386,7 @@ final class DegreeContext implements Context
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase, $user);
         $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
     }
 
@@ -404,7 +420,7 @@ final class DegreeContext implements Context
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase, $user);
         $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
 
         $this->currentExercisePhase = $exercisePhase;
@@ -435,7 +451,7 @@ final class DegreeContext implements Context
 
         $user = $this->userRepository->find(self::TEST_STUDENT);
 
-        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase, $user);
         $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
 
 
@@ -576,7 +592,6 @@ final class DegreeContext implements Context
         $exercisePhaseTeam = new ExercisePhaseTeam();
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
-        // NOTE: will be overwritten by "prepersist" hook
         $exercisePhaseTeam->setCreator($user);
 
         $this->eventStore->addEvent('MemberAddedToTeam', [
@@ -870,12 +885,6 @@ final class DegreeContext implements Context
         // Temporarily switch to dozent user to create videos
         $dozent = $this->createUser(self::TEST_DOZENT);
         $this->userHasCourseRole(self::TEST_DOZENT, CourseRole::DOZENT, self::TEST_COURSE_1);
-
-        // WHY:
-        // This is a hack, because we currently do have a prePersist hook for exercise creation
-        // (see ExerciseEventListener). That way the exercise creator will always be set to
-        // the user who is currently logged in, no matter what has been set before.
-        $this->iAmLoggedInAs(self::TEST_DOZENT);
 
         $videoIdList = ["video1", "video2", "video3"];
 

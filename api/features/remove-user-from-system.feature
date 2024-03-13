@@ -12,9 +12,7 @@ Feature: Degree User is removed completely from system
         Given The User "student1@test.de" has CourseRole "DOZENT" in Course "course1"
         And An Exercise with ID "exerciseByStudent1" created by User "student1@test.de" in Course "course1" exists
         And A Video with ID "video1" created by User "student1@test.de" exists
-        # Why
-            # log in as admin _after_ Exercise creation
-            # Due to the pre_persist of ExerciseEventListener where the creator is set to the logged in user
+        # Why only an admin can delete a user
         And I am logged in as 'admin@test.de'
         When I delete User "student1@test.de"
 

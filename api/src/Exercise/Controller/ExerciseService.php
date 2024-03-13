@@ -3,7 +3,6 @@
 
 namespace App\Exercise\Controller;
 
-use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
@@ -11,7 +10,6 @@ use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExerciseStatus;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Account\CourseRoleRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use DateTimeImmutable;
@@ -192,12 +190,6 @@ class ExerciseService
 
     public function deleteExercise(Exercise $exercise): void
     {
-        // Remove phases in reverse order to prevent foreign key exception when removing a phase that is
-        // referenced by another phase (e.g. phase depending on other phase, using solution of another phase).
-        foreach (array_reverse($exercise->getPhases()->toArray()) as $phase) {
-            $this->entityManager->remove($phase);
-        }
-
         $this->eventStore->addEvent('ExerciseDeleted', [
             'exerciseId' => $exercise->getId(),
             'courseId' => $exercise->getCourse()->getId(),

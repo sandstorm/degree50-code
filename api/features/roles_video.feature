@@ -280,14 +280,14 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And the page should contain the text "<text>"
 
         Examples:
-            | url                                   | statusCode | text                        |
-            | /video/delete/admin_video_no_course   | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/admin_video_course1     | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/admin_video_course2     | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/dozent_video_no_course  | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/dozent_video_course1    | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/student_video_no_course | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/student_video_course1   | 200        | Video erfolgreich gelöscht! |
+            | url                                     | statusCode | text                        |
+            | /video/delete/admin_video_no_course/1   | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/admin_video_course1/1     | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/admin_video_course2/1     | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/dozent_video_no_course/1  | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/dozent_video_course1/1    | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/student_video_no_course/1 | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/student_video_course1/1   | 200        | Video erfolgreich gelöscht! |
 
     Scenario: As dozent I can see the delete option only for my created videos
         Given I am logged in via browser as "test-dozent@sandstorm.de"
@@ -309,14 +309,14 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And the page should contain the text "<text>"
 
         Examples:
-            | url                                   | statusCode | text                        |
-            | /video/delete/dozent_video_no_course  | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/dozent_video_course1    | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/admin_video_no_course   | 403        | Zugriff verweigert          |
-            | /video/delete/admin_video_course1     | 403        | Zugriff verweigert          |
-            | /video/delete/admin_video_course2     | 403        | Zugriff verweigert          |
-            | /video/delete/student_video_no_course | 403        | Zugriff verweigert          |
-            | /video/delete/student_video_course1   | 403        | Zugriff verweigert          |
+            | url                                     | statusCode | text                        |
+            | /video/delete/dozent_video_no_course/1  | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/dozent_video_course1/1    | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/admin_video_no_course/1   | 403        | Zugriff verweigert          |
+            | /video/delete/admin_video_course1/1     | 403        | Zugriff verweigert          |
+            | /video/delete/admin_video_course2/1     | 403        | Zugriff verweigert          |
+            | /video/delete/student_video_no_course/1 | 403        | Zugriff verweigert          |
+            | /video/delete/student_video_course1/1   | 403        | Zugriff verweigert          |
 
     Scenario: As student I can see the delete option only for my created videos
         Given I am logged in via browser as "test-student@sandstorm.de"
@@ -338,11 +338,11 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And the page should contain the text "<text>"
 
         Examples:
-            | url                                   | statusCode | text                        |
-            | /video/delete/student_video_no_course | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/student_video_course1   | 200        | Video erfolgreich gelöscht! |
-            | /video/delete/admin_video_no_course   | 403        | Zugriff verweigert          |
-            | /video/delete/admin_video_course1     | 403        | Zugriff verweigert          |
-            | /video/delete/admin_video_course2     | 403        | Zugriff verweigert          |
-            | /video/delete/dozent_video_no_course  | 403        | Zugriff verweigert          |
-            | /video/delete/dozent_video_course1    | 403        | Zugriff verweigert          |
+            | url                                     | statusCode | text                        |
+            | /video/delete/student_video_no_course/1 | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/student_video_course1/1   | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/admin_video_no_course/1   | 403        | Zugriff verweigert          |
+            | /video/delete/admin_video_course1/1     | 403        | Zugriff verweigert          |
+            | /video/delete/admin_video_course2/1     | 403        | Zugriff verweigert          |
+            | /video/delete/dozent_video_no_course/1  | 403        | Zugriff verweigert          |
+            | /video/delete/dozent_video_course1/1    | 403        | Zugriff verweigert          |

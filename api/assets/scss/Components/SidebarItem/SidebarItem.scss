@@ -34,14 +34,9 @@
     }
 
     &--disabled {
-        background-color: $theme__color__grey--lighter !important;
+        opacity: .5;
 
-        a {
-            color: $theme__color__grey--dark !important;
-        }
-
-        &:hover a {
-            color: $theme__color__grey--dark !important;
-        }
+        cursor: default;
+        pointer-events: none;
     }
 }

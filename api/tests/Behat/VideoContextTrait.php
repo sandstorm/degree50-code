@@ -8,11 +8,10 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\Solution;
 use App\Entity\VirtualizedFile;
-use App\Repository\Video\VideoRepository;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotEmpty;
 
 /**
  *
@@ -32,6 +31,9 @@ trait VideoContextTrait
         /** @var Video $video */
         $video = $this->entityManager->find(Video::class, $videoId);
 
+        // check if video exists
+        assertEquals($videoId, $video->getId());
+
         $exercisePhase->addVideo($video);
 
         $this->entityManager->persist($exercisePhase);
@@ -46,19 +48,8 @@ trait VideoContextTrait
     {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
-        /** @var Video $video */
-        $video = $this->entityManager->find(Video::class, $videoId);
 
-        if (!$video) {
-            $video = new Video($videoId);
-            $video->setDataPrivacyAccepted(true);
-            $video->setDataPrivacyPermissionsAccepted(true);
-            $video->setCreator($this->security->getUser());
-            $video->setTitle('TEST_Video_' . $videoId);
-            $video->setEncodingStatus(Video::ENCODING_FINISHED);
-            $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
-            $video->setEncodedVideoDirectory($outputDirectory);
-        }
+        $video = $this->ensureVideoByUserExists($videoId, $this->currentUser->getId());
 
         if ($course) {
             $video->addCourse($course);
@@ -72,24 +63,30 @@ trait VideoContextTrait
     /**
      * @Given A Video with ID :videoId created by User :username exists
      */
-    public function ensureVideoByUserExists($videoId, $username)
+    public function ensureVideoByUserExists($videoId, $username): Video
     {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        /** @var Video $video */
+        $video = $this->entityManager->find(Video::class, $videoId);
 
-        $video = new Video($videoId);
-        $video->setCreator($user);
-        $video->setDataPrivacyAccepted(true);
-        $video->setDataPrivacyPermissionsAccepted(true);
-        $video->setTitle('TEST: CutVideo');
-        $video->setEncodingStatus(Video::ENCODING_FINISHED);
-        $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
-        $video->setEncodedVideoDirectory($outputDirectory);
+        if (!$video) {
+            /** @var User $user */
+            $user = $this->entityManager->find(User::class, $username);
 
-        $this->entityManager->persist($video);
+            $video = new Video($videoId);
+            $video->setCreator($user);
+            $video->setDataPrivacyAccepted(true);
+            $video->setDataPrivacyPermissionsAccepted(true);
+            $video->setTitle('TEST_Video_' . $videoId);
+            $video->setEncodingStatus(Video::ENCODING_FINISHED);
+            $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
+            $video->setEncodedVideoDirectory($outputDirectory);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
-        $this->entityManager->flush();
+            $this->entityManager->persist($video);
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $this->entityManager->flush();
+        }
+
+        return $video;
     }
 
     /**
@@ -97,15 +94,12 @@ trait VideoContextTrait
      */
     public function assertVideosByUserDoNotExist($username)
     {
-        /** @var VideoRepository $videoRepository */
-        $videoRepository = $this->entityManager->getRepository(Video::class);
-
         /**
          * Why
          * We want to find _all_ Videos of the user without doctrine filtering out any of them
          */
         $this->entityManager->getFilters()->disable('video_doctrine_filter');
-        $videos = $videoRepository->findAll();
+        $videos = $this->videoRepository->findAll();
         $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         /**
@@ -123,66 +117,70 @@ trait VideoContextTrait
     }
 
     /**
-     * @When I find videos by creator :userId without cut videos
-     */
-    public function iFindVideosByCreatorWithoutCutVideos($userId)
-    {
-        /** @var VideoRepository $videoRepository */
-        $videoRepository = $this->entityManager->getRepository(Video::class);
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $userId);
-
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
-        $this->queryResult = $videoRepository->findByCreatorWithoutCutVideos($user);
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
-    }
-
-    /**
+     * Creates a cut video for the currently logged in user (use the according step to log in first)
+     *
      * @Given I have a cut video :cutVideoId belonging to solution :solutionId
      */
     public function iHaveACutVideoBelongingToSolution($cutVideoId, $solutionId)
     {
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        $loggedInUser = $tokenStorage->getToken()->getUser();
-
         // NOTE: we do not save a video file here only the wrapping model,
         // because we do not test for the file itself!
-        $cutVideo = new Video($cutVideoId);
-        $cutVideo->setCreator($loggedInUser);
-        $cutVideo->setDataPrivacyAccepted(true);
-        $cutVideo->setDataPrivacyPermissionsAccepted(true);
-        $cutVideo->setTitle('TEST: CutVideo');
-        $cutVideo->setEncodingStatus(Video::ENCODING_FINISHED);
-        $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $cutVideo->getId());
-        $cutVideo->setEncodedVideoDirectory($outputDirectory);
+        $cutVideo = $this->ensureVideoByUserExists($cutVideoId, $this->currentUser->getId());
 
         /** @var Solution $solution */
         $solution = $this->entityManager->find(Solution::class, $solutionId);
-
         $solution->setCutVideo($cutVideo);
 
-        $this->entityManager->persist($cutVideo);
         $this->entityManager->persist($solution);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
-     * @Then I only receive the regular video :videoId and not the cut video :cutVideoId
+     * @Then I only receive the regular video :videoId and not the cut video :cutVideoId for creator :userId
      */
-    public function iOnlyReceiveTheRegularVideoAndNotTheCutVideo($videoId, $cutVideoId)
+    public function iOnlyReceiveTheRegularVideoAndNotTheCutVideoForCreator($videoId, $cutVideoId, $userId): void
     {
-        assert(!empty($this->queryResult), 'Query result is empty!');
+        /** @var User $user */
+        $user = $this->entityManager->find(User::class, $userId);
 
-        $filteredByCutId = array_filter($this->queryResult, function ($video) use ($cutVideoId) {
+        $this->entityManager->getFilters()->disable('video_doctrine_filter');
+        $queryResult = $this->videoRepository->findByCreatorWithoutCutVideos($user);
+        $this->entityManager->getFilters()->enable('video_doctrine_filter');
+
+        assertNotEmpty($queryResult, 'Query result is empty!');
+
+        $filteredByCutId = array_filter($queryResult, function ($video) use ($cutVideoId) {
             return $video->getId() === $cutVideoId;
         });
 
         assertEmpty($filteredByCutId, 'Cut video was found. (Should not be part of result!)');
 
-        /** @var Video $firstVideo */
-        $firstVideo = current($this->queryResult);
-        assertEquals($videoId, $firstVideo->getId());
+        $filteredByVideoId = array_filter($queryResult, function ($video) use ($videoId) {
+            return $video->getId() === $videoId;
+        });
+
+        assertNotEmpty($filteredByVideoId, 'Regular video was not found. (Should be part of result!)');
+        assertEquals($videoId, $filteredByVideoId[0]->getId());
+        assertEquals($userId, $filteredByVideoId[0]->getCreator()->getId());
+    }
+
+    /**
+     * @When I delete the video :videoId
+     */
+    public function iDeleteTheVideo($videoId): void
+    {
+        $video = $this->videoRepository->find($videoId);
+        assertEquals($videoId, $video->getId());
+        $this->videoService->deleteVideo($video);
+    }
+
+    /**
+     * @Then The video :videoId is deleted
+     */
+    public function theVideoShouldIsDeleted($videoId): void
+    {
+        $video = $this->videoRepository->find($videoId);
+        assertEquals(null, $video);
     }
 }

@@ -393,9 +393,15 @@ class ExercisePhaseService
         );
     }
 
-    public function createPhaseTeam(ExercisePhase $exercisePhase): ExercisePhaseTeam
+    /**
+     * @param ExercisePhase $exercisePhase
+     * @param User $user
+     * @return ExercisePhaseTeam
+     */
+    public function createPhaseTeam(ExercisePhase $exercisePhase, User $user): ExercisePhaseTeam
     {
         $exercisePhaseTeam = new ExercisePhaseTeam();
+        $exercisePhaseTeam->setCreator($user);
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
 
         $this->eventStore->addEvent('TeamCreated', [
@@ -420,6 +426,15 @@ class ExercisePhaseService
         ]);
 
         $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+    }
+
+    public function deleteExercisePhase(ExercisePhase $exercisePhase): void
+    {
+        $this->eventStore->addEvent('ExercisePhaseDeleted', [
+            'exercisePhaseId' => $exercisePhase->getId()
+        ]);
+        $this->entityManager->remove($exercisePhase);
         $this->entityManager->flush();
     }
 }

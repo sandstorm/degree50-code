@@ -56,6 +56,8 @@ class ExercisePhaseTeam
     private User $creator;
 
     /**
+     * @var ExercisePhaseStatus
+     *
      * @ORM\Column(type="string", enumType=ExercisePhaseStatus::class)
      */
     private ExercisePhaseStatus $status = ExercisePhaseStatus::IN_BEARBEITUNG;

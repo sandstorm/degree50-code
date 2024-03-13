@@ -25,10 +25,9 @@ use App\Exercise\LiveSync\LiveSyncService;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Repository\Exercise\SolutionRepository;
 use App\Twig\AppRuntime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -48,6 +47,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ExercisePhaseController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private AppRuntime $appRuntime;
@@ -57,9 +57,7 @@ class ExercisePhaseController extends AbstractController
     private ExercisePhaseService $exercisePhaseService;
     private ExerciseService $exerciseService;
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
-    private LoggerInterface $logger;
     private SolutionService $solutionService;
-    private SolutionRepository $solutionRepository;
     private VideoFavouritesService $videoFavouritesService;
 
     public function __construct(
@@ -71,13 +69,11 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseRepository $exercisePhaseRepository,
         ExercisePhaseService $exercisePhaseService,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        LoggerInterface $logger,
         SolutionService $solutionService,
-        SolutionRepository $solutionRepository,
         VideoFavouritesService $videoFavouritesService,
         ExerciseService $exerciseService,
+        EntityManagerInterface $entityManager
     ) {
-        $this->logger = $logger;
         $this->translator = $translator;
         $this->eventStore = $eventStore;
         $this->appRuntime = $appRuntime;
@@ -87,9 +83,9 @@ class ExercisePhaseController extends AbstractController
         $this->exercisePhaseService = $exercisePhaseService;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->solutionService = $solutionService;
-        $this->solutionRepository = $solutionRepository;
         $this->videoFavouritesService = $videoFavouritesService;
         $this->exerciseService = $exerciseService;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -166,6 +162,7 @@ class ExercisePhaseController extends AbstractController
         $teams = array_filter($teams, fn ($team) => $team->getSolution() !== null);
 
         // Fix "Aufgabe Testen"
+        /** @var User $user */
         $user = $this->getUser();
         if ($user === $exercise->getCreator()) {
             /* @var ExercisePhaseTeam|null $teamOfCreator */
@@ -270,14 +267,7 @@ class ExercisePhaseController extends AbstractController
                 $teams
             );
 
-        // TODO throws Parameter 'userId' does not exist.... why?
-        //$this->getDoctrine()->getManager()->getFilters()->enable('video_doctrine_filter');
-
-        // TODO: obsolete/unused?
-        $phasesWithReviewRequiredIds = $exercise->getPhases()->filter(
-            fn (ExercisePhase $phase) => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase)
-        )->map(fn (ExercisePhase $phase) => $phase->getId());
-
+        /** @var User $user */
         $user = $this->getUser();
         $phases = $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user);
 
@@ -409,10 +399,9 @@ class ExercisePhaseController extends AbstractController
         $exercisePhaseAtNewSortIndex->setSorting($currentSortIndex);
 
         $this->eventStore->disableEventPublishingForNextFlush();
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($exercisePhase);
-        $entityManager->persist($exercisePhaseAtNewSortIndex);
-        $entityManager->flush();
+        $this->entityManager->persist($exercisePhase);
+        $this->entityManager->persist($exercisePhaseAtNewSortIndex);
+        $this->entityManager->flush();
 
         return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
     }
@@ -425,13 +414,7 @@ class ExercisePhaseController extends AbstractController
      */
     public function delete(Exercise $exercise, ExercisePhase $exercisePhase): Response
     {
-        $this->eventStore->addEvent('ExercisePhaseDeleted', [
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($exercisePhase);
-        $entityManager->flush();
+        $this->exercisePhaseService->deleteExercisePhase($exercisePhase);
 
         // Update sorting
         /** @var ExercisePhase[] $remainingPhases */
@@ -441,9 +424,10 @@ class ExercisePhaseController extends AbstractController
             $this->addExercisePhaseEditedEvent($phase);
 
             $phase->setSorting($index);
-            $entityManager->persist($phase);
-            $entityManager->flush();
+            $this->entityManager->persist($phase);
         }
+
+        $this->entityManager->flush();
 
         $this->addFlash(
             'success',
@@ -462,20 +446,18 @@ class ExercisePhaseController extends AbstractController
             $exercisePhaseTeam->setCurrentEditor($user);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
         $this->eventStore->disableEventPublishingForNextFlush();
 
         if (!$exercisePhaseTeam->getSolution()) {
             $this->initNewSolution($exercisePhase, $exercisePhaseTeam);
         }
 
-        $entityManager->persist($exercisePhaseTeam);
-        $entityManager->flush();
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
     }
 
     private function initNewSolution(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam)
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $this->eventStore->disableEventPublishingForNextFlush();
 
         $newSolution = null;
@@ -498,7 +480,7 @@ class ExercisePhaseController extends AbstractController
 
         $exercisePhaseTeam->setSolution($newSolution);
 
-        $entityManager->persist($newSolution);
+        $this->entityManager->persist($newSolution);
     }
 
     private function getConfigWithSolutionApiEndpoints(
@@ -592,9 +574,8 @@ class ExercisePhaseController extends AbstractController
             'type' => $type
         ]);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($exercisePhase);
-        $entityManager->flush();
+        $this->entityManager->persist($exercisePhase);
+        $this->entityManager->flush();
 
         return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
     }
@@ -621,9 +602,8 @@ class ExercisePhaseController extends AbstractController
 
             return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
         } else {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($exercisePhase);
-            $entityManager->flush();
+            $this->entityManager->persist($exercisePhase);
+            $this->entityManager->flush();
 
             $this->addFlash(
                 'success',

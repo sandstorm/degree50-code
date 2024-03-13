@@ -58,7 +58,8 @@
     }
 }
 
-.button--type-primary, .btn-primary {
+.button--type-primary, .btn-primary,
+.btn-primary.disabled, .btn-primary:disabled {
     color: $theme__color__white;
     background-color: $theme__color__primary;
     border-color: $theme__color__primary;

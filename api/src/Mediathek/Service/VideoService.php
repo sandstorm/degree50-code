@@ -3,9 +3,11 @@
 namespace App\Mediathek\Service;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Video\Video;
 use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Exercise\Controller\ExerciseService;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +25,7 @@ class VideoService
     private AppRuntime $appRuntime;
     private KernelInterface $kernel;
     private VideoFavouritesService $videoFavouritesService;
+    private ExerciseService $exerciseService;
 
     const VIDEO_DOCTRINE_FILTER_NAME = 'video_doctrine_filter';
 
@@ -33,6 +36,7 @@ class VideoService
         AppRuntime $appRuntime,
         KernelInterface $kernel,
         VideoFavouritesService $videoFavouritesService,
+        ExerciseService $exerciseService,
     ) {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
@@ -40,6 +44,7 @@ class VideoService
         $this->appRuntime = $appRuntime;
         $this->kernel = $kernel;
         $this->videoFavouritesService = $videoFavouritesService;
+        $this->exerciseService = $exerciseService;
     }
 
     /**
@@ -66,9 +71,23 @@ class VideoService
 
     /**
      * Removes a video entity along with its encoded video directory.
+     * Also removes all exercises that are associated with the video.
      */
     public function deleteVideo(Video $video): void
     {
+        $exercisePhases = $video->getExercisePhases();
+        $exercisesToDelete = [];
+        // loop over exercisePhases and get the exercises
+        /** @var ExercisePhase $exercisePhase */
+        foreach ($exercisePhases as $exercisePhase) {
+            $exercise = $exercisePhase->getBelongsToExercise();
+            $exercisesToDelete[$exercise->getId()] = $exercise;
+        }
+
+        foreach ($exercisesToDelete as $exercise) {
+            $this->exerciseService->deleteExercise($exercise);
+        }
+
         // remove VideoFavourites
         $this->videoFavouritesService->removeVideoFavoritesOfVideo($video);
 

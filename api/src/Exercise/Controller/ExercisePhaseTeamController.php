@@ -14,7 +14,6 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\LiveSync\LiveSyncService;
 use App\VideoEncoding\Message\CutListEncodingTask;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -32,7 +31,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ExercisePhaseTeamController extends AbstractController
 {
-    private LoggerInterface $logger;
     private TranslatorInterface $translator;
     private DoctrineIntegratedEventStore $eventStore;
     private LiveSyncService $liveSyncService;
@@ -46,7 +44,6 @@ class ExercisePhaseTeamController extends AbstractController
         LiveSyncService $liveSyncService,
         MessageBusInterface $messageBus,
         SolutionService $solutionService,
-        LoggerInterface $logger,
         ExercisePhaseService $exercisePhaseService,
     ) {
         $this->translator = $translator;
@@ -54,7 +51,6 @@ class ExercisePhaseTeamController extends AbstractController
         $this->liveSyncService = $liveSyncService;
         $this->messageBus = $messageBus;
         $this->solutionService = $solutionService;
-        $this->logger = $logger;
         $this->exercisePhaseService = $exercisePhaseService;
     }
 
@@ -87,7 +83,7 @@ class ExercisePhaseTeamController extends AbstractController
             }
         }
 
-        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase);
+        $exercisePhaseTeam = $this->exercisePhaseService->createPhaseTeam($exercisePhase, $user);
         $this->exercisePhaseService->addMemberToPhaseTeam($exercisePhaseTeam, $user);
 
         if ($exercisePhase->isGroupPhase()) {

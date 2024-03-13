@@ -81,7 +81,6 @@
             <a
                 href="{{ path('mediathek__video--delete', {id: video.data.id}) }}"
                 class="color-alert"
-                onclick="return confirm('{% trans %}video.delete.confirm{% endtrans %}');"
             >
                 <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
             </a>

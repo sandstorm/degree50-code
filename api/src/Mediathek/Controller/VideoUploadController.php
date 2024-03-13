@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Mediathek\Controller;
-
 
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
@@ -11,7 +9,6 @@ use App\Entity\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\EventListener\UploadListener;
 use App\Mediathek\Form\VideoType;
-use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
 use App\VideoEncoding\Message\WebEncodingTask;
@@ -180,32 +177,26 @@ class VideoUploadController extends AbstractController
     }
 
     /**
+     * TODO show delete page to confirm and show usage of the video on delete
      * Delete the video entity and the encoded video
      *
      * @IsGranted("delete", subject="video")
-     * @Route("/video/delete/{id}", name="mediathek__video--delete")
+     * @Route("/video/delete/{id}/{confirm}", name="mediathek__video--delete")
      */
-    public function delete(Video $video): Response
+    public function delete(Video $video, bool $confirm = false): Response
     {
-        // seems to be a failsafe if the video has already been deleted
-        if ($video) {
-            if (count($video->getExercisePhases()) > 0) {
-                $this->addFlash(
-                    'danger',
-                    $this->translator->trans('video.delete.messages.isCurrentlyUsed', [], 'forms')
-                );
-                return $this->redirectToRoute('mediathek--index');
-            }
-
+        if ($confirm) {
             $this->videoService->deleteVideo($video);
-
             $this->addFlash(
                 'success',
                 $this->translator->trans('video.delete.messages.success', [], 'forms')
             );
+            return $this->redirectToRoute('mediathek--index');
         }
 
-        return $this->redirectToRoute('mediathek--index');
+        return $this->render('Mediathek/VideoUpload/Delete.html.twig', [
+            'video' => $video,
+        ]);
     }
 
     /**
