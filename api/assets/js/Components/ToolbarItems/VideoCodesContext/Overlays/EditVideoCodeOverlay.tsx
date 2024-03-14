@@ -23,7 +23,7 @@ const mapStateToProps = (state: AppState) => {
 
     return {
         videoCode,
-        prototypes: selectors.data.selectAllPrototypesFlattened(state),
+        prototypes: selectors.data.selectVideoCodePrototypesOfCurrentSolutionFlattened(state),
         duration,
         currentTime,
     }

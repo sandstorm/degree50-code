@@ -26,15 +26,13 @@ const TeamMenu: FC<Props> = (props) => {
 
     return (
         <div className="video-editor__menu">
+            {!isDisabled && <div className="video-editor__menu__count-badge">{props.onlineTeamMemberIds.length}</div>}
             <Button
                 title="Team"
                 isDisabled={isDisabled}
                 className="button button--type-primary video-editor__toolbar__button"
                 onPress={handleClick}
             >
-                {!isDisabled && (
-                    <div className="video-editor__menu__count-badge">{props.onlineTeamMemberIds.length}</div>
-                )}
                 <i className="fas fa-users" />
             </Button>
         </div>

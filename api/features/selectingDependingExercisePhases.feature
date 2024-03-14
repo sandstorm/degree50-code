@@ -64,14 +64,13 @@ Feature: Valid choices for "dependsOnExercisePhase" when editing ExercisePhases
             | Cutting2   |
             | Reflexion2 |
 
-    Scenario: Fourth ExercisePhase is a VideoAnalysisPhase and can not depend on any other ExercisePhase
+    Scenario: Fourth ExercisePhase is a VideoAnalysisPhase and can only depend on another VideoAnalysisPhase
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1/phase/analysis2/edit"
         # These texts are all options of the 'dependsOnExercisePhase' select
         Then the page contains all the following texts:
-            | Keine     |
-        And the page contains none of the following texts:
             | Analysis1 |
+        And the page contains none of the following texts:
             | Cutting1  |
             | Reflexion1 |
             # WHY: The Name of the currently edited Phase is present in the headline

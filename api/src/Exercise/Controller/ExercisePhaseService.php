@@ -20,6 +20,7 @@ use App\Service\UserMaterialService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ExercisePhaseService
 {
@@ -28,6 +29,7 @@ class ExercisePhaseService
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private UserMaterialService $materialService;
     private AutosavedSolutionRepository $autoSavedSolutionRepository;
+    private TranslatorInterface $translator;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -35,38 +37,34 @@ class ExercisePhaseService
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         UserMaterialService $materialService,
         AutosavedSolutionRepository $autoSavedSolutionRepository,
-    ) {
+        TranslatorInterface $translator,
+    )
+    {
         $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->materialService = $materialService;
         $this->autoSavedSolutionRepository = $autoSavedSolutionRepository;
+        $this->translator = $translator;
     }
 
     public function getPhaseTypeTitle(ExercisePhaseType $exercisePhaseType): string
     {
-        return match($exercisePhaseType) {
-            ExercisePhaseType::VIDEO_ANALYSIS => "Videoanalyse",
-            ExercisePhaseType::REFLEXION => "Vergleichsphase",
-            ExercisePhaseType::VIDEO_CUT => "Schnittphase",
-            ExercisePhaseType::MATERIAL => "Dokumentationsphase",
-        };
+        return $this->translator->trans("exercisePhase.types.$exercisePhaseType->value.label", [], 'forms');
     }
 
     public function getPhaseTypeIconClasses(ExercisePhaseType $exercisePhaseType): string
     {
-        return match($exercisePhaseType) {
-            ExercisePhaseType::VIDEO_ANALYSIS => "fas fa-film",
-            ExercisePhaseType::REFLEXION => "fas fa-book-open",
-            ExercisePhaseType::VIDEO_CUT => "fas fa-cut",
-            ExercisePhaseType::MATERIAL => "fas fa-square-quote",
-        };
+        return $this->translator->trans("exercisePhase.types.$exercisePhaseType->value.iconClass", [], 'forms');
     }
 
     /**
      * Check if the combination of ExercisePhase "depending on" and the "depending" ExercisePhase is valid.
      */
-    public function isValidDependingOnExerciseCombination(ExercisePhase $phaseDependingOn, ExercisePhase $dependingPhase): bool
+    public function isValidDependingOnExerciseCombination(
+        ExercisePhase $phaseDependingOn,
+        ExercisePhase $dependingPhase
+    ): bool
     {
         // check sorting: $phaseDependingOn must come _before_ this $dependingPhase
         if ($phaseDependingOn->getSorting() >= $dependingPhase->getSorting()) {
@@ -76,20 +74,36 @@ class ExercisePhaseService
         // check type combination
 
         // Reflexion can depend on any other(!) type
-        if ($dependingPhase->getType() === ExercisePhaseType::REFLEXION && $phaseDependingOn->getType() !== ExercisePhaseType::REFLEXION) {
+        if (
+            $dependingPhase->getType() === ExercisePhaseType::REFLEXION
+            && $phaseDependingOn->getType() !== ExercisePhaseType::REFLEXION
+        ) {
             return true;
         }
 
         // VideoCutting can depend on VideoAnalysis
-        if ($dependingPhase->getType() === ExercisePhaseType::VIDEO_CUT && $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS) {
+        if (
+            $dependingPhase->getType() === ExercisePhaseType::VIDEO_CUT
+            && $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS
+        ) {
             return true;
         }
 
         // MaterialPhase can depend on VideoAnalysis & VideoCutting
         if (
-            $dependingPhase->getType() === ExercisePhaseType::MATERIAL && ($phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS
+            $dependingPhase->getType() === ExercisePhaseType::MATERIAL
+            && (
+                $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS
                 || $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_CUT
             )
+        ) {
+            return true;
+        }
+
+        // VideoAnalysis can depend on VideoAnalysis
+        if (
+            $dependingPhase->getType() === ExercisePhaseType::VIDEO_ANALYSIS
+            && $phaseDependingOn->getType() === ExercisePhaseType::VIDEO_ANALYSIS
         ) {
             return true;
         }

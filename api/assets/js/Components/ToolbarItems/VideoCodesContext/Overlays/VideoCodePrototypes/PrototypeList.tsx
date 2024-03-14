@@ -14,6 +14,8 @@ import {
 type OwnProps = {
     videoCodePrototypes: VideoCodePrototype[]
     parentPrototype?: VideoCodePrototype
+    emptyMessage?: string
+    readonly?: boolean
 }
 
 const mapStateToProps = (state: ConfigStateSlice) => {
@@ -45,6 +47,8 @@ const PrototypeList = (props: Props) => {
         })
     }
 
+    const isReadonly = props.readonly || props.isSolutionView
+
     return (
         <>
             {props.videoCodePrototypes?.length > 0 ? ( // exists, because we might have nested lists inside an Entry
@@ -54,12 +58,25 @@ const PrototypeList = (props: Props) => {
                             key={prototype.id}
                             videoCodePrototype={prototype}
                             parentPrototype={props.parentPrototype}
-                        />
+                            readonly={isReadonly}
+                        >
+                            <ConnectedPrototypeList
+                                videoCodePrototypes={prototype.videoCodes}
+                                parentPrototype={prototype}
+                                readonly={isReadonly}
+                            />
+                        </PrototypeEntry>
                     ))}
                 </ul>
+            ) : props.emptyMessage ? (
+                <div className="video-editor__video-codes">
+                    <div className="video-code__empty-message">
+                        <span>{props.emptyMessage}</span>
+                    </div>
+                </div>
             ) : null}
 
-            {!props.isSolutionView && (
+            {!isReadonly && (
                 <Button
                     title={`Neuen ${props.parentPrototype ? 'Untercode' : 'Code'} erstellen`}
                     className={'button button--type-outline-primary button--block button--size-small'}
@@ -73,4 +90,6 @@ const PrototypeList = (props: Props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(PrototypeList))
+const ConnectedPrototypeList = connect(mapStateToProps, mapDispatchToProps)(React.memo(PrototypeList))
+
+export default ConnectedPrototypeList

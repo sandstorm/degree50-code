@@ -4,7 +4,6 @@ namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCodePrototype;
@@ -27,7 +26,7 @@ class SolutionService
     private ExercisePhaseService $exercisePhaseService;
     private LoggerInterface $logger;
 
-    function __construct(
+    public function __construct(
         AutosavedSolutionRepository $autosavedSolutionRepository,
         LoggerInterface $logger,
         AppRuntime $appRuntime,

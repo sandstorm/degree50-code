@@ -12,7 +12,7 @@ type OwnProps = {
 }
 
 const mapStateToProps = (state: AppState) => ({
-    prototypes: selectors.data.selectAllPrototypesFlattened(state),
+    prototypes: selectors.data.selectVideoCodePrototypesOfCurrentSolutionFlattened(state),
     prototypesById: selectors.data.videoCodePrototypes.selectById(state),
 })
 

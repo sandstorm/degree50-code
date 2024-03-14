@@ -1,19 +1,20 @@
 import React from 'react'
-import { getComponentName } from '.'
+import getComponentName from 'Components/VideoEditor/components/MultiLane/getComponentName'
 
 type Props = {
     componentName: ReturnType<typeof getComponentName>
     itemCount: number
     userName?: string
     fromGroupPhase?: boolean
-    isCurrent?: boolean
+    isPreviousSolution?: boolean
 }
 
 const MediaLaneDescription = (props: Props) => {
-    const { componentName, itemCount, userName, fromGroupPhase } = props
+    const { componentName, itemCount, userName, fromGroupPhase, isPreviousSolution } = props
     return (
         <div className="multilane__medialane-description">
-            {componentName} ({itemCount}) - {fromGroupPhase ? 'Gruppe von' : ''} {userName ?? '<unbekannt>'}
+            {componentName} ({itemCount}) - {isPreviousSolution ? 'aus Lösung von ' : ''}{' '}
+            {fromGroupPhase ? 'Gruppe von' : ''} {userName ?? '<Unbekannter Nutzer>'}
         </div>
     )
 }

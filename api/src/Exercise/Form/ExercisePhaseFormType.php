@@ -6,7 +6,6 @@ use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Exercise\Controller\ExercisePhaseService;
 use App\Repository\Exercise\ExercisePhaseRepository;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -22,22 +21,29 @@ class ExercisePhaseFormType extends AbstractType
 
     private ExercisePhaseService $exercisePhaseService;
 
-    public function __construct(ExercisePhaseRepository $exercisePhaseRepository, ExercisePhaseService $exercisePhaseService)
+    public function __construct(
+        ExercisePhaseRepository $exercisePhaseRepository,
+        ExercisePhaseService $exercisePhaseService,
+    )
     {
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->exercisePhaseService = $exercisePhaseService;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
-        $dependsOnPreviousPhaseIsDisabled = $exercisePhase->getSorting() === 0 || $exercisePhase->getType() == ExercisePhaseType::VIDEO_ANALYSIS;
 
-        $phasesFromSameCourse = $this->exercisePhaseRepository->findBy(['belongsToExercise' => $exercisePhase->belongsToExercise]);
-        $exercisePhaseChoices = array_filter($phasesFromSameCourse, function (ExercisePhase $phaseDependingOn) use ($exercisePhase) {
-            return $this->exercisePhaseService->isValidDependingOnExerciseCombination($phaseDependingOn, $exercisePhase);
-        });
+        $phasesFromSameCourse = $this->exercisePhaseRepository
+            ->findBy(['belongsToExercise' => $exercisePhase->belongsToExercise]);
+        $exercisePhaseChoices = array_filter(
+            $phasesFromSameCourse,
+            function (ExercisePhase $phaseDependingOn) use ($exercisePhase) {
+                return $this->exercisePhaseService
+                    ->isValidDependingOnExerciseCombination($phaseDependingOn, $exercisePhase);
+            }
+        );
 
         $components = $exercisePhase->getAllowedComponents();
         $componentChoices = [];
@@ -51,11 +57,15 @@ class ExercisePhaseFormType extends AbstractType
             ->add('dependsOnExercisePhase', EntityType::class, [
                 'class' => ExercisePhase::class,
                 'choices' => $exercisePhaseChoices,
-                'choice_label' => 'name',
+                'choice_label' => function (ExercisePhase $exercisePhase) {
+                    $name = $exercisePhase->getName();
+                    $type = $this->exercisePhaseService->getPhaseTypeTitle($exercisePhase->getType());
+                    return "$name ($type)";
+                },
                 'placeholder' => 'Keine',
                 'multiple' => false,
                 'required' => $isReflexionPhase,
-                'disabled' => $dependsOnPreviousPhaseIsDisabled || $exercisePhase->getHasSolutions(),
+                'disabled' => $exercisePhase->getSorting() === 0 || $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.labels.dependsOnPreviousPhase",
                 'translation_domain' => 'forms',
                 'help' => $isReflexionPhase
@@ -123,7 +133,7 @@ class ExercisePhaseFormType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => ExercisePhase::class,

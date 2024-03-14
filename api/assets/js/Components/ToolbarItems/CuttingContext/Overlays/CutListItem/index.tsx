@@ -34,6 +34,7 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
         creatorName: selectors.data.selectCreatorNameForCut(state, ownProps),
         phaseType: selectors.config.selectPhaseType(state),
         isFromGroupPhase,
+        isFromCurrentSolution: selectors.data.selectCutIsFromCurrentSolution(state, ownProps),
     }
 }
 
@@ -50,6 +51,8 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 
 const CutListItem: FC<Props> = (props) => {
     const { item, phaseType, index, isFromGroupPhase } = props
+
+    const isFromPreviousSolution = !props.isFromCurrentSolution
 
     const handleRemove = () => {
         props.setCurrentlyEditedElementId(item.id)
@@ -76,7 +79,9 @@ const CutListItem: FC<Props> = (props) => {
     }
 
     const element = `${index + 1}. Element`
-    const creatorDescription = `Schnitt von: ${isFromGroupPhase ? 'Gruppe von ' : ''}${props.creatorName}`
+    const creatorDescription = `Schnitt ${isFromPreviousSolution ? 'aus Lösung' : ''} von: ${
+        isFromGroupPhase ? 'Gruppe von ' : ''
+    }${props.creatorName}`
     const description = `Beschreibung: ${item.text}`
     const start = `Von: ${item.start}`
     const end = `Bis: ${item.end}`
@@ -98,6 +103,7 @@ const CutListItem: FC<Props> = (props) => {
     const asRichtext = cutAsRichtext({
         cut: item,
         creatorName: props.creatorName,
+        isFromPreviousSolution,
     })
 
     return (

@@ -11,7 +11,8 @@
     list-style: none;
 }
 
-.video-code {
+.video-code,
+.video-code__empty-message {
     padding: $theme__spacing--small $theme__spacing--base;
 
     &:focus, &:focus-within {
@@ -40,6 +41,10 @@
         display: block;
         margin-top: $theme__spacing--small;
     }
+}
+
+.video-code__empty-message {
+    background-color: $theme__color__grey--light;
 }
 
 .video-code__child-count {

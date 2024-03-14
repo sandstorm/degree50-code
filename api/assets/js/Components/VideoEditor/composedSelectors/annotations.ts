@@ -55,9 +55,13 @@ export const composedAnnotationSelectors = {
     selectCreatorNameForAnnotation,
 }
 
-export const annotationWithCreatorNameAsRichtext = (annotation: Annotation & { creatorName: string }) => {
+export const annotationWithCreatorNameAsRichtext = (
+    annotation: Annotation & { creatorName: string; isFromPreviousSolution: boolean }
+) => {
     const description = `Beschreibung: ${annotation.text}`
-    const creatorDescription = `Annotation von: ${annotation.creatorName}`
+    const creatorDescription = `Annotation ${annotation.isFromPreviousSolution ? 'aus Lösung' : ''} von: ${
+        annotation.creatorName
+    }`
     const start = `Von: ${annotation.start}`
     const end = `Bis: ${annotation.end}`
     const memo = `${annotation.memo.length > 0 ? `Memo: ${annotation.memo}` : ''}`
