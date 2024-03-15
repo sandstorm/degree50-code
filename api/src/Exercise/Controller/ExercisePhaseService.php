@@ -163,7 +163,6 @@ class ExercisePhaseService
                 $newPhase->setName($originalPhase->getName());
                 $newPhase->setTask($originalPhase->getTask());
                 $newPhase->setSorting($originalPhase->getSorting());
-                $newPhase->setComponents($originalPhase->getComponents());
                 $newPhase->setIsGroupPhase($originalPhase->isGroupPhase());
                 $newPhase->setOtherSolutionsAreAccessible($originalPhase->getOtherSolutionsAreAccessible());
 

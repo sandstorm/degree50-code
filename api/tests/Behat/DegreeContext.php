@@ -465,7 +465,7 @@ final class DegreeContext implements Context
                 'task' => $exercisePhase->getTask(),
                 'isGroupPhase' => $exercisePhase->isGroupPhase(),
                 'dependsOnPreviousPhase' => $exercisePhase->getDependsOnExercisePhase() !== null,
-                'components' => $exercisePhase->getComponents(),
+                'components' => [],
                 'reviewRequired' => $reviewRequired,
             ]);
 
@@ -1186,7 +1186,7 @@ final class DegreeContext implements Context
                 'task' => $exercisePhase->getTask(),
                 'isGroupPhase' => $exercisePhase->isGroupPhase(),
                 'dependsOnPreviousPhase' => $exercisePhase->getDependsOnExercisePhase() !== null,
-                'components' => $exercisePhase->getComponents(),
+                'components' => [],
                 'reviewRequired' => $reviewRequired,
             ]);
 

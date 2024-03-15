@@ -16,12 +16,6 @@ class VideoAnalysisPhase extends ExercisePhase
 {
     const type = ExercisePhaseType::VIDEO_ANALYSIS;
 
-    const PHASE_COMPONENTS = [
-        ExercisePhase::VIDEO_PLAYER,
-    ];
-
-    const PHASE_COMPONENTS_GROUP = [];
-
     /**
      * @var VideoCode[]
      *
@@ -71,18 +65,6 @@ class VideoAnalysisPhase extends ExercisePhase
         }
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllowedComponents(): array
-    {
-        if ($this->isGroupPhase()) {
-            return array_merge(self::PHASE_COMPONENTS, self::PHASE_COMPONENTS_GROUP);
-        } else {
-            return self::PHASE_COMPONENTS;
-        }
     }
 
     public function getVideoAnnotationsActive(): ?bool

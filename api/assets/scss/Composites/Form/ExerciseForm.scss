@@ -21,6 +21,13 @@
     padding-left: 0;
 }
 
+.exercise-form__right-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $theme__spacing--base;
+}
+
 label.required:before {
     content: '*';
 }

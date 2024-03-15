@@ -17,7 +17,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
-use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -46,7 +45,6 @@ abstract class ExercisePhase
     const type = null;
 
     // components for phases
-    const VIDEO_PLAYER = 'videoPlayer';
     const VIDEO_CODE = 'videoCode';
     const VIDEO_CUTTING = 'videoCutting';
     const VIDEO_ANNOTATION = 'videoAnnotation';
@@ -84,13 +82,6 @@ abstract class ExercisePhase
      * @ORM\OneToMany(targetEntity="App\Entity\Exercise\ExercisePhaseTeam", mappedBy="exercisePhase", cascade={"all"})
      */
     private Collection $teams;
-
-    // FIXME
-    // why is this type so broad although we expect only an optional array later on?
-    /**
-     * @ORM\Column(type="simple_array", nullable=TRUE)
-     */
-    public string|array|null $components = [];
 
     /**
      * @var Attachment[]
@@ -238,16 +229,6 @@ abstract class ExercisePhase
         $this->isGroupPhase = $isGroupPhase;
     }
 
-    public function getComponents(): ?array
-    {
-        return $this->components;
-    }
-
-    public function setComponents(array $components): void
-    {
-        $this->components = $components;
-    }
-
     public function addAttachment(Attachment $attachment): self
     {
         $this->attachment->add($attachment);
@@ -333,11 +314,6 @@ abstract class ExercisePhase
         $hasSolutionsWithoutTestSolution = !empty($solutionsWithoutTestSolution);
 
         return $hasSolutionsWithoutTestSolution;
-    }
-
-    public function getAllowedComponents()
-    {
-        return [];
     }
 
     /**
