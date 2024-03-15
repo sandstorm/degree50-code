@@ -202,7 +202,7 @@ deploy-prod:
         - mkdir -p ~/.ssh
         - ssh-keyscan -H degree40.tu-dortmund.de >> ~/.ssh/known_hosts
         - scp docker-compose-prod-tu-dortmund.yml deployment@degree40.tu-dortmund.de:~/docker-compose.yml
-        - ssh deployment@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"
+        - ssh deployment@degree40.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker compose pull && docker compose up -d"
 
 # manual deploy to degree40-test
 deploy-test:
@@ -229,4 +229,4 @@ deploy-test:
         - mkdir -p ~/.ssh
         - ssh-keyscan -H degree40-test.tu-dortmund.de >> ~/.ssh/known_hosts
         - scp docker-compose-test-tu-dortmund.yml deployment@degree40-test.tu-dortmund.de:~/docker-compose.yml
-        - ssh deployment@degree40-test.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker-compose pull && docker-compose up -d"
+        - ssh deployment@degree40-test.tu-dortmund.de "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker compose pull && docker compose up -d"
