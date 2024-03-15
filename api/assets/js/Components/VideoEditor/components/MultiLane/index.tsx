@@ -15,7 +15,7 @@ import CutLaneContainer from './CutLaneContainer'
 import { useMediaLaneClick } from '../MediaLane/useMediaLaneClick'
 import MediaLaneToolbarItem from '../MediaLaneToolbar/MediaLaneToolbarItem'
 import LaneHeightMenu from './LaneHeightMenu'
-import MediaLaneFullHeightToggle from 'Components/VideoEditor/components/MultiLane/MediaLaneFullHeightToggle'
+import MediaLaneFullHeightToggle from './MediaLaneFullHeightToggle'
 
 const getMediaLaneContainerComponentById = (componentId: ComponentId) => {
     switch (componentId) {

@@ -6,9 +6,10 @@ type Props = {
     toggleFullHeight: () => void
 }
 
-const LaneHeightMenu = (props: Props) => {
-    const label = props.isFullHeight ? 'Exit Full Screen' : 'Enter Full Screen'
+const MediaLaneFullHeightToggle = (props: Props) => {
+    const label = props.isFullHeight ? 'Vollbildmodus verlassen' : 'Vollbildmodus aktivieren'
     const iconName = props.isFullHeight ? 'minimize' : 'maximize'
+
     return (
         <Button
             className="button button--type-primary menu-button media-lane-toolbar__menu-button"
@@ -19,4 +20,4 @@ const LaneHeightMenu = (props: Props) => {
     )
 }
 
-export default React.memo(LaneHeightMenu)
+export default React.memo(MediaLaneFullHeightToggle)
