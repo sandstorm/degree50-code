@@ -39,7 +39,9 @@ const MenuButton: FC<Props> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false)
 
-    const open = useCallback(() => setIsOpen(true), [])
+    const open = useCallback(() => {
+        setIsOpen(true)
+    }, [])
     const close = useCallback(() => {
         setIsOpen(false)
     }, [])
@@ -56,16 +58,7 @@ const MenuButton: FC<Props> = ({
         }
     }, [isOpen, close, open, pauseVideo, setPauseVideo])
 
-    /**
-     * WHY stopPropagation and preventDefault:
-     *   Touch fires an additional click after a small delay.
-     *   To prevent that from happening we immediately prevent the event from bubbling.
-     *   This is probably due to browser implementation of secondary touch (long touch)
-     *   where after the timeout for long-touch a click is triggered.
-     */
-    const handleToggleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        event.preventDefault()
-        event.stopPropagation()
+    const handleToggleMenu = () => {
         toggleMenu()
     }
 
@@ -101,10 +94,16 @@ const MenuButton: FC<Props> = ({
 
     return (
         <div className="menu-wrapper">
-            <Button className={classes} onClick={handleToggleMenu} title={ariaLabel}>
+            <Button className={classes} onPress={handleToggleMenu} title={ariaLabel}>
                 {icon} {label}
             </Button>
-            {isOpen && <div className="menu-backdrop" onClick={close} />}
+            {isOpen && (
+                // WHY use mouseDown and touchStart instead of click:
+                //   This fixes an issue with Chrome Dev Tools where a click event is triggered after a touch event.
+                //   This causes the menu to close immediately after opening.
+                //   By using mouseDown and touchStart, we can ignore this additional click event.
+                <div className="menu-backdrop" onMouseDown={close} onTouchStart={close} />
+            )}
             {isOpen && (
                 <FocusScope autoFocus contain restoreFocus key={focusScopeKey}>
                     <div

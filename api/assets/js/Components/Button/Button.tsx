@@ -3,7 +3,6 @@ import { useButton } from '@react-aria/button'
 
 type ButtonProps = {
     onPress?: () => void
-    onClick?: (event: React.MouseEvent<HTMLElement>) => void
     children: React.ReactNode
     isDisabled?: boolean
     className: string
