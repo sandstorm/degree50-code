@@ -58,10 +58,6 @@ const MenuButton: FC<Props> = ({
         }
     }, [isOpen, close, open, pauseVideo, setPauseVideo])
 
-    const handleToggleMenu = () => {
-        toggleMenu()
-    }
-
     const handleKeyDown = useCallback(
         (ev: React.KeyboardEvent<HTMLElement>) => {
             switch (ev.key) {
@@ -94,7 +90,7 @@ const MenuButton: FC<Props> = ({
 
     return (
         <div className="menu-wrapper">
-            <Button className={classes} onPress={handleToggleMenu} title={ariaLabel}>
+            <Button className={classes} onPress={toggleMenu} title={ariaLabel}>
                 {icon} {label}
             </Button>
             {isOpen && (
