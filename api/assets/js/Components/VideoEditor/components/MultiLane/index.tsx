@@ -15,6 +15,7 @@ import CutLaneContainer from './CutLaneContainer'
 import { useMediaLaneClick } from '../MediaLane/useMediaLaneClick'
 import MediaLaneToolbarItem from '../MediaLaneToolbar/MediaLaneToolbarItem'
 import LaneHeightMenu from './LaneHeightMenu'
+import MediaLaneFullHeightToggle from 'Components/VideoEditor/components/MultiLane/MediaLaneFullHeightToggle'
 
 const getMediaLaneContainerComponentById = (componentId: ComponentId) => {
     switch (componentId) {
@@ -36,6 +37,11 @@ const getMediaLaneContainerComponentById = (componentId: ComponentId) => {
     }
 }
 
+type OwnProps = {
+    isFullHeight: boolean
+    toggleFullHeight: () => void
+}
+
 const mapStateToProps = (state: VideoEditorState & ConfigStateSlice) => ({
     videos: configSelectors.selectVideos(state),
     mediaLaneRenderConfig: videoEditorSelectors.mediaLaneRenderConfig.selectRenderConfig(state.videoEditor),
@@ -48,7 +54,7 @@ const mapDispatchToProps = {
     updateZoom: actions.mediaLaneRenderConfig.updateZoom,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const MultiLane = (props: Props) => {
     const { handleMediaLaneClick } = useMediaLaneClick(
@@ -75,6 +81,12 @@ const MultiLane = (props: Props) => {
             >
                 <MediaLaneToolbarItem>
                     <LaneHeightMenu />
+                </MediaLaneToolbarItem>
+                <MediaLaneToolbarItem>
+                    <MediaLaneFullHeightToggle
+                        isFullHeight={props.isFullHeight}
+                        toggleFullHeight={props.toggleFullHeight}
+                    />
                 </MediaLaneToolbarItem>
             </Toolbar>
             <div className="video-editor-timeline__entries multilane">

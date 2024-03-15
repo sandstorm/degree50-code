@@ -16,11 +16,15 @@ const VideoEditor: FC<Props> = (props) => {
     useShortCuts()
 
     const [showMediaLane, setShowMediaLane] = useState(false)
+    const [isMediaLaneFullHeight, setIsMediaLaneFullHeight] = useState(false)
+
     const handleMediaLaneToggle = () => setShowMediaLane(!showMediaLane)
+    const handleMediaLaneFullHeightToggle = () => setIsMediaLaneFullHeight(!isMediaLaneFullHeight)
 
     return (
         <div className="video-editor" data-test-id="videoEditor">
             <ConnectedVideoJSPlayer
+                hidden={isMediaLaneFullHeight}
                 videoJsOptions={{
                     autoplay: false,
                     controls: true,
@@ -30,7 +34,7 @@ const VideoEditor: FC<Props> = (props) => {
                 }}
                 videoMap={firstVideo}
             />
-            <Toolbar>
+            <Toolbar hidden={isMediaLaneFullHeight}>
                 <div className="video-editor__menu video-editor__menu--right">
                     <button
                         className="button button--type-primary video-editor__toolbar__button video-editor__toolbar__button--with-text"
@@ -44,7 +48,11 @@ const VideoEditor: FC<Props> = (props) => {
                 </div>
             </Toolbar>
             <OverlayContainer />
-            <MediaLaneContainer showMediaLane={showMediaLane} />
+            <MediaLaneContainer
+                showMediaLane={showMediaLane}
+                isFullHeight={isMediaLaneFullHeight}
+                toggleFullHeight={handleMediaLaneFullHeightToggle}
+            />
         </div>
     )
 }

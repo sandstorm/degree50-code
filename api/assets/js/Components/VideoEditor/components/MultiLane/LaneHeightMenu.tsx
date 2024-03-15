@@ -1,12 +1,12 @@
 import React from 'react'
 import MenuButton from '../MenuButton'
 import MenuItem from '../MenuItem'
-import { MediaLaneRenderConfigState, selectors, actions } from 'Components/VideoEditor/MediaLaneRenderConfigSlice'
-import { MedialaneHeightModifier } from '../MediaLane/MediaTrack'
+import { actions, selectors } from 'Components/VideoEditor/MediaLaneRenderConfigSlice'
+import { MediaLaneHeightModifier } from '../MediaLane/MediaTrack'
 import { connect } from 'react-redux'
 import { VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 
-const getHeightModifierLabel = (modifier: MedialaneHeightModifier) => {
+const getHeightModifierLabel = (modifier: MediaLaneHeightModifier) => {
     return `${modifier * 100}%`
 }
 

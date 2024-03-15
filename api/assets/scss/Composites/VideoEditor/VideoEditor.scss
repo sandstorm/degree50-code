@@ -18,6 +18,10 @@
 
     background-color: $theme__color__grey--light;
 
+    &--hidden {
+        display: none;
+    }
+
     .menu {
         z-index: $theme__z-index--menu;
         position: absolute;
