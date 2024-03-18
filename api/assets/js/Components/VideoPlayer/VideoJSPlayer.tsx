@@ -8,6 +8,7 @@ import { generate } from 'shortid'
 import { useAddCustomVideoJsComponent } from '../VideoEditor/useCustomVideoJsComponent'
 import { usePatchVideoJsToMakeHotKeysWork } from '../VideoEditor/usePatchVideoJsToMakeHotKeysWork'
 import { SetPlayerTimeControl } from 'Components/ToolbarItems/SetVideoPlayerTimeContext/SetVideoPlayerTimeMenu'
+import classNames from 'classnames'
 
 type Props = {
     videoJsOptions: VideoJsPlayerOptions
@@ -17,6 +18,7 @@ type Props = {
     setPauseCallback?: (pause: boolean) => void
     isPaused?: boolean
     playPosition?: number
+    hidden?: boolean
 }
 
 const defaultVideoJsOptions: VideoJsPlayerOptions = {
@@ -83,7 +85,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
         // has been transmitted to the server it will be available to all player occurrences!
         if (player && props.worker && !props.worker.onmessage) {
             // eslint-disable-next-line
-      props.worker.onmessage = (event) => {
+            props.worker.onmessage = (event) => {
                 setVttPath(event.data)
             }
         }
@@ -117,8 +119,10 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
         }
     }
 
+    const className = classNames('video-player', { 'video-player--hidden': props.hidden })
+
     return (
-        <div className={'video-player'}>
+        <div className={className}>
             <div data-vjs-player>
                 <video
                     id={playerId}

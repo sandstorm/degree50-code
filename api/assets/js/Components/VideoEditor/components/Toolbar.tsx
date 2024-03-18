@@ -9,14 +9,20 @@ import ToggleVideoFavorite from 'Components/ToolbarItems/ToggleVideoFavorite'
 import VideoCodesMenu from 'Components/ToolbarItems/VideoCodesContext/VideoCodesMenu'
 import ZusatzAttachmentMenu from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentMenu'
 import React, { FC, ReactNode } from 'react'
+import classNames from 'classnames'
 
 type OwnProps = {
+    hidden?: boolean
     children?: ReactNode
 }
 
 const Toolbar: FC<OwnProps> = (props) => {
+    const className = classNames('video-editor__toolbar', {
+        'video-editor__toolbar--hidden': props.hidden,
+    })
+
     return (
-        <div className="video-editor__toolbar">
+        <div className={className}>
             <AllMediaItemsMenu />
             <AnnotationsMenu />
             <VideoCodesMenu />

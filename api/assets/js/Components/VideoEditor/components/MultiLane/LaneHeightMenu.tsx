@@ -1,12 +1,12 @@
 import React from 'react'
 import MenuButton from '../MenuButton'
 import MenuItem from '../MenuItem'
-import { MediaLaneRenderConfigState, selectors, actions } from 'Components/VideoEditor/MediaLaneRenderConfigSlice'
-import { MedialaneHeightModifier } from '../MediaLane/MediaTrack'
+import { actions, selectors } from 'Components/VideoEditor/MediaLaneRenderConfigSlice'
+import { MediaLaneHeightModifier } from '../MediaLane/MediaTrack'
 import { connect } from 'react-redux'
 import { VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 
-const getHeightModifierLabel = (modifier: MedialaneHeightModifier) => {
+const getHeightModifierLabel = (modifier: MediaLaneHeightModifier) => {
     return `${modifier * 100}%`
 }
 
@@ -25,11 +25,13 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const LaneHeightMenu = (props: Props) => {
     const heightModifierLabel = getHeightModifierLabel(props.heightModifier)
     const menuButtonLabel = `Zeilenhöhe: ${heightModifierLabel}`
+    const icon = <i className="fa-solid fa-line-height"></i>
 
     return (
         <div className="video-editor__menu">
             <MenuButton
                 label={menuButtonLabel}
+                icon={icon}
                 ariaLabel={menuButtonLabel}
                 pauseVideo
                 className="media-lane-toolbar__menu-button"

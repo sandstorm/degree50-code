@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { MedialaneHeightModifier, RenderConfig } from './components/MediaLane/MediaTrack'
+import { MediaLaneHeightModifier, RenderConfig } from './components/MediaLane/MediaTrack'
 import { INITIAL_ZOOM } from './components/MediaLane/useMediaLaneRendering'
 
 export const initialRenderConfig: RenderConfig = {
@@ -19,7 +19,7 @@ const MediaLaneRenderConfigSlice = createSlice({
     initialState: initialRenderConfig,
     reducers: {
         setRenderConfig: (_: RenderConfig, action: PayloadAction<RenderConfig>): RenderConfig => action.payload,
-        setHeightModifier: (state, action: PayloadAction<MedialaneHeightModifier>): RenderConfig => {
+        setHeightModifier: (state, action: PayloadAction<MediaLaneHeightModifier>): RenderConfig => {
             return {
                 ...state,
                 heightModifier: action.payload,
