@@ -506,7 +506,7 @@ class ExercisePhaseController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $components = $exercisePhase->getComponents();
+        $components = [];
 
         switch ($exercisePhase->getType()) {
             case ExercisePhaseType::VIDEO_ANALYSIS:
@@ -514,15 +514,15 @@ class ExercisePhaseController extends AbstractController
                  * @var VideoAnalysisPhase $exercisePhase
                  **/
                 if ($exercisePhase->getVideoAnnotationsActive()) {
-                    array_push($components, ExercisePhase::VIDEO_ANNOTATION);
+                    $components[] = ExercisePhase::VIDEO_ANNOTATION;
                 }
                 if ($exercisePhase->getVideoCodesActive()) {
-                    array_push($components, ExercisePhase::VIDEO_CODE);
+                    $components[] = ExercisePhase::VIDEO_CODE;
                 }
 
                 break;
             case ExercisePhaseType::VIDEO_CUT:
-                array_push($components, ExercisePhase::VIDEO_CUTTING);
+                $components[] = ExercisePhase::VIDEO_CUTTING;
                 break;
             case ExercisePhaseType::REFLEXION:
                 break;
@@ -667,7 +667,7 @@ class ExercisePhaseController extends AbstractController
             'videoCodes' => $phase->getVideoCodes()->map(fn (VideoCode $videoCode) => [
                 'videoCodeId' => $videoCode->getId()
             ])->toArray(),
-            'components' => $phase->getComponents()
+            'components' => []
         ]);
     }
 
@@ -682,7 +682,7 @@ class ExercisePhaseController extends AbstractController
             'videos' => $phase->getVideos()->map(fn (Video $video) => [
                 'videoId' => $video->getId()
             ])->toArray(),
-            'components' => $phase->getComponents()
+            'components' => []
         ]);
     }
 
@@ -694,7 +694,7 @@ class ExercisePhaseController extends AbstractController
             'task' => $phase->getTask(),
             'isGroupPhase' => $phase->isGroupPhase(),
             'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'components' => $phase->getComponents()
+            'components' => []
         ]);
     }
 
@@ -706,7 +706,7 @@ class ExercisePhaseController extends AbstractController
             'task' => $phase->getTask(),
             'isGroupPhase' => $phase->isGroupPhase(),
             'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'components' => $phase->getComponents()
+            'components' => []
         ]);
     }
 

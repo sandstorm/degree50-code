@@ -13,10 +13,6 @@ class MaterialPhase extends ExercisePhase
 {
     const type = ExercisePhaseType::MATERIAL;
 
-    const PHASE_COMPONENTS = [];
-
-    const PHASE_COMPONENTS_GROUP = [];
-
     /**
      * @orm\column(name="material", type="text")
      */
@@ -31,18 +27,6 @@ class MaterialPhase extends ExercisePhase
     public function __construct(string $id = null)
     {
         parent::__construct($id);
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllowedComponents(): array
-    {
-        if ($this->isGroupPhase()) {
-            return array_merge(self::PHASE_COMPONENTS, self::PHASE_COMPONENTS_GROUP);
-        } else {
-            return self::PHASE_COMPONENTS;
-        }
     }
 
     public function getMaterial(): string

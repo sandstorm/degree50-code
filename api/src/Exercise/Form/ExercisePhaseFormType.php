@@ -45,12 +45,6 @@ class ExercisePhaseFormType extends AbstractType
             }
         );
 
-        $components = $exercisePhase->getAllowedComponents();
-        $componentChoices = [];
-        foreach ($components as $component) {
-            $componentChoices[$component] = $component;
-        }
-
         $isReflexionPhase = $exercisePhase->getType() === ExercisePhaseType::REFLEXION;
 
         $builder
@@ -71,18 +65,6 @@ class ExercisePhaseFormType extends AbstractType
                 'help' => $isReflexionPhase
                     ? "exercisePhase.help.dependsOnPreviousPhase.reflexion"
                     : "exercisePhase.help.dependsOnPreviousPhase.regular",
-            ])
-            // TODO remove and remove the component choices in the Phase Types
-            ->add('components', ChoiceType::class, [
-                'label' => "exercisePhase.labels.components",
-                'translation_domain' => 'forms',
-                'choices' => $componentChoices,
-                'multiple' => true,
-                'expanded' => true,
-                'choice_label' => function ($choice, $key, $value) {
-                    return 'exercisePhase.components.' . $key . '.label';
-                },
-                'choice_translation_domain' => 'forms'
             ])
             ->add('isGroupPhase', CheckboxType::class, [
                 'required' => false,

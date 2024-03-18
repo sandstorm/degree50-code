@@ -46,7 +46,14 @@
                     {{ form_row(form.description) }}
                 </div>
                 <div class="exercise-form__right">
-                    <h5>Phasen ({{ exercise.phases|length }})</h5>
+                    <div class="exercise-form__right-header">
+                        <h5>Phasen ({{ exercise.phases|length }})</h5>
+                        <a class="button button--type-primary button--size-small"
+                           href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id}) }}">
+                            <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}
+                        </a>
+                    </div>
+
                     <table class="table">
                         <thead>
                         <tr>
@@ -147,12 +154,7 @@
                                 </td>
                             </tr>
                         {% endfor %}
-
                     </table>
-                    <a class="button button--type-primary button--size-small"
-                       href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id}) }}">
-                        <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}
-                    </a>
                 </div>
             </div>
         </div>
