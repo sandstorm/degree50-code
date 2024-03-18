@@ -124,7 +124,7 @@ class ExercisePhaseController extends AbstractController
             'exercise' => $exercise,
             'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
             'exercisePhaseTeam' => $exercisePhaseTeam,
-            'currentEditor' => null,
+            'currentEditor' => null
         ], $response);
     }
 
@@ -277,6 +277,7 @@ class ExercisePhaseController extends AbstractController
             'exercise' => $exercise,
             'phases' => $phases,
             'currentExercisePhase' => $exercisePhase,
+            'hasSolutions' => $exercisePhase->getHasSolutions()
         ]);
     }
 

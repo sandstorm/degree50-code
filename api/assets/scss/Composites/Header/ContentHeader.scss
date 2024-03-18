@@ -8,10 +8,14 @@
     border-bottom: 1px solid $theme__color__grey;
 
     &--center {
-        text-align: center;
+        justify-content: center;
     }
 
     > * {
         margin-bottom: 0;
     }
+}
+
+.solution-app .content-header {
+    margin: 0;
 }

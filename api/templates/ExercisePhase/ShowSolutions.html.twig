@@ -19,18 +19,19 @@
 
 {% block body %}
     <div class="solution-app">
+        <header class="content-header content-header--center">
+            <h3>{{ exercise.name }} - Lösungen</h3>
+        </header>
         {% if currentExercisePhase.type.value == 'reflexion' %}
-            <header class="content-header--center">
-                <h3>{{ exercise.name }}</h3>
-            </header>
-            <div class="exercise-phase exercise-phase--read-only">
-                <p>Dieser Phasentyp hat keine Lösungen</p>
+            <div class="exercise-phase exercise-phase--no-solutions">
+                <h5>Dieser Phasentyp hat keine Lösungen</h5>
+            </div>
+        {% elseif hasSolutions == false %}
+            <div class="exercise-phase exercise-phase--no-solutions">
+                <h5>Es gibt noch keine Lösungen</h5>
             </div>
         {% else %}
-            <header class="content-header--center">
-                <h3>{{ exercise.name }} - Lösungen</h3>
-            </header>
-            <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {data: data, config: config} |json_encode|e('html_attr') }}">
+            <div class="exercise-phase" data-controller="solutions" data-solutions-props="{{ {data: data, config: config} |json_encode|e('html_attr') }}">
                 <div class="loading-screen">
                     <i class="fas fa-spinner fa-spin"></i>
                 </div>
