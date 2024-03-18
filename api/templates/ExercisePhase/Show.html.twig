@@ -7,7 +7,7 @@
 {% block body %}
     {% if exercisePhase.type.value == 'reflexion' %}
 
-        <div class="exercise-phase exercise-phase--read-only" data-controller="solutions" data-solutions-props="{{ {data: data, config: config, } |json_encode|e('html_attr') }}">
+        <div class="exercise-phase" data-controller="solutions" data-solutions-props="{{ {data: data, config: config, } |json_encode|e('html_attr') }}">
             <div class="loading-screen">
                 <i class="fas fa-spinner fa-spin"></i>
             </div>
