@@ -2,8 +2,8 @@
 {% block main %}
     {{ include('Partials/Header.html.twig') }}
     <main class="main main--with-header {% block layoutCssClass %}{% endblock %}">
-        {{ include('Partials/FlashMessages.html.twig') }}
         <div class="main-inner">
+            {{ include('Partials/FlashMessages.html.twig') }}
             {% block body %}{% endblock %}
         </div>
     </main>

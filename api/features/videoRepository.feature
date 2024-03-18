@@ -1,13 +1,17 @@
 @fixtures @integration
 Feature: CRUD operations on the videoRepository
 
-    Scenario:
+    Background:
         Given I am logged in as "foo@bar.de"
         And I have a course with ID "c"
         And I have an exercise with ID "ex" belonging to course "c"
+        And I have an exercise with ID "ex-2" belonging to course "c"
         And I have an exercise phase "ex-p1" belonging to exercise "ex"
+        And I have an exercise phase "ex-p2" belonging to exercise "ex"
+        And I have an exercise phase "ex-p3" belonging to exercise "ex-2"
         And I have a team with ID "team-1" belonging to exercise phase "ex-p1"
         And A Video with ID "video-1" created by User "foo@bar.de" exists
+        And I have a video "video-1" belonging to exercise phase "ex-p1"
         And I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
@@ -71,7 +75,20 @@ Feature: CRUD operations on the videoRepository
               ]
             }
             """
-        Given I have a cut video "cut-video-1" belonging to solution "solution-1"
-        When I find videos by creator "foo@bar.de" without cut videos
-        Then I only receive the regular video "video-1" and not the cut video "cut-video-1"
+        And I have a cut video "cut-video-1" belonging to solution "solution-1"
+
+    Scenario: Find videos by creator and not cut videos
+        Then I only receive the regular video "video-1" and not the cut video "cut-video-1" for creator "foo@bar.de"
+
+    Scenario: When I delete the video, the exercise and phases using this video, are deleted too
+        When I delete the video "video-1"
+        Then The video "video-1" is deleted
+        And The exercise phase "ex-p1" is deleted
+        And The exercise phase "ex-p2" is deleted
+        And The exercise "ex" is deleted
+        And The team "team-1" is deleted
+        And The solution "solution-1" is deleted
+        And The video "cut-video-1" is deleted
+        And The exercise "ex-2" exists
+        And 1 exercise phases should exist
 

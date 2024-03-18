@@ -18,7 +18,6 @@ use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use Oneup\UploaderBundle\Event\PostUploadEvent;
 use Oneup\UploaderBundle\Uploader\Response\ResponseInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Security;
 
@@ -39,7 +38,6 @@ class UploadListener
     private DoctrineIntegratedEventStore $eventStore;
     private ExercisePhaseRepository $exercisePhaseRepository;
     private VideoService $videoService;
-    private LoggerInterface $logger;
 
     const TARGET_VIDEO = 'video';
     const TARGET_ATTACHMENT = 'attachment';
@@ -54,7 +52,6 @@ class UploadListener
         Security $security,
         ExercisePhaseRepository $exercisePhaseRepository,
         VideoService $videoService,
-        LoggerInterface $logger
     )
     {
         $this->fileSystemService = $fileSystemService;
@@ -64,7 +61,6 @@ class UploadListener
         $this->security = $security;
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->videoService = $videoService;
-        $this->logger = $logger;
     }
 
     public function onUpload(PostUploadEvent $event)

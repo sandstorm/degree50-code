@@ -18,11 +18,7 @@ body {
 }
 
 .main {
-    height: 100vh;
-    @supports (height: 100dvh) {
-        height: 100dvh;
-    }
-
+    height: 100%;
     width: 100vw;
 
     &--with-header {
@@ -30,7 +26,7 @@ body {
     }
 
     &--with-footer {
-        padding-bottom: 58px;
+        padding-bottom: 57px;
     }
 
     &--without-scrollbar {
@@ -50,20 +46,23 @@ body {
     }
 }
 
+.main.solution-fullscreen {
+    height: 100vh;
+
+    @supports (height: 100dvh) {
+        height: 100dvh;
+    }
+}
+
 .main-inner {
     position: relative;
     height: 100%;
-    width: 100%;
-
-    display: grid;
-    grid-template-rows: 1fr auto;
-
     overflow: hidden;
     overflow-y: scroll;
 
-    > .container {
+    > .container, > form {
         padding-top: 20px;
-        padding-bottom: 70px;
+        padding-bottom: 20px;
     }
 }
 
@@ -81,6 +80,7 @@ body {
     @include transition(padding-left 250ms ease);
 }
 
+// TODO
 .highlight-focus-within {
     &:hover {
         color: $theme__color__white;

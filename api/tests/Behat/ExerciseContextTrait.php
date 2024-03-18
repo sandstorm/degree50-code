@@ -9,6 +9,7 @@ use App\Repository\Exercise\ExerciseRepository;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertSame;
 
 /**
  *
@@ -51,6 +52,7 @@ trait ExerciseContextTrait
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
+
     /**
      * @Given An Exercise with the following json-data exists:
      *
@@ -94,11 +96,8 @@ trait ExerciseContextTrait
         }
 
         $exercise->setName($exerciseId);
-
         $exercise->setCreator($user);
-
         $exercise->setStatus(2);
-
         // This also sets the course on the exercise
         $course->addExercise($exercise);
 
@@ -173,20 +172,52 @@ trait ExerciseContextTrait
     }
 
     /**
+     * Creates an exercise for the currently logged in user (use the according step to log in first)
+     *
      * @Given I have an exercise with ID :exerciseId belonging to course :courseId
      */
-    public function iHaveAnExercise($exerciseId, $courseId)
+    public function iHaveAnExercise($exerciseId, $courseId): void
     {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
 
         $exercise = new Exercise($exerciseId);
         $exercise->setCourse($course);
+        $exercise->setCreator($this->currentUser);
         $course->addExercise($exercise);
 
         $this->entityManager->persist($exercise);
         $this->entityManager->persist($course);
         $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
+    }
+
+    /**
+     * @When I delete the exercise :exerciseId
+     */
+    public function iDeleteTheExercise($exerciseId): void
+    {
+        $exercise = $this->exerciseRepository->find($exerciseId);
+        assertSame($exerciseId, $exercise->getId());
+        assertSame($this->currentUser->getUsername(), $exercise->getCreator()->getUsername());
+        $this->exerciseService->deleteExercise($exercise);
+    }
+
+    /**
+     * @Then The exercise :exerciseId is deleted
+     */
+    public function theExerciseShouldIsDeleted($exerciseId): void
+    {
+        $exercise = $this->exerciseRepository->find($exerciseId);
+        assertEquals(null, $exercise);
+    }
+
+    /**
+     * @Then The exercise :exerciseId exists
+     */
+    public function theExerciseExists($exerciseId): void
+    {
+        $exercise = $this->exerciseRepository->find($exerciseId);
+        assertSame($exerciseId, $exercise->getId());
     }
 }

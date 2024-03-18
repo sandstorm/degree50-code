@@ -202,6 +202,15 @@ class Video
         return $this->exercisePhases;
     }
 
+    public function addExercisePhase(ExercisePhase $exercisePhase): self
+    {
+        if (!$this->exercisePhases->contains($exercisePhase)) {
+            $this->exercisePhases[] = $exercisePhase;
+        }
+
+        return $this;
+    }
+
     public function getCreator(): User
     {
         return $this->creator;
@@ -215,7 +224,7 @@ class Video
     }
 
     /**
-     * @return Collection|Course[]
+     * @return Course[]
      */
     public function getCourses(): Collection
     {

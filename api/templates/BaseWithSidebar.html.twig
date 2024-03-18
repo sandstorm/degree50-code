@@ -2,7 +2,6 @@
 {% block main %}
     {{ include('Partials/Header.html.twig') }}
     <main class="main main--with-header {% block layoutCssClass %}{% endblock %}">
-        {{ include('Partials/FlashMessages.html.twig') }}
         <div class="main-inner">
             <div id="sidebar" class="sidebar {{ sidebar_is_open }}" data-controller="sidebar">
                 <div class="sidebar__content">
@@ -15,6 +14,7 @@
                 </div>
             </div>
             <div class="content-with-sidebar">
+                {{ include('Partials/FlashMessages.html.twig') }}
                 {% block body %}{% endblock %}
             </div>
         </div>

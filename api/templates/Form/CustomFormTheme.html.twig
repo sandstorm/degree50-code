@@ -39,8 +39,7 @@
                {% if disabled %} disabled {% endif %}
                type="checkbox"/>
         <label for="{{ choice.value }}" class="video-checkbox__label">
-            <div class="video-checkbox__image" role="img"
-                 style="background-image: url({{ choice.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg)"></div>
+            <img class="video-checkbox__image" alt="{{ choice.data.title }}" src="{{ choice.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg" />
             <span class="tile__date">{% trans %}video.labels.created{% endtrans %}: {{ choice.data.createdAt|date("d.m.Y") }}</span>
             <span class="tile__title">{{ choice.data.title }}</span>
         </label>
@@ -55,6 +54,8 @@
             {% if value is defined %} value="{{ value }}"{% endif %}
             {% if checked %} checked="checked"{% endif %}
         />
-        <label class="button button--type-outline-primary" for="{{ id }}"><i class="fas fa-times"></i><i class="fas fa-check"></i> {{- label|trans(label_translation_parameters, translation_domain) -}}</label>
+        <label class="button button--type-outline-primary {% if disabled %}disabled{% endif %}" for="{{ id }}">
+            <i class="fas fa-times"></i><i class="fas fa-check"></i> {{- label|trans(label_translation_parameters, translation_domain) -}}
+        </label>
     </div>
 {% endblock %}

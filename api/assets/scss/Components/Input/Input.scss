@@ -8,8 +8,8 @@ input,
 
     &:focus,
     &:focus-within {
-        border-color: $theme__color__secondary--dark;
-        border-width: 1px;
+        outline: 2px solid $theme__color__grey--dark;
+        outline-offset: 2px;
     }
 
     &:hover {

@@ -72,6 +72,7 @@ class ExercisePhaseFormType extends AbstractType
                     ? "exercisePhase.help.dependsOnPreviousPhase.reflexion"
                     : "exercisePhase.help.dependsOnPreviousPhase.regular",
             ])
+            // TODO remove and remove the component choices in the Phase Types
             ->add('components', ChoiceType::class, [
                 'label' => "exercisePhase.labels.components",
                 'translation_domain' => 'forms',

@@ -57,23 +57,23 @@
     </div>
 
     {{ form_start(form) }}
-    <div class="container">
-        {{ form_row(form.title) }}
-        {{ form_row(form.description) }}
-        {{ form_row(form.visiblePersons) }}
-        {{ form_row(form.courses) }}
-        <div class="form__data-privacy">
-            {{ form_row(form.dataPrivacyAccepted) }}
-            {{ form_row(form.dataPrivacyPermissionsAccepted) }}
-            <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmungen</a> | <a href="{{ path('terms-of-use') }}" target="_blank">Nutzungsbedingungen</a>
+        <div class="container">
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.visiblePersons) }}
+            {{ form_row(form.courses) }}
+            <div class="form__data-privacy">
+                {{ form_row(form.dataPrivacyAccepted) }}
+                {{ form_row(form.dataPrivacyPermissionsAccepted) }}
+                <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmungen</a> | <a href="{{ path('terms-of-use') }}" target="_blank">Nutzungsbedingungen</a>
+            </div>
         </div>
-    </div>
-    <footer class="footer">
-        <a class="button button--type-outline-primary footer__left"
-           href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
-        <div class="footer__right">
-            {{ form_row(form.save) }}
-        </div>
-    </footer>
+        <footer class="footer">
+            <a class="button button--type-outline-primary footer__left"
+               href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
+            <div class="footer__right">
+                {{ form_row(form.save) }}
+            </div>
+        </footer>
     {{ form_end(form) }}
 {% endblock %}

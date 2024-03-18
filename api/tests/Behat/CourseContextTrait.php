@@ -13,16 +13,16 @@ trait CourseContextTrait
 {
 
     /**
+     * Creates a new course with the given ID and adds a course role "DOZENT"
+     * for the currently logged in user (use the according step to log in first)
+     *
      * @Given I have a course with ID :courseId
      */
-    public function iHaveACourseWithID($courseId)
+    public function iHaveACourseWithIDForUser($courseId): void
     {
-        /* @var User $user */
-        $user = $this->entityManager->find(User::class, 'foo@bar.de');
-
         $course = new Course($courseId);
         $courseRole = new CourseRole();
-        $courseRole->setUser($user);
+        $courseRole->setUser($this->currentUser);
         $courseRole->setCourse($course);
         $courseRole->setName(CourseRole::DOZENT);
 
@@ -36,9 +36,11 @@ trait CourseContextTrait
     }
 
     /**
+     * Ensures a course with the given ID exists without any course roles
+     *
      * @Given A Course with ID :courseId exists
      */
-    public function ensureCourseExists($courseId)
+    public function ensureCourseExists($courseId): Course
     {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);

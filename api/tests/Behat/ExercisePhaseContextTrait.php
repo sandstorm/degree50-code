@@ -12,6 +12,7 @@ use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
+use App\Entity\Video\Video;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
@@ -50,6 +51,7 @@ trait ExercisePhaseContextTrait
 
         $exercisePhaseTeam = new ExercisePhaseTeam($teamId);
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
+        $exercisePhaseTeam->setCreator($this->currentUser);
 
         $exercisePhase->addTeam($exercisePhaseTeam);
 
@@ -64,8 +66,7 @@ trait ExercisePhaseContextTrait
      */
     public function iHaveATeamWithIdBelongingToExercisePhaseAndCreatorId($teamId, $exercisePhaseId, $creatorId)
     {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
         /** @var User $creator */
         $creator = $this->entityManager->find(User::class, $creatorId);
 
@@ -82,14 +83,32 @@ trait ExercisePhaseContextTrait
     }
 
     /**
+     * @Given I have a video :videoId belonging to exercise phase :exercisePhaseId
+     */
+    public function iHaveAVideoBelongingToExercisePhase($videoId, $exercisePhaseId)
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        $video = $this->videoRepository->find($videoId);
+
+        assertNotNull($exercisePhase, 'ExercisePhase with ID ' . $exercisePhaseId . ' does not exist');
+        assertNotNull($video, 'Video with ID ' . $videoId . ' does not exist');
+
+        $exercisePhase->addVideo($video);
+
+        $this->entityManager->persist($exercisePhase);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
      * @Given I have a predefined videoCodePrototype belonging to exercise phase :exercisePhaseId and with properties
      */
     public function iHaveAPredefinedVideocodeprototypeWithIdBelongingToExecisePhaseAndWithProperties(
         $exercisePhaseId,
         TableNode $propertyTable
     ) {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
+        /** @var VideoAnalysisPhase $exercisePhase */
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
 
         $data = $propertyTable->getHash()[0];
         $videoCodePrototype = new VideoCode($data['id']);
@@ -204,10 +223,8 @@ trait ExercisePhaseContextTrait
      */
     public function theExercisePhaseDependsOnThePreviousPhase($exercisePhaseId1, $exercisePhaseId2)
     {
-        /** @var ExercisePhase $exercisePhase1 */
-        $exercisePhase1 = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId1);
-        /** @var ExercisePhase $exercisePhase2 */
-        $exercisePhase2 = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId2);
+        $exercisePhase1 = $this->exercisePhaseRepository->find($exercisePhaseId1);
+        $exercisePhase2 = $this->exercisePhaseRepository->find($exercisePhaseId2);
 
         $exercisePhase1->setDependsOnExercisePhase($exercisePhase2);
         $exercisePhase1->setSorting(2);
@@ -239,8 +256,7 @@ trait ExercisePhaseContextTrait
      */
     public function iConvertThePersistedServersidesolutionsForAllTeamsOfExercisePhaseToTheClientSideData($exercisePhaseId)
     {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
         $exercisePhaseTeams = $exercisePhase->getTeams()->toArray();
 
         $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
@@ -412,7 +428,7 @@ trait ExercisePhaseContextTrait
      *
      * TODO: rename Given step so that it better represents, what this actually does
      */
-    public function assureExercisePhasesWithTheFollowingDataExist(TableNode $tableNode)
+    public function assureExercisePhasesWithTheFollowingDataExist(TableNode $tableNode): void
     {
         foreach ($tableNode->getHash() as $phaseData) {
             $this->createExercisePhase($phaseData);
@@ -425,11 +441,57 @@ trait ExercisePhaseContextTrait
      * This is just another way to use the step above, because oftentimes configuring
      * the step via JSON is much more convenient and easier to read for large data sets.
      */
-    public function assureAnExercisePhaseWithTheFollowingJsonDataExists(PyStringNode $exercisePhaseDataJson)
+    public function assureAnExercisePhaseWithTheFollowingJsonDataExists(PyStringNode $exercisePhaseDataJson): void
     {
         $phases = json_decode($exercisePhaseDataJson->getRaw(), true);
         foreach ($phases as $phaseData) {
             $this->createExercisePhase($phaseData);
         }
+    }
+
+    /**
+     * @When I delete the exercise phase :exercisePhaseId
+     */
+    public function iDeleteTheExercisePhase($exercisePhaseId): void
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        assertEquals($exercisePhaseId, $exercisePhase->getId());
+        $this->exercisePhaseService->deleteExercisePhase($exercisePhase);
+    }
+
+    /**
+     * @Then The exercise phase :exercisePhaseId is deleted
+     */
+    public function theExercisePhaseShouldIsDeleted($exercisePhaseId): void
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        assertEquals(null, $exercisePhase);
+    }
+
+    /**
+     * @Then The team :teamId is deleted
+     */
+    public function theExercisePhaseTeamShouldIsDeleted($teamId): void
+    {
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($teamId);
+        assertEquals(null, $exercisePhaseTeam);
+    }
+
+    /**
+     * @Then The solution :solutionId is deleted
+     */
+    public function theSolutionShouldIsDeleted($solutionId): void
+    {
+        $solution = $this->solutionRepository->find($solutionId);
+        assertEquals(null, $solution);
+    }
+
+    /**
+     * @Then :amount exercise phases should exist
+     */
+    public function exercisePhasesShouldExist($amount): void
+    {
+        $exercisePhases = $this->exercisePhaseRepository->findAll();
+        assertEquals($amount, count($exercisePhases));
     }
 }

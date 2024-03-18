@@ -13,14 +13,7 @@ class ReflexionPhase extends ExercisePhase
 {
     const type = ExercisePhaseType::REFLEXION;
 
-    /**
-     * @deprecated
-     */
     const PHASE_COMPONENTS = [];
-
-    /**
-     * @deprecated
-     */
     const PHASE_COMPONENTS_GROUP = [];
 
     public function __construct(string $id = null)

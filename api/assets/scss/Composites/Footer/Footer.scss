@@ -8,13 +8,12 @@
     grid-template-areas: 'left center right';
     grid-gap: 20px;
     align-items: center;
-
     padding: $theme__spacing--base;
 
     background-color: $theme__color__grey--lighter;
     border-top: 1px solid $theme__color__grey--light;
 
-    z-index: 8000;
+    z-index: $theme__z-index--footer;
 
     @include mq(xmedium) {
         padding: $theme__spacing--small $theme__spacing--base;
@@ -32,10 +31,6 @@
     &--center {
         justify-content: center;
     }
-}
-
-.solution-fullscreen .footer {
-    position: relative;
 }
 
 .footer__left {

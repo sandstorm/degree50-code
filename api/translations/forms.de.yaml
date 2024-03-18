@@ -145,10 +145,8 @@ video:
             success: 'Video erfolgreich gespeichert!'
     delete:
         title: 'Video löschen'
-        confirm: 'Sind Sie sicher, dass Sie dieses Video löschen möchten?'
         messages:
             success: 'Video erfolgreich gelöscht!'
-            isCurrentlyUsed: 'Das Video kann nicht gelöscht werden: Es wird in einer oder mehreren Phasen genutzt!'
 
 attachments:
     labels:
