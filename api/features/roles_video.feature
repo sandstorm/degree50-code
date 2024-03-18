@@ -9,18 +9,20 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     # dozent & student can
     #   * view, edit, delete videos of himself
     #   * create videos for all assigned courses
+    # dozent
+    #   * can view, edit, delete videos of his courses
     # student without course can
     #   * view, edit, delete videos of himself
     #
-    #   ┌──────────┬────────────────────┬────────────────────┬───────────┬───────────┐
-    #   │  Action  │        View        │       Create       │  Edit     │  Delete   │
-    #   ├──────────┼────────────────────┼────────────────────┼───────────┼───────────┤
-    #   │  admin   │  ALL               │  All courses       │  ALL      │  ALL      │
-    #   ├──────────┼────────────────────┼────────────────────┼───────────┼───────────┤
-    #   │  dozent  │  Created | course  │  Assigned courses  │  Created  │  Created  │
-    #   ├──────────┼────────────────────┼────────────────────┼───────────┼───────────┤
-    #   │  student │  Created | course  │  Assigned courses  │  Created  │  Created  │
-    #   └──────────┴────────────────────┴────────────────────┴───────────┴───────────┘
+    #   ┌──────────┬────────────────────┬────────────────────┬───────────┬────────────────────┐
+    #   │  Action  │        View        │       Create       │  Edit     │  Delete            │
+    #   ├──────────┼────────────────────┼────────────────────┼───────────┼────────────────────┤
+    #   │  admin   │  ALL               │  All courses       │  ALL      │  ALL               │
+    #   ├──────────┼────────────────────┼────────────────────┼───────────┼────────────────────┤
+    #   │  dozent  │  Created | course  │  Assigned courses  │  Created  │  Created | course  │
+    #   ├──────────┼────────────────────┼────────────────────┼───────────┼────────────────────┤
+    #   │  student │  Created | course  │  Assigned courses  │  Created  │  Created           │
+    #   └──────────┴────────────────────┴────────────────────┴───────────┴────────────────────┘
     #
 
     Background:
@@ -200,20 +202,20 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | /video/edit/student_video_no_course | 200        | Video bearbeiten |
             | /video/edit/student_video_course1   | 200        | Video bearbeiten |
 
-    Scenario: As dozent I can see the edit option only for my created videos
+    Scenario: As dozent I can see the edit option for all my videos and videos in my courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit route "mediathek--index"
         Then the page contains all the following texts:
-            | /video/edit/dozent_video_no_course |
-            | /video/edit/dozent_video_course1   |
+            | /video/edit/dozent_video_no_course  |
+            | /video/edit/dozent_video_course1    |
+            | /video/edit/student_video_course1   |
+            | /video/edit/admin_video_course1     |
         And the page contains none of the following texts:
             | /video/edit/admin_video_no_course   |
-            | /video/edit/admin_video_course1     |
             | /video/edit/admin_video_course2     |
             | /video/edit/student_video_no_course |
-            | /video/edit/student_video_course1   |
 
-    Scenario Outline: As dozent I can access the edit page of my videos only
+    Scenario Outline: As dozent I can access the edit page for all my videos and videos in my courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit url "<url>"
         Then the response status code should be "<statusCode>"
@@ -223,11 +225,11 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | url                                 | statusCode | text               |
             | /video/edit/dozent_video_no_course  | 200        | Video bearbeiten   |
             | /video/edit/dozent_video_course1    | 200        | Video bearbeiten   |
+            | /video/edit/admin_video_course1     | 200        | Video bearbeiten   |
+            | /video/edit/student_video_course1   | 200        | Video bearbeiten   |
             | /video/edit/admin_video_no_course   | 403        | Zugriff verweigert |
-            | /video/edit/admin_video_course1     | 403        | Zugriff verweigert |
             | /video/edit/admin_video_course2     | 403        | Zugriff verweigert |
             | /video/edit/student_video_no_course | 403        | Zugriff verweigert |
-            | /video/edit/student_video_course1   | 403        | Zugriff verweigert |
 
     Scenario: As student I can see the edit option only for my created videos
         Given I am logged in via browser as "test-student@sandstorm.de"
@@ -289,20 +291,20 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | /video/delete/student_video_no_course/1 | 200        | Video erfolgreich gelöscht! |
             | /video/delete/student_video_course1/1   | 200        | Video erfolgreich gelöscht! |
 
-    Scenario: As dozent I can see the delete option only for my created videos
+    Scenario: As dozent I can see the delete option for all my videos and videos in my courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit route "mediathek--index"
         Then the page contains all the following texts:
-            | /video/delete/dozent_video_no_course |
-            | /video/delete/dozent_video_course1   |
+            | /video/delete/dozent_video_no_course  |
+            | /video/delete/dozent_video_course1    |
+            | /video/delete/admin_video_course1     |
+            | /video/delete/student_video_course1   |
         And the page contains none of the following texts:
             | /video/delete/admin_video_no_course   |
-            | /video/delete/admin_video_course1     |
             | /video/delete/admin_video_course2     |
             | /video/delete/student_video_no_course |
-            | /video/delete/student_video_course1   |
 
-    Scenario Outline: As dozent I delete only my created videos
+    Scenario Outline: As dozent I delete my created videos and videos in my courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit url "<url>"
         Then the response status code should be "<statusCode>"
@@ -312,11 +314,11 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | url                                     | statusCode | text                        |
             | /video/delete/dozent_video_no_course/1  | 200        | Video erfolgreich gelöscht! |
             | /video/delete/dozent_video_course1/1    | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/admin_video_course1/1     | 200        | Video erfolgreich gelöscht! |
+            | /video/delete/student_video_course1/1   | 200        | Video erfolgreich gelöscht! |
             | /video/delete/admin_video_no_course/1   | 403        | Zugriff verweigert          |
-            | /video/delete/admin_video_course1/1     | 403        | Zugriff verweigert          |
             | /video/delete/admin_video_course2/1     | 403        | Zugriff verweigert          |
             | /video/delete/student_video_no_course/1 | 403        | Zugriff verweigert          |
-            | /video/delete/student_video_course1/1   | 403        | Zugriff verweigert          |
 
     Scenario: As student I can see the delete option only for my created videos
         Given I am logged in via browser as "test-student@sandstorm.de"

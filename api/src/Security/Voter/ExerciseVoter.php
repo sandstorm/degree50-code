@@ -66,7 +66,9 @@ class ExerciseVoter extends Voter
                     return $this->exerciseHasBeenStarted($exercise, $user);
                 case self::VIEW:
                     return $this->canView($exercise, $user);
-                case self::EDIT or self::DELETE or self::SHOW_SOLUTION:
+                case self::EDIT:
+                case self::DELETE:
+                case self::SHOW_SOLUTION:
                     return $this->canEditOrDelete($exercise, $user);
             }
         } else {
@@ -127,8 +129,7 @@ class ExerciseVoter extends Voter
         $course = $exercise->getCourse();
         $isCourseDozent = $user->getCourseRoles()->exists(
             fn ($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
-                $courseRole->getUser() === $user &&
-                $courseRole->getName() === CourseRole::DOZENT
+                $courseRole->getUser() === $user && $courseRole->isCourseDozent()
         );
 
         // Dozent && KursDozent has access

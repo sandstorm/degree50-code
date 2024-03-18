@@ -72,6 +72,16 @@ class CourseRole
         $this->name = $name;
     }
 
+    public function isCourseDozent(): bool
+    {
+        return $this->name === self::DOZENT;
+    }
+
+    public function isCourseStudent(): bool
+    {
+        return $this->name === self::STUDENT;
+    }
+
     public function __toString()
     {
         return sprintf('CourseRole<%s, %s, %s>', $this->getCourse()->getName(), $this->getUser()->getEmail(), $this->name);

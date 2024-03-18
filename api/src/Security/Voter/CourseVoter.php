@@ -63,7 +63,7 @@ class CourseVoter extends Voter
 
         return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course
             && $courseRole->getUser() === $user
-            && $courseRole->getName() == CourseRole::DOZENT
+            && $courseRole->isCourseDozent()
         );
     }
 
@@ -76,7 +76,7 @@ class CourseVoter extends Voter
         // User which has ROLE_DOZENT and has the courseRole DOZENT
         return $user->isDozent() && $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course
                 && $courseRole->getUser() === $user
-                && $courseRole->getName() == CourseRole::DOZENT
+                && $courseRole->isCourseDozent()
             );
     }
 }
