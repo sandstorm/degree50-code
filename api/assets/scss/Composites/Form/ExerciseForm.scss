@@ -2,32 +2,17 @@
     [contenteditable="true"] {
         min-height: 10em;
     }
+
+    // min height for ckeditor to avoid jumping ui
+    input[data-controller='ckeditor']:not(.ckeditor-loaded) {
+        min-height: 200px;
+    }
 }
 
-.exercise-form__columns {
-    display: flex;
-    flex-direction: column;
-}
-
-.exercise-form__left {
-    margin-bottom: 40px;
-    padding-right: 0;
-    width: 100%;
-    border-right: none;
-}
-
-.exercise-form__right {
-    width: 100%;
-    padding-left: 0;
-}
-
-.exercise-form__right-header {
+.exercise-form__table-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: $theme__spacing--huge;
     margin-bottom: $theme__spacing--base;
-}
-
-label.required:before {
-    content: '*';
 }

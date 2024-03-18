@@ -33,8 +33,8 @@ class CourseFormType extends AbstractType
         $course = $options['data'];
         $courseRoles = $course->getCourseRoles();
         $userChoices = array_filter($this->userRepository->findBy([], array('email' => 'ASC')), function (User $user) use ($courseRoles) {
-            // skip users that are ROLE_STUDENT
-            if ($user->isStudent()) {
+            // skip users that are ROLE_STUDENT or ROLE_ADMIN
+            if ($user->isStudent() || $user->isAdmin()) {
                 return false;
             }
             $exists = $courseRoles->exists(fn($i, CourseRole $courseRole) => $courseRole->getUser() === $user);
@@ -56,7 +56,7 @@ class CourseFormType extends AbstractType
                 'required' => false,
                 'choice_label' => 'userName',
                 'multiple' => true,
-                'expanded' => false,
+                'expanded' => true,
                 'label' => 'course.labels.tutors',
                 'help' => 'course.help.tutors',
                 'translation_domain' => 'forms',

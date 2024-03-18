@@ -38,125 +38,120 @@
         </p>
         <div class="exercise-form">
             {{ form_start(form) }}
-            <div class="exercise-form__columns">
-                <div class="exercise-form__left">
-                    {{ form_errors(form) }}
+            {{ form_errors(form) }}
 
-                    {{ form_row(form.name) }}
-                    {{ form_row(form.description) }}
-                </div>
-                <div class="exercise-form__right">
-                    <div class="exercise-form__right-header">
-                        <h5>Phasen ({{ exercise.phases|length }})</h5>
-                        <a class="button button--type-primary button--size-small"
-                           href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id}) }}">
-                            <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}
-                        </a>
-                    </div>
+            {{ form_row(form.name) }}
+            {{ form_row(form.description) }}
 
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>{% trans %}exercisePhase.labels.type{% endtrans %}</th>
-                            <th>{% trans %}exercisePhase.labels.name{% endtrans %}</th>
-                            <th>{% trans %}exercisePhase.labels.dependsOnPhaseName{% endtrans %}</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-
-                        {% for exercisePhase in exercisePhases %}
-                            {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.phase.type.value) ~ '.label' %}
-                            <tr>
-                                <td>
-                                    {% if exercisePhase.phase.isGroupPhase %}
-                                        <i class="fas fa-users"
-                                           title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
-                                    {% else %}
-                                        <i class="fas fa-user"></i>
-                                    {% endif %}
-                                    {% if exercisePhase.phase.dependsOnExercisePhase %}
-                                        <i class="fas fa-arrow-up"
-                                           title="Nutzt Ergebnis von Phase '{{ exercisePhase.phase.dependsOnExercisePhase.name }}'"></i>
-                                    {% endif %}
-                                </td>
-                                <td>{{ phaseTypeTransVar | trans }}</td>
-                                <td>{{ exercisePhase.phase.name }}</td>
-                                <td>
-                                    {% if exercisePhase.phase.dependsOnExercisePhase %}
-                                        {{ exercisePhase.phase.dependsOnExercisePhase.name }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-right">
-                                    {% if exercisePhase.phase.hasSolutions %}
-                                        <a class="button button--type-outline-danger disabled button--size-small">
-                                            <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
-                                        </a>
-                                    {% else %}
-                                        <a
-                                            class="button button--type-outline-danger button--size-small"
-                                            href="{{ path('exercise-overview__exercise-phase--delete', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}"
-                                            onclick="return confirm('{% trans %}exercisePhase.delete.confirm{% endtrans %}');"
-                                        >
-                                            <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
-                                        </a>
-                                    {% endif %}
-                                    <a class="button button--type-primary button--size-small"
-                                       href="{{ path('exercise-overview__exercise-phase--edit', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}"
-                                       data-test-id="exercisePhaseEditButton"
-                                       >
-                                        <i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.button{% endtrans %}
-                                    </a>
-
-                                    <div class="button-group" role="group" aria-label="Sortierung der Phase ändern">
-                                        {% if exercisePhase.canMoveUp != true %}
-                                            <button
-                                                class="button button--type-outline-primary button--size-small"
-                                                disabled="disabled"
-                                                aria-disabled="true"
-                                                title="Phase nach oben sortieren"
-                                                data-test-id="movePhaseUp"
-                                            >
-                                                <i class="fas fa-arrow-up"></i>
-                                            </button>
-                                        {% else %}
-                                            <a
-                                                class="button button--type-outline-primary button--size-small"
-                                                title="Phase nach oben sortieren"
-                                                href="{{ path('exercise-overview__exercise-phase--change-sorting', {id: exercise.id, phase_id: exercisePhase.phase.id, sortUp: true}) }}"
-                                                data-test-id="movePhaseUp"
-                                            >
-                                                <i class="fas fa-arrow-up"></i>
-                                            </a>
-                                        {% endif %}
-
-                                        {% if exercisePhase.canMoveDown != true %}
-                                            <button
-                                                class="button button--type-outline-primary button--size-small"
-                                                disabled="disabled"
-                                                aria-disabled="true"
-                                                title="Phase nach unten sortieren"
-                                                data-test-id="movePhaseDown"
-                                            >
-                                                <i class="fas fa-arrow-down"></i>
-                                            </button>
-                                        {% else %}
-                                            <a
-                                                class="button button--type-outline-primary button--size-small"
-                                                title="Phase nach unten sortieren"
-                                                href="{{ path('exercise-overview__exercise-phase--change-sorting', {id: exercise.id, phase_id: exercisePhase.phase.id, sortUp: false}) }}"
-                                                data-test-id="movePhaseDown"
-                                            >
-                                                <i class="fas fa-arrow-down"></i>
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+            <div class="exercise-form__table-header">
+                <h5>Phasen ({{ exercise.phases|length }})</h5>
+                <a class="button button--type-primary button--size-small"
+                   href="{{ path('exercise-overview__exercise-phase--new', {id: exercise.id}) }}">
+                    <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}
+                </a>
             </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans %}exercisePhase.labels.type{% endtrans %}</th>
+                    <th>{% trans %}exercisePhase.labels.name{% endtrans %}</th>
+                    <th>{% trans %}exercisePhase.labels.dependsOnPhaseName{% endtrans %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                {% for exercisePhase in exercisePhases %}
+                    {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.phase.type.value) ~ '.label' %}
+                    <tr>
+                        <td>
+                            {% if exercisePhase.phase.isGroupPhase %}
+                                <i class="fas fa-users"
+                                   title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
+                            {% if exercisePhase.phase.dependsOnExercisePhase %}
+                                <i class="fas fa-arrow-up"
+                                   title="Nutzt Ergebnis von Phase '{{ exercisePhase.phase.dependsOnExercisePhase.name }}'"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ phaseTypeTransVar | trans }}</td>
+                        <td>{{ exercisePhase.phase.name }}</td>
+                        <td>
+                            {% if exercisePhase.phase.dependsOnExercisePhase %}
+                                {{ exercisePhase.phase.dependsOnExercisePhase.name }}
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            {% if exercisePhase.phase.hasSolutions %}
+                                <a class="button button--type-outline-danger disabled button--size-small">
+                                    <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
+                                </a>
+                            {% else %}
+                                <a
+                                    class="button button--type-outline-danger button--size-small"
+                                    href="{{ path('exercise-overview__exercise-phase--delete', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}"
+                                    onclick="return confirm('{% trans %}exercisePhase.delete.confirm{% endtrans %}');"
+                                >
+                                    <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
+                                </a>
+                            {% endif %}
+                            <a class="button button--type-primary button--size-small"
+                               href="{{ path('exercise-overview__exercise-phase--edit', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}"
+                               data-test-id="exercisePhaseEditButton"
+                               >
+                                <i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.button{% endtrans %}
+                            </a>
+
+                            <div class="button-group" role="group" aria-label="Sortierung der Phase ändern">
+                                {% if exercisePhase.canMoveUp != true %}
+                                    <button
+                                        class="button button--type-outline-primary button--size-small"
+                                        disabled="disabled"
+                                        aria-disabled="true"
+                                        title="Phase nach oben sortieren"
+                                        data-test-id="movePhaseUp"
+                                    >
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                {% else %}
+                                    <a
+                                        class="button button--type-outline-primary button--size-small"
+                                        title="Phase nach oben sortieren"
+                                        href="{{ path('exercise-overview__exercise-phase--change-sorting', {id: exercise.id, phase_id: exercisePhase.phase.id, sortUp: true}) }}"
+                                        data-test-id="movePhaseUp"
+                                    >
+                                        <i class="fas fa-arrow-up"></i>
+                                    </a>
+                                {% endif %}
+
+                                {% if exercisePhase.canMoveDown != true %}
+                                    <button
+                                        class="button button--type-outline-primary button--size-small"
+                                        disabled="disabled"
+                                        aria-disabled="true"
+                                        title="Phase nach unten sortieren"
+                                        data-test-id="movePhaseDown"
+                                    >
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                {% else %}
+                                    <a
+                                        class="button button--type-outline-primary button--size-small"
+                                        title="Phase nach unten sortieren"
+                                        href="{{ path('exercise-overview__exercise-phase--change-sorting', {id: exercise.id, phase_id: exercisePhase.phase.id, sortUp: false}) }}"
+                                        data-test-id="movePhaseDown"
+                                    >
+                                        <i class="fas fa-arrow-down"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 

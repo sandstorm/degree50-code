@@ -1,5 +1,10 @@
 <a class="button button--type-primary button--block" href="{{ path('mediathek--index') }}">Alle Videos</a>
 <hr />
+
+{% if sidebarItems | length == 0 %}
+    <p>Du bist keinem Kurs zugeordnet</p>
+{% endif %}
+
 {% for item in sidebarItems %}
     <div class="sidebar__group">
         <header id="heading{{ loop.index }}">

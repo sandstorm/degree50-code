@@ -41,14 +41,12 @@ class CKEditorController extends Controller {
                 getContentEditableElementFromInsideElement(ckEditorRoot)?.focus()
             })
 
-        document.addEventListener('', () => {
-            console.log('loaded', getContentEditableElementFromInsideElement(ckEditorRoot))
-        })
-
-        const handleReady = (editor: CustomCKEditor) => {
+        const handleReady = () => {
             // Add "aria-required" attribute to editable content element from "required" attribute of original form field
             getContentEditableElementFromInsideElement(ckEditorRoot)?.setAttribute('aria-required', 'true')
         }
+
+        originalFormField.classList.add('ckeditor-loaded')
 
         ReactDOM.render(
             <CKEditorStandalone initialValue={initialValue} onChange={handleChange} onReady={handleReady} />,

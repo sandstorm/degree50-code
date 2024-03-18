@@ -76,11 +76,15 @@ class CourseController extends AbstractController
                 'success',
                 $this->translator->trans('course.editMembers.messages.success', [], 'forms')
             );
-            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+
+            return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
         }
 
         $studentsArray = $course->getCourseRoles()
             ->filter(function (CourseRole $role) {
+                if ($role->getUser()->isAdmin()) {
+                    return false;
+                }
                 return $role->getUser()->isStudent();
             })
             ->toArray();
@@ -258,7 +262,7 @@ class CourseController extends AbstractController
                 $this->translator->trans('course.edit.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+            return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
         }
 
         $tutorsArray = $course->getCourseRoles()

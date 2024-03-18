@@ -42,6 +42,16 @@ select[multiple] {
     min-height: 200px;
 }
 
+.searchable-select-field__list {
+    max-height: 200px;
+    padding: $theme__spacing--base;
+    overflow-y: auto;
+}
+
+.searchable-select-field__input {
+    margin-bottom: $theme__spacing--small;
+}
+
 .form__data-privacy {
     display: inline-block;
     width: 100%;
@@ -54,6 +64,10 @@ select[multiple] {
 
 label {
     margin: 0;
+}
+
+label.required:before {
+    content: '*';
 }
 
 .input-group-text {
@@ -81,4 +95,9 @@ input[type='color'] {
     input[type='text'] {
         flex: 1;
     }
+}
+
+// min height for ckeditor to avoid jumping ui
+input[data-controller='ckeditor']:not(.ckeditor-loaded) {
+    min-height: 100px;
 }

@@ -1,6 +1,6 @@
 {% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
-
+{% block layoutCssClass %}main--with-footer{% endblock %}
 {% block title %}{% trans %}course.editMembers.title{% endtrans %}{% endblock %}
 
 {% block body %}
@@ -24,7 +24,20 @@
         {{ form_start(form) }}
         {{ form_errors(form) }}
 
-        {{ form_row(form.users) }}
+        <div class="searchable-select-field form-group" data-controller="searchableSelectField">
+            {{ form_label(form.users) }}
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fa fa-search"></i></div>
+                </div>
+                <input type="search" class="form-control searchable-select-field__input" aria-label="Lernende filtern durch Texteingabe" placeholder="Lernende filtern" />
+            </div>
+            {{ form_errors(form.users) }}
+            <div class="searchable-select-field__list">
+                {{ form_widget(form.users) }}
+            </div>
+            {{ form_help(form.users) }}
+        </div>
 
         <h5>{% trans %}course.labels.currentStudents{% endtrans %} ({{ students.count }} {% trans %}course.labels.students{% endtrans %})</h5>
         <table class="table table-sm">
