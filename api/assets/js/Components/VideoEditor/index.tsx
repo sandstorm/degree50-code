@@ -5,6 +5,7 @@ import MediaLaneContainer from './components/MediaLaneContainer'
 import OverlayContainer from 'Components/ToolbarItems/components/OverlayContainer'
 import Toolbar from './components/Toolbar'
 import { useShortCuts } from 'Components/ToolbarItems/ShortCutsContext/useShortCuts'
+import classNames from 'classnames'
 
 type Props = {
     videos: Array<Video>
@@ -21,8 +22,13 @@ const VideoEditor: FC<Props> = (props) => {
     const handleMediaLaneToggle = () => setShowMediaLane(!showMediaLane)
     const handleMediaLaneFullHeightToggle = () => setIsMediaLaneFullHeight(!isMediaLaneFullHeight)
 
+    const videoEditorClassNames = classNames('video-editor', {
+        'video-editor--media-lane-full-height': isMediaLaneFullHeight,
+        'video-editor--media-lane-visible': showMediaLane && !isMediaLaneFullHeight,
+    })
+
     return (
-        <div className="video-editor" data-test-id="videoEditor">
+        <div className={videoEditorClassNames} data-test-id="videoEditor">
             <ConnectedVideoJSPlayer
                 hidden={isMediaLaneFullHeight}
                 videoJsOptions={{

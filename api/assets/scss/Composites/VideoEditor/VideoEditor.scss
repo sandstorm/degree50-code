@@ -8,7 +8,15 @@
         background-color: black;
     }
 
+    &--media-lane-visible {
+        grid-template-rows: 1fr 40px min(350px, 30vh);
+    }
+
+    &--media-lane-full-height {
+        display: block;
+    }
 }
+
 .video-editor__toolbar {
     display: flex;
     align-items: center;

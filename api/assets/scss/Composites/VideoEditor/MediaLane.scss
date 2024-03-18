@@ -5,12 +5,6 @@
     grid-template-rows: auto 1fr;
 }
 
-.video-editor {
-    .video-editor-timeline {
-        height: min(350px, 30vh);
-    }
-}
-
 .video-editor-timeline__entries {
     overflow-y: scroll;
 }

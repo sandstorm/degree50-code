@@ -25,11 +25,13 @@ type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 const LaneHeightMenu = (props: Props) => {
     const heightModifierLabel = getHeightModifierLabel(props.heightModifier)
     const menuButtonLabel = `Zeilenhöhe: ${heightModifierLabel}`
+    const icon = <i className="fa-solid fa-line-height"></i>
 
     return (
         <div className="video-editor__menu">
             <MenuButton
                 label={menuButtonLabel}
+                icon={icon}
                 ariaLabel={menuButtonLabel}
                 pauseVideo
                 className="media-lane-toolbar__menu-button"
