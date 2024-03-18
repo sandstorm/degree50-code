@@ -114,7 +114,7 @@ class CourseController extends AbstractController
             'userName' => $courseRole->getUser()->getUsername(),
         ]);
 
-        $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $courseRole) => $courseRole->getName() == CourseRole::DOZENT);
+        $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $courseRole) => $courseRole->isCourseDozent());
         if ($redirectToEdit && count($courseRolesWithDozent) == 1) {
             $this->addFlash(
                 'danger',

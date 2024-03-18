@@ -60,14 +60,18 @@ class VideoVoter extends Voter
             case self::VIEW:
                 return $this->canView($video, $user);
             case self::EDIT:
-                return $this->canEdit($video, $user);
             case self::DELETE:
-                return $this->canDelete($video, $user);
+                return $this->canEditOrDelete($video, $user);
             case self::FAVOR:
                 return $this->canFavor($user);
         }
 
         throw new LogicException('This code should not be reached!');
+    }
+
+    private function canCreate(User $user): bool
+    {
+        return $this->userService->canUploadVideo($user);
     }
 
     private function canFavor(User $user): bool
@@ -104,24 +108,24 @@ class VideoVoter extends Voter
         });
     }
 
-    private function canEdit(Video $video, User $user): bool
+    private function canEditOrDelete(Video $video, User $user): bool
     {
         if ($user->isAdmin()) {
             return true;
         }
-        return $user === $video->getCreator();
-    }
 
-    private function canDelete(Video $video, User $user): bool
-    {
-        if ($user->isAdmin()) {
+        if ($user === $video->getCreator()) {
             return true;
         }
-        return $user === $video->getCreator();
-    }
 
-    private function canCreate(User $user): bool
-    {
-        return $this->userService->canUploadVideo($user);
+        $videoCourses = $video->getCourses();
+        /** @var CourseRole $courseRole */
+        foreach ($user->getCourseRoles() as $courseRole) {
+            if ($videoCourses->contains($courseRole->getCourse()) && $courseRole->isCourseDozent()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
