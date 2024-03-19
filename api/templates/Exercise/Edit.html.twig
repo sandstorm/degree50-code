@@ -65,7 +65,7 @@
                 {% for exercisePhase in exercisePhases %}
                     {% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.phase.type.value) ~ '.label' %}
                     <tr>
-                        <td>
+                        <td class="table-cell--no-wrap">
                             {% if exercisePhase.phase.isGroupPhase %}
                                 <i class="fas fa-users"
                                    title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
@@ -84,7 +84,7 @@
                                 {{ exercisePhase.phase.dependsOnExercisePhase.name }}
                             {% endif %}
                         </td>
-                        <td class="text-right">
+                        <td class="table-cell--no-wrap text-right">
                             {% if exercisePhase.phase.hasSolutions %}
                                 <a class="button button--type-outline-danger disabled button--size-small">
                                     <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}

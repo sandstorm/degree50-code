@@ -135,3 +135,7 @@ body {
         border-color: $theme__color__primary;
     }
 }
+
+table .table-cell--no-wrap {
+    white-space: nowrap;
+}
