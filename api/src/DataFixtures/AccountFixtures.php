@@ -51,8 +51,17 @@ class AccountFixtures extends Fixture
         $student2 = $this->createUser($manager, 'student2@sandstorm.de', [User::ROLE_STUDENT]);
         $this->createCourseRole($manager, CourseRole::STUDENT, $course, $student2);
 
+        $this->createRandomStudentUsers($manager, 10);
+
         $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
+    }
+
+    private function createRandomStudentUsers(ObjectManager $manager, int $amount): void
+    {
+        for ($i = 0; $i < $amount; $i++) {
+            $this->createUser($manager, 'another-student' . $i . '@sandstorm.de', [User::ROLE_STUDENT]);
+        }
     }
 
     private function createUser(ObjectManager $manager, string $userName, $roles = []): User

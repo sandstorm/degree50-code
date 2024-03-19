@@ -4,7 +4,12 @@
 {% if is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN') %}
     <a class="button button--type-outline-primary button--block" href="{{ path('exercise-overview__course--new') }}"><i class="fas fa-plus"></i> {% trans %}course.new.title{% endtrans %}</a>
 {% endif %}
+
 <hr />
+
+{% if sidebarItems | length == 0 %}
+    <p>Du bist keinem Kurs zugeordnet</p>
+{% endif %}
 
 {% for item in sidebarItems %}
     <div class="sidebar__group">

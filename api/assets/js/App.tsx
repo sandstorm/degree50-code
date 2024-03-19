@@ -25,6 +25,7 @@ import SidebarController from 'StimulusControllers/SidebarController'
 import { initColors, ORIGINAL_COLORS } from 'ntc-ts'
 import CKEditorController from 'StimulusControllers/CkeditorController'
 import SchreibtischController from 'StimulusControllers/Schreibtisch/SchreibtischController'
+import SearchableSelectFieldController from "StimulusControllers/SearchableSelectFieldController";
 
 const application = Application.start()
 
@@ -41,6 +42,7 @@ application.register('videosForm', VideosFormController)
 application.register('deleteEntity', DeleteEntityController)
 application.register('sidebar', SidebarController)
 application.register('schreibtisch', SchreibtischController)
+application.register('searchableSelectField', SearchableSelectFieldController)
 
 /**
  * Initialize color map for ntc (color hex -> color name conversion) with default colors (browser standard).

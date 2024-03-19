@@ -20,19 +20,15 @@ trait PlaywrightContextTrait
     public function visitUrl(string $url): void
     {
         $this->playwrightConnector->execute($this->playwrightContext, sprintf(
-            // language=JavaScript
-            '
-            if (!vars.page) {
-                vars.page = await context.newPage()
-            }
-            // TODO write first goto and then waitforNavigation
-            const response = await vars.page.goto(`BASEURL%s`)
-
-            // save response in context
-            vars.response = response
-            ' // language=PHP
-            ,
-            $url
+            <<<JS
+                if (!vars.page) {
+                    vars.page = await context.newPage()
+                }
+                // TODO write first goto and then waitforNavigation
+                const response = await vars.page.goto(`BASEURL$url`)
+                // save response in context
+                vars.response = response
+            JS
         ));
     }
 
@@ -43,10 +39,9 @@ trait PlaywrightContextTrait
     {
         $actual = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            '
+            <<<JS
             return vars.response.status();
-            '
+            JS
         );
 
         assertEquals($code, $actual);
@@ -66,21 +61,16 @@ trait PlaywrightContextTrait
     public function iAmLoggedInViaBrowserAs($username)
     {
         $this->playwrightConnector->execute($this->playwrightContext, sprintf(
-            // language=JavaScript
-            '
-            vars.page = await context.newPage();
-            await vars.page.goto("BASEURL/login");
-
-            await vars.page.fill(`[name="email"]`, `%s`);
-            await vars.page.fill(`[name="password"]`, `password`);
-
-            await Promise.all([
-                vars.page.waitForNavigation(),
-                vars.page.click(`button[type="submit"]`)
-            ])
-        ' // language=PHP
-            ,
-            $username
+            <<<JS
+                vars.page = await context.newPage();
+                await vars.page.goto("BASEURL/login");
+                await vars.page.fill(`[name="email"]`, `$username`);
+                await vars.page.fill(`[name="password"]`, `password`);
+                await Promise.all([
+                    vars.page.waitForNavigation(),
+                    vars.page.click(`button[type="submit"]`)
+                ])
+            JS
         ));
     }
 
@@ -88,10 +78,9 @@ trait PlaywrightContextTrait
     {
         $content = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            '
+            <<<JS
                 return await vars.page.content();
-            '
+            JS
         );
 
         return $content;
@@ -158,12 +147,11 @@ trait PlaywrightContextTrait
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 await vars.page.fill(`input#course_form_name`, `Test-Kurs`)
-                await vars.page.selectOption(`select#course_form_users`, { index: 0 })
+                await vars.page.click(`#course_form_users input[type="checkbox"]`)
                 await vars.page.click(`button#course_form_save`)
-            "
+            JS
         );
     }
 
@@ -171,10 +159,9 @@ trait PlaywrightContextTrait
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 await vars.page.waitForSelector('data-test-id=${selector}')
-            "
+            JS
         );
     }
 
@@ -185,10 +172,9 @@ trait PlaywrightContextTrait
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 await vars.page.click(`text=${innerText}`)
-            "
+            JS
         );
     }
 
@@ -212,10 +198,9 @@ trait PlaywrightContextTrait
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            '
+            <<<JS
                 await vars.page.click(`[type="submit"]`)
-            '
+            JS
         );
     }
 
@@ -226,8 +211,7 @@ trait PlaywrightContextTrait
     {
         $url = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 const [ download ] = await Promise.all(
                     [
                         vars.page.waitForEvent('download'),
@@ -237,7 +221,7 @@ trait PlaywrightContextTrait
                 const path = await download.url()
 
                 return path
-            "
+            JS
         );
 
         assertStringContainsString($entityId, $url);
@@ -250,15 +234,14 @@ trait PlaywrightContextTrait
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 await vars.page.fill(`input#exercise_name`, `Test-Aufgabe`)
                 // here we have to use this way to navigate to the description field because we use ckeditor
                 await vars.page.keyboard.press('Tab')
                 await vars.page.keyboard.type('Test-Aufgaben-Beschreibung')
 
                 await vars.page.click(`button#exercise_save`)
-            "
+            JS
         );
     }
 
@@ -269,13 +252,12 @@ trait PlaywrightContextTrait
     {
         $hasElement = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 const element = await vars.page.locator('data-test-id=$testId >> nth=$index')
                 vars.selectedElement = element
 
                 return !!element
-            "
+            JS
         );
 
         assertTrue($hasElement);
@@ -288,10 +270,9 @@ trait PlaywrightContextTrait
     {
         $actual = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 return vars.selectedElement.getAttribute('$attribute')
-            "
+            JS
         );
 
         assertEquals($actual, $expectedValue);
@@ -304,10 +285,9 @@ trait PlaywrightContextTrait
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 vars.selectedElement.click()
-            "
+            JS
         );
     }
 
@@ -318,10 +298,9 @@ trait PlaywrightContextTrait
     {
         $actual = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 return vars.selectedElement.count()
-            "
+            JS
         );
 
         assertEquals($count, $actual);
@@ -334,10 +313,9 @@ trait PlaywrightContextTrait
     {
         $actualClasses = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 return await vars.selectedElement.getAttribute('class')
-            "
+            JS
         );
 
         assertTrue(str_contains($actualClasses, $cssClass));
@@ -350,10 +328,9 @@ trait PlaywrightContextTrait
     {
         $actualClasses = $this->playwrightConnector->execute(
             $this->playwrightContext,
-            // language=JavaScript
-            "
+            <<<JS
                 return await vars.selectedElement.getAttribute('class')
-            "
+            JS
         );
 
         assertTrue(!str_contains($actualClasses, $cssClass));
