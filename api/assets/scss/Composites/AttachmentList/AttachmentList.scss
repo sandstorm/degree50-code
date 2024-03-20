@@ -6,6 +6,8 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
+        margin-bottom: $theme__spacing--small;
+        gap: $theme__spacing--base;
 
         .button {
             white-space: nowrap;

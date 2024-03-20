@@ -373,4 +373,23 @@ trait PlaywrightContextTrait
             JS
         );
     }
+
+    /**
+     * @Then I wait for the event :eventName to be dispatched
+     */
+    public function iWaitForTheEventToBeDispatched(string $eventName): void
+    {
+        $this->playwrightConnector->execute($this->playwrightContext, sprintf(
+            <<<JS
+                // evaluate the event listener
+                await vars.page.evaluate((eventName) => {
+                    return new Promise((resolve) => {
+                        window.addEventListener(eventName, () => {
+                            resolve();
+                        });
+                    });
+                }, `$eventName`);
+            JS
+        ));
+    }
 }

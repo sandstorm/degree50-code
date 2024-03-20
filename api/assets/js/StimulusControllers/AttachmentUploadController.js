@@ -6,20 +6,21 @@ const Dropzone = require('dropzone/dist/min/dropzone.min')
 
 Dropzone.autoDiscover = false
 
+export const updateAttachmentList = () => {
+    const attachmentList = document.getElementById('attachment-list')
+    const updateEndPoint = attachmentList.getAttribute('data-update-endpoint')
+
+    Axios.post(updateEndPoint)
+        .then(function (response) {
+            attachmentList.innerHTML = response.data
+        })
+        .catch(function (e) {
+            console.error('>>>>> update attachment list failed', e)
+        })
+}
+
 export default class extends Controller {
     connect() {
-        const updateAttachmentList = (attachmentList) => {
-            const updateEndPoint = attachmentList.getAttribute('data-update-endpoint')
-
-            Axios.post(updateEndPoint)
-                .then(function (response) {
-                    attachmentList.innerHTML = response.data
-                })
-                .catch(function (e) {
-                    console.error('>>>>> update attachment list failed', e)
-                })
-        }
-
         const endpoint = this.data.get('endpoint')
         const removeEndpoint = this.data.get('remove-endpoint')
         const id = this.data.get('id')
@@ -92,22 +93,39 @@ export default class extends Controller {
                 file.attachmentId = response.attachmentId
 
                 // update list of attachment
-                updateAttachmentList(attachmentList)
+                updateAttachmentList()
 
                 // This return statement is necessary to remove progress bar after uploading.
-                return file.previewElement.classList.add('dz-success')
+                file.previewElement.classList.add('dz-success')
+            },
+            error: function (file, error) {
+                let errorMessage = ""
+                if (typeof error === 'string') {
+                    errorMessage = error
+                } else {
+                    errorMessage = JSON.stringify(error)
+                }
+
+                // add error class to the file
+                file.previewElement.classList.add('dz-error')
+                //  get child element by class of file.previewElement
+                const errorElement = file.previewElement.getElementsByClassName('dz-error-message')[0]
+                errorElement.innerHTML = errorMessage
             },
             removedfile: function (file) {
-                Axios.post(removeEndpoint, {
-                    attachmentId: file.attachmentId,
-                })
-                    .then(function () {
-                        // update list of attachment
-                        updateAttachmentList(attachmentList)
+                // only remove uploaded files
+                if (file.status !== "error") {
+                    Axios.post(removeEndpoint, {
+                        attachmentId: file.attachmentId,
                     })
-                    .catch(function (e) {
-                        console.error('>>>>> remove attachment failed', e)
-                    })
+                        .then(function () {
+                            // update list of attachment
+                            updateAttachmentList()
+                        })
+                        .catch(function (e) {
+                            console.error('>>>>> remove attachment failed', e)
+                        })
+                }
 
                 let _ref
                 return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0

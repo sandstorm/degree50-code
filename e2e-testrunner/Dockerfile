@@ -9,6 +9,7 @@ FROM mcr.microsoft.com/playwright:bionic
 RUN mkdir /app
 WORKDIR /app
 ADD package.json package-lock.json index.js /app/
+ADD FileUploadFixtures /app/FileUploadFixtures
 RUN npm install
 EXPOSE 3000
 CMD ["node", "index.js"]

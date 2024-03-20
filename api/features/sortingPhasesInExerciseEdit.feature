@@ -23,7 +23,6 @@ Feature: Editing of phase order inside an Exercise
             | reflexion2 | Reflexion2 | Description of Reflexion2 | true         | 4       | true                        | e1                | cutting1       | reflexion     |                        |                  |
             | cutting2   | Cutting2   | Description of Cutting2   | false        | 5       | true                        | e1                | null           | videoCutting  |                        |                  |
 
-
     Scenario: The first phase can't be moved 'up'
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/edit/e1"
