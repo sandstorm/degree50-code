@@ -84,7 +84,7 @@ class RegistrationController extends AbstractController
             (new TemplatedEmail())
                 ->to($user->getEmail())
                 ->subject($this->translator->trans('email.subject', [], 'user-registration'))
-                ->htmlTemplate('registration/confirmation_email.html.twig')
+                ->htmlTemplate('Registration/confirmation_email.html.twig')
         );
     }
 
