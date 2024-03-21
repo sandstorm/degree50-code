@@ -1,0 +1,174 @@
+{
+  "type": "https://tools.ietf.org/html/rfc2616#section-10",
+  "title": "An error occurred",
+  "status": 500,
+  "detail": "Warning: fopen(/app/public/data/material/65fae47b09234.jpg): Failed to open stream: Permission denied",
+  "class": "ErrorException",
+  "trace": [
+    {
+      "namespace": "",
+      "short_class": "",
+      "class": "",
+      "type": "",
+      "function": "",
+      "file": "/app/vendor/league/flysystem/src/Adapter/Local.php",
+      "line": 157,
+      "args": []
+    },
+    {
+      "namespace": "League\\Flysystem\\Adapter",
+      "short_class": "Local",
+      "class": "League\\Flysystem\\Adapter\\Local",
+      "type": "->",
+      "function": "writeStream",
+      "file": "/app/vendor/league/flysystem/src/Filesystem.php",
+      "line": 123,
+      "args": [
+        [
+          "string",
+          "65fae47b09234.jpg"
+        ],
+        [
+          "resource",
+          "stream"
+        ],
+        [
+          "object",
+          "League\\Flysystem\\Config"
+        ]
+      ]
+    },
+    {
+      "namespace": "League\\Flysystem",
+      "short_class": "Filesystem",
+      "class": "League\\Flysystem\\Filesystem",
+      "type": "->",
+      "function": "putStream",
+      "file": "/app/vendor/oneup/uploader-bundle/src/Uploader/Storage/FlysystemStorage.php",
+      "line": 54,
+      "args": [
+        [
+          "string",
+          "65fae47b09234.jpg"
+        ],
+        [
+          "resource",
+          "stream"
+        ],
+        [
+          "object",
+          "League\\Flysystem\\Config"
+        ]
+      ]
+    },
+    {
+      "namespace": "Oneup\\UploaderBundle\\Uploader\\Storage",
+      "short_class": "FlysystemStorage",
+      "class": "Oneup\\UploaderBundle\\Uploader\\Storage\\FlysystemStorage",
+      "type": "->",
+      "function": "upload",
+      "file": "/app/vendor/oneup/uploader-bundle/src/Controller/AbstractController.php",
+      "line": 151,
+      "args": [
+        [
+          "object",
+          "Oneup\\UploaderBundle\\Uploader\\File\\FilesystemFile"
+        ],
+        [
+          "string",
+          "65fae47b09234.jpg"
+        ]
+      ]
+    },
+    {
+      "namespace": "Oneup\\UploaderBundle\\Controller",
+      "short_class": "AbstractController",
+      "class": "Oneup\\UploaderBundle\\Controller\\AbstractController",
+      "type": "->",
+      "function": "handleUpload",
+      "file": "/app/vendor/oneup/uploader-bundle/src/Controller/DropzoneController.php",
+      "line": 29,
+      "args": [
+        [
+          "object",
+          "Oneup\\UploaderBundle\\Uploader\\File\\FilesystemFile"
+        ],
+        [
+          "object",
+          "Oneup\\UploaderBundle\\Uploader\\Response\\EmptyResponse"
+        ],
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ]
+      ]
+    },
+    {
+      "namespace": "Oneup\\UploaderBundle\\Controller",
+      "short_class": "DropzoneController",
+      "class": "Oneup\\UploaderBundle\\Controller\\DropzoneController",
+      "type": "->",
+      "function": "upload",
+      "file": "/app/vendor/symfony/http-kernel/HttpKernel.php",
+      "line": 152,
+      "args": []
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel",
+      "short_class": "HttpKernel",
+      "class": "Symfony\\Component\\HttpKernel\\HttpKernel",
+      "type": "->",
+      "function": "handleRaw",
+      "file": "/app/vendor/symfony/http-kernel/HttpKernel.php",
+      "line": 74,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "integer",
+          1
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel",
+      "short_class": "HttpKernel",
+      "class": "Symfony\\Component\\HttpKernel\\HttpKernel",
+      "type": "->",
+      "function": "handle",
+      "file": "/app/vendor/symfony/http-kernel/Kernel.php",
+      "line": 202,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "integer",
+          1
+        ],
+        [
+          "boolean",
+          true
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel",
+      "short_class": "Kernel",
+      "class": "Symfony\\Component\\HttpKernel\\Kernel",
+      "type": "->",
+      "function": "handle",
+      "file": "/app/public/index.php",
+      "line": 27,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ]
+      ]
+    }
+  ]
+}

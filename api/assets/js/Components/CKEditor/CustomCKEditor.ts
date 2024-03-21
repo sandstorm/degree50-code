@@ -19,12 +19,12 @@ import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize'
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle'
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar'
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js'
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter'
 import Link from '@ckeditor/ckeditor5-link/src/link'
 import List from '@ckeditor/ckeditor5-list/src/list'
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties'
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph'
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice'
-import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter'
 import Table from '@ckeditor/ckeditor5-table/src/table'
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption'
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties'
@@ -68,8 +68,8 @@ ClassicEditor.builtinPlugins = [
     TableProperties,
     TableToolbar,
     Underline,
-    SimpleUploadAdapter,
     CKEditorPrintPlugin,
+    Base64UploadAdapter,
 ]
 
 // eslint-disable-next-line functional/immutable-data
@@ -162,21 +162,7 @@ ClassicEditor.defaultConfig = {
             'imageTextAlternative',
         ],
         upload: {
-            // should match ImageUploadController::SUPPORTED_IMAGE_EXTENSIONS
-            types: ['jpeg', 'png', 'gif', 'bmp', 'webp'],
-        },
-    },
-    simpleUpload: {
-        // The URL that the images are uploaded to.
-        uploadUrl: 'http://localhost:8080/images',
-
-        // Enable the XMLHttpRequest.withCredentials property.
-        withCredentials: true,
-
-        // Headers sent along with the XMLHttpRequest to the upload server.
-        // TODO: Currently no csrf protection in image upload?
-        headers: {
-            'X-CSRF-TOKEN': 'CSRF-Token',
+            types: ['jpeg', 'gif', 'webp'],
         },
     },
 }

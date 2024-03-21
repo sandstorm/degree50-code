@@ -12,7 +12,6 @@ use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
 use App\Entity\Exercise\Solution;
 use App\Entity\Exercise\VideoCode;
-use App\Entity\Video\Video;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
@@ -493,5 +492,102 @@ trait ExercisePhaseContextTrait
     {
         $exercisePhases = $this->exercisePhaseRepository->findAll();
         assertEquals($amount, count($exercisePhases));
+    }
+
+    /**
+     * @When I upload material :fileName to the phase
+     */
+    public function IUploadMaterialToThePhase($fileName): void
+    {
+        // working path is the /e2e-testrunner directory
+        // we mount this path into the container when the tests run inside the gitlab pipeline
+        $fixturePath ='./FileUploadFixtures';
+
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const [fileChooser] = await Promise.all([
+                    // It is important to call waitForEvent before click to set up waiting.
+                    vars.page.waitForEvent('filechooser'),
+                    // Opens the file chooser.
+                    vars.page.click('text=Hier klicken um Anhänge hochzuladen')
+                ])
+                await fileChooser.setFiles(`$fixturePath/$fileName`);
+            JS
+        );
+    }
+
+    /**
+     * @Then I should see the uploaded file :fileName in the attachment list
+     */
+    public function iShouldSeeTheUploadedFileInTheAttachmentList($expectedFileName): void
+    {
+        $actualFileName = $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const attachment = await vars.page.locator('.attachment-list .attachment-list__name').first()
+                try {
+                    await expect(attachment).toHaveText(`$expectedFileName`)
+                } catch (e) {
+                  // just catch the error
+                }
+                return await attachment.textContent();
+            JS
+        );
+
+        assertEquals($expectedFileName, $actualFileName, 'The uploaded file is not in the attachment list');
+    }
+
+    /**
+     * @Then The upload area shows :amount file
+     */
+    public function theUploadAreaShowsFile($expectedAmount): void
+    {
+        $actualFileCount = $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const fileCount = await vars.page.locator('.dropzone .dz-image-preview').count()
+                return fileCount;
+            JS
+        );
+
+        assertEquals($expectedAmount, $actualFileCount, 'The upload area does not show the expected amount of files');
+    }
+
+    /**
+     * @When I remove the uploaded file :fileName
+     */
+    public function iRemoveTheUploadedFile($fileName): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                // find attachment by name
+                const attachment = vars.page.locator(`.attachment-list li:has-text('$fileName')`);
+                // click button with text "Datei löschen"
+                await attachment.locator('.button:has-text("Datei löschen")').click();
+            JS
+        );
+    }
+
+    /**
+     * @Then I should see :amount uploaded files in the attachment list
+     */
+    public function iShouldSeeUploadedFilesInTheAttachmentList($expectedAmount): void
+    {
+        $actualFileCount = $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const attachments = await vars.page.locator('.attachment-list li')
+                try {
+                    await expect(attachments).toHaveCount(`$expectedAmount`);
+                } catch (e) {
+                    // just catch error
+                }
+                return await attachments.count();
+            JS
+        );
+
+        assertEquals($expectedAmount, $actualFileCount, 'The attachment list does not show the expected amount of files');
     }
 }
