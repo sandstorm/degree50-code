@@ -58,5 +58,10 @@ php bin/console assets:install
 # clear caches
 php bin/console cache:clear
 
+# copy all env vars to an env file so we can load them in cron jobs
+# see degree_crontab
+# Hint: With `grep -EV 'BASHOPTS|BASH_VERSINFO|EUID|PPID|SHELLOPTS|UID'` we remove all read-only vars
+declare -p | grep -Ev 'BASHOPTS|BASH_VERSINFO|EUID|PPID|SHELLOPTS|UID' > /root/.cron.env
+
 /usr/bin/supervisord
 
