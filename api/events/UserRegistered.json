@@ -5,17 +5,15 @@
     "userId": {
       "type": "string"
     },
-    "oldDate": {
-      "type": "string"
-    },
-    "newDate": {
-      "type": "string"
+    "method": {
+      "description": "User registration method",
+      "type": "string",
+      "enum": ["SAML", "RegistrationForm"]
     }
   },
   "required": [
     "userId",
-    "oldDate",
-    "newDate"
+    "method"
   ],
   "additionalProperties": false
 }

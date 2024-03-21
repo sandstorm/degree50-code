@@ -9,7 +9,14 @@
             <h1 class="h1 mb-3 font-weight-normal login-form__headline">Video-Lernplattform Degree 4.0</h1>
 
             {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                <div class="alert alert-danger">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                    <br/>
+                    <br/>
+                    <a href="{{ path('app_forgot_password_request') }}" class="alert-link">
+                        {{ "flash-message.forgot-password"|trans({}, 'user-password-reset') }}
+                    </a>
+                </div>
             {% endif %}
 
             <br/>
@@ -19,7 +26,7 @@
                 href="{{ path('saml_login') }}"
                 aria-label="Klicken, um dich mit deinem Uni-Account (SSO) einzuloggen."
             >
-                Login mit Uni-Account (SSO)
+                {{ "login.login-sso"|trans({}, 'forms') }}
             </a>
 
             <br />
@@ -27,25 +34,27 @@
             <br />
 
             <div class="form-group">
-                <label for="inputEmail">E-Mail</label>
+                <label for="inputEmail">{{ "login.label.email"|trans({}, 'forms') }}</label>
                 <input
                     type="email"
                     value="{{ last_username }}"
                     name="email" id="inputEmail"
                     class="form-control"
                     aria-labelledby="inputEmail"
+                    autocomplete="username"
                     required
                     autofocus
                 >
             </div>
             <div class="form-group">
-                <label for="inputPassword">Passwort</label>
+                <label for="inputPassword">{{ "login.label.password"|trans({}, 'forms') }}</label>
                 <input
                     type="password"
                     name="password"
                     id="inputPassword"
                     class="form-control"
                     aria-labelledby="inputPassword"
+                    autocomplete="current-password"
                     required
                 >
             </div>
@@ -58,8 +67,12 @@
                 type="submit"
                 role="button"
             >
-                Direkter Login
+                {{ "login.login-directly"|trans({}, 'forms') }}
             </button>
+            <hr />
+            <div class="login-form__register">
+                <a href="{{ path('app_register') }}">{{ 'login.register'|trans({}, 'forms') }}</a>
+            </div>
         </form>
     </div>
     <footer class="footer footer--center">
@@ -82,7 +95,7 @@
             },
             {# test for insecure browsers #}
             insecure: true,
-            api: 2020.10,
+            api: 2024.03,
             nostatistics: true,
             shift_page_down: false,
             {# test the notification - even if browser is up-to-date #}

@@ -38,6 +38,10 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
          * */
         $user = $this->security->getUser();
 
+        if (!$user->isVerified()) {
+            return new RedirectResponse($this->urlGenerator->generate('app_verify_email_pending'));
+        }
+
         if (!$user->acceptedCurrentDataPrivacy()) {
             return new RedirectResponse($this->urlGenerator->generate('app_data-privacy'));
         }

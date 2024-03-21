@@ -55,4 +55,42 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return User[]
+     */
+    public function findAllUsersWithVerificationTimeout(): array
+    {
+        // we calculate the verification deadline by subtracting the timeout duration from the current date
+        // Example: createdAt < now - 5 days
+        $now = new \DateTimeImmutable();
+        $verificationDeadline = $now
+            ->sub(\DateInterval::createFromDateString(User::VERIFICATION_TIMEOUT_DURATION_STRING));
+
+        // expiration_date - notice_duration < now
+        return $this->createQueryBuilder('user')
+            ->where('user.isVerified != TRUE')
+            ->andWhere('user.createdAt < :verificationDeadline')
+            ->setParameter('verificationDeadline', $verificationDeadline->format(User::DB_DATE_FORMAT))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAllUnNotifiedSoonToBeExpiredUsers(): array
+    {
+        $now = new \DateTimeImmutable();
+        $notificationTimeWindowStart = $now
+            ->add(\DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
+
+        // expiration_date - notice_duration < now
+        return $this->createQueryBuilder('user')
+            ->where('user.expirationNoticeSent != TRUE')
+            ->andWhere('user.expirationDate < :notificationTimeWindowStart')
+            ->setParameter('notificationTimeWindowStart', $notificationTimeWindowStart->format(User::DB_DATE_FORMAT))
+            ->getQuery()
+            ->getResult();
+    }
 }

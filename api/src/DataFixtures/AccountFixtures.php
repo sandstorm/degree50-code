@@ -19,7 +19,10 @@ class AccountFixtures extends Fixture
     private UserPasswordHasherInterface $userPasswordHasher;
     private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher, DoctrineIntegratedEventStore $eventStore)
+    public function __construct(
+        UserPasswordHasherInterface $userPasswordHasher,
+        DoctrineIntegratedEventStore $eventStore,
+    )
     {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->eventStore = $eventStore;
@@ -30,9 +33,7 @@ class AccountFixtures extends Fixture
         $fachbereich = $this->createFachbereich($manager, 'Fachbereich Mathematik');
 
         $course = $this->createCourse($manager, 'Seminar Mathe 1', $fachbereich);
-        $course->setFachbereich($fachbereich);
         $course2 = $this->createCourse($manager, 'Seminar Mathe 2', $fachbereich);
-        $course2->setFachbereich($fachbereich);
 
         // other fixtures can get this object using the AccountFixtures::COURSE_REFERENCE constant
         $this->addReference(self::COURSE_REFERENCE, $course);
@@ -70,6 +71,7 @@ class AccountFixtures extends Fixture
         $account->setEmail($userName);
         $account->setRoles($roles);
         $account->setPassword($this->userPasswordHasher->hashPassword($account, 'password'));
+        $account->setIsVerified(true);
         $manager->persist($account);
 
         return $account;
@@ -79,6 +81,7 @@ class AccountFixtures extends Fixture
     {
         $course = new Course();
         $course->setName($name);
+        $course->setFachbereich($fachbereich);
         $manager->persist($course);
 
         return $course;
