@@ -1,9 +1,8 @@
 <?php
 
-
 namespace App\Security\Voter;
 
-
+use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
@@ -17,6 +16,8 @@ class ExercisePhaseVoter extends Voter
     const SHOW = 'show';
     const NEXT = 'next';
     const DELETE = 'delete';
+    const TEST = 'test';
+
     const SHOW_SOLUTIONS = 'showSolutions';
     const CREATE_TEAM = 'createTeam';
     const VIEW_OTHER_SOLUTIONS = 'viewOtherSolutions';
@@ -24,7 +25,16 @@ class ExercisePhaseVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::SHOW, self::NEXT, self::DELETE, self::SHOW_SOLUTIONS, self::CREATE_TEAM, self::VIEW_OTHER_SOLUTIONS, self::VIEW])) {
+        if (!in_array($attribute, [
+            self::SHOW,
+            self::NEXT,
+            self::DELETE,
+            self::SHOW_SOLUTIONS,
+            self::CREATE_TEAM,
+            self::VIEW_OTHER_SOLUTIONS,
+            self::VIEW,
+            self::TEST
+        ])) {
             return false;
         }
 
@@ -64,7 +74,8 @@ class ExercisePhaseVoter extends Voter
                 return $this->canViewOtherSolutions($exercisePhase, $user);
             case self::VIEW:
                 return $this->canViewExercisePhase($exercisePhase, $user);
-
+            case self::TEST:
+                return $this->canTest($exercisePhase, $user);
         }
 
         throw new LogicException('This code should not be reached!');
@@ -85,10 +96,6 @@ class ExercisePhaseVoter extends Voter
      */
     private function canViewExercisePhase(ExercisePhase $exercisePhase, User $user): bool
     {
-        if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
-            return true;
-        }
-
         // check if previous ExercisePhase exists or has solution
         $sortingPosition = $exercisePhase->getSorting();
 
@@ -138,14 +145,9 @@ class ExercisePhaseVoter extends Voter
 
     private function canGetToNextPhase(ExercisePhase $exercisePhase, User $user): bool
     {
-        if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
-            return true;
-        }
-
         return $exercisePhase->getHasSolutionForUser($user);
     }
 
-    // TODO can only delete exercisePhases which have no results/teams
     private function canDelete(ExercisePhase $exercisePhase, User $user): bool
     {
         return $user === $exercisePhase->getBelongsToExercise()->getCreator();
@@ -171,5 +173,11 @@ class ExercisePhaseVoter extends Voter
         }
 
         return $canCreate;
+    }
+
+    private function canTest(ExercisePhase $exercisePhase, User $user): bool
+    {
+        $exercise = $exercisePhase->getBelongsToExercise();
+        return ExerciseVoter::canTest($exercise, $user);
     }
 }

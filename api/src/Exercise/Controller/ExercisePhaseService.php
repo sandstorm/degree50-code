@@ -3,6 +3,7 @@
 namespace App\Exercise\Controller;
 
 use App\Entity\Account\User;
+use App\Entity\Exercise\Attachment;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
@@ -13,13 +14,17 @@ use App\Entity\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
 use App\Entity\Exercise\ExercisePhaseTypes\VideoCutPhase;
 use App\Entity\Exercise\VideoCode;
+use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Exercise\AutosavedSolutionRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Service\UserMaterialService;
+use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ExercisePhaseService
@@ -30,6 +35,10 @@ class ExercisePhaseService
     private UserMaterialService $materialService;
     private AutosavedSolutionRepository $autoSavedSolutionRepository;
     private TranslatorInterface $translator;
+    private AppRuntime $appRuntime;
+    private VideoFavouritesService $videoFavouritesService;
+    private UrlGeneratorInterface $router;
+
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -38,6 +47,9 @@ class ExercisePhaseService
         UserMaterialService $materialService,
         AutosavedSolutionRepository $autoSavedSolutionRepository,
         TranslatorInterface $translator,
+        AppRuntime $appRuntime,
+        VideoFavouritesService $videoFavouritesService,
+        UrlGeneratorInterface $router
     )
     {
         $this->entityManager = $entityManager;
@@ -46,6 +58,9 @@ class ExercisePhaseService
         $this->materialService = $materialService;
         $this->autoSavedSolutionRepository = $autoSavedSolutionRepository;
         $this->translator = $translator;
+        $this->appRuntime = $appRuntime;
+        $this->videoFavouritesService = $videoFavouritesService;
+        $this->router = $router;
     }
 
     public function getPhaseTypeTitle(ExercisePhaseType $exercisePhaseType): string
@@ -395,13 +410,15 @@ class ExercisePhaseService
     /**
      * @param ExercisePhase $exercisePhase
      * @param User $user
+     * @param bool $testMode
      * @return ExercisePhaseTeam
      */
-    public function createPhaseTeam(ExercisePhase $exercisePhase, User $user): ExercisePhaseTeam
+    public function createPhaseTeam(ExercisePhase $exercisePhase, User $user, bool $testMode = false): ExercisePhaseTeam
     {
         $exercisePhaseTeam = new ExercisePhaseTeam();
         $exercisePhaseTeam->setCreator($user);
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
+        $exercisePhaseTeam->setIsTest($testMode);
 
         $this->eventStore->addEvent('TeamCreated', [
             'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
@@ -436,4 +453,58 @@ class ExercisePhaseService
         $this->entityManager->remove($exercisePhase);
         $this->entityManager->flush();
     }
+
+    public function getConfig(ExercisePhase $exercisePhase, User $user, $readOnly = false): array
+    {
+        $components = [];
+
+        switch ($exercisePhase->getType()) {
+            case ExercisePhaseType::VIDEO_ANALYSIS:
+                /**
+                 * @var VideoAnalysisPhase $exercisePhase
+                 **/
+                if ($exercisePhase->getVideoAnnotationsActive()) {
+                    $components[] = ExercisePhase::VIDEO_ANNOTATION;
+                }
+                if ($exercisePhase->getVideoCodesActive()) {
+                    $components[] = ExercisePhase::VIDEO_CODE;
+                }
+
+                break;
+            case ExercisePhaseType::VIDEO_CUT:
+                $components[] = ExercisePhase::VIDEO_CUTTING;
+                break;
+            case ExercisePhaseType::REFLEXION:
+                break;
+        }
+
+        $dependsOnPreviousPhase = $exercisePhase->getDependsOnExercisePhase() !== null;
+
+        return [
+            'title' => $exercisePhase->getName(),
+            'description' => $exercisePhase->getTask(),
+            'type' => $exercisePhase->getType(),
+            'components' => $components,
+            'userId' => $user->getId(),
+            'userName' => $user->getEmail(),
+            'isStudent' => $user->isStudent(),
+            'isGroupPhase' => $exercisePhase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $dependsOnPreviousPhase,
+            'readOnly' => $readOnly,
+            'attachments' => array_map(function (Attachment $entry) {
+                return [
+                    'id' => $entry->getId(),
+                    'name' => $entry->getName(),
+                    'type' => $entry->getMimeType(),
+                    'url' => $this->router->generate('exercise-overview__attachment--download', ['id' => $entry->getId()])
+                ];
+            }, $exercisePhase->getAttachment()->toArray()),
+            'videos' => array_map(function (Video $video) use ($user) {
+                return array_merge($video->getAsClientSideVideo($this->appRuntime)->toArray(), [
+                    'isFavorite' => $this->videoFavouritesService->videoIsFavorite($video, $user)
+                ]);
+            }, $exercisePhase->getVideos()->toArray()),
+        ];
+    }
+
 }

@@ -14,7 +14,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">
+                    <a href="{{ path('exercise__edit', {id: exercise.id}) }}">
                         {{ exercise.name }}
                     </a>
                 </li>
@@ -28,7 +28,7 @@
 
         <div class="tiles">
             {% for type in types %}
-                <a href="{{ path('exercise-overview__exercise-phase--set-type', {id: exercise.id, type: type.id }) }}" class="tile">
+                <a href="{{ path('exercise-phase__set-type', {id: exercise.id, type: type.id }) }}" class="tile">
                     <div class="tile__content">
                         <i class="tile__icon {{ type.iconClass}}"></i>
                         <span>{{ type.label }}</span>
@@ -39,7 +39,7 @@
     </div>
 
     <footer class="footer">
-        <a class="button button--type-outline-primary footer__left" href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+        <a class="button button--type-outline-primary footer__left" href="{{ path('exercise__edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
     </footer>
 
 {% endblock %}

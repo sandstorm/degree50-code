@@ -3,6 +3,8 @@
 
 namespace App\Exercise\Controller;
 
+use App\Entity\Account\Course;
+use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
@@ -70,22 +72,40 @@ class ExerciseService
         return $visibleExercises;
     }
 
-    public function getPhasesWithStatusMetadata(Exercise $exercise, User $user)
+    /**
+     * Used for testing the exercise
+     *
+     * @param Exercise $exercise
+     * @return array
+     */
+    public function getPhasesForTesting(Exercise $exercise): array
     {
-        $isStudent = $user->isStudent();
-
-        $phases = $exercise->getPhases();
-
-        return $phases->map(function ($phase) use ($isStudent, $user) {
-            if ($isStudent) {
-                return $this->getPhaseWithStatusMetadataForStudent($phase, $user);
-            } else {
-                return $this->getPhaseWithStatusMetadataForDozent($phase);
-            }
-        });
+        $phasesWithMapping = [];
+        foreach ($exercise->getPhases() as $phase) {
+            $phasesWithMapping[] = $this->getPhaseWithStatusMetadataForTesting($phase);
+        }
+        return $phasesWithMapping;
     }
 
-    private function getPhaseWithStatusMetadataForStudent(ExercisePhase $phase, User $user)
+    /**
+     * @param Exercise $exercise
+     * @param User $user
+     * @return array
+     */
+    public function getPhasesWithStatusMetadata(Exercise $exercise, User $user): array
+    {
+        $phasesWithMapping = [];
+        foreach ($exercise->getPhases() as $phase) {
+            if ($user->isStudent() || self::userIsCourseDozent($user, $exercise->getCourse())) {
+                $phasesWithMapping[] = $this->getPhaseWithStatusMetadataForStudent($phase, $user);
+            } else {
+                $phasesWithMapping[] = $this->getPhaseWithStatusMetadataForDozent($phase);
+            }
+        }
+        return $phasesWithMapping;
+    }
+
+    private function getPhaseWithStatusMetadataForStudent(ExercisePhase $phase, User $user): array
     {
         $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
 
@@ -101,7 +121,7 @@ class ExerciseService
         ];
     }
 
-    private function getPhaseWithStatusMetadataForDozent(ExercisePhase $phase)
+    private function getPhaseWithStatusMetadataForDozent(ExercisePhase $phase): array
     {
         // TODO: Refactor this in to Dtos
         return [
@@ -109,6 +129,19 @@ class ExerciseService
             'metadata' => [
                 'needsReview' => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase),
                 'isDone' => false, // not relevant for dozenten, but needed inside the twig template
+                'phaseTitle' => $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
+                'iconClass' => $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType()),
+            ]
+        ];
+    }
+
+    private function getPhaseWithStatusMetadataForTesting(ExercisePhase $phase): array
+    {
+        return [
+            'phase' => $phase,
+            'metadata' => [
+                'needsReview' => false,
+                'isDone' => false,
                 'phaseTitle' => $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
                 'iconClass' => $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType()),
             ]
@@ -206,5 +239,17 @@ class ExerciseService
          */
         $this->entityManager->remove($exercise);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param User $user
+     * @param Course $course
+     * @return bool
+     */
+    public static function userIsCourseDozent(User $user, Course $course): bool
+    {
+        return $user->getCourseRoles()->exists(
+            fn ($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->isCourseDozent()
+        );
     }
 }

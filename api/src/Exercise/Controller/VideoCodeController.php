@@ -5,12 +5,12 @@ namespace App\Exercise\Controller;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -19,17 +19,21 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class VideoCodeController extends AbstractController
 {
-    private TranslatorInterface $translator;
+    private EntityManagerInterface $entityManager;
     private DoctrineIntegratedEventStore $eventStore;
 
-    public function __construct(TranslatorInterface $translator, DoctrineIntegratedEventStore $eventStore)
-    {
-        $this->translator = $translator;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        DoctrineIntegratedEventStore $eventStore
+    ) {
+        $this->entityManager = $entityManager;
         $this->eventStore = $eventStore;
     }
 
     /**
-     * @Route("/video-codes/add/{id}", name="exercise-overview__video-codes--add")
+     * Used only asynchronous
+     *
+     * @Route("/video-codes/add/{id}", name="video-code__add", methods={"POST"})
      */
     public function add(Request $request, ExercisePhase $exercisePhase): Response
     {
@@ -46,15 +50,16 @@ class VideoCodeController extends AbstractController
             'color' => $videoCode->getColor(),
         ]);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($videoCode);
-        $entityManager->flush();
+        $this->entityManager->persist($videoCode);
+        $this->entityManager->flush();
 
-        return Response::create('OK');
+        return new Response('OK');
     }
 
     /**
-     * @Route("/video-codes/delete/{id}", name="exercise-overview__video-codes--delete")
+     * Used only asynchronous
+     *
+     * @Route("/video-codes/delete/{id}", name="video-code__delete", methods={"GET"})
      */
     public function delete(VideoCode $videoCode): Response
     {
@@ -64,20 +69,14 @@ class VideoCodeController extends AbstractController
             'color' => $videoCode->getColor(),
         ]);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($videoCode);
-        $entityManager->flush();
+        $this->entityManager->remove($videoCode);
+        $this->entityManager->flush();
 
-        $this->addFlash(
-            'success',
-            $this->translator->trans('videoCode.delete.messages.success', [], 'forms')
-        );
-
-        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $videoCode->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $videoCode->getExercisePhase()->getId()]);
+        return new Response('OK');
     }
 
     /**
-     * @Route("/video-codes/list/{id}", name="exercise-overview__video-codes--list")
+     * @Route("/video-codes/list/{id}", name="video-code__list")
      */
     public function videoCodes(ExercisePhase $exercisePhase): Response
     {

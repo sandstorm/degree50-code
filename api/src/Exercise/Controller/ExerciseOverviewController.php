@@ -5,10 +5,8 @@ namespace App\Exercise\Controller;
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
 use App\Entity\Exercise\Exercise;
-use App\Exercise\Controller\GroupedExercisesBuilder;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
-use ExerciseWithReviewStatusDto;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +56,7 @@ class ExerciseOverviewController extends AbstractController
             return $this->redirectToRoute('schreibtisch');
         } else {
             return $this->redirectToRoute('exercise-overview');
-        };
+        }
     }
 
     /**

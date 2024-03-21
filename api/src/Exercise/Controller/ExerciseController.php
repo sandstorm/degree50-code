@@ -7,7 +7,9 @@ use App\Entity\Account\User;
 use App\Entity\Exercise\CopyExerciseFormDto;
 use App\Entity\Exercise\Exercise;
 use App\Entity\Exercise\ExercisePhase;
+use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\Form\CopyExerciseFormType;
 use App\Exercise\Form\ExerciseType;
 use App\Repository\Exercise\ExercisePhaseRepository;
@@ -33,6 +35,8 @@ class ExerciseController extends AbstractController
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private ExerciseService $exerciseService;
 
+    private SolutionService $solutionService;
+
     public function __construct(
         ExercisePhaseRepository $exercisePhaseRepository,
         ExercisePhaseService $exercisePhaseService,
@@ -40,6 +44,7 @@ class ExerciseController extends AbstractController
         DoctrineIntegratedEventStore $eventStore,
         ExerciseService $exerciseService,
         ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        SolutionService $solutionService
     ) {
         $this->exercisePhaseRepository = $exercisePhaseRepository;
         $this->exercisePhaseService = $exercisePhaseService;
@@ -47,6 +52,62 @@ class ExerciseController extends AbstractController
         $this->eventStore = $eventStore;
         $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->exerciseService = $exerciseService;
+        $this->solutionService = $solutionService;
+    }
+
+    /**
+     * This actions is responsible for showing the general overview of an exercise.
+     * This includes the exercise description as well as an overview of phases.
+     *
+     * @IsGranted("view", subject="exercise")
+     * @Route("/exercise/{id}/show", name="exercise__show")
+     */
+    public function show(Exercise $exercise): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
+
+        return $this->render(
+            'Exercise/Show.html.twig',
+            [
+                'testMode' => false,
+                'exercise' => $exercise,
+                'exercisePhase' => null,
+                'previousExercisePhase' => null,
+                'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
+                'currentPhaseIndex' => false,
+                'nextExercisePhase' => $nextExercisePhase,
+                'amountOfPhases' => count($exercise->getPhases()) - 1,
+            ]
+        );
+    }
+
+    /**
+     * Version for testing of showOverview()
+     *
+     * @IsGranted("test", subject="exercise")
+     * @Route("/exercise/{id}/test", name="exercise__test")
+     */
+    public function test(Exercise $exercise): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
+
+        return $this->render(
+            'Exercise/Show.html.twig',
+            [
+                'testMode' => true,
+                'exercise' => $exercise,
+                'exercisePhase' => null,
+                'previousExercisePhase' => null,
+                'phases' => $this->exerciseService->getPhasesForTesting($exercise,),
+                'currentPhaseIndex' => false,
+                'nextExercisePhase' => $nextExercisePhase,
+                'amountOfPhases' => count($exercise->getPhases()) - 1,
+            ]
+        );
     }
 
     /**
@@ -54,14 +115,12 @@ class ExerciseController extends AbstractController
      * is able to start solving the phase or seeing other students solutions.
      *
      * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show-phase-overview/{id}/{phaseId}", name="exercise-overview__exercise--show-phase-overview")
+     * @Route("/exercise/{id}/phase/{phaseId}", name="exercise__show-phase")
      */
-    public function showPhaseOverview(Exercise $exercise, string $phaseId = ''): Response
+    public function showExercisePhase(Exercise $exercise, string $phaseId = ''): Response
     {
-
         /** @var User $user */
         $user = $this->getUser();
-        $userIsCreator = $user === $exercise->getCreator();
 
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
@@ -70,22 +129,19 @@ class ExerciseController extends AbstractController
         $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
 
         $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
-        $otherTeams = array_filter($this->exercisePhaseTeamRepository->findByExercisePhase($exercisePhase), function ($team) use ($teamOfCurrentUser) {
-            // filter out team of current user
-            if ($team === $teamOfCurrentUser) {
-                return false;
-            }
-            // only show teams that the user is allowed to see
-            return $this->isGranted('viewExercisePhaseTeam', $team);
-        });
+        if ($teamOfCurrentUser) {
+            $otherTeams = $this->exercisePhaseTeamRepository->findOtherTeamsByPhaseExcludingTests($exercisePhase, $teamOfCurrentUser);
+        } else {
+            $otherTeams = $this->exercisePhaseTeamRepository->findAllByPhaseExcludingTests($exercisePhase);
+        }
 
         // WHY: Make sure the first team that's shown is the team of the current user
         $allTeams = $teamOfCurrentUser ? array_merge([$teamOfCurrentUser], $otherTeams) : $otherTeams;
 
         return $this->render(
-            'Exercise/Show.html.twig',
+            'Exercise/ShowPhase.html.twig',
             [
-                'userIsCreator' => $userIsCreator,
+                'testMode' => false,
                 'exercise' => $exercise,
                 'exercisePhase' => $exercisePhase,
                 'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
@@ -101,37 +157,52 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * This actions is responsible for showing the general overview of an exercise.
-     * This includes the exercise description as well as an overview of phases.
+     * Version for testing of showExercisePhase()
+     * Removes other teams and only shows the team of the current user.
      *
-     * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/show-overview/{id}", name="exercise-overview__exercise--show-overview")
+     * @IsGranted("test", subject="exercise")
+     * @Route("/exercise/test/{id}/phase/{phaseId}", name="exercise__show-test-phase")
      */
-    public function showOverview(Exercise $exercise): Response
+    public function showTestExercisePhase(Exercise $exercise, string $phaseId = ''): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $userIsCreator = $user === $exercise->getCreator();
 
-        $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
+        /** @var ExercisePhase $exercisePhase */
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+
+        $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
+        $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
+
+        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
+
+        $teams = [];
+
+        if ($teamOfCurrentUser !== null) {
+            $teams[] = $teamOfCurrentUser;
+        }
 
         return $this->render(
-            'Exercise/ShowOverview.html.twig',
+            'Exercise/ShowPhase.html.twig',
             [
-                'userIsCreator' => $userIsCreator,
+                'testMode' => true,
                 'exercise' => $exercise,
-                'exercisePhase' => null,
-                'previousExercisePhase' => null,
-                'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
-                'currentPhaseIndex' => false,
+                'exercisePhase' => $exercisePhase,
+                'phases' => $this->exerciseService->getPhasesForTesting($exercise),
+                'currentPhaseIndex' => $exercisePhase->getSorting(),
+                'previousExercisePhase' => $previousExercisePhase,
                 'nextExercisePhase' => $nextExercisePhase,
+                'teams' => $teams,
+                'otherTeams' => [],
+                'teamOfCurrentUser' => $teamOfCurrentUser,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
             ]
         );
     }
+
     /**
      * @IsGranted("newExercise", subject="course")
-     * @Route("/exercise/new/{id}", name="exercise-overview__exercise--new")
+     * @Route("/exercise/new/{id}", name="exercise__new")
      */
     public function new(Request $request, Course $course): Response
     {
@@ -166,7 +237,7 @@ class ExerciseController extends AbstractController
                 $this->translator->trans('exercise.new.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
+            return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
         }
 
         return $this->render('Exercise/New.html.twig', [
@@ -177,7 +248,7 @@ class ExerciseController extends AbstractController
 
     /**
      * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/edit/{id}", name="exercise-overview__exercise--edit")
+     * @Route("/exercise/{id}/edit", name="exercise__edit")
      */
     public function edit(Request $request, Exercise $exercise): Response
     {
@@ -205,7 +276,7 @@ class ExerciseController extends AbstractController
                 $this->translator->trans('exercise.edit.messages.success', [], 'forms')
             );
 
-            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
+            return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
         }
 
         $exerciseHasSolutions = $this->getExerciseHasSolutions($exercise);
@@ -241,14 +312,19 @@ class ExerciseController extends AbstractController
     {
         $phases = $exercise->getPhases()->toArray();
 
-        return array_reduce($phases, function ($carry, $phase) {
-            return $carry || $phase->getHasSolutions();
-        }, false);
+        /** @var ExercisePhase $phase */
+        foreach ($phases as $phase) {
+            if ($phase->getHasSolutions()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/edit/{id}/change-status", name="exercise-overview__exercise--change-status")
+     * @Route("/exercise/{id}/edit/change-status", name="exercise__change-status")
      */
     public function changeStatus(Request $request, Exercise $exercise): Response
     {
@@ -261,7 +337,7 @@ class ExerciseController extends AbstractController
                 'Aufgabe hat noch keine Phasen!'
             );
 
-            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
+            return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
         }
 
         $this->eventStore->addEvent('ExerciseStatusUpdated', [
@@ -273,12 +349,12 @@ class ExerciseController extends AbstractController
         $entityManager->persist($exercise);
         $entityManager->flush();
 
-        return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $exercise->getId()]);
+        return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
     }
 
     /**
      * @IsGranted("delete", subject="exercise")
-     * @Route("/exercise/delete/{id}", name="exercise-overview__exercise--delete")
+     * @Route("/exercise/{id}/delete", name="exercise__delete")
      */
     public function delete(Exercise $exercise): Response
     {
@@ -294,7 +370,7 @@ class ExerciseController extends AbstractController
 
     /**
      * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/copy/{id}", name="exercise-overview__exercise--copy")
+     * @Route("/exercise/{id}/copy", name="exercise__copy")
      */
     public function copy(Request $request, Exercise $exercise): Response
     {
@@ -343,12 +419,58 @@ class ExerciseController extends AbstractController
             $entityManager->persist($newExercise);
             $entityManager->flush();
 
-            return $this->redirectToRoute('exercise-overview__exercise--edit', ['id' => $newExercise->getId()]);
+            return $this->redirectToRoute('exercise__edit', ['id' => $newExercise->getId()]);
         }
 
         return $this->render('Exercise/Copy.html.twig', [
             'exercise' => $exercise,
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * FIXME: It is possible that there are Exercises with no Phases! This currently just throws a 500 Error, but shouldn't!
+     *
+     * @IsGranted("showSolution", subject="exercise")
+     * @Route("/exercise/{id}/show-solutions/{phaseId?}", name="exercise__show-solutions")
+     */
+    public function showSolutions(Request $request, Exercise $exercise): Response
+    {
+        $phaseId = $request->get('phaseId');
+
+        /** @var ExercisePhase $exercisePhase */
+        $exercisePhase = $phaseId
+            ? $this->exercisePhaseRepository->find($phaseId)
+            : $exercise->getPhases()->first();
+
+        $teams = $this->exercisePhaseTeamRepository->findAllByPhaseExcludingTests($exercisePhase);
+
+        // HOTFIX: It's possible to create a team without solutions right now, e.g. when a user creates a team in a
+        // group phase and does not start the phase for this group at least once.
+        // This leads to an 500 Error down the line, when the cut video of the solution is accessed. (can't get a
+        // cut video from a solution that does not exist).
+        // This is a quick fix and should be addressed with more insight later.
+        $teams = array_filter($teams, fn ($team) => $team->getSolution() !== null);
+
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
+        $data = $exercisePhase->getType() === ExercisePhaseType::REFLEXION
+            ? null
+            : $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
+                $clientSideSolutionDataBuilder,
+                $teams
+            );
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $phases = $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user);
+
+        return $this->render('ExercisePhase/ShowSolutions.html.twig', [
+            'config' => $this->exercisePhaseService->getConfig($exercisePhase, $user,true),
+            'data' => $data,
+            'exercise' => $exercise,
+            'phases' => $phases,
+            'currentExercisePhase' => $exercisePhase,
+            'hasSolutions' => $exercisePhase->getHasSolutions()
         ]);
     }
 }

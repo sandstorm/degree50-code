@@ -15,7 +15,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">
+                    <a href="{{ path('exercise__edit', {id: exercise.id}) }}">
                         {{ exercise.name }}
                     </a>
                 </li>
@@ -82,8 +82,9 @@
                 <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
                 <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
                 <div class="form-inline video-code-form" id="add-new-video-code-form" data-controller="videoCodeForm"
-                     data-videoCodeForm-endpoint="{{ path('exercise-overview__video-codes--add', {id: exercisePhase.id}) }}"
-                     data-videoCodeForm-update="video-codes-list">
+                     data-videoCodeForm-endpoint="{{ path('video-code__add', {id: exercisePhase.id}) }}"
+                     data-videoCodeForm-update="video-codes-list"
+                >
                     <label id="code-color-label" class="sr-only" for="video-code-color">Farbe des Video-Codes</label>
                     <input
                         class="form-control"
@@ -104,9 +105,11 @@
                         Video-Code hinzufügen
                     </button>
                 </div>
-                <div id="video-codes-list"
-                     data-update-endpoint="{{ path('exercise-overview__video-codes--list', {id: exercisePhase.id}) }}">
-                    {{ render(path('exercise-overview__video-codes--list', {id: exercisePhase.id})) }}
+                <div
+                    id="video-codes-list"
+                    data-update-endpoint="{{ path('video-code__list', {id: exercisePhase.id}) }}"
+                >
+                    {{ render(path('video-code__list', {id: exercisePhase.id})) }}
                 </div>
 
                 <hr/>
@@ -136,7 +139,7 @@
     </div>
     <footer class="footer">
         <a class="button button--type-outline-primary footer__left"
-           href="{{ path('exercise-overview__exercise--edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+           href="{{ path('exercise__edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
         <div class="footer__right">
             {{ form_row(form.save) }}
         </div>

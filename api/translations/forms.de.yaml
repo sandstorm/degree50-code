@@ -43,6 +43,22 @@ exercise:
         title: 'Aufgabe kopieren'
         message:
             success: 'Aufgabe erfolgreich kopert!'
+    showPhase:
+        phase: 'Phase'
+        dependsOnPreviousPhaseInfo: 'Diese Phase baut auf der vorherigen auf. Es muss ein Ergebnis aus der vorherigen Phase vorliegen.'
+        myResult: 'Mein Ergebnis'
+        showResult: 'Ergebnis anzeigen'
+        existingResults: 'Bisherigen Ergebnisse deiner Seminargruppe:'
+        startPhase: 'Phase starten'
+        groupOf: 'Gruppe von'
+        groupMembers: 'Mitglieder'
+        joinGroup: 'Gruppe beitreten'
+        leaveGroup: 'Gruppe verlassen'
+        deleteGroup: 'Gruppe löschen'
+        newGroup: 'Neue Gruppe anlegen'
+        existingGroups: 'Bestehende Gruppen'
+        existingGroupsInfo: 'Tritt einer Gruppe bei um die Aufgabe zu bearbeiten oder erstelle eine neue Gruppe.'
+        testInfo: 'Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.'
 
 exercisePhase:
     labels:
@@ -109,7 +125,10 @@ exercisePhase:
         confirm: 'Sind Sie sicher, dass Sie diese Phase löschen möchten?'
         messages:
             success: 'Phase erfolgreich gelöscht!'
-
+    resetTest:
+        title: 'Test Ergebnis zurücksetzen'
+        messages:
+            success: 'Test Ergebnis erfolgreich zurückgesetzt!'
     showSolutions:
         back: 'Zurück zur Übersicht'
 

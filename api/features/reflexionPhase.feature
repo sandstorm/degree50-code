@@ -151,7 +151,7 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
 
     Scenario: ReflexionPhase shows correct solution view (analysis -> videoEditor)
         When I am logged in via browser as "test-student@sandstorm.de"
-        And I visit url "/exercise/show-overview/e1"
+        And I visit url "/exercise/e1/show"
         And I select the nth "1" element with testid "exercisePhaseSidebarItem"
         And I click on the selected element
         And I click on first element with testId "createGroupButton"
@@ -161,7 +161,7 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
 
     Scenario: ReflexionPhase shows correct solution view (cutting -> cutting solution)
         When I am logged in via browser as "test-student@sandstorm.de"
-        And I visit url "/exercise/show-overview/e1"
+        And I visit url "/exercise/e1/show"
         And I select the nth "3" element with testid "exercisePhaseSidebarItem"
         And I click on the selected element
         And I click on first element with testId "createGroupButton"

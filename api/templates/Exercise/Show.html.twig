@@ -1,160 +1,49 @@
 {% extends 'BaseWithSidebar.html.twig' %}
+{% trans_default_domain 'forms' %}
 
 {% block title %}{{ exercise.name }}{% endblock %}
 
 {% block sidebar %}
-    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: phases, currentItemId: exercisePhase.id, showSolution: false}) }}
+    {{ include('Exercise/PhasesSidebar.html.twig', {sidebarItems: phases, currentItemId: false, showSolution: false, testMode: testMode}) }}
 {% endblock %}
 
 {% block layoutCssClass %}main--with-footer{% endblock %}
 
 {% block body %}
-    {% if userIsCreator %}
+    {% if testMode %}
         <div class="striped-banner">
             <span class="striped-banner__text">Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.</span>
         </div>
     {% endif %}
-    <h2 class="text-center">Phase {{ currentPhaseIndex + 1 }}: {{ exercisePhase.name }}</h2>
-    <p class="text-center"><strong>{% if exercisePhase.isGroupPhase %}In Gruppen{% else %}Alleine{% endif %}</strong></p>
-    {% if exercisePhase.dependsOnExercisePhase and exercisePhase.type.value != 'reflexion' %}
-        <p class="text-center">
-            <strong>ACHTUNG:</strong> Diese Phase baut auf der vorherigen auf. Es muss ein Ergebnis aus der vorherigen Phase vorliegen.
-        </p>
-    {% endif %}
+    <h5 class="text-center">Aufgabe:</h5>
+    <h2 class="text-center">{{ exercise.name }}</h2>
+    <hr />
+
+    <h5>Aufgabenstellung:</h5>
     <p class="text-center text-small">
-        {{ exercisePhase.task | raw }}
+        {{ exercise.description | raw }}
     </p>
 
-    {% if exercisePhase.isGroupPhase %}
-        <hr/>
-        <h4>Bestehende Gruppen</h4>
-        <p>Tritt einer Gruppe bei um die Aufgabe zu bearbeiten oder erstelle eine neue Gruppe.</p>
-
-        <div class="row">
-            <div class="col-3">
-                {% if is_granted('createTeam', exercisePhase) %}
-                    <a class="tile" href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}" data-test-id="createGroupButton">
-                        <div class="tile__content">
-                            <i class="tile__icon fas fa-plus-circle"></i>
-                            <span>Neue Gruppe anlegen</span>
-                        </div>
-                    </a>
-                {% else %}
-                    <div class="tile tile--disabled">
-                        <div class="tile__content">
-                            <i class="tile__icon fas fa-plus-circle"></i>
-                            <span>Neue Gruppe anlegen</span>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            <div class="col-9">
-                <div class="tiles">
-                    {% for team in teams %}
-                        <div tabindex="0" class="tile tile--with-extension tile--active">
-                            <div class="tile__content">
-                                <i class="tile__icon fas fa-users"></i>
-                                <span>Gruppe von {{ team.creator.username }}</span>
-                            </div>
-                            <div class="tile__extension">
-                                <div class="tile__extension-content">
-                                    <strong>Mitglieder:</strong> <br/>
-                                    {% for member in team.members %}
-                                        {{ member.username }} <br/>
-                                    {% endfor %}
-                                </div>
-                                <div class="tile__extension-actions">
-                                    {% if is_granted('join', team) %}
-                                        <a class="button button--type-primary button--size-small"
-                                           href="{{ path('exercise-overview__exercise-phase-team--join', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
-                                            beitreten</a>
-                                    {% endif %}
-                                    {% if is_granted('leave', team) %}
-                                        <a class="button button--type-outline-primary button--size-small"
-                                           href="{{ path('exercise-overview__exercise-phase-team--leave', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
-                                            verlassen</a>
-                                    {% endif %}
-                                    {% if is_granted('delete', team) %}
-                                        <a class="button button--type-danger button--size-small"
-                                           href="{{ path('exercise-overview__exercise-phase-team--delete', { 'id':exercisePhase.id, 'team_id': team.id }) }}">Gruppe
-                                            löschen</a>
-                                    {% endif %}
-                                    {% if is_granted('show', team) %}
-                                        <a
-                                           class="button button--type-primary button--size-small"
-                                           href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id }) }}"
-                                           data-test-id="startPhaseButtonGroup"
-                                       ><i class="fas fa-play"></i> Phase starten
-                                       </a>
-                                    {% else %}
-                                        {% if is_granted('viewOtherSolutions', exercisePhase) %}
-                                            <a class="button button--type-outline-primary button--size-small"
-                                               href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}">Ergebnis
-                                                ansehen</a>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% else %}
-        <div class="text-center">
-            {% if teamOfCurrentUser %}
-                <a class="button button--size-large button--type-primary"
-                   href="{{ path('exercise-overview__exercise-phase--show', { 'id':exercisePhase.id, 'team_id': teamOfCurrentUser.id }) }}">
-                    <i class="fas fa-play"></i>
-                    Mein Ergebnis
-                </a>
-            {% else %}
-                {% if is_granted('createTeam', exercisePhase) %}
-                    <a
-                       class="button button--size-large button--type-primary"
-                       href="{{ path('exercise-overview__exercise-phase-team--new', {id: exercisePhase.id}) }}"
-                       data-test-id="startPhaseButtonSingle"
-                   >
-                        <i class="fas fa-play"></i>
-                        Phase starten
-                    </a>
-                {% endif %}
-            {% endif %}
-        </div>
-
-        <hr/>
-
-        <h5>Bisherigen Ergebnisse deiner Seminargruppe: </h5>
-        {% if otherTeams %}
-            <table class="table table-sm">
-                <thead class="thead-light">
-                <tr>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for team in otherTeams %}
-                    <tr>
-                        <td>{{ team.creator.username }}</td>
-                        <td>
-                            {% if is_granted('viewOtherSolutions', exercisePhase) %}
-                                <a
-                                        href="{{ path('exercise-overview__exercise-phase--show-other-solution', { 'id':exercisePhase.id, 'team_id': team.id }) }}">
-                                    Ergebnis anzeigen
-                                </a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            Keine vorhanden
-        {% endif %}
-    {% endif %}
+    <hr />
+    <h5>Übersicht der Phasen:</h5>
+    <ul class="list">
+        {% for phase in exercise.phases %}
+            <li>
+                {{ loop.index }}: {{ phase.name }}
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
 
 {% block footer %}
-    {{ include('Exercise/Footer.html.twig', {exercise: exercise, exercisePhase: exercisePhase, amountOfPhases: amountOfPhases, previousExercisePhase: previousExercisePhase, nextExercisePhase: nextExercisePhase}) }}
+    {{ include('Exercise/Footer.html.twig', {
+        exercise: exercise,
+        exercisePhase: exercisePhase,
+        showPhasesProgression: false,
+        currentPhaseIndex: -1,
+        amountOfPhases: amountOfPhases,
+        previousExercisePhase: previousExercisePhase,
+        nextExercisePhase: nextExercisePhase,
+        testMode: testMode
+    }) }}
 {% endblock %}

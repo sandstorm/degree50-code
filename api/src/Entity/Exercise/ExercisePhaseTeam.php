@@ -67,6 +67,13 @@ class ExercisePhaseTeam
      */
     private ?DateTimeImmutable $phaseLastOpenedAt = null;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private bool $isTest = false;
+
     public function __construct(?string $id = null)
     {
         $this->members = new ArrayCollection();
@@ -210,5 +217,15 @@ class ExercisePhaseTeam
     public function setPhaseLastOpenedAt($phaseLastOpenedAt)
     {
         $this->phaseLastOpenedAt = $phaseLastOpenedAt;
+    }
+
+    public function isTest(): bool
+    {
+        return $this->isTest;
+    }
+
+    public function setIsTest(bool $isTest): void
+    {
+        $this->isTest = $isTest;
     }
 }

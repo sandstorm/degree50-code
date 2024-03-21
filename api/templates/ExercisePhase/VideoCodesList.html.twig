@@ -16,7 +16,7 @@
                 <span class="video-code__name">
                     {{ videoCode.name }}
                 </span>
-                <a data-controller="deleteEntity" href="{{ path('exercise-overview__video-codes--delete', {id: videoCode.id}) }}" class="button button--type-danger button--size-small">
+                <a data-controller="deleteEntity" href="{{ path('video-code__delete', {id: videoCode.id}) }}" class="button button--type-danger button--size-small">
                     <i class="fas fa-trash-alt"></i> Video-Code löschen
                 </a>
             </div>

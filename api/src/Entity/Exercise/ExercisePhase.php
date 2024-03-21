@@ -302,18 +302,18 @@ abstract class ExercisePhase
         return $this;
     }
 
+    /*
+     * Returns boolean if the phase has a solution.
+     * Excludes the test solution.
+     *
+     * @return bool
+     */
     public function getHasSolutions(): bool
     {
-        $parentExercise = $this->getBelongsToExercise();
-        $creator = $parentExercise->getCreator();
         $teams = $this->getTeams()->toArray();
 
-        // A creator can test created phases and create solutions only the creator can see this way.
-        // Therefore we need to check if solutions exist, where the creator isn't also the creator of the phase.
-        $solutionsWithoutTestSolution = array_filter($teams, fn (ExercisePhaseTeam $team) => $team->getCreator() !== $creator);
-        $hasSolutionsWithoutTestSolution = !empty($solutionsWithoutTestSolution);
-
-        return $hasSolutionsWithoutTestSolution;
+        $solutionsWithoutTestSolution = array_filter($teams, fn (ExercisePhaseTeam $team) => !$team->isTest());
+        return count($solutionsWithoutTestSolution) > 0;
     }
 
     /**

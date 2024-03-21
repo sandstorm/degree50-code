@@ -52,6 +52,26 @@ body {
     @supports (height: 100dvh) {
         height: 100dvh;
     }
+
+    &--test-mode .exercise-phase {
+        padding: 5px;
+
+        background-image: linear-gradient(
+                125deg,
+                $theme__color__primary 25%,
+                $theme__color__white 25%,
+                $theme__color__white 50%,
+                $theme__color__primary 50%,
+                $theme__color__primary 75%,
+                $theme__color__white 75%,
+                $theme__color__white 100%
+        );
+        background-size: 24.42px 34.87px;
+
+        .loading-screen {
+            background-color: $theme__color__white;
+        }
+    }
 }
 
 .main-inner {

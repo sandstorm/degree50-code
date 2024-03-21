@@ -21,7 +21,7 @@
     display: inline-block;
     padding: 2px 10px;
 
-    background-color: transparentize($theme__color__white, 0.1);
+    background-color: $theme__color__white;
 
     text-transform: uppercase;
     font-size: $base__fontSize--smaller;

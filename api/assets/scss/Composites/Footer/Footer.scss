@@ -39,16 +39,9 @@
 
 .footer__center {
     grid-area: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.solution-fullscreen .footer__center {
-    display: inline-block;
-    overflow: hidden;
 
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
 }

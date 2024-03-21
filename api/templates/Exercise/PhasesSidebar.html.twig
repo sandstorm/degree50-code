@@ -2,7 +2,11 @@
 
 <div class="sidebar__group">
     {{ _self.sidebarLink(exercise.course.name, false, '', path('exercise-overview', {id: exercise.course.id})) }}
-    {{ _self.sidebarLink(exercise.name, false, '', path('exercise-overview__exercise--show-overview', {id: exercise.id})) }}
+    {% if testMode %}
+        {{ _self.sidebarLink(exercise.name, false, '', path('exercise__test', {id: exercise.id})) }}
+    {% else %}
+        {{ _self.sidebarLink(exercise.name, false, '', path('exercise__show', {id: exercise.id})) }}
+    {% endif %}
     <header id="heading-phases">
         <h5>Phasen:</h5>
     </header>
@@ -10,7 +14,10 @@
         <div class="sidebar__group-body">
             <ul class="list">
                 {% for item in sidebarItems %}
-                    <li class="sidebar-item {{ (item.phase.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ is_granted('viewExercisePhase', item.phase) ? "" : "sidebar-item--disabled" }}" data-test-id="exercisePhaseSidebarItem">
+                    <li
+                        class="sidebar-item {{ (item.phase.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ testMode == true or is_granted('viewExercisePhase', item.phase) ? "" : "sidebar-item--disabled" }}"
+                        data-test-id="exercisePhaseSidebarItem"
+                    >
                         {% if showSolution %}
                             {{
                                 _self.sidebarLink(
@@ -18,8 +25,25 @@
                                     item.phase.dependsOnExercisePhase,
                                     item.phase.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
-                                        'exercise-overview__exercise-phase--show-solutions',
-                                        {id: exercise.id, phase_id: item.phase.id}
+                                        'exercise__show-solutions',
+                                        {id: exercise.id, phaseId: item.phase.id}
+                                    ),
+                                    true,
+                                    item.metadata.isDone,
+                                    item.metadata.needsReview,
+                                    item.metadata.iconClass,
+                                    item.metadata.phaseTitle,
+                                )
+                            }}
+                        {% elseif testMode %}
+                            {{
+                                _self.sidebarLink(
+                                    item.phase.name,
+                                    item.phase.dependsOnExercisePhase,
+                                    item.phase.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
+                                    path(
+                                        'exercise__show-test-phase',
+                                        {id: exercise.id, phaseId: item.phase.id}
                                     ),
                                     true,
                                     item.metadata.isDone,
@@ -35,7 +59,7 @@
                                     item.phase.dependsOnExercisePhase,
                                     item.phase.isGroupPhase ? 'fas fa-users' : 'fas fa-user',
                                     path(
-                                        'exercise-overview__exercise--show-phase-overview',
+                                        'exercise__show-phase',
                                         {id: exercise.id, phaseId: item.phase.id}
                                     ),
                                     is_granted('viewExercisePhase', item.phase),
