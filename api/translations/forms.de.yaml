@@ -3,6 +3,14 @@ form:
         delete: 'Löschen'
         download: 'Datei herunterladen'
 
+login:
+    login-sso: 'Login mit Uni-Account (SSO)'
+    login-directly: 'Direkter Login'
+    register: 'Registrieren'
+    label:
+        email: 'E-Mail'
+        password: 'Passwort'
+
 exercise:
     labels:
         name: 'Titel der Aufgabe'

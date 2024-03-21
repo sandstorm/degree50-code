@@ -27,6 +27,7 @@ services:
       - app-var:/app/var
 
   redis:
+    # TODO: check for update
     image: redis:6.2-alpine3.15
     ports:
       - 16379:6379
@@ -40,6 +41,7 @@ services:
       - 8002:8900
 
   db:
+    # TODO: check for update
     image: mariadb:10.7
     ports:
       - 13306:3306
@@ -53,6 +55,15 @@ services:
       - ./deployment/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     # use Unicode encoding as default!
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+  
+  #####
+  # Mailpit (local smtp)
+  mailpit:
+    # TODO: pin version
+    image: axllent/mailpit:latest
+    hostname: mailpit
+    ports:
+      - '8025:8025'
 
 volumes:
   app-var: {}

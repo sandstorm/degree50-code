@@ -31,8 +31,13 @@ class SamlUserFactory implements SamlUserFactoryInterface
         $user->setIsStudent(true);
         $user->setPassword('notused');
         $user->setEmail($userIdentifier);
+        // SAML users are verified by default
+        $user->setIsVerified(true);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->eventStore->addEvent('UserRegistered', [
+            'userId' => $user->getId(),
+            'method' => 'SAML',
+        ]);
 
         return $user;
     }

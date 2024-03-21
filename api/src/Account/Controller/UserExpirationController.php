@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Account\Controller;
+
+use App\Admin\Service\UserExpirationService;
+use App\Admin\Service\UserService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+class UserExpirationController extends AbstractController
+{
+    public function __construct(
+        private readonly UserService $userService,
+        private readonly UserExpirationService $userExpirationService,
+        private readonly TranslatorInterface $translator,
+    )
+    {
+    }
+
+    /**
+     * Display & process form to request a password reset.
+     *
+     * @isGranted("ROLE_USER")
+     */
+    #[Route('/account-expiration', name: 'app_increase_user_expiration_date')]
+    public function increaseUserExpirationDatePage(): Response
+    {
+        $user = $this->userService->getLoggendInUser();
+
+        if ($user === null) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('flash-message.error.not-authenticated', [], 'user-expiration')
+            );
+            return $this->redirectToRoute('app');
+        }
+
+        if ($this->userExpirationService->userCanUpdateExpirationDate($user)) {
+            return $this->render('UserExpiration/IncreaseExpirationDate.html.twig', [
+                'routeName' => 'app_increase_user_expiration_date_process',
+                'deletionDate' => $user->getExpirationDate()->format('j. F Y'),
+            ]);
+        } else {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('flash-message.error.not-now', [], 'user-expiration')
+            );
+            return $this->redirectToRoute('app');
+        }
+    }
+
+    /**
+     * @isGranted("ROLE_USER")
+     */
+    #[Route('/account-expiration-increase', name: 'app_increase_user_expiration_date_process')]
+    public function increaseUserExpirationDateAction(): RedirectResponse
+    {
+        $user = $this->userService->getLoggendInUser();
+
+        if ($user === null) {
+            $this->addFlash(
+                'error',
+                $this->translator->trans('flash-message.error.not-authenticated', [], 'user-expiration')
+            );
+            return $this->redirectToRoute('app');
+        }
+
+        $this->userExpirationService->increaseExpirationDateByOneYearForUser($user);
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans('flash-message.success', [], 'user-expiration')
+        );
+        return $this->redirectToRoute('app');
+    }
+}

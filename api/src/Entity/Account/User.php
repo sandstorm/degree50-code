@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Account\UserRepository")
- * TODO: possible leak of used email?
+ * TODO: possible leak of used email!
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -33,6 +33,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     const EXPIRATION_DURATION_STRING = '5 years';
     const DB_DATE_FORMAT = 'Y-m-d H:i:s';
     const EXPIRATION_NOTICE_DURATION_STRING = '6 months';
+    // TODO: What value should this have?
+    const VERIFICATION_TIMEOUT_DURATION_STRING = '5 days';
+
+    // TODO: What value should this have?
+    const MIN_PASSWORD_LENGTH = 8;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -124,6 +129,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private \DateTimeImmutable $expirationDate;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $isVerified = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $expirationNoticeSent = false;
+
     public function __construct(?string $id = null)
     {
         $this->courseRoles = new ArrayCollection();
@@ -132,7 +147,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->favoriteVideos = new ArrayCollection();
         $this->generateOrSetId($id);
         $this->createdAt = new \DateTimeImmutable();
-        $this->expirationDate = $this->createdAt->add(\DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING));
+        $this->expirationDate = $this->createdAt->add(
+            \DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING)
+        );
     }
 
     public function getUserIdentifier(): string
@@ -174,7 +191,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // WHY the array_values:
         // The way doctrine saves these roles inside the database sometimes differs (no idea why.).
         // Sometimes doctrine will save them as array list and sometimes it saves them as associative array.
-        // However we expect the structure to always be a list, which is why we make sure here, that we actually get one ;)
+        // However we expect the structure to always be a list, which is why we make sure here,
+        // that we actually get one ;)
         return array_values(array_unique($roles));
     }
 
@@ -342,7 +360,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->termsOfUseVersion;
     }
 
-    public function setTermsOfUseVersion(int $termsOfUseVersion)
+    public function setTermsOfUseVersion(int $termsOfUseVersion): void
     {
         $this->termsOfUseVersion = $termsOfUseVersion;
     }
@@ -375,5 +393,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setExpirationDate(\DateTimeImmutable $expirationDate): void
     {
         $this->expirationDate = $expirationDate;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function isExpirationNoticeSent(): bool
+    {
+        return $this->expirationNoticeSent;
+    }
+
+    public function setExpirationNoticeSent(bool $expirationNoticeSent): void
+    {
+        $this->expirationNoticeSent = $expirationNoticeSent;
     }
 }

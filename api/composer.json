@@ -39,6 +39,7 @@
     "symfony/expression-language": "5.4.*",
     "symfony/flex": "^1.1",
     "symfony/framework-bundle": "5.4.*",
+    "symfony/mailer": "5.4.*",
     "symfony/mercure-bundle": "^0.2",
     "symfony/messenger": "5.4.*",
     "symfony/monolog-bundle": "^3.5",
@@ -53,6 +54,8 @@
     "symfony/validator": "5.4.*",
     "symfony/webpack-encore-bundle": "^1.7",
     "symfony/yaml": "5.4.*",
+    "symfonycasts/reset-password-bundle": "^1.21",
+    "symfonycasts/verify-email-bundle": "^1.17",
     "vich/uploader-bundle": "^1.13",
     "webonyx/graphql-php": "^0.13.8"
   },
@@ -95,7 +98,7 @@
   },
   "config": {
     "platform": {
-      "php": "8.1"
+      "php": "8.1.27"
     },
     "preferred-install": {
       "*": "dist"

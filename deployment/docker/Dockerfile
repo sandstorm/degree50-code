@@ -1,5 +1,6 @@
 # NOTE: this file is executed from the ROOT DIRECTORY of the project, i.e. "../"
-FROM php:8.1-fpm-bullseye
+# TODO: update php
+FROM php:8.1.27-fpm-bullseye
 
 # Install intl, bcmath, pdo, pdo_mysql, mysqli, libvips, zip
 RUN apt-get update -y && \
@@ -14,6 +15,7 @@ RUN apt-get update -y && \
     pecl install apcu && docker-php-ext-enable apcu
 
 # install composer
+# TODO: update composer version
 COPY --from=composer:2.3.8 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 # install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
@@ -22,6 +24,7 @@ RUN set -eux; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
+# TODO: Update mercure
 COPY --from=dunglas/mercure:v0.10.2 /mercure /usr/bin/mercure
 
 # application entrypoint

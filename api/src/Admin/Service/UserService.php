@@ -69,22 +69,13 @@ class UserService
         return $this->security->getUser();
     }
 
-    /**
-     * @return string[] emails of deleted users
-     */
-    public function removeAllExpiredUsers(): array
+    public function deleteStudent(User $user): void
     {
-        // get expired users
-        $expiredUsers = $this->userRepository->findAllExpiredUsers();
-        $expiredStudents = array_filter($expiredUsers, fn(User $user) => !$user->isAdmin() && !$user->isDozent());
-        $expiredStudentEmails = array_map(fn(User $user) => $user->getEmail(), $expiredStudents);
-
-        foreach ($expiredStudents as $user) {
-            $this->deleteStudentOrAdmin($user);
-            // TODO: Logging
+        if ($user->isAdmin() || $user->isDozent()) {
+            throw new \InvalidArgumentException('User is not a Student');
         }
 
-        return $expiredStudentEmails;
+        $this->deleteStudentOrAdmin($user);
     }
 
     public function removeUser(User $user): void
@@ -107,23 +98,6 @@ class UserService
         } else {
             $this->deleteStudentOrAdmin($user);
         }
-    }
-
-    public function increaseUserExpirationDateByOneYear(User $user): void
-    {
-        $oldExpirationDate = $user->getExpirationDate();
-        $newExpirationDate = $oldExpirationDate->add(\DateInterval::createFromDateString('1 year'));
-
-        $user->setExpirationDate($newExpirationDate);
-
-        $this->eventStore->addEvent('UserExpirationDateIncreased', [
-            'user' => $user->getEmail(),
-            'oldDate' => $oldExpirationDate->format(User::DB_DATE_FORMAT),
-            'newDate' => $newExpirationDate->format(User::DB_DATE_FORMAT),
-        ]);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
     }
 
     /**

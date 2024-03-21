@@ -25,6 +25,7 @@ trait UserContextTrait
         string $password = null,
         bool $acceptPrivacyAndTerms = false,
         bool $isStudent = false,
+        bool $isVerified = true
     ): User {
         $user = new User($username);
         $user->setEmail($username);
@@ -35,6 +36,8 @@ trait UserContextTrait
         } else {
             $user->setIsDozent(true);
         }
+
+        $user->setIsVerified($isVerified);
 
         // TODO: Put in separate step
         if ($acceptPrivacyAndTerms) {
