@@ -63,6 +63,7 @@ class ResetPasswordController extends AbstractController
         MailerInterface $mailer,
     ): RedirectResponse
     {
+        /* @var $user User|null */
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
         ]);
@@ -70,6 +71,11 @@ class ResetPasswordController extends AbstractController
         // Do not reveal whether a user account was found or not.
         if (!$user) {
             return $this->redirectToRoute('app_check_email');
+        }
+
+        if (!$user->isSSOUser()) {
+            $this->addFlash('error', $this->translator->trans('process.error.sso-user', [], 'user-password-reset'));
+            return $this->redirectToRoute('app');
         }
 
         $this->eventStore->addEvent('UserPasswordChangRequested', [
@@ -82,7 +88,7 @@ class ResetPasswordController extends AbstractController
         try {
             $resetToken = $this->resetPasswordHelper->generateResetToken($user);
         } catch (ResetPasswordExceptionInterface $e) {
-            $this->addFlash('error', $this->translator->trans('process.error', [], 'user-password-reset'));
+            $this->addFlash('error', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
             return $this->redirectToRoute('app');
         }
 
@@ -102,7 +108,7 @@ class ResetPasswordController extends AbstractController
         try {
             $mailer->send($email);
         } catch (TransportExceptionInterface $e) {
-            $this->addFlash('error', $this->translator->trans('process.error', [], 'user-password-reset'));
+            $this->addFlash('error', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
             return $this->redirectToRoute('app');
         }
 

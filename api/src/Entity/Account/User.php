@@ -317,6 +317,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return in_array(self::ROLE_DOZENT, $this->roles);
     }
 
+    public function isSSOUser(): bool
+    {
+        return in_array(self::ROLE_SSO_USER, $this->roles);
+    }
+
     public function getDataPrivacyAccepted(): ?bool
     {
         return $this->dataPrivacyAccepted;
