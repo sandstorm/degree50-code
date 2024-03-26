@@ -25,24 +25,29 @@
         </label>
         <div class="tile__actions">
             {% if is_granted('showSolution', exercise.exercise) %}
-                <a href="{{ path('exercise-overview__exercise-phase--show-solutions', {id: exercise.exercise.id}) }}">
+                <a href="{{ path('exercise__show-solutions', {id: exercise.exercise.id}) }}">
                     <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
                 </a>
             {% endif %}
+            {% if is_granted('test', exercise.exercise) %}
+                <a href="{{ path('exercise__test', {id: exercise.exercise.id}) }}">
+                    <i class="fas fa-vial"></i> {% trans %}exercise.test.title{% endtrans %}
+                </a>
+            {% endif %}
             {% if is_granted('view', exercise.exercise) %}
-                <a href="{{ path('exercise-overview__exercise--show-overview', {id: exercise.exercise.id}) }}">
-                    <i class="fas fa-eye"></i> {% trans %}exercise.test.title{% endtrans %}
+                <a href="{{ path('exercise__show', {id: exercise.exercise.id}) }}">
+                    <i class="fas fa-play"></i> Aufgabe starten
                 </a>
             {% endif %}
             {% if is_granted('edit', exercise.exercise) %}
-                <a href="{{ path('exercise-overview__exercise--edit', {id: exercise.exercise.id}) }}">
+                <a href="{{ path('exercise__edit', {id: exercise.exercise.id}) }}">
                     <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
                 </a>
-                <a href="{{ path('exercise-overview__exercise--copy', {id: exercise.exercise.id}) }}">
+                <a href="{{ path('exercise__copy', {id: exercise.exercise.id}) }}">
                     <i class="fas fa-clone"></i> {% trans %}exercise.copy.title{% endtrans %}
                 </a>
                 <a
-                    href="{{ path('exercise-overview__exercise--delete', {id: exercise.exercise.id}) }}"
+                    href="{{ path('exercise__delete', {id: exercise.exercise.id}) }}"
                     class="color-alert"
                     onclick="return confirm('{% trans %}exercise.delete.confirm{% endtrans %}');"
                 >
@@ -64,7 +69,7 @@
 {% endif %}
 
 {% macro tile(exercise, additionalClass, iconClass) %}
-    <a href="{{ path('exercise-overview__exercise--show-overview', {id: exercise.id}) }}" class="tile {{ additionalClass }}" title="{{ exercise.description }}">
+    <a href="{{ path('exercise__show', {id: exercise.id}) }}" class="tile {{ additionalClass }}" title="{{ exercise.description }}">
         <div class="ribbon"><span>Is New</span></div>
         <div class="tile__content">
             <i class="tile__icon {{ iconClass }}"></i>

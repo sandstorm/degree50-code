@@ -24,15 +24,15 @@ Feature: Redirections to the login if unauthenticated
             | mediathek__video--upload                         |                                   |
             | mediathek__video--edit                           | {"id": "foo"}                     |
             | mediathek__video--delete                         | {"id": "foo"}                     |
-            | exercise-overview__exercise--show-phase-overview | {"id": "ex"}                      |
-            | exercise-overview__exercise--show-overview       | {"id": "ex"}                      |
-            | exercise-overview__exercise--new                 | {"id": "c"}                       |
-            | exercise-overview__exercise--edit                | {"id": "ex"}                      |
+            | exercise__show-phase | {"id": "ex"}                      |
+            | exercise__show       | {"id": "ex"}                      |
+            | exercise__new                 | {"id": "c"}                       |
+            | exercise__edit                | {"id": "ex"}                      |
             | exercise-overview                                | {"id": "c"}                       |
-            | exercise-overview__exercise-phase--new           | {"id": "ex"}                      |
-            | exercise-overview__exercise-phase--set-type      | {"id": "ex"}                      |
-            | exercise-overview__exercise-phase--edit          | {"id": "ex", "phase_id": "ex-p1"} |
-            | exercise-overview__exercise-phase--delete        | {"id": "ex", "phase_id": "ex-p1"} |
+            | exercise-phase__new           | {"id": "ex"}                      |
+            | exercise-phase__set-type      | {"id": "ex"}                      |
+            | exercise-phase__edit          | {"id": "ex", "phase_id": "ex-p1"} |
+            | exercise-phase__delete        | {"id": "ex", "phase_id": "ex-p1"} |
             | exercise-overview__attachment--download            | {"id": "m"}                       |
 
       # TODO add missing routes!

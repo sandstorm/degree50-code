@@ -71,7 +71,7 @@ class AttachmentController extends AbstractController
             $this->translator->trans('attachment.delete.messages.success', [], 'forms')
         );
 
-        return $this->redirectToRoute('exercise-overview__exercise-phase--edit', ['id' => $attachment->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $attachment->getExercisePhase()->getId()]);
+        return $this->redirectToRoute('exercise-phase__edit', ['id' => $attachment->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $attachment->getExercisePhase()->getId()]);
     }
 
     /**
@@ -86,12 +86,12 @@ class AttachmentController extends AbstractController
         $user = $this->getUser();
 
         if ($attachment->getCreator() !== $user) {
-            return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
+            return new Response('NOT CREATOR', Response::HTTP_FORBIDDEN);
         }
 
         $this->removeAttachment($appRuntime, $attachment);
 
-        return Response::create('OK');
+        return new Response('OK');
     }
 
     private function removeAttachment(AppRuntime $appRuntime, Attachment $attachment): void

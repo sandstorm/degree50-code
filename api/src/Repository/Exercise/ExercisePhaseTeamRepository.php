@@ -25,24 +25,44 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
     /**
      * @return ExercisePhaseTeam[]
      */
-    public function findByExercisePhase(ExercisePhase $exercisePhase): iterable
+    public function findAllByPhaseExcludingTests(ExercisePhase $exercisePhase): iterable
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exercisePhase = :exercisePhase')
+        return $this->createQueryBuilder('team')
+            ->andWhere('team.exercisePhase = :exercisePhase')
+            ->andWhere('team.isTest = false')
             ->setParameter('exercisePhase', $exercisePhase)
-            ->orderBy('e.id', 'ASC')
+            ->orderBy('team.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param ExercisePhase $exercisePhase
+     * @param ExercisePhaseTeam $currentTeam
+     *
+     * @return ExercisePhaseTeam[]
+     */
+    public function findOtherTeamsByPhaseExcludingTests(ExercisePhase $exercisePhase, ExercisePhaseTeam $currentTeam): iterable
+    {
+        return $this->createQueryBuilder('team')
+            ->andWhere('team.exercisePhase = :exercisePhase')
+            ->andWhere('team.isTest = false')
+            ->andWhere('team != :currentTeam')
+            ->setParameter('exercisePhase', $exercisePhase)
+            ->setParameter('currentTeam', $currentTeam)
+            ->orderBy('team.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
 
     public function findByMemberAndExercisePhase(User $member, ExercisePhase $exercisePhase): ?ExercisePhaseTeam
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere(':member MEMBER OF e.members')
-            ->andWhere('e.exercisePhase = :exercisePhase')
+        return $this->createQueryBuilder('team')
+            ->andWhere(':member MEMBER OF team.members')
+            ->andWhere('team.exercisePhase = :exercisePhase')
             ->setParameter('member', $member)
             ->setParameter('exercisePhase', $exercisePhase)
-            ->orderBy('e.id', 'ASC')
+            ->orderBy('team.id', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -50,42 +70,13 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
 
     public function findBySolution(Solution $solution): ?ExercisePhaseTeam
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.solution = :solution')
+        return $this->createQueryBuilder('team')
+            ->andWhere('team.solution = :solution')
             ->setParameter('solution', $solution)
-            ->orderBy('e.id', 'ASC')
+            ->orderBy('team.id', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-    public function findByCreator(User $creator, ExercisePhase $exercisePhase): ?ExercisePhaseTeam
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.creator = :creator')
-            ->andWhere('e.exercisePhase = :exercisePhase')
-            ->setParameter('creator', $creator)
-            ->setParameter('exercisePhase', $exercisePhase)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    /**
-     * @return ExercisePhaseTeam[]
-     */
-    public function findAllCreatedByOtherUsers(User $user, User $exerciseCreator, ExercisePhase $exercisePhase): iterable
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.creator != :user')
-            ->andWhere('e.creator != :exerciseCreator')
-            ->andWhere('e.exercisePhase = :exercisePhase')
-            ->setParameter('user', $user)
-            ->setParameter('exerciseCreator', $exerciseCreator)
-            ->setParameter('exercisePhase', $exercisePhase)
-            ->orderBy('e.id', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
 }

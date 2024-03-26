@@ -4,8 +4,8 @@ namespace App\Security\Voter;
 
 
 use App\Entity\Account\Course;
-use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
+use App\Exercise\Controller\ExerciseService;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -61,10 +61,7 @@ class CourseVoter extends Voter
             return true;
         }
 
-        return $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course
-            && $courseRole->getUser() === $user
-            && $courseRole->isCourseDozent()
-        );
+        return ExerciseService::userIsCourseDozent($user, $course);
     }
 
     private function canEdit(User $user, Course $course): bool
@@ -74,9 +71,6 @@ class CourseVoter extends Voter
         }
 
         // User which has ROLE_DOZENT and has the courseRole DOZENT
-        return $user->isDozent() && $user->getCourseRoles()->exists(fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course
-                && $courseRole->getUser() === $user
-                && $courseRole->isCourseDozent()
-            );
+        return $user->isDozent() && ExerciseService::userIsCourseDozent($user, $course);
     }
 }

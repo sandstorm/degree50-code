@@ -18,11 +18,10 @@ class ExercisePhaseTeamVoter extends Voter
     const LEAVE = 'leave';
     const DELETE = 'delete';
     const UPDATE_SOLUTION = 'updateSolution';
-    const VIEW = 'viewExercisePhaseTeam';
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::JOIN, self::SHOW, self::SHOW_SOLUTION, self::LEAVE, self::DELETE, self::UPDATE_SOLUTION, self::VIEW])) {
+        if (!in_array($attribute, [self::JOIN, self::SHOW, self::SHOW_SOLUTION, self::LEAVE, self::DELETE, self::UPDATE_SOLUTION])) {
             return false;
         }
 
@@ -60,8 +59,6 @@ class ExercisePhaseTeamVoter extends Voter
                 return $this->canDelete($exercisePhaseTeam, $user);
             case self::UPDATE_SOLUTION:
                 return $this->canUpdateSolution($exercisePhaseTeam, $user);
-            case self::VIEW:
-                return $this->canView($exercisePhaseTeam, $user);
         }
 
         throw new LogicException('This code should not be reached!');
@@ -117,16 +114,5 @@ class ExercisePhaseTeamVoter extends Voter
     private function canUpdateSolution(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
         return $exercisePhaseTeam->getMembers()->contains($user);
-    }
-
-    private function canView(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
-    {
-        // admins and Dozenten can view all
-        if ($user->isAdmin() || $user->isDozent()) {
-            return true;
-        }
-
-        // if team is from admin or dozent -> hide it from students
-        return !$exercisePhaseTeam->hasAdminOrDozentMember();
     }
 }

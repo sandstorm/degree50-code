@@ -1145,8 +1145,7 @@ final class DegreeContext implements Context
     public function theMaterialPhaseIs($phaseId)
     {
         $materialPhase = $this->exercisePhaseRepository->find($phaseId);
-
-        $phaseTeam = $this->exercisePhaseTeamRepository->findByExercisePhase($materialPhase)[0];
+        $phaseTeam = $this->exercisePhaseTeamRepository->findOneBy(["exercisePhase" => $materialPhase]);
 
         $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
         $this->entityManager->persist($phaseTeam);

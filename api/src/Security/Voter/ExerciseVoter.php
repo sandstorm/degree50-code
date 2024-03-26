@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security\Voter;
-
 
 use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
@@ -16,6 +14,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ExerciseVoter extends Voter
 {
     const VIEW = 'view';
+    const TEST = 'test';
     const SHOW_SOLUTION = 'showSolution';
     const EDIT = 'edit';
     const DELETE = 'delete';
@@ -31,7 +30,15 @@ class ExerciseVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::VIEW, self::SHOW_SOLUTION, self::EDIT, self::DELETE, self::IS_OPENED, self::IS_FINISHED])) {
+        if (!in_array($attribute, [
+            self::VIEW,
+            self::TEST,
+            self::SHOW_SOLUTION,
+            self::EDIT,
+            self::DELETE,
+            self::IS_OPENED,
+            self::IS_FINISHED
+        ])) {
             return false;
         }
 
@@ -58,7 +65,6 @@ class ExerciseVoter extends Voter
         if ($subject instanceof Exercise) {
             $exercise = $subject;
 
-
             switch ($attribute) {
                 case self::IS_FINISHED:
                     return $this->exerciseHasBeenFinished($exercise, $user);
@@ -66,6 +72,8 @@ class ExerciseVoter extends Voter
                     return $this->exerciseHasBeenStarted($exercise, $user);
                 case self::VIEW:
                     return $this->canView($exercise, $user);
+                case self::TEST:
+                    return $this->canTest($exercise, $user);
                 case self::EDIT:
                 case self::DELETE:
                 case self::SHOW_SOLUTION:
@@ -88,13 +96,26 @@ class ExerciseVoter extends Voter
         return $this->exerciseService->getExerciseStatusForUser($exercise, $user) === ExerciseStatus::BEENDET;
     }
 
-    private function canView(Exercise $exercise, User $user): bool
+    public static function canTest(Exercise $exercise, User $user): bool
     {
-        // creator has access
+        // creator can test
         if ($exercise->getCreator() === $user) {
             return true;
         }
 
+        // student can only test his/her own exercises
+        if ($user->isStudent()) {
+            return false;
+        }
+
+        // if user has role "dozent" in course, he or she can test
+        $isCourseDozent = ExerciseService::userIsCourseDozent($user, $exercise->getCourse());
+
+        return $isCourseDozent && $user->isDozent();
+    }
+
+    private function canView(Exercise $exercise, User $user): bool
+    {
         $course = $exercise->getCourse();
         $hasAccessToCourse = $user->getCourseRoles()->exists(
             fn ($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
@@ -126,11 +147,7 @@ class ExerciseVoter extends Voter
             return true;
         }
 
-        $course = $exercise->getCourse();
-        $isCourseDozent = $user->getCourseRoles()->exists(
-            fn ($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
-                $courseRole->getUser() === $user && $courseRole->isCourseDozent()
-        );
+        $isCourseDozent = ExerciseService::userIsCourseDozent($user, $exercise->getCourse());
 
         // Dozent && KursDozent has access
         if ($isCourseDozent && $user->isDozent()) {

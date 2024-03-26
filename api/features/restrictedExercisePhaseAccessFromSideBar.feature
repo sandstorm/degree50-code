@@ -100,24 +100,24 @@ Feature: When a student solves an exercise they should only be able to access ph
 
     Scenario: The first phase "analysis1" should be accessible
         When I am logged in via browser as "test-student@sandstorm.de"
-        And I visit url "/exercise/show-overview/e1"
+        And I visit url "/exercise/e1/show"
         And I select the nth "0" element with testid "exercisePhaseSidebarItem"
         Then The selected element should not have the CSS-class "sidebar-item--disabled"
 
     Scenario: The second phase "reflexion1" should be accessible because "analysis1" has a solution
         When I am logged in via browser as "test-student@sandstorm.de"
-        And I visit url "/exercise/show-overview/e1"
+        And I visit url "/exercise/e1/show"
         And I select the nth "1" element with testid "exercisePhaseSidebarItem"
         Then The selected element should not have the CSS-class "sidebar-item--disabled"
 
     Scenario: The third phase "cutting" should be accessible because "analysis1" has a solution and "reflexion1" is a reflexionPhase
         When I am logged in via browser as "test-student@sandstorm.de"
-        And I visit url "/exercise/show-overview/e1"
+        And I visit url "/exercise/e1/show"
         And I select the nth "2" element with testid "exercisePhaseSidebarItem"
         Then The selected element should not have the CSS-class "sidebar-item--disabled"
 
     Scenario: The fourth phase "reflexion2" should not be accessible because "cutting1" does not have a solution and "reflexion2" depends on it
         When I am logged in via browser as "test-student@sandstorm.de"
-        And I visit url "/exercise/show-overview/e1"
+        And I visit url "/exercise/e1/show"
         And I select the nth "3" element with testid "exercisePhaseSidebarItem"
         Then The selected element should have the CSS-class "sidebar-item--disabled"

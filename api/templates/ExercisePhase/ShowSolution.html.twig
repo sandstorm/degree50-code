@@ -11,8 +11,8 @@
         </div>
     </div>
     <footer class="footer">
-        <a class="button button--type-outline-primary footer__left" href="{{ path('exercise-overview__exercise--show-phase-overview', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id, showSolution: true}) }}">Zurück</a>
+        <a class="button button--type-outline-primary footer__left" href="{{ path('exercise__show-phase', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id, showSolution: true}) }}">Zurück</a>
         <span class="footer__center">Phase {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}</span>
-        <a class="button button--type-primary disabled footer__right" href="#">Ergebnis teilen</a>
+        <button class="button button--type-primary disabled footer__right" type="button" disabled="disabled">Ergebnis teilen</button>
     </footer>
 {% endblock %}

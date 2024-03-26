@@ -210,12 +210,12 @@ class VideoUploadController extends AbstractController
         $user = $this->getUser();
 
         if ($video->getCreator() !== $user) {
-            return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
+            return new Response('NOT CREATOR', Response::HTTP_FORBIDDEN);
         }
 
         $this->videoService->removeOriginalVideoFile($video);
 
-        return Response::create('OK');
+        return new Response('OK');
     }
 
     /**
@@ -229,12 +229,12 @@ class VideoUploadController extends AbstractController
         $user = $this->getUser();
 
         if ($video->getCreator() !== $user) {
-            return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
+            return new Response('NOT CREATOR', Response::HTTP_FORBIDDEN);
         }
 
         $this->videoService->removeOriginalSubtitleFile($video);
 
-        return Response::create('OK');
+        return new Response('OK');
     }
 
     /**
@@ -248,11 +248,11 @@ class VideoUploadController extends AbstractController
         $user = $this->getUser();
 
         if ($video->getCreator() !== $user) {
-            return Response::create('NOT CREATOR', Response::HTTP_FORBIDDEN);
+            return new Response('NOT CREATOR', Response::HTTP_FORBIDDEN);
         }
 
         $this->videoService->removeOriginalAudioDescriptionFile($video);
 
-        return Response::create('OK');
+        return new Response('OK');
     }
 }

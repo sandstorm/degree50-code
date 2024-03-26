@@ -202,7 +202,7 @@ class SchreibtischService
                 'originalExercisePhaseTeamId' => $originalExercisePhaseTeam->getId(),
                 'originalExercisePhaseName' => $originalExercisePhase->getName(),
                 'originalExercisePhaseUrl' => $this->router->generate(
-                    "exercise-overview__exercise--show-phase-overview",
+                    "exercise__show-phase",
                     [
                         "id" => $originalExercise->getId(),
                         "phaseId" => $originalExercisePhase->getId()

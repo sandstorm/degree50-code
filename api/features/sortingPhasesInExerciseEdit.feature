@@ -25,24 +25,24 @@ Feature: Editing of phase order inside an Exercise
 
     Scenario: The first phase can't be moved 'up'
         When I am logged in via browser as "test-admin@sandstorm.de"
-        And I visit url "/exercise/edit/e1"
+        And I visit url "/exercise/e1/edit"
         And I select the nth "0" element with testId "movePhaseUp"
         Then the selected element should have its attribute "disabled" set to value "disabled"
 
     Scenario: The last phase can't be moved 'down'
         When I am logged in via browser as "test-admin@sandstorm.de"
-        And I visit url "/exercise/edit/e1"
+        And I visit url "/exercise/e1/edit"
         And I select the nth "5" element with testId "movePhaseDown"
         Then the selected element should have its attribute "disabled" set to value "disabled"
 
     Scenario: A phase depending on another can't be moved 'up' before the phase it depends on
         When I am logged in via browser as "test-admin@sandstorm.de"
-        And I visit url "/exercise/edit/e1"
+        And I visit url "/exercise/e1/edit"
         And I select the nth "2" element with testId "movePhaseUp"
         Then the selected element should have its attribute "disabled" set to value "disabled"
 
     Scenario: A phase which has a phase depending on it, can't be moved 'down' behind this phase
         When I am logged in via browser as "test-admin@sandstorm.de"
-        And I visit url "/exercise/edit/e1"
+        And I visit url "/exercise/e1/edit"
         And I select the nth "1" element with testId "movePhaseDown"
         Then the selected element should have its attribute "disabled" set to value "disabled"

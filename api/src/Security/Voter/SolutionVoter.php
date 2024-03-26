@@ -4,12 +4,9 @@
 namespace App\Security\Voter;
 
 
-use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
-use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Exercise\Solution;
+use App\Exercise\Controller\ExerciseService;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -80,8 +77,6 @@ class SolutionVoter extends Voter
             ->getCourse();
 
         // check if Dozent has access to course
-        return $user->getCourseRoles()->exists(function ($_, CourseRole $courseRole) use ($solution, $course) {
-            return $courseRole->isCourseDozent() && $courseRole->getCourse() === $course;
-        });
+        return ExerciseService::userIsCourseDozent($user, $course);
     }
 }
