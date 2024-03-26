@@ -86,7 +86,7 @@
 
         text-decoration: none !important;
         color: $theme__color__grey--dark;
-        font-family: $theme__bold__fontStack;
+        font-weight: $theme__bold__fontWeight;
 
         &:hover, &:focus, &:focus-within {
             background-color: $theme__color__primary;

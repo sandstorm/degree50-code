@@ -19,8 +19,7 @@
         background: linear-gradient($theme__color__primary 0%, $theme__color__primary--dark 100%);
         box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
 
-        font-family: $theme__bold__fontStack;
-        font-weight: bold;
+        font-weight: $theme__bold__fontWeight;
         font-size: $base__fontSize--tiny;
         color: $theme__color__white;
         text-transform: uppercase;

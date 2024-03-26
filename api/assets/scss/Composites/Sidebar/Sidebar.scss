@@ -128,7 +128,7 @@ $sidebar__width--without-padding: $sidebar__width - 20px;
             margin-bottom: 0;
 
             font-size: $base__fontSize !important;
-            font-weight: bold;
+            font-weight: $theme__bold__fontWeight;
         }
     }
 }

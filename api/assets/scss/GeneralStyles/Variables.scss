@@ -17,6 +17,29 @@ $theme__color__blue: #2196f3;
 $theme__color__blue--dark: #1f2133;
 */
 
+@font-face {
+    font-family: Akkurat;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(../../fonts/lineto-akkurat-pro-regular.eot);
+    src: url(../../fonts/lineto-akkurat-pro-regular.eot?#iefix) format('embedded-opentype'),
+    url(../../fonts/lineto-akkurat-pro-regular.woff2) format('woff2'),
+    url(../../fonts/lineto-akkurat-pro-regular.woff) format('woff');
+}
+
+@font-face {
+    font-family: Akkurat;
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(../../fonts/lineto-akkurat-pro-bold.eot);
+    src: url(../../fonts/lineto-akkurat-pro-bold.eot?#iefix) format('embedded-opentype'),
+    url(../../fonts/lineto-akkurat-pro-bold.woff2) format('woff2'),
+    url(../../fonts/lineto-akkurat-pro-bold.woff) format('woff');
+}
+
+
 $theme__color__red: #cc3f2d;
 $theme__color__red--dark: #9a2f21;
 $theme__color__gold: #ffd700;
@@ -66,12 +89,11 @@ $theme__z-index--media-lane-toolbar: 10;
 // fonts
 $theme__heading__fontWeight: 400;
 $theme__default__fontWeight: 400;
+$theme__bold__fontWeight: 700;
 
-$theme__font__akkurat: 'Akkurat-Regular', Helvetica, Arial, sans-serif;
-$theme__font__akkurat--bold: 'Akkurat-Bold', Helvetica, Arial, sans-serif;
+$theme__font__akkurat: 'Akkurat', Helvetica, Arial, sans-serif;
 
 $theme__default__fontStack: $theme__font__akkurat;
-$theme__bold__fontStack: $theme__font__akkurat--bold;
 
 $base__fontSize: 16px;
 $base__fontSize--larger: 18px;
@@ -100,19 +122,3 @@ $breakpoints: (
     large: '(max-width: 1400px)',
     xlarge: '(max-width: 1800px)',
 );
-
-@font-face {
-    font-family: Akkurat-Regular;
-    src: url(../../fonts/lineto-akkurat-pro-regular.eot);
-    src: url(../../fonts/lineto-akkurat-pro-regular.eot?#iefix) format('embedded-opentype'),
-        url(../../fonts/lineto-akkurat-pro-regular.woff2) format('woff2'),
-        url(../../fonts/lineto-akkurat-pro-regular.woff) format('woff');
-}
-
-@font-face {
-    font-family: Akkurat-Bold;
-    src: url(../../fonts/lineto-akkurat-pro-bold.eot);
-    src: url(../../fonts/lineto-akkurat-pro-bold.eot?#iefix) format('embedded-opentype'),
-        url(../../fonts/lineto-akkurat-pro-bold.woff2) format('woff2'),
-        url(../../fonts/lineto-akkurat-pro-bold.woff) format('woff');
-}
