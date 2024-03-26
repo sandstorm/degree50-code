@@ -14,7 +14,7 @@ $header__height: 40px;
 
     border-bottom: 1px solid $theme__color__primary;
 
-    font-weight: bold;
+    font-weight: $theme__bold__fontWeight;
 }
 
 .presence__team-members {
