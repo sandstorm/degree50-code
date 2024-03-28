@@ -39,8 +39,7 @@ trait ExerciseContextTrait
         $exerciseData = $tableNode->getHash()[0];
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $exerciseData['course']);
-        /** @var User $creator */
-        $creator = $this->entityManager->find(User::class, $exerciseData['creator']);
+        $creator = $this->getUserByEmail($exerciseData['creator']);
 
         $exercise = new Exercise($exerciseData['id']);
         $exercise->setName($exerciseData['name']);
@@ -64,8 +63,7 @@ trait ExerciseContextTrait
         $exerciseData = json_decode($exerciseDataJson->getRaw(), true);
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $exerciseData['course']);
-        /** @var User $creator */
-        $creator = $this->entityManager->find(User::class, $exerciseData['creator']);
+        $creator = $this->getUserByEmail($exerciseData['creator']);
 
         $exercise = new Exercise($exerciseData['id']);
         $exercise->setName($exerciseData['name']);

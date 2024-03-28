@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
+use App\Admin\Service\UserExpirationService;
 use App\Admin\Service\UserService;
 use App\DataExport\Controller\DegreeDataToCsvService;
 use App\DataExport\Controller\Dto\TextFileDto;
@@ -73,10 +74,10 @@ final class DegreeContext implements Context
 
     use DatabaseFixtureContextTrait;
     use PlaywrightTrait;
-
+    use EmailTrait;
 
     /*
-     * Subcontexts
+     * Sub-contexts
      */
     use AttachmentContextTrait;
     use CourseContextTrait;
@@ -86,29 +87,6 @@ final class DegreeContext implements Context
     use PlaywrightContextTrait;
     use UserContextTrait;
     use VideoContextTrait;
-
-    private Session $minkSession;
-    private RouterInterface $router;
-    protected EntityManagerInterface $entityManager;
-    protected KernelInterface $kernel;
-    private DoctrineIntegratedEventStore $eventStore;
-    private Security $security;
-    private SolutionService $solutionService;
-    private ExercisePhaseRepository $exercisePhaseRepository;
-    private ExerciseRepository $exerciseRepository;
-    private DegreeDataToCsvService $degreeDataToCSVService;
-    private UserService $userService;
-    private VideoService $videoService;
-    private ExerciseService $exerciseService;
-    private UserPasswordHasherInterface $userPasswordHasher;
-    private UserRepository $userRepository;
-    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
-    private ExercisePhaseService $exercisePhaseService;
-    private VideoFavouritesService $videoFavouritesService;
-    private UserMaterialService $materialService;
-    private MaterialRepository $materialRepository;
-    private VideoRepository $videoRepository;
-    private SolutionRepository $solutionRepository;
 
     private ?string $clientSideJSON;
 
@@ -136,52 +114,30 @@ final class DegreeContext implements Context
     const TEST_FACHBEREICH_1 = 'fachbereich1';
 
     public function __construct(
-        Session $minkSession,
-        RouterInterface $router,
-        EntityManagerInterface $entityManager,
-        DoctrineIntegratedEventStore $eventStore,
-        KernelInterface $kernel,
-        Security $security,
-        SolutionService $solutionService,
-        DegreeDataToCsvService $degreeDataToCsvService,
-        UserService $userService,
-        VideoService $videoService,
-        ExerciseService $exerciseService,
-        UserPasswordHasherInterface $userPasswordHasher,
-        ExercisePhaseRepository $exercisePhaseRepository,
-        UserRepository $userRepository,
-        ExerciseRepository $exerciseRepository,
-        ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        ExercisePhaseService $exercisePhaseService,
-        VideoFavouritesService $videoFavouritesService,
-        UserMaterialService $materialService,
-        MaterialRepository $materialRepository,
-        VideoRepository $videoRepository,
-        SolutionRepository $solutionRepository
+        private readonly Session $minkSession,
+        private readonly RouterInterface $router,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly DoctrineIntegratedEventStore $eventStore,
+        private readonly KernelInterface $kernel,
+        private readonly Security $security,
+        private readonly SolutionService $solutionService,
+        private readonly DegreeDataToCsvService $degreeDataToCsvService,
+        private readonly UserService $userService,
+        private readonly UserExpirationService $userExpirationService,
+        private readonly VideoService $videoService,
+        private readonly ExerciseService $exerciseService,
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly ExercisePhaseRepository $exercisePhaseRepository,
+        private readonly UserRepository $userRepository,
+        private readonly ExerciseRepository $exerciseRepository,
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private readonly ExercisePhaseService $exercisePhaseService,
+        private readonly VideoFavouritesService $videoFavouritesService,
+        private readonly UserMaterialService $materialService,
+        private readonly MaterialRepository $materialRepository,
+        private readonly VideoRepository $videoRepository,
+        private readonly SolutionRepository $solutionRepository
     ) {
-        $this->minkSession = $minkSession;
-        $this->router = $router;
-        $this->entityManager = $entityManager;
-        $this->eventStore = $eventStore;
-        $this->kernel = $kernel;
-        $this->security = $security;
-        $this->solutionService = $solutionService;
-        $this->degreeDataToCSVService = $degreeDataToCsvService;
-        $this->userService = $userService;
-        $this->videoService = $videoService;
-        $this->exerciseService = $exerciseService;
-        $this->userPasswordHasher = $userPasswordHasher;
-        $this->exercisePhaseRepository = $exercisePhaseRepository;
-        $this->userRepository = $userRepository;
-        $this->exerciseRepository = $exerciseRepository;
-        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
-        $this->exercisePhaseService = $exercisePhaseService;
-        $this->videoFavouritesService = $videoFavouritesService;
-        $this->materialService = $materialService;
-        $this->materialRepository = $materialRepository;
-        $this->videoRepository = $videoRepository;
-        $this->solutionRepository = $solutionRepository;
-
         $this->setupPlaywright();
     }
 
@@ -191,7 +147,7 @@ final class DegreeContext implements Context
      */
     public function iAmLoggedInAs($username)
     {
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
         if (!$user) {
             $user = $this->createUser($username);
         }

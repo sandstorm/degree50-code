@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use ZipArchive;
 
 /**
+ * // TODO: role ROLE_ADMIN/DOZENT or at least ROLE_USER?
+ * @isGranted("user-verified")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
  */

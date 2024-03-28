@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Single exercise overview handling is located inside the [ExerciseController]
  *
  * @IsGranted("ROLE_USER")
+ * @isGranted("user-verified")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
  */

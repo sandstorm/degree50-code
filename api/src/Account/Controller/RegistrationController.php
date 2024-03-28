@@ -117,7 +117,7 @@ class RegistrationController extends AbstractController
         } catch (VerifyEmailExceptionInterface|\Exception $e) {
             // Show generic error
             $this->addFlash(
-                'verify_email_error',
+                'danger',
                 $this->translator->trans('flash-message.email-confirmation.error', [], 'user-registration')
             );
 

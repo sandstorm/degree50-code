@@ -121,6 +121,8 @@ integration_test:
     services:
         -   name: mariadb:10.7
         -   name: redis:6.2
+        -   name: axllent/mailpit:v1.15
+            alias: mailpit
         # here, we make the e2e-testrunner available
         -   name: $CI_REGISTRY_IMAGE:e2e-testrunner
             alias: e2e-testrunner
@@ -161,6 +163,8 @@ e2e_test:
     services:
         -   name: mariadb:10.7
         -   name: redis:6.2
+        -   name: axllent/mailpit:v1.15
+            alias: mailpit
         # here, we make the e2e-testrunner available
         -   name: $CI_REGISTRY_IMAGE:e2e-testrunner
             alias: e2e-testrunner

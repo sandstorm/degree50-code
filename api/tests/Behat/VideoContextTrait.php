@@ -69,8 +69,7 @@ trait VideoContextTrait
         $video = $this->entityManager->find(Video::class, $videoId);
 
         if (!$video) {
-            /** @var User $user */
-            $user = $this->entityManager->find(User::class, $username);
+            $user = $this->getUserByEmail($username);
 
             $video = new Video($videoId);
             $video->setCreator($user);

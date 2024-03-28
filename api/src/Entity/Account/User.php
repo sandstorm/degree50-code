@@ -32,11 +32,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     const EXPIRATION_DURATION_STRING = '5 years';
     const DB_DATE_FORMAT = 'Y-m-d H:i:s';
-    const EXPIRATION_NOTICE_DURATION_STRING = '6 months';
-    // TODO: What value should this have?
+    const EXPIRATION_NOTICE_DURATION_STRING = '8 months';
     const VERIFICATION_TIMEOUT_DURATION_STRING = '5 days';
 
-    // TODO: What value should this have?
     const MIN_PASSWORD_LENGTH = 8;
 
     /**
@@ -118,13 +116,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private int $termsOfUseVersion = 0;
 
     /**
-     * TODO: migration -> set to a specific date (now, or last year) for existing users
      * @ORM\Column(name="created_at", type="datetimetz_immutable")
      */
     private \DateTimeImmutable $createdAt;
 
     /**
-     * * TODO: migration -> set for existing users
      * @ORM\Column(name="expiration_date", type="datetimetz_immutable")
      */
     private \DateTimeImmutable $expirationDate;

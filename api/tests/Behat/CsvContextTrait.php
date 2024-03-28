@@ -5,7 +5,6 @@ namespace App\Tests\Behat;
 use App\DataExport\Controller\Dto\TextFileDto;
 use Behat\Gherkin\Node\PyStringNode;
 use App\Entity\Account\Course;
-use App\Entity\Exercise\Solution;
 
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertIsObject;
@@ -19,17 +18,17 @@ trait CsvContextTrait
     /**
      * @When I convert all data for :courseId to csv
      */
-    public function iConvertAllDataForCourseToCsv(string $courseId)
+    public function iConvertAllDataForCourseToCsv(string $courseId): void
     {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
-        $this->csvDtoList = $this->degreeDataToCSVService->getAllAsVirtualCSVs($course);
+        $this->csvDtoList = $this->degreeDataToCsvService->getAllAsVirtualCSVs($course);
     }
 
     /**
      * @Then I have a CSVDto-list containing a file :fileName with a CSV content string
      */
-    public function iHaveACsvDtoListContainingAFileWithACsvContentString(string $fileName, PyStringNode $contentString)
+    public function iHaveACsvDtoListContainingAFileWithACsvContentString(string $fileName, PyStringNode $contentString): void
     {
         /** @var TextFileDto $csvDto */
         $csvDto = current(array_filter($this->csvDtoList, function (TextFileDto $cSVDto) use ($fileName) {
@@ -46,7 +45,7 @@ trait CsvContextTrait
     /**
      * @Then I have CSVDto-list containing a file :fileName
      */
-    public function iHaveCsvdtoListContainingAFile($fileName)
+    public function iHaveCsvDtoListContainingAFile($fileName): void
     {
         /** @var TextFileDto $csvDto */
         $csvDto = current(array_filter($this->csvDtoList, function (TextFileDto $cSVDto) use ($fileName) {

@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Security;
 
 /**
  * @IsGranted("ROLE_USER")
+ * @isGranted("user-verified")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
  */
