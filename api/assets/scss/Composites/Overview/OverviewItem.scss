@@ -1,0 +1,71 @@
+.overview-item {
+    display: grid;
+    grid-template-columns: 95px 35px auto 40px;
+    align-items: center;
+    gap: $theme__spacing--base;
+    padding: $theme__spacing--base 0;
+
+    text-decoration: none !important;
+
+    &:nth-child(even) {
+        background-color: $theme__color__grey--lighter;
+    }
+}
+
+.overview-item__date {
+    text-align: right;
+}
+
+.overview-item__status {
+    text-align: center;
+
+    i {
+        font-size: 1rem;
+    }
+}
+
+.overview-item__title {
+
+}
+
+.overview-item__actions {
+    position: relative;
+
+    .button {
+        display: inline-flex;
+        width: 40px;
+
+        > i {
+            font-size: 1.6rem;
+        }
+    }
+
+    // show .overview-item__actions-dropdown when checkbox is checked
+    .button:focus-within .overview-item__actions-dropdown {
+        display: flex;
+    }
+}
+
+.overview-item__actions-dropdown {
+    position: absolute;
+    display: none;
+    right: 0;
+    top: 40px;
+    width: max-content;
+    flex-direction: column;
+
+    background-color: $theme__color__white;
+    border: 1px solid $theme__color__grey--dark;
+    box-shadow: 0 0 5px 0 transparentize($theme__color__black, 0.5);
+    z-index: 10;
+
+    a {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: $theme__spacing--base;
+        padding: $theme__spacing--small $theme__spacing--base;
+
+        text-decoration: none !important;
+    }
+}

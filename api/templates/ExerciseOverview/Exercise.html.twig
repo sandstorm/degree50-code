@@ -2,80 +2,87 @@
 
 {% if is_granted('edit', exercise.exercise) %}
     {% set statusTransVar = 'exercise.labels.status' ~ (exercise.exercise.status) %}
-    {% set statusClassVar = 'tile--status-' ~ (exercise.exercise.status) %}
-    <div tabindex="0" class="tile {{ statusClassVar }}" title="{{ exercise.exercise.description | striptags }}">
-        <input id="{{ exercise.exercise.id }}" type="checkbox" />
-        <label for="{{ exercise.exercise.id }}" class="tile__content">
+    {% set statusClassVar = 'overview-item--status-' ~ (exercise.exercise.status) %}
+    <div tabindex="0" class="overview-item {{ statusClassVar }}" title="{{ exercise.exercise.description | striptags }}">
+        <div class="overview-item__date">
+            {{ exercise.exercise.createdAt|date("d.m.Y") }}
+        </div>
+        <div class="overview-item__status">
             {% if exercise.exercise.status == 0 %}
-                <i class="tile__icon fas fa-eye-slash" title="{{ statusTransVar | trans }}"></i>
+                <i class="fas fa-eye-slash" title="{{ statusTransVar | trans }}"></i>
             {% elseif exercise.exercise.status == 1 %}
-                <i class="tile__icon fas fa-check" title="{{ statusTransVar | trans }}"></i>
+                <i class="fas fa-check" title="{{ statusTransVar | trans }}"></i>
             {% else %}
-                <i class="tile__icon fas fa-eye" title="{{ statusTransVar | trans }}"></i>
+                <i class="fas fa-eye" title="{{ statusTransVar | trans }}"></i>
             {% endif %}
-            <span class="tile__date">{{ exercise.exercise.createdAt|date("d.m.Y") }}</span>
-            <span class="tile__title">{{ exercise.exercise.name }}</span>
-            <span class="tile__phases">
-                {% trans %}exercise.labels.phases{% endtrans %}: {{ exercise.exercise.phases|length }}
-                {% if exercise.needsReview %}
-                    <i class="fa-regular fa-circle-exclamation-check" title="{{ 'exercise.labels.reviewRequired' | trans }}"></i>
-                {% endif %}
-            </span>
-            <i class="tile__action-icon fas fa-arrow-down"></i>
-        </label>
-        <div class="tile__actions">
-            {% if is_granted('showSolution', exercise.exercise) %}
-                <a href="{{ path('exercise__show-solutions', {id: exercise.exercise.id}) }}">
-                    <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
-                </a>
+        </div>
+        <div class="overview-item__title">
+            <strong>{{ exercise.exercise.name }}</strong>
+            <em>{{ exercise.exercise.phases|length }} {% trans %}exercise.labels.phases{% endtrans %}</em>
+            {% if exercise.needsReview %}
+                <div><i class="fa-regular fa-circle-exclamation-check"></i> {{ 'exercise.labels.reviewRequired' | trans }}</div>
             {% endif %}
-            {% if is_granted('test', exercise.exercise) %}
-                <a href="{{ path('exercise__test', {id: exercise.exercise.id}) }}">
-                    <i class="fas fa-vial"></i> {% trans %}exercise.test.title{% endtrans %}
-                </a>
-            {% endif %}
-            {% if is_granted('view', exercise.exercise) %}
-                <a href="{{ path('exercise__show', {id: exercise.exercise.id}) }}">
-                    <i class="fas fa-play"></i> Aufgabe starten
-                </a>
-            {% endif %}
-            {% if is_granted('edit', exercise.exercise) %}
-                <a href="{{ path('exercise__edit', {id: exercise.exercise.id}) }}">
-                    <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
-                </a>
-                <a href="{{ path('exercise__copy', {id: exercise.exercise.id}) }}">
-                    <i class="fas fa-clone"></i> {% trans %}exercise.copy.title{% endtrans %}
-                </a>
-                <a
-                    href="{{ path('exercise__delete', {id: exercise.exercise.id}) }}"
-                    class="color-alert"
-                    onclick="return confirm('{% trans %}exercise.delete.confirm{% endtrans %}');"
-                >
-                    <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
-                </a>
-            {% endif %}
+        </div>
+        <div class="overview-item__actions">
+            <button class="button button--type-link" aria-label="Aktionen aus/einblenden">
+                <i class="fas fa-ellipsis-v"></i>
+                <div class="overview-item__actions-dropdown">
+                    {% if is_granted('showSolution', exercise.exercise) %}
+                        <a href="{{ path('exercise__show-solutions', {id: exercise.exercise.id}) }}">
+                            <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
+                        </a>
+                    {% endif %}
+                    {% if is_granted('test', exercise.exercise) %}
+                        <a href="{{ path('exercise__test', {id: exercise.exercise.id}) }}">
+                            <i class="fas fa-vial"></i> {% trans %}exercise.test.title{% endtrans %}
+                        </a>
+                    {% endif %}
+                    {% if is_granted('view', exercise.exercise) %}
+                        <a href="{{ path('exercise__show', {id: exercise.exercise.id}) }}">
+                            <i class="fas fa-play"></i> Aufgabe starten
+                        </a>
+                    {% endif %}
+                    {% if is_granted('edit', exercise.exercise) %}
+                        <a href="{{ path('exercise__edit', {id: exercise.exercise.id}) }}">
+                            <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
+                        </a>
+                        <a href="{{ path('exercise__copy', {id: exercise.exercise.id}) }}">
+                            <i class="fas fa-clone"></i> {% trans %}exercise.copy.title{% endtrans %}
+                        </a>
+                        <a
+                            href="{{ path('exercise__delete', {id: exercise.exercise.id}) }}"
+                            class="color-alert"
+                            onclick="return confirm('{% trans %}exercise.delete.confirm{% endtrans %}');"
+                        >
+                            <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
+                        </a>
+                    {% endif %}
+                </div>
+            </button>
         </div>
     </div>
 {% else %}
     {% if is_granted('view', exercise.exercise) %}
         {% if is_granted('isFinished', exercise.exercise) %}
-            {{ _self.tile(exercise.exercise, '', 'fas fa-check') }}
+            {{ _self.tile(exercise.exercise, 'fas fa-check') }}
         {% elseif is_granted('isOpened', exercise.exercise) %}
-            {{ _self.tile(exercise.exercise, '', 'fas fa-user-edit') }}
+            {{ _self.tile(exercise.exercise, 'fas fa-user-edit') }}
         {% else %}
-            {{ _self.tile(exercise.exercise, 'tile--is-new', 'fas fa-envelope-open-text') }}
+            {{ _self.tile(exercise.exercise, 'fas fa-envelope-open-text') }}
         {% endif %}
     {% endif %}
 {% endif %}
 
-{% macro tile(exercise, additionalClass, iconClass) %}
-    <a href="{{ path('exercise__show', {id: exercise.id}) }}" class="tile {{ additionalClass }}" title="{{ exercise.description }}">
-        <div class="ribbon"><span>Is New</span></div>
-        <div class="tile__content">
-            <i class="tile__icon {{ iconClass }}"></i>
-            <span class="tile__date">{{ exercise.createdAt|date("d.m.Y") }}</span>
-            <span class="tile__title">{{ exercise.name }}</span>
-            <i class="tile__action-icon  fas fa-arrow-right"></i>
+{% macro tile(exercise, iconClass) %}
+    <a href="{{ path('exercise__show', {id: exercise.id}) }}" class="overview-item" title="{{ exercise.description }}">
+        <div class="overview-item__date">
+            {{ exercise.createdAt|date("d.m.Y") }}
+        </div>
+        <div class="overview-item__status">
+            <i class="{{ iconClass }}"></i>
+        </div>
+        <div class="overview-item__title">
+            {{ exercise.name }}
         </div>
     </a>
 {% endmacro %}
