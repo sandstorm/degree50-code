@@ -7,9 +7,6 @@ import Schreibtisch from 'StimulusControllers/Schreibtisch/Schreibtisch'
 
 class SchreibtischController extends Controller {
     connect() {
-        const propsAsString = this.data.get('props')
-        const props = propsAsString ? JSON.parse(propsAsString) : {}
-
         ReactDOM.render(
             <Provider store={store}>
                 <Schreibtisch />

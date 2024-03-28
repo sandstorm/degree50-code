@@ -1,14 +1,14 @@
 .overview-item {
     display: grid;
-    grid-template-columns: 95px 35px auto 40px;
+    grid-template-columns: 95px 35px 1fr auto;
     align-items: center;
     gap: $theme__spacing--base;
     padding: $theme__spacing--base 0;
 
     text-decoration: none !important;
 
-    &:nth-child(even) {
-        background-color: $theme__color__grey--lighter;
+    &:hover {
+        background-color: $theme__color__primary--lighter !important;
     }
 }
 
@@ -25,11 +25,22 @@
 }
 
 .overview-item__title {
+    text-decoration: none !important;
 
+    img {
+        height: 50px;
+        width: 100px;
+        object-fit: cover;
+        margin-right: $theme__spacing--base;
+    }
 }
 
 .overview-item__actions {
     position: relative;
+    display: flex;
+    gap: $theme__spacing--base;
+    align-items: center;
+    padding-right: $theme__spacing--base;
 
     .button {
         display: inline-flex;
@@ -40,9 +51,24 @@
         }
     }
 
-    // show .overview-item__actions-dropdown when checkbox is checked
     .button:focus-within .overview-item__actions-dropdown {
         display: flex;
+    }
+}
+
+.overview-item__action-favourite {
+    i {
+        font-size: 1.6rem;
+
+        transform-style: preserve-3d;
+        @include transition(transform .5s);
+    }
+
+    &:hover, &:focus, &:active {
+        i {
+            // rotate icon on toggle
+            transform: rotateY(180deg);
+        }
     }
 }
 
@@ -59,7 +85,6 @@
     box-shadow: 0 0 5px 0 transparentize($theme__color__black, 0.5);
     z-index: 10;
 
-
     a {
         display: flex;
         flex-wrap: nowrap;
@@ -70,3 +95,5 @@
         text-decoration: none !important;
     }
 }
+
+

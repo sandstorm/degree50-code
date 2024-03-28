@@ -3,11 +3,12 @@
     {% if group.videos|length > 0 %}
         {% set groupIdTransVar = 'mediathek.groups.' ~ (group.id) %}
         <h5>{{ groupIdTransVar | trans }}</h5>
-        <hr />
-        <div class="tiles">
+        <ul class="overview">
             {% for video in group.videos %}
-                {{ include('Mediathek/Video.html.twig', {video: video}) }}
+                <li>
+                    {{ include('Mediathek/Video.html.twig', {video: video}) }}
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     {% endif %}
 {% endfor %}

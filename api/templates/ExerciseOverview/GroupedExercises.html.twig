@@ -3,11 +3,12 @@
     {% if group.exercises|length > 0 %}
         {% set groupIdTransVar = 'exerciseOverview.groups.' ~ (group.id) %}
         <h5>{{ groupIdTransVar | trans }}</h5>
-        <hr />
-        <div class="overview">
+        <ul class="overview">
             {% for exercise in group.exercises %}
-                {{ include('ExerciseOverview/Exercise.html.twig', {exercise: exercise}) }}
+                <li>
+                    {{ include('ExerciseOverview/Exercise.html.twig', {exercise: exercise}) }}
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     {% endif %}
 {% endfor %}

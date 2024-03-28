@@ -5,6 +5,7 @@ import { VideoJsPlayerOptions } from 'video.js'
 export type Video = {
     id: string
     name: string
+    createdAt: string
     description: string
     url: { hls?: string; mp4?: string; vtt?: string; thumbnail?: string }
     duration: number

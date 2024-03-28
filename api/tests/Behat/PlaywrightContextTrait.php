@@ -35,12 +35,12 @@ trait PlaywrightContextTrait
     /**
      * @Then the response status code should be :code
      */
-    public function assertResponseStatus(int $code)
+    public function assertResponseStatus(int $code): void
     {
         $actual = $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-            return vars.response.status();
+                return vars.response.status();
             JS
         );
 
@@ -50,7 +50,7 @@ trait PlaywrightContextTrait
     /**
      * @Then I am redirected to the login page
      */
-    public function iAmRedirectedToTheLoginPage()
+    public function iAmRedirectedToTheLoginPage(): void
     {
         $this->thePageShouldContainTheText('Login mit Uni-Account (SSO)');
     }
@@ -58,7 +58,7 @@ trait PlaywrightContextTrait
     /**
      * @Given I am logged in via browser as :username
      */
-    public function iAmLoggedInViaBrowserAs($username)
+    public function iAmLoggedInViaBrowserAs($username): void
     {
         $this->playwrightConnector->execute($this->playwrightContext, sprintf(
             <<<JS
@@ -89,7 +89,7 @@ trait PlaywrightContextTrait
     /**
      * @Then the page should contain the text :text
      */
-    public function thePageShouldContainTheText($text)
+    public function thePageShouldContainTheText($text): void
     {
         $content = $this->getPageContent();
 
@@ -99,7 +99,7 @@ trait PlaywrightContextTrait
     /**
      * @Then the page should not contain the text :text
      */
-    public function thePageShouldNotContainTheText($text)
+    public function thePageShouldNotContainTheText($text): void
     {
         $content = $this->getPageContent();
 
@@ -109,12 +109,12 @@ trait PlaywrightContextTrait
     /**
      * @Then the page contains all the following texts:
      */
-    public function thePageContainsAllTheFollowingTexts(TableNode $tableNode)
+    public function thePageContainsAllTheFollowingTexts(TableNode $tableNode): void
     {
         $this->pageContainsTexts($tableNode->getColumn(0));
     }
 
-    private function pageContainsTexts(array $texts)
+    private function pageContainsTexts(array $texts): void
     {
         $content = $this->getPageContent();
 
@@ -123,7 +123,7 @@ trait PlaywrightContextTrait
         }
     }
 
-    private function pageNotContainTexts(array $texts)
+    private function pageNotContainTexts(array $texts): void
     {
         $content = $this->getPageContent();
 
@@ -135,7 +135,7 @@ trait PlaywrightContextTrait
     /**
      * @Then the page contains none of the following texts:
      */
-    public function thePageContainsNoneTheFollowingTexts(TableNode $tableNode)
+    public function thePageContainsNoneTheFollowingTexts(TableNode $tableNode): void
     {
         $this->pageNotContainTexts($tableNode->getColumn(0));
     }
@@ -143,7 +143,7 @@ trait PlaywrightContextTrait
     /**
      * @Given I fill out the course form and submit
      */
-    public function iFillOutTheCourseFormAndSubmit()
+    public function iFillOutTheCourseFormAndSubmit(): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -155,7 +155,7 @@ trait PlaywrightContextTrait
         );
     }
 
-    public function waitForSelector($selector)
+    public function waitForSelector($selector): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -166,9 +166,9 @@ trait PlaywrightContextTrait
     }
 
     /**
-     * @Given I click on :innerText
+     * @When I click on :innerText
      */
-    public function iClickOn($innerText)
+    public function iClickOn($innerText): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -179,9 +179,22 @@ trait PlaywrightContextTrait
     }
 
     /**
+     * @When I click on the button with the aria label :ariaLabel
+     */
+    public function iClickOnTheButtonWithTheAriaLabel($ariaLabel): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.click(`[aria-label="${ariaLabel}"]`)
+            JS
+        );
+    }
+
+    /**
      * @When I click on first element with testId :testId
      */
-    public function iClickOnFirstElementWithTestId($testId)
+    public function iClickOnFirstElementWithTestId($testId): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -194,7 +207,7 @@ trait PlaywrightContextTrait
     /**
      * @Given I submit the form
      */
-    public function iSubmitTheForm()
+    public function iSubmitTheForm(): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -207,7 +220,7 @@ trait PlaywrightContextTrait
     /**
      * @Then I should be able to download the CSV export for :entityId when clicking on :label
      */
-    public function iShouldBeAbleToDownloadCsvExport($entityId, $label)
+    public function iShouldBeAbleToDownloadCsvExport($entityId, $label): void
     {
         $url = $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -230,7 +243,7 @@ trait PlaywrightContextTrait
     /**
      * @Given I fill out the exercise form and submit
      */
-    public function iFillOutTheExerciseFormAndSubmit()
+    public function iFillOutTheExerciseFormAndSubmit(): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -248,7 +261,7 @@ trait PlaywrightContextTrait
     /**
      * @When I select the nth :index element with testId :testId
      */
-    public function iSelectTheNthElementWithTestId(int $index, string $testId)
+    public function iSelectTheNthElementWithTestId(int $index, string $testId): void
     {
         $hasElement = $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -266,7 +279,7 @@ trait PlaywrightContextTrait
     /**
      * @Then the selected element should have its attribute :attribute set to value :expectedValue
      */
-    public function theSelectedElementShouldHaveAttributeSetToValue(string $attribute, string $expectedValue)
+    public function theSelectedElementShouldHaveAttributeSetToValue(string $attribute, string $expectedValue): void
     {
         $actual = $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -281,7 +294,7 @@ trait PlaywrightContextTrait
     /**
      * @Then I click on the selected element
      */
-    public function iClickOnTheSelectedElement()
+    public function iClickOnTheSelectedElement(): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -294,7 +307,7 @@ trait PlaywrightContextTrait
     /**
      * @Then :count elements of selectedElement type should exist
      */
-    public function numberOfElementsShouldExist($count)
+    public function numberOfElementsShouldExist($count): void
     {
         $actual = $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -309,7 +322,7 @@ trait PlaywrightContextTrait
     /**
      * @Then The selected element should have the CSS-class :cssClass
      */
-    public function selectedElementShouldHaveCssClass($cssClass)
+    public function selectedElementShouldHaveCssClass($cssClass): void
     {
         $actualClasses = $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -324,7 +337,7 @@ trait PlaywrightContextTrait
     /**
      * @Then The selected element should not have the CSS-class :cssClass
      */
-    public function selectedElementShouldNotHaveCssClass($cssClass)
+    public function selectedElementShouldNotHaveCssClass($cssClass): void
     {
         $actualClasses = $this->playwrightConnector->execute(
             $this->playwrightContext,

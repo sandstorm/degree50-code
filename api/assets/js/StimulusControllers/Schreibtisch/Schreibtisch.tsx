@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate, NavLink } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import MyExercises from 'StimulusControllers/Schreibtisch/Aufgaben/MyExercises'
 import MaterialEditor from './MaterialEditor/MaterialEditor'
 import MyMaterials from './Materialien/MyMaterials'
