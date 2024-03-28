@@ -113,6 +113,7 @@ class UserExpirationService
         $newExpirationDate = $oldExpirationDate->add(\DateInterval::createFromDateString('1 year'));
 
         $user->setExpirationDate($newExpirationDate);
+        $user->setExpirationNoticeSent(false);
 
         $this->eventStore->addEvent('UserExpirationDateIncreased', [
             'userId' => $user->getId(),

@@ -13,9 +13,7 @@ use App\Entity\Exercise\ServerSideSolutionData\ServerSideAnnotation;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCode;
 use App\Entity\Exercise\ServerSideSolutionData\ServerSideVideoCodePrototype;
-use App\Repository\Exercise\ExercisePhaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Serializer;
 
@@ -30,10 +28,6 @@ use Symfony\Component\Serializer\Serializer;
  */
 class DegreeDataToCsvService
 {
-    private ExercisePhaseRepository $exercisePhaseRepository;
-    private LoggerInterface $logger;
-    private ManagerRegistry $managerRegistry;
-
     private const DEFAULT_DELIMITER = ';';
     private const DEFAULT_ENCLOSURE = '"';
     private const DEFAULT_ENCODING_CONTEXT = [
@@ -42,15 +36,10 @@ class DegreeDataToCsvService
         CsvEncoder::NO_HEADERS_KEY => true,
     ];
 
-    function __construct(
-        LoggerInterface $logger,
-        ExercisePhaseRepository $exercisePhaseRepository,
-        ManagerRegistry $managerRegistry
+    public function __construct(
+        private readonly ManagerRegistry $managerRegistry
     )
     {
-        $this->exercisePhaseRepository = $exercisePhaseRepository;
-        $this->logger = $logger;
-        $this->managerRegistry = $managerRegistry;
     }
 
     /**

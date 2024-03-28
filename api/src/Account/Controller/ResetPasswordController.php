@@ -63,7 +63,7 @@ class ResetPasswordController extends AbstractController
         MailerInterface $mailer,
     ): RedirectResponse
     {
-        /* @var $user User|null */
+        /* @var User|null $user */
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
         ]);
@@ -73,9 +73,9 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_check_email');
         }
 
-        if (!$user->isSSOUser()) {
-            $this->addFlash('error', $this->translator->trans('process.error.sso-user', [], 'user-password-reset'));
-            return $this->redirectToRoute('app');
+        if ($user->isSSOUser()) {
+            $this->addFlash('danger', $this->translator->trans('process.error.sso-user', [], 'user-password-reset'));
+            return $this->redirectToRoute('app_forgot_password_request');
         }
 
         $this->eventStore->addEvent('UserPasswordChangRequested', [
@@ -88,7 +88,7 @@ class ResetPasswordController extends AbstractController
         try {
             $resetToken = $this->resetPasswordHelper->generateResetToken($user);
         } catch (ResetPasswordExceptionInterface $e) {
-            $this->addFlash('error', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
+            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
             return $this->redirectToRoute('app');
         }
 
@@ -108,7 +108,7 @@ class ResetPasswordController extends AbstractController
         try {
             $mailer->send($email);
         } catch (TransportExceptionInterface $e) {
-            $this->addFlash('error', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
+            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
             return $this->redirectToRoute('app');
         }
 
@@ -153,7 +153,7 @@ class ResetPasswordController extends AbstractController
         try {
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
         } catch (ResetPasswordExceptionInterface $e) {
-            $this->addFlash('error', sprintf(
+            $this->addFlash('danger', sprintf(
                 '%s - %s',
                 $this->translator
                     ->trans(ResetPasswordExceptionInterface::MESSAGE_PROBLEM_VALIDATE, [], 'ResetPasswordBundle'),

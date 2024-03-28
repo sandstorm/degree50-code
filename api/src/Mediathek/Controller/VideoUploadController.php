@@ -37,6 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @see UploadListener
  *
  * @IsGranted("ROLE_USER")
+ * @isGranted("user-verified")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
  */

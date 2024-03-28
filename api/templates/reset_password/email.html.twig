@@ -4,7 +4,7 @@
 
 <p>{{ "email.body"|trans }}</p>
 
-<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ "email.link"|trans }}</a>
 
 <p>{{ "email.link-expiration"|trans({'expirationTime': expirationTime}) }}</p>
 

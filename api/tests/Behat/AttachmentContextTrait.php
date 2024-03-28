@@ -23,8 +23,7 @@ trait AttachmentContextTrait
         $attachment->setName($fileName);
         $attachment->setMimeType('application/pdf');
 
-        /* @var User $user */
-        $user = $this->entityManager->find(User::class, 'foo@bar.de');
+        $user = $this->getUserByEmail('foo@bar.de');
         $attachment->setCreator($user);
 
         $this->entityManager->persist($attachment);
@@ -37,8 +36,7 @@ trait AttachmentContextTrait
      */
     public function ensureAttachmentByUserExistsInExercisePhase($attachmentId, $username, $exercisePhaseId)
     {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
         /** @var Attachment $attachment */

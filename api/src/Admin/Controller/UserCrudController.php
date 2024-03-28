@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 /**
  * @IsGranted("ROLE_ADMIN")
+ * @isGranted("user-verified")
  * @IsGranted("data-privacy-accepted")
  * @IsGranted("terms-of-use-accepted")
  */

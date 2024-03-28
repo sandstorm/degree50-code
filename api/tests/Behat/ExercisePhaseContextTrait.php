@@ -274,8 +274,7 @@ trait ExercisePhaseContextTrait
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
 
         $exercisePhaseTeam->addMember($user);
     }
@@ -287,8 +286,7 @@ trait ExercisePhaseContextTrait
     {
         /** @var ExercisePhaseTeam $team */
         $team = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
 
         $team->addMember($user);
         $team->setCreator($user);
@@ -325,8 +323,7 @@ trait ExercisePhaseContextTrait
      */
     public function ensureTheUserHasCreatedAnAutosavedSolutionForExerciseTeam($username, $autosavedSolutionId, $teamId)
     {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
         /** @var ExercisePhaseTeam $team */
         $team = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
         /** @var AutosavedSolution $autosavedSolution */

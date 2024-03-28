@@ -2,6 +2,7 @@
 
 namespace App\Tests\Behat;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 
 use function PHPUnit\Framework\assertEquals;
@@ -19,17 +20,21 @@ trait PlaywrightContextTrait
      */
     public function visitUrl(string $url): void
     {
-        $this->playwrightConnector->execute($this->playwrightContext, sprintf(
+        // BASEURL is a magic string that will be replaced by the actual base URL
+        $urlWithBaseUrl = str_starts_with($url, '/') ? 'BASEURL' . $url : $url;
+
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             <<<JS
                 if (!vars.page) {
                     vars.page = await context.newPage()
                 }
                 // TODO write first goto and then waitforNavigation
-                const response = await vars.page.goto(`BASEURL$url`)
+                const response = await vars.page.goto('$urlWithBaseUrl')
                 // save response in context
                 vars.response = response
             JS
-        ));
+        );
     }
 
     /**
@@ -60,18 +65,19 @@ trait PlaywrightContextTrait
      */
     public function iAmLoggedInViaBrowserAs($username)
     {
-        $this->playwrightConnector->execute($this->playwrightContext, sprintf(
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
             <<<JS
                 vars.page = await context.newPage();
                 await vars.page.goto("BASEURL/login");
-                await vars.page.fill(`[name="email"]`, `$username`);
-                await vars.page.fill(`[name="password"]`, `password`);
+                await vars.page.fill('[name="email"]', '$username');
+                await vars.page.fill('[name="password"]', 'password');
                 await Promise.all([
                     vars.page.waitForNavigation(),
-                    vars.page.click(`button[type="submit"]`)
+                    vars.page.click('button[type="submit"]')
                 ])
             JS
-        ));
+        );
     }
 
     private function getPageContent(): string
@@ -148,9 +154,9 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-                await vars.page.fill(`input#course_form_name`, `Test-Kurs`)
-                await vars.page.click(`#course_form_users input[type="checkbox"]`)
-                await vars.page.click(`button#course_form_save`)
+                await vars.page.fill('input#course_form_name', 'Test-Kurs')
+                await vars.page.click('#course_form_users input[type="checkbox"]')
+                await vars.page.click('button#course_form_save')
             JS
         );
     }
@@ -160,7 +166,7 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-                await vars.page.waitForSelector('data-test-id=${selector}')
+                await vars.page.waitForSelector('data-test-id=$selector')
             JS
         );
     }
@@ -173,7 +179,8 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-                await vars.page.click(`text=${innerText}`)
+
+                await vars.page.click('text=$innerText')
             JS
         );
     }
@@ -199,7 +206,7 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-                await vars.page.click(`[type="submit"]`)
+                await vars.page.click('[type="submit"]')
             JS
         );
     }
@@ -215,7 +222,7 @@ trait PlaywrightContextTrait
                 const [ download ] = await Promise.all(
                     [
                         vars.page.waitForEvent('download'),
-                        vars.page.click(`[role='button']:has-text('{$label}'), button:has-text('{$label}'), .btn:has-text('{$label}'), a:has-text('{$label}')`)
+                        vars.page.click('[role="button"]:has-text("$label"), button:has-text("$label"), .btn:has-text("$label"), a:has-text("$label")')
                     ]
                 )
                 const path = await download.url()
@@ -235,12 +242,12 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-                await vars.page.fill(`input#exercise_name`, `Test-Aufgabe`)
+                await vars.page.fill('input#exercise_name', 'Test-Aufgabe')
                 // here we have to use this way to navigate to the description field because we use ckeditor
                 await vars.page.keyboard.press('Tab')
                 await vars.page.keyboard.type('Test-Aufgaben-Beschreibung')
 
-                await vars.page.click(`button#exercise_save`)
+                await vars.page.click('button#exercise_save')
             JS
         );
     }
@@ -388,8 +395,64 @@ trait PlaywrightContextTrait
                             resolve();
                         });
                     });
-                }, `$eventName`);
+                }, '$eventName');
             JS
         ));
+    }
+
+    /**
+     * @When I fill the registration form with email :email and password :password
+     */
+    public function iFillTheRegistrationFormWithEmailAndPassword(string $email, string $password): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.fill('input#registration_form_email', '$email')
+                await vars.page.fill('input#registration_form_plainPassword_first', '$password')
+                await vars.page.fill('input#registration_form_plainPassword_second', '$password')
+            JS
+        );
+    }
+
+    /**
+     * @When I fill the login form with email :email and password :password
+     */
+    public function iFillTheLoginFormWithEmailAndPassword(string $email, string $password): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.fill('input[name="email"]', '$email')
+                await vars.page.fill('input[name="password"]', '$password')
+            JS
+        );
+    }
+
+    /**
+     * @When I fill the request password reset form with email :email
+     */
+    public function iFillTheRequestPasswordResetFormWithEmail(string $email): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.fill('input#reset_password_request_form_email', '$email')
+            JS
+        );
+    }
+
+    /**
+     * @When I fill the password reset form with the new password :password
+     */
+    public function iFillThePasswordResetFormWithTheNewPassword(string $password): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.fill('input#change_password_form_plainPassword_first', '$password')
+                await vars.page.fill('input#change_password_form_plainPassword_second', '$password')
+            JS
+        );
     }
 }

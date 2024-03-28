@@ -12,8 +12,12 @@ use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Entity\Video\Video;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
+use Behat\Behat\Tester\Exception\PendingException;
+use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertNotEquals;
+use function PHPUnit\Framework\assertTrue;
 
 /**
  *
@@ -60,7 +64,7 @@ trait UserContextTrait
      */
     public function aUserExists(string $username)
     {
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
         if (!$user) {
             $this->createUser($username, null, true);
         }
@@ -76,8 +80,7 @@ trait UserContextTrait
         $this->aUserExists($username);
 
         // add the role
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
         $user->setRoles([$role]);
 
         // persist
@@ -91,9 +94,7 @@ trait UserContextTrait
      */
     public function iDeleteUser($username)
     {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
-
+        $user = $this->getUserByEmail($username);
         $this->userService->removeUser($user);
     }
 
@@ -113,8 +114,7 @@ trait UserContextTrait
         /* @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
 
-        /* @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->getUserByEmail($username);
 
         $courseRole = new CourseRole();
         $courseRole->setCourse($course);
@@ -133,9 +133,19 @@ trait UserContextTrait
     /**
      * @Then User :username should not exist
      */
-    public function assertUserDoesNotExist($username)
+    public function assertUserDoesNotExist($username): void
     {
-        assertEquals(null, $this->entityManager->find(User::class, $username));
+        $user = $this->getUserByEmail($username);
+        assertEquals(null, $user);
+    }
+
+    /**
+     * @Then User :username should exist
+     */
+    public function assertUserExists(string $username): void
+    {
+        $user = $this->getUserByEmail($username);
+        assertNotEquals(null, $user);
     }
 
     /**
@@ -159,8 +169,7 @@ trait UserContextTrait
      */
     public function assertUserIsAnonymizedAndUnusedContentIsRemoved($username)
     {
-        /** @var User $user */
-        $user = $this->entityManager->find(User::class, $username);
+        $user = $this->entityManager->getRepository(User::class)->find($username);
 
         /**
          * Why
@@ -213,7 +222,7 @@ trait UserContextTrait
                 })
             ) === 0;
 
-        assertEquals(true, $exercisesNotUnpublishedAndAnonymized, "No unpublished Exercises should remain.");
+        assertTrue($exercisesNotUnpublishedAndAnonymized, "No unpublished Exercises should remain.");
 
         // teams
         $teams = $this->entityManager->getRepository(ExercisePhaseTeam::class)->findAll();
@@ -225,5 +234,106 @@ trait UserContextTrait
         });
 
         assertEquals(0, count($teamsWithUser), "User should not be in any ExercisePhaseTeam.");
+    }
+
+    /**
+     * @Given the expiration date of user :username is set to :relativeTime from now
+     */
+    public function theExpirationDateOfUserIsSetTo(string $username, string $relativeTime): void
+    {
+        $user = $this->getUserByEmail($username);
+        $user->setExpirationDate(new \DateTimeImmutable($relativeTime));
+
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Then the expiration date of user :username should be set to :relativeTime from now
+     */
+    public function theExpirationDateOfUserShouldBeSetTo(string $username, string $relativeTime): void
+    {
+        $user = $this->getUserByEmail($username);
+
+        $expectedDateDiff = (new \DateTimeImmutable($relativeTime))->diff($user->getExpirationDate());
+        assertEquals($expectedDateDiff->days, 0);
+    }
+
+    /**
+     * @When expired users are removed
+     */
+    public function expiredUsersAreRemoved(): void
+    {
+        $this->userExpirationService->removeAllExpiredUsers();
+    }
+
+    /**
+     * @When expiring users are notified
+     */
+    public function expiringUsersAreNotified(): void
+    {
+        $this->userExpirationService->notifySoonToBeExpiredUsers();
+    }
+
+    /**
+     * @Then User :username should be marked as notified
+     */
+    public function userShouldBeMarkedAsNotified(string $username): void
+    {
+        $user = $this->getUserByEmail($username);
+        assertTrue($user->isExpirationNoticeSent());
+    }
+
+    /**
+     * @Then User :username should be marked as not notified
+     */
+    public function userShouldBeMarkedAsNotNotified(string $username): void
+    {
+        $user = $this->getUserByEmail($username);
+        assertFalse($user->isExpirationNoticeSent());
+    }
+
+    /**
+     * @Then User :username should only have the role :role
+     */
+    public function userShouldHaveTheRole(string $username, string $role): void
+    {
+        $user = $this->getUserByEmail($username);
+        assertContains($role, $user->getRoles());
+    }
+
+    /**
+     * @Given User :username is marked as not verified
+     */
+    public function userIsMarkedAsNotVerified(string $username): void
+    {
+        $user = $this->getUserByEmail($username);
+        $user->setIsVerified(false);
+
+        $this->entityManager->persist($user);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given User :username is marked as verified
+     */
+    public function userIsMarkedAsVerified(string $username): void
+    {
+        $user = $this->getUserByEmail($username);
+        $user->setIsVerified(true);
+
+        $this->entityManager->persist($user);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    private function getUserByEmail(string $email): User|null
+    {
+        /** @var User|null */
+        return $this->entityManager
+            ->getRepository(User::class)
+            ->findOneBy(['email' => $email]);
     }
 }
