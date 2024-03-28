@@ -1,8 +1,6 @@
 import { Controller } from 'stimulus'
 import ReactDOM from 'react-dom'
 import CKEditorStandalone from 'Components/CKEditor/CKEditorStandalone'
-import CustomCKEditor from 'Components/CKEditor/CustomCKEditor'
-
 class CKEditorController extends Controller {
     connect() {
         /**

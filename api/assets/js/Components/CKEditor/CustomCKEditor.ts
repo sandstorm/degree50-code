@@ -19,7 +19,6 @@ import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize'
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle'
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar'
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js'
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter'
 import Link from '@ckeditor/ckeditor5-link/src/link'
 import List from '@ckeditor/ckeditor5-list/src/list'
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties'
@@ -33,6 +32,7 @@ import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties'
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar'
 // custom plugins
 import CKEditorPrintPlugin from 'Components/CKEditor/CustomPlugins/CKEditorPrintPlugin/CKEditorPrintPlugin'
+import CustomBase64UploadAdapter from 'Components/CKEditor/CustomAdapter/CKEditorBase64UploadAdapter'
 
 export default class CustomCKEditor extends ClassicEditor {}
 
@@ -69,7 +69,7 @@ ClassicEditor.builtinPlugins = [
     TableToolbar,
     Underline,
     CKEditorPrintPlugin,
-    Base64UploadAdapter,
+    CustomBase64UploadAdapter,
 ]
 
 // eslint-disable-next-line functional/immutable-data
