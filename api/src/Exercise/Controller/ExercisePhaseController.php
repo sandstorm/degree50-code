@@ -204,7 +204,7 @@ class ExercisePhaseController extends AbstractController
         $this->initiateExercisePhaseTeamWithSolution($exercisePhase, $exercisePhaseTeam, $user);
 
         $response = new Response();
-        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhaseTeam));
 
         $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
@@ -401,7 +401,7 @@ class ExercisePhaseController extends AbstractController
         $config = $this->getConfigWithSolutionApiEndpoints($exercisePhase, $exercisePhaseTeam);
 
         $response = new Response();
-        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhase));
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhaseTeam));
 
         $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
         $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(

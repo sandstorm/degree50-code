@@ -175,7 +175,7 @@ class ExerciseController extends AbstractController
         $previousExercisePhase = $this->exercisePhaseRepository->findExercisePhaseBefore($exercisePhase);
         $nextExercisePhase = $this->exercisePhaseRepository->findExercisePhaseAfter($exercisePhase);
 
-        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
+        $teamOfCurrentUser = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase, true);
 
         $teams = [];
 

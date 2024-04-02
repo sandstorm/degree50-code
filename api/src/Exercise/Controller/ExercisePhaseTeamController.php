@@ -13,6 +13,7 @@ use App\Entity\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\LiveSync\LiveSyncService;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
@@ -40,6 +41,7 @@ class ExercisePhaseTeamController extends AbstractController
     private MessageBusInterface $messageBus;
     private SolutionService $solutionService;
     private ExercisePhaseService $exercisePhaseService;
+    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -49,6 +51,7 @@ class ExercisePhaseTeamController extends AbstractController
         MessageBusInterface $messageBus,
         SolutionService $solutionService,
         ExercisePhaseService $exercisePhaseService,
+        ExercisePhaseTeamRepository $exercisePhaseTeamRepository
     ) {
         $this->entityManager = $entityManager;
         $this->translator = $translator;
@@ -57,6 +60,7 @@ class ExercisePhaseTeamController extends AbstractController
         $this->messageBus = $messageBus;
         $this->solutionService = $solutionService;
         $this->exercisePhaseService = $exercisePhaseService;
+        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
     }
 
     /**
@@ -69,7 +73,13 @@ class ExercisePhaseTeamController extends AbstractController
         $user = $this->getUser();
         $exercise = $exercisePhase->getBelongsToExercise();
 
-        $existingTeams = $exercisePhase->getTeams();
+        $existingTeams = $this->exercisePhaseTeamRepository->findBy(
+            [
+                'exercisePhase' => $exercisePhase,
+                'isTest' => false
+            ]
+        );
+
         foreach ($existingTeams as $team) {
             if ($team->getCreator() === $user) {
                 $this->addFlash(

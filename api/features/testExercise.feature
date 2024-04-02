@@ -48,6 +48,47 @@ Feature: Test an exercise
         Then the page should contain the text "Test Ergebnis erfolgreich zurückgesetzt!"
         And the page should contain the text "Phase starten"
 
+    Scenario: User can test and start his own phase
+        # log in as dozent and test the first phase
+        Given I am logged in via browser as "test-dozent@sandstorm.de"
+        When I visit url "/exercise/test/c1-exercise-dozent/phase/analysis1"
+        Then the page should contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+        When I click on "Phase starten"
+        Then the page should contain the text "Testen von Phase 1: analysis1"
+        When I click on "Phase abschließen"
+        Then the page should contain the text "Mein Ergebnis"
+        And the page should contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+        # than start the first phase with same user
+        When I visit url "/exercise/c1-exercise-dozent/phase/analysis1"
+        Then the page should not contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+        Then the page should contain the text "Phase starten"
+        When I click on "Phase starten"
+        Then the page should contain the text "Phase 1: analysis1"
+        When I click on "Phase abschließen"
+        Then the page should contain the text "Mein Ergebnis"
+        Then the page should not contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+
+    Scenario: User can start his own phase and test
+        # log in as dozent and start the first phase
+        Given I am logged in via browser as "test-dozent@sandstorm.de"
+        When I visit url "/exercise/c1-exercise-dozent/phase/analysis1"
+        Then the page should not contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+        Then the page should contain the text "Phase starten"
+        When I click on "Phase starten"
+        Then the page should contain the text "Phase 1: analysis1"
+        When I click on "Phase abschließen"
+        Then the page should contain the text "Mein Ergebnis"
+        Then the page should not contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+
+        # than test the first phase with same user
+        When I visit url "/exercise/test/c1-exercise-dozent/phase/analysis1"
+        Then the page should contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+        When I click on "Phase starten"
+        Then the page should contain the text "Testen von Phase 1: analysis1"
+        When I click on "Phase abschließen"
+        Then the page should contain the text "Mein Ergebnis"
+        And the page should contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
+
     Scenario: The student does not see the test solution from the dozent
         # log in as dozent and test the first phase
         Given I am logged in via browser as "test-dozent@sandstorm.de"
