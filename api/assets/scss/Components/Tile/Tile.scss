@@ -10,12 +10,6 @@ $tileHeight--small: 150px;
         display: none;
     }
 
-    &:focus-within {
-        .tile__actions {
-            display: block !important;
-        }
-    }
-
     &:hover {
         text-decoration: none;
     }
@@ -33,10 +27,6 @@ $tileHeight--small: 150px;
             background-color: $theme__color__primary;
             border-color: $theme__color__primary;
 
-            color: $theme__color__white;
-        }
-
-        .tile__action-icon {
             color: $theme__color__white;
         }
 
@@ -90,12 +80,6 @@ $tileHeight--small: 150px;
             border-style: dashed;
         }
     }
-
-    &--is-new {
-        .ribbon {
-            display: block;
-        }
-    }
 }
 
 .tile__content {
@@ -122,39 +106,12 @@ $tileHeight--small: 150px;
     overflow: hidden;
 }
 
-.tile__date,
-.tile__phases {
+.tile__date {
     display: inline-block;
     width: 100%;
 
     text-align: left;
     font-size: $base__fontSize--tiny;
-}
-
-.tile__action-icon {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-
-    color: $theme__color__primary;
-}
-
-.tile__status {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-
-    &--0 {
-        color: $theme__color__red;
-    }
-
-    &--1 {
-        color: $theme__color__primary;
-    }
-
-    &--2 {
-        color: $theme__color__secondary;
-    }
 }
 
 .tile__icon {
@@ -170,85 +127,6 @@ $tileHeight--small: 150px;
     width: 100%;
     margin-bottom: $theme__spacing--small;
     object-fit: cover;
-}
-
-a.tile__favor-button,
-button.tile__favor-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: -7px;
-    right: -7px;
-    width: 40px;
-    height: 40px;
-
-    color: $theme__color__gold;
-
-    background: $theme__color__grey;
-    border: none;
-    border-radius: 50%;
-
-    z-index: 1000;
-
-    i {
-        font-size: 1.2rem;
-
-        @include transition(transform .5s);
-        transform-style: preserve-3d;
-    }
-
-    &:focus {
-        outline: 2px solid $theme__color__grey--dark;
-        outline-offset: 2px;
-    }
-
-    &:hover, &:focus, &:active {
-        color: $theme__color__gold;
-
-        i {
-            // rotate icon on toggle
-            transform: rotateY(180deg);
-        }
-    }
-}
-
-.tile__actions {
-    display: none;
-    position: absolute;
-    height: auto;
-    width: 100%;
-    top: 0;
-
-    background-color: $theme__color__white;
-    border: 1px solid $theme__color__primary;
-
-    z-index: 100;
-
-    i {
-        width: 25px;
-
-        text-align: center;
-    }
-
-    a, button {
-        display: block;
-        width: 100%;
-        padding: 5px;
-
-        text-decoration: none;
-        text-overflow: ellipsis;
-        text-align: left;
-        white-space: nowrap;
-        font-size: 0.9rem;
-    }
-
-    button {
-        background-color: $theme__color__white;
-        border: none;
-
-        color: $theme__color__primary;
-    }
 }
 
 .tile__extension {

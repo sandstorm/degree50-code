@@ -103,6 +103,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "cutVideo": {
                   "id": "cut-video-1",
                   "name": "TEST_Video_cut-video-1",
+                  "createdAt": "02.04.2024",
                   "description": "",
                   "duration": 0,
                   "url": {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useVideoFavoritesQuery } from 'StimulusControllers/Schreibtisch/Store/SchreibtischApi'
-import VideoTile from './VideoTile'
+import VideoFavourite from './VideoFavourite'
 import { Course, Fachbereich, VideoFavorite } from 'StimulusControllers/Schreibtisch/types'
 import { useSelector } from 'react-redux'
 import { selectActiveCourseFilters } from 'StimulusControllers/Schreibtisch/Store/CourseFilterSlice'
@@ -58,10 +58,10 @@ const VideoFavorites = () => {
 
     // TODO: a11y
     return (
-        <ul data-test-id="video-favorites" className="tiles video-favorites">
+        <ul data-test-id="video-favorites" className="overview">
             {filteredVideos.map((videoFavorite) => (
                 <li key={videoFavorite.id}>
-                    <VideoTile video={videoFavorite.video} />
+                    <VideoFavourite video={videoFavorite.video} />
                 </li>
             ))}
         </ul>

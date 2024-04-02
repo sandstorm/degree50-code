@@ -20,16 +20,9 @@ class AppFixtures extends Fixture
         $this->eventStore = $eventStore;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
-        $exercise = new Exercise("e1");
-        $exercise->name = 'Analyse eines Videos zu einer Fördersituation';
-        $exercise->description = 'Analyse eines Videos zu einer Fördersituation, indem unter einem bestimmten Blickwinkel ein Analytical Shortfilm aus dem Video erstellt wird';
-
-        // this reference returns the User object created in UserFixtures
-        $exercise->setCourse($this->getReference(AccountFixtures::COURSE_REFERENCE));
-        $exercise->setCreator($this->getReference(AccountFixtures::CREATOR_REFERENCE));
-
+        $exercise = $this->createExercise($manager, 'Analyse eines Videos zu einer Fördersituation', 'Analyse eines Videos zu einer Fördersituation, indem unter einem bestimmten Blickwinkel ein Analytical Shortfilm aus dem Video erstellt wird');
         $exercise_p1 = new VideoAnalysisPhase();
         $exercise_p1->setVideoAnnotationsActive(true);
         $exercise_p1->setVideoCodesActive(true);
@@ -64,15 +57,40 @@ class AppFixtures extends Fixture
                 Szenen Ihrer Filme allgemeine Kennzeichen für gelungene bzw. weniger gelungene Fördermomente ableiten. Halten Sie Ihre Ergebnisse – jeder für sich – in der Tabelle fest (AB 4 Kennzeichen gelungener/ weniger gelungener Fördermomente).
         ';
         $exercise->addPhase($exercise_p3);
+        $manager->persist($exercise);
 
         $this->createVideoCodePrototypes($manager);
-
-        $manager->persist($exercise);
+        // create some more random exercises
+        $this->createExercise($manager, 'Weitere Aufgabe', 'Beschreibung dieser Aufgabe');
+        $this->createExercise($manager, 'Noch eine Aufgabe', 'Beschreibung dieser Aufgabe');
+        $this->createExercise($manager, 'Und noch eine Aufgabe', 'Beschreibung dieser Aufgabe');
 
         $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
     }
 
+    /**
+     * @param string $name
+     * @param string $description
+     * @return Exercise
+     */
+    private function createExercise(ObjectManager $manager, string $name, string $description): Exercise
+    {
+        $exercise = new Exercise("e1");
+        $exercise->name = $name;
+        $exercise->description = $description;
+
+        // this reference returns the User object created in UserFixtures
+        $exercise->setCourse($this->getReference(AccountFixtures::COURSE_REFERENCE));
+        $exercise->setCreator($this->getReference(AccountFixtures::CREATOR_REFERENCE));
+        $manager->persist($exercise);
+        return $exercise;
+    }
+
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     private function createVideoCodePrototypes(ObjectManager $manager): void
     {
         $videoCode1 = new VideoCode();

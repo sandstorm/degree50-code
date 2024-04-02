@@ -123,8 +123,8 @@ To create and deploy a versioned release follow these steps:
 
 ### Running Behat Tests
 
-1. Install e2e-testrunner dependencies: `cd e2e-testrunner && npm install`
-2. Start e2e-testrunner: `node index.js`
+1. Install e2e-testrunner dependencies: `cd e2e-testrunner && nvm use && npm install`
+2. Start e2e-testrunner headless: `node index.js` or non-headless: `node index.js false`
 3. Start docker containers `make start`
 4. execute tests
    1. Integration: `make test-integration`

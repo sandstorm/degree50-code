@@ -14,6 +14,7 @@ final class ClientSideCutVideo implements JsonSerializable
 {
     private string $id;
     private string $name;
+    private string $createdAt;
     private ?string $description;
     private ?float $duration;
 
@@ -22,12 +23,14 @@ final class ClientSideCutVideo implements JsonSerializable
     private function __construct(
         string $id,
         string $name,
+        string $createdAt,
         ?string $description,
         ?float $duration,
         ClientSideVideoUrl $url
     ) {
         $this->id = $id;
         $this->name = $name;
+        $this->createdAt = $createdAt;
         $this->description = $description;
         $this->duration = $duration;
         $this->url = $url;
@@ -38,6 +41,7 @@ final class ClientSideCutVideo implements JsonSerializable
         return new self(
             $video->getId(),
             $video->getTitle(),
+            $video->getCreatedAt()->format("d.m.Y"),
             $video->getDescription(),
             $video->getVideoDuration(),
             $url,
@@ -49,6 +53,7 @@ final class ClientSideCutVideo implements JsonSerializable
         return new self(
             $input['id'],
             $input['name'],
+            $input['createdAt'],
             $input['description'],
             $input['duration'],
             $input['url']
@@ -60,6 +65,7 @@ final class ClientSideCutVideo implements JsonSerializable
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'createdAt' => $this->createdAt,
             'description' => $this->description,
             'duration' => $this->duration,
             'url' => $this->url,
