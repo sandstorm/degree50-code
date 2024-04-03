@@ -29,7 +29,8 @@ const prettyConvertPhaseStatus = (backendStatus: Exercise['status']) => {
 const ExerciseListItem = (props: Props) => {
     const { exercise } = props
 
-    const url = `/exercise/show-overview/${exercise.id}`
+    // see route "exercise__show" in ExerciseController.php
+    const url = `/exercise/${exercise.id}/show`
     // TODO
     const ariaLabel = undefined
 

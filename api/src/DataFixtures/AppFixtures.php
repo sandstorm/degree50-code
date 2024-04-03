@@ -76,7 +76,7 @@ class AppFixtures extends Fixture
      */
     private function createExercise(ObjectManager $manager, string $name, string $description): Exercise
     {
-        $exercise = new Exercise("e1");
+        $exercise = new Exercise();
         $exercise->name = $name;
         $exercise->description = $description;
 
