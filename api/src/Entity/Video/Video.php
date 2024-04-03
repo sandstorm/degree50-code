@@ -2,9 +2,6 @@
 
 namespace App\Entity\Video;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Core\EntityTraits\IdentityTrait;
 use App\Entity\Account\Course;
 use App\Entity\Account\User;
@@ -17,11 +14,13 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource
  * @ORM\Entity(repositoryClass="App\Repository\Video\VideoRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class Video
 {
@@ -152,6 +151,7 @@ class Video
         $this->generateOrSetId($id);
         $this->exercisePhases = new ArrayCollection();
         $this->courses = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getTitle(): string
@@ -302,11 +302,14 @@ class Video
     }
 
     /**
-     * @ORM\PrePersist
+     * Used for testing purposes only.
+     *
+     * @param DateTimeImmutable $createdAt
+     * @return void
      */
-    public function setCreatedAtValue()
+    public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = $createdAt;
     }
 
     public function getCreatedAt(): ?DateTimeImmutable
