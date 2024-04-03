@@ -39,7 +39,11 @@ const triggerSound = new Howl({
 })
 
 export function* playShortCutTrigger() {
-    triggerSound.play()
+    const isSoundEnabled = selectIsSoundEnabled(yield selectState())
+
+    if (isSoundEnabled) {
+        triggerSound.play()
+    }
 }
 
 const STORAGE_KEY = 'degree-short-cut-sound-options'

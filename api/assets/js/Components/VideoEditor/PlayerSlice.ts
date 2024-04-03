@@ -34,12 +34,6 @@ export const playerSlice = createSlice({
                 playPosition: action.payload,
             }
         },
-        togglePlay: (state) => {
-            return {
-                ...state,
-                isPaused: !state.isPaused,
-            }
-        },
         setPause: (state, action: PayloadAction<boolean>) => {
             return {
                 ...state,

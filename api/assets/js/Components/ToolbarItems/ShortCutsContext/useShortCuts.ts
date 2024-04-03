@@ -19,6 +19,7 @@ import { AllMediaItemsOverlayIds } from 'Components/ToolbarItems/AllMediaItemsCo
 
 export const useShortCuts = () => {
     const dispatch = useAppDispatch()
+    const isCurrentEditor = useAppSelector(selectors.selectUserIsCurrentEditor)
 
     useEffect(() => {
         dispatch(initializeShortCuts())
@@ -91,7 +92,7 @@ export const useShortCuts = () => {
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()
         },
-        { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'] },
+        { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'], enabled: isCurrentEditor },
         [dispatch]
     )
 
@@ -107,11 +108,11 @@ export const useShortCuts = () => {
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()
         },
-        { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'] },
+        { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'], enabled: isCurrentEditor },
         [dispatch]
     )
 
-    // createVideoCode
+    // createVideoCut
     const createVideoCutHotKey = useAppSelector((state) => selectHotKeyByShortCutId(state, ShortCutId.CREATE_VIDEO_CUT))
     useHotkeys(
         createVideoCutHotKey,
@@ -121,7 +122,7 @@ export const useShortCuts = () => {
             keyboardEvent.preventDefault()
             keyboardEvent.stopPropagation()
         },
-        { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'] },
+        { enableOnTags: ['SELECT', 'INPUT', 'TEXTAREA'], enabled: isCurrentEditor },
         [dispatch]
     )
 
