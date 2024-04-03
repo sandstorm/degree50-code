@@ -87,13 +87,11 @@ $tileHeight--small: 150px;
     display: block;
     margin: 0;
     padding: 10px;
-    padding-bottom: 25px;
 
     text-align: center;
+    cursor: pointer;
 
     border: 1px solid $theme__color__primary;
-
-    cursor: pointer;
 }
 
 .tile__title {

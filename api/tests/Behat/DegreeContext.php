@@ -744,9 +744,9 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Then See my available exercises by default
+     * @Then I see my available exercises by default
      */
-    public function seeMyAvailableExercisesByDefault()
+    public function iSeeMyAvailableExercisesByDefault(): void
     {
         $this->waitForSelector('exercise-list');
         $this->pageContainsTexts([
@@ -1014,7 +1014,7 @@ final class DegreeContext implements Context
     /**
      * @When I access :materialId from "Meine Materialien"
      */
-    public function iAccessAMaterialFrom($materialId)
+    public function iAccessAMaterialFrom($materialId): void
     {
         $this->iNavigateToSchreibtisch();
         $this->iClickOn('Meine Materialien');
@@ -1027,7 +1027,7 @@ final class DegreeContext implements Context
     /**
      * @When I edit material :materialId and change it to :materialValue
      */
-    public function editThisMaterial($materialId, $materialValue)
+    public function editThisMaterial($materialId, $materialValue): void
     {
         // edit material
         $this->playwrightConnector->execute(

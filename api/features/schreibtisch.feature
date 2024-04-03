@@ -7,7 +7,17 @@ Feature: Students can access their available videos, exercises and materials via
         And I am part of two courses with multiple exercises
         When I navigate to "Schreibtisch"
         Then I get access to "Meine Aufgaben", "Meine Videofavoriten", "Meine Materialien"
-        And See my available exercises by default
+        And I see my available exercises by default
+
+    @playwright
+    Scenario: A student can open an exercise from the schreibtisch
+        Given I am a student logged in via browser
+        And I am part of two courses with multiple exercises
+        When I navigate to "Schreibtisch"
+        And I access "Meine Aufgaben"
+        Then I see my available exercises by default
+        When I click on "exercise1"
+        Then the page should contain the text "Aufgabenstellung:"
 
     @integration
     Scenario: A student can see all exercises of courses they are part of in "Meine Aufgaben"

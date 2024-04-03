@@ -18,20 +18,17 @@ const MaterialTile = (props: Props) => {
 
     return (
         <NavLink
-            tabIndex={0}
-            className="tile"
+            className="overview-item"
             title={material.originalExercisePhaseName}
             to={`${ROUTE_EDIT_MATERIAL}/${material.id}`}
         >
-            <div className="tile__content">
-                <i className="tile__icon fas fa-square-quote"></i>
-                <p className="material-tile__phase-name">{material.originalExercisePhaseName}</p>
-                {lastUpdatedAt ? (
-                    <p className="material-tile__date">Zuletzt geändert: {lastUpdatedAt}</p>
-                ) : (
-                    <p className="material-tile__date">Erstellt am: {createdAt}</p>
-                )}
+            <div className="overview-item__date" title={lastUpdatedAt ? 'Zuletzt geändert' : 'Erstellt am'}>
+                {lastUpdatedAt ? lastUpdatedAt : createdAt}
             </div>
+            <div className="overview-item__status">
+                <i className="fas fa-square-quote"></i>
+            </div>
+            <div className="overview-item__title">{material.originalExercisePhaseName}</div>
         </NavLink>
     )
 }

@@ -64,9 +64,9 @@ const MaterialList = () => {
 
     // TODO a11y
     return (
-        <ul data-test-id="material" className="tiles material">
+        <ul data-test-id="material" className="overview material">
             {filteredMaterials.map((material) => (
-                <li key={material.id} className="tile">
+                <li key={material.id}>
                     <MaterialTile material={material} />
                 </li>
             ))}
