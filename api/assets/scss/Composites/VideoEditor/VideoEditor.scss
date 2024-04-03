@@ -29,37 +29,6 @@
     &--hidden {
         display: none;
     }
-
-    .menu {
-        z-index: $theme__z-index--menu;
-        position: absolute;
-        bottom: 32px;
-        width: 210px;
-
-        background-color: $theme__color__grey--dark;
-        color: $theme__color__white;
-
-        .menu-item {
-            padding: 8px;
-            width: 100%;
-            text-align: left;
-        }
-    }
-
-    .menu-wrapper {
-        position: relative;
-    }
-
-    .menu-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-
-        height: 100%;
-        width: 100%;
-
-        z-index: $theme__z-index--menu - 1;
-    }
 }
 
 .video-editor__toolbar__button {

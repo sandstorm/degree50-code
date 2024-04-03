@@ -41,7 +41,7 @@ const VideoEditor: FC<Props> = (props) => {
                 videoMap={firstVideo}
             />
             <Toolbar hidden={isMediaLaneFullHeight}>
-                <div className="video-editor__menu video-editor__menu--right">
+                <div className="video-editor-menu video-editor-menu--right">
                     <button
                         className="button button--type-primary video-editor__toolbar__button video-editor__toolbar__button--with-text"
                         title="Zeitleiste anzeigen/verbergen"

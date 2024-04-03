@@ -1,25 +1,22 @@
 import Button from 'Components/Button/Button'
 import { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { ConfigStateSlice } from 'StimulusControllers/ExercisePhaseApp/Components/Config/ConfigSlice'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { AUFGABE_OVERLAY_ID } from './AufgabeOverlay'
-
-const mapStateToProps = (state: ConfigStateSlice) => ({})
 
 const mapDispatchToProps = {
     setOverlay: actions.overlay.setOverlay,
 }
 
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+type Props = typeof mapDispatchToProps
 
-const AufgabeMenu: FC<Props> = (props) => {
+const AufgabeMenu: FC<Props> = (props: Props) => {
     const handleClick = () => {
         props.setOverlay({ overlayId: AUFGABE_OVERLAY_ID, closeOthers: true })
     }
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             <Button
                 title="Aufgabe"
                 className="button button--type-primary video-editor__toolbar__button"
@@ -31,4 +28,4 @@ const AufgabeMenu: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(AufgabeMenu))
+export default connect(undefined, mapDispatchToProps)(memo(AufgabeMenu))

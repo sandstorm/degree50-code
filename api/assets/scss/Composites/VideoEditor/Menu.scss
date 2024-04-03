@@ -1,32 +1,41 @@
-.video-editor__menu {
-    position: relative;
+.menu {
+    z-index: $theme__z-index--menu;
+    position: absolute;
+    bottom: 32px;
 
-    &--right {
-        margin-left: $theme__spacing--huge;
+    background-color: $theme__color__grey--dark;
 
-        @include mq(xmedium) {
-            margin-left: auto;
-        }
+    color: $theme__color__white;
+}
+
+.menu__item {
+    @extend .button;
+    @extend .button--type-grey;
+    padding: $theme__spacing--small $theme__spacing--base;
+    width: 100%;
+
+    white-space: nowrap;
+
+    &--disabled {
+        opacity: 0.5;
+    }
+
+    &--active {
+        color: $theme__color__white;
+        background-color: $theme__color__grey--dark;
+        border-color: $theme__color__grey--dark;
     }
 }
 
-.video-editor__menu__count-badge {
-    position: absolute;
-    display: flex;
+.menu__wrapper {
+    position: relative;
+}
 
-    align-items: baseline;
-    justify-content: center;
-    right: -5px;
-    bottom: -5px;
-    width: 15px;
-    height: 15px;
-
-    background-color: $theme__color__red;
-    border: none;
-    border-radius: 50%;
-
-    color: $theme__color__white;
-    font-size: calc(0.7 * #{$base__fontSize});
-
-    z-index: 10;
+.menu__backdrop {
+    z-index: $theme__z-index--menu - 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
 }

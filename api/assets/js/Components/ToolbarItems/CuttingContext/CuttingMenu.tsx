@@ -60,8 +60,8 @@ const CutsMenu: FC<Props> = (props) => {
     const menuButtonAriaLabel = `Schnitte (${props.activeCutCount} aktive Schnitte)`
 
     return (
-        <div className="video-editor__menu">
-            {props.activeCutCount > 0 && <div className="video-editor__menu__count-badge">{props.activeCutCount}</div>}
+        <div className="video-editor-menu">
+            {props.activeCutCount > 0 && <div className="video-editor-menu__count-badge">{props.activeCutCount}</div>}
             <MenuButton
                 icon={<i className="fas fa-cut" />}
                 ariaLabel={menuButtonAriaLabel}

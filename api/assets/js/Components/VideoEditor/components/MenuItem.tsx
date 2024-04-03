@@ -1,30 +1,36 @@
-import React, { memo } from 'react'
+import React, { memo, useCallback } from 'react'
 
 type Props = {
     label: string
     onClick: () => void
     ariaLabel: string
     disabled?: boolean
+    isActive?: boolean
 }
 
 const MenuItem = (props: Props) => {
-    const className = ['button button--type-grey menu-item', ...(props.disabled ? ['disabled'] : [])].join(' ')
+    const className = [
+        'menu__item',
+        ...(props.disabled ? ['menu__item--disabled'] : []),
+        ...(props.isActive ? ['menu__item--active'] : []),
+    ].join(' ')
 
-    if (props.disabled) {
-        // WHY:
-        // For accessibility reasons we do want to keep the order of menus always the same.
-        // To prevent the button from being skipped when tabbing, we don't actually disable it,
-        // but just give it the correct styles and remove its click handler, when its disabled.
-        // That way all menut items will always be reachable with the same amount of tab presses.
-        return (
-            <button className={className} aria-label={`${props.ariaLabel}-deaktiviert`}>
-                {props.label}
-            </button>
-        )
-    }
+    const handleClick = useCallback(() => {
+        if (!props.disabled) {
+            props.onClick()
+        }
+    }, [props.onClick, props.disabled])
+
+    const ariaLabel = props.disabled ? props.ariaLabel + '-deaktiviert' : props.ariaLabel
 
     return (
-        <button className={className} onClick={props.onClick} aria-label={props.ariaLabel} disabled={props.disabled}>
+        <button
+            className={className}
+            onClick={handleClick}
+            aria-label={ariaLabel}
+            autoFocus={props.isActive}
+            disabled={props.disabled}
+        >
             {props.label}
         </button>
     )

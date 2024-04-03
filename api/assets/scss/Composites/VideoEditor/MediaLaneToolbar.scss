@@ -51,10 +51,9 @@
         outline: none;
     }
 
-    .video-editor__menu {
+    .video-editor-menu {
         .menu {
-            position: absolute;
-            width: max-content;
+            bottom: unset;
         }
     }
 }

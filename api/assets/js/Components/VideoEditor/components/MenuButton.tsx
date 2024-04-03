@@ -80,7 +80,7 @@ const MenuButton: FC<Props> = ({
 
     if (disabled) {
         return (
-            <div className="menu-wrapper">
+            <div className="menu__wrapper">
                 <Button title={ariaLabel} className={classes} isDisabled>
                     {icon} {label}
                 </Button>
@@ -89,7 +89,7 @@ const MenuButton: FC<Props> = ({
     }
 
     return (
-        <div className="menu-wrapper">
+        <div className="menu__wrapper">
             <Button className={classes} onPress={toggleMenu} title={ariaLabel}>
                 {icon} {label}
             </Button>
@@ -98,7 +98,7 @@ const MenuButton: FC<Props> = ({
                 //   This fixes an issue with Chrome Dev Tools where a click event is triggered after a touch event.
                 //   This causes the menu to close immediately after opening.
                 //   By using mouseDown and touchStart, we can ignore this additional click event.
-                <div className="menu-backdrop" onMouseDown={close} onTouchStart={close} />
+                <div className="menu__backdrop" onMouseDown={close} onTouchStart={close} />
             )}
             {isOpen && (
                 <FocusScope autoFocus contain restoreFocus key={focusScopeKey}>

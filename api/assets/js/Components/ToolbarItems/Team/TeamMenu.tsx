@@ -25,8 +25,8 @@ const TeamMenu: FC<Props> = (props) => {
     const isDisabled = !props.isGroupPhase || props.isSolutionView
 
     return (
-        <div className="video-editor__menu">
-            {!isDisabled && <div className="video-editor__menu__count-badge">{props.onlineTeamMemberIds.length}</div>}
+        <div className="video-editor-menu">
+            {!isDisabled && <div className="video-editor-menu__count-badge">{props.onlineTeamMemberIds.length}</div>}
             <Button
                 title="Team"
                 isDisabled={isDisabled}

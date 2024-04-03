@@ -22,7 +22,7 @@ const ShortCutsMenu = (props: Props) => {
         })
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             <Button
                 title="Tastenkombination zur Bedienung"
                 className="button button--type-primary video-editor__toolbar__button"
