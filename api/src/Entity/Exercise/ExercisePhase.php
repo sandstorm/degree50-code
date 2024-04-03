@@ -311,13 +311,13 @@ abstract class ExercisePhase
     public function getHasSolutions(): bool
     {
         $teams = $this->getTeams()->toArray();
-
         $solutionsWithoutTestSolution = array_filter($teams, fn (ExercisePhaseTeam $team) => !$team->isTest());
         return count($solutionsWithoutTestSolution) > 0;
     }
 
     /**
      * Check if a Solution exists on a Team that the user is a member of.
+     * Excludes the test solution.
      */
     public function getHasSolutionForUser(User $user): bool
     {
@@ -325,7 +325,7 @@ abstract class ExercisePhase
             ->getTeams()
             ->exists(
                 function ($i, ExercisePhaseTeam $exercisePhaseTeam) use ($user) {
-                    return $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user);
+                    return !$exercisePhaseTeam->isTest() && $exercisePhaseTeam->hasSolution() && $exercisePhaseTeam->getMembers()->contains($user);
                 }
             );
     }

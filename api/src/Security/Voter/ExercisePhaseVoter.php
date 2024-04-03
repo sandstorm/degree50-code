@@ -2,7 +2,6 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Account\CourseRole;
 use App\Entity\Account\User;
 use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
@@ -105,7 +104,7 @@ class ExercisePhaseVoter extends Voter
         }
 
         $phaseSortingsUpToThisPhase = range(0, $exercisePhase->getSorting() - 1);
-        $exercise =$exercisePhase->getBelongsToExercise();
+        $exercise = $exercisePhase->getBelongsToExercise();
 
         $phasesBeforeAreDone = array_reduce(
             $phaseSortingsUpToThisPhase,
@@ -162,7 +161,12 @@ class ExercisePhaseVoter extends Voter
     {
         $existingTeams = $exercisePhase->getTeams();
         $canCreate = true;
+        /** @var ExercisePhaseTeam $team */
         foreach ($existingTeams as $team) {
+            if ($team->isTest()) {
+                continue;
+            }
+
             if ($team->getMembers()->contains($user)) {
                 $canCreate = false;
             }

@@ -133,7 +133,7 @@
                     {% trans %}exercise.showPhase.myResult{% endtrans %}
                 </a>
             {% else %}
-                {% if is_granted('createTeam', exercisePhase) %}
+                {% if is_granted('createTeam', exercisePhase) or testMode %}
                     <a
                         class="button button--size-large button--type-primary"
                         href="{{ path((testMode) ? 'exercise-phase-team__test-new' : 'exercise-phase-team__new', {id: exercisePhase.id}) }}"

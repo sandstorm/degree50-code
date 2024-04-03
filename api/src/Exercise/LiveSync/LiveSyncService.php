@@ -3,7 +3,6 @@
 namespace App\Exercise\LiveSync;
 
 use App\Entity\Account\User;
-use App\Entity\Exercise\ExercisePhase;
 use App\Entity\Exercise\ExercisePhaseTeam;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use Firebase\JWT\JWT;
@@ -20,23 +19,17 @@ use Symfony\Component\Mercure\Update;
  */
 class LiveSyncService
 {
-    private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
     private string $jwtPrivateSigningKey;
     private PublisherInterface $publisher;
 
-    public function __construct(ExercisePhaseTeamRepository $exercisePhaseTeamRepository, string $jwtPrivateSigningKey, PublisherInterface $publisher)
+    public function __construct(string $jwtPrivateSigningKey, PublisherInterface $publisher)
     {
-        $this->exercisePhaseTeamRepository = $exercisePhaseTeamRepository;
         $this->jwtPrivateSigningKey = $jwtPrivateSigningKey;
         $this->publisher = $publisher;
     }
 
-    public function getSubscriberJwtCookie(User $user, ExercisePhase $exercisePhase): Cookie
+    public function getSubscriberJwtCookie(User $user, ExercisePhaseTeam $exercisePhaseTeam): Cookie
     {
-        // !!! taking only the team for the current phase prohibits the user from editing two phases
-        // in two browser windows at the same time !!!
-        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
-
         $exercisePhaseTeamTopicIdentifiers = [];
         $exercisePhaseTeamTopicIdentifiers[] = self::buildMercureTopicIdentifier($exercisePhaseTeam);
         // we also need to enable access to the subscription topic

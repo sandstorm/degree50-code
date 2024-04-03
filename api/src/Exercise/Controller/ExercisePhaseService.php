@@ -397,14 +397,16 @@ class ExercisePhaseService
     /**
      * Get the exercise phase status for all teams and checks if at least one team has a solution
      * to review.
-     * */
+     */
     public function phaseHasAtLeastOneSolutionToReview(ExercisePhase $exercisePhase): bool
     {
-        $exercisePhaseTeams = $exercisePhase->getTeams();
+        $oneTeamWithSolutionToReview = $this->exercisePhaseTeamRepository->findOneBy([
+            'exercisePhase' => $exercisePhase,
+            'isTest' => false,
+            'status' => ExercisePhaseStatus::IN_REVIEW
+        ]);
 
-        return $exercisePhaseTeams->exists(
-            fn ($_key, $team) => $this->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW
-        );
+        return $oneTeamWithSolutionToReview !== null;
     }
 
     /**
