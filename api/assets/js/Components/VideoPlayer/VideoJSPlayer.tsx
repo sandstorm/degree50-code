@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import videojs, { VideoJsPlayerOptions, VideoJsPlayer } from 'video.js'
 import videojsDE from 'video.js/dist/lang/de.json'
 
@@ -113,11 +113,17 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
         }
     }
 
-    const handlePause = (pause: boolean) => {
-        if (props.setPauseCallback) {
-            props.setPauseCallback(pause)
+    const handlePause = useCallback(() => {
+        if (props.setPauseCallback && !props.isPaused) {
+            props.setPauseCallback(true)
         }
-    }
+    }, [props])
+
+    const handlePlay = useCallback(() => {
+        if (props.setPauseCallback && props.isPaused) {
+            props.setPauseCallback(false)
+        }
+    }, [props])
 
     const className = classNames('video-player', { 'video-player--hidden': props.hidden })
 
@@ -128,8 +134,8 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
                     id={playerId}
                     ref={videoRef}
                     onTimeUpdate={updateTime}
-                    onPause={() => handlePause(true)}
-                    onPlay={() => handlePause(false)}
+                    onPause={handlePause}
+                    onPlay={handlePlay}
                     className="video-js"
                 >
                     {vttPath && <track kind="captions" src={vttPath} label="Standard" default />}

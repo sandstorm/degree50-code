@@ -13,7 +13,7 @@ export function* togglePlayShortCutSaga() {
 function* togglePlayShortCut() {
     const isPaused = selectors.player.selectIsPaused(yield selectState())
 
-    yield put(actions.player.togglePlay())
+    yield put(actions.player.setPause(!isPaused))
 
     const newIsPaused = selectors.player.selectIsPaused(yield selectState())
 

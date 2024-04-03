@@ -7,6 +7,9 @@ import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionS
 
 const mapStateToProps = (state: AppState) => {
     const isSolutionView = selectors.config.selectIsSolutionView(state)
+    const isCurrentEditor = selectors.selectUserIsCurrentEditor(state)
+
+    const readonly = isSolutionView || !isCurrentEditor
 
     const videoCodePrototypesOfCurrentSolution = selectors.data.selectCurrentSolutionVideoCodePrototypesList(state)
     const videoCodePrototypesOfPreviousSolutions = selectors.data.selectPreviousSolutionsVideoCodePrototypesList(state)
@@ -15,8 +18,8 @@ const mapStateToProps = (state: AppState) => {
     return {
         videoCodePrototypesOfCurrentSolution,
         videoCodePrototypesOfPreviousSolutions,
-        isSolutionView,
         isVideoAnalysisPhase,
+        readonly,
     }
 }
 
@@ -47,6 +50,7 @@ const VideoCodePrototypes = (props: Props) => {
                     <PrototypeList
                         videoCodePrototypes={props.videoCodePrototypesOfCurrentSolution}
                         emptyMessage="Es stehen aktuell keine Video-Codes zur Auswahl"
+                        readonly={props.readonly}
                     />
                 </>
             ) : null}

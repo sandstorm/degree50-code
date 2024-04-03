@@ -91,7 +91,13 @@ const selectPreviousSolutionsVideoCodePrototypesList = createSelector(
     [selectDenormalizedPreviousSolutionsVideoCodePrototypes],
     (prototypes) => {
         return prototypes.reduce((acc: VideoCodePrototype[], prototype) => {
+            // Only root prototypes
             if (prototype.parentId) {
+                return acc
+            }
+
+            // No duplicates
+            if (acc.find((p) => p.id === prototype.id)) {
                 return acc
             }
 

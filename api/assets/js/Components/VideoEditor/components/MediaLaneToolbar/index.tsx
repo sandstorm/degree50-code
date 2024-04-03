@@ -1,31 +1,17 @@
 import React, { useCallback } from 'react'
-import { connect } from 'react-redux'
 import { Translate } from 'react-i18nify'
 import { RenderConfig } from '../MediaLane/MediaTrack'
-import { VideoEditorState, selectors, actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { MEDIA_LANE_TOOLBAR_HEIGHT } from '../MediaLane/useMediaLaneRendering'
 import MediaLaneToolbarItem from './MediaLaneToolbarItem'
 import { secondsToTimeString } from 'Components/VideoEditor/utils/time'
 
-type OwnProps = {
+type Props = {
     updateZoom: (value: number) => void
     videoDuration: number
     renderConfig: RenderConfig
     handleTimeLineAction: (clickTime: number) => void
     children?: React.ReactNode
 }
-
-const mapStateToProps = (state: VideoEditorState) => {
-    return {
-        playerIsPaused: selectors.player.selectIsPaused(state),
-    }
-}
-
-const mapDispatchToProps = {
-    togglePlay: actions.player.togglePlay,
-}
-
-type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & OwnProps
 
 const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction, children }: Props) => {
     const leftInteractionAreaIsDisabled = renderConfig.timelineStartTime === 0
@@ -73,7 +59,6 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
                 </MediaLaneToolbarItem>
                 <MediaLaneToolbarItem>
                     <button
-                        tabIndex={1}
                         className={'button button--type-primary button--size-small'}
                         disabled={leftInteractionAreaIsDisabled}
                         title={'Timeline nach links verschieben'}
@@ -86,7 +71,6 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
                 </MediaLaneToolbarItem>
                 <MediaLaneToolbarItem>
                     <button
-                        tabIndex={1}
                         className={'button button--type-primary button--size-small'}
                         disabled={rightInteractionAreaIsDisabled}
                         title={'Timeline nach rechts verschieben'}
@@ -103,4 +87,4 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Toolbar))
+export default React.memo(Toolbar)
