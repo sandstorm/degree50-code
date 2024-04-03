@@ -70,6 +70,9 @@ trait VideoContextTrait
 
         if (!$video) {
             $user = $this->getUserByEmail($username);
+            // fixed creation date for video
+            $now = new \DateTimeImmutable();
+            $creationDateForVideo = $now->setTimestamp(1711960922); // 2024-04-01 08:42:02
 
             $video = new Video($videoId);
             $video->setCreator($user);
@@ -77,6 +80,7 @@ trait VideoContextTrait
             $video->setDataPrivacyPermissionsAccepted(true);
             $video->setTitle('TEST_Video_' . $videoId);
             $video->setEncodingStatus(Video::ENCODING_FINISHED);
+            $video->setCreatedAt($creationDateForVideo);
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
             $video->setEncodedVideoDirectory($outputDirectory);
 
