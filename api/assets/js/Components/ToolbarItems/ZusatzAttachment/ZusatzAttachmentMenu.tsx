@@ -21,7 +21,7 @@ const ZusatzAttachmentMenu: FC<Props> = (props) => {
     }
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             <Button
                 title="Zusätzliche Anhänge"
                 className="button button--type-primary video-editor__toolbar__button"

@@ -26,7 +26,7 @@ const FilterMenu = (props: Props) => {
     const solutionsFilterLabel = 'Lösungs-Filter anpassen'
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             <Button
                 title={solutionsFilterLabel}
                 className="button button--type-primary video-editor__toolbar__button"

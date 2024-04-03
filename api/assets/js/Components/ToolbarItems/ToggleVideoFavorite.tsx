@@ -20,7 +20,7 @@ const ToggleVideoFavorite = () => {
     }, [video, dispatch])
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             <Button
                 title={isFavorite ? 'Video entfavorisieren' : 'Video favorisieren'}
                 className="button button--type-primary video-editor__toolbar__button"

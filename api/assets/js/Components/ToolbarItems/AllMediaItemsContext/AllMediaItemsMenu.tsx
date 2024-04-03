@@ -2,7 +2,6 @@ import Button from 'Components/Button/Button'
 import React from 'react'
 import { connect, ConnectedProps } from 'react-redux'
 import { actions } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
-import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 export const prefix = 'ALL_MEDIA_ITEMS'
 
@@ -10,15 +9,11 @@ export const AllMediaItemsOverlayIds = {
     all: `${prefix}/all`,
 }
 
-const mapStateToProps = (state: AppState) => {
-    return {}
-}
-
 const mapDispatchToProps = {
     setOverlay: actions.videoEditor.overlay.setOverlay,
 }
 
-const connector = connect(mapStateToProps, mapDispatchToProps)
+const connector = connect(undefined, mapDispatchToProps)
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
@@ -32,7 +27,7 @@ const AllMediaItemsMenu = (props: Props) => {
     }
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             <Button
                 title="Zeige Liste aller Elemente"
                 className="button button--type-primary video-editor__toolbar__button"

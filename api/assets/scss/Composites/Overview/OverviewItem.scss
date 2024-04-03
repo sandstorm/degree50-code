@@ -93,6 +93,11 @@
         padding: $theme__spacing--small $theme__spacing--base;
 
         text-decoration: none !important;
+
+        i {
+            width: 20px;
+            text-align: center;
+        }
     }
 }
 

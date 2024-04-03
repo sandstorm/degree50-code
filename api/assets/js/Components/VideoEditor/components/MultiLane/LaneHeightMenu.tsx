@@ -28,7 +28,7 @@ const LaneHeightMenu = (props: Props) => {
     const icon = <i className="fa-solid fa-line-height"></i>
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             <MenuButton
                 label={menuButtonLabel}
                 icon={icon}
@@ -37,9 +37,24 @@ const LaneHeightMenu = (props: Props) => {
                 className="media-lane-toolbar__menu-button"
                 closeMenuOnItemSelect
             >
-                <MenuItem ariaLabel="25% Höhe" label="25%" onClick={() => props.setHeightModifier(0.25)} />
-                <MenuItem ariaLabel="50% Höhe" label="50%" onClick={() => props.setHeightModifier(0.5)} />
-                <MenuItem ariaLabel="100% Höhe" label="100%" onClick={() => props.setHeightModifier(1)} />
+                <MenuItem
+                    isActive={props.heightModifier === 0.25}
+                    ariaLabel="25% Höhe"
+                    label="25%"
+                    onClick={() => props.setHeightModifier(0.25)}
+                />
+                <MenuItem
+                    isActive={props.heightModifier === 0.5}
+                    ariaLabel="50% Höhe"
+                    label="50%"
+                    onClick={() => props.setHeightModifier(0.5)}
+                />
+                <MenuItem
+                    isActive={props.heightModifier === 1}
+                    ariaLabel="100% Höhe"
+                    label="100%"
+                    onClick={() => props.setHeightModifier(1)}
+                />
             </MenuButton>
         </div>
     )

@@ -55,9 +55,9 @@ const VideoCodesMenu: FC<Props> = (props) => {
     const menuButtonAriaLabel = `Codierungen (${props.activeVideoCodeCount} aktive Codierungen)`
 
     return (
-        <div className="video-editor__menu">
+        <div className="video-editor-menu">
             {props.activeVideoCodeCount > 0 && (
-                <div className="video-editor__menu__count-badge">{props.activeVideoCodeCount}</div>
+                <div className="video-editor-menu__count-badge">{props.activeVideoCodeCount}</div>
             )}
             <MenuButton
                 icon={<i className="fa fa-tag" />}
