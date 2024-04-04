@@ -1,4 +1,4 @@
-@fixtures @playwright @debug
+@fixtures @playwright
 Feature: I can select components that I want to use in my exercise
     For example, when I create an Analysis Phase, I can select "Annotationen" or "Codierungen" or both.
     Only those components should be active in the ExercisePhase.
