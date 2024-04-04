@@ -18,6 +18,7 @@ use Behat\Gherkin\Node\TableNode;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
+use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotNull;
 
 /**
@@ -586,5 +587,63 @@ trait ExercisePhaseContextTrait
         );
 
         assertEquals($expectedAmount, $actualFileCount, 'The attachment list does not show the expected amount of files');
+    }
+
+    /**
+     * @Given An ExercisePhaseTeam :teamId belonging to exercise phase :phaseId created by :username exists
+     */
+    public function anExercisePhaseTeamBelongingToExercisePhaseCreatedByExists(string $teamId, string $phaseId, string $username): void
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
+        $user = $this->getUserByEmail($username);
+
+        $exercisePhaseTeam = new ExercisePhaseTeam($teamId);
+        $exercisePhaseTeam->setCreator($user);
+        $exercisePhaseTeam->addMember($user);
+        $exercisePhaseTeam->setExercisePhase($exercisePhase);
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Then The ExercisePhaseTeam :teamId should exist
+     */
+    public function theExercisePhaseTeamShouldExist(string $teamId): void
+    {
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($teamId);
+        assertNotNull($exercisePhaseTeam);
+    }
+
+    /**
+     * @Then The creator of ExercisePhaseTeam :teamId should be :username
+     */
+    public function theCreatorOfExercisePhaseTeamShouldBe(string $teamId, string $username): void
+    {
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($teamId);
+        $user = $this->getUserByEmail($username);
+
+        assertEquals($user, $exercisePhaseTeam->getCreator());
+    }
+
+    /**
+     * @Then The Solution :solutionId should exist
+     */
+    public function theSolutionShouldExist(string $solutionId): void
+    {
+        $solution = $this->solutionRepository->find($solutionId);
+        assertNotNull($solution);
+    }
+
+    /**
+     * @Then The creator of ExercisePhaseTeam :teamId should not be :username
+     */
+    public function theCreatorOfExercisePhaseTeamShouldNotBe(string $teamId, string $username): void
+    {
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($teamId);
+        $creator = $exercisePhaseTeam->getCreator();
+
+        assertNotEquals($username, $creator->getUsername());
     }
 }

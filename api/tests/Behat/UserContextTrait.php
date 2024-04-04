@@ -336,4 +336,13 @@ trait UserContextTrait
             ->getRepository(User::class)
             ->findOneBy(['email' => $email]);
     }
+
+    /**
+     * @Then The User with Id :userId should be anonymized
+     */
+    public function theUserShouldBeAnonymized(string $userId): void
+    {
+        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        assertNotEquals($userId, $user->getUsername());
+    }
 }
