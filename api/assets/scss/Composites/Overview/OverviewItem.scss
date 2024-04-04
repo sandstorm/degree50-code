@@ -7,7 +7,7 @@
 
     text-decoration: none !important;
 
-    &:hover {
+    &:hover, &:focus, &:focus-within {
         background-color: $theme__color__primary--lighter !important;
     }
 }
