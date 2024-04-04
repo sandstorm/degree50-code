@@ -13,7 +13,7 @@ use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ExerciseService;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Mediathek\Service\VideoService;
-use App\Repository\Account\UserRepository;
+use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Service\UserMaterialService;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
@@ -32,35 +32,16 @@ use Symfony\Component\Security\Core\Security;
  */
 class UserService
 {
-
-    private EntityManagerInterface $entityManager;
-    private DoctrineIntegratedEventStore $eventStore;
-    private VideoService $videoService;
-    private ExerciseService $exerciseService;
-    private VideoFavouritesService $videoFavoritesService;
-    private UserMaterialService $userMaterialService;
-    private UserRepository $userRepository;
-    private Security $security;
-
     public function __construct(
-        Security $security,
-        EntityManagerInterface $entityManager,
-        DoctrineIntegratedEventStore $eventStore,
-        VideoService $videoService,
-        ExerciseService $exerciseService,
-        VideoFavouritesService $videoFavoritesService,
-        UserMaterialService $userMaterialService,
-        UserRepository $userRepository,
+        private readonly Security $security,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly DoctrineIntegratedEventStore $eventStore,
+        private readonly VideoService $videoService,
+        private readonly ExerciseService $exerciseService,
+        private readonly VideoFavouritesService $videoFavoritesService,
+        private readonly UserMaterialService $userMaterialService,
     )
     {
-        $this->security = $security;
-        $this->entityManager = $entityManager;
-        $this->eventStore = $eventStore;
-        $this->videoService = $videoService;
-        $this->exerciseService = $exerciseService;
-        $this->videoFavoritesService = $videoFavoritesService;
-        $this->userMaterialService = $userMaterialService;
-        $this->userRepository = $userRepository;
     }
 
     public function getLoggendInUser(): User|null
@@ -75,7 +56,51 @@ class UserService
             throw new \InvalidArgumentException('User is not a Student');
         }
 
-        $this->deleteStudentOrAdmin($user);
+        $this->exerciseService->deleteExercisesCreatedByUser($user);
+        $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
+        $this->userMaterialService->deleteMaterialsOfUser($user);
+        $this->videoService->deleteVideosCreatedByUser($user);
+
+        // remove user from teams
+        $teamsWhereUserCanNotBeRemoved = $this->removeFromExerciseTeams($user);
+
+        if (count($teamsWhereUserCanNotBeRemoved) === 0) {
+            $this->eventStore->addEvent('UserDeleted', [
+                'userId' => $user->getId(),
+                "method" => 'deleted',
+            ]);
+
+            /**
+             * Due to ORM cascading options the following things will also happen when we delete a user:
+             *
+             *   1. All orphaned CourseRoles will be removed @see User::$courseRoles
+             *   // TODO: UserExerciseInteractions are not part of the model anymore?
+             *   2. All orphaned UserExerciseInteractions will be removed @see User::$userExerciseInteractions
+             */
+            $this->entityManager->remove($user);
+            $this->entityManager->flush();
+        } else {
+            // anonymize user
+            $user->setEmail(Uuid::uuid4()->toString());
+            $user->setPassword(md5(random_bytes(20)));
+            $user->setRoles([]);
+            $user->setDataPrivacyVersion(-1);
+            $user->setTermsOfUseVersion(-1);
+
+            // set expiration date to 1 year from now
+            $user->setExpirationDate(new \DateTimeImmutable('+1 year'));
+            // prevent emails from being sent to user due to expiration
+            $user->setExpirationNoticeSent(true);
+
+            // set expiration date to 1 year from now
+            $this->eventStore->addEvent('UserDeleted', [
+                'userId' => $user->getId(),
+                "method" => 'anonymized',
+            ]);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
     }
 
     public function removeUser(User $user): void
@@ -93,10 +118,18 @@ class UserService
          *   created educational content (used exercises, used videos, used attachments).
          *   Dozent will be anonymized and the Account made practically unusable.
          */
-        if ($user->isDozent()) {
-            $this->anonymizeDozent($user);
-        } else {
-            $this->deleteStudentOrAdmin($user);
+        switch (true) {
+            case $user->isAdmin():
+                $this->deleteAdmin($user);
+                break;
+            case $user->isDozent():
+                $this->anonymizeDozent($user);
+                break;
+            case $user->isStudent():
+                $this->deleteStudent($user);
+                break;
+            default:
+                throw new \InvalidArgumentException('User is not a Student, Dozent or Admin');
         }
     }
 
@@ -128,8 +161,18 @@ class UserService
         $user->setDataPrivacyVersion(-1);
         $user->setTermsOfUseVersion(-1);
 
+        // set expiration date to 1 year from now
+        $user->setExpirationDate(new \DateTimeImmutable('+1 year'));
+        // prevent emails from being sent to user due to expiration
+        $user->setExpirationNoticeSent(true);
+
         // remove unused educational content
-        $this->removeFromExerciseTeams($user);
+        $teamsWhereUserIsOnlyMember = $this->removeFromExerciseTeams($user);
+
+        foreach ($teamsWhereUserIsOnlyMember as $team) {
+            $this->entityManager->remove($team);
+        }
+
         $this->removeUnpublishedExercisesOfUser($user);
         $this->removeUnUsedVideosOfUser($user);
 
@@ -148,14 +191,18 @@ class UserService
         $this->entityManager->flush();
     }
 
-    private function deleteStudentOrAdmin(User $user): void
+    private function deleteAdmin(User $user): void
     {
         // remove created Exercises, Videos and Interactions
         $this->videoService->deleteVideosCreatedByUser($user);
         $this->exerciseService->deleteExercisesCreatedByUser($user);
         $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
         $this->userMaterialService->deleteMaterialsOfUser($user);
-        $this->removeFromExerciseTeams($user);
+        $teamsWhereUserIsOnlyMember = $this->removeFromExerciseTeams($user);
+
+        foreach ($teamsWhereUserIsOnlyMember as $team) {
+            $this->entityManager->remove($team);
+        }
 
         $this->eventStore->addEvent('UserDeleted', [
             'userId' => $user->getId(),
@@ -175,44 +222,55 @@ class UserService
     /**
      * Why
      *   Remove User from ExercisePhaseTeams and remove their AutosavedSolutions.
-     *   If the user is the only member remove the ExercisePhaseTeam which cascades
-     *   down to Solutions and AutosavedSolutions.
+     *   If the user is the only member then only remove AutosavedSolutions.
+     *
+     * @return ExercisePhaseTeam[] Teams the User could not be removed from
      */
-    private function removeFromExerciseTeams(User $user): void
+    private function removeFromExerciseTeams(User $user): array
     {
+        /* @var ExercisePhaseTeamRepository $teamRepository */
         $teamRepository = $this->entityManager->getRepository(ExercisePhaseTeam::class);
         $teamsOfUser = array_filter($teamRepository->findAll(), function (ExercisePhaseTeam $team) use ($user) {
             return $team->getMembers()->contains($user);
         });
 
+        $teamsNotRemoved = [];
+
         foreach ($teamsOfUser as $team) {
             /** @var ExercisePhaseTeam $team */
+            $team->getAutosavedSolutions()
+                ->filter(function (AutosavedSolution $autosavedSolution) use ($user) {
+                    return $autosavedSolution->getOwner() === $user;
+                })
+                ->forAll(fn ($_i, AutosavedSolution $autosavedSolution) => $this->entityManager->remove($autosavedSolution));
+            $this->eventStore->disableEventPublishingForNextFlush();
+            $this->entityManager->flush();
+
             if ($team->getMembers()->count() > 1) {
                 $team->removeMember($user);
-                $team->getAutosavedSolutions()
-                    ->filter(function (AutosavedSolution $autosavedSolution) use ($user) {
-                        return $autosavedSolution->getOwner() === $user;
-                    })
-                    ->forAll(fn ($_i, AutosavedSolution $autosavedSolution) => $this->entityManager->remove($autosavedSolution));
-
-                $this->entityManager->persist($team);
 
                 $this->eventStore->addEvent('MemberRemovedFromTeam', [
                     "exercisePhaseTeamId" => $team->getId(),
                     "userId" => $user->getId(),
                     "exercisePhaseId" => $team->getExercisePhase()->getId(),
                 ]);
-            } else {
+
+                $this->entityManager->persist($team);
+                $this->entityManager->flush();
+            } elseif ($team->isTest()) {
                 $this->eventStore->addEvent('TeamDeleted', [
                     "exercisePhaseTeamId" => $team->getId(),
                     "userId" => $user->getId(),
                     "exercisePhaseId" => $team->getExercisePhase()->getId(),
                 ]);
                 $this->entityManager->remove($team);
+                $this->entityManager->flush();
+            } else {
+                $teamsNotRemoved[] = $team;
             }
-
-            $this->entityManager->flush();
         }
+
+        return $teamsNotRemoved;
     }
 
     private function removeUnpublishedExercisesOfUser(User $user): void
