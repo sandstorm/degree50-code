@@ -1,5 +1,4 @@
 import { combineReducers, createSelector } from '@reduxjs/toolkit'
-import toolbarReducer from '../ExercisePhaseApp/Components/Toolbar/ToolbarSlice'
 import configReducer, {
     actions as configActions,
     selectors as configSelectors,
@@ -33,9 +32,10 @@ import { Annotation, Cut, MediaItemTypeEnum, VideoCode } from 'Components/VideoE
 import { annotationWithCreatorNameAsRichtext } from 'Components/VideoEditor/composedSelectors/annotations'
 import { videoCodeAsRichtext } from 'Components/VideoEditor/composedSelectors/videoCodes'
 import { cutAsRichtext } from 'Components/VideoEditor/composedSelectors/cuts'
+import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
+import { TabsTypesEnum } from 'types'
 
 export const RootReducer = combineReducers({
-    toolbar: toolbarReducer,
     videoEditor: VideoEditorSlice,
     data: DataSlice,
     config: configReducer,
@@ -315,6 +315,56 @@ const selectAllActiveCutIdsAtCursor = createSelector(
     }
 )
 
+const selectCanUserCreateAnnotations = createSelector(
+    [configSelectors.selectIsSolutionView, configSelectors.selectPhaseType, selectUserIsCurrentEditor],
+    (isSolutionView, activePhaseType, userIsCurrentEditor) =>
+        !isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS && userIsCurrentEditor
+)
+
+const selectCanUserCreateVideoCodes = createSelector(
+    [configSelectors.selectIsSolutionView, configSelectors.selectPhaseType, selectUserIsCurrentEditor],
+    (isSolutionView, activePhaseType, userIsCurrentEditor) =>
+        !isSolutionView && activePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS && userIsCurrentEditor
+)
+
+const selectVideoCodeMenuEnabled = createSelector([configSelectors.selectConfig], (config) => {
+    if (
+        config.dependsOnPreviousPhase &&
+        config.previousPhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS &&
+        config.previousPhaseComponents?.includes(TabsTypesEnum.VIDEO_CODES)
+    ) {
+        return true
+    }
+
+    if (
+        config.type === ExercisePhaseTypesEnum.VIDEO_ANALYSIS &&
+        config.components?.includes(TabsTypesEnum.VIDEO_CODES)
+    ) {
+        return true
+    }
+
+    return false
+})
+
+const selectAnnotationMenuEnabled = createSelector([configSelectors.selectConfig], (config) => {
+    if (
+        config.dependsOnPreviousPhase &&
+        config.previousPhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS &&
+        config.previousPhaseComponents?.includes(TabsTypesEnum.VIDEO_ANNOTATIONS)
+    ) {
+        return true
+    }
+
+    if (
+        config.type === ExercisePhaseTypesEnum.VIDEO_ANALYSIS &&
+        config.components?.includes(TabsTypesEnum.VIDEO_ANNOTATIONS)
+    ) {
+        return true
+    }
+
+    return false
+})
+
 export const selectors = {
     videoEditor: videoEditorSelectors,
     data: dataSelectors,
@@ -326,6 +376,12 @@ export const selectors = {
     selectUserIsCurrentEditor,
     selectUserCanEditSolution,
     selectSolutionData,
+
+    selectCanUserCreateAnnotations,
+    selectCanUserCreateVideoCodes,
+
+    selectVideoCodeMenuEnabled,
+    selectAnnotationMenuEnabled,
 
     selectAllMediaItemsByStartTime,
     selectAllMediaItemsByStartTimeAsRichtext,

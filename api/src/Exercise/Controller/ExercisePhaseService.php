@@ -458,6 +458,44 @@ class ExercisePhaseService
 
     public function getConfig(ExercisePhase $exercisePhase, User $user, $readOnly = false): array
     {
+        $components = $this->getComponentsOfExercisePhase($exercisePhase);
+
+        $previousPhase = $exercisePhase->getDependsOnExercisePhase();
+        $dependsOnPreviousPhase = $previousPhase !== null;
+        $previousPhaseType = $previousPhase?->getType();
+        $previousPhaseComponents = $previousPhase === null ? null : $this->getComponentsOfExercisePhase($previousPhase);
+
+        return [
+            'title' => $exercisePhase->getName(),
+            'description' => $exercisePhase->getTask(),
+            'type' => $exercisePhase->getType(),
+            'components' => $components,
+            'userId' => $user->getId(),
+            'userName' => $user->getEmail(),
+            'isStudent' => $user->isStudent(),
+            'isGroupPhase' => $exercisePhase->isGroupPhase(),
+            'dependsOnPreviousPhase' => $dependsOnPreviousPhase,
+            'previousPhaseType' => $previousPhaseType,
+            'previousPhaseComponents' => $previousPhaseComponents,
+            'readOnly' => $readOnly,
+            'attachments' => array_map(function (Attachment $entry) {
+                return [
+                    'id' => $entry->getId(),
+                    'name' => $entry->getName(),
+                    'type' => $entry->getMimeType(),
+                    'url' => $this->router->generate('exercise-overview__attachment--download', ['id' => $entry->getId()])
+                ];
+            }, $exercisePhase->getAttachment()->toArray()),
+            'videos' => array_map(function (Video $video) use ($user) {
+                return array_merge($video->getAsClientSideVideo($this->appRuntime)->toArray(), [
+                    'isFavorite' => $this->videoFavouritesService->videoIsFavorite($video, $user)
+                ]);
+            }, $exercisePhase->getVideos()->toArray()),
+        ];
+    }
+
+    private function getComponentsOfExercisePhase(ExercisePhase $exercisePhase): array
+    {
         $components = [];
 
         switch ($exercisePhase->getType()) {
@@ -476,37 +514,10 @@ class ExercisePhaseService
             case ExercisePhaseType::VIDEO_CUT:
                 $components[] = ExercisePhase::VIDEO_CUTTING;
                 break;
-            case ExercisePhaseType::REFLEXION:
+            default:
                 break;
         }
 
-        $dependsOnPreviousPhase = $exercisePhase->getDependsOnExercisePhase() !== null;
-
-        return [
-            'title' => $exercisePhase->getName(),
-            'description' => $exercisePhase->getTask(),
-            'type' => $exercisePhase->getType(),
-            'components' => $components,
-            'userId' => $user->getId(),
-            'userName' => $user->getEmail(),
-            'isStudent' => $user->isStudent(),
-            'isGroupPhase' => $exercisePhase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $dependsOnPreviousPhase,
-            'readOnly' => $readOnly,
-            'attachments' => array_map(function (Attachment $entry) {
-                return [
-                    'id' => $entry->getId(),
-                    'name' => $entry->getName(),
-                    'type' => $entry->getMimeType(),
-                    'url' => $this->router->generate('exercise-overview__attachment--download', ['id' => $entry->getId()])
-                ];
-            }, $exercisePhase->getAttachment()->toArray()),
-            'videos' => array_map(function (Video $video) use ($user) {
-                return array_merge($video->getAsClientSideVideo($this->appRuntime)->toArray(), [
-                    'isFavorite' => $this->videoFavouritesService->videoIsFavorite($video, $user)
-                ]);
-            }, $exercisePhase->getVideos()->toArray()),
-        ];
+        return $components;
     }
-
 }

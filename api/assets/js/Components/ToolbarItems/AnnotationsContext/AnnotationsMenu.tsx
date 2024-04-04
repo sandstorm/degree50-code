@@ -1,7 +1,6 @@
 import { actions, selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { FC, memo, useCallback } from 'react'
 import { connect, ConnectedProps } from 'react-redux'
-import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { useAppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/hooks'
 import MenuButton from 'Components/VideoEditor/components/MenuButton'
@@ -18,23 +17,11 @@ export const AnnotationOverlayIds = {
 }
 
 const mapStateToProps = (state: AppState) => {
-    const activePhaseType = selectors.config.selectPhaseType(state)
-    const isSolutionView = selectors.config.selectIsSolutionView(state)
-    const userIsCurrentEditor = selectors.selectUserIsCurrentEditor(state)
-    const annotationsAreActive = selectors.config.selectAnnotationsAreActive(state)
-    const dependsOnPreviousPhase = selectors.config.selectDependsOnPreviousPhase(state)
-
-    const disableCreate =
-        isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS || !userIsCurrentEditor
-    const disabled =
-        (!annotationsAreActive && !dependsOnPreviousPhase) ||
-        (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
-
     return {
         allAnnotationsCount: selectors.selectAllAnnotationIdsByStartTime(state).length,
         activeAnnotationCount: selectors.selectAllActiveAnnotationIdsAtCursor(state).length,
-        disableCreate,
-        disabled,
+        userCanCreateAnnotations: selectors.selectCanUserCreateAnnotations(state),
+        enabled: selectors.selectAnnotationMenuEnabled(state),
     }
 }
 
@@ -68,7 +55,7 @@ const AnnotationsMenu: FC<Props> = (props) => {
             <MenuButton
                 icon={<i className="fas fa-pen" />}
                 ariaLabel={menuButtonAriaLabel}
-                disabled={props.disabled}
+                disabled={!props.enabled}
                 pauseVideo
             >
                 <MenuItem
@@ -90,7 +77,7 @@ const AnnotationsMenu: FC<Props> = (props) => {
                             closeOthers: true,
                         })
                     }
-                    disabled={props.disableCreate}
+                    disabled={!props.userCanCreateAnnotations}
                 />
                 <MenuItem
                     ariaLabel={allAnnotationsAriaLabel}

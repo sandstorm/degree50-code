@@ -2,10 +2,10 @@
 
 namespace App\Tests\Behat;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringNotContainsString;
 use function PHPUnit\Framework\assertTrue;
@@ -467,5 +467,39 @@ trait PlaywrightContextTrait
                 await vars.page.fill('input#change_password_form_plainPassword_second', '$password')
             JS
         );
+    }
+
+    /**
+     * @Then The element with an aria-label starting with text :text should be disabled
+     */
+    public function theElementWithAnAriaLabelStartingWithTextShouldBeDisabled(string $text): void
+    {
+        $isDisabled = $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const element = await vars.page.locator('[aria-label^="$text"]')
+
+                return await element.isDisabled()
+            JS
+        );
+
+        assertTrue($isDisabled);
+    }
+
+    /**
+     * @Then The element with an aria-label starting with text :text should be enabled
+     */
+    public function theElementWithAnAriaLabelStartingWithTextShouldBeEnabled(string $text): void
+    {
+        $isDisabled = $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const element = await vars.page.locator('[aria-label^="$text"]')
+
+                return await element.isDisabled()
+            JS
+        );
+
+        assertFalse($isDisabled);
     }
 }
