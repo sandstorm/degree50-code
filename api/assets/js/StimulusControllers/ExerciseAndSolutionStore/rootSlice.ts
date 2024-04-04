@@ -316,15 +316,33 @@ const selectAllActiveCutIdsAtCursor = createSelector(
 )
 
 const selectCanUserCreateAnnotations = createSelector(
-    [configSelectors.selectIsSolutionView, configSelectors.selectPhaseType, selectUserIsCurrentEditor],
-    (isSolutionView, activePhaseType, userIsCurrentEditor) =>
-        !isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS && userIsCurrentEditor
+    [configSelectors.selectConfig, selectUserIsCurrentEditor],
+    (config, userIsCurrentEditor) => {
+        if (
+            !config.isSolutionView &&
+            config.type === ExercisePhaseTypesEnum.VIDEO_ANALYSIS &&
+            config.components?.includes(TabsTypesEnum.VIDEO_ANNOTATIONS)
+        ) {
+            return userIsCurrentEditor
+        }
+
+        return false
+    }
 )
 
 const selectCanUserCreateVideoCodes = createSelector(
-    [configSelectors.selectIsSolutionView, configSelectors.selectPhaseType, selectUserIsCurrentEditor],
-    (isSolutionView, activePhaseType, userIsCurrentEditor) =>
-        !isSolutionView && activePhaseType === ExercisePhaseTypesEnum.VIDEO_ANALYSIS && userIsCurrentEditor
+    [configSelectors.selectConfig, selectUserIsCurrentEditor],
+    (config, userIsCurrentEditor) => {
+        if (
+            !config.isSolutionView &&
+            config.type === ExercisePhaseTypesEnum.VIDEO_ANALYSIS &&
+            config.components?.includes(TabsTypesEnum.VIDEO_CODES)
+        ) {
+            return userIsCurrentEditor
+        }
+
+        return false
+    }
 )
 
 const selectVideoCodeMenuEnabled = createSelector([configSelectors.selectConfig], (config) => {

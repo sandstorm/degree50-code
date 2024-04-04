@@ -502,4 +502,32 @@ trait PlaywrightContextTrait
 
         assertFalse($isDisabled);
     }
+
+    /**
+     * @When I click on the element with an aria-label starting with text :text
+     */
+    public function iClickOnTheElementWithAnAriaLabelStartingWithText(string $text): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.click('[aria-label^="$text"]')
+            JS
+        );
+    }
+
+    /**
+     * @When I press the key :key
+     *
+     * @param string $key see https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
+     */
+    public function iPressTheKey(string $key): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.keyboard.press('$key')
+            JS
+        );
+    }
 }
