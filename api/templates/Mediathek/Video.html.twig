@@ -53,25 +53,28 @@
     data-test-id="video-tile--{{ video.data.id }}"
     class="overview-item"
 >
-    <div class="overview-item__date" aria-label="{% trans %}video.labels.createdLabel{% endtrans %}">
+    <div class="overview-item__date" aria-label="{% trans %}video.labels.createdLabel{% endtrans %}: {{ video.data.createdAt|date("d.m.Y") }}">
         {{ video.data.createdAt|date("d.m.Y") }}
     </div>
-    <div class="overview-item__status" aria-label="{% trans %}video.labels.statusLabel{% endtrans %}">
-        {% if video.data.courses | length == 0 %}
+    {% if video.data.courses | length == 0 %}
+        <div class="overview-item__status" aria-label="{% trans %}video.labels.statusLabel{% endtrans %}: {% trans %}video.labels.statusPrivate{% endtrans %}">
             <i class="fas fa-eye-slash" title="{% trans %}video.labels.statusPrivate{% endtrans %}"></i>
-        {% else %}
+        </div>
+    {% else %}
+        <div class="overview-item__status" aria-label="{% trans %}video.labels.statusLabel{% endtrans %}: {% trans %}video.labels.statusPublic{% endtrans %}">
             <i class="fas fa-eye" title="{% trans %}video.labels.statusPublic{% endtrans %}"></i>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
     <a
         tabindex="0"
         href="{{ path("mediathek__video--player", {id: video.data.id}) }}"
         class="overview-item__title" title="{{ video.data.description }}"
-        aria-label="{% trans %}video.labels.titleLabel{% endtrans %}"
+        aria-label="{% trans %}video.labels.titleLabel{% endtrans %}: {{ video.data.title }}"
         title="{{ video.data.description }}"
     >
-        <img alt="{% trans %}video.labels.previewImage{% endtrans %}" height="50" src="{{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg"/>
+        <img alt="{% trans %}video.labels.previewImage{% endtrans %}" height="50" width="100" src="{{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg"/>
         {{ video.data.title }}
+    </a>
     {% if is_granted('edit', video.data) %}
         <div class="overview-item__actions" aria-label="{% trans %}video.labels.actionsLabel{% endtrans %}">
             {% if app.user.isStudent %}
