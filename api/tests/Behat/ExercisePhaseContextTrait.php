@@ -378,9 +378,9 @@ trait ExercisePhaseContextTrait
 
         $phase->setName($phaseData['name']);
         $phase->setTask($phaseData['task']);
-        $phase->setIsGroupPhase((boolval($phaseData['isGroupPhase'])));
+        $phase->setIsGroupPhase($phaseData['isGroupPhase'] === "true");
         $phase->setSorting(intval($phaseData['sorting']));
-        $phase->setOtherSolutionsAreAccessible(boolval($phaseData['otherSolutionsAreAccessible']));
+        $phase->setOtherSolutionsAreAccessible($phaseData['otherSolutionsAreAccessible'] === "true");
 
         /** @var Exercise $exercise */
         $exercise = $this->entityManager->find(Exercise::class, $phaseData['belongsToExercise']);
@@ -396,8 +396,8 @@ trait ExercisePhaseContextTrait
         // phase type specific
         switch ($phaseType) {
             case ExercisePhaseType::VIDEO_ANALYSIS:
-                $phase->setVideoAnnotationsActive(boolval($phaseData['videoAnnotationsActive']));
-                $phase->setVideoCodesActive(boolval($phaseData['videoCodesActive']));
+                $phase->setVideoAnnotationsActive($phaseData['videoAnnotationsActive'] === "true");
+                $phase->setVideoCodesActive($phaseData['videoCodesActive'] === "true");
                 break;
             case ExercisePhaseType::VIDEO_CUT:
             case ExercisePhaseType::REFLEXION:

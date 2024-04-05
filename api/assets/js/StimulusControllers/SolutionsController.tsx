@@ -6,20 +6,11 @@ import { ConfigState, actions as configActions } from './ExercisePhaseApp/Compon
 import { setTranslations, setLocale } from 'react-i18nify'
 import i18n from 'StimulusControllers/i18n'
 import { normalizeFilterData } from './normalizeData'
-import { Solution } from 'Components/VideoEditor/types'
-import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { actions as videoEditorActions } from 'Components/VideoEditor/VideoEditorSlice'
 import SolutionsApp from './SolutionsApp'
 import { initData } from 'Components/VideoEditor/initData'
 import { DataState } from './ExerciseAndSolutionStore/DataSlice'
 import rootSaga from './ExerciseAndSolutionStore/rootSaga'
-
-export type SolutionByTeam = Solution & {
-    teamCreator: string
-    teamMembers: Array<string>
-    visible: boolean
-    cutVideo?: Video
-}
 
 setTranslations(i18n)
 setLocale('de')

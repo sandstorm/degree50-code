@@ -128,7 +128,7 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
     And I have a team with ID "team2" belonging to exercise phase "cutting1" and creator "test-student@sandstorm.de"
     And User "test-student@sandstorm.de" belongs to "team2"
     And The User "test-student@sandstorm.de" has CourseRole "STUDENT" in Course "course1"
-    And I have a solution with ID "cutting1Soution" belonging to team with ID "team2" with solutionData as JSON
+    And I have a solution with ID "cutting1Solution" belonging to team with ID "team2" with solutionData as JSON
     """
     {
       "annotations": [ ],
@@ -154,8 +154,7 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
         And I visit url "/exercise/e1/show"
         And I select the nth "1" element with testid "exercisePhaseSidebarItem"
         And I click on the selected element
-        And I click on first element with testId "createGroupButton"
-        And I click on first element with testId "startPhaseButtonGroup"
+        And I click on first element with testId "startPhaseButtonSingle"
         And I select the nth "0" element with testid "videoEditor"
         Then "1" elements of selectedElement type should exist
 

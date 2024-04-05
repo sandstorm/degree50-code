@@ -20,6 +20,8 @@ export interface ConfigState {
     isStudent?: boolean
     isGroupPhase: boolean
     dependsOnPreviousPhase: boolean
+    previousPhaseType?: ExercisePhaseTypesEnum
+    previousPhaseComponents?: Array<ComponentId>
     readOnly: boolean
     components: Array<ComponentId>
     attachments: Array<Attachment>
@@ -44,6 +46,8 @@ const initialState: ConfigState = {
     userName: '',
     isGroupPhase: false,
     dependsOnPreviousPhase: false,
+    previousPhaseType: undefined,
+    previousPhaseComponents: undefined,
     readOnly: false,
     components: [],
     attachments: [],
@@ -83,7 +87,6 @@ export const configSlice = createSlice({
     },
 })
 
-export const { hydrateConfig } = configSlice.actions
 export const actions = {
     ...configSlice.actions,
     toggleVideoFavorite,

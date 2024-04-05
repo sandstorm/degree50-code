@@ -2,10 +2,10 @@
 
 namespace App\Tests\Behat;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringNotContainsString;
 use function PHPUnit\Framework\assertTrue;
@@ -465,6 +465,68 @@ trait PlaywrightContextTrait
             <<<JS
                 await vars.page.fill('input#change_password_form_plainPassword_first', '$password')
                 await vars.page.fill('input#change_password_form_plainPassword_second', '$password')
+            JS
+        );
+    }
+
+    /**
+     * @Then The element with an aria-label starting with text :text should be disabled
+     */
+    public function theElementWithAnAriaLabelStartingWithTextShouldBeDisabled(string $text): void
+    {
+        $isDisabled = $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const element = await vars.page.locator('[aria-label^="$text"]')
+
+                return await element.isDisabled()
+            JS
+        );
+
+        assertTrue($isDisabled);
+    }
+
+    /**
+     * @Then The element with an aria-label starting with text :text should be enabled
+     */
+    public function theElementWithAnAriaLabelStartingWithTextShouldBeEnabled(string $text): void
+    {
+        $isDisabled = $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                const element = await vars.page.locator('[aria-label^="$text"]')
+
+                return await element.isDisabled()
+            JS
+        );
+
+        assertFalse($isDisabled);
+    }
+
+    /**
+     * @When I click on the element with an aria-label starting with text :text
+     */
+    public function iClickOnTheElementWithAnAriaLabelStartingWithText(string $text): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.click('[aria-label^="$text"]')
+            JS
+        );
+    }
+
+    /**
+     * @When I press the key :key
+     *
+     * @param string $key see https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
+     */
+    public function iPressTheKey(string $key): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                await vars.page.keyboard.press('$key')
             JS
         );
     }

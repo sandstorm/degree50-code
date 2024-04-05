@@ -3,7 +3,6 @@ import MenuItem from 'Components/VideoEditor/components/MenuItem'
 import { actions } from 'Components/VideoEditor/VideoEditorSlice'
 import { FC, memo } from 'react'
 import { connect } from 'react-redux'
-import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import { selectors } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
 import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
@@ -20,23 +19,11 @@ export const VideoCodeOverlayIds = {
 }
 
 const mapStateToProps = (state: AppState) => {
-    const activePhaseType = selectors.config.selectPhaseType(state)
-    const isSolutionView = selectors.config.selectIsSolutionView(state)
-    const userIsCurrentEditor = selectors.selectUserIsCurrentEditor(state)
-    const videoCodesAreActive = selectors.config.selectVideoCodesAreActive(state)
-    const dependsOnPreviousPhase = selectors.config.selectDependsOnPreviousPhase(state)
-
-    const disableCreate =
-        isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS || !userIsCurrentEditor
-    const disabled =
-        (!videoCodesAreActive && !dependsOnPreviousPhase) ||
-        (isSolutionView && activePhaseType !== ExercisePhaseTypesEnum.VIDEO_ANALYSIS)
-
     return {
         allVideoCodesCount: selectors.selectAllVideoCodeIdsByStartTime(state).length,
         activeVideoCodeCount: selectors.selectAllActiveVideoCodeIdsAtCursor(state).length,
-        disableCreate,
-        disabled,
+        userCanCreateVideoCodes: selectors.selectCanUserCreateVideoCodes(state),
+        enabled: selectors.selectVideoCodeMenuEnabled(state),
     }
 }
 
@@ -62,8 +49,9 @@ const VideoCodesMenu: FC<Props> = (props) => {
             <MenuButton
                 icon={<i className="fa fa-tag" />}
                 ariaLabel={menuButtonAriaLabel}
-                disabled={props.disabled}
+                disabled={!props.enabled}
                 pauseVideo
+                data-test-id="video-codes-menu"
             >
                 <MenuItem
                     ariaLabel={activeCodesAriaLabel}
@@ -84,7 +72,7 @@ const VideoCodesMenu: FC<Props> = (props) => {
                             closeOthers: true,
                         })
                     }
-                    disabled={props.disableCreate}
+                    disabled={!props.userCanCreateVideoCodes}
                 />
                 <MenuItem
                     ariaLabel={allCodesAriaLabel}
@@ -105,7 +93,6 @@ const VideoCodesMenu: FC<Props> = (props) => {
                             closeOthers: true,
                         })
                     }
-                    disabled={props.disabled}
                 />
             </MenuButton>
         </div>
