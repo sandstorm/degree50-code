@@ -345,6 +345,17 @@ const selectCanUserCreateVideoCodes = createSelector(
     }
 )
 
+const selectCanUserCreateVideoCuts = createSelector(
+    [configSelectors.selectConfig, selectUserIsCurrentEditor],
+    (config, userIsCurrentEditor) => {
+        if (!config.isSolutionView && config.type === ExercisePhaseTypesEnum.VIDEO_CUTTING) {
+            return userIsCurrentEditor
+        }
+
+        return false
+    }
+)
+
 const selectVideoCodeMenuEnabled = createSelector([configSelectors.selectConfig], (config) => {
     if (
         config.dependsOnPreviousPhase &&
@@ -397,6 +408,7 @@ export const selectors = {
 
     selectCanUserCreateAnnotations,
     selectCanUserCreateVideoCodes,
+    selectCanUserCreateVideoCuts,
 
     selectVideoCodeMenuEnabled,
     selectAnnotationMenuEnabled,
