@@ -1,0 +1,79 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseFullscreen.html.twig' %}
+
+{% block title %}{% trans %}video.upload.title{% endtrans %}{% endblock %}
+{% block layoutCssClass %}main--with-footer{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}video.upload.title{% endtrans %}</h3>
+        </header>
+        <div class="dropzone" data-controller="videoUpload"
+             data-videoUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_videos') }}"
+             data-videoUpload-remove-endpoint="{{ path('mediathek__video--delete-ajax', {id: uuid}) }}"
+             data-videoUpload-id="{{ uuid }}"
+             data-videoUpload-label="Hier klicken um Video hochzuladen">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <span class="form-text text-muted">
+            Es kann immer nur ein Video hochgeladen werden. <br />
+            <strong>Hinweis:</strong> Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.
+        </span>
+    </div>
+    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}video.upload.subtitleUploadTitle{% endtrans %}</h3>
+        </header>
+        <div class="dropzone" data-controller="subtitleUpload"
+             data-subtitleUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_subtitles') }}"
+             data-subtitleUpload-remove-endpoint="{{ path('mediathek__subtitle--delete-ajax', {id: uuid}) }}"
+             data-subtitleUpload-video-id="{{ uuid }}"
+             data-subtitleUpload-label="Hier klicken um Untertitel hochzuladen">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <span class="form-text text-muted">
+            Es kann immer nur eine Untertiteldatei hochgeladen werden. <br />
+            Untertitel sind optional.<br />
+            <strong>Hinweis:</strong> Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade die Datei an einem schnelleren Internetanschluss hoch.
+        </span>
+    </div>
+    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}video.upload.audioDescriptionUploadTitle{% endtrans %}</h3>
+        </header>
+        <div class="dropzone" data-controller="audioDescriptionUpload"
+             data-audioDescriptionUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_audio_descriptions') }}"
+             data-audioDescriptionUpload-remove-endpoint="{{ path('mediathek__audio_description--delete-ajax', {id: uuid}) }}"
+             data-audioDescriptionUpload-video-id="{{ uuid }}"
+             data-audioDescriptionUpload-label="Hier klicken um Audio-Datei hochzuladen">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <span class="form-text text-muted">
+            Es kann immer nur eine Audio Datei hochgeladen werden. <br />
+            Audio Deskriptionen sind optional, können aktuell aber NICHT im Nachhinein hinzugefügt werden.<br />
+            <strong>Hinweis:</strong> Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade die Datei an einem schnelleren Internetanschluss hoch.
+        </span>
+    </div>
+
+    {{ form_start(form) }}
+        <div class="container">
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.visiblePersons) }}
+            {{ form_row(form.courses) }}
+            <div class="form__data-privacy">
+                {{ form_row(form.dataPrivacyAccepted) }}
+                {{ form_row(form.dataPrivacyPermissionsAccepted) }}
+                <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmungen</a> | <a href="{{ path('terms-of-use') }}" target="_blank">Nutzungsbedingungen</a>
+            </div>
+        </div>
+        <footer class="footer">
+            <a class="button button--type-outline-primary footer__left"
+               href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
+            <div class="footer__right">
+                {{ form_row(form.save) }}
+            </div>
+        </footer>
+    {{ form_end(form) }}
+{% endblock %}

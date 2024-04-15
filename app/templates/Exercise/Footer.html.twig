@@ -1,0 +1,50 @@
+{% trans_default_domain 'forms' %}
+
+<footer class="footer">
+    <div class="button-group footer__left">
+    {% if previousExercisePhase %}
+        <a
+            class="button button--type-outline-primary button--size-small"
+            href="{{ path((testMode) ? 'exercise__show-test-phase' : 'exercise__show-phase', {id: exercise.id, phaseId: previousExercisePhase.id}) }}"
+        >
+            Vorherige Phase
+        </a>
+    {% else %}
+        <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+    {% endif %}
+    {% if testMode and is_granted('edit', exercise) %}
+        <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise__edit', {id: exercise.id}) }}">
+            <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
+        </a>
+    {% endif %}
+    </div>
+
+    {% if showPhasesProgression %}
+        <span class="footer__center">
+            {{ (testMode) ? 'Testen von' : '' }}
+            Phase {{ currentPhaseIndex + 1 }} / {{ amountOfPhases + 1 }}: {{ exercisePhase.name }}
+        </span>
+    {% endif %}
+
+    <div class="footer__right">
+    {% if nextExercisePhase %}
+        {% if testMode %}
+            <a class="button button--type-primary  button--size-small" href="{{ path('exercise__show-test-phase', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">
+                {{ (currentPhaseIndex < 0) ? 'Aufgabe starten' : 'Nächste Phase' }}
+            </a>
+        {% else %}
+            {% if is_granted('viewExercisePhase', nextExercisePhase) %}
+                <a class="button button--type-primary  button--size-small" href="{{ path('exercise__show-phase', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">
+                    {{ (currentPhaseIndex < 0) ? 'Aufgabe starten' : 'Nächste Phase' }}
+                </a>
+            {% else %}
+                <button type="button" class="button button--type-primary button--size-small disabled" disabled="disabled">
+                    {{ (currentPhaseIndex < 0) ? 'Aufgabe starten' : 'Nächste Phase' }}
+                </button>
+            {% endif %}
+        {% endif %}
+    {% elseif amountOfPhases == currentPhaseIndex %}
+        <a class="button button--type-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">Aufgabe abschließen</a>
+    {% endif %}
+    </div>
+</footer>

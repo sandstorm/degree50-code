@@ -1,0 +1,150 @@
+{% trans_default_domain 'forms' %}
+{% set phaseTypeTransVar = 'exercisePhase.types.' ~ (exercisePhase.type.value) ~ '.label' %}
+{% extends 'BaseFullscreen.html.twig' %}
+{% block layoutCssClass %}main--with-footer{% endblock %}
+
+{% block title %}{% trans %}exercisePhase.edit.title{% endtrans %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                        {{ exercise.course.name }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('exercise__edit', {id: exercise.id}) }}">
+                        {{ exercise.name }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active"
+                    aria-current="page">{% trans %}exercisePhase.edit.title{% endtrans %}</li>
+            </ol>
+        </nav>
+
+        <header class="content-header">
+            <h3>{% trans %}exercisePhase.edit.title{% endtrans %}</h3>
+            {% if exercisePhase.hasSolutions %}
+                <div class="alert alert-warning">
+                    Achtung: Phase wird/wurde schon von Studierenden bearbeitet.
+                </div>
+            {% endif %}
+        </header>
+
+        <h5>Typ: {{ phaseTypeTransVar | trans }}</h5>
+
+        <div class="exercise-form">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.isGroupPhase) }}
+                    {% if exercisePhase.type.value != 'reflexion' %}
+                        {{ form_row(form.otherSolutionsAreAccessible) }}
+                    {% endif %}
+                    {% if exercisePhase.type.value == 'material' %}
+                        {{ form_row(form.reviewRequired) }}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.dependsOnExercisePhase) }}
+                </div>
+            </div>
+            <hr/>
+
+            {{ form_row(form.name) }}
+            {{ form_row(form.task) }}
+
+            {% if exercisePhase.type.value == 'material' %}
+                {{ form_row(form.material) }}
+            {% endif %}
+
+            <hr/>
+            {% if exercisePhase.type.value == 'videoAnalysis' %}
+                <p>Aktive Komponenten zur Lösung der Aufgabe: </p>
+                {{ form_widget(form.videoAnnotationsActive) }}
+                {{ form_widget(form.videoCodesActive) }}
+            {% endif %}
+            <hr/>
+
+            {% if exercisePhase.type.value == 'videoAnalysis' or exercisePhase.type.value == 'videoCutting' %}
+                <h4>{% trans %}exercisePhase.labels.videosExtended{% endtrans %}</h4>
+                <div data-controller="videosForm">
+                    {{ form_row(form.videos) }}
+                </div>
+                <hr/>
+            {% endif %}
+
+            {% if exercisePhase.type.value == 'videoAnalysis' and exercisePhase.videoCodesActive %}
+                <h4>{% trans %}exercisePhase.labels.videoCodes{% endtrans %}</h4>
+                <p>Stehen dem Nutzer zur Auswahl während der Aufgabe</p>
+                <div class="form-inline video-code-form" id="add-new-video-code-form" data-controller="videoCodeForm"
+                     data-videoCodeForm-endpoint="{{ path('video-code__add', {id: exercisePhase.id}) }}"
+                     data-videoCodeForm-update="video-codes-list"
+                >
+                    <label id="code-color-label" class="sr-only" for="video-code-color">Farbe des Video-Codes</label>
+                    <input
+                        class="form-control"
+                        id="video-code-color"
+                        type="color"
+                        placeholder="#ccc"
+                        aria-describedby="code-color-label"
+                    />
+                    <label id="code-name-label" class="sr-only" for="video-code-name">Name des Video-Codes</label>
+                    <input
+                        class="form-control"
+                        id="video-code-name"
+                        type="text"
+                        placeholder="Name des Video-Codes"
+                        aria-describedby="code-name-label"
+                    />
+                    <button id="add-new-video-code" type="button" class="button button--type-primary"><i class="fas fa-plus"></i>
+                        Video-Code hinzufügen
+                    </button>
+                </div>
+                <div
+                    id="video-codes-list"
+                    data-update-endpoint="{{ path('video-code__list', {id: exercisePhase.id}) }}"
+                >
+                    {{ render(path('video-code__list', {id: exercisePhase.id})) }}
+                </div>
+
+                <hr/>
+            {% endif %}
+
+            <h4>{% trans %}exercisePhase.labels.attachments{% endtrans %}</h4>
+            <p>
+                Anhang hochladen, der zur Lösung der Aufgabe bereit steht <span class="color-alert">(Achten Sie unbedingt darauf, dass die Dokumente barrierefrei sind.)</span>
+            </p>
+            <div class="dropzone" data-controller="attachmentUpload"
+                 data-attachmentUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_attachment') }}"
+                 data-attachmentUpload-remove-endpoint="{{ path('exercise-overview__attachment--delete-ajax') }}"
+                 data-attachmentUpload-label="Hier klicken um Anhänge hochzuladen"
+                 data-attachmentUpload-phase-id="{{ exercisePhase.id }}"
+                 data-attachmentUpload-update="attachment-list">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <span class="form-text text-muted">Hinweis: Kommt es zu Timeout-Fehlern beim Upload, ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.</span>
+            <h5>
+                Bereits hochgeladene Dateien:
+            </h5>
+            <div id="attachment-list"
+                 data-update-endpoint="{{ path('exercise-overview__attachment--list', {id: exercisePhase.id}) }}">
+                {{ render(path('exercise-overview__attachment--list', {id: exercisePhase.id})) }}
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <a class="button button--type-outline-primary footer__left"
+           href="{{ path('exercise__edit', {id: exercise.id}) }}">{% trans %}exercisePhase.new.back{% endtrans %}</a>
+        <div class="footer__right">
+            {{ form_row(form.save) }}
+        </div>
+    </footer>
+    {{ form_end(form) }}
+
+{% endblock %}
+

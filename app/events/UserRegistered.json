@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "userId": {
+      "type": "string"
+    },
+    "method": {
+      "description": "User registration method",
+      "type": "string",
+      "enum": ["SAML", "RegistrationForm"]
+    }
+  },
+  "required": [
+    "userId",
+    "method"
+  ],
+  "additionalProperties": false
+}

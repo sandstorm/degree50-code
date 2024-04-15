@@ -1,0 +1,46 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseFullscreen.html.twig' %}
+
+{% block title %}{% trans %}video.delete.title{% endtrans %}{% endblock %}
+{% block layoutCssClass %}main--with-footer{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <header class="content-header content-header--center">
+            <h3>{% trans %}video.delete.title{% endtrans %}</h3>
+        </header>
+        <h4>Das Video wird in folgenden Aufgaben/Phasen verwendet</h4>
+        <p class="alert alert-warning">Achtung: <strong>Aufgaben/Phasen/Ergebnisse</strong> werden bei Löschen des Videos mit gelöscht!</p>
+        {% if video.exercisePhases|length == 0 %}
+            <p>Das Video wird in keiner Aufgabe/Phase verwendet.</p>
+        {% else %}
+            <table class="table table-sm">
+                <thead class="thead-light">
+                <tr>
+                    <th>Aufgabe</th>
+                    <th>Phase</th>
+                    <th>Hat Lösungen</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for phase in video.exercisePhases %}
+                    <tr>
+                        <td>{{ phase.belongsToExercise.name }}</td>
+                        <td>{{ phase.name }}</td>
+                        <td>{% if phase.hasSolutions %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <footer class="footer">
+        <a class="button button--type-outline-primary footer__left" href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
+        <div class="footer__right">
+            <a class="button button--type-danger" href="{{ path('mediathek__video--delete', {id: video.id, confirm: true}) }}">
+                Video Löschen
+            </a>
+        </div>
+    </footer>
+{% endblock %}

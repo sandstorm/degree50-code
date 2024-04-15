@@ -1,0 +1,260 @@
+form:
+    label:
+        delete: 'Löschen'
+        download: 'Datei herunterladen'
+
+login:
+    login-sso: 'Login mit Uni-Account (SSO)'
+    login-directly: 'Direkter Login'
+    register: 'Registrieren'
+    label:
+        email: 'E-Mail'
+        password: 'Passwort'
+
+exercise:
+    labels:
+        name: 'Titel der Aufgabe'
+        description: 'Lernauftrag / Beschreibung'
+        submit: 'Aufgabe speichern'
+        test: 'Aufgabe testen'
+        created: 'Erstellt'
+        createdLabel: 'Aufgabe erstellt am'
+        phases: 'Phasen'
+        status: 'Status'
+        statusLabel: 'Status der Aufgabe'
+        status0: 'Aufgabe Erstellt'
+        status1: 'Aufgabe Abgeschlossen'
+        status2: 'Aufgabe Veröffentlicht'
+        statusNew: 'Neue Aufgabe'
+        statusStarted: 'Aufgabe angefangen'
+        statusFinished: 'Aufgabe abgeschlossen'
+        reviewRequired: "Überprüfung durch lehrende Person erforderlich"
+        phaseDone: 'Phase abgeschlossen'
+        actionsLabel: 'Aktionen'
+        toggleActions: 'Aktionen ein/ausblenden für Aufgabe:'
+    show:
+        title: 'Aufgabe starten'
+    test:
+        title: 'Aufgabe testen'
+    new:
+        back: 'Zurück zur Übersicht'
+        title: 'Neue Aufgabe anlegen'
+        messages:
+            success: 'Aufgabe erfolgreich angelegt!'
+    showSolution:
+        title: 'Lösungen ansehen'
+        messages:
+            error: 'Lösung kann nicht angesehen werden!'
+    edit:
+        title: 'Aufgabe bearbeiten'
+        messages:
+            success: 'Aufgabe erfolgreich gespeichert!'
+    delete:
+        title: 'Aufgabe löschen'
+        confirm: 'Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?'
+        messages:
+            success: 'Aufgabe erfolgreich gelöscht!'
+    copy:
+        title: 'Aufgabe kopieren'
+        message:
+            success: 'Aufgabe erfolgreich kopert!'
+    showPhase:
+        phase: 'Phase'
+        dependsOnPreviousPhaseInfo: 'Diese Phase baut auf der vorherigen auf. Es muss ein Ergebnis aus der vorherigen Phase vorliegen.'
+        myResult: 'Mein Ergebnis'
+        showResult: 'Ergebnis anzeigen'
+        existingResults: 'Bisherigen Ergebnisse deiner Seminargruppe:'
+        startPhase: 'Phase starten'
+        groupOf: 'Gruppe von'
+        groupMembers: 'Mitglieder'
+        joinGroup: 'Gruppe beitreten'
+        leaveGroup: 'Gruppe verlassen'
+        deleteGroup: 'Gruppe löschen'
+        newGroup: 'Neue Gruppe anlegen'
+        existingGroups: 'Bestehende Gruppen'
+        existingGroupsInfo: 'Tritt einer Gruppe bei um die Aufgabe zu bearbeiten oder erstelle eine neue Gruppe.'
+        testInfo: 'Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.'
+
+exercisePhase:
+    labels:
+        isGroupPhase: 'Ist eine Gruppenarbeit'
+        dependsOnPreviousPhase: 'Nutzt Ergebnis von Phase'
+        dependsOnPhaseName: 'Nutzt Ergebnis von Phase'
+        otherSolutionsAreAccessible: 'Lernende können gegenseitig Ergebnisse einsehen'
+        name: 'Titel der Phase'
+        task: 'Lernauftrag / Beschreibung'
+        material: 'Material'
+        videos: 'Videos'
+        videosExtended: 'Video für die Aufgabe auswählen'
+        videoCodes: 'Video-Codes'
+        components: 'Zusätzlich Komponenten'
+        attachments: 'Anhänge'
+        submit: 'Phase speichern'
+        type: 'Typ'
+    help:
+        isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
+        dependsOnPreviousPhase:
+            regular: 'Wenn aktiv, können Lernende beim Bearbeiten ihr Ergebnis dieser Phase einsehen und verwenden.'
+            reflexion: 'Bestimmt die Phase, welche innerhalb der Vergleichsphase begutachtet wird.'
+        otherSolutionsAreAccessible: 'Wenn aktiv, können die Lernenden für diese Phase die Ergebnisse ihrer Mitlernenden einsehen.'
+    types:
+        videoAnalysis:
+            label: 'Videoanalyse'
+            iconClass: 'fas fa-film'
+        videoCutting:
+            label: 'Videoschnitt'
+            iconClass: 'fas fa-cut'
+        reflexion:
+            label: 'Vergleich'
+            iconClass: 'fas fa-book-open'
+        material:
+            label: 'Dokumentation'
+            iconClass: 'fas fa-square-quote'
+    components:
+        videoPlayer:
+            label: 'Videoplayer'
+        videoCutting:
+            label: 'Videoschnitt'
+        chat:
+            label: 'Chat'
+        documentUpload:
+            label: 'Dokumenten-Upload'
+        videoCode:
+            label: 'Videocodierung'
+        sharedDocument:
+            label: 'Geteiltes Dokument'
+        videoAnnotation:
+            label: 'Videoannotation'
+    new:
+        back: 'Zurück zur Aufgabe'
+        title: 'Phase hinzufügen'
+        titleForGroupPhase: 'Gruppenphase hinzufügen'
+    edit:
+        title: 'Phase bearbeiten'
+        button: 'Bearbeiten'
+        messages:
+            success: 'Phase erfolgreich gespeichert!'
+    delete:
+        title: 'Phase löschen'
+        button: 'Löschen'
+        confirm: 'Sind Sie sicher, dass Sie diese Phase löschen möchten?'
+        messages:
+            success: 'Phase erfolgreich gelöscht!'
+    resetTest:
+        title: 'Test Ergebnis zurücksetzen'
+        messages:
+            success: 'Test Ergebnis erfolgreich zurückgesetzt!'
+    showSolutions:
+        back: 'Zurück zur Übersicht'
+
+video:
+    labels:
+        title: 'Titel'
+        titleLabel: 'Name des Videos'
+        created: 'Erstellt'
+        createdLabel: 'Video erstellt am'
+        statusPrivate: 'Video ist privat'
+        statusPublic: 'Video ist öffentlich'
+        statusLabel: 'Status des Videos'
+        description: 'Beschreibung'
+        visiblePersons: 'Zu sehende Personen im Video'
+        courses: 'Kurse mit Berechtigung für dieses Video'
+        dataPrivacyAccepted: 'Ich bestätige, dass dieser Upload den Datenschutzbestimmungen und den Nutzungsbedingungen entspricht.'
+        dataPrivacyPermissionsAccepted: 'Ich bestätige, dass die datenschutzrechtliche Einwilligung der betroffenen Personen schriftlich eingeholt wurde, bei minderjährigen Betroffenen von deren gesetzlichen Vertretern, und wirksam vorliegt. Die Betroffenen wurden über ihre Rechte im Rahmen der Datenschutzgrundverordnung informiert. Weiterhin bestätige ich, dass die hochgeladenen Inhalte (insbesondere Videos) mit pseudonymisierten Informationen über die abgebildeten oder zu hörenden Personen versehen wurden.'
+        submit: 'Video speichern'
+        previewImage: 'Vorschaubild des Videos'
+        actionsLabel: 'Aktionen'
+        toggleActions: 'Aktionen ein/ausblenden für Video:'
+    help:
+        courses: 'Das Video kann nur von den jeweiligen Lernenden des Kurses angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
+        visiblePersons: 'Bitte alle Personen auflisten (Vor- und Nachname) die im Video zu sehen sind. Dieses Feld ist aus Datenschutzgründen relevant.'
+    upload:
+        title: 'Video hochladen'
+        back: 'Zurück zur Übersicht'
+        subtitleUploadTitle: 'Untertitel hochladen (WebVTT)'
+        audioDescriptionUploadTitle: 'Audiodeskription hochladen (mp3)'
+        messages:
+            success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
+    show:
+        title: 'Video abspielen'
+    favor:
+        title: 'Favorisieren'
+    unfavor:
+        title: 'Entfavorisieren'
+    edit:
+        title: 'Video bearbeiten'
+        messages:
+            success: 'Video erfolgreich gespeichert!'
+    delete:
+        title: 'Video löschen'
+        messages:
+            success: 'Video erfolgreich gelöscht!'
+
+attachments:
+    labels:
+        name: 'Name des Dokuments/Anhangs'
+        file: 'Datei'
+        selectFile: 'Datei auswählen'
+    delete:
+        messages:
+            success: 'Datei erfolgreich gelöscht!'
+
+exercisePhaseTeam:
+    new:
+        messages:
+            success: 'Neue Gruppe angelegt!'
+            alreadyCreatedATeam: 'Du hast bereits eine Gruppe angelegt!'
+    join:
+        messages:
+            success: 'Gruppe beigetreten'
+    delete:
+        messages:
+            hasSolution: 'Gruppe kann nicht gelöscht werden. Es gibt bereits ein Ergebnis.'
+            success: 'Gruppe gelöscht'
+    leave:
+        messages:
+            success: 'Gruppe verlassen'
+
+course:
+    new:
+        title: 'Kurs anlegen'
+        back: 'Zurück zur Übersicht'
+        messages:
+            success: 'Kurs erfolgreich angelegt!'
+    edit:
+        title: 'Kurs bearbeiten'
+        messages:
+            success: 'Kurs erfolgreich gespeichert!'
+    exportCSV:
+        title: 'CSV exportieren'
+    editMembers:
+        title: 'Lernende verwalten'
+        messages:
+            success: 'Lernende erfolgreich gespeichert!'
+    labels:
+        name: 'Name'
+        role: 'Rolle'
+        submit: 'Kurs speichern'
+        addMember: 'Lernende speichern'
+        student: 'Lernende:r'
+        students: 'Lernende'
+        currentStudents: 'Aktuelle Lernende'
+        tutor: 'Lehrende:r'
+        tutors: 'Lehrende'
+        currentTutors: 'Aktuelle Lehrende'
+    help:
+        students: 'Hier können Lernende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
+        tutors: 'Hier können Lehrende ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
+    upgradeMember:
+        title: 'Darf Aufgabe erstellen'
+    downgradeMember:
+        title: 'Darf keine Aufgabe erstellen'
+    removeMember:
+        title: 'Entfernen'
+        messages:
+            notPossible: 'Nicht möglich: Es muss mindestens eine:n Lehrende:n pro Kurs geben!'
+    delete:
+        title: 'Kurs löschen'
+        messages:
+            success: 'Kurs erfolgreich gelöscht!'
+            notPossible: 'Kurs kann nicht gelöscht werden, so lange Aufgaben zugewiesen sind!'

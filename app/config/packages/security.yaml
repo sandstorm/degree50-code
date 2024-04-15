@@ -1,0 +1,58 @@
+security:
+    encoders:
+        App\Entity\Account\User:
+            algorithm: auto
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\Account\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: lazy
+            provider: app_user_provider
+            access_denied_handler: App\Security\AccessDeniedHandler
+
+            # we allow logging in both via SAML (Single Signon) and via form_login.
+            saml:
+                username_attribute: mail
+                check_path: saml_acs
+                login_path: saml_login
+                failure_path: /login
+                always_use_default_target_path: true
+                user_factory: saml_user_factory
+                persist_user: true
+
+            form_login:
+                login_path: /login
+                check_path: /login_check
+                always_use_default_target_path: true
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+            logout:
+                # this URL must match the `app_logout` route.
+                # DO NOT CHANGE THE URL, as the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
+                # TODO: configure this in authentication controller
+                path: saml_logout
+                # for logout, we both trigger the classic session-based logout, and as well the SAML logout.
+                handlers:
+                    - 'nbgrp_onelogin_saml.saml_logout'
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

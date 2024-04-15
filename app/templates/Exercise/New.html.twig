@@ -1,0 +1,39 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseFullscreen.html.twig' %}
+{% block layoutCssClass %}main--with-footer{% endblock %}
+
+{% block title %}{% trans %}exercise.new.title{% endtrans %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('exercise-overview', {id: course.id}) }}">{{ course.name }}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans %}exercise.new.title{% endtrans %}</li>
+            </ol>
+        </nav>
+
+        <header class="content-header content-header--center">
+            <h3>{% trans %}exercise.new.title{% endtrans %}</h3>
+        </header>
+    </div>
+
+    <div class="exercise-form">
+        {{ form_start(form) }}
+            <div class="container">
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+            </div>
+
+
+            <footer class="footer">
+                <a class="button button--type-outline-primary footer__left" href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+                <div class="footer__right">
+                    {{ form_row(form.save) }}
+                </div>
+            </footer>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

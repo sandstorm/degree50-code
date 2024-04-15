@@ -1,0 +1,20 @@
+{% extends 'BaseNoHeader.html.twig' %}
+{% trans_default_domain 'user-registration' %}
+
+{% block body %}
+    <div class="container text-justified">
+        <h1 class="h1">{{ "process.email-confirmation.title"|trans }}</h1>
+        <p>{{ "process.email-confirmation.body"|trans }}</p>
+
+        <p>{{ "process.email-confirmation.spamInfo"|trans }}</p>
+        <p><a href="{{ path('app_resend-verification-email') }}" role="link">{{ "process.email-confirmation.retryLink"|trans }}</a></p>
+    </div>
+
+    <footer class="footer footer--center">
+        {{ include('Version.html.twig') }}
+        <a class="button button--type-link" href="{{ path('imprint') }}" role="link">Impressum</a>
+        <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">Datenschutz</a>
+        <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">Nutzungsbedingungen</a>
+    </footer>
+{% endblock %}
+

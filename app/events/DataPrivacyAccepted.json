@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "userId": {
+            "type": "string"
+        },
+        "data_privacy_version": {
+            "type": "integer"
+        }
+    },
+    "required": ["userId", "data_privacy_version"],
+    "additionalProperties": false
+}

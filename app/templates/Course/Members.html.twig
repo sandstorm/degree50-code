@@ -1,0 +1,77 @@
+{% trans_default_domain 'forms' %}
+{% extends 'BaseFullscreen.html.twig' %}
+{% block layoutCssClass %}main--with-footer{% endblock %}
+{% block title %}{% trans %}course.editMembers.title{% endtrans %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('exercise-overview', {id: course.id}) }}">
+                        {{ course.name}}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active"
+                    aria-current="page">{% trans %}course.editMembers.title{% endtrans %}</li>
+            </ol>
+        </nav>
+
+        <header class="content-header">
+            <h3>{% trans %}course.editMembers.title{% endtrans %}</h3>
+        </header>
+
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        <div class="searchable-select-field form-group" data-controller="searchableSelectField">
+            {{ form_label(form.users) }}
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fa fa-search"></i></div>
+                </div>
+                <input type="search" class="form-control searchable-select-field__input" aria-label="Lernende filtern durch Texteingabe" placeholder="Lernende filtern" />
+            </div>
+            {{ form_errors(form.users) }}
+            <div class="searchable-select-field__list">
+                {{ form_widget(form.users) }}
+            </div>
+            {{ form_help(form.users) }}
+        </div>
+
+        <h5>{% trans %}course.labels.currentStudents{% endtrans %} ({{ students.count }} {% trans %}course.labels.students{% endtrans %})</h5>
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th>{% trans %}course.labels.student{% endtrans %}</th>
+                <th>{% trans %}course.labels.role{% endtrans %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.user.userName }}</td>
+                    <td>{% trans %}course.labels.student{% endtrans %} {% if student.name == 'DOZENT' %}(Darf Aufgaben Erstellen){% endif %}</td>
+                    <td class="text-right">
+                        {% if student.name == 'STUDENT' %}
+                            <a href="{{ path('exercise-overview__course--upgrade-role', {id: course.id, userRole_id: student.id}) }}"
+                               class="button button--type-outline-primary button--size-small">{% trans %}course.upgradeMember.title{% endtrans %}</a>
+                        {% else %}
+                            <a href="{{ path('exercise-overview__course--downgrade-role', {id: course.id, userRole_id: student.id}) }}"
+                               class="button button--type-outline-primary button--size-small">{% trans %}course.downgradeMember.title{% endtrans %}</a>
+                        {% endif %}
+                        <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: student.id}) }}"
+                           class="button button--type-danger button--size-small">{% trans %}course.removeMember.title{% endtrans %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <footer class="footer">
+        <a class="button button--type-outline-primary"
+           href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}course.new.back{% endtrans %}</a>
+        {{ form_row(form.save) }}
+    </footer>
+    {{ form_end(form) }}
+{% endblock %}

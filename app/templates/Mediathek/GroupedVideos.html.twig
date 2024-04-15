@@ -1,0 +1,14 @@
+{% trans_default_domain 'mediathek' %}
+{% for group in groupedVideos %}
+    {% if group.videos|length > 0 %}
+        {% set groupIdTransVar = 'mediathek.groups.' ~ (group.id) %}
+        <h5>{{ groupIdTransVar | trans }}</h5>
+        <ul class="overview">
+            {% for video in group.videos %}
+                <li>
+                    {{ include('Mediathek/Video.html.twig', {video: video}) }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}

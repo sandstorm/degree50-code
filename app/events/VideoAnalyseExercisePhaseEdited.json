@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "exercisePhaseId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "task": {
+      "type": "string"
+    },
+    "isGroupPhase": {
+      "type": "boolean"
+    },
+    "dependsOnPreviousPhase": {
+      "type": "boolean"
+    },
+    "videos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "videoId": {
+            "type": "string"
+          }
+        },
+        "required": ["videoId"],
+        "additionalProperties": false
+      }
+    },
+    "videoCodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "videoCodeId": {
+            "type": "string"
+          }
+        },
+        "required": ["videoCodeId"],
+        "additionalProperties": false
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "exercisePhaseId",
+    "name",
+    "task",
+    "isGroupPhase",
+    "dependsOnPreviousPhase",
+    "videos",
+    "videoCodes",
+    "components"
+  ],
+  "additionalProperties": false
+}

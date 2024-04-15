@@ -1,0 +1,32 @@
+{% extends 'BaseNoHeader.html.twig' %}
+{% trans_default_domain 'user-registration' %}
+
+{% block title %}Degree 4.0 - Registration{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="registration-form">
+            <img src="{{ asset('build/images/logo.svg') }}" alt="Logo der TU Dortmund" />
+            <h1 class="h1 mb-3 font-weight-normal login-form__headline">Video-Lernplattform Degree 4.0</h1>
+
+            <br/>
+            <hr/>
+            <br/>
+
+            <h2 class="registration-form__headline">{{ "form.title"|trans }}</h2>
+            {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm.email) }}
+                {{ form_row(registrationForm.plainPassword) }}
+
+                <button type="submit" class="button">{{ "form.submit"|trans }}</button>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+
+    <footer class="footer footer--center">
+        {{ include('Version.html.twig') }}
+        <a class="button button--type-link" href="{{ path('imprint') }}" role="link">Impressum</a>
+        <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">Datenschutz</a>
+        <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">Nutzungsbedingungen</a>
+    </footer>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'Base.html.twig' %}
+
+{% block title %}Video - {{ video.title }}{% endblock %}
+
+{% block body %}
+    <h2>{{ video.title }}</h2>
+    <p>
+        {{ video.description }}
+    </p>
+    {% if video.encodingStatus == 1 %}
+        {% if video.courses | length == 0 %}
+        <div class="alert alert-warning">
+            Achtung: Video ist aktuell keinen Kursen zugewiesen und nur für dich sichtbar.
+        </div>
+        {% endif %}
+
+        <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true }, videoMap: videoMap } | json_encode|e('html_attr')}}"></div>
+    {% elseif video.encodingStatus == 3 %}
+        <div class="alert alert-danger">
+            Video-Encoding fehlgeschlagen...
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Video-Encoding läuft noch. Dieser Prozess kann mehrere Minuten in Anspruch nehmen. Je nach Länge des Videos.
+        </div>
+    {% endif %}
+
+
+{% endblock %}

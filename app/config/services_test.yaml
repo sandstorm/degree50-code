@@ -1,0 +1,9 @@
+parameters:
+    app.event_store.throw_exceptions: true
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Tests\Behat\:
+        resource: '../tests/Behat/*'

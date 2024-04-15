@@ -1,0 +1,37 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+
+        # IMPORTANT: You MUST configure your server version,
+        # either here or in the DATABASE_URL env var (see .env file)
+        server_version: 'mariadb-11.3.2'
+
+        # we ignore the eventstore_events table
+        schema_filter: ~^(?!eventstore_events)~
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
+        filters:
+            exercise_doctrine_filter:
+                class: App\Security\DoctrineFilter\ExerciseDoctrineFilter
+                enabled: true
+                parameters:
+                    userId: -1
+            course_doctrine_filter:
+                class: App\Security\DoctrineFilter\CourseDoctrineFilter
+                enabled: true
+                parameters:
+                    userId: -1
+            video_doctrine_filter:
+                class: App\Security\DoctrineFilter\VideoDoctrineFilter
+                enabled: true
+                parameters:
+                    userId: -1
