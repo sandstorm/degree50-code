@@ -32,6 +32,7 @@
         "symfony/mailer": "6.4.*",
         "symfony/mercure-bundle": "*",
         "symfony/messenger": "6.4.*",
+        "symfony/monolog-bundle": "*",
         "symfony/runtime": "6.4.*",
         "symfony/yaml": "6.4.*"
     },
