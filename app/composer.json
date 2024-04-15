@@ -29,6 +29,8 @@
         "symfony/dotenv": "6.4.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.4.*",
+        "symfony/mailer": "6.4.*",
+        "symfony/mercure-bundle": "*",
         "symfony/runtime": "6.4.*",
         "symfony/yaml": "6.4.*"
     },
