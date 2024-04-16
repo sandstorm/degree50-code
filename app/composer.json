@@ -45,6 +45,7 @@
         "symfonycasts/verify-email-bundle": "^1.17"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "*",
         "symfony/maker-bundle": "^1.58"
     },
     "config": {
