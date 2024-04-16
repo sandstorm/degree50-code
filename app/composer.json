@@ -35,6 +35,7 @@
         "symfony/monolog-bundle": "*",
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
+        "symfony/serializer": "6.4.*",
         "symfony/yaml": "6.4.*"
     },
     "require-dev": {
