@@ -49,7 +49,8 @@
         "friends-of-behat/symfony-extension": "*",
         "phpunit/phpunit": "*",
         "sandstorm/e2etesttools": "*",
-        "symfony/maker-bundle": "^1.58"
+        "symfony/maker-bundle": "^1.58",
+        "symfony/web-profiler-bundle": "6.4.*"
     },
     "config": {
         "allow-plugins": {
