@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use GuzzleHttp\Client;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;

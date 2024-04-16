@@ -45,7 +45,10 @@
         "symfonycasts/verify-email-bundle": "^1.17"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "*",
+        "doctrine/doctrine-fixtures-bundle": "^3.5",
+        "friends-of-behat/symfony-extension": "*",
+        "phpunit/phpunit": "*",
+        "sandstorm/e2etesttools": "*",
         "symfony/maker-bundle": "^1.58"
     },
     "config": {
