@@ -3,6 +3,9 @@ security:
         App\Entity\Account\User:
             algorithm: auto
 
+
+    # TODO: think about rate limiting: https://symfony.com/doc/6.4/security.html#limiting-login-attempts
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
@@ -19,7 +22,7 @@ security:
             provider: app_user_provider
             access_denied_handler: App\Security\AccessDeniedHandler
 
-            # we allow logging in both via SAML (Single Signon) and via form_login.
+            # we allow logging in both via SAML (Single Sign On) and via form_login.
             saml:
                 username_attribute: mail
                 check_path: saml_acs
@@ -39,7 +42,7 @@ security:
             logout:
                 # this URL must match the `app_logout` route.
                 # DO NOT CHANGE THE URL, as the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
-                # TODO: configure this in authentication controller
+                # TODO: configure this in authentication controller see: https://symfony.com/doc/6.4/security.html#form-login
                 path: saml_logout
                 # for logout, we both trigger the classic session-based logout, and as well the SAML logout.
                 handlers:
