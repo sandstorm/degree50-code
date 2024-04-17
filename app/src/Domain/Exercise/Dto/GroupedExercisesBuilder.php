@@ -6,37 +6,36 @@ use App\Domain\Exercise\Controller\ExerciseService;
 
 class GroupedExercisesBuilder
 {
-
     private array $ownExercises = [];
     private array $otherExercises = [];
 
-    function __construct(
+    public function __construct(
         private readonly ExerciseService $exerciseService
     )
     {
     }
 
-    public function addOwnExercise($exercise)
+    public function addOwnExercise($exercise): static
     {
-        array_push(
-            $this->ownExercises,
-            ExerciseWithReviewStatusDTO::create($exercise, $this->exerciseService->needsReview($exercise))
+        $this->ownExercises[] = ExerciseWithReviewStatusDTO::create(
+            $exercise,
+            $this->exerciseService->needsReview($exercise)
         );
 
         return $this;
     }
 
-    public function addOtherExercise($exercise)
+    public function addOtherExercise($exercise): static
     {
-        array_push(
-            $this->otherExercises,
-            ExerciseWithReviewStatusDto::create($exercise, $this->exerciseService->needsReview($exercise))
+        $this->otherExercises[] = ExerciseWithReviewStatusDto::create(
+            $exercise,
+            $this->exerciseService->needsReview($exercise)
         );
 
         return $this;
     }
 
-    public function create()
+    public function create(): array
     {
         return [
             [

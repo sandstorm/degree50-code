@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Administration\Service\UserEmailValidationService;
-use App\Administration\Service\UserExpirationService;
+use App\Domain\User\Service\UserEmailValidationService;
+use App\Domain\User\Service\UserExpirationService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

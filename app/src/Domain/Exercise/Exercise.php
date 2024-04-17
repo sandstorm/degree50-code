@@ -37,7 +37,7 @@ class Exercise
     public string $description = '';
 
     /**
-     * @var ExercisePhase[]
+     * @var Collection<ExercisePhase>
      *
      * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExercise", cascade={"all"})
      * @ORM\OrderBy({"sorting" = "ASC"})
@@ -78,7 +78,7 @@ class Exercise
     /**
      * @ORM\PrePersist
      */
-    public function setCreatedAtValue()
+    public function setCreatedAtValue(): void
     {
         $this->createdAt = new DateTimeImmutable();
     }

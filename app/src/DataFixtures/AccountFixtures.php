@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Domain\Account\Course;
-use App\Domain\Account\CourseRole;
+use App\Domain\Course;
+use App\Domain\CourseRole;
 use App\Domain\User;
 use App\Domain\Fachbereich;
 use App\EventStore\DoctrineIntegratedEventStore;
@@ -23,7 +23,7 @@ class AccountFixtures extends Fixture
     {
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $fachbereich = $this->createFachbereich($manager, 'Fachbereich Mathematik');
 

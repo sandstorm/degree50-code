@@ -2,6 +2,12 @@
 
 namespace App\Domain\Exercise\Controller;
 
+use App\Domain\Course;
+use App\Domain\Course\Repository\CourseRepository;
+use App\Domain\Exercise;
+use App\Domain\Exercise\Dto\GroupedExercisesBuilder;
+use App\Domain\Exercise\Repository\ExerciseRepository;
+use App\Domain\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +27,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ExerciseOverviewController extends AbstractController
 {
-
     /**
      * @param CourseRepository $courseRepository
      * @param ExerciseRepository $exerciseRepository

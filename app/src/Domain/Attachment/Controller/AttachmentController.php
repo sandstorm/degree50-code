@@ -4,7 +4,7 @@ namespace App\Domain\Attachment\Controller;
 
 use App\Domain\Attachment;
 use App\Domain\Attachment\Repository\AttachmentRepository;
-use App\Domain\Exercise\ExercisePhase;
+use App\Domain\ExercisePhase;
 use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Twig\AppRuntime;

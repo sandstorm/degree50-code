@@ -2,10 +2,9 @@
 
 namespace App\DataExport\Controller;
 
-use App\Domain\Account\Course;
+use App\Domain\Course;
 use app\src\DataExport\Service\DegreeDataToCsvService;
 use Ramsey\Uuid\Uuid;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

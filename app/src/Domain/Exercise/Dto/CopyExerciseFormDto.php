@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exercise\Dto;
 
-
+use App\Domain\Course;
 use App\Domain\Exercise;
 
 class CopyExerciseFormDto

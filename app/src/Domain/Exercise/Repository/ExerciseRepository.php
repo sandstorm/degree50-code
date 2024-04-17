@@ -2,6 +2,7 @@
 
 namespace App\Domain\Exercise\Repository;
 
+use App\Domain\Exercise;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

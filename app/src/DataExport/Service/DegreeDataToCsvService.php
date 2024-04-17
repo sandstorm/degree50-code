@@ -2,16 +2,16 @@
 
 namespace app\src\DataExport\Service;
 
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideAnnotation;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideVideoCode;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideVideoCodePrototype;
-use App\Domain\Account\Course;
-use App\Domain\Account\CourseRole;
+use App\Domain\Course;
+use App\Domain\CourseRole;
+use App\Domain\Exercise;
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideAnnotation;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCode;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCodePrototype;
 use App\Domain\User;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhaseTeam;
 use app\src\DataExport\Dto\TextFileDto;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;

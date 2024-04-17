@@ -33,19 +33,19 @@ class Course
     public DateTime $creationDate;
 
     /**
-     * @var Exercise[]
+     * @var Collection<Exercise>
      * @ORM\OneToMany(targetEntity="App\Domain\Exercise\Exercise", mappedBy="course", orphanRemoval=true)
      */
     private Collection $exercises;
 
     /**
-     * @var CourseRole[]
+     * @var Collection<CourseRole>
      * @ORM\OneToMany(targetEntity="App\Domain\Account\CourseRole", mappedBy="course", cascade={"all"}, orphanRemoval=true)
      */
     private Collection $courseRoles;
 
     /**
-     * @var Video[]
+     * @var Collection<Video>
      * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="courses")
      */
     private Collection $videos;
@@ -66,7 +66,7 @@ class Course
     }
 
     /**
-     * @return CourseRole[]
+     * @return Collection<CourseRole>
      */
     public function getCourseRoles(): Collection
     {
@@ -117,7 +117,7 @@ class Course
     }
 
     /**
-     * @return Exercise[]
+     * @return Collection<Exercise>
      */
     public function getExercises(): Collection
     {
@@ -147,13 +147,14 @@ class Course
         return $this;
     }
 
+    // TODO: what?
     public function __sleep()
     {
         return [];
     }
 
     /**
-     * @return Video[]
+     * @return Collection<Video>
      */
     public function getVideos(): Collection
     {

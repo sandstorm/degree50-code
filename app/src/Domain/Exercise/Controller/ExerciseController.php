@@ -2,6 +2,20 @@
 
 namespace App\Domain\Exercise\Controller;
 
+use App\Domain\Course;
+use App\Domain\Exercise;
+use App\Domain\Exercise\Dto\CopyExerciseFormDto;
+use App\Domain\Exercise\Form\CopyExerciseFormType;
+use App\Domain\Exercise\Form\ExerciseFormType;
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\ExercisePhaseType;
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Domain\Solution\Service\SolutionService;
+use App\Domain\User;
+use App\EventStore\DoctrineIntegratedEventStore;
+use App\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +31,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ExerciseController extends AbstractController
 {
-
     public function __construct(
         private readonly ExercisePhaseRepository      $exercisePhaseRepository,
         private readonly ExercisePhaseService         $exercisePhaseService,

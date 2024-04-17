@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Repository\Video\VideoRepository;
+use App\Domain\Video\Repository\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,7 +24,7 @@ class EnqueueVideoEncodingCommand extends Command
     }
 
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Enqueue a video for encoding')

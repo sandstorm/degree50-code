@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
+use App\Domain\User\Repository\UserRepository;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Account\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,7 +25,7 @@ class SetAdminCommand extends Command
     }
 
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('')

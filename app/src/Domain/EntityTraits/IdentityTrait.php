@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Domain\EntityTraits;
-
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;

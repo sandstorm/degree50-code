@@ -26,7 +26,7 @@ class CreateUserCommand extends Command
     }
 
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Create a new user')

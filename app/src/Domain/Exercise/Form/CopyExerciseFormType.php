@@ -2,6 +2,9 @@
 
 namespace App\Domain\Exercise\Form;
 
+use App\Domain\Course;
+use App\Domain\Course\Repository\CourseRepository;
+use App\Domain\Exercise\Dto\CopyExerciseFormDto;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -11,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CopyExerciseFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('course', EntityType::class, [
@@ -36,7 +39,7 @@ class CopyExerciseFormType extends AbstractType
             ->add('save', SubmitType::class, ['label' => 'exercise.copy.title', 'translation_domain' => 'forms']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => CopyExerciseFormDto::class,

@@ -4,9 +4,9 @@ namespace App\Domain\Course\Form;
 
 use App\Domain\Course;
 use App\Domain\CourseRole;
-use App\Domain\User;
 use App\Domain\Fachbereich;
-use App\User\Repository\UserRepository;
+use App\Domain\User;
+use App\Domain\User\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -21,11 +21,13 @@ class CourseFormType extends AbstractType
      * CourseType constructor.
      * @param UserRepository $userRepository
      */
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct(
+        private readonly UserRepository $userRepository
+    )
     {
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Course $course */
         $course = $options['data'];
@@ -63,7 +65,7 @@ class CourseFormType extends AbstractType
             ->add('save', SubmitType::class, ['label' => 'course.labels.submit', 'translation_domain' => 'forms']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Course::class,

@@ -10,28 +10,28 @@ use App\Domain\Exercise;
 class ExerciseWithReviewStatusDTO
 {
     private function __construct(
-        private Exercise $exercise,
+        private readonly Exercise $exercise,
         private bool $needsReview
     )
     {
     }
 
-    public static function create(Exercise $exercise, bool $needsReview)
+    public static function create(Exercise $exercise, bool $needsReview): ExerciseWithReviewStatusDTO
     {
         return new self($exercise, $needsReview);
     }
 
-    public function getExercise()
+    public function getExercise(): Exercise
     {
         return $this->exercise;
     }
 
-    public function getNeedsReview()
+    public function getNeedsReview(): bool
     {
         return $this->needsReview;
     }
 
-    public function setNeedsReview($needsReview)
+    public function setNeedsReview($needsReview): void
     {
         $this->needsReview = $needsReview;
     }

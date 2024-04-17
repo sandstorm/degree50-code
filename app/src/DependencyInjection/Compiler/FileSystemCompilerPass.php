@@ -2,7 +2,7 @@
 
 namespace App\DependencyInjection\Compiler;
 
-use App\Core\FileSystemService;
+use App\FileSystem\FileSystemService;
 use Oneup\FlysystemBundle\DependencyInjection\Compiler\FilesystemPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
