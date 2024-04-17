@@ -2,6 +2,7 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,12 +34,12 @@ class VideoFavorite
         $this->video = $video;
     }
 
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function getVideo()
+    public function getVideo(): Video
     {
         return $this->video;
     }

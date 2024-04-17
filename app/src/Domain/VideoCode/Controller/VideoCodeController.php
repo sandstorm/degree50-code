@@ -2,6 +2,9 @@
 
 namespace App\Domain\VideoCode\Controller;
 
+use App\Domain\ExercisePhase\VideoAnalysisPhase;
+use App\Domain\VideoCode;
+use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +21,7 @@ class VideoCodeController extends AbstractController
 {
 
     public function __construct(
-        private readonly EntityManagerInterface       $entityManager,
+        private readonly EntityManagerInterface $entityManager,
         private readonly DoctrineIntegratedEventStore $eventStore
     )
     {
@@ -29,7 +32,7 @@ class VideoCodeController extends AbstractController
      *
      * @Route("/video-codes/add/{id}", name="video-code__add", methods={"POST"})
      */
-    public function add(Request $request, ExercisePhase $exercisePhase): Response
+    public function add(Request $request, VideoAnalysisPhase $exercisePhase): Response
     {
         $color = json_decode($request->getContent(), true)['color'];
         $name = json_decode($request->getContent(), true)['name'];
@@ -72,7 +75,7 @@ class VideoCodeController extends AbstractController
     /**
      * @Route("/video-codes/list/{id}", name="video-code__list")
      */
-    public function videoCodes(ExercisePhase $exercisePhase): Response
+    public function videoCodes(VideoAnalysisPhase $exercisePhase): Response
     {
         return $this->render('ExercisePhase/VideoCodesList.html.twig', [
             'videoCodes' => $exercisePhase->getVideoCodes()

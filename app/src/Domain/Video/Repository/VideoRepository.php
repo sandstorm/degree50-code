@@ -2,6 +2,9 @@
 
 namespace App\Domain\Video\Repository;
 
+use App\Domain\Course;
+use App\Domain\User;
+use App\Domain\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,6 +46,7 @@ class VideoRepository extends ServiceEntityRepository
 
     /**
      * @param Course $course
+     * TODO: Collection?
      * @return Video[]|iterable
      */
     public function findByCourse(Course $course): iterable

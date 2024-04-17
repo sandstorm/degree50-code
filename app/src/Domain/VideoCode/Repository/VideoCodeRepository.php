@@ -2,6 +2,7 @@
 
 namespace App\Domain\VideoCode\Repository;
 
+use App\Domain\VideoCode;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

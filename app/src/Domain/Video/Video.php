@@ -2,6 +2,10 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
+use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideCutVideo;
+use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideVideoUrl;
+use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -67,7 +71,7 @@ class Video
     private ?VirtualizedFile $encodedVideoDirectory;
 
     /**
-     * @var ExercisePhase[]
+     * @var Collection<ExercisePhase>
      *
      * @ORM\ManyToMany(targetEntity="App\Domain\Exercise\ExercisePhase", mappedBy="videos")
      */
@@ -85,7 +89,7 @@ class Video
     private ?DateTimeImmutable $createdAt;
 
     /**
-     * @var Course[]
+     * @var Collection<Course>
      *
      * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="videos")
      */
@@ -171,18 +175,8 @@ class Video
         $this->uploadedVideoFile = $uploadedVideoFile;
     }
 
-    public function getEncodedVideoDirectory(): ?VirtualizedFile
-    {
-        return $this->encodedVideoDirectory;
-    }
-
-    public function setEncodedVideoDirectory(?VirtualizedFile $encodedVideoDirectory): void
-    {
-        $this->encodedVideoDirectory = $encodedVideoDirectory;
-    }
-
     /**
-     * @return ExercisePhase[]
+     * @return Collection<ExercisePhase>
      */
     public function getExercisePhases(): Collection
     {
@@ -211,7 +205,7 @@ class Video
     }
 
     /**
-     * @return Course[]
+     * @return Collection<Course>
      */
     public function getCourses(): Collection
     {
@@ -288,6 +282,11 @@ class Video
         $this->encodingStatus = $encodingStatus;
     }
 
+    public function getCreatedAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
     /**
      * Used for testing purposes only.
      *
@@ -299,11 +298,6 @@ class Video
         $this->createdAt = $createdAt;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
     public function getAsClientSideVideo(AppRuntime $appRuntime): ClientSideCutVideo
     {
         $videoUrl = $appRuntime->virtualizedFileUrl($this->getEncodedVideoDirectory());
@@ -312,6 +306,16 @@ class Video
             $this,
             ClientSideVideoUrl::fromBaseUrl($videoUrl)
         );
+    }
+
+    public function getEncodedVideoDirectory(): ?VirtualizedFile
+    {
+        return $this->encodedVideoDirectory;
+    }
+
+    public function setEncodedVideoDirectory(?VirtualizedFile $encodedVideoDirectory): void
+    {
+        $this->encodedVideoDirectory = $encodedVideoDirectory;
     }
 
     public function getVisiblePersons(): ?string
@@ -341,7 +345,7 @@ class Video
         return $this->dataPrivacyPermissionsAccepted;
     }
 
-    public function setDataPrivacyPermissionsAccepted($dataPrivacyPermissionsAccepted)
+    public function setDataPrivacyPermissionsAccepted($dataPrivacyPermissionsAccepted): void
     {
         $this->dataPrivacyPermissionsAccepted = $dataPrivacyPermissionsAccepted;
     }
@@ -351,7 +355,7 @@ class Video
         return $this->uploadedSubtitleFile;
     }
 
-    public function setUploadedSubtitleFile(?VirtualizedFile $uploadedSubtitleFile)
+    public function setUploadedSubtitleFile(?VirtualizedFile $uploadedSubtitleFile): void
     {
         $this->uploadedSubtitleFile = $uploadedSubtitleFile;
     }
@@ -361,7 +365,7 @@ class Video
         return $this->uploadedAudioDescriptionFile;
     }
 
-    public function setUploadedAudioDescriptionFile(?VirtualizedFile $uploadedAudioDescriptionFile)
+    public function setUploadedAudioDescriptionFile(?VirtualizedFile $uploadedAudioDescriptionFile): void
     {
         $this->uploadedAudioDescriptionFile = $uploadedAudioDescriptionFile;
     }

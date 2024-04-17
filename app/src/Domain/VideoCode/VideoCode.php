@@ -2,6 +2,9 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
+use App\Domain\ExercisePhase\VideoAnalysisPhase;
+use App\Domain\VideoCode\Repository\VideoCodeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 // NOTE:

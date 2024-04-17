@@ -2,6 +2,10 @@
 
 namespace App\Domain\VideoFavorite\Repository;
 
+use App\Domain\User;
+use App\Domain\Video;
+use App\Domain\VideoFavorite;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,7 +18,8 @@ class VideoFavoritesRepository extends ServiceEntityRepository
 {
     public function __construct(
         ManagerRegistry $registry,
-    ) {
+    )
+    {
         parent::__construct($registry, VideoFavorite::class);
     }
 
