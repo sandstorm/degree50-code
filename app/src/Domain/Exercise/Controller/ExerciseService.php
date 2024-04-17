@@ -4,8 +4,8 @@ namespace App\Domain\Exercise\Controller;
 
 use App\Domain\Exercise\Repository\ExerciseRepository;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 

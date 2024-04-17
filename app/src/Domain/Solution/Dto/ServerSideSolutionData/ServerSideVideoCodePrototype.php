@@ -2,6 +2,8 @@
 
 namespace App\Domain\Solution\Dto\ServerSideSolutionData;
 
+use App\Domain\VideoCode;
+
 /**
  * Server side representation of a videoCodePrototype.
  *

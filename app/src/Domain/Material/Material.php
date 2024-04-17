@@ -2,11 +2,12 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Material\MaterialRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\Material\Repository\MaterialRepository")
  */
 class Material
 {
@@ -34,7 +35,7 @@ class Material
     private ?DateTimeImmutable $lastUpdatedAt = null;
 
     /**
-     * @var ExercisePhaseTeam
+     * @var ExercisePhaseTeam|null
      *
      * @ORM\ManyToOne(targetEntity="App\Domain\Exercise\ExercisePhaseTeam")
      */
@@ -45,39 +46,34 @@ class Material
         $this->generateOrSetId($id);
     }
 
-    public function getMaterial()
+    public function getMaterial(): string
     {
         return $this->material;
     }
 
-    public function setMaterial($material)
+    public function setMaterial(string $material): void
     {
         $this->material = $material;
     }
 
-    public function getOwner()
+    public function getOwner(): User
     {
         return $this->owner;
     }
 
-    public function setOwner($owner)
+    public function setOwner(User $owner): void
     {
         $this->owner = $owner;
     }
 
-    public function getOriginalPhaseTeam()
+    public function getOriginalPhaseTeam(): ?ExercisePhaseTeam
     {
         return $this->originalPhaseTeam;
     }
 
-    public function setOriginalPhaseTeam($originalPhaseTeam)
+    public function setOriginalPhaseTeam(?ExercisePhaseTeam $originalPhaseTeam): void
     {
         $this->originalPhaseTeam = $originalPhaseTeam;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt)
-    {
-        $this->createdAt = $createdAt;
     }
 
     public function getCreatedAt(): ?DateTimeImmutable
@@ -85,12 +81,17 @@ class Material
         return $this->createdAt;
     }
 
-    public function getLastUpdatedAt()
+    public function setCreatedAt(DateTimeImmutable $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getLastUpdatedAt(): ?DateTimeImmutable
     {
         return $this->lastUpdatedAt;
     }
 
-    public function setLastUpdatedAt($lastUpdatedAt)
+    public function setLastUpdatedAt(?DateTimeImmutable $lastUpdatedAt): void
     {
         $this->lastUpdatedAt = $lastUpdatedAt;
     }

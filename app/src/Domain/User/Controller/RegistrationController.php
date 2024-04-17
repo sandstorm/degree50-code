@@ -2,6 +2,11 @@
 
 namespace App\Domain\User\Controller;
 
+use App\Domain\User;
+use App\Domain\User\Form\RegistrationFormType;
+use App\Domain\User\Repository\UserRepository;
+use App\EventStore\DoctrineIntegratedEventStore;
+use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

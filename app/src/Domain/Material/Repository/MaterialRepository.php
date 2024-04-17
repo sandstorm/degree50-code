@@ -2,6 +2,8 @@
 
 namespace App\Domain\Material\Repository;
 
+use App\Domain\Material;
+use App\Domain\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

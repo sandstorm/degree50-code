@@ -2,6 +2,7 @@
 
 namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
+use App\Domain\Video;
 use JsonSerializable;
 
 /**

@@ -2,6 +2,8 @@
 
 namespace App\Domain\User\Controller;
 
+use App\Domain\User\Service\UserExpirationService;
+use App\Domain\User\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;

@@ -1,7 +1,12 @@
 <?php
 
-namespace App\ResetPassword\Controller;
+namespace App\Domain\ResetPassword\Controller;
 
+use App\Domain\ResetPassword\Form\ResetPasswordRequestFormType;
+use App\Domain\ResetPassword\Repository\ResetPasswordRequestRepository;
+use App\Domain\User;
+use App\Domain\User\Form\ChangePasswordFormType;
+use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,11 +28,11 @@ class ResetPasswordController extends AbstractController
     use ResetPasswordControllerTrait;
 
     public function __construct(
-        private readonly ResetPasswordHelperInterface   $resetPasswordHelper,
+        private readonly ResetPasswordHelperInterface $resetPasswordHelper,
         private readonly ResetPasswordRequestRepository $resetPasswordRequestRepository,
-        private readonly EntityManagerInterface         $entityManager,
-        private readonly DoctrineIntegratedEventStore   $eventStore,
-        private readonly TranslatorInterface            $translator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly DoctrineIntegratedEventStore $eventStore,
+        private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -54,7 +59,7 @@ class ResetPasswordController extends AbstractController
     }
 
     private function processSendingPasswordResetEmail(
-        string          $emailFormData,
+        string $emailFormData,
         MailerInterface $mailer,
     ): RedirectResponse
     {
@@ -127,9 +132,9 @@ class ResetPasswordController extends AbstractController
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
     public function reset(
-        Request                     $request,
+        Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        string                      $token = null,
+        string $token = null,
     ): Response
     {
         if ($token) {
@@ -146,6 +151,7 @@ class ResetPasswordController extends AbstractController
         }
 
         try {
+            /** @var User $user */
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
         } catch (ResetPasswordExceptionInterface $e) {
             $this->addFlash('danger', sprintf(

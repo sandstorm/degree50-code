@@ -2,6 +2,8 @@
 
 namespace App\Domain\Solution\Dto\ServerSideSolutionData;
 
+use App\VideoEncoding\TimeCode;
+
 /**
  * Server side representation of a cut.
  *

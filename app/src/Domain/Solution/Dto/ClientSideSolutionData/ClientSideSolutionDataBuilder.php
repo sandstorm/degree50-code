@@ -2,6 +2,15 @@
 
 namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
+use App\Domain\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideAnnotation;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideMaterial;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCode;
+use App\Domain\User;
 use JsonSerializable;
 
 /**

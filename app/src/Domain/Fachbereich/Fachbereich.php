@@ -2,6 +2,7 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -20,6 +21,11 @@ class Fachbereich
      */
     private string $name = '';
 
+    public function __construct(?string $id = null)
+    {
+        $this->generateOrSetId($id);
+    }
+
     /**
      * @return string
      */
@@ -34,10 +40,5 @@ class Fachbereich
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    public function __construct(?string $id = null)
-    {
-        $this->generateOrSetId($id);
     }
 }

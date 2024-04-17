@@ -2,18 +2,29 @@
 
 namespace App\Domain\Solution\Service;
 
+use App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository;
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\ExercisePhase\VideoAnalysisPhase;
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
+use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Domain\Solution\Dto\PreviousSolutionDto;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCodePrototype;
+use App\Domain\User;
+use App\Domain\VideoCode;
+use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class SolutionService
 {
-
     public function __construct(
         private readonly AutosavedSolutionRepository $autosavedSolutionRepository,
-        private readonly AppRuntime                  $appRuntime,
+        private readonly AppRuntime $appRuntime,
         private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        private readonly ManagerRegistry             $managerRegistry,
-        private readonly ExercisePhaseService        $exercisePhaseService,
+        private readonly ManagerRegistry $managerRegistry,
+        private readonly ExercisePhaseService $exercisePhaseService,
     )
     {
     }
@@ -25,7 +36,7 @@ class SolutionService
      */
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
-        array                         $teams
+        array $teams
     ): ClientSideSolutionDataBuilder
     {
         // FIXME
@@ -84,8 +95,8 @@ class SolutionService
 
     public function retrieveAndAddDataToClientSideDataBuilder(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
-        ExercisePhaseTeam             $exercisePhaseTeam,
-        ExercisePhase                 $exercisePhase
+        ExercisePhaseTeam $exercisePhaseTeam,
+        ExercisePhase $exercisePhase
     ): ClientSideSolutionDataBuilder
     {
         // Note: This might either be an autosaved solution or an actual solution
@@ -135,7 +146,7 @@ class SolutionService
     }
 
     private function getPreviousSolutionDtosForVideoEditor(
-        ExercisePhase     $exercisePhase,
+        ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam = null
     )
     {

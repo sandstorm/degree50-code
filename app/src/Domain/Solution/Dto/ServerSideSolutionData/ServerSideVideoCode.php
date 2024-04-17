@@ -9,6 +9,7 @@ namespace App\Domain\Solution\Dto\ServerSideSolutionData;
  **/
 final class ServerSideVideoCode
 {
+    // TOD: public readonly
     private string $start;
     private string $end;
     private string $text;

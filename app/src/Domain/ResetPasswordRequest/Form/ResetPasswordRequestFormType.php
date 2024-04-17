@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ResetPassword\Form;
+namespace App\Domain\ResetPassword\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,7 +13,8 @@ class ResetPasswordRequestFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator
-    ) {
+    )
+    {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

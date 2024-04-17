@@ -2,6 +2,11 @@
 
 namespace App\Domain\Solution\Dto;
 
+use App\Domain\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideCutVideo;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
+use App\Domain\User;
+
 class PreviousSolutionDto
 {
     /**
@@ -55,20 +60,17 @@ class PreviousSolutionDto
         return $this->cutVideo;
     }
 
-    /**
-     * Get fromGroupPhase.
-     */
-    public function getFromGroupPhase()
+    public function getFromGroupPhase(): ?bool
     {
         return $this->fromGroupPhase;
     }
 
-    public function getStatus()
+    public function getStatus(): ?ExercisePhaseStatus
     {
         return $this->status;
     }
 
-    public function setStatus($status)
+    public function setStatus($status): void
     {
         $this->status = $status;
     }

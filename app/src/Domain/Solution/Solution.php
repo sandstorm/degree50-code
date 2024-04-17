@@ -2,6 +2,8 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 

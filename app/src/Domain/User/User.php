@@ -2,6 +2,7 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
