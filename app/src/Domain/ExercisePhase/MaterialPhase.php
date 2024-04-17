@@ -2,10 +2,11 @@
 
 namespace App\Domain\ExercisePhase;
 
+use App\Domain\ExercisePhase;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\ExercisePhaseRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")
  */
 class MaterialPhase extends ExercisePhase
 {
@@ -32,7 +33,7 @@ class MaterialPhase extends ExercisePhase
         return $this->material;
     }
 
-    public function setMaterial(string $material)
+    public function setMaterial(string $material): void
     {
         $this->material = $material;
     }
@@ -46,7 +47,7 @@ class MaterialPhase extends ExercisePhase
         return $this->reviewRequired;
     }
 
-    public function setReviewRequired(bool $reviewRequired)
+    public function setReviewRequired(bool $reviewRequired): void
     {
         $this->reviewRequired = $reviewRequired;
     }

@@ -2,6 +2,10 @@
 
 namespace App\Domain\ExercisePhase\Form;
 
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\ExercisePhaseType;
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -65,7 +69,7 @@ class ExercisePhaseFormType extends AbstractType
             ])
             ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
             // NOTE: there seems to be a bug inside CKEditor where the editor does not respect the 'required' attribute
-            // We currently work around this by falling back to symfonys own validation via Annotations on the ExercisePhase.php entity.
+            // We currently work around this by falling back to symfony's own validation via Annotations on the ExercisePhase.php entity.
             // Therefore we added an @Assert\NotBlank to the entity field and also made the field setter property optional.
             ->add('task', TextType::class, [
                 'label' => "exercisePhase.labels.task",

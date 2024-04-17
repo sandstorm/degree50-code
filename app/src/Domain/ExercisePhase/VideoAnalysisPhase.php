@@ -2,19 +2,21 @@
 
 namespace App\Domain\ExercisePhase;
 
+use App\Domain\ExercisePhase;
+use App\Domain\VideoCode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\ExercisePhaseRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")
  */
 class VideoAnalysisPhase extends ExercisePhase
 {
     const type = ExercisePhaseType::VIDEO_ANALYSIS;
 
     /**
-     * @var VideoCode[]
+     * @var Collection<VideoCode>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Exercise\VideoCode", mappedBy="exercisePhase", cascade={"persist", "remove"})
      * @ORM\OrderBy({"name" = "ASC"})

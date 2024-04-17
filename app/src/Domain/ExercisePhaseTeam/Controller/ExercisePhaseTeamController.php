@@ -1,7 +1,22 @@
 <?php
 
-namespace App\ExercisePhaseTeam\Controller;
+namespace App\Domain\ExercisePhaseTeam\Controller;
 
+use App\Domain\AutosavedSolution;
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\ExercisePhase\VideoCutPhase;
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\Solution;
+use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
+use App\Domain\Solution\Service\SolutionService;
+use App\Domain\User;
+use App\Domain\Video;
+use App\EventStore\DoctrineIntegratedEventStore;
+use App\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
+use App\LiveSync\LiveSyncService;
+use App\VideoEncoding\Message\CutListEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,16 +34,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ExercisePhaseTeamController extends AbstractController
 {
-
     public function __construct(
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly TranslatorInterface          $translator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
         private readonly DoctrineIntegratedEventStore $eventStore,
-        private readonly LiveSyncService              $liveSyncService,
-        private readonly MessageBusInterface          $messageBus,
-        private readonly SolutionService              $solutionService,
-        private readonly ExercisePhaseService         $exercisePhaseService,
-        private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository
+        private readonly LiveSyncService $liveSyncService,
+        private readonly MessageBusInterface $messageBus,
+        private readonly SolutionService $solutionService,
+        private readonly ExercisePhaseService $exercisePhaseService,
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository
     )
     {
     }
@@ -257,36 +271,7 @@ class ExercisePhaseTeamController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/exercise-phase/finish-reflexion/{id}", name="exercise-phase-team--finish-reflexion")
-     */
-    public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam): Response
-    {
-        // TODO
-        // We might refactor this, so that this can be part of share_result instead and we
-        // no longer have the distinction inside the template (and also would not need this route anymore)
-
-        $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
-
-        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-        $this->eventStore->addEvent('ReflexionFinished', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-        ]);
-
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->flush();
-
-        return $this->redirectToRoute(
-            'exercise__show-phase',
-            [
-                'id' => $exercisePhase->getBelongsToExercise()->getId(),
-                'phaseId' => $exercisePhase->getId()
-            ]
-        );
-    }
-
-    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam)
+    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam): void
     {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
@@ -319,6 +304,35 @@ class ExercisePhaseTeamController extends AbstractController
         $this->entityManager->flush();
 
         return $video;
+    }
+
+    /**
+     * @Route("/exercise-phase/finish-reflexion/{id}", name="exercise-phase-team--finish-reflexion")
+     */
+    public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam): Response
+    {
+        // TODO
+        // We might refactor this, so that this can be part of share_result instead and we
+        // no longer have the distinction inside the template (and also would not need this route anymore)
+
+        $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
+
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+        $this->eventStore->addEvent('ReflexionFinished', [
+            'exercisePhaseId' => $exercisePhase->getId(),
+            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
+        ]);
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute(
+            'exercise__show-phase',
+            [
+                'id' => $exercisePhase->getBelongsToExercise()->getId(),
+                'phaseId' => $exercisePhase->getId()
+            ]
+        );
     }
 
     /**
@@ -389,9 +403,7 @@ class ExercisePhaseTeamController extends AbstractController
         $this->entityManager->persist($solution);
         $this->entityManager->flush();
 
-        $response = new Response('OK');
-
-        return $response;
+        return new Response('OK');
     }
 
     /**

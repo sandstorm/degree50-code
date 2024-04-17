@@ -2,6 +2,8 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
+use App\Domain\ExercisePhase\ExercisePhaseStatus;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource(paginationEnabled=false)
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\ExercisePhaseTeamRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository")
  */
 class ExercisePhaseTeam
 {
@@ -39,7 +41,7 @@ class ExercisePhaseTeam
     private ?User $currentEditor;
 
     /**
-     * @var AutosavedSolution[]
+     * @var Collection<AutosavedSolution>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Exercise\AutosavedSolution", mappedBy="team", orphanRemoval=true, cascade={"remove"})
      */
@@ -95,11 +97,6 @@ class ExercisePhaseTeam
         return $this->solution;
     }
 
-    public function hasSolution(): bool
-    {
-        return !!$this->solution;
-    }
-
     public function setSolution(?Solution $solution): self
     {
         $this->solution = $solution;
@@ -107,9 +104,9 @@ class ExercisePhaseTeam
         return $this;
     }
 
-    public function getMembers(): Collection
+    public function hasSolution(): bool
     {
-        return $this->members;
+        return $this->solution != null;
     }
 
     public function addMember(User $member): self
@@ -135,6 +132,18 @@ class ExercisePhaseTeam
         return $this;
     }
 
+    public function getCreator(): User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(User $creator): self
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
     public function getCurrentEditor(): ?User
     {
         return $this->currentEditor;
@@ -148,7 +157,7 @@ class ExercisePhaseTeam
     }
 
     /**
-     * @return AutosavedSolution[]
+     * @return Collection<AutosavedSolution>
      */
     public function getAutosavedSolutions(): Collection
     {
@@ -174,18 +183,6 @@ class ExercisePhaseTeam
         return $this;
     }
 
-    public function getCreator(): User
-    {
-        return $this->creator;
-    }
-
-    public function setCreator(User $creator): self
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
     public function getStatus(): ExercisePhaseStatus
     {
         return $this->status;
@@ -205,12 +202,17 @@ class ExercisePhaseTeam
         );
     }
 
-    public function getPhaseLastOpenedAt()
+    public function getMembers(): Collection
+    {
+        return $this->members;
+    }
+
+    public function getPhaseLastOpenedAt(): ?DateTimeImmutable
     {
         return $this->phaseLastOpenedAt;
     }
 
-    public function setPhaseLastOpenedAt($phaseLastOpenedAt)
+    public function setPhaseLastOpenedAt($phaseLastOpenedAt): void
     {
         $this->phaseLastOpenedAt = $phaseLastOpenedAt;
     }

@@ -1,7 +1,11 @@
 <?php
 
-namespace App\ExercisePhaseTeam\Repository;
+namespace App\Domain\ExercisePhaseTeam\Repository;
 
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\Solution;
+use App\Domain\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -76,5 +80,4 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
 }

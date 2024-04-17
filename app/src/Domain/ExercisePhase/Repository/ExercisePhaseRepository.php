@@ -2,6 +2,8 @@
 
 namespace App\Domain\ExercisePhase\Repository;
 
+use App\Domain\Exercise;
+use App\Domain\ExercisePhase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -41,6 +43,14 @@ class ExercisePhaseRepository extends ServiceEntityRepository
     /**
      * @throws NonUniqueResultException
      */
+    public function findExercisePhaseAfter(ExercisePhase $exercisePhase): ?ExercisePhase
+    {
+        return $this->findExercisePhasesLargerThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
     public function findExercisePhasesLargerThen(int $sorting, Exercise $exercise): ?ExercisePhase
     {
         $em = $this->getEntityManager();
@@ -62,9 +72,9 @@ class ExercisePhaseRepository extends ServiceEntityRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function findExercisePhaseAfter(ExercisePhase $exercisePhase): ?ExercisePhase
+    public function findExercisePhaseBefore(ExercisePhase $exercisePhase): ?ExercisePhase
     {
-        return $this->findExercisePhasesLargerThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
+        return $this->findExercisePhasesLesserThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
     }
 
     /**
@@ -86,14 +96,6 @@ class ExercisePhaseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
 
-    }
-
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function findExercisePhaseBefore(ExercisePhase $exercisePhase): ?ExercisePhase
-    {
-        return $this->findExercisePhasesLesserThen($exercisePhase->getSorting(), $exercisePhase->getBelongsToExercise());
     }
 
     public function findAllSortedBySorting($exercise)

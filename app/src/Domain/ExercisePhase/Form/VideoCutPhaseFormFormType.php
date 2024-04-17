@@ -2,6 +2,12 @@
 
 namespace App\Domain\ExercisePhase\Form;
 
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\ExercisePhase\VideoCutPhase;
+use App\Domain\Video;
+use App\Domain\Video\Repository\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -9,7 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class VideoCutPhaseFormFormType extends ExercisePhaseFormType
 {
-
     public function __construct(
         ExercisePhaseRepository $exercisePhaseRepository,
         ExercisePhaseService    $exercisePhaseService,

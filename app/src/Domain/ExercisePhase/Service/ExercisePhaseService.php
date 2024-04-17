@@ -2,6 +2,25 @@
 
 namespace App\Domain\ExercisePhase\Service;
 
+use App\Domain\Attachment;
+use App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository;
+use App\Domain\Exercise;
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\ExercisePhase\ExercisePhaseType;
+use App\Domain\ExercisePhase\MaterialPhase;
+use App\Domain\ExercisePhase\ReflexionPhase;
+use App\Domain\ExercisePhase\VideoAnalysisPhase;
+use App\Domain\ExercisePhase\VideoCutPhase;
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\User;
+use App\Domain\User\Service\UserMaterialService;
+use App\Domain\Video;
+use App\Domain\VideoCode;
+use App\EventStore\DoctrineIntegratedEventStore;
+use App\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
+use App\Mediathek\Service\VideoFavouritesService;
+use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -89,7 +108,7 @@ class ExercisePhaseService
     }
 
     /**
-     * @return ExercisePhase[]|Collection<ExercisePhase>
+     * @return Collection<ExercisePhase>
      */
     public function duplicatePhasesOfExercise(Exercise $originalExercise, Exercise $newExercise): Collection
     {
@@ -111,7 +130,7 @@ class ExercisePhaseService
                         $newPhase->setVideoCodesActive($originalPhase->getVideoCodesActive());
 
                         // create new VideoCodes from original VideoCodes
-                        foreach ($originalPhase->getVideoCodes() as $_key => $videoCode) {
+                        foreach ($originalPhase->getVideoCodes() as $videoCode) {
                             $newVideoCode = new VideoCode();
                             $newVideoCode->setName($videoCode->getName());
                             $newVideoCode->setColor($videoCode->getColor());
@@ -144,11 +163,11 @@ class ExercisePhaseService
                 $newPhase->setIsGroupPhase($originalPhase->isGroupPhase());
                 $newPhase->setOtherSolutionsAreAccessible($originalPhase->getOtherSolutionsAreAccessible());
 
-                foreach ($originalPhase->getAttachment() as $_key => $attachment) {
+                foreach ($originalPhase->getAttachment() as $attachment) {
                     $newPhase->addAttachment($attachment);
                 }
 
-                foreach ($originalPhase->getVideos() as $_key => $video) {
+                foreach ($originalPhase->getVideos() as $video) {
                     // WHY: The video also needs to be made available in the Course of the new Exercise
                     $newExercise->getCourse()->addVideo($video);
                     $newPhase->addVideo($video);
@@ -322,7 +341,7 @@ class ExercisePhaseService
             // While we set the status to "IN_BEARBEITUNG" when we initially create the phase,
             // a user might re-enter the phase after the status has already been set to "BEENDET".
             // In that case we want the phase to reflect that, by having the "IN_BEARBEITUNG" status again.
-            $exercisePhaseTeam->setStatus(ExercisePhase\ExercisePhaseStatus::IN_BEARBEITUNG);
+            $exercisePhaseTeam->setStatus(ExercisePhaseStatus::IN_BEARBEITUNG);
             $exercisePhaseTeam->setPhaseLastOpenedAt(new DateTimeImmutable());
 
             $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [

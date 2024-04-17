@@ -2,6 +2,12 @@
 
 namespace App\Domain;
 
+use App\Domain\EntityTraits\IdentityTrait;
+use App\Domain\ExercisePhase\ExercisePhaseType;
+use App\Domain\ExercisePhase\MaterialPhase;
+use App\Domain\ExercisePhase\ReflexionPhase;
+use App\Domain\ExercisePhase\VideoAnalysisPhase;
+use App\Domain\ExercisePhase\VideoCutPhase;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -67,14 +73,14 @@ abstract class ExercisePhase
     public int $sorting;
 
     /**
-     * @var ExercisePhaseTeam[]
+     * @var Collection<ExercisePhaseTeam>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Exercise\ExercisePhaseTeam", mappedBy="exercisePhase", cascade={"all"})
      */
     private Collection $teams;
 
     /**
-     * @var Attachment[]
+     * @var Collection<Attachment>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Exercise\Attachment", mappedBy="exercisePhase", cascade={"all"})
      * @ORM\OrderBy({"uploadAt" = "DESC"})
@@ -82,7 +88,7 @@ abstract class ExercisePhase
     private Collection $attachment;
 
     /**
-     * @var Video[]
+     * @var Collection<Video>
      *
      * @ORM\ManyToMany(targetEntity="App\Domain\Video\Video", inversedBy="exercisePhases")
      */
@@ -101,15 +107,10 @@ abstract class ExercisePhase
      */
     private bool $otherSolutionsAreAccessible = false;
 
-    public static function byType(ExercisePhaseType $type, string $id = null): VideoAnalysisPhase | VideoCutPhase | ReflexionPhase | MaterialPhase
-    {
-        return match ($type) {
-            ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase($id),
-            ExercisePhaseType::VIDEO_CUT => new VideoCutPhase($id),
-            ExercisePhaseType::REFLEXION => new ReflexionPhase($id),
-            ExercisePhaseType::MATERIAL => new MaterialPhase($id),
-        };
-    }
+    /**
+     * @var Collection<ExercisePhase>
+     */
+    private Collection $phasesDependentOnThis;
 
     protected function __construct(string $id = null)
     {
@@ -119,6 +120,16 @@ abstract class ExercisePhase
         $this->videos = new ArrayCollection();
         $this->phasesDependentOnThis = new ArrayCollection();
         $this->isGroupPhase = false;
+    }
+
+    public static function byType(ExercisePhaseType $type, string $id = null): VideoAnalysisPhase|VideoCutPhase|ReflexionPhase|MaterialPhase
+    {
+        return match ($type) {
+            ExercisePhaseType::VIDEO_ANALYSIS => new VideoAnalysisPhase($id),
+            ExercisePhaseType::VIDEO_CUT => new VideoCutPhase($id),
+            ExercisePhaseType::REFLEXION => new ReflexionPhase($id),
+            ExercisePhaseType::MATERIAL => new MaterialPhase($id),
+        };
     }
 
     public function __toString()
@@ -133,11 +144,6 @@ abstract class ExercisePhase
     public function getType(): ExercisePhaseType
     {
         return $this::type;
-    }
-
-    public function getTeams(): Collection
-    {
-        return $this->teams;
     }
 
     public function addTeam(ExercisePhaseTeam $team): self
@@ -292,17 +298,23 @@ abstract class ExercisePhase
         return $this;
     }
 
+    public function getHasSolutions(): bool
+    {
+        $teams = $this->getTeams()->toArray();
+        $solutionsWithoutTestSolution = array_filter($teams, fn(ExercisePhaseTeam $team) => !$team->isTest());
+        return count($solutionsWithoutTestSolution) > 0;
+    }
+
     /*
      * Returns boolean if the phase has a solution.
      * Excludes the test solution.
      *
      * @return bool
      */
-    public function getHasSolutions(): bool
+
+    public function getTeams(): Collection
     {
-        $teams = $this->getTeams()->toArray();
-        $solutionsWithoutTestSolution = array_filter($teams, fn (ExercisePhaseTeam $team) => !$team->isTest());
-        return count($solutionsWithoutTestSolution) > 0;
+        return $this->teams;
     }
 
     /**
