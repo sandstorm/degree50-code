@@ -4,10 +4,10 @@
 namespace App\Security\Voter;
 
 
-use App\Admin\Service\UserService;
+use App\Administration\Service\UserService;
 use App\Domain\Account\Course;
 use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Video\Video;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

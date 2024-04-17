@@ -1,26 +1,7 @@
 <?php
 
-namespace App\ExercisePhase\Service;
+namespace App\Domain\ExercisePhase\Service;
 
-use App\Domain\Account\User;
-use App\Domain\Exercise\Attachment;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\ExercisePhaseTypes\MaterialPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\ReflexionPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Domain\Exercise\VideoCode;
-use App\Domain\Video\Video;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\Mediathek\Service\VideoFavouritesService;
-use App\Repository\Exercise\AutosavedSolutionRepository;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Service\UserMaterialService;
-use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;

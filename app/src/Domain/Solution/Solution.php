@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Domain\Solution;
+namespace App\Domain;
 
-use App\Domain\EntityTraits\IdentityTrait;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\Video\Video;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource()
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\SolutionRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\Solution\Repository\SolutionRepository")
  */
 class Solution
 {

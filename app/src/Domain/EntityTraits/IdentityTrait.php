@@ -18,7 +18,7 @@ trait IdentityTrait
      */
     private string $id;
 
-    private function generateOrSetId(?string $id = null)
+    private function generateOrSetId(?string $id = null): void
     {
         $this->id = $id ?: Uuid::uuid4()->toString();
     }

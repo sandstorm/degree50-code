@@ -2,7 +2,7 @@
 
 namespace App\Mediathek\Controller;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Video\Video;
 use App\Mediathek\Service\VideoFavouritesService;
 use app\src\Mediathek\Dto\VideoWithFavoriteStatusDto;

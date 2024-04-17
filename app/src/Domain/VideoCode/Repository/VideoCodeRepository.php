@@ -1,8 +1,7 @@
 <?php
 
-namespace App\VideoCode\Repository;
+namespace App\Domain\VideoCode\Repository;
 
-use App\Domain\Exercise\VideoCode;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

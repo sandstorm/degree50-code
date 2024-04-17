@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Exercise\Form;
+namespace App\Domain\Exercise\Form;
 
-use App\Domain\Exercise\Dto\CopyExerciseFormDto;
-use App\Domain\Account\Course;
-use App\Repository\Account\CourseRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;

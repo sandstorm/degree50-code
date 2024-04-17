@@ -1,11 +1,7 @@
 <?php
 
-namespace App\ExercisePhase\Form;
+namespace App\Domain\ExercisePhase\Form;
 
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\ExercisePhase\Service\ExercisePhaseService;
-use App\Repository\Exercise\ExercisePhaseRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -16,7 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExercisePhaseFormType extends AbstractType
 {
-
     public function __construct(
         private readonly ExercisePhaseRepository $exercisePhaseRepository,
         private readonly ExercisePhaseService    $exercisePhaseService,

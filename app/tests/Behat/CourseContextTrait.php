@@ -4,7 +4,7 @@ namespace App\Tests\Behat;
 
 use App\Domain\Account\Course;
 use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\User;
 
 /**
  *

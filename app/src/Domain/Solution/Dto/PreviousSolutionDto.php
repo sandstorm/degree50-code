@@ -1,11 +1,6 @@
 <?php
 
-namespace App\Domain\Exercise\Dto;
-
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideCutVideo;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
+namespace App\Domain\Solution\Dto;
 
 class PreviousSolutionDto
 {

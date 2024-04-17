@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Exercise\ExercisePhase;
+namespace App\Domain\ExercisePhase;
 
 /**
  * These values are used all over the place. As keys for translations, in frontend, everywhere.

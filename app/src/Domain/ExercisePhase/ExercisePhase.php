@@ -1,18 +1,7 @@
 <?php
 
-namespace App\Domain\ExercisePhase;
+namespace App\Domain;
 
-use App\Domain\EntityTraits\IdentityTrait;
-use App\Domain\Account\User;
-use App\Domain\Exercise\Attachment;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\ExercisePhaseTypes\MaterialPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\ReflexionPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Domain\Video\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

@@ -5,7 +5,7 @@ namespace App\Tests\Behat;
 use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Domain\Account\Course;
 use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\Attachment;
 use App\Domain\Exercise\Exercise;
 use App\Domain\Exercise\ExercisePhaseTeam;

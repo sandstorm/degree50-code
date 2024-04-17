@@ -4,7 +4,7 @@
 namespace App\Mediathek\EventListener;
 
 use App\Core\FileSystemService;
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\Attachment;
 use App\Domain\Video\Video;
 use App\Domain\VirtualizedFile;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Admin\EventSubscriber;
+namespace App\Administration\EventSubscriber;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
@@ -28,7 +28,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function disableEventPublishingForNextFlush()
+    public function disableEventPublishingForNextFlush(): void
     {
         $this->eventStore->disableEventPublishingForNextFlush();
     }
@@ -37,7 +37,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
      * If the entity contained by the event is a user we encrypt its plain password
      * and write it to the user::password property.
      */
-    public function encodePassword($event)
+    public function encodePassword($event): void
     {
         $entity = $event->getEntityInstance();
         if ($entity instanceof User && $entity->getPlainPassword()) {

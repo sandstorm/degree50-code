@@ -1,16 +1,7 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ClientSideSolutionData;
+namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideAnnotation;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideMaterial;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideVideoCode;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\ExercisePhase\Service\ExercisePhaseService;
 use JsonSerializable;
 
 /**

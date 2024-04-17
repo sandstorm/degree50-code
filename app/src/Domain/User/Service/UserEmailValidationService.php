@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Admin\Service;
-
-use App\Repository\Account\UserRepository;
+namespace App\Domain\User\Service;
 
 /**
  * Most of the email validation logic is done in SymfonyCasts\Bundle\VerifyEmail.

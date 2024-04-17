@@ -1,8 +1,7 @@
 <?php
 
-namespace App\ExercisePhase\Form;
+namespace App\Domain\ExercisePhase\Form;
 
-use App\Domain\Exercise\ExercisePhaseTypes\ReflexionPhase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 

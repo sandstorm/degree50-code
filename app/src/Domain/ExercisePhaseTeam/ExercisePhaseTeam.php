@@ -1,13 +1,7 @@
 <?php
 
-namespace App\Domain\ExercisePhaseTeam;
+namespace App\Domain;
 
-use App\Domain\EntityTraits\IdentityTrait;
-use App\Domain\Account\User;
-use App\Domain\Exercise\AutosavedSolution;
-use App\Domain\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
-use App\Domain\Exercise\Solution;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -35,12 +29,12 @@ class ExercisePhaseTeam
     /**
      * @var User[]
      *
-     * @ORM\ManyToMany(targetEntity="App\Domain\Account\User")
+     * @ORM\ManyToMany(targetEntity="App\Domain\User")
      */
     private Collection $members;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User")
      */
     private ?User $currentEditor;
 
@@ -52,7 +46,7 @@ class ExercisePhaseTeam
     private Collection $autosavedSolutions;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $creator;

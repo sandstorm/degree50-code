@@ -1,12 +1,7 @@
 <?php
 
-namespace App\Admin\Service;
+namespace App\Domain\User\Service;
 
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Material\Material;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Material\MaterialRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 

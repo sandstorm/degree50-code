@@ -1,36 +1,9 @@
 <?php
 
-namespace App\ExercisePhase\Controller;
+namespace App\Domain\ExercisePhase\Controller;
 
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use App\Domain\Account\User;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\ExercisePhaseTypes\MaterialPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\ReflexionPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Domain\Exercise\Solution;
-use App\Domain\Exercise\VideoCode;
-use App\Domain\Video\Video;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\Exercise\Controller\ExerciseService;
-use App\ExercisePhase\Form\MaterialPhaseFormType;
-use App\ExercisePhase\Form\ReflexionPhaseFormType;
-use App\ExercisePhase\Form\VideoAnalysisPhaseFormFormType;
-use App\ExercisePhase\Form\VideoCutPhaseFormFormType;
-use App\ExercisePhase\Service\ExercisePhaseService;
-use App\LiveSync\LiveSyncService;
-use App\Repository\Exercise\ExercisePhaseRepository;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Solution\Service\SolutionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;

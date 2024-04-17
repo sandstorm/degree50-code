@@ -2,10 +2,10 @@
 
 namespace App\Schreibtisch\Service;
 
-use App\Admin\Service\UserService;
+use App\Administration\Service\UserService;
 use App\Domain\Account\Course;
 use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\Exercise;
 use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
@@ -13,8 +13,8 @@ use App\Domain\Exercise\ExerciseStatus;
 use App\Domain\Fachbereich;
 use App\Domain\Material\Material;
 use App\Domain\Video\VideoFavorite;
-use App\Exercise\Controller\ExerciseService;
-use App\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\Exercise\Controller\ExerciseService;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Service\UserMaterialService;
 use App\Twig\AppRuntime;

@@ -4,7 +4,7 @@
 namespace App\Security\Voter;
 
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\ExercisePhaseTeam;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

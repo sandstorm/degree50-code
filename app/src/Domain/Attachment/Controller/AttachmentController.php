@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Attachment\Controller;
+namespace App\Domain\Attachment\Controller;
 
-use App\Domain\Account\User;
-use App\Domain\Exercise\Attachment;
+use App\Domain\Attachment;
+use App\Domain\Attachment\Repository\AttachmentRepository;
 use App\Domain\Exercise\ExercisePhase;
+use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Exercise\AttachmentRepository;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -18,23 +17,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+#[IsGranted("ROLE_USER")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class AttachmentController extends AbstractController
 {
 
     public function __construct(
-        private readonly TranslatorInterface          $translator,
-        private readonly KernelInterface              $kernel,
+        private readonly TranslatorInterface $translator,
+        private readonly KernelInterface $kernel,
         private readonly DoctrineIntegratedEventStore $eventStore,
-        private readonly AttachmentRepository         $attachmentRepository,
-        private readonly EntityManagerInterface       $entityManager
+        private readonly AttachmentRepository $attachmentRepository,
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
@@ -69,6 +67,23 @@ class AttachmentController extends AbstractController
         return $this->redirectToRoute('exercise-phase__edit', ['id' => $attachment->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $attachment->getExercisePhase()->getId()]);
     }
 
+    private function removeAttachment(AppRuntime $appRuntime, Attachment $attachment): void
+    {
+        $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
+        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
+
+        $filesystem = new Filesystem();
+        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
+
+        $this->eventStore->addEvent('AttachmentDeleted', [
+            'attachmentId' => $attachment->getId(),
+            'uploadedFile' => $fileUrl
+        ]);
+
+        $this->entityManager->remove($attachment);
+        $this->entityManager->flush();
+    }
+
     /**
      * @Route("/attachment/delete-ajax", name="exercise-overview__attachment--delete-ajax")
      */
@@ -87,23 +102,6 @@ class AttachmentController extends AbstractController
         $this->removeAttachment($appRuntime, $attachment);
 
         return new Response('OK');
-    }
-
-    private function removeAttachment(AppRuntime $appRuntime, Attachment $attachment): void
-    {
-        $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
-        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
-
-        $filesystem = new Filesystem();
-        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
-
-        $this->eventStore->addEvent('AttachmentDeleted', [
-            'attachmentId' => $attachment->getId(),
-            'uploadedFile' => $fileUrl
-        ]);
-
-        $this->entityManager->remove($attachment);
-        $this->entityManager->flush();
     }
 
     /**

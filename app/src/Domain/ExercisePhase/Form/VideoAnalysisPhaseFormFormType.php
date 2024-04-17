@@ -1,13 +1,7 @@
 <?php
 
-namespace App\ExercisePhase\Form;
+namespace App\Domain\ExercisePhase\Form;
 
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Domain\Video\Video;
-use App\ExercisePhase\Service\ExercisePhaseService;
-use App\Repository\Exercise\ExercisePhaseRepository;
-use App\Repository\Video\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;

@@ -2,7 +2,7 @@
 
 namespace App\Security\Voter;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Domain\Exercise\ExercisePhaseTeam;

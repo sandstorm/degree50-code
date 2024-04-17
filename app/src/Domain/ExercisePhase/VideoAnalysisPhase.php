@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Domain\Exercise\ExercisePhaseTypes;
+namespace App\Domain\ExercisePhase;
 
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Domain\Exercise\VideoCode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

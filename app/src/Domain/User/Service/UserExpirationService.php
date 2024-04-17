@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Admin\Service;
+namespace App\Domain\User\Service;
 
-use App\Domain\Account\User;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Account\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

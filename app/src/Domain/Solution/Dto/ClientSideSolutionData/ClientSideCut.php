@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ClientSideSolutionData;
+namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
 use JsonSerializable;
 
 /**
- * Client side represenation of a cut.
+ * Client side representation of a cut.
  *
  * @see ClientSideSolutionDataBuilder
  **/

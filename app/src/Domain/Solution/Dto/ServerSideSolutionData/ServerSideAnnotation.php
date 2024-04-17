@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ServerSideSolutionData;
+namespace App\Domain\Solution\Dto\ServerSideSolutionData;
 
 /**
- * Server side represenation of an annotation.
+ * Server side representation of an annotation.
  *
- * @see \App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
+ * @see \App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
 final class ServerSideAnnotation
 {

@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Domain\VideoCode;
+namespace App\Domain;
 
-use App\Core\EntityTraits\IdentityTrait;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Repository\Exercise\VideoCodeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 // NOTE:

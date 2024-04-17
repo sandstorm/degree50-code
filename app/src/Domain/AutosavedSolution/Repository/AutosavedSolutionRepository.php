@@ -1,10 +1,10 @@
 <?php
 
-namespace App\AutosavedSolution\Repository;
+namespace App\Domain\AutosavedSolution\Repository;
 
-use App\Domain\Exercise\AutosavedSolution;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\Solution;
+use App\Domain\AutosavedSolution;
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\Solution;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

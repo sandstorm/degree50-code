@@ -1,22 +1,18 @@
 <?php
 
-namespace App\Domain\Video;
+namespace App\Domain;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Core\EntityTraits\IdentityTrait;
-use App\Domain\Account\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource
- * @ORM\Entity(repositoryClass="App\Repository\Video\VideoFavoritesRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\VideoFavorite\Repository\VideoFavoritesRepository")
  */
 class VideoFavorite
 {
     use IdentityTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User", inversedBy="favoriteVideos")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="favoriteVideos")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $user;

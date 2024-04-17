@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exercise\Dto;
 
-use App\Exercise\Controller\ExerciseService;
+use App\Domain\Exercise\Controller\ExerciseService;
 
 class GroupedExercisesBuilder
 {

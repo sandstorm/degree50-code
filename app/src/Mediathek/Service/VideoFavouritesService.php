@@ -2,7 +2,7 @@
 
 namespace App\Mediathek\Service;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Video\Video;
 use App\Domain\Video\VideoFavorite;
 use App\EventStore\DoctrineIntegratedEventStore;

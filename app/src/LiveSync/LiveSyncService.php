@@ -2,7 +2,7 @@
 
 namespace App\LiveSync;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\ExercisePhaseTeam;
 use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;

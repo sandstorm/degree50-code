@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Domain\Exercise;
+namespace App\Domain;
 
 use App\Domain\EntityTraits\IdentityTrait;
-use App\Domain\Account\Course;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhase;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -54,7 +51,7 @@ class Exercise
     private ?Course $course;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User", inversedBy="createdExercises")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="createdExercises")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $creator;

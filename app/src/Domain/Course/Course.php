@@ -1,12 +1,8 @@
 <?php
 
-namespace App\Domain\Course;
+namespace App\Domain;
 
 use App\Domain\EntityTraits\IdentityTrait;
-use App\Domain\Account\CourseRole;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Fachbereich;
-use App\Domain\Video\Video;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Account\CourseRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\Course\Repository\CourseRepository")
  */
 class Course
 {

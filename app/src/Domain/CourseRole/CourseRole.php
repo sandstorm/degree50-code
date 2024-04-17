@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Domain\CourseRole;
+namespace App\Domain;
 
 use App\Domain\EntityTraits\IdentityTrait;
-use App\Domain\Account\Course;
-use App\Domain\Account\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Account\CourseRoleRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\CourseRole\Repository\CourseRoleRepository")
  */
 class CourseRole
 {
@@ -27,7 +25,7 @@ class CourseRole
     public string $name = '';
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User", inversedBy="courseRoles")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="courseRoles")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $user;

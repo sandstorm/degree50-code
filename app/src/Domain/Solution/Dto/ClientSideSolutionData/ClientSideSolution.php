@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ClientSideSolutionData;
+namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
 use JsonSerializable;
 
 /**
- * Client side represenation of a solution.
+ * Client side representation of a solution.
  *
  * @see ClientSideSolutionDataBuilder
  **/

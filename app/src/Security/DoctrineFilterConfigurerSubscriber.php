@@ -4,7 +4,7 @@
 namespace App\Security;
 
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;

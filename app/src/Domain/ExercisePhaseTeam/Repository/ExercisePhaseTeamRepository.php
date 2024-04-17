@@ -2,10 +2,6 @@
 
 namespace App\ExercisePhaseTeam\Repository;
 
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\Solution;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

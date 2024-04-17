@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Attachment\Repository;
+namespace App\Domain\Attachment\Repository;
 
-use App\Domain\Exercise\Attachment;
+use App\Domain\Attachment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

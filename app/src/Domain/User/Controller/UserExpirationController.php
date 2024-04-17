@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Account\Controller;
+namespace App\Domain\User\Controller;
 
-use App\Admin\Service\UserExpirationService;
-use App\Admin\Service\UserService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;

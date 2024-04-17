@@ -1,16 +1,11 @@
 <?php
 
-namespace App\Domain\Material;
+namespace App\Domain;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Core\EntityTraits\IdentityTrait;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhaseTeam;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource
  * @ORM\Entity(repositoryClass="App\Repository\Material\MaterialRepository")
  */
 class Material
@@ -23,7 +18,7 @@ class Material
     private string $material;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User", inversedBy="materials")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="materials")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $owner;

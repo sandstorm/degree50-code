@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Exercise\ExercisePhase;
+namespace App\Domain\ExercisePhase;
 
 /**
  * The Status of an ExercisePhase

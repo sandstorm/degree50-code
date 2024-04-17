@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ServerSideSolutionData;
-
-use App\Domain\Exercise\VideoCode;
+namespace App\Domain\Solution\Dto\ServerSideSolutionData;
 
 /**
  * Server side representation of a videoCodePrototype.
  *
- * @see \App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
+ * @see \App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
 final class ServerSideVideoCodePrototype
 {

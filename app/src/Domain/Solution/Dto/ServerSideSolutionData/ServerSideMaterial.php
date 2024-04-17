@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ServerSideSolutionData;
+namespace App\Domain\Solution\Dto\ServerSideSolutionData;
 
 /**
- * Server side represenation of material.
+ * Server side representation of material.
  *
- * @see \App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
+ * @see \App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
 final class ServerSideMaterial
 {

@@ -1,15 +1,9 @@
 <?php
 
-namespace App\Account\Controller;
+namespace App\Domain\User\Controller;
 
-use App\Account\Form\RegistrationFormType;
-use App\Domain\Account\User;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Account\UserRepository;
-use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

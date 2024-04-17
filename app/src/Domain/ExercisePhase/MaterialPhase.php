@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Domain\Exercise\ExercisePhaseTypes;
+namespace App\Domain\ExercisePhase;
 
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

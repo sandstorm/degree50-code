@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Exercise\Form;
+namespace App\Domain\Exercise\Form;
 
-use App\Domain\Exercise\Exercise;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

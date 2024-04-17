@@ -2,12 +2,12 @@
 
 namespace App\Mediathek\Service;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Video\Video;
 use App\Domain\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Exercise\Controller\ExerciseService;
+use App\Domain\Exercise\Controller\ExerciseService;
 use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;

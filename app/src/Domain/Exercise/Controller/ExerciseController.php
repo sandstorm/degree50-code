@@ -1,23 +1,8 @@
 <?php
 
-namespace App\Exercise\Controller;
+namespace App\Domain\Exercise\Controller;
 
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use App\Domain\Exercise\Dto\CopyExerciseFormDto;
-use App\Domain\Account\Course;
-use App\Domain\Account\User;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\Exercise\Form\CopyExerciseFormType;
-use App\Exercise\Form\ExerciseFormType;
-use App\ExercisePhase\Service\ExercisePhaseService;
-use App\Repository\Exercise\ExercisePhaseRepository;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Solution\Service\SolutionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

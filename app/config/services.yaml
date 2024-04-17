@@ -38,7 +38,7 @@ services:
     App\Account\Controller\:
         resource: '../src/Account/Controller'
         tags: ['controller.service_arguments']
-    App\Exercise\Controller\:
+    App\Domain\Exercise\Controller\:
         resource: '../src/Exercise/Controller'
         tags: ['controller.service_arguments']
 
@@ -73,11 +73,11 @@ services:
         arguments:
             $options: { }
 
-    App\Exercise\LiveSync\LiveSyncService:
+    App\Domain\Exercise\LiveSync\LiveSyncService:
         arguments:
             $jwtPrivateSigningKey: '%app.live_sync.jwt_private_signing_key%'
 
-    App\Exercise\LiveSync\MercureJwtProvider:
+    App\Domain\Exercise\LiveSync\MercureJwtProvider:
         arguments:
             $jwtPrivateSigningKey: '%app.live_sync.jwt_private_signing_key%'
 

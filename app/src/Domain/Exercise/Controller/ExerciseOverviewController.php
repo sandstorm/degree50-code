@@ -1,14 +1,7 @@
 <?php
 
-namespace App\Exercise\Controller;
+namespace App\Domain\Exercise\Controller;
 
-use App\Domain\Exercise\Dto\GroupedExercisesBuilder;
-use App\Domain\Account\Course;
-use App\Domain\Account\User;
-use App\Domain\Exercise\Exercise;
-use App\Repository\Account\CourseRepository;
-use App\Repository\Exercise\ExerciseRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

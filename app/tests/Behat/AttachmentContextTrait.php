@@ -2,7 +2,7 @@
 
 namespace App\Tests\Behat;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\Attachment;
 use App\Domain\Exercise\ExercisePhase;
 

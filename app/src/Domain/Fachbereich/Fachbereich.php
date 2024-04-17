@@ -2,7 +2,6 @@
 
 namespace App\Domain;
 
-use App\Core\EntityTraits\IdentityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 

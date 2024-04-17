@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ClientSideSolutionData;
+namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideVideoCode;
 use JsonSerializable;
 
 /**

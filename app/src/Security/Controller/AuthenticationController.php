@@ -2,7 +2,7 @@
 
 namespace App\Account\Controller;
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;

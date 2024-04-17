@@ -4,7 +4,7 @@
 namespace App\Security\DoctrineFilter;
 
 
-use App\Domain\Account\User;
+use App\Domain\User;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 

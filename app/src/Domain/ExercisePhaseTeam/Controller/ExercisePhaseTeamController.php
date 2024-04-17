@@ -2,25 +2,8 @@
 
 namespace App\ExercisePhaseTeam\Controller;
 
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\Account\User;
-use App\Domain\Exercise\AutosavedSolution;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Domain\Exercise\Solution;
-use App\Domain\Video\Video;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\ExercisePhase\Service\ExercisePhaseService;
-use App\LiveSync\LiveSyncService;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Solution\Service\SolutionService;
-use App\VideoEncoding\Message\CutListEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

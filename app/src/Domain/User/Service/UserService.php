@@ -1,20 +1,7 @@
 <?php
 
+namespace App\Domain\User\Service;
 
-namespace App\Admin\Service;
-
-
-use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
-use App\Domain\Exercise\AutosavedSolution;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\EventStore\DoctrineIntegratedEventStore;
-use App\Exercise\Controller\ExerciseService;
-use App\Mediathek\Service\VideoFavouritesService;
-use App\Mediathek\Service\VideoService;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Service\UserMaterialService;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -73,9 +60,9 @@ class UserService
             /**
              * Due to ORM cascading options the following things will also happen when we delete a user:
              *
-             *   1. All orphaned CourseRoles will be removed @see User::$courseRoles
+             *   1. All orphaned CourseRoles will be removed @see \App\Domain\User\\Model\User::$courseRoles
              *   // TODO: UserExerciseInteractions are not part of the model anymore?
-             *   2. All orphaned UserExerciseInteractions will be removed @see User::$userExerciseInteractions
+             *   2. All orphaned UserExerciseInteractions will be removed @see \App\Domain\User\\Model\User::$userExerciseInteractions
              */
             $this->entityManager->remove($user);
             $this->entityManager->flush();
@@ -141,7 +128,7 @@ class UserService
         /**
          * WHY overwrite the email:
          *     Email acts as the username in this system.
-         * @see User::getUsername()
+         * @see \App\Domain\User\\Model\User::getUsername()
          */
         $user->setEmail(Uuid::uuid4()->toString());
 
@@ -212,8 +199,8 @@ class UserService
         /**
          * Due to ORM cascading options the following things will also happen when we delete a user:
          *
-         *   1. All orphaned CourseRoles will be removed @see User::$courseRoles
-         *   2. All orphaned UserExerciseInteractions will be removed @see User::$userExerciseInteractions
+         *   1. All orphaned CourseRoles will be removed @see \App\Domain\User\\Model\User::$courseRoles
+         *   2. All orphaned UserExerciseInteractions will be removed @see \App\Domain\User\\Model\User::$userExerciseInteractions
          */
         $this->entityManager->remove($user);
         $this->entityManager->flush();

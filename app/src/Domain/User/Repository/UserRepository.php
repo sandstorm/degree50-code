@@ -1,9 +1,7 @@
 <?php
 
-namespace App\User\Repository;
+namespace App\Domain\User\Repository;
 
-use App\Domain\Account\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;

@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Admin\Controller;
+namespace App\Administration\Controller;
 
-use App\Domain\User;
 use App\Domain\Fachbereich;
+use App\Domain\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @IsGranted("ROLE_ADMIN")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+#[IsGranted("ROLE_ADMIN")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class DashboardController extends AbstractDashboardController
 {
     public function __construct(
@@ -28,9 +26,7 @@ class DashboardController extends AbstractDashboardController
     {
     }
 
-    /**
-     * @Route("/admin", name="admin-panel")
-     */
+    #[Route("/admin", name: "admin-panel")]
     public function index(): Response
     {
         // redirect to some CRUD controller

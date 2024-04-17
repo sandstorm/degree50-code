@@ -1,11 +1,7 @@
 <?php
 
-namespace App\Repository\Video;
+namespace App\Domain\VideoFavorite\Repository;
 
-use App\Domain\Account\User;
-use App\Domain\Video\Video;
-use App\Domain\Video\VideoFavorite;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**

@@ -1,8 +1,7 @@
 <?php
 
-namespace App\ExercisePhase\Form;
+namespace App\Domain\ExercisePhase\Form;
 
-use App\Domain\Exercise\ExercisePhaseTypes\MaterialPhase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;

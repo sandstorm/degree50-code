@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exercise\Dto;
 
-use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise;
 
 /**
  * Dto which contains an exercise as well as its review status.

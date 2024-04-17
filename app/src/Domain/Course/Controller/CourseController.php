@@ -1,39 +1,29 @@
 <?php
 
-namespace App\Course\Controller;
+namespace App\Domain\Course\Controller;
 
-use App\Course\Form\CourseFormType;
-use App\Course\Form\CourseMembersType;
-use App\Domain\Account\Course;
-use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\Course\Form\CourseFormType;
+use App\Domain\Course\Form\CourseMembersType;
+use App\Domain\Course;
+use App\Domain\CourseRole;
+use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+#[IsGranted("ROLE_USER")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class CourseController extends AbstractController
 {
-
-    /**
-     * CourseController constructor.
-     * @param DoctrineIntegratedEventStore $eventStore
-     * @param TranslatorInterface $translator
-     */
     public function __construct(
         private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly TranslatorInterface          $translator,
@@ -43,9 +33,9 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("editMembers", subject="course")
      * @Route("/exercise-overview/{id}/course-members", name="exercise-overview__course--members")
      */
+    #[IsGranted("editMembers", subject: "course")]
     public function editCourseMembers(Request $request, Course $course): Response
     {
         $form = $this->createForm(CourseMembersType::class, $course);
@@ -111,7 +101,7 @@ class CourseController extends AbstractController
      */
     public function removeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
     {
-        $redirectToEdit = !!$request->get('redirectToEdit');
+        $redirectToEdit = (bool)$request->get('redirectToEdit');
 
         $this->eventStore->addEvent('CourseRoleRemoved', [
             'courseRoleId' => $courseRole->getId(),
@@ -144,7 +134,7 @@ class CourseController extends AbstractController
      * @Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name="exercise-overview__course--upgrade-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
      */
-    public function upgradeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
+    public function upgradeCourseMember(Course $course, CourseRole $courseRole): Response
     {
         $this->eventStore->addEvent('CourseRoleUpgraded', [
             'courseRoleId' => $courseRole->getId(),
@@ -165,7 +155,7 @@ class CourseController extends AbstractController
      * @Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name="exercise-overview__course--downgrade-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
      */
-    public function downgradeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
+    public function downgradeCourseMember(Course $course, CourseRole $courseRole): Response
     {
         $this->eventStore->addEvent('CourseRoleDowngraded', [
             'courseRoleId' => $courseRole->getId(),
@@ -209,7 +199,7 @@ class CourseController extends AbstractController
         ]);
     }
 
-    private function createOrUpdateCourse(FormInterface $form)
+    private function createOrUpdateCourse(FormInterface $form): void
     {
         // $form->getData() holds the submitted values
         // but, the original `$course` variable has also been updated

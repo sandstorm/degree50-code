@@ -1,19 +1,7 @@
 <?php
 
-namespace App\Solution\Service;
+namespace App\Domain\Solution\Service;
 
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use App\Domain\Exercise\Dto\PreviousSolutionDto;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideVideoCodePrototype;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Domain\Exercise\VideoCode;
-use App\ExercisePhase\Service\ExercisePhaseService;
-use App\Repository\Exercise\AutosavedSolutionRepository;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 

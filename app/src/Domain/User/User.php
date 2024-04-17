@@ -1,15 +1,7 @@
 <?php
 
-namespace App\Domain\User;
+namespace App\Domain;
 
-use App\Domain\EntityTraits\IdentityTrait;
-use App\Domain\Account\CourseRole;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Material\Material;
-use App\Domain\Video\Video;
-use App\Domain\Video\VideoFavorite;
-use App\Security\Voter\DataPrivacyVoter;
-use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +10,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Account\UserRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\User\Repository\UserRepository")
  * TODO: possible leak of used email!
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */

@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Exercise\Repository;
+namespace App\Domain\Exercise\Repository;
 
-use App\Domain\Exercise\Exercise;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

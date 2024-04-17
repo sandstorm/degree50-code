@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Course\Form;
+namespace App\Domain\Course\Form;
 
-use App\Domain\Account\Course;
-use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\Course;
+use App\Domain\CourseRole;
+use App\Domain\User;
 use App\Domain\Fachbereich;
-use App\Repository\Account\UserRepository;
+use App\User\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

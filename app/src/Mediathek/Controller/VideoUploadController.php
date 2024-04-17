@@ -3,7 +3,7 @@
 namespace App\Mediathek\Controller;
 
 use App\Domain\Account\Course;
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Video\Video;
 use App\Domain\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;

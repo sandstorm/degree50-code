@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ClientSideSolutionData;
+namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideAnnotation;
 use JsonSerializable;
 
 /**
- * Client side represenation of an annotation.
+ * Client side representation of an annotation.
  *
  * @see ClientSideSolutionDataBuilder
  **/

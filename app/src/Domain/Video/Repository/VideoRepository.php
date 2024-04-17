@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Repository\Video;
+namespace App\Domain\Video\Repository;
 
-use App\Domain\Account\Course;
-use App\Domain\Account\User;
-use App\Domain\Video\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;

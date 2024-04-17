@@ -1,9 +1,7 @@
 <?php
 
+namespace App\ResetPassword\Repository;
 
-namespace App\ResetPasswordRequest\Repository;
-
-use App\Domain\ResetPasswordRequest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;

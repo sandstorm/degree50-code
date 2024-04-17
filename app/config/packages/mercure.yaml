@@ -3,4 +3,4 @@ mercure:
     hubs:
         default:
             url: '%env(MERCURE_PUBLISH_URL)%'
-            jwt_provider: 'App\Exercise\LiveSync\MercureJwtProvider'
+            jwt_provider: 'App\Domain\Exercise\LiveSync\MercureJwtProvider'

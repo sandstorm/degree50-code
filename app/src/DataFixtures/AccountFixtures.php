@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Domain\Account\Course;
 use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Fachbereich;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;

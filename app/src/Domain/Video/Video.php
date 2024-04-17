@@ -1,26 +1,14 @@
 <?php
 
-namespace App\Domain\Video;
+namespace App\Domain;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Core\EntityTraits\IdentityTrait;
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideCutVideo;
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideVideoUrl;
-use App\Domain\Account\Course;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\VirtualizedFile;
-use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource
- * @ORM\Entity(repositoryClass="App\Repository\Video\VideoRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\Video\Repository\VideoRepository")
  */
 class Video
 {
@@ -33,7 +21,6 @@ class Video
 
     /**
      * @ORM\Column(type="text")
-     * @ApiFilter(SearchFilter::class, strategy="ipartial")
      */
     private string $title = '';
 
@@ -87,7 +74,7 @@ class Video
     private Collection $exercisePhases;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User", inversedBy="createdVideos")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="createdVideos")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $creator;

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ClientSideSolutionData;
+namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\Video\Video;
 use JsonSerializable;
 
 /**
- * Client side represenation of an encoded cut video.
+ * Client side representation of an encoded cut video.
  *
  * @see ClientSideSolutionDataBuilder
  **/

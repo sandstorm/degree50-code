@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Domain\Attachment;
+namespace App\Domain;
 
-use App\Core\EntityTraits\IdentityTrait;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\VirtualizedFile;
+use App\Domain\EntityTraits\IdentityTrait;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -13,7 +10,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * Attachment
  *
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\AttachmentRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\Attachment\Repository\AttachmentRepository")
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
@@ -43,7 +40,7 @@ class Attachment
 
     /**
      * // TODO: inversedBy="createdVideos" -- is this a bug?
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User", inversedBy="createdVideos")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="createdVideos")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $creator;
@@ -63,7 +60,7 @@ class Attachment
     }
 
 
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -74,9 +71,10 @@ class Attachment
     }
 
     /**
+     * TODO: used?
      * @ORM\PrePersist
      */
-    public function setUploadedAtValue()
+    public function setUploadedAtValue(): void
     {
         $this->uploadAt = new DateTimeImmutable();
     }
@@ -86,7 +84,7 @@ class Attachment
         return $this->uploadAt;
     }
 
-    public function setExercisePhase(?ExercisePhase $exercisePhase)
+    public function setExercisePhase(?ExercisePhase $exercisePhase): void
     {
         $this->exercisePhase = $exercisePhase;
     }

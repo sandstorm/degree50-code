@@ -1,19 +1,15 @@
 <?php
 
-namespace App\Domain\AutosavedSolution;
+namespace App\Domain;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Core\EntityTraits\IdentityTrait;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\Account\User;
-use App\Domain\Exercise\ExercisePhaseTeam;
+use App\Domain\EntityTraits\IdentityTrait;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
  * @ORM\HasLifecycleCallbacks()
- * @ORM\Entity(repositoryClass="App\Repository\Exercise\AutosavedSolutionRepository")
+ * @ORM\Entity(repositoryClass="App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository")
  */
 class AutosavedSolution
 {
@@ -30,7 +26,7 @@ class AutosavedSolution
     private ?DateTimeImmutable $update_timestamp;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\User")
+     * @ORM\ManyToOne(targetEntity="App\Domain\User")
      */
     private ?User $owner;
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
-use App\Admin\Service\UserExpirationService;
-use App\Admin\Service\UserService;
+use App\Administration\Service\UserExpirationService;
+use App\Administration\Service\UserService;
 use App\Domain\Account\CourseRole;
-use App\Domain\Account\User;
+use App\Domain\User;
 use App\Domain\Exercise\Exercise;
 use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
@@ -22,8 +22,8 @@ use App\Domain\Video\Video;
 use App\Domain\Video\VideoFavorite;
 use App\Domain\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Exercise\Controller\ExerciseService;
-use App\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\Exercise\Controller\ExerciseService;
+use App\Domain\ExercisePhase\Service\ExercisePhaseService;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Mediathek\Service\VideoService;
 use App\Repository\Account\UserRepository;

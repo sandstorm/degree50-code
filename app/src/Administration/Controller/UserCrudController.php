@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Admin\Controller;
+namespace App\Administration\Controller;
 
-use App\Admin\EventSubscriber\EasyAdminSubscriber;
-use App\Admin\Service\UserService;
-use App\Domain\Account\User;
+use App\Administration\EventSubscriber\EasyAdminSubscriber;
+use App\Domain\User;
+use App\Domain\User\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @IsGranted("ROLE_ADMIN")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+#[IsGranted("ROLE_ADMIN")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class UserCrudController extends AbstractCrudController
 {
     public function __construct(

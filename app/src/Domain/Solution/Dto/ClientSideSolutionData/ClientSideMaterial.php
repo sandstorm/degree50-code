@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Domain\Exercise\Dto\ClientSideSolutionData;
+namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideMaterial;
 use JsonSerializable;
 
 /**
- * Client side represenation of material
+ * Client side representation of material
  *
  * @see ClientSideSolutionDataBuilder
  **/
