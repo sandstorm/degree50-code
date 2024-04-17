@@ -2,9 +2,10 @@
 
 namespace App\Exercise\Controller;
 
-use App\Entity\Account\Course;
-use App\Entity\Account\User;
-use App\Entity\Exercise\Exercise;
+use App\Domain\Exercise\Dto\GroupedExercisesBuilder;
+use App\Domain\Account\Course;
+use App\Domain\Account\User;
+use App\Domain\Exercise\Exercise;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;

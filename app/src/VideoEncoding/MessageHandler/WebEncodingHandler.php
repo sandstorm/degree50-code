@@ -5,7 +5,7 @@ namespace App\VideoEncoding\MessageHandler;
 
 
 use App\Core\FileSystemService;
-use App\Entity\Video\Video;
+use App\Domain\Video\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Controller\VideoUploadController;
 use App\Mediathek\Service\VideoService;

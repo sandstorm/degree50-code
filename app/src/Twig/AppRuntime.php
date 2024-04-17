@@ -3,7 +3,7 @@
 
 namespace App\Twig;
 
-use App\Entity\VirtualizedFile;
+use App\Domain\VirtualizedFile;
 use Twig\Extension\RuntimeExtensionInterface;
 
 class AppRuntime implements RuntimeExtensionInterface

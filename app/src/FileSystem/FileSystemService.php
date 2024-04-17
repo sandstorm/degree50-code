@@ -3,7 +3,7 @@
 namespace App\FileSystem;
 
 use App\DependencyInjection\Compiler\FileSystemCompilerPass;
-use App\Entity\VirtualizedFile;
+use App\Domain\VirtualizedFile;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;

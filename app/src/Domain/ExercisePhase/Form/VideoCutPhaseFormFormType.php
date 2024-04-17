@@ -1,0 +1,57 @@
+<?php
+
+namespace App\ExercisePhase\Form;
+
+use App\Domain\Exercise\ExercisePhase;
+use App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase;
+use App\Domain\Video\Video;
+use App\ExercisePhase\Service\ExercisePhaseService;
+use App\Repository\Exercise\ExercisePhaseRepository;
+use App\Repository\Video\VideoRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+
+class VideoCutPhaseFormFormType extends ExercisePhaseFormType
+{
+
+    public function __construct(
+        ExercisePhaseRepository $exercisePhaseRepository,
+        ExercisePhaseService    $exercisePhaseService,
+        private readonly VideoRepository $videoRepository,
+    )
+    {
+        parent::__construct($exercisePhaseRepository, $exercisePhaseService);
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        parent::buildForm($builder, $options);
+
+        /** @var ExercisePhase $exercisePhase */
+        $exercisePhase = $options['data'];
+
+        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
+
+        $builder
+            ->add('videos', EntityType::class, [
+                'class' => Video::class,
+                'choices' => $videoChoices,
+                'required' => true,
+                'disabled' => $exercisePhase->getHasSolutions(),
+                'choice_label' => 'title',
+                'multiple' => true,
+                'expanded' => true,
+                'label' => false,
+                'block_prefix' => 'video_entity'
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => VideoCutPhase::class,
+        ]);
+    }
+}

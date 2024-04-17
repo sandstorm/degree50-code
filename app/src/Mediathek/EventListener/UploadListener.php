@@ -4,10 +4,10 @@
 namespace App\Mediathek\EventListener;
 
 use App\Core\FileSystemService;
-use App\Entity\Account\User;
-use App\Entity\Exercise\Attachment;
-use App\Entity\Video\Video;
-use App\Entity\VirtualizedFile;
+use App\Domain\Account\User;
+use App\Domain\Exercise\Attachment;
+use App\Domain\Video\Video;
+use App\Domain\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Controller\VideoUploadController;
 use App\Mediathek\Service\VideoService;

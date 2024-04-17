@@ -2,10 +2,10 @@
 
 namespace App\Mediathek\Service;
 
-use App\Entity\Account\User;
-use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Video\Video;
-use App\Entity\VirtualizedFile;
+use App\Domain\Account\User;
+use App\Domain\Exercise\ExercisePhase;
+use App\Domain\Video\Video;
+use App\Domain\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Exercise\Controller\ExerciseService;
 use App\Repository\Video\VideoRepository;

@@ -2,9 +2,9 @@
 
 namespace App\Tests\Behat;
 
-use App\Entity\Account\User;
-use App\Entity\Exercise\Attachment;
-use App\Entity\Exercise\ExercisePhase;
+use App\Domain\Account\User;
+use App\Domain\Exercise\Attachment;
+use App\Domain\Exercise\ExercisePhase;
 
 /**
  *

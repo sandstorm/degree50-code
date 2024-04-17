@@ -2,18 +2,20 @@
 
 namespace App\Exercise\Controller;
 
-use App\Entity\Account\Course;
-use App\Entity\Account\User;
-use App\Entity\Exercise\CopyExerciseFormDto;
-use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Domain\Exercise\Dto\CopyExerciseFormDto;
+use App\Domain\Account\Course;
+use App\Domain\Account\User;
+use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise\ExercisePhase;
+use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Exercise\Form\CopyExerciseFormType;
-use App\Exercise\Form\ExerciseType;
+use App\Exercise\Form\ExerciseFormType;
+use App\ExercisePhase\Service\ExercisePhaseService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
+use App\Solution\Service\SolutionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -201,7 +203,7 @@ class ExerciseController extends AbstractController
         $user = $this->getUser();
         $exercise->setCreator($user);
 
-        $form = $this->createForm(ExerciseType::class, $exercise);
+        $form = $this->createForm(ExerciseFormType::class, $exercise);
 
         $form->handleRequest($request);
 
@@ -240,7 +242,7 @@ class ExerciseController extends AbstractController
      */
     public function edit(Request $request, Exercise $exercise): Response
     {
-        $form = $this->createForm(ExerciseType::class, $exercise);
+        $form = $this->createForm(ExerciseFormType::class, $exercise);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

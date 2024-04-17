@@ -2,9 +2,9 @@
 
 namespace App\Tests\Behat;
 
-use App\Entity\Account\Course;
-use App\Entity\Account\CourseRole;
-use App\Entity\Account\User;
+use App\Domain\Account\Course;
+use App\Domain\Account\CourseRole;
+use App\Domain\Account\User;
 
 /**
  *

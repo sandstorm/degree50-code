@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit;
 
-use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
+use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
 use App\VideoEncoding\Service\SubtitleService;
 use PHPUnit\Framework\TestCase;
 

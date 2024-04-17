@@ -2,15 +2,16 @@
 
 namespace App\Exercise\Controller;
 
-use App\Entity\Account\Course;
-use App\Entity\Account\CourseRole;
-use App\Entity\Account\User;
-use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
-use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ExerciseStatus;
+use App\Domain\Account\Course;
+use App\Domain\Account\CourseRole;
+use App\Domain\Account\User;
+use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise\ExercisePhase;
+use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\Exercise\ExercisePhaseTeam;
+use App\Domain\Exercise\ExerciseStatus;
 use App\EventStore\DoctrineIntegratedEventStore;
+use App\ExercisePhase\Service\ExercisePhaseService;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Exercise\ExerciseRepository;
 use DateTimeImmutable;

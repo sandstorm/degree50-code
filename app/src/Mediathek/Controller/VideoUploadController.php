@@ -2,10 +2,10 @@
 
 namespace App\Mediathek\Controller;
 
-use App\Entity\Account\Course;
-use App\Entity\Account\User;
-use App\Entity\Video\Video;
-use App\Entity\VirtualizedFile;
+use App\Domain\Account\Course;
+use App\Domain\Account\User;
+use App\Domain\Video\Video;
+use App\Domain\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\EventListener\UploadListener;
 use App\Mediathek\Form\VideoType;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace migrations;
 
-use App\Entity\Exercise\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 

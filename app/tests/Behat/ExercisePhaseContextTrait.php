@@ -2,17 +2,17 @@
 
 namespace App\Tests\Behat;
 
-use App\Entity\Account\User;
-use App\Entity\Exercise\AutosavedSolution;
-use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhase;
-use App\Entity\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Entity\Exercise\ServerSideSolutionData\ServerSideSolutionData;
-use App\Entity\Exercise\Solution;
-use App\Entity\Exercise\VideoCode;
-use App\Exercise\Controller\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
+use App\Domain\Account\User;
+use App\Domain\Exercise\AutosavedSolution;
+use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise\ExercisePhase;
+use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
+use App\Domain\Exercise\ExercisePhaseTeam;
+use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
+use App\Domain\Exercise\Solution;
+use App\Domain\Exercise\VideoCode;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

@@ -3,8 +3,8 @@
 namespace App\VideoEncoding\Service;
 
 use App\Core\FileSystemService;
-use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
-use App\Entity\Video\Video;
+use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
+use App\Domain\Video\Video;
 use App\VideoEncoding\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;

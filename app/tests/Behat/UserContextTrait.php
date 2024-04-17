@@ -3,13 +3,13 @@
 namespace App\Tests\Behat;
 
 use ApiPlatform\Core\Exception\InvalidArgumentException;
-use App\Entity\Account\Course;
-use App\Entity\Account\CourseRole;
-use App\Entity\Account\User;
-use App\Entity\Exercise\Attachment;
-use App\Entity\Exercise\Exercise;
-use App\Entity\Exercise\ExercisePhaseTeam;
-use App\Entity\Video\Video;
+use App\Domain\Account\Course;
+use App\Domain\Account\CourseRole;
+use App\Domain\Account\User;
+use App\Domain\Exercise\Attachment;
+use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise\ExercisePhaseTeam;
+use App\Domain\Video\Video;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use Behat\Behat\Tester\Exception\PendingException;

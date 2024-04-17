@@ -2,9 +2,9 @@
 
 namespace App\Mediathek\Service;
 
-use App\Entity\Account\User;
-use App\Entity\Video\Video;
-use App\Entity\Video\VideoFavorite;
+use App\Domain\Account\User;
+use App\Domain\Video\Video;
+use App\Domain\Video\VideoFavorite;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Video\VideoFavoritesRepository;
 use Doctrine\ORM\EntityManagerInterface;

@@ -2,7 +2,7 @@
 
 namespace App\VideoEncoding\Service;
 
-use App\Entity\Exercise\ServerSideSolutionData\ServerSideCut;
+use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
 use App\VideoEncoding\TimeCode;
 
 class SubtitleService

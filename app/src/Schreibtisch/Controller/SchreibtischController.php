@@ -2,8 +2,8 @@
 
 namespace App\Schreibtisch\Controller;
 
-use App\Entity\Material\Material;
-use App\Entity\Video\Video;
+use App\Domain\Material\Material;
+use App\Domain\Video\Video;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Schreibtisch\Service\SchreibtischService;
 use App\Service\UserMaterialService;

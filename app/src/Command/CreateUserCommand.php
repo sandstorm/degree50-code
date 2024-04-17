@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\Account\User;
+use App\Domain\Account\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;

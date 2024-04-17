@@ -2,9 +2,9 @@
 
 namespace App\Mediathek\Controller;
 
-use App\Entity\Account\Course;
-use App\Entity\Account\User;
-use App\Entity\Video\Video;
+use App\Domain\Account\Course;
+use App\Domain\Account\User;
+use App\Domain\Video\Video;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Repository\Account\CourseRepository;
 use App\Repository\Video\VideoRepository;

@@ -2,10 +2,9 @@
 
 namespace App\Tests\Behat;
 
-use App\DataExport\Controller\Dto\TextFileDto;
+use App\Domain\Account\Course;
+use app\src\DataExport\Dto\TextFileDto;
 use Behat\Gherkin\Node\PyStringNode;
-use App\Entity\Account\Course;
-
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertIsObject;
 

@@ -1,0 +1,95 @@
+<?php
+
+namespace App\User\Repository;
+
+use App\Domain\Account\User;
+use App\EventStore\DoctrineIntegratedEventStore;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use function get_class;
+
+/**
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+{
+
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly DoctrineIntegratedEventStore $eventStore)
+    {
+        parent::__construct($registry, User::class);
+    }
+
+    /**
+     * Used to upgrade (rehash) the user's password automatically over time.
+     */
+    public function upgradePassword(UserInterface $user, string $newHashedPassword): void
+    {
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
+        }
+
+        $user->setPassword($newHashedPassword);
+        $this->eventStore->disableEventPublishingForNextFlush();
+        $this->_em->persist($user);
+        $this->_em->flush();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAllExpiredUsers(): array
+    {
+        $now = new \DateTimeImmutable();
+        return $this->createQueryBuilder('user')
+            ->where('user.expirationDate < :now')
+            ->setParameter('now', $now->format(User::DB_DATE_FORMAT))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAllUsersWithVerificationTimeout(): array
+    {
+        // we calculate the verification deadline by subtracting the timeout duration from the current date
+        // Example: createdAt < now - 5 days
+        $now = new \DateTimeImmutable();
+        $verificationDeadline = $now
+            ->sub(\DateInterval::createFromDateString(User::VERIFICATION_TIMEOUT_DURATION_STRING));
+
+        // expiration_date - notice_duration < now
+        return $this->createQueryBuilder('user')
+            ->where('user.isVerified != TRUE')
+            ->andWhere('user.createdAt < :verificationDeadline')
+            ->setParameter('verificationDeadline', $verificationDeadline->format(User::DB_DATE_FORMAT))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findAllUnNotifiedSoonToBeExpiredUsers(): array
+    {
+        $now = new \DateTimeImmutable();
+        $notificationTimeWindowStart = $now
+            ->add(\DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
+
+        // expiration_date - notice_duration < now
+        return $this->createQueryBuilder('user')
+            ->where('user.expirationNoticeSent != TRUE')
+            ->andWhere('user.expirationDate < :notificationTimeWindowStart')
+            ->setParameter('notificationTimeWindowStart', $notificationTimeWindowStart->format(User::DB_DATE_FORMAT))
+            ->getQuery()
+            ->getResult();
+    }
+}

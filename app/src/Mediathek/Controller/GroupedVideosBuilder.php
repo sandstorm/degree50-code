@@ -2,10 +2,10 @@
 
 namespace App\Mediathek\Controller;
 
-use App\Entity\Account\User;
-use App\Entity\Video\Video;
-use App\Mediathek\Controller\Dto\VideoWithFavoriteStatusDto;
+use App\Domain\Account\User;
+use App\Domain\Video\Video;
 use App\Mediathek\Service\VideoFavouritesService;
+use app\src\Mediathek\Dto\VideoWithFavoriteStatusDto;
 
 class GroupedVideosBuilder
 {

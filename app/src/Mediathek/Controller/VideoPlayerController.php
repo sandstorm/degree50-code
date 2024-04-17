@@ -4,7 +4,7 @@
 namespace App\Mediathek\Controller;
 
 
-use App\Entity\Video\Video;
+use App\Domain\Video\Video;
 use App\Twig\AppRuntime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

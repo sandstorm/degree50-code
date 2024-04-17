@@ -2,8 +2,8 @@
 
 namespace App\Exercise\Form;
 
-use App\Entity\Account\Course;
-use App\Entity\Exercise\CopyExerciseFormDto;
+use App\Domain\Exercise\Dto\CopyExerciseFormDto;
+use App\Domain\Account\Course;
 use App\Repository\Account\CourseRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

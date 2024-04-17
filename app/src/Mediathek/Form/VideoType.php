@@ -2,8 +2,8 @@
 
 namespace App\Mediathek\Form;
 
-use App\Entity\Account\Course;
-use App\Entity\Video\Video;
+use App\Domain\Account\Course;
+use App\Domain\Video\Video;
 use App\Repository\Account\CourseRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
