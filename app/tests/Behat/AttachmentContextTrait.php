@@ -2,16 +2,14 @@
 
 namespace App\Tests\Behat;
 
-use App\Domain\User\Model\User;
-use App\Domain\Exercise\Attachment;
-use App\Domain\Exercise\ExercisePhase;
+use App\Domain\Attachment\Model\Attachment;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
 
 /**
  *
  */
 trait AttachmentContextTrait
 {
-
     /**
      * @Given I have an attachment with ID :attachmentId
      */

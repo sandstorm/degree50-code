@@ -3,7 +3,6 @@
 namespace App\Domain\User\Repository;
 
 use App\Domain\User\Model\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;

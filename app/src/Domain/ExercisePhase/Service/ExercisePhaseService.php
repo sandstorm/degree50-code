@@ -19,7 +19,6 @@ use App\Domain\User\Service\UserMaterialService;
 use App\Domain\Video\Model\Video;
 use App\Domain\VideoCode\Model\VideoCode;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;

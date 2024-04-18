@@ -6,7 +6,7 @@ use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
-use App\Domain\Exercise\Attachment;
+use App\Domain\Attachment\Model\Attachment;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\ExercisePhaseTeam;
 use App\Domain\Video\Model\Video;

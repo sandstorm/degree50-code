@@ -14,7 +14,6 @@ use App\Domain\Solution\Model\Solution;
 use App\Domain\Solution\Service\SolutionService;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\LiveSync\LiveSyncService;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use Doctrine\ORM\EntityManagerInterface;

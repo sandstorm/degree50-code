@@ -6,19 +6,17 @@ use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
 use App\Domain\Fachbereich\Model\Fachbereich;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AccountFixtures extends Fixture
 {
-    public const COURSE_REFERENCE = 'course';
-    public const CREATOR_REFERENCE = 'creator';
+    public const string COURSE_REFERENCE = 'course';
+    public const string CREATOR_REFERENCE = 'creator';
 
     public function __construct(
         private readonly UserPasswordHasherInterface  $userPasswordHasher,
-        private readonly DoctrineIntegratedEventStore $eventStore,
     )
     {
     }
@@ -49,7 +47,6 @@ class AccountFixtures extends Fixture
 
         $this->createRandomStudentUsers($manager, 10);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
     }
 
@@ -82,7 +79,7 @@ class AccountFixtures extends Fixture
         return $course;
     }
 
-    private function createCourseRole(ObjectManager $manager, string $name, Course $course, User $user): CourseRole
+    private function createCourseRole(ObjectManager $manager, string $name, Course $course, User $user): void
     {
         $courseRole = new CourseRole();
         $courseRole->setName($name);
@@ -90,7 +87,6 @@ class AccountFixtures extends Fixture
         $courseRole->setUser($user);
         $manager->persist($courseRole);
 
-        return $courseRole;
     }
 
     private function createFachbereich(ObjectManager $manager, string $name): Fachbereich

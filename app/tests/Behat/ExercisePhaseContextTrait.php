@@ -7,7 +7,7 @@ use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
 use App\Domain\User\Model\User;
 use App\Domain\Exercise\AutosavedSolution;
 use App\Domain\Exercise\Model\Exercise;
-use App\Domain\Exercise\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Domain\Exercise\ExercisePhaseTeam;
 use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;

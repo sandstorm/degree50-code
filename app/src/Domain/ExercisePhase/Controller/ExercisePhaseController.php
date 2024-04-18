@@ -24,7 +24,6 @@ use App\Domain\Solution\Service\SolutionService;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use App\Domain\VideoCode\Model\VideoCode;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\LiveSync\LiveSyncService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;

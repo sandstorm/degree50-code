@@ -3,22 +3,22 @@ oneup_flysystem:
     adapters:
         default_adapter:
             local:
-                directory: '%kernel.cache_dir%/flysystem'
+                location: '%kernel.cache_dir%/flysystem'
         uploaded_videos_adapter:
             local:
-                directory: '%kernel.project_dir%/var/data/persistent/videos/original'
+                location: '%kernel.project_dir%/var/data/persistent/videos/original'
         uploaded_subtitles_adapter:
             local:
-                directory: '%kernel.project_dir%/var/data/persistent/subtitles/original'
+                location: '%kernel.project_dir%/var/data/persistent/subtitles/original'
         uploaded_audio_descriptions_adapter:
             local:
-                directory: '%kernel.project_dir%/var/data/persistent/audio_descriptions/original'
+                location: '%kernel.project_dir%/var/data/persistent/audio_descriptions/original'
         encoded_videos_adapter:
             local:
-                directory: '%kernel.project_dir%/public/data/encoded_videos'
+                location: '%kernel.project_dir%/public/data/encoded_videos'
         uploaded_attachment_adapter:
             local:
-                directory: '%kernel.project_dir%/public/data/material'
+                location: '%kernel.project_dir%/public/data/material'
     filesystems:
         local_tmp:
             adapter: default_adapter

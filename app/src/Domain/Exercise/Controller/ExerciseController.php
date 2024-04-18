@@ -16,7 +16,6 @@ use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Domain\Solution\Service\SolutionService;
 use App\Domain\User\Model\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

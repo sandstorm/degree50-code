@@ -8,7 +8,6 @@ use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\Video\Service\VideoService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Form\MediathekVideoFormType;
 use App\Twig\AppRuntime;
 use App\VideoEncoding\Message\WebEncodingTask;

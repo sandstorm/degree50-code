@@ -4,7 +4,6 @@ namespace App\Domain\VideoCode\Controller;
 
 use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
 use App\Domain\VideoCode\Model\VideoCode;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

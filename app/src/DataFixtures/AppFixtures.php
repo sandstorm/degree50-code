@@ -7,18 +7,11 @@ use App\Domain\ExercisePhase\Model\ReflexionPhase;
 use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\VideoCode\Model\VideoCode;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    public function __construct(
-        private readonly DoctrineIntegratedEventStore $eventStore
-    )
-    {
-    }
-
     public function load(ObjectManager $manager): void
     {
         $exercise = $this->createExercise($manager, 'Analyse eines Videos zu einer Fördersituation', 'Analyse eines Videos zu einer Fördersituation, indem unter einem bestimmten Blickwinkel ein Analytical Shortfilm aus dem Video erstellt wird');
@@ -64,7 +57,6 @@ class AppFixtures extends Fixture
         $this->createExercise($manager, 'Noch eine Aufgabe', 'Beschreibung dieser Aufgabe');
         $this->createExercise($manager, 'Und noch eine Aufgabe', 'Beschreibung dieser Aufgabe');
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $manager->flush();
     }
 

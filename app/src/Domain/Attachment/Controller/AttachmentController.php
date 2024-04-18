@@ -6,7 +6,6 @@ use App\Domain\Attachment\Model\Attachment;
 use App\Domain\Attachment\Repository\AttachmentRepository;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\User\Model\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +29,6 @@ class AttachmentController extends AbstractController
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly KernelInterface $kernel,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly AttachmentRepository $attachmentRepository,
         private readonly EntityManagerInterface $entityManager
     )
@@ -74,11 +72,6 @@ class AttachmentController extends AbstractController
 
         $filesystem = new Filesystem();
         $filesystem->remove($publicResourcesFolderPath . $fileUrl);
-
-        $this->eventStore->addEvent('AttachmentDeleted', [
-            'attachmentId' => $attachment->getId(),
-            'uploadedFile' => $fileUrl
-        ]);
 
         $this->entityManager->remove($attachment);
         $this->entityManager->flush();

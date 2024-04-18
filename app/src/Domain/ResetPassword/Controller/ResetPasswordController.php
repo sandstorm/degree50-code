@@ -6,7 +6,6 @@ use App\Domain\ResetPassword\Form\ChangePasswordFormType;
 use App\Domain\ResetPassword\Form\ResetPasswordRequestFormType;
 use App\Domain\ResetPassword\Repository\ResetPasswordRequestRepository;
 use App\Domain\User\Model\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

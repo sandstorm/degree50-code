@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\Domain\User\Model\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Nbgrp\OneloginSamlBundle\Security\User\SamlUserFactoryInterface;
 
 /**

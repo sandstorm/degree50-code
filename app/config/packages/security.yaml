@@ -1,9 +1,4 @@
 security:
-    encoders:
-        App\Domain\User:
-            algorithm: auto
-
-
     # TODO: think about rate limiting: https://symfony.com/doc/6.4/security.html#limiting-login-attempts
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
@@ -18,13 +13,14 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: lazy
+            entry_point: form_login
+            lazy: true
             provider: app_user_provider
             access_denied_handler: App\Security\AccessDeniedHandler
 
             # we allow logging in both via SAML (Single Sign On) and via form_login.
             saml:
-                username_attribute: mail
+                identifier_attribute: mail
                 check_path: saml_acs
                 login_path: saml_login
                 failure_path: /login
@@ -36,17 +32,13 @@ security:
                 login_path: /login
                 check_path: /login_check
                 always_use_default_target_path: true
-            guard:
-                authenticators:
-                    - App\Security\LoginFormAuthenticator
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
             logout:
                 # this URL must match the `app_logout` route.
                 # DO NOT CHANGE THE URL, as the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
                 # TODO: configure this in authentication controller see: https://symfony.com/doc/6.4/security.html#form-login
                 path: saml_logout
-                # for logout, we both trigger the classic session-based logout, and as well the SAML logout.
-                handlers:
-                    - 'nbgrp_onelogin_saml.saml_logout'
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

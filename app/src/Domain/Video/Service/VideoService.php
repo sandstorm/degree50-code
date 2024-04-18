@@ -9,7 +9,6 @@ use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;

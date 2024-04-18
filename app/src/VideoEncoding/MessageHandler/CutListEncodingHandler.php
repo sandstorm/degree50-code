@@ -6,7 +6,6 @@ use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\FileSystem\FileSystemService;
 use App\Domain\Video\Model\Video;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Video\Repository\VideoRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
@@ -41,7 +40,6 @@ class CutListEncodingHandler implements MessageHandlerInterface
         private readonly FileSystemService            $fileSystemService,
         private readonly VideoRepository              $videoRepository,
         private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
         private readonly EncodingService              $encodingService,
         private readonly SubtitleService              $subtitleService,
@@ -126,12 +124,10 @@ class CutListEncodingHandler implements MessageHandlerInterface
 
             $this->entityManager->persist($cutVideo);
             $this->entityManager->persist($solution);
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage());
             $cutVideo->setEncodingStatus(Video::ENCODING_ERROR);
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->persist($cutVideo);
             $this->entityManager->flush();
         } finally {

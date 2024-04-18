@@ -11,7 +11,6 @@ use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Service\VideoService;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\SecurityBundle\Security;

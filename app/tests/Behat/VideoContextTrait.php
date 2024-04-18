@@ -5,7 +5,7 @@ namespace App\Tests\Behat;
 use App\Domain\Video\Model\Video;
 use App\Domain\Course\Model\Course;
 use App\Domain\User\Model\User;
-use App\Domain\Exercise\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 

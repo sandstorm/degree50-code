@@ -3,23 +3,22 @@
 
 namespace App\Mediathek\EventListener;
 
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\FileSystem\FileSystemService;
-use App\Domain\Exercise\Attachment;
+use App\Domain\Attachment\Model\Attachment;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use App\Domain\Video\Service\VideoService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Controller\VideoUploadController;
-use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Domain\Video\Repository\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use Oneup\UploaderBundle\Event\PostUploadEvent;
 use Oneup\UploaderBundle\Uploader\Response\ResponseInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * This listener handles the upload of subtitle, attachment, audioDescription and video files inside the video upload form
@@ -31,16 +30,15 @@ use Symfony\Component\Security\Core\Security;
  */
 class UploadListener
 {
-    const TARGET_VIDEO = 'video';
-    const TARGET_ATTACHMENT = 'attachment';
-    const TARGET_SUBTITLE = 'subtitle';
-    const TARGET_AUDIO_DESCRIPTION = 'audio_description';
+    const string TARGET_VIDEO = 'video';
+    const string TARGET_ATTACHMENT = 'attachment';
+    const string TARGET_SUBTITLE = 'subtitle';
+    const string TARGET_AUDIO_DESCRIPTION = 'audio_description';
 
     public function __construct(
         private readonly FileSystemService            $fileSystemService,
         private readonly EntityManagerInterface       $entityManager,
         private readonly VideoRepository              $videoRepository,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly Security                     $security,
         private readonly ExercisePhaseRepository      $exercisePhaseRepository,
         private readonly VideoService                 $videoService,
@@ -54,18 +52,13 @@ class UploadListener
         /** @var User $user */
         $user = $this->security->getUser();
 
-        switch ($target) {
-            case self::TARGET_VIDEO:
-                return $this->uploadVideo($event, $user);
-            case self::TARGET_SUBTITLE:
-                return $this->uploadSubtitle($event, $user);
-            case self::TARGET_ATTACHMENT:
-                return $this->uploadAttachment($event, $user);
-            case self::TARGET_AUDIO_DESCRIPTION:
-                return $this->uploadAudioDescription($event, $user);
-            default:
-                throw new InvalidArgumentException('Unknown target: "' . $target . '"');
-        }
+        return match ($target) {
+            self::TARGET_VIDEO => $this->uploadVideo($event, $user),
+            self::TARGET_SUBTITLE => $this->uploadSubtitle($event, $user),
+            self::TARGET_ATTACHMENT => $this->uploadAttachment($event, $user),
+            self::TARGET_AUDIO_DESCRIPTION => $this->uploadAudioDescription($event, $user),
+            default => throw new InvalidArgumentException('Unknown target: "' . $target . '"'),
+        };
     }
 
     private function uploadAttachment(PostUploadEvent $event, User $user): ResponseInterface
@@ -86,11 +79,6 @@ class UploadListener
 
         $uploadedFile = $this->uploadFile($attachment->getId(), $event);
         $attachment->setUploadedFile($uploadedFile);
-
-        $this->eventStore->addEvent('AttachmentUploaded', [
-            'attachmentId' => $attachment->getId(),
-            'uploadedFile' => $attachment->getUploadedFile()->getVirtualPathAndFilename(),
-        ]);
 
         $this->entityManager->persist($attachment);
         $this->entityManager->flush();

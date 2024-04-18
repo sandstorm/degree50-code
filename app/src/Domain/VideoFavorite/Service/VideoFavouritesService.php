@@ -6,15 +6,13 @@ use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Domain\VideoFavorite\Repository\VideoFavoritesRepository;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 
 class VideoFavouritesService
 {
     public function __construct(
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
-        private readonly VideoFavoritesRepository     $videoFavoritesRepository,
+        private readonly EntityManagerInterface   $entityManager,
+        private readonly VideoFavoritesRepository $videoFavoritesRepository,
     )
     {
     }
@@ -48,10 +46,6 @@ class VideoFavouritesService
 
     public function removeVideoFavorite(VideoFavorite $videoFavorite): void
     {
-        $this->eventStore->addEvent('VideoFavoriteRemoved', [
-            'videoFavoriteId' => $videoFavorite->getId(),
-        ]);
-
         $this->entityManager->remove($videoFavorite);
         $this->entityManager->flush();
     }
@@ -72,11 +66,6 @@ class VideoFavouritesService
     public function addVideoFavouriteForUser(Video $video, User $user): void
     {
         $newFavorite = new VideoFavorite($user, $video);
-
-        $this->eventStore->addEvent('VideoFavorited', [
-            'videoId' => $video->getId(),
-            'userId' => $user->getId(),
-        ]);
 
         $this->entityManager->persist($newFavorite);
         $this->entityManager->flush();

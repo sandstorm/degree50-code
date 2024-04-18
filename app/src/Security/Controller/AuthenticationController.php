@@ -3,7 +3,6 @@
 namespace App\Security\Controller;
 
 use App\Domain\User\Model\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\ORM\EntityManagerInterface;

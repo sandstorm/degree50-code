@@ -13,7 +13,6 @@ use App\Domain\ExercisePhase\Service\ExercisePhaseService;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\User\Model\User;
-use App\EventStore\DoctrineIntegratedEventStore;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 

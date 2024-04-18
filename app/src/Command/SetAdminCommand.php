@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Domain\User\Repository\UserRepository;
-use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,9 +15,8 @@ class SetAdminCommand extends Command
     protected static $defaultName = 'app:set-admin';
 
     public function __construct(
-        private readonly UserRepository               $userRepository,
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore
+        private readonly UserRepository         $userRepository,
+        private readonly EntityManagerInterface $entityManager,
     )
     {
         parent::__construct();
