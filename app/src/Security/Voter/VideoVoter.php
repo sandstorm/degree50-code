@@ -1,13 +1,11 @@
 <?php
 
-
 namespace App\Security\Voter;
 
-
-use App\Administration\Service\UserService;
-use App\Domain\Account\Course;
-use App\Domain\Account\CourseRole;
+use App\Domain\Course\Model\Course;
+use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
+use App\Domain\User\Service\UserService;
 use App\Domain\Video\Model\Video;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -15,15 +13,15 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class VideoVoter extends Voter
 {
-    const VIEW = 'view';
-    const FAVOR = 'favor';
-    const EDIT = 'edit';
-    const DELETE = 'delete';
-    const CREATE = 'create';
+    const string VIEW = 'view';
+    const string FAVOR = 'favor';
+    const string EDIT = 'edit';
+    const string DELETE = 'delete';
+    const string CREATE = 'create';
 
     private UserService $userService;
 
-    function __construct(UserService $userService)
+    public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
@@ -54,6 +52,7 @@ class VideoVoter extends Voter
         /** @var Video $video */
         $video = $subject;
 
+        // TODO: use match expression
         switch ($attribute) {
             case self::CREATE:
                 return $this->canCreate($user);

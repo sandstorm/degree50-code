@@ -2,10 +2,10 @@
 
 namespace App\Security\Voter;
 
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhaseType;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Domain\Exercise\ExercisePhaseTeam;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -58,6 +58,7 @@ class ExercisePhaseVoter extends Voter
             return false;
         }
 
+        // TODO: use match expression
         switch ($attribute) {
             case self::SHOW:
                 return $this->canShow($exercisePhase, $user);
@@ -106,26 +107,26 @@ class ExercisePhaseVoter extends Voter
         $phaseSortingsUpToThisPhase = range(0, $exercisePhase->getSorting() - 1);
         $exercise = $exercisePhase->getBelongsToExercise();
 
+        // TODO: this is not simple enough
         $phasesBeforeAreDone = array_reduce(
             $phaseSortingsUpToThisPhase,
-            function($allAreDone, $phaseSorting
-        ) use($exercise, $user) {
-            $phase = $exercise->getPhaseAtSortingPosition($phaseSorting);
+            function ($allAreDone, $phaseSorting) use ($exercise, $user) {
+                $phase = $exercise->getPhaseAtSortingPosition($phaseSorting);
 
-            if (empty($phase)) {
-                return $allAreDone;
-            }
+                if (empty($phase)) {
+                    return $allAreDone;
+                }
 
-            if ($phase->getType() === ExercisePhaseType::REFLEXION) {
-                return $allAreDone && true;
-            }
+                if ($phase->getType() === ExercisePhaseType::REFLEXION) {
+                    return $allAreDone && true;
+                }
 
-            if ($phase->getHasSolutionForUser($user)) {
-                return $allAreDone && true;
-            }
+                if ($phase->getHasSolutionForUser($user)) {
+                    return $allAreDone && true;
+                }
 
-            return false;
-        }, true);
+                return false;
+            }, true);
 
         return $phasesBeforeAreDone;
     }

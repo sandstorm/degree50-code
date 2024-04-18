@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security\Voter;
-
 
 use App\Domain\User\Model\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

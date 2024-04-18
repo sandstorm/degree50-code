@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security\Voter;
-
 
 use App\Domain\User\Model\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -10,8 +8,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TermsOfUseVoter extends Voter
 {
-    const ACCEPTED = 'terms-of-use-accepted';
-    const TERMS_OF_USE_VERSION = 3;
+    const string ACCEPTED = 'terms-of-use-accepted';
+    const int TERMS_OF_USE_VERSION = 3;
 
     public function supports($attribute, $subject): bool
     {

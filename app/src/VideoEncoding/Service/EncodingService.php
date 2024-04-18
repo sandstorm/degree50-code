@@ -2,13 +2,12 @@
 
 namespace App\VideoEncoding\Service;
 
-use App\Core\FileSystemService;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;
 use App\Domain\Video\Model\Video;
+use App\FileSystem\FileSystemService;
 use App\VideoEncoding\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
-use League\Flysystem\FileExistsException;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -16,7 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class EncodingService
 {
-    const CONFIG = [
+    const array CONFIG = [
         'ffmpeg.binaries' => '/usr/bin/ffmpeg',
         'ffprobe.binaries' => '/usr/bin/ffprobe',
         'timeout' => 3600, // The timeout for the underlying process
@@ -111,9 +110,6 @@ class EncodingService
         }, $cutList);
     }
 
-    /**
-     * @throws FileExistsException
-     */
     public function encodeMP4WithAudioDescription(Video $video, string $localOutputDirectory): void
     {
         $inputVideoFileName = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());

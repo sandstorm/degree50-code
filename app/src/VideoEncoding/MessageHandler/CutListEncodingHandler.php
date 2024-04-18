@@ -1,16 +1,14 @@
 <?php
 
-
 namespace App\VideoEncoding\MessageHandler;
 
-
-use App\Core\FileSystemService;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase;
+use App\Domain\ExercisePhase\Model\VideoCutPhase;
+use App\FileSystem\FileSystemService;
 use App\Domain\Video\Model\Video;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
-use App\Repository\Video\VideoRepository;
+use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
+use App\Domain\Video\Repository\VideoRepository;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use App\VideoEncoding\Service\EncodingService;
 use App\VideoEncoding\Service\SubtitleService;
@@ -38,7 +36,6 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  */
 class CutListEncodingHandler implements MessageHandlerInterface
 {
-
     public function __construct(
         private readonly LoggerInterface              $logger,
         private readonly FileSystemService            $fileSystemService,
@@ -53,8 +50,7 @@ class CutListEncodingHandler implements MessageHandlerInterface
     {
     }
 
-
-    public function __invoke(CutListEncodingTask $encodingTask)
+    public function __invoke(CutListEncodingTask $encodingTask): void
     {
         $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($encodingTask->getExercisePhaseTeamId());
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
@@ -145,12 +141,12 @@ class CutListEncodingHandler implements MessageHandlerInterface
         }
     }
 
-    private function pingAndReconnectDB()
+    private function pingAndReconnectDB(): void
     {
         // WHY: The encoding process might take quite long and the db connection might have been
         // lost/closed in the meantime. Therefore we check if we still have a connection and
         // otherwise reconnect.
-        if ($this->entityManager->getConnection()->ping() === false) {
+        if ($this->entityManager->getConnection()->isConnected() === false) {
             $this->entityManager->getConnection()->close();
             $this->entityManager->getConnection()->connect();
         }

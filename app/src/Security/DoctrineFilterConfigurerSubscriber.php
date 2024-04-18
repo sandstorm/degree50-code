@@ -1,18 +1,16 @@
 <?php
 
-
 namespace App\Security;
-
 
 use App\Domain\User\Model\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Security;
 
+// TODO: we should get rid of doctrine filters
 class DoctrineFilterConfigurerSubscriber implements EventSubscriberInterface
 {
-
     public function __construct(
         private readonly Security       $security,
         private readonly EntityManagerInterface $entityManager

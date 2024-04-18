@@ -2,8 +2,7 @@
 
 namespace App\Security\Voter;
 
-
-use App\Domain\Account\Course;
+use App\Domain\Course\Model\Course;
 use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\User\Model\User;
 use LogicException;
@@ -45,6 +44,7 @@ class CourseVoter extends Voter
             return false;
         }
 
+        // TODO: use match expression
         switch ($attribute) {
             case self::NEW_EXERCISE:
                 return $this->canCreateNewExercise($user, $course);

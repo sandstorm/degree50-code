@@ -1,15 +1,13 @@
 <?php
 
-
 namespace App\VideoEncoding\MessageHandler;
 
-
-use App\Core\FileSystemService;
+use App\FileSystem\FileSystemService;
 use App\Domain\Video\Model\Video;
 use App\Domain\Video\Service\VideoService;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Controller\VideoUploadController;
-use App\Repository\Video\VideoRepository;
+use App\Domain\Video\Repository\VideoRepository;
 use App\VideoEncoding\Message\WebEncodingTask;
 use App\VideoEncoding\Service\EncodingService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +32,6 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  */
 class WebEncodingHandler implements MessageHandlerInterface
 {
-
     public function __construct(
         private readonly LoggerInterface              $logger,
         private readonly FileSystemService            $fileSystemService,
@@ -47,8 +44,7 @@ class WebEncodingHandler implements MessageHandlerInterface
     {
     }
 
-
-    public function __invoke(WebEncodingTask $encodingTask)
+    public function __invoke(WebEncodingTask $encodingTask): void
     {
         $this->logger->warning("WebEncodingHandler Line 64: filter enabled = " . $this->entityManager->getFilters()->isEnabled('video_doctrine_filter'));
         if ($this->entityManager->getFilters()->isEnabled('video_doctrine_filter')) {
@@ -130,29 +126,26 @@ class WebEncodingHandler implements MessageHandlerInterface
         }
     }
 
-    /**
-     * @throws FileExistsException
-     */
-    private function copyUploadedSubtitleFileToOutputDirectory(Video $video, $localOutputDirectory)
+    private function copyUploadedSubtitleFileToOutputDirectory(Video $video, $localOutputDirectory): void
     {
         $uploadedFilePath = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedSubtitleFile());
         $destinationPath = $localOutputDirectory . '/subtitles.vtt';
         copy($uploadedFilePath, $destinationPath);
     }
 
-    private function createEmptyDefaultSubtitlesFile($localOutputDirectory)
+    private function createEmptyDefaultSubtitlesFile($localOutputDirectory): void
     {
         $path = $localOutputDirectory . '/subtitles.vtt';
 
         file_put_contents($path, '');
     }
 
-    private function pingAndReconnectDB()
+    private function pingAndReconnectDB(): void
     {
         // WHY: The encoding process might take quite long and the db connection might have been
         // lost/closed in the meantime. Therefore we check if we still have a connection and
         // otherwise reconnect.
-        if ($this->entityManager->getConnection()->ping() === false) {
+        if ($this->entityManager->getConnection()->isConnected() === false) {
             $this->entityManager->getConnection()->close();
             $this->entityManager->getConnection()->connect();
         }

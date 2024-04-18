@@ -1,13 +1,11 @@
 <?php
 
-
 namespace App\Security\Voter;
 
-
 use App\Domain\Exercise\Service\ExerciseService;
-use App\Domain\Exercise\Solution;
+use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
+use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
-use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -50,6 +48,7 @@ class SolutionVoter extends Voter
             return false;
         }
 
+        // TODO: use match expression
         switch ($attribute) {
             case self::REVIEW_SOLUTION:
                 return $this->canReviewSolution($solution, $user);

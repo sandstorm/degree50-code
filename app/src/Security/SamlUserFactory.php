@@ -5,8 +5,7 @@ namespace App\Security;
 
 use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
-use Hslavich\OneloginSamlBundle\Security\Authentication\Token\SamlTokenInterface;
-use Hslavich\OneloginSamlBundle\Security\User\SamlUserFactoryInterface;
+use Nbgrp\OneloginSamlBundle\Security\User\SamlUserFactoryInterface;
 
 /**
  * Create new users if they do not exist locally
@@ -19,10 +18,8 @@ class SamlUserFactory implements SamlUserFactoryInterface
     {
     }
 
-    public function createUser(SamlTokenInterface $token): User
+    public function createUser(string $identifier, array $attributes): User
     {
-        $attributes = $token->getAttributes();
-
         $userIdentifier = $attributes['mail'][0];
 
         $user = new User();

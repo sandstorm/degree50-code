@@ -2,7 +2,7 @@
 
 namespace App\Tests\Behat;
 
-use App\Domain\Account\Course;
+use App\Domain\Course\Model\Course;
 use App\Domain\User\Model\User;
 use App\Domain\Exercise\Model\Exercise;
 use App\Repository\Exercise\ExerciseRepository;

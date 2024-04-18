@@ -1,11 +1,9 @@
 <?php
 
-
 namespace App\Security\Voter;
 
-
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
-use App\Domain\Exercise\ExercisePhaseTeam;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -46,6 +44,7 @@ class ExercisePhaseTeamVoter extends Voter
             return false;
         }
 
+        // TODO: use match expression
         switch ($attribute) {
             case self::SHOW:
                 return $this->canShow($exercisePhaseTeam, $user);

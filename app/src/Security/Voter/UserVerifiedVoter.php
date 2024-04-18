@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class UserVerifiedVoter extends Voter
 {
-    const USER_VERIFIED = 'user-verified';
+    const string USER_VERIFIED = 'user-verified';
 
     public function supports($attribute, $subject): bool
     {

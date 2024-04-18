@@ -6,7 +6,6 @@ use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 
 class WebEncodingTask
 {
-
     public function __construct(
         private readonly string          $videoId,
         private readonly VirtualizedFile $desiredOutputDirectory

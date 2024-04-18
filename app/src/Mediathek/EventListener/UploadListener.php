@@ -3,7 +3,7 @@
 
 namespace App\Mediathek\EventListener;
 
-use App\Core\FileSystemService;
+use App\FileSystem\FileSystemService;
 use App\Domain\Exercise\Attachment;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
@@ -12,7 +12,7 @@ use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Controller\VideoUploadController;
 use App\Repository\Exercise\ExercisePhaseRepository;
-use App\Repository\Video\VideoRepository;
+use App\Domain\Video\Repository\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;

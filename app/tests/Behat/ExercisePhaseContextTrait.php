@@ -11,7 +11,7 @@ use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Domain\Exercise\ExercisePhaseTeam;
 use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
-use App\Domain\Exercise\Solution;
+use App\Domain\Solution\Model\Solution;
 use App\Domain\Exercise\VideoCode;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
