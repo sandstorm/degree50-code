@@ -3,10 +3,10 @@
 namespace App\Security\Voter;
 
 use App\Domain\Account\CourseRole;
-use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Model\ExerciseStatus;
 use App\Domain\Exercise\Service\ExerciseService;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;

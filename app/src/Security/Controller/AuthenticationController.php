@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Account\Controller;
+namespace App\Security\Controller;
 
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,7 +67,7 @@ class AuthenticationController extends AbstractController
      */
     public function dataPrivacy(Request $request): Response
     {
-        $accepted = !!$request->query->get('accepted', false);
+        $accepted = (bool)$request->query->get('accepted', false);
         /** @var User $user */
         $user = $this->getUser();
 

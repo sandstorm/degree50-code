@@ -2,8 +2,8 @@
 
 namespace App\DataExport\Controller;
 
-use App\Domain\Course;
-use app\src\DataExport\Service\DegreeDataToCsvService;
+use App\Domain\Course\Model\Course;
+use App\DataExport\Service\DegreeDataToCsvService;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

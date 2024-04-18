@@ -2,18 +2,17 @@
 
 namespace App\Mediathek\Controller;
 
-use App\Domain\Account\Course;
-use App\Domain\User;
-use App\Domain\Video\Video;
-use App\Mediathek\Service\VideoFavouritesService;
-use App\Repository\Account\CourseRepository;
-use App\Repository\Video\VideoRepository;
+use App\Domain\Course\Model\Course;
+use App\Domain\Course\Repository\CourseRepository;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
+use App\Domain\Video\Repository\VideoRepository;
+use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -23,7 +22,6 @@ use Symfony\Component\Security\Core\Security;
  */
 class MediathekOverviewController extends AbstractController
 {
-
     public function __construct(
         private readonly VideoRepository        $videoRepository,
         private readonly CourseRepository       $courseRepository,
@@ -75,7 +73,7 @@ class MediathekOverviewController extends AbstractController
         /** @var User $user */
         $user = $this->security->getUser();
 
-        $groupedVideosBuilder = new GroupedVideosBuilder($this->videoFavouritesService, $user);
+        $groupedVideosBuilder = new GroupedVideosBuilder($this->videoFavouritesService);
         $groupedVideosBuilder->setUser($user);
 
         // we need all the videos, also the private ones that dont belong to any course
@@ -83,7 +81,7 @@ class MediathekOverviewController extends AbstractController
 
         $ownVideos = $this->videoRepository->findByCreatorWithoutCutVideos($user);
 
-        foreach ($ownVideos as $_key => $ownVideo) {
+        foreach ($ownVideos as $ownVideo) {
             $groupedVideosBuilder->addOwnVideo($ownVideo);
         }
 
@@ -111,7 +109,8 @@ class MediathekOverviewController extends AbstractController
             if (!array_key_exists($creationDateYear, $sidebarItems)) {
                 $sidebarItems[$creationDateYear] = ['label' => $creationDateYear, 'courses' => []];
             }
-            array_push($sidebarItems[$creationDateYear]['courses'], $course);
+
+            $sidebarItems[$creationDateYear]['courses'][] = $course;
         }
 
         return $sidebarItems;

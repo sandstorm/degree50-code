@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Security\DoctrineFilter;
 
-
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 

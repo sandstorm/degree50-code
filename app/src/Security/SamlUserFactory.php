@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Hslavich\OneloginSamlBundle\Security\Authentication\Token\SamlTokenInterface;
 use Hslavich\OneloginSamlBundle\Security\User\SamlUserFactoryInterface;

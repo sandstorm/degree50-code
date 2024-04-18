@@ -2,10 +2,10 @@
 
 namespace App\DataFixtures;
 
-use App\Domain\Course;
-use App\Domain\CourseRole;
-use App\Domain\User;
-use App\Domain\Fachbereich;
+use App\Domain\Course\Model\Course;
+use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\User\Model\User;
+use App\Domain\Fachbereich\Model\Fachbereich;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;

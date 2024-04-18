@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Mediathek\Service;
+namespace App\Domain\VideoFavorite\Service;
 
-use App\Domain\User;
-use App\Domain\Video\Video;
-use App\Domain\Video\VideoFavorite;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
+use App\Domain\VideoFavorite\Model\VideoFavorite;
+use App\Domain\VideoFavorite\Repository\VideoFavoritesRepository;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Video\VideoFavoritesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class VideoFavouritesService
 {
-
     public function __construct(
         private readonly EntityManagerInterface       $entityManager,
         private readonly DoctrineIntegratedEventStore $eventStore,
@@ -24,14 +23,10 @@ class VideoFavouritesService
     {
         $maybeFavorite = $this->videoFavoritesRepository->findOneByUserAndVideo($user, $video);
 
-        if (!is_null($maybeFavorite)) {
-            return true;
-        } else {
-            return false;
-        }
+        return !is_null($maybeFavorite);
     }
 
-    public function toggleFavorite(Video $video, User $user)
+    public function toggleFavorite(Video $video, User $user): void
     {
         $maybeFavorite = $this->videoFavoritesRepository->findOneByUserAndVideo($user, $video);
 
@@ -51,7 +46,7 @@ class VideoFavouritesService
         }
     }
 
-    public function removeVideoFavorite(VideoFavorite $videoFavorite)
+    public function removeVideoFavorite(VideoFavorite $videoFavorite): void
     {
         $this->eventStore->addEvent('VideoFavoriteRemoved', [
             'videoFavoriteId' => $videoFavorite->getId(),

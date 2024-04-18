@@ -2,7 +2,7 @@
 
 namespace App\Administration\Form;
 
-use App\Domain\CourseRole;
+use App\Domain\CourseRole\Model\CourseRole;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;

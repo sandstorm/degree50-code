@@ -4,7 +4,7 @@
 namespace App\Security\Voter;
 
 
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 

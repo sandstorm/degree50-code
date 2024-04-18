@@ -1,6 +1,6 @@
 <?php
 
-namespace app\src\DataExport\Dto;
+namespace App\DataExport\Dto;
 
 /**
  * This is just a simple in memory text file representation.

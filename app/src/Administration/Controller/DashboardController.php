@@ -2,8 +2,8 @@
 
 namespace App\Administration\Controller;
 
-use App\Domain\Fachbereich;
-use App\Domain\User;
+use App\Domain\Fachbereich\Model\Fachbereich;
+use App\Domain\User\Model\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;

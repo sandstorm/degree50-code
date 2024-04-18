@@ -2,10 +2,10 @@
 
 namespace App\Mediathek\Controller;
 
-use App\Domain\User;
-use App\Domain\Video\Video;
-use App\Mediathek\Service\VideoFavouritesService;
-use app\src\Mediathek\Dto\VideoWithFavoriteStatusDto;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
+use App\Domain\VideoFavorite\Service\VideoFavouritesService;
+use App\Mediathek\Dto\VideoWithFavoriteStatusDto;
 
 class GroupedVideosBuilder
 {
@@ -13,36 +13,36 @@ class GroupedVideosBuilder
     private array $ownVideos = [];
     private array $otherVideos = [];
 
-    function __construct(private readonly VideoFavouritesService $videoFavouritesService)
+    public function __construct(private readonly VideoFavouritesService $videoFavouritesService)
     {
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
 
-    public function addOwnVideo(Video $video)
+    public function addOwnVideo(Video $video): static
     {
-        array_push(
-            $this->ownVideos,
-            VideoWithFavoriteStatusDto::create($video, $this->videoFavouritesService->videoIsFavorite($video, $this->user))
+        $this->ownVideos[] = VideoWithFavoriteStatusDto::create(
+            $video,
+            $this->videoFavouritesService->videoIsFavorite($video, $this->user),
         );
 
         return $this;
     }
 
-    public function addOtherVideo(Video $video)
+    public function addOtherVideo(Video $video): static
     {
-        array_push(
-            $this->otherVideos,
-            VideoWithFavoriteStatusDto::create($video, $this->videoFavouritesService->videoIsFavorite($video, $this->user))
+        $this->otherVideos[] = VideoWithFavoriteStatusDto::create(
+            $video,
+            $this->videoFavouritesService->videoIsFavorite($video, $this->user),
         );
 
         return $this;
     }
 
-    public function create()
+    public function create(): array
     {
         return [
             [

@@ -2,7 +2,7 @@
 
 namespace App\Administration\Controller;
 
-use App\Domain\Fachbereich;
+use App\Domain\Fachbereich\Model\Fachbereich;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 

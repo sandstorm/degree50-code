@@ -2,7 +2,7 @@
 
 namespace App\Security;
 
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

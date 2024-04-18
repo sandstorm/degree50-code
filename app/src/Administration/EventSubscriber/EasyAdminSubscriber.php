@@ -2,7 +2,7 @@
 
 namespace App\Administration\EventSubscriber;
 
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;

@@ -4,13 +4,13 @@
 namespace App\Mediathek\EventListener;
 
 use App\Core\FileSystemService;
-use App\Domain\User;
 use App\Domain\Exercise\Attachment;
-use App\Domain\Video\Video;
-use App\Domain\VirtualizedFile;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
+use App\Domain\Video\Service\VideoService;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Controller\VideoUploadController;
-use App\Mediathek\Service\VideoService;
 use App\Repository\Exercise\ExercisePhaseRepository;
 use App\Repository\Video\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +31,6 @@ use Symfony\Component\Security\Core\Security;
  */
 class UploadListener
 {
-
     const TARGET_VIDEO = 'video';
     const TARGET_ATTACHMENT = 'attachment';
     const TARGET_SUBTITLE = 'subtitle';

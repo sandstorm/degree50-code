@@ -6,8 +6,8 @@ namespace App\VideoEncoding\MessageHandler;
 
 use App\Core\FileSystemService;
 use App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase;
-use App\Domain\Video\Video;
-use App\Domain\VirtualizedFile;
+use App\Domain\Video\Model\Video;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use App\Repository\Video\VideoRepository;

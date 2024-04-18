@@ -2,9 +2,9 @@
 
 namespace App\Mediathek\Form;
 
-use App\Domain\Account\Course;
-use App\Domain\Video\Video;
-use App\Repository\Account\CourseRepository;
+use App\Domain\Course\Model\Course;
+use App\Domain\Course\Repository\CourseRepository;
+use App\Domain\Video\Model\Video;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -14,9 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class VideoType extends AbstractType
+class MediathekVideoFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title', TextType::class, ['label' => "video.labels.title", 'translation_domain' => 'forms'])
@@ -47,7 +47,7 @@ class VideoType extends AbstractType
             ->add('save', SubmitType::class, ['label' => "video.labels.submit", 'translation_domain' => 'forms']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Video::class,

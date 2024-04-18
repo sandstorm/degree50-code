@@ -2,11 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Domain\Exercise;
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\ExercisePhase\Model\ReflexionPhase;
 use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
-use App\Domain\VideoCode;
+use App\Domain\VideoCode\Model\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;

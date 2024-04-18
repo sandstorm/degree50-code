@@ -2,14 +2,13 @@
 
 namespace App\Schreibtisch\Controller;
 
-use App\Domain\Material\Material;
-use App\Domain\Video\Video;
-use App\Mediathek\Service\VideoFavouritesService;
+use App\Domain\Material\Model\Material;
+use App\Domain\User\Model\User;
+use App\Domain\User\Service\UserMaterialService;
+use App\Domain\Video\Model\Video;
+use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Schreibtisch\Service\SchreibtischService;
-use App\Service\UserMaterialService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +35,7 @@ class SchreibtischController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('Schreibtisch/Index.html.twig', []);
+        return $this->render('Schreibtisch/Index.html.twig');
     }
 
     /**
@@ -88,6 +87,7 @@ class SchreibtischController extends AbstractController
      */
     public function toggleVideoFavorite(Video $video): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
         $this->videoFavouritesService->toggleFavorite($video, $user);
 
@@ -100,6 +100,7 @@ class SchreibtischController extends AbstractController
      */
     public function getFachbereiche(): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
         $responseData = json_encode($this->schreibtischService->getFachbereicheResponse($user));
 
@@ -112,6 +113,7 @@ class SchreibtischController extends AbstractController
      */
     public function getCourses(): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
         $responseData = json_encode($this->schreibtischService->getCoursesResponse($user));
 

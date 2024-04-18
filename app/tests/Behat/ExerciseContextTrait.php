@@ -3,8 +3,8 @@
 namespace App\Tests\Behat;
 
 use App\Domain\Account\Course;
-use App\Domain\User;
-use App\Domain\Exercise\Exercise;
+use App\Domain\User\Model\User;
+use App\Domain\Exercise\Model\Exercise;
 use App\Repository\Exercise\ExerciseRepository;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;

@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Security\DoctrineFilter;
 
-
-use App\Domain\Video\Video;
+use App\Domain\Video\Model\Video;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**

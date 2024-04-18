@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Security\DoctrineFilter;
 
-
-use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise\Model\Exercise;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
@@ -16,7 +14,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class ExerciseDoctrineFilter extends AbstractDoctrineFilter
 {
-
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         if ($targetEntity->getName() !== Exercise::class) {

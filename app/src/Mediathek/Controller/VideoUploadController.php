@@ -2,21 +2,19 @@
 
 namespace App\Mediathek\Controller;
 
-use App\Domain\Account\Course;
-use App\Domain\User;
-use App\Domain\Video\Video;
-use App\Domain\VirtualizedFile;
+use App\Domain\Course\Model\Course;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
+use App\Domain\Video\Repository\VideoRepository;
+use App\Domain\Video\Service\VideoService;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Mediathek\EventListener\UploadListener;
-use App\Mediathek\Form\VideoType;
-use App\Repository\Video\VideoRepository;
+use App\Mediathek\Form\MediathekVideoFormType;
 use App\Twig\AppRuntime;
 use App\VideoEncoding\Message\WebEncodingTask;
+use App\VideoEncoding\MessageHandler\WebEncodingHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
-use App\Mediathek\Service\VideoService;
-use App\VideoEncoding\MessageHandler\WebEncodingHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +42,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class VideoUploadController extends AbstractController
 {
-
     public function __construct(
         private readonly TranslatorInterface          $translator,
         private readonly DoctrineIntegratedEventStore $eventStore,
@@ -91,7 +88,7 @@ class VideoUploadController extends AbstractController
             $video->addCourse($course);
         }
 
-        $form = $this->createForm(VideoType::class, $video, [
+        $form = $this->createForm(MediathekVideoFormType::class, $video, [
             'action' => $this->generateUrl('mediathek__video--upload', ['videoUuid' => $videoUuid])
         ]);
 
@@ -135,7 +132,7 @@ class VideoUploadController extends AbstractController
      */
     public function edit(Request $request, Video $video): Response
     {
-        $form = $this->createForm(VideoType::class, $video);
+        $form = $this->createForm(MediathekVideoFormType::class, $video);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

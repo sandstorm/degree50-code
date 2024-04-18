@@ -2,7 +2,7 @@
 
 namespace App\VideoEncoding\Message;
 
-use App\Domain\VirtualizedFile;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 
 class WebEncodingTask
 {

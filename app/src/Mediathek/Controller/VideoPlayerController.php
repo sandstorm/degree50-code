@@ -1,12 +1,9 @@
 <?php
 
-
 namespace App\Mediathek\Controller;
 
-
-use App\Domain\Video\Video;
+use App\Domain\Video\Model\Video;
 use App\Twig\AppRuntime;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,8 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class VideoPlayerController extends AbstractController
 {
-
-    function __construct(private readonly AppRuntime $appRuntime)
+    public function __construct(private readonly AppRuntime $appRuntime)
     {
     }
 

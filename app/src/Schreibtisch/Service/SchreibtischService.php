@@ -2,21 +2,21 @@
 
 namespace App\Schreibtisch\Service;
 
-use App\Administration\Service\UserService;
-use App\Domain\Account\Course;
-use App\Domain\Account\CourseRole;
-use App\Domain\Exercise\Exercise;
-use App\Domain\Exercise\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\Course\Model\Course;
+use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Model\ExerciseStatus;
 use App\Domain\Exercise\Service\ExerciseService;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhaseStatus;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
-use App\Domain\Fachbereich;
-use App\Domain\Material\Material;
-use App\Domain\User;
-use App\Domain\Video\VideoFavorite;
-use App\Mediathek\Service\VideoFavouritesService;
-use App\Service\UserMaterialService;
+use App\Domain\Fachbereich\Model\Fachbereich;
+use App\Domain\Material\Model\Material;
+use App\Domain\User\Model\User;
+use App\Domain\User\Service\UserMaterialService;
+use App\Domain\User\Service\UserService;
+use App\Domain\VideoFavorite\Model\VideoFavorite;
+use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Twig\AppRuntime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +24,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SchreibtischService
 {
-
     public function __construct(
         private readonly ExerciseService        $exerciseService,
         private readonly UserService            $userService,
@@ -38,23 +37,26 @@ class SchreibtischService
     {
     }
 
-    private function sortByExerciseStatus(ExerciseStatus $statusA, ExerciseStatus $statusB)
+    private function sortByExerciseStatus(ExerciseStatus $statusA, ExerciseStatus $statusB): int
     {
+        // NEU < IN_BEARBEITUNG < BEENDET
+        // TODO: refactor to match expression
         if ($statusA === ExerciseStatus::NEU && $statusB !== ExerciseStatus::NEU) {
             return -1;
-        } else if ($statusA !== ExerciseStatus::NEU && $statusB === ExerciseStatus::NEU) {
+        } elseif ($statusA !== ExerciseStatus::NEU && $statusB === ExerciseStatus::NEU) {
             return 1;
-        } else if ($statusA === ExerciseStatus::IN_BEARBEITUNG && $statusB === ExerciseStatus::BEENDET) {
+        } elseif ($statusA === ExerciseStatus::IN_BEARBEITUNG && $statusB === ExerciseStatus::BEENDET) {
             return -1;
-        } else if ($statusB === ExerciseStatus::IN_BEARBEITUNG && $statusA === ExerciseStatus::BEENDET) {
+        } elseif ($statusB === ExerciseStatus::IN_BEARBEITUNG && $statusA === ExerciseStatus::BEENDET) {
             return 1;
         } else {
             return 0;
         }
     }
 
-    private function sortByDateTimeImmutable(?DateTimeImmutable $dateA, ?DateTimeImmutable $dateB)
+    private function sortByDateTimeImmutable(?DateTimeImmutable $dateA, ?DateTimeImmutable $dateB): int
     {
+        // TODO: refactor to match expression
         if ($dateA === $dateB) {
             return 0;
         } else {
@@ -158,14 +160,15 @@ class SchreibtischService
         $user = $this->userService->getLoggendInUser();
         $materialList = $this->materialService->getMaterialsForUser($user);
 
-        $mateiralListCopy = [...$materialList];
+        $materialListCopy = [...$materialList];
 
-        usort($mateiralListCopy, function (Material $materialA, Material $materialB) {
+        usort($materialListCopy, function (Material $materialA, Material $materialB) {
+            // TODO: refactor to match expression
             if (is_null($materialA->getLastUpdatedAt()) && is_null($materialB->getLastUpdatedAt())) {
                 return $this->sortByDateTimeImmutable($materialA->getCreatedAt(), $materialB->getCreatedAt());
-            } else if (is_null($materialA->getLastUpdatedAt()) && !is_null($materialB->getLastUpdatedAt())) {
+            } elseif (is_null($materialA->getLastUpdatedAt()) && !is_null($materialB->getLastUpdatedAt())) {
                 return -1;
-            } else if (!is_null($materialA->getLastUpdatedAt()) && is_null(($materialB->getLastUpdatedAt()))) {
+            } elseif (!is_null($materialA->getLastUpdatedAt()) && is_null(($materialB->getLastUpdatedAt()))) {
                 return 1;
             } else {
                 return $this->sortByDateTimeImmutable($materialA->getLastUpdatedAt(), $materialB->getLastUpdatedAt());
@@ -203,7 +206,7 @@ class SchreibtischService
                     'name' => $course->getName(),
                 ] : null,
             ];
-        }, $mateiralListCopy);
+        }, $materialListCopy);
     }
 
     public function getFachbereicheResponse(User $user): array
@@ -228,7 +231,7 @@ class SchreibtischService
         return $result;
     }
 
-    public function getCoursesResponse(User $user)
+    public function getCoursesResponse(User $user): array
     {
         /** @var Course[] $courses */
         $courses = $user->getCourseRoles()->map(fn(CourseRole $courseRole) => $courseRole->getCourse())->toArray();

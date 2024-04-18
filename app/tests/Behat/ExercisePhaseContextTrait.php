@@ -4,9 +4,9 @@ namespace App\Tests\Behat;
 
 use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\Domain\Exercise\AutosavedSolution;
-use App\Domain\Exercise\Exercise;
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
 use App\Domain\Exercise\ExercisePhaseTeam;

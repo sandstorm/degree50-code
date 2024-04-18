@@ -2,8 +2,8 @@
 
 namespace App\LiveSync;
 
-use App\Domain\User;
-use App\Domain\Exercise\ExercisePhaseTeam;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
+use App\Domain\User\Model\User;
 use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\Mercure\PublisherInterface;
@@ -20,10 +20,35 @@ class LiveSyncService
 {
 
     public function __construct(
-        private string             $jwtPrivateSigningKey,
-        private PublisherInterface $publisher
+        private readonly string             $jwtPrivateSigningKey,
+        private readonly PublisherInterface $publisher
     )
     {
+    }
+
+    public static function getBaseJwtPayload(): array
+    {
+        return [
+            "iss" => "Degree 5.0 App",
+            "iat" => time(), // issued at
+            "nbf" => time() - 5 * 60, // not before,
+            "exp" => time() + 30 * 60, // expiration in 30 minutes,
+        ];
+    }
+
+    private static function buildMercureTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam): string
+    {
+        return 'exercisePhaseTeam-' . $exercisePhaseTeam->getId();
+    }
+
+    private static function buildPresenceTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam): string
+    {
+        return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam) . '/{subscription}';
+    }
+
+    private static function buildSubscriptionAPIEndpoint(ExercisePhaseTeam $exercisePhaseTeam): string
+    {
+        return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam);
     }
 
     public function getSubscriberJwtCookie(User $user, ExercisePhaseTeam $exercisePhaseTeam): Cookie
@@ -71,32 +96,7 @@ class LiveSyncService
         ];
     }
 
-    private static function buildMercureTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam): string
-    {
-        return 'exercisePhaseTeam-' . $exercisePhaseTeam->getId();
-    }
-
-    private static function buildPresenceTopicIdentifier(ExercisePhaseTeam $exercisePhaseTeam): string
-    {
-        return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam) . '/{subscription}';
-    }
-
-    private static function buildSubscriptionAPIEndpoint(ExercisePhaseTeam $exercisePhaseTeam): string
-    {
-        return '/.well-known/mercure/subscriptions/' . self::buildMercureTopicIdentifier($exercisePhaseTeam);
-    }
-
-    public static function getBaseJwtPayload(): array
-    {
-        return [
-            "iss" => "Degree 4.0 App",
-            "iat" => time(), // issued at
-            "nbf" => time() - 5 * 60, // not before,
-            "exp" => time() + 30 * 60, // expiration in 30 minutes,
-        ];
-    }
-
-    public function publish(ExercisePhaseTeam $exercisePhaseTeam, array $data)
+    public function publish(ExercisePhaseTeam $exercisePhaseTeam, array $data): void
     {
         $update = new Update(
             self::buildMercureTopicIdentifier($exercisePhaseTeam),

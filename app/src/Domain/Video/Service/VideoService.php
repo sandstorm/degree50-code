@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Mediathek\Service;
+namespace App\Domain\Video\Service;
 
-use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Exercise\Service\ExerciseService;
-use App\Domain\User;
-use App\Domain\Video\Video;
-use App\Domain\VirtualizedFile;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
+use App\Domain\Video\Repository\VideoRepository;
+use App\Domain\VideoFavorite\Service\VideoFavouritesService;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\EventStore\DoctrineIntegratedEventStore;
-use App\Repository\Video\VideoRepository;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -19,8 +20,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class VideoService
 {
-
-    const VIDEO_DOCTRINE_FILTER_NAME = 'video_doctrine_filter';
+    const string VIDEO_DOCTRINE_FILTER_NAME = 'video_doctrine_filter';
 
     public function __construct(
         private readonly EntityManagerInterface       $entityManager,

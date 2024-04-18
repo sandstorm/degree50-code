@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Security\DoctrineFilter;
 
-
-use App\Domain\Account\Course;
+use App\Domain\Course\Model\Course;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
@@ -16,7 +14,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class CourseDoctrineFilter extends AbstractDoctrineFilter
 {
-
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         if ($targetEntity->getName() !== Course::class) {

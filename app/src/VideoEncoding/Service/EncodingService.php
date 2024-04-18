@@ -4,7 +4,7 @@ namespace App\VideoEncoding\Service;
 
 use App\Core\FileSystemService;
 use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideCut;
-use App\Domain\Video\Video;
+use App\Domain\Video\Model\Video;
 use App\VideoEncoding\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;

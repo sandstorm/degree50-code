@@ -2,12 +2,12 @@
 
 namespace App\Tests\Behat;
 
-use App\Domain\Video\Video;
+use App\Domain\Video\Model\Video;
 use App\Domain\Account\Course;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\Domain\Exercise\ExercisePhase;
 use App\Domain\Exercise\Solution;
-use App\Domain\VirtualizedFile;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;

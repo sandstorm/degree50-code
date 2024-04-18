@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class FileSystemCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->has(FileSystemService::class)) {
             return;
