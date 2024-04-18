@@ -2,9 +2,9 @@
 
 namespace App\Domain\Course\Controller;
 
+use App\Domain\Course;
 use App\Domain\Course\Form\CourseFormType;
 use App\Domain\Course\Form\CourseMembersType;
-use App\Domain\Course;
 use App\Domain\CourseRole;
 use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;

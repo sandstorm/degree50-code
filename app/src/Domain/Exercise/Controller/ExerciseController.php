@@ -91,7 +91,7 @@ class ExerciseController extends AbstractController
                 'exercise' => $exercise,
                 'exercisePhase' => null,
                 'previousExercisePhase' => null,
-                'phases' => $this->exerciseService->getPhasesForTesting($exercise,),
+                'phases' => $this->exerciseService->getPhasesForTesting($exercise),
                 'currentPhaseIndex' => false,
                 'nextExercisePhase' => $nextExercisePhase,
                 'amountOfPhases' => count($exercise->getPhases()) - 1,
@@ -275,7 +275,7 @@ class ExerciseController extends AbstractController
             $canMoveUp = $phase->getDependsOnExercisePhase() !== $previousPhase;
 
             /**
-             * @var ExercisePhase
+             * @var ExercisePhase $nextPhase
              */
             $nextPhase = $index === count($exercisePhases) - 1 ? null : $exercisePhases[$index + 1];
             $canMoveDown = $nextPhase && $nextPhase->getDependsOnExercisePhase() !== $phase;

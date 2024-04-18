@@ -2,9 +2,17 @@
 
 namespace App\Domain\Exercise\Controller;
 
+use App\Domain\Course;
+use App\Domain\CourseRole;
+use App\Domain\Exercise;
+use App\Domain\Exercise\ExerciseStatus;
 use App\Domain\Exercise\Repository\ExerciseRepository;
+use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\ExercisePhaseStatus;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
+use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,7 +55,7 @@ class ExerciseService
 
         foreach ($user->getCourseRoles()->getValues() as $courseRole) {
             $result = [...$result, ...$courseRole->getCourse()->getExercises()];
-        };
+        }
 
         $visibleExercises = array_filter($result, fn(Exercise $exercise) => $exercise->getStatus() !== 0);
 

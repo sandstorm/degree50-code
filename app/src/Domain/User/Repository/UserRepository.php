@@ -5,6 +5,7 @@ namespace App\Domain\User\Repository;
 use App\Domain\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -22,7 +23,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function __construct(
         ManagerRegistry $registry,
-        private readonly DoctrineIntegratedEventStore $eventStore)
+        private readonly DoctrineIntegratedEventStore $eventStore,
+        private readonly EntityManagerInterface $entityManager
+    )
     {
         parent::__construct($registry, User::class);
     }
@@ -38,8 +41,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         $user->setPassword($newHashedPassword);
         $this->eventStore->disableEventPublishingForNextFlush();
-        $this->_em->persist($user);
-        $this->_em->flush();
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 
     /**

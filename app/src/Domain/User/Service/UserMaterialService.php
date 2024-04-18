@@ -2,13 +2,17 @@
 
 namespace App\Domain\User\Service;
 
+use App\Domain\ExercisePhaseTeam;
+use App\Domain\Material;
+use App\Domain\Material\Repository\MaterialRepository;
+use App\Domain\User;
+use App\EventStore\DoctrineIntegratedEventStore;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UserMaterialService
 {
-
-    function __construct(
+    public function __construct(
         private readonly EntityManagerInterface       $entityManager,
         private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly MaterialRepository           $materialRepository,
@@ -26,7 +30,7 @@ class UserMaterialService
         return $this->materialRepository->findByOwner($user);
     }
 
-    public function updateMaterial(Material $material, string $newValue)
+    public function updateMaterial(Material $material, string $newValue): void
     {
         $material->setMaterial($newValue);
         $material->setLastUpdatedAt(new DateTimeImmutable());
@@ -44,11 +48,11 @@ class UserMaterialService
      * from their final submitted solution.
      * The material can then be accessed and edited by each individual user on their "Schreibtisch"
      **/
-    public function createMaterialsForExercisePhaseTeamMembers(ExercisePhaseTeam $exercisePhaseTeam)
+    public function createMaterialsForExercisePhaseTeamMembers(ExercisePhaseTeam $exercisePhaseTeam): void
     {
         $members = $exercisePhaseTeam->getMembers();
 
-        foreach ($members as $_key => $member) {
+        foreach ($members as $member) {
             $this->createMaterialForUser($member, $exercisePhaseTeam);
         }
     }

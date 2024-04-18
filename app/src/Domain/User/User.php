@@ -3,6 +3,8 @@
 namespace App\Domain;
 
 use App\Domain\EntityTraits\IdentityTrait;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -56,35 +58,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     /**
-     * @var CourseRole[]
+     * @var Collection<CourseRole>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Account\CourseRole", mappedBy="user", orphanRemoval=true)
      */
     private Collection $courseRoles;
 
     /**
-     * @var Exercise[]
+     * @var Collection<Exercise>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Exercise\Exercise", mappedBy="creator")
      */
     private Collection $createdExercises;
 
     /**
-     * @var Video[]
+     * @var Collection<Video>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Video\Video", mappedBy="creator")
      */
     private Collection $createdVideos;
 
     /**
-     * @var VideoFavorite[]
+     * @var Collection<VideoFavorite>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Video\VideoFavorite", mappedBy="user")
      */
     private Collection $favoriteVideos;
 
     /**
-     * @var Material[]
+     * @var Collection<Material>
      *
      * @ORM\OneToMany(targetEntity="App\Domain\Material\Material", mappedBy="owner")
      */
@@ -254,6 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->courseRoles->contains($courseRole)) {
             $this->courseRoles->removeElement($courseRole);
             // set the owning side to null (unless already changed)
+            // TODO: Why?
             if ($courseRole->getUser() === $this) {
                 $courseRole->setUser(null);
             }
@@ -329,7 +332,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->dataPrivacyVersion;
     }
 
-    public function setDataPrivacyVersion(int $dataPrivacyVersion)
+    public function setDataPrivacyVersion(int $dataPrivacyVersion): void
     {
         $this->dataPrivacyVersion = $dataPrivacyVersion;
     }
@@ -371,7 +374,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->plainPassword;
     }
 
-    public function setPlainPassword($plainPassword)
+    public function setPlainPassword($plainPassword): void
     {
         $this->plainPassword = $plainPassword;
     }

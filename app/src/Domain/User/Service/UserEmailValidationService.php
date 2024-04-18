@@ -2,6 +2,8 @@
 
 namespace App\Domain\User\Service;
 
+use App\Domain\User\Repository\UserRepository;
+
 /**
  * Most of the email validation logic is done in SymfonyCasts\Bundle\VerifyEmail.
  *

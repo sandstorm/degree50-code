@@ -59,7 +59,7 @@ class AutosavedSolution
     /**
      * @ORM\PrePersist
      */
-    public function setUpdateTimestampValue()
+    public function setUpdateTimestampValue(): void
     {
         $this->update_timestamp = new DateTimeImmutable();
     }

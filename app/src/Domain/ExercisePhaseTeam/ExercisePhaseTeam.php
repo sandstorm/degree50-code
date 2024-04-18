@@ -10,7 +10,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource(paginationEnabled=false)
  * @ORM\Entity(repositoryClass="App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository")
  */
 class ExercisePhaseTeam
@@ -29,7 +28,7 @@ class ExercisePhaseTeam
     private ?Solution $solution = null;
 
     /**
-     * @var User[]
+     * @var Collection<User>
      *
      * @ORM\ManyToMany(targetEntity="App\Domain\User")
      */
