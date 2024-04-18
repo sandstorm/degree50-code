@@ -2,11 +2,11 @@
 
 namespace App\Domain\ExercisePhase\Form;
 
-use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
-use App\Domain\ExercisePhase\VideoCutPhase;
-use App\Domain\Video;
+use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;

@@ -2,10 +2,10 @@
 
 namespace App\Domain\Course\Form;
 
-use App\Domain\Course;
-use App\Domain\CourseRole;
-use App\Domain\Fachbereich;
-use App\Domain\User;
+use App\Domain\Course\Model\Course;
+use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\Fachbereich\Model\Fachbereich;
+use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

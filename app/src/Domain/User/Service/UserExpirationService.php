@@ -2,7 +2,7 @@
 
 namespace App\Domain\User\Service;
 
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;

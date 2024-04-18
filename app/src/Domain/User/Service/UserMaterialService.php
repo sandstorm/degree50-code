@@ -2,10 +2,10 @@
 
 namespace App\Domain\User\Service;
 
-use App\Domain\ExercisePhaseTeam;
-use App\Domain\Material;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
+use App\Domain\Material\Model\Material;
 use App\Domain\Material\Repository\MaterialRepository;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;

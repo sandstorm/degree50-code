@@ -2,6 +2,7 @@
 
 namespace App\Domain\User\Service;
 
+use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
 
 /**
@@ -23,6 +24,7 @@ class UserEmailValidationService
      */
     public function removeAllUsersWithVerificationTimeout(): array
     {
+        /** @var User $usersWithVerificationTimeout */
         $usersWithVerificationTimeout = $this->userRepository->findAllUsersWithVerificationTimeout();
         $studentIds = [];
 

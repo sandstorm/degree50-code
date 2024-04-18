@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exercise\Form;
 
-use App\Domain\Course;
+use App\Domain\Course\Model\Course;
 use App\Domain\Course\Repository\CourseRepository;
 use App\Domain\Exercise\Dto\CopyExerciseFormDto;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

@@ -2,19 +2,20 @@
 
 namespace App\Domain\Exercise\Controller;
 
-use App\Domain\Course;
-use App\Domain\Exercise;
+use App\Domain\Course\Model\Course;
 use App\Domain\Exercise\Dto\CopyExerciseFormDto;
 use App\Domain\Exercise\Form\CopyExerciseFormType;
 use App\Domain\Exercise\Form\ExerciseFormType;
-use App\Domain\ExercisePhase;
-use App\Domain\ExercisePhase\ExercisePhaseType;
+use App\Domain\Exercise\Model\Exercise;
+use App\Domain\Exercise\Service\ExerciseService;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhaseType;
 use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Domain\Solution\Service\SolutionService;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

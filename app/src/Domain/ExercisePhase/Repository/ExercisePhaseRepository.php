@@ -2,8 +2,8 @@
 
 namespace App\Domain\ExercisePhase\Repository;
 
-use App\Domain\Exercise;
-use App\Domain\ExercisePhase;
+use App\Domain\Exercise\Model\Exercise;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;

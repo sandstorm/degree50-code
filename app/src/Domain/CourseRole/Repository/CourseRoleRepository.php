@@ -2,7 +2,7 @@
 
 namespace App\Domain\CourseRole\Repository;
 
-use App\Domain\CourseRole;
+use App\Domain\CourseRole\Model\CourseRole;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

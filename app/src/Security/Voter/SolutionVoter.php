@@ -4,9 +4,9 @@
 namespace App\Security\Voter;
 
 
-use App\Domain\User;
+use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\Exercise\Solution;
-use App\Domain\Exercise\Controller\ExerciseService;
+use App\Domain\User;
 use App\Repository\Exercise\ExercisePhaseTeamRepository;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

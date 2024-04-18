@@ -2,12 +2,13 @@
 
 namespace App\Domain\Exercise\Controller;
 
-use App\Domain\Course;
+use App\Domain\Course\Model\Course;
 use App\Domain\Course\Repository\CourseRepository;
-use App\Domain\Exercise;
 use App\Domain\Exercise\Dto\GroupedExercisesBuilder;
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Repository\ExerciseRepository;
-use App\Domain\User;
+use App\Domain\Exercise\Service\ExerciseService;
+use App\Domain\User\Model\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

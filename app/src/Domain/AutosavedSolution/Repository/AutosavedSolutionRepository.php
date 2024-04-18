@@ -2,9 +2,9 @@
 
 namespace App\Domain\AutosavedSolution\Repository;
 
-use App\Domain\AutosavedSolution;
-use App\Domain\ExercisePhaseTeam;
-use App\Domain\Solution;
+use App\Domain\AutosavedSolution\Model\AutosavedSolution;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
+use App\Domain\Solution\Model\Solution;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

@@ -2,10 +2,10 @@
 
 namespace App\Domain\Solution\Dto;
 
-use App\Domain\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\ExercisePhase\Model\ExercisePhaseStatus;
 use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideCutVideo;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 
 class PreviousSolutionDto
 {

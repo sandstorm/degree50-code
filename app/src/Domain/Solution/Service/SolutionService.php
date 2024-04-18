@@ -3,16 +3,16 @@
 namespace App\Domain\Solution\Service;
 
 use App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository;
-use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
-use App\Domain\ExercisePhase\VideoAnalysisPhase;
-use App\Domain\ExercisePhaseTeam;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Domain\Solution\Dto\PreviousSolutionDto;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCodePrototype;
-use App\Domain\User;
-use App\Domain\VideoCode;
+use App\Domain\User\Model\User;
+use App\Domain\VideoCode\Model\VideoCode;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;

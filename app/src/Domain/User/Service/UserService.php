@@ -2,13 +2,13 @@
 
 namespace App\Domain\User\Service;
 
-use App\Domain\AutosavedSolution;
-use App\Domain\CourseRole;
-use App\Domain\Exercise;
-use App\Domain\Exercise\Controller\ExerciseService;
-use App\Domain\ExercisePhaseTeam;
+use App\Domain\AutosavedSolution\Model\AutosavedSolution;
+use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\Exercise\Model\Exercise;
+use App\Domain\Exercise\Service\ExerciseService;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Mediathek\Service\VideoService;

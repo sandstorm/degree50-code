@@ -2,18 +2,18 @@
 
 namespace App\Domain\ExercisePhaseTeam\Controller;
 
-use App\Domain\AutosavedSolution;
-use App\Domain\ExercisePhase;
+use App\Domain\AutosavedSolution\Model\AutosavedSolution;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
-use App\Domain\ExercisePhase\VideoCutPhase;
-use App\Domain\ExercisePhaseTeam;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
-use App\Domain\Solution;
 use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
+use App\Domain\Solution\Model\Solution;
 use App\Domain\Solution\Service\SolutionService;
-use App\Domain\User;
-use App\Domain\Video;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\LiveSync\LiveSyncService;
 use App\VideoEncoding\Message\CutListEncodingTask;

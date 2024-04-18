@@ -2,22 +2,22 @@
 
 namespace App\Domain\ExercisePhase\Service;
 
-use App\Domain\Attachment;
+use App\Domain\Attachment\Model\Attachment;
 use App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository;
-use App\Domain\Exercise;
-use App\Domain\ExercisePhase;
-use App\Domain\ExercisePhase\ExercisePhaseStatus;
-use App\Domain\ExercisePhase\ExercisePhaseType;
-use App\Domain\ExercisePhase\MaterialPhase;
-use App\Domain\ExercisePhase\ReflexionPhase;
-use App\Domain\ExercisePhase\VideoAnalysisPhase;
-use App\Domain\ExercisePhase\VideoCutPhase;
-use App\Domain\ExercisePhaseTeam;
+use App\Domain\Exercise\Model\Exercise;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhaseStatus;
+use App\Domain\ExercisePhase\Model\ExercisePhaseType;
+use App\Domain\ExercisePhase\Model\MaterialPhase;
+use App\Domain\ExercisePhase\Model\ReflexionPhase;
+use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
+use App\Domain\ExercisePhase\Model\VideoCutPhase;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
-use App\Domain\User;
+use App\Domain\User\Model\User;
 use App\Domain\User\Service\UserMaterialService;
-use App\Domain\Video;
-use App\Domain\VideoCode;
+use App\Domain\Video\Model\Video;
+use App\Domain\VideoCode\Model\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Mediathek\Service\VideoFavouritesService;
 use App\Twig\AppRuntime;

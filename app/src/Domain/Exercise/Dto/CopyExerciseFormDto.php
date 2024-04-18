@@ -2,8 +2,8 @@
 
 namespace App\Domain\Exercise\Dto;
 
-use App\Domain\Course;
-use App\Domain\Exercise;
+use App\Domain\Course\Model\Course;
+use App\Domain\Exercise\Model\Exercise;
 
 class CopyExerciseFormDto
 {

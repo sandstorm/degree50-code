@@ -2,7 +2,7 @@
 
 namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
-use App\Domain\ExercisePhase\ExercisePhaseStatus;
+use App\Domain\ExercisePhase\Model\ExercisePhaseStatus;
 use JsonSerializable;
 
 /**

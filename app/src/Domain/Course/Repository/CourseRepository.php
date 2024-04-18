@@ -2,7 +2,7 @@
 
 namespace App\Domain\Course\Repository;
 
-use App\Domain\Course;
+use App\Domain\Course\Model\Course;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

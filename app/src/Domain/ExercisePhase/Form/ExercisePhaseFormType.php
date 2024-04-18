@@ -2,8 +2,8 @@
 
 namespace App\Domain\ExercisePhase\Form;
 
-use App\Domain\ExercisePhase;
-use App\Domain\ExercisePhase\ExercisePhaseType;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhaseType;
 use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

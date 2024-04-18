@@ -2,9 +2,9 @@
 
 namespace App\Domain\Video\Repository;
 
-use App\Domain\Course;
-use App\Domain\User;
-use App\Domain\Video;
+use App\Domain\Course\Model\Course;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;

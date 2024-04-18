@@ -2,8 +2,8 @@
 
 namespace App\Domain\User\Controller;
 
-use App\Domain\User;
 use App\Domain\User\Form\RegistrationFormType;
+use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Security\EmailVerifier;

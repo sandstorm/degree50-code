@@ -5,7 +5,7 @@ namespace app\src\DataExport\Service;
 use App\Domain\Course;
 use App\Domain\CourseRole;
 use App\Domain\Exercise;
-use App\Domain\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhaseTeam;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideAnnotation;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;

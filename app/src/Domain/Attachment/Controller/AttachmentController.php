@@ -2,10 +2,10 @@
 
 namespace App\Domain\Attachment\Controller;
 
-use App\Domain\Attachment;
+use App\Domain\Attachment\Model\Attachment;
 use App\Domain\Attachment\Repository\AttachmentRepository;
-use App\Domain\ExercisePhase;
-use App\Domain\User;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\User\Model\User;
 use App\EventStore\DoctrineIntegratedEventStore;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;

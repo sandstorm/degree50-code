@@ -2,7 +2,7 @@
 
 namespace App\Domain\Attachment\Repository;
 
-use App\Domain\Attachment;
+use App\Domain\Attachment\Model\Attachment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

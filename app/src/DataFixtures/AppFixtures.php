@@ -3,9 +3,9 @@
 namespace App\DataFixtures;
 
 use App\Domain\Exercise;
-use App\Domain\ExercisePhase\ReflexionPhase;
-use App\Domain\ExercisePhase\VideoAnalysisPhase;
-use App\Domain\ExercisePhase\VideoCutPhase;
+use App\Domain\ExercisePhase\Model\ReflexionPhase;
+use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
+use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\VideoCode;
 use App\EventStore\DoctrineIntegratedEventStore;
 use Doctrine\Bundle\FixturesBundle\Fixture;

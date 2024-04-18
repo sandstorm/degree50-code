@@ -2,9 +2,9 @@
 
 namespace App\Domain\VideoFavorite\Repository;
 
-use App\Domain\User;
-use App\Domain\Video;
-use App\Domain\VideoFavorite;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
+use App\Domain\VideoFavorite\Model\VideoFavorite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

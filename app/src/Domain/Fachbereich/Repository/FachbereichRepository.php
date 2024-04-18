@@ -2,7 +2,7 @@
 
 namespace App\Domain\Fachbereich\Repository;
 
-use App\Domain\Fachbereich;
+use App\Domain\Fachbereich\Model\Fachbereich;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
