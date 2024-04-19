@@ -21,14 +21,14 @@ final class ServerSideCut
     public readonly float $playbackRate;
 
     private function __construct(
-        string $start,
-        string $end,
-        string $text,
-        string $memo,
+        string  $start,
+        string  $end,
+        string  $text,
+        string  $memo,
         ?string $color,
-        string $url,
-        float $offset,
-        float $playbackRate
+        string  $url,
+        float   $offset,
+        float   $playbackRate
     )
     {
         $this->start = $start;

@@ -16,12 +16,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserExpirationService
 {
     public function __construct(
-        private readonly UserService                  $userService,
-        private readonly UserRepository               $userRepository,
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly MailerInterface              $mailer,
-        private readonly LoggerInterface              $logger,
-        private readonly TranslatorInterface          $translator,
+        private readonly UserService            $userService,
+        private readonly UserRepository         $userRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly MailerInterface        $mailer,
+        private readonly LoggerInterface        $logger,
+        private readonly TranslatorInterface    $translator,
     )
     {
     }
@@ -54,33 +54,6 @@ class UserExpirationService
         }
 
         return $soonToBeExpiredStudentIds;
-    }
-
-    /**
-     * @param User $user
-     * @return bool true if the email was sent successfully
-     */
-    private function sendExpirationNotice(User $user): bool
-    {
-        $email = (new TemplatedEmail())
-            ->to($user->getEmail())
-            ->subject($this->translator->trans('email.subject', [], 'user-expiration'))
-            ->htmlTemplate('UserExpiration/notification_email.html.twig')
-            ->context([
-                'routeName' => 'app_increase_user_expiration_date',
-                'deletionDate' => $user->getExpirationDate()->format('j. F Y'),
-            ]);
-
-        try {
-            $this->mailer->send($email);
-            return true;
-        } catch (TransportExceptionInterface $e) {
-            $this->logger->error('Failed to send expiration notice email to user', [
-                'userId' => $user->getId(),
-                'exception' => $e,
-            ]);
-            return false;
-        }
     }
 
     /**
@@ -127,5 +100,32 @@ class UserExpirationService
 
         // For example: Expiration date is smaller than "6 month from now".
         return $user->getExpirationDate() < $expirationNotificationWindowStart;
+    }
+
+    /**
+     * @param User $user
+     * @return bool true if the email was sent successfully
+     */
+    private function sendExpirationNotice(User $user): bool
+    {
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->subject($this->translator->trans('email.subject', [], 'user-expiration'))
+            ->htmlTemplate('UserExpiration/notification_email.html.twig')
+            ->context([
+                'routeName' => 'app_increase_user_expiration_date',
+                'deletionDate' => $user->getExpirationDate()->format('j. F Y'),
+            ]);
+
+        try {
+            $this->mailer->send($email);
+            return true;
+        } catch (TransportExceptionInterface $e) {
+            $this->logger->error('Failed to send expiration notice email to user', [
+                'userId' => $user->getId(),
+                'exception' => $e,
+            ]);
+            return false;
+        }
     }
 }

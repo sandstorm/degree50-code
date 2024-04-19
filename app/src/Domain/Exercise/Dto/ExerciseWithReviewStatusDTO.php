@@ -11,7 +11,7 @@ class ExerciseWithReviewStatusDTO
 {
     private function __construct(
         private readonly Exercise $exercise,
-        private bool $needsReview
+        private bool              $needsReview
     )
     {
     }

@@ -24,12 +24,12 @@ final class ServerSideVideoCodePrototype
     private array $childServerSidePrototypes;
 
     private function __construct(
-        string $id,
-        string $name,
-        string $color,
-        array $childServerSidePrototypes,
+        string  $id,
+        string  $name,
+        string  $color,
+        array   $childServerSidePrototypes,
         ?string $parentId,
-        bool $userCreated
+        bool    $userCreated
     )
     {
         $this->id = $id;

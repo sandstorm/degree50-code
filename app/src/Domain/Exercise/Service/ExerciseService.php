@@ -21,12 +21,24 @@ class ExerciseService
     const EXERCISE_DOCTRINE_FILTER_NAME = 'exercise_doctrine_filter';
 
     public function __construct(
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly ExerciseRepository           $exerciseRepository,
-        private readonly ExercisePhaseService         $exercisePhaseService,
-        private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
+        private readonly EntityManagerInterface      $entityManager,
+        private readonly ExerciseRepository          $exerciseRepository,
+        private readonly ExercisePhaseService        $exercisePhaseService,
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
     )
     {
+    }
+
+    /**
+     * @param User $user
+     * @param Course $course
+     * @return bool
+     */
+    public static function userIsCourseDozent(User $user, Course $course): bool
+    {
+        return $user->getCourseRoles()->exists(
+            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->isCourseDozent()
+        );
     }
 
     /**
@@ -93,6 +105,96 @@ class ExerciseService
         return $phasesWithMapping;
     }
 
+    public function deleteExercisesCreatedByUser(User $user): void
+    {
+        $exercises = $this->getExercisesCreatedByUserWithoutFilters($user);
+
+        foreach ($exercises as $exercise) {
+            $this->deleteExercise($exercise);
+        }
+    }
+
+    /**
+     * Checks the most current edit date by one of the users exercisePhaseTeams
+     * of the exercise.
+     * If no teams are found, null is returned.
+     * */
+    public function getLastEditDateByUser(Exercise $exercise, User $user): ?DateTimeImmutable
+    {
+        $phases = $exercise->getPhases()->toArray();
+
+        return array_reduce($phases, function ($maybeDate, $phase) use ($user) {
+            /** @var ExercisePhase $phase */
+            $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
+
+            if (is_null($team)) {
+                return $maybeDate;
+            }
+
+            return $team->getPhaseLastOpenedAt() > $maybeDate ? $team->getPhaseLastOpenedAt() : $maybeDate;
+        }, null);
+    }
+
+    public function needsReview(Exercise $exercise): bool
+    {
+        return $exercise->getPhases()->exists(
+            fn($_key, ExercisePhase $exercisePhase) => $exercisePhase->getTeams()->exists(fn($_key, ExercisePhaseTeam $team) => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW)
+        );
+    }
+
+    public function getExerciseStatusForUser(Exercise $exercise, User $user): ExerciseStatus
+    {
+        $exercisePhases = $exercise->getPhases();
+        $teams = $exercise->getPhases()->map(
+            fn(ExercisePhase $phase) => $phase->getTeams()->filter(
+                fn(ExercisePhaseTeam $team) => $team->getMembers()->contains($user)
+            )->first()
+        // Why "mixed": Collection filter returns false if collection is empty o.O
+        )->filter(fn(mixed $team) => $team instanceof ExercisePhaseTeam);
+
+        // no phase started yet
+        if ($teams->isEmpty()) {
+            return ExerciseStatus::NEU;
+        }
+
+        if (
+            // at least one phase not started yet
+            $teams->count() < $exercisePhases->count()
+            // at least one phase in BEARBEITUNG
+            || $teams->exists(
+                fn($_key, ExercisePhaseTeam $team) => $team->getStatus() === ExercisePhaseStatus::IN_BEARBEITUNG
+                    || $team->getStatus() === ExercisePhaseStatus::IN_REVIEW
+            )
+        ) {
+            return ExerciseStatus::IN_BEARBEITUNG;
+        }
+
+        return ExerciseStatus::BEENDET;
+    }
+
+    /*
+     * The "needsReview" status is derived from all phases and their teams.
+     * So if there is at least one phase that has the "reviewRequired" flag set to true and
+     * where the ExercisePhaseStatus of the team is "IN_REVIEW" the "needsReview" status of this Dto
+     * will be set to true.
+     */
+
+    public function deleteExercise(Exercise $exercise): void
+    {
+        /**
+         * Due to ORM cascading options the following things will also happen when we delete an Exercise:
+         *
+         *   1. All attached ExercisePhases will be removed @see Exercise::$phases
+         *   // TODO: userExerciseInteractions do not exist anymore, right?
+         *   2. All attached UserExerciseInteractions will be removed @see Exercise::$userExerciseInteractions
+         *
+         * TODO: There will be no Events triggered like "ExercisePhaseDeleted" or "AttachmentDeleted" (cascaded removal when
+         *       deleting an ExercisePhase).
+         */
+        $this->entityManager->remove($exercise);
+        $this->entityManager->flush();
+    }
+
     private function getPhaseWithStatusMetadataForStudent(ExercisePhase $phase, User $user): array
     {
         $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
@@ -134,106 +236,5 @@ class ExerciseService
                 'iconClass' => $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType()),
             ]
         ];
-    }
-
-    public function deleteExercisesCreatedByUser(User $user): void
-    {
-        $exercises = $this->getExercisesCreatedByUserWithoutFilters($user);
-
-        foreach ($exercises as $exercise) {
-            $this->deleteExercise($exercise);
-        }
-    }
-
-    /**
-     * Checks the most current edit date by one of the users exercisePhaseTeams
-     * of the exercise.
-     * If no teams are found, null is returned.
-     * */
-    public function getLastEditDateByUser(Exercise $exercise, User $user): ?DateTimeImmutable
-    {
-        $phases = $exercise->getPhases()->toArray();
-
-        return array_reduce($phases, function ($maybeDate, $phase) use ($user) {
-            /** @var ExercisePhase $phase */
-            $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
-
-            if (is_null($team)) {
-                return $maybeDate;
-            }
-
-            return $team->getPhaseLastOpenedAt() > $maybeDate ? $team->getPhaseLastOpenedAt() : $maybeDate;
-        }, null);
-    }
-
-    /*
-     * The "needsReview" status is derived from all phases and their teams.
-     * So if there is at least one phase that has the "reviewRequired" flag set to true and
-     * where the ExercisePhaseStatus of the team is "IN_REVIEW" the "needsReview" status of this Dto
-     * will be set to true.
-     */
-    public function needsReview(Exercise $exercise): bool
-    {
-        return $exercise->getPhases()->exists(
-            fn($_key, ExercisePhase $exercisePhase) => $exercisePhase->getTeams()->exists(fn($_key, ExercisePhaseTeam $team) => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW)
-        );
-    }
-
-    public function getExerciseStatusForUser(Exercise $exercise, User $user): ExerciseStatus
-    {
-        $exercisePhases = $exercise->getPhases();
-        $teams = $exercise->getPhases()->map(
-            fn(ExercisePhase $phase) => $phase->getTeams()->filter(
-                fn(ExercisePhaseTeam $team) => $team->getMembers()->contains($user)
-            )->first()
-        // Why "mixed": Collection filter returns false if collection is empty o.O
-        )->filter(fn(mixed $team) => $team instanceof ExercisePhaseTeam);
-
-        // no phase started yet
-        if ($teams->isEmpty()) {
-            return ExerciseStatus::NEU;
-        }
-
-        if (
-            // at least one phase not started yet
-            $teams->count() < $exercisePhases->count()
-            // at least one phase in BEARBEITUNG
-            || $teams->exists(
-                fn($_key, ExercisePhaseTeam $team) => $team->getStatus() === ExercisePhaseStatus::IN_BEARBEITUNG
-                    || $team->getStatus() === ExercisePhaseStatus::IN_REVIEW
-            )
-        ) {
-            return ExerciseStatus::IN_BEARBEITUNG;
-        }
-
-        return ExerciseStatus::BEENDET;
-    }
-
-    public function deleteExercise(Exercise $exercise): void
-    {
-        /**
-         * Due to ORM cascading options the following things will also happen when we delete an Exercise:
-         *
-         *   1. All attached ExercisePhases will be removed @see Exercise::$phases
-         *   // TODO: userExerciseInteractions do not exist anymore, right?
-         *   2. All attached UserExerciseInteractions will be removed @see Exercise::$userExerciseInteractions
-         *
-         * TODO: There will be no Events triggered like "ExercisePhaseDeleted" or "AttachmentDeleted" (cascaded removal when
-         *       deleting an ExercisePhase).
-         */
-        $this->entityManager->remove($exercise);
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @param User $user
-     * @param Course $course
-     * @return bool
-     */
-    public static function userIsCourseDozent(User $user, Course $course): bool
-    {
-        return $user->getCourseRoles()->exists(
-            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course && $courseRole->isCourseDozent()
-        );
     }
 }

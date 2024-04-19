@@ -15,6 +15,26 @@ final class ServerSideAnnotation
     private string $memo;
     private ?string $color;
 
+    private function __construct(string $start, string $end, string $text, string $memo, ?string $color)
+    {
+        $this->start = $start;
+        $this->end = $end;
+        $this->text = $text;
+        $this->memo = $memo;
+        $this->color = $color;
+    }
+
+    public static function fromArray(array $input): ServerSideAnnotation
+    {
+        return new self(
+            $input['start'],
+            $input['end'],
+            $input['text'],
+            $input['memo'],
+            $input['color'],
+        );
+    }
+
     public function getStart(): string
     {
         return $this->start;
@@ -38,26 +58,6 @@ final class ServerSideAnnotation
     public function getColor(): ?string
     {
         return $this->color;
-    }
-
-    private function __construct(string $start, string $end, string $text, string $memo, ?string $color)
-    {
-        $this->start = $start;
-        $this->end = $end;
-        $this->text = $text;
-        $this->memo = $memo;
-        $this->color = $color;
-    }
-
-    public static function fromArray(array $input): ServerSideAnnotation
-    {
-        return new self(
-            $input['start'],
-            $input['end'],
-            $input['text'],
-            $input['memo'],
-            $input['color'],
-        );
     }
 
     public function toArray(): array

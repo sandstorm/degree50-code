@@ -24,8 +24,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CourseController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface          $translator,
-        private readonly EntityManagerInterface       $entityManager
+        private readonly TranslatorInterface    $translator,
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
@@ -169,26 +169,6 @@ class CourseController extends AbstractController
         ]);
     }
 
-    private function createOrUpdateCourse(FormInterface $form): void
-    {
-        // $form->getData() holds the submitted values
-        // but, the original `$course` variable has also been updated
-        $course = $form->getData();
-
-        $newMembers = $form->get('users')->getData();
-
-        /** @var User $newMember */
-        foreach ($newMembers as $newMember) {
-            $courseRole = new CourseRole();
-            $courseRole->setName(CourseRole::DOZENT);
-            $courseRole->setUser($newMember);
-            $course->addCourseRole($courseRole);
-        }
-
-        $this->entityManager->persist($course);
-        $this->entityManager->flush();
-    }
-
     #[IsGranted("edit", subject: "course")]
     #[Route("/exercise-overview/course/edit/{id}", name: "exercise-overview__course--edit")]
     public function edit(Request $request, Course $course): Response
@@ -249,5 +229,25 @@ class CourseController extends AbstractController
         );
 
         return $this->redirectToRoute('exercise-overview');
+    }
+
+    private function createOrUpdateCourse(FormInterface $form): void
+    {
+        // $form->getData() holds the submitted values
+        // but, the original `$course` variable has also been updated
+        $course = $form->getData();
+
+        $newMembers = $form->get('users')->getData();
+
+        /** @var User $newMember */
+        foreach ($newMembers as $newMember) {
+            $courseRole = new CourseRole();
+            $courseRole->setName(CourseRole::DOZENT);
+            $courseRole->setUser($newMember);
+            $course->addCourseRole($courseRole);
+        }
+
+        $this->entityManager->persist($course);
+        $this->entityManager->flush();
     }
 }

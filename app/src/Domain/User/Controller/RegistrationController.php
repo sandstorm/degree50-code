@@ -30,9 +30,9 @@ class RegistrationController extends AbstractController
 
     #[Route("/register", name: "app_register")]
     public function register(
-        Request                      $request,
-        UserPasswordHasherInterface  $userPasswordHasher,
-        EntityManagerInterface       $entityManager,
+        Request                     $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface      $entityManager,
     ): Response
     {
         $user = new User();
@@ -65,19 +65,6 @@ class RegistrationController extends AbstractController
         return $this->render('Registration/Register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
-    }
-
-    private function sendConfirmationEmail(User $user): void
-    {
-        // generate a signed url and email it to the user
-        $this->emailVerifier->sendEmailConfirmation(
-            'app_verify_email',
-            $user,
-            (new TemplatedEmail())
-                ->to($user->getEmail())
-                ->subject($this->translator->trans('email.subject', [], 'user-registration'))
-                ->htmlTemplate('Registration/confirmation_email.html.twig')
-        );
     }
 
     #[Route("/verify", name: "app_verify_email")]
@@ -151,5 +138,18 @@ class RegistrationController extends AbstractController
         );
 
         return $this->redirectToRoute('app');
+    }
+
+    private function sendConfirmationEmail(User $user): void
+    {
+        // generate a signed url and email it to the user
+        $this->emailVerifier->sendEmailConfirmation(
+            'app_verify_email',
+            $user,
+            (new TemplatedEmail())
+                ->to($user->getEmail())
+                ->subject($this->translator->trans('email.subject', [], 'user-registration'))
+                ->htmlTemplate('Registration/confirmation_email.html.twig')
+        );
     }
 }

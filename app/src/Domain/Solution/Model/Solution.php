@@ -9,7 +9,7 @@ use App\Domain\Video\Model\Video;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
- #[ORM\Entity(repositoryClass: SolutionRepository::class)]
+#[ORM\Entity(repositoryClass: SolutionRepository::class)]
 class Solution
 {
     use IdentityTrait;

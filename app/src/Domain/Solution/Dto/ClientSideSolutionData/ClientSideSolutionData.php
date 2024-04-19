@@ -62,17 +62,6 @@ final class ClientSideSolutionData implements JsonSerializable
         );
     }
 
-    public function jsonSerialize(): array
-    {
-        return [
-            'annotations' => $this->annotationIds,
-            'videoCodes' => $this->videoCodeIds,
-            'cutList' => $this->cutIds,
-            'videoCodePrototypes' => $this->videoCodePrototypeIds,
-            'material' => $this->materialId,
-        ];
-    }
-
     public static function fromArray(array $input): ClientSideSolutionData
     {
         return new self(
@@ -82,6 +71,17 @@ final class ClientSideSolutionData implements JsonSerializable
             $input['videoCodePrototypes'],
             $input['material'],
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'annotations' => $this->annotationIds,
+            'videoCodes' => $this->videoCodeIds,
+            'cutList' => $this->cutIds,
+            'videoCodePrototypes' => $this->videoCodePrototypeIds,
+            'material' => $this->materialId,
+        ];
     }
 
     public function getAnnotationIds(): array

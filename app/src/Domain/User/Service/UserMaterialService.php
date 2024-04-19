@@ -12,8 +12,8 @@ use Doctrine\ORM\EntityManagerInterface;
 class UserMaterialService
 {
     public function __construct(
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly MaterialRepository           $materialRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly MaterialRepository     $materialRepository,
     )
     {
     }

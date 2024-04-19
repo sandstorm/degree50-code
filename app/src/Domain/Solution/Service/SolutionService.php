@@ -21,10 +21,10 @@ class SolutionService
 {
     public function __construct(
         private readonly AutosavedSolutionRepository $autosavedSolutionRepository,
-        private readonly AppRuntime $appRuntime,
+        private readonly AppRuntime                  $appRuntime,
         private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        private readonly ManagerRegistry $managerRegistry,
-        private readonly ExercisePhaseService $exercisePhaseService,
+        private readonly ManagerRegistry             $managerRegistry,
+        private readonly ExercisePhaseService        $exercisePhaseService,
     )
     {
     }
@@ -36,7 +36,7 @@ class SolutionService
      */
     public function retrieveAndAddDataToClientSideDataBuilderForSolutionView(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
-        array $teams
+        array                         $teams
     ): ClientSideSolutionDataBuilder
     {
         // FIXME
@@ -95,8 +95,8 @@ class SolutionService
 
     public function retrieveAndAddDataToClientSideDataBuilder(
         ClientSideSolutionDataBuilder $clientSideSolutionDataBuilder,
-        ExercisePhaseTeam $exercisePhaseTeam,
-        ExercisePhase $exercisePhase
+        ExercisePhaseTeam             $exercisePhaseTeam,
+        ExercisePhase                 $exercisePhase
     ): ClientSideSolutionDataBuilder
     {
         // Note: This might either be an autosaved solution or an actual solution
@@ -146,7 +146,7 @@ class SolutionService
     }
 
     private function getPreviousSolutionDtosForVideoEditor(
-        ExercisePhase $exercisePhase,
+        ExercisePhase     $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam = null
     )
     {

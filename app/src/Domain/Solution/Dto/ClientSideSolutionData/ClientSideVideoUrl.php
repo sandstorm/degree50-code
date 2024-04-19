@@ -17,22 +17,8 @@ final class ClientSideVideoUrl implements JsonSerializable
         private readonly string $mp4,
         private readonly string $vtt,
         private readonly string $thumbnail,
-    ) {
-    }
-
-    public function jsonSerialize(): array
+    )
     {
-        return $this->toArray();
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'hls' => $this->hls,
-            'mp4' => $this->mp4,
-            'vtt' => $this->vtt,
-            'thumbnail' => $this->thumbnail,
-        ];
     }
 
     public static function fromBaseUrl(string $baseUrl): ClientSideVideoUrl
@@ -67,5 +53,20 @@ final class ClientSideVideoUrl implements JsonSerializable
             $vttUrl,
             $thumbnailUrl,
         );
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'hls' => $this->hls,
+            'mp4' => $this->mp4,
+            'vtt' => $this->vtt,
+            'thumbnail' => $this->thumbnail,
+        ];
     }
 }

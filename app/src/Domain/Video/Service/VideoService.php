@@ -22,12 +22,12 @@ class VideoService
     const string VIDEO_DOCTRINE_FILTER_NAME = 'video_doctrine_filter';
 
     public function __construct(
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly VideoRepository              $videoRepository,
-        private readonly AppRuntime                   $appRuntime,
-        private readonly KernelInterface              $kernel,
-        private readonly VideoFavouritesService       $videoFavouritesService,
-        private readonly ExerciseService              $exerciseService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly VideoRepository        $videoRepository,
+        private readonly AppRuntime             $appRuntime,
+        private readonly KernelInterface        $kernel,
+        private readonly VideoFavouritesService $videoFavouritesService,
+        private readonly ExerciseService        $exerciseService,
     )
     {
     }
@@ -162,14 +162,6 @@ class VideoService
         $this->entityManager->flush();
     }
 
-    private function removeVideoFile(string $fileUrl): void
-    {
-        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
-
-        $filesystem = new Filesystem();
-        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
-    }
-
     /**
      * Persists the an uploaded audio file to the respective video and also sets some basic properties like <creator> and dataPrivacy properties.
      *
@@ -205,5 +197,13 @@ class VideoService
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
+    }
+
+    private function removeVideoFile(string $fileUrl): void
+    {
+        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
+
+        $filesystem = new Filesystem();
+        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
     }
 }

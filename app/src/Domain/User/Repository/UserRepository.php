@@ -23,7 +23,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 {
 
     public function __construct(
-        ManagerRegistry $registry,
+        ManagerRegistry                         $registry,
         private readonly EntityManagerInterface $entityManager
     )
     {

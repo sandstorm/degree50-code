@@ -35,12 +35,13 @@ final class ServerSideSolutionData
     private ?ServerSideMaterial $serverSideMaterial;
 
     private function __construct(
-        array $serverSideAnnotations,
-        array $serverSideVideoCodes,
-        array $serverSideCutList,
-        array $serverSideVideoCodePrototypes,
+        array               $serverSideAnnotations,
+        array               $serverSideVideoCodes,
+        array               $serverSideCutList,
+        array               $serverSideVideoCodePrototypes,
         ?ServerSideMaterial $serverSideMaterial,
-    ) {
+    )
+    {
         foreach ($serverSideAnnotations as $annotation) {
             assert($annotation instanceof ServerSideAnnotation);
         }
@@ -200,7 +201,7 @@ final class ServerSideSolutionData
         return $this->serverSideVideoCodePrototypes;
     }
 
-    public function getMaterial(): ServerSideMaterial | null
+    public function getMaterial(): ServerSideMaterial|null
     {
         return $this->serverSideMaterial;
     }

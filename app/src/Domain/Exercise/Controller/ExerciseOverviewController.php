@@ -22,10 +22,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * NOTE: This has nothing to do with the overview of a single exercise.
  * Single exercise overview handling is located inside the [ExerciseController]
  */
- #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[IsGranted("ROLE_USER")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class ExerciseOverviewController extends AbstractController
 {
     /**

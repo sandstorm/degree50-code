@@ -47,14 +47,14 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
      */
     public function __construct(
         private readonly ExercisePhaseService $exercisePhaseService,
-        private array $clientSideSolutions = [],
-        private array $clientSideAnnotations = [],
-        private array $clientSideVideoCodes = [],
-        private array $clientSideCuts = [],
-        private array $clientSideVideoCodePrototypes = [],
-        private ?string $currentSolutionId = null,
-        private array $previousSolutionIds = [],
-        private array $materials = [],
+        private array                         $clientSideSolutions = [],
+        private array                         $clientSideAnnotations = [],
+        private array                         $clientSideVideoCodes = [],
+        private array                         $clientSideCuts = [],
+        private array                         $clientSideVideoCodePrototypes = [],
+        private ?string                       $currentSolutionId = null,
+        private array                         $previousSolutionIds = [],
+        private array                         $materials = [],
     )
     {
     }
@@ -131,6 +131,42 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         return $this;
     }
 
+    public function addVideoCodePrototypesToSolution(array $serverSideVideoCodePrototypes, string $solutionId): static
+    {
+        $solution = $this->clientSideSolutions[$solutionId];
+
+        $this->clientSideSolutions[$solutionId] = ClientSideSolution::create(
+            ClientSideSolutionData::create(
+                $solution->getClientSideSolutionData()->getAnnotationIds(),
+                $solution->getClientSideSolutionData()->getVideoCodeIds(),
+                $solution->getClientSideSolutionData()->getCutIds(),
+                array_unique(array_merge(
+                    $solution->getClientSideSolutionData()->getVideoCodePrototypeIds(),
+                    $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes)
+                )),
+                $solution->getClientSideSolutionData()->getMaterialId(),
+            ),
+            $solutionId,
+            $solution->getUserName(),
+            $solution->getUserId(),
+            $solution->getCutVideo(),
+            $solution->getFromGroupPhase(),
+            $solution->getStatus()
+        );
+
+        return $this;
+    }
+
+    /**
+     * Creates clientSidePrototypes from serverSidePrototypes and adds them to the clientSideVideoCodePrototypesList
+     * Returns the builder itself, so that further methods can be chained.
+     */
+    public function addVideoCodePrototypes(array $serverSideVideoCodePrototypes): static
+    {
+        $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes);
+        return $this;
+    }
+
     private function addSolution(
         ServerSideSolutionData $serverSideSolutionData,
         string                 $solutionId,
@@ -175,32 +211,6 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         );
 
         return $solutionId;
-    }
-
-    public function addVideoCodePrototypesToSolution(array $serverSideVideoCodePrototypes, string $solutionId): static
-    {
-        $solution = $this->clientSideSolutions[$solutionId];
-
-        $this->clientSideSolutions[$solutionId] = ClientSideSolution::create(
-            ClientSideSolutionData::create(
-                $solution->getClientSideSolutionData()->getAnnotationIds(),
-                $solution->getClientSideSolutionData()->getVideoCodeIds(),
-                $solution->getClientSideSolutionData()->getCutIds(),
-                array_unique(array_merge(
-                    $solution->getClientSideSolutionData()->getVideoCodePrototypeIds(),
-                    $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes)
-                )),
-                $solution->getClientSideSolutionData()->getMaterialId(),
-            ),
-            $solutionId,
-            $solution->getUserName(),
-            $solution->getUserId(),
-            $solution->getCutVideo(),
-            $solution->getFromGroupPhase(),
-            $solution->getStatus()
-        );
-
-        return $this;
     }
 
     /**
@@ -268,16 +278,6 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         }, $clientSideCutList);
 
         return $clientSideCutIds;
-    }
-
-    /**
-     * Creates clientSidePrototypes from serverSidePrototypes and adds them to the clientSideVideoCodePrototypesList
-     * Returns the builder itself, so that further methods can be chained.
-     */
-    public function addVideoCodePrototypes(array $serverSideVideoCodePrototypes): static
-    {
-        $this->_addVideoCodePrototypes($serverSideVideoCodePrototypes);
-        return $this;
     }
 
     /**

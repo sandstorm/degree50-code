@@ -31,12 +31,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class UserService
 {
     public function __construct(
-        private readonly Security                     $security,
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly VideoService                 $videoService,
-        private readonly ExerciseService              $exerciseService,
-        private readonly VideoFavouritesService       $videoFavoritesService,
-        private readonly UserMaterialService          $userMaterialService,
+        private readonly Security               $security,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly VideoService           $videoService,
+        private readonly ExerciseService        $exerciseService,
+        private readonly VideoFavouritesService $videoFavoritesService,
+        private readonly UserMaterialService    $userMaterialService,
     )
     {
     }
@@ -117,6 +117,27 @@ class UserService
             default:
                 throw new InvalidArgumentException('User is not a Student, Dozent or Admin');
         }
+    }
+
+    public function userCanUploadVideo(): bool
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        return $this->canUploadVideo($user);
+    }
+
+    public function canUploadVideo(User $user): bool
+    {
+        if ($user->isAdmin() || $user->isDozent()) {
+            return true;
+        }
+
+        // check if student is assigned to a course
+        $userCourses = $user->getCourseRoles()->map(function (CourseRole $courseRole) {
+            return $courseRole->getCourse();
+        });
+
+        return $userCourses->count() > 0;
     }
 
     /**
@@ -259,26 +280,5 @@ class UserService
         foreach ($unUsedVideosOfUser as $video) {
             $this->videoService->deleteVideo($video);
         }
-    }
-
-    public function userCanUploadVideo(): bool
-    {
-        /** @var User $user */
-        $user = $this->security->getUser();
-        return $this->canUploadVideo($user);
-    }
-
-    public function canUploadVideo(User $user): bool
-    {
-        if ($user->isAdmin() || $user->isDozent()) {
-            return true;
-        }
-
-        // check if student is assigned to a course
-        $userCourses = $user->getCourseRoles()->map(function (CourseRole $courseRole) {
-            return $courseRole->getCourse();
-        });
-
-        return $userCourses->count() > 0;
     }
 }

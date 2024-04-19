@@ -24,20 +24,20 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
- #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[IsGranted("ROLE_USER")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class ExerciseController extends AbstractController
 {
     public function __construct(
-        private readonly ExercisePhaseRepository      $exercisePhaseRepository,
-        private readonly ExercisePhaseService         $exercisePhaseService,
-        private readonly TranslatorInterface          $translator,
-        private readonly ExerciseService              $exerciseService,
-        private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
-        private readonly SolutionService              $solutionService,
-        private readonly EntityManagerInterface       $entityManager
+        private readonly ExercisePhaseRepository     $exercisePhaseRepository,
+        private readonly ExercisePhaseService        $exercisePhaseService,
+        private readonly TranslatorInterface         $translator,
+        private readonly ExerciseService             $exerciseService,
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private readonly SolutionService             $solutionService,
+        private readonly EntityManagerInterface      $entityManager
     )
     {
     }
@@ -270,20 +270,6 @@ class ExerciseController extends AbstractController
         ]);
     }
 
-    private function getExerciseHasSolutions(Exercise $exercise): bool
-    {
-        $phases = $exercise->getPhases()->toArray();
-
-        /** @var ExercisePhase $phase */
-        foreach ($phases as $phase) {
-            if ($phase->getHasSolutions()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     #[IsGranted("edit", subject: "exercise")]
     #[Route("/exercise/{id}/edit/change-status", name: "exercise__change-status")]
     public function changeStatus(Request $request, Exercise $exercise): Response
@@ -413,5 +399,19 @@ class ExerciseController extends AbstractController
             'currentExercisePhase' => $exercisePhase,
             'hasSolutions' => $exercisePhase->getHasSolutions()
         ]);
+    }
+
+    private function getExerciseHasSolutions(Exercise $exercise): bool
+    {
+        $phases = $exercise->getPhases()->toArray();
+
+        /** @var ExercisePhase $phase */
+        foreach ($phases as $phase) {
+            if ($phase->getHasSolutions()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
