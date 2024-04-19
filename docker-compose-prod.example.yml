@@ -50,7 +50,7 @@ services:
       # TODO: TRUSTED_HOSTS as env var
       TRUSTED_HOSTS: degree40.tu-dortmund.de
       # TODO: change db url and use env var
-      DATABASE_URL: "mysql://api-platform:${MYSQL_PASSWORD}@db/api"
+      DATABASE_URL: "mysql://degree:${MYSQL_PASSWORD}@db/degree"
       APP_SECRET: "${APP_SECRET}"
       APP_ENV: "prod"
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: "${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}"
@@ -94,8 +94,8 @@ services:
       - 127.0.0.1:3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: api
-      MYSQL_USER: api-platform
+      MYSQL_DATABASE: degree
+      MYSQL_USER: degree
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     volumes:
       - /home/deployment/data/mysql:/var/lib/mysql:rw
