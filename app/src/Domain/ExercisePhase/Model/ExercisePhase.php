@@ -11,9 +11,6 @@ use App\Domain\Video\Model\Video;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\DiscriminatorColumn;
-use Doctrine\ORM\Mapping\DiscriminatorMap;
-use Doctrine\ORM\Mapping\InheritanceType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -23,17 +20,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * If "otherSolutionsAreAccessible" it is possible for "studierende" to display the solutions
  * of other "studierende" for the phase.
- *
- * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name: "phaseType", type="string")
- * @DiscriminatorMap({
- *     "videoAnalysisPhase" = "App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase",
- *     "videoCutPhase" = "App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase",
- *     "reflexionPhase" = "App\Domain\Exercise\ExercisePhaseTypes\ReflexionPhase",
- *     "materialPhase" = "App\Domain\Exercise\ExercisePhaseTypes\MaterialPhase",
- * })
  */
 #[ORM\Entity]
+#[ORM\InheritanceType("SINGLE_TABLE")]
+#[ORM\DiscriminatorColumn(name: "phaseType", type: "string")]
+#[ORM\DiscriminatorMap([
+    "videoAnalysisPhase" => VideoAnalysisPhase::class,
+    "videoCutPhase" => VideoCutPhase::class,
+    "reflexionPhase" => ReflexionPhase::class,
+    "materialPhase" => MaterialPhase::class,
+])]
 abstract class ExercisePhase
 {
     use IdentityTrait;
