@@ -2,6 +2,7 @@
 
 namespace App\Domain\Attachment\Model;
 
+use App\Domain\Attachment\Repository\AttachmentRepository;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\User\Model\User;
@@ -16,7 +17,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @Vich\Uploadable
  */
 //TODO: what are lifecycle callbacks?
-#[ORM\Entity(repositoryClass: "App\Domain\Attachment\Repository\AttachmentRepository")]
+#[ORM\Entity(repositoryClass: AttachmentRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
 class Attachment
 {
@@ -39,7 +40,7 @@ class Attachment
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdVideos")]
     private User $creator;
 
-    #[ORM\ManyToOne(targetEntity: "ExercisePhase", inversedBy: "attachment")]
+    #[ORM\ManyToOne(targetEntity: ExercisePhase::class, inversedBy: "attachment")]
     #[ORM\JoinColumn(nullable: true)]
     private ?ExercisePhase $exercisePhase;
 

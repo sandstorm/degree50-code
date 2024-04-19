@@ -15,9 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class SchreibtischController extends AbstractController
 {
 
@@ -71,9 +71,9 @@ class SchreibtischController extends AbstractController
     }
 
     /**
-     * @Route("/schreibtisch/video-favorites/toggle/{id}", name="schreibtisch-video-favorite-toggle", methods={"POST"})
      * @Entity("video", expr="repository.find(id)")
      */
+    #[Route("/schreibtisch/video-favorites/toggle/{id}", name: "schreibtisch-video-favorite-toggle", methods: ["POST"])]
     public function toggleVideoFavorite(Video $video): Response
     {
         /** @var User $user */

@@ -4,11 +4,12 @@ namespace App\Domain\Solution\Model;
 
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
+use App\Domain\Solution\Repository\SolutionRepository;
 use App\Domain\Video\Model\Video;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
- #[ORM\Entity(repositoryClass: "App\Domain\Solution\Repository\SolutionRepository")]
+ #[ORM\Entity(repositoryClass: SolutionRepository::class)]
 class Solution
 {
     use IdentityTrait;

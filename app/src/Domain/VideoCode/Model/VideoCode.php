@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 // The naming was very misleading in the past. It might make sense to
 // change the schema in the future.
 
- #[ORM\Entity(repositoryClass: VideoCodeRepository::class)]
+#[ORM\Entity(repositoryClass: VideoCodeRepository::class)]
 class VideoCode
 {
     use IdentityTrait;

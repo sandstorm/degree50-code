@@ -2,12 +2,13 @@
 
 namespace App\Domain\ExercisePhase\Model;
 
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\Domain\VideoCode\Model\VideoCode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: "App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")]
+#[ORM\Entity(repositoryClass: ExercisePhaseRepository::class)]
 class VideoAnalysisPhase extends ExercisePhase
 {
     const ?ExercisePhaseType type = ExercisePhaseType::VIDEO_ANALYSIS;

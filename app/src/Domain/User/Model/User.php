@@ -6,6 +6,7 @@ use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Material\Model\Material;
+use App\Domain\User\Repository\UserRepository;
 use App\Domain\Video\Model\Video;
 use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Security\Voter\DataPrivacyVoter;
@@ -22,7 +23,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * TODO: leak of user email!
  */
-#[ORM\Entity(repositoryClass: "App\Domain\User\Repository\UserRepository")]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ["email"])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

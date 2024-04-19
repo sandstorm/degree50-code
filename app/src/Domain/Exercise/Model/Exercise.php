@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 // TODO: life cycle callbacks?
+// TODO: Entity repository?
 #[ORM\HasLifecycleCallbacks()]
 #[ORM\Entity]
 class Exercise

@@ -8,6 +8,7 @@ use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideCutVideo;
 use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideVideoUrl;
 use App\Domain\User\Model\User;
+use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\Twig\AppRuntime;
 use DateTimeImmutable;
@@ -15,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
- #[ORM\Entity(repositoryClass: "App\Domain\Video\Repository\VideoRepository")]
+#[ORM\Entity(repositoryClass: VideoRepository::class)]
 class Video
 {
     use IdentityTrait;

@@ -8,7 +8,7 @@ use App\Domain\Video\Model\Video;
 use App\Domain\VideoFavorite\Repository\VideoFavoritesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
- #[ORM\Entity(repositoryClass: VideoFavoritesRepository::class)]
+#[ORM\Entity(repositoryClass: VideoFavoritesRepository::class)]
 class VideoFavorite
 {
     use IdentityTrait;

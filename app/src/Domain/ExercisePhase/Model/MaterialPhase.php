@@ -2,9 +2,10 @@
 
 namespace App\Domain\ExercisePhase\Model;
 
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: "App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")]
+#[ORM\Entity(repositoryClass: ExercisePhaseRepository::class)]
 class MaterialPhase extends ExercisePhase
 {
     const ?ExercisePhaseType type = ExercisePhaseType::MATERIAL;

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Course\Model;
 
+use App\Domain\Course\Repository\CourseRepository;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\Exercise\Model\Exercise;
@@ -13,7 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: "App\Domain\Course\Repository\CourseRepository")]
+#[ORM\Entity(repositoryClass: CourseRepository::class)]
 class Course
 {
     use IdentityTrait;
