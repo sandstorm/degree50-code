@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -35,9 +35,7 @@ class AttachmentController extends AbstractController
     {
     }
 
-    /**
-     * @Route("/attachment/download/{id}", name="exercise-overview__attachment--download")
-     */
+    #[Route("/attachment/download/{id}", name: "exercise-overview__attachment--download")]
     public function download(AppRuntime $appRuntime, Attachment $attachment): BinaryFileResponse
     {
         $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
@@ -50,9 +48,7 @@ class AttachmentController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/attachment/delete/{id}", name="exercise-overview__attachment--delete")
-     */
+    #[Route("/attachment/delete/{id}", name: "exercise-overview__attachment--delete")]
     public function delete(AppRuntime $appRuntime, Attachment $attachment): Response
     {
         $this->removeAttachment($appRuntime, $attachment);
@@ -77,9 +73,7 @@ class AttachmentController extends AbstractController
         $this->entityManager->flush();
     }
 
-    /**
-     * @Route("/attachment/delete-ajax", name="exercise-overview__attachment--delete-ajax")
-     */
+    #[Route("/attachment/delete-ajax", name: "exercise-overview__attachment--delete-ajax")]
     public function deleteAjax(AppRuntime $appRuntime, Request $request): Response
     {
         $attachmentIdFromJson = json_decode($request->getContent(), true)['attachmentId'];
@@ -97,9 +91,7 @@ class AttachmentController extends AbstractController
         return new Response('OK');
     }
 
-    /**
-     * @Route("/attachment/list/{id}", name="exercise-overview__attachment--list")
-     */
+    #[Route("/attachment/list/{id}", name: "exercise-overview__attachment--list")]
     public function uploadedAttachment(ExercisePhase $exercisePhase): Response
     {
         return $this->render('ExercisePhase/AttachmentList.html.twig', [

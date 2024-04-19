@@ -20,15 +20,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+ #[IsGranted("ROLE_USER")]
+ #[isGranted("user-verified")]
+ #[IsGranted("data-privacy-accepted")]
+ #[IsGranted("terms-of-use-accepted")]
 class ExerciseController extends AbstractController
 {
     public function __construct(
@@ -44,12 +43,11 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * This actions is responsible for showing the general overview of an exercise.
+     * This action is responsible for showing the general overview of an exercise.
      * This includes the exercise description as well as an overview of phases.
-     *
-     * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/{id}/show", name="exercise__show")
      */
+    #[IsGranted("view", subject: "exercise")]
+    #[Route("/exercise/{id}/show", name: "exercise__show")]
     public function show(Exercise $exercise): Response
     {
         /** @var User $user */
@@ -73,10 +71,9 @@ class ExerciseController extends AbstractController
 
     /**
      * Version for testing of showOverview()
-     *
-     * @IsGranted("test", subject="exercise")
-     * @Route("/exercise/{id}/test", name="exercise__test")
      */
+    #[IsGranted("test", subject: "exercise")]
+    #[Route("/exercise/{id}/test", name: "exercise__test")]
     public function test(Exercise $exercise): Response
     {
         $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
@@ -99,10 +96,9 @@ class ExerciseController extends AbstractController
     /**
      * This action is responsible for showing the phase overview screen from which a student
      * is able to start solving the phase or seeing other students solutions.
-     *
-     * @IsGranted("view", subject="exercise")
-     * @Route("/exercise/{id}/phase/{phaseId}", name="exercise__show-phase")
      */
+    #[IsGranted("view", subject: "exercise")]
+    #[Route("/exercise/{id}/phase/{phaseId}", name: "exercise__show-phase")]
     public function showExercisePhase(Exercise $exercise, string $phaseId = ''): Response
     {
         /** @var User $user */
@@ -145,10 +141,9 @@ class ExerciseController extends AbstractController
     /**
      * Version for testing of showExercisePhase()
      * Removes other teams and only shows the team of the current user.
-     *
-     * @IsGranted("test", subject="exercise")
-     * @Route("/exercise/test/{id}/phase/{phaseId}", name="exercise__show-test-phase")
      */
+    #[IsGranted("test", subject: "exercise")]
+    #[Route("/exercise/test/{id}/phase/{phaseId}", name: "exercise__show-test-phase")]
     public function showTestExercisePhase(Exercise $exercise, string $phaseId = ''): Response
     {
         /** @var User $user */
@@ -186,10 +181,8 @@ class ExerciseController extends AbstractController
         );
     }
 
-    /**
-     * @IsGranted("newExercise", subject="course")
-     * @Route("/exercise/new/{id}", name="exercise__new")
-     */
+    #[IsGranted("newExercise", subject: "course")]
+    #[Route("/exercise/new/{id}", name: "exercise__new")]
     public function new(Request $request, Course $course): Response
     {
         $exercise = new Exercise();
@@ -224,10 +217,8 @@ class ExerciseController extends AbstractController
         ]);
     }
 
-    /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/{id}/edit", name="exercise__edit")
-     */
+    #[IsGranted("edit", subject: "exercise")]
+    #[Route("/exercise/{id}/edit", name: "exercise__edit")]
     public function edit(Request $request, Exercise $exercise): Response
     {
         $form = $this->createForm(ExerciseFormType::class, $exercise);
@@ -293,10 +284,8 @@ class ExerciseController extends AbstractController
         return false;
     }
 
-    /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/{id}/edit/change-status", name="exercise__change-status")
-     */
+    #[IsGranted("edit", subject: "exercise")]
+    #[Route("/exercise/{id}/edit/change-status", name: "exercise__change-status")]
     public function changeStatus(Request $request, Exercise $exercise): Response
     {
         $newStatus = (int)$request->query->get('status', Exercise::EXERCISE_CREATED);
@@ -317,10 +306,8 @@ class ExerciseController extends AbstractController
         return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
     }
 
-    /**
-     * @IsGranted("delete", subject="exercise")
-     * @Route("/exercise/{id}/delete", name="exercise__delete")
-     */
+    #[IsGranted("delete", subject: "exercise")]
+    #[Route("/exercise/{id}/delete", name: "exercise__delete")]
     public function delete(Exercise $exercise): Response
     {
         $this->exerciseService->deleteExercise($exercise);
@@ -333,10 +320,8 @@ class ExerciseController extends AbstractController
         return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);
     }
 
-    /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/{id}/copy", name="exercise__copy")
-     */
+    #[IsGranted("edit", subject: "exercise")]
+    #[Route("/exercise/{id}/copy", name: "exercise__copy")]
     public function copy(Request $request, Exercise $exercise): Response
     {
         $form = $this->createForm(CopyExerciseFormType::class, CopyExerciseFormDto::fromExercise($exercise));
@@ -387,10 +372,9 @@ class ExerciseController extends AbstractController
 
     /**
      * FIXME: It is possible that there are Exercises with no Phases! This currently just throws a 500 Error, but shouldn't!
-     *
-     * @IsGranted("showSolution", subject="exercise")
-     * @Route("/exercise/{id}/show-solutions/{phaseId?}", name="exercise__show-solutions")
      */
+    #[IsGranted("showSolution", subject: "exercise")]
+    #[Route("/exercise/{id}/show-solutions/{phaseId?}", name: "exercise__show-solutions")]
     public function showSolutions(Request $request, Exercise $exercise): Response
     {
         $phaseId = $request->get('phaseId');

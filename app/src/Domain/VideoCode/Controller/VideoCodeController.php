@@ -8,14 +8,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+#[IsGranted("ROLE_USER")]
+ #[isGranted("user-verified")]
+ #[IsGranted("data-privacy-accepted")]
+ #[IsGranted("terms-of-use-accepted")]
 class VideoCodeController extends AbstractController
 {
 
@@ -27,9 +26,8 @@ class VideoCodeController extends AbstractController
 
     /**
      * Used only asynchronous
-     *
-     * @Route("/video-codes/add/{id}", name="video-code__add", methods={"POST"})
      */
+     #[Route("/video-codes/add/{id}", name: "video-code__add", methods: ["POST"])]
     public function add(Request $request, VideoAnalysisPhase $exercisePhase): Response
     {
         $color = json_decode($request->getContent(), true)['color'];
@@ -47,9 +45,8 @@ class VideoCodeController extends AbstractController
 
     /**
      * Used only asynchronous
-     *
-     * @Route("/video-codes/delete/{id}", name="video-code__delete", methods={"GET"})
      */
+    #[Route("/video-codes/delete/{id}", name: "video-code__delete", methods: ["GET"])]
     public function delete(VideoCode $videoCode): Response
     {
         $this->entityManager->remove($videoCode);
@@ -58,9 +55,7 @@ class VideoCodeController extends AbstractController
         return new Response('OK');
     }
 
-    /**
-     * @Route("/video-codes/list/{id}", name="video-code__list")
-     */
+    #[Route("/video-codes/list/{id}", name: "video-code__list")]
     public function videoCodes(VideoAnalysisPhase $exercisePhase): Response
     {
         return $this->render('ExercisePhase/VideoCodesList.html.twig', [

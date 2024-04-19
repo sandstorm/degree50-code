@@ -7,7 +7,8 @@ use App\Domain\User\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserExpirationController extends AbstractController
@@ -22,9 +23,8 @@ class UserExpirationController extends AbstractController
 
     /**
      * Display & process form to request a password reset.
-     *
-     * @isGranted("ROLE_USER")
      */
+    #[isGranted("ROLE_USER")]
     #[Route('/account-expiration', name: 'app_increase_user_expiration_date')]
     public function increaseUserExpirationDatePage(): Response
     {
@@ -52,9 +52,7 @@ class UserExpirationController extends AbstractController
         }
     }
 
-    /**
-     * @isGranted("ROLE_USER")
-     */
+    #[isGranted("ROLE_USER")]
     #[Route('/account-expiration-increase', name: 'app_increase_user_expiration_date_process')]
     public function increaseUserExpirationDateAction(): RedirectResponse
     {

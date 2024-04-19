@@ -30,16 +30,15 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+ #[IsGranted("ROLE_USER")]
+ #[isGranted("user-verified")]
+ #[IsGranted("data-privacy-accepted")]
+ #[IsGranted("terms-of-use-accepted")]
 class ExercisePhaseController extends AbstractController
 {
     public function __construct(
@@ -58,9 +57,9 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
-     * @Route("/exercise-phase/show/{id}/{team_id}", name="exercise-phase__show")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
+    #[Route("/exercise-phase/show/{id}/{team_id}", name: "exercise-phase__show")]
     public function show(
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
@@ -224,10 +223,10 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("test", subject="exercisePhase")
-     * @Route("/exercise-phase/test/{id}/{team_id}", name="exercise-phase__test")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
+    #[IsGranted("test", subject: "exercisePhase")]
+    #[Route("/exercise-phase/test/{id}/{team_id}", name: "exercise-phase__test")]
     public function test(
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
@@ -243,10 +242,10 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("test", subject="exercisePhase")
-     * @Route("/exercise-phase/test/{id}/{team_id}/reset", name="exercise-phase__reset-test")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
+    #[IsGranted("test", subject: "exercisePhase")]
+    #[Route("/exercise-phase/test/{id}/{team_id}/reset", name: "exercise-phase__reset-test")]
     public function resetTest(
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
@@ -269,10 +268,8 @@ class ExercisePhaseController extends AbstractController
         );
     }
 
-    /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/{id}/edit/phase/new", name="exercise-phase__new")
-     */
+    #[IsGranted("edit", subject: "exercise")]
+    #[Route("/exercise/{id}/edit/phase/new", name: "exercise-phase__new")]
     public function new(Exercise $exercise): Response
     {
         $types = [];
@@ -291,10 +288,8 @@ class ExercisePhaseController extends AbstractController
         ]);
     }
 
-    /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/{id}/edit/phase/type", name="exercise-phase__set-type")
-     */
+    #[IsGranted("edit", subject: "exercise")]
+    #[Route("/exercise/{id}/edit/phase/type", name: "exercise-phase__set-type")]
     public function initializePhaseByType(Request $request, Exercise $exercise): Response
     {
         $type = $request->query->get('type');
@@ -342,10 +337,10 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/{id}/edit/phase/{phase_id}/edit", name="exercise-phase__edit")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
+    #[IsGranted("edit", subject: "exercise")]
+    #[Route("/exercise/{id}/edit/phase/{phase_id}/edit", name: "exercise-phase__edit")]
     public function edit(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
     {
         $form = $this->getPhaseForm($exercisePhase);
@@ -432,10 +427,8 @@ class ExercisePhaseController extends AbstractController
         return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
     }
 
-    /**
-     * @IsGranted("reviewSolution", subject="solution")
-     * @Route("/exercise-phase-solution/finish-review/{id}", name="exercise-phase-solution__finish-review", methods={"POST"})
-     */
+    #[IsGranted("reviewSolution", subject: "solution")]
+    #[Route("/exercise-phase-solution/finish-review/{id}", name: "exercise-phase-solution__finish-review", methods: ["POST"])]
     public function finishReview(Solution $solution): Response
     {
         try {
@@ -449,10 +442,10 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("edit", subject="exercise")
-     * @Route("/exercise/{id}/edit/phase/{phase_id}/change-sorting", name="exercise-phase__change-sorting")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
+    #[IsGranted("edit", subject: "exercise")]
+    #[Route("/exercise/{id}/edit/phase/{phase_id}/change-sorting", name: "exercise-phase__change-sorting")]
     public function changeSorting(Request $request, Exercise $exercise, ExercisePhase $exercisePhase): Response
     {
         $sortUp = $request->query->get('sortUp', false);
@@ -482,10 +475,10 @@ class ExercisePhaseController extends AbstractController
     }
 
     /**
-     * @IsGranted("delete", subject="exercisePhase")
-     * @Route("/exercise/{id}/edit/phase/{phase_id}/delete", name="exercise-phase__delete")
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
+    #[IsGranted("delete", subject: "exercisePhase")]
+    #[Route("/exercise/{id}/edit/phase/{phase_id}/delete", name: "exercise-phase__delete")]
     public function delete(Exercise $exercise, ExercisePhase $exercisePhase): Response
     {
         $this->exercisePhaseService->deleteExercisePhase($exercisePhase);
@@ -511,9 +504,9 @@ class ExercisePhaseController extends AbstractController
 
     /**
      * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
-     * @Route("/exercise-phase/show-others/{id}/{team_id}", name="exercise-phase__show-other-solution")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
+    #[Route("/exercise-phase/show-others/{id}/{team_id}", name: "exercise-phase__show-other-solution")]
     public function showOtherStudentsSolution(
         ExercisePhase $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam

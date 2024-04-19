@@ -13,7 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
@@ -26,9 +27,7 @@ class RegistrationController extends AbstractController
     {
     }
 
-    /**
-     * @Route("/register", name="app_register")
-     */
+    #[Route("/register", name: "app_register")]
     public function register(
         Request                      $request,
         UserPasswordHasherInterface  $userPasswordHasher,
@@ -80,9 +79,7 @@ class RegistrationController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/verify", name="app_verify_email")
-     */
+    #[Route("/verify", name: "app_verify_email")]
     public function verifyUserEmail(
         Request         $request,
         UserRepository  $userRepository,
@@ -120,10 +117,8 @@ class RegistrationController extends AbstractController
         }
     }
 
-    /**
-     * @isGranted("ROLE_USER")
-     * @Route("/verify-email", name="app_verify_email_pending")
-     */
+    #[isGranted("ROLE_USER")]
+    #[Route("/verify-email", name: "app_verify_email_pending")]
     public function verifyUserEmailPending(): Response
     {
         /** @var User $user */
@@ -136,10 +131,8 @@ class RegistrationController extends AbstractController
         return $this->render('Security/VerifyEmail.html.twig');
     }
 
-    /**
-     * @isGranted("ROLE_USER")
-     * @Route("/verify-email-resend", name="app_resend-verification-email")
-     */
+    #[isGranted("ROLE_USER")]
+    #[Route("/verify-email-resend", name: "app_resend-verification-email")]
     public function resendVerificationEmail(): Response
     {
         /** @var User $user */

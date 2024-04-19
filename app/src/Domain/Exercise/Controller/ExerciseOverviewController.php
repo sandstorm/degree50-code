@@ -12,7 +12,8 @@ use App\Domain\User\Model\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * This controller is responsible for actions regarding the exercise overview
@@ -20,12 +21,11 @@ use Symfony\Component\Routing\Annotation\Route;
  * Exercises are being displayed as tiles on the templates.
  * NOTE: This has nothing to do with the overview of a single exercise.
  * Single exercise overview handling is located inside the [ExerciseController]
- *
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
  */
+ #[IsGranted("ROLE_USER")]
+ #[isGranted("user-verified")]
+ #[IsGranted("data-privacy-accepted")]
+ #[IsGranted("terms-of-use-accepted")]
 class ExerciseOverviewController extends AbstractController
 {
     /**
@@ -40,9 +40,7 @@ class ExerciseOverviewController extends AbstractController
     {
     }
 
-    /**
-     * @Route("/", name="app")
-     */
+    #[Route("/", name: "app")]
     public function index(): Response
     {
         /** @var User $user */
@@ -55,9 +53,7 @@ class ExerciseOverviewController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/exercise-overview/{id?}", name="exercise-overview")
-     */
+    #[Route("/exercise-overview/{id?}", name: "exercise-overview")]
     public function overview(Request $request, Course $course = null): Response
     {
         $statusFilter = $request->query->get('status');

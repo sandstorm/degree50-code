@@ -22,15 +22,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+ #[IsGranted("ROLE_USER")]
+ #[isGranted("user-verified")]
+ #[IsGranted("data-privacy-accepted")]
+ #[IsGranted("terms-of-use-accepted")]
 class ExercisePhaseTeamController extends AbstractController
 {
     public function __construct(
@@ -45,10 +44,8 @@ class ExercisePhaseTeamController extends AbstractController
     {
     }
 
-    /**
-     * @IsGranted("createTeam", subject="exercisePhase")
-     * @Route("/exercise-phase/{id}/team/new", name="exercise-phase-team__new")
-     */
+    #[IsGranted("createTeam", subject: "exercisePhase")]
+    #[Route("/exercise-phase/{id}/team/new", name: "exercise-phase-team__new")]
     public function new(ExercisePhase $exercisePhase): Response
     {
         /** @var User $user */
@@ -105,10 +102,8 @@ class ExercisePhaseTeamController extends AbstractController
         }
     }
 
-    /**
-     * @IsGranted("test", subject="exercisePhase")
-     * @Route("/exercise-phase/test/{id}/team/new", name="exercise-phase-team__test-new")
-     */
+    #[IsGranted("test", subject: "exercisePhase")]
+    #[Route("/exercise-phase/test/{id}/team/new", name: "exercise-phase-team__test-new")]
     public function test(ExercisePhase $exercisePhase): Response
     {
         /** @var User $user */
@@ -143,10 +138,10 @@ class ExercisePhaseTeamController extends AbstractController
     }
 
     /**
-     * @IsGranted("join", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/{id}/team/{team_id}/join", name="exercise-phase-team__join")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
+    #[IsGranted("join", subject: "exercisePhaseTeam")]
+    #[Route("/exercise-phase/{id}/team/{team_id}/join", name: "exercise-phase-team__join")]
     public function join(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         /** @var User $user */
@@ -169,10 +164,10 @@ class ExercisePhaseTeamController extends AbstractController
     }
 
     /**
-     * @IsGranted("delete", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/{id}/team/{team_id}/delete", name="exercise-phase-team__delete")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
+    #[IsGranted("delete", subject: "exercisePhaseTeam")]
+    #[Route("/exercise-phase/{id}/team/{team_id}/delete", name: "exercise-phase-team__delete")]
     public function delete(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         $this->entityManager->remove($exercisePhaseTeam);
@@ -193,10 +188,10 @@ class ExercisePhaseTeamController extends AbstractController
     }
 
     /**
-     * @IsGranted("leave", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/{id}/team/{team_id}/leave", name="exercise-phase-team__leave")
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
+    #[IsGranted("leave", subject: "exercisePhaseTeam")]
+    #[Route("/exercise-phase/{id}/team/{team_id}/leave", name: "exercise-phase-team__leave")]
     public function leave(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         /** @var User $user */
@@ -222,9 +217,7 @@ class ExercisePhaseTeamController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/exercise-phase/share-result/{id}", name="exercise-phase-team__share-result")
-     */
+    #[Route("/exercise-phase/share-result/{id}", name: "exercise-phase-team__share-result")]
     public function shareResult(ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         $this->exercisePhaseService->promoteLastAutoSavedSolutionToRealSolution($exercisePhaseTeam);
@@ -288,9 +281,7 @@ class ExercisePhaseTeamController extends AbstractController
         return $video;
     }
 
-    /**
-     * @Route("/exercise-phase/finish-reflexion/{id}", name="exercise-phase-team--finish-reflexion")
-     */
+    #[Route("/exercise-phase/finish-reflexion/{id}", name: "exercise-phase-team--finish-reflexion")]
     public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         // TODO
@@ -315,10 +306,9 @@ class ExercisePhaseTeamController extends AbstractController
 
     /**
      * Try to create a new AutosaveSolution and then publish the most recent version of the solution.
-     *
-     * @IsGranted("updateSolution", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/update-solution/{id}", name="exercise-phase-team__update-solution")
      */
+    #[IsGranted("updateSolution", subject: "exercisePhaseTeam")]
+    #[Route("/exercise-phase/update-solution/{id}", name: "exercise-phase-team__update-solution")]
     public function updateSolution(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         /** @var User $user */
@@ -363,10 +353,9 @@ class ExercisePhaseTeamController extends AbstractController
      * Update a solution of a student as Dozent.
      * This is only possible for MaterialPhases, where the Dozent can edit the material solution of a student
      * as a review process.
-     *
-     * @IsGranted("reviewSolution", subject="solution")
-     * @Route("/exercise-phase/review-solution/{id}", name="exercise-phase-team__review-solution")
      */
+    #[IsGranted("reviewSolution", subject: "solution")]
+    #[Route("/exercise-phase/review-solution/{id}", name: "exercise-phase-team__review-solution")]
     public function reviewSolution(Request $request, Solution $solution): Response
     {
         $solutionDataFromJson = json_decode($request->getContent(), true);
@@ -384,10 +373,9 @@ class ExercisePhaseTeamController extends AbstractController
 
     /**
      * Try to update the currentEditor of the TeamPhase and then publish the most recent solution
-     *
-     * @IsGranted("updateSolution", subject="exercisePhaseTeam")
-     * @Route("/exercise-phase/update-current-editor/{id}", name="exercise-phase-team__update-current-editor")
      */
+    #[IsGranted("updateSolution", subject: "exercisePhaseTeam")]
+    #[Route("/exercise-phase/update-current-editor/{id}", name: "exercise-phase-team__update-current-editor")]
     public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
         $user = $this->getUser();

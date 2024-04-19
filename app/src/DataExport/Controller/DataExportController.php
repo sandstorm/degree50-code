@@ -8,15 +8,13 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use ZipArchive;
 
-/**
- * // TODO: role ROLE_ADMIN/DOZENT or at least ROLE_USER?
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class DataExportController extends AbstractController
 {
     public function __construct(
@@ -25,10 +23,8 @@ class DataExportController extends AbstractController
     {
     }
 
-    /**
-     * @IsGranted("exportCSV", subject="course")
-     * @Route("/exercise-overview/{id}/export-csv", name="exercise-overview__course-export-csv")
-     */
+    #[IsGranted("exportCSV", subject: "course")]
+    #[Route("/exercise-overview/{id}/export-csv", name: "exercise-overview__course-export-csv")]
     public function exportData(Request $request, Course $course): Response
     {
         $csvList = $this->degreeDataToCsvService->getAllAsVirtualCSVs($course);

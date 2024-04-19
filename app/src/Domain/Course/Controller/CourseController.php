@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -30,9 +30,7 @@ class CourseController extends AbstractController
     {
     }
 
-    /**
-     * @Route("/exercise-overview/{id}/course-members", name="exercise-overview__course--members")
-     */
+    #[Route("/exercise-overview/{id}/course-members", name: "exercise-overview__course--members")]
     #[IsGranted("editMembers", subject: "course")]
     public function editCourseMembers(Request $request, Course $course): Response
     {
@@ -86,9 +84,9 @@ class CourseController extends AbstractController
 
     /**
      * @Security("is_granted('edit', course) or is_granted('editMembers', course)")
-     * @Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name="exercise-overview__course--remove-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
      */
+    #[Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name: "exercise-overview__course--remove-role")]
     public function removeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
     {
         $redirectToEdit = (bool)$request->get('redirectToEdit');
@@ -114,10 +112,10 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("editMembers", subject="course")
-     * @Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name="exercise-overview__course--upgrade-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
      */
+    #[IsGranted("editMembers", subject: "course")]
+    #[Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name: "exercise-overview__course--upgrade-role")]
     public function upgradeCourseMember(Course $course, CourseRole $courseRole): Response
     {
         $courseRole->setName(CourseRole::DOZENT);
@@ -129,10 +127,10 @@ class CourseController extends AbstractController
     }
 
     /**
-     * @IsGranted("editMembers", subject="course")
-     * @Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name="exercise-overview__course--downgrade-role")
      * @Entity("courseRole", expr="repository.find(userRole_id)")
      */
+    #[IsGranted("editMembers", subject: "course")]
+    #[Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name: "exercise-overview__course--downgrade-role")]
     public function downgradeCourseMember(Course $course, CourseRole $courseRole): Response
     {
         $courseRole->setName(CourseRole::STUDENT);
@@ -145,8 +143,8 @@ class CourseController extends AbstractController
 
     /**
      * @Security("is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN')")
-     * @Route("/exercise-overview/course/new", name="exercise-overview__course--new")
      */
+    #[Route("/exercise-overview/course/new", name: "exercise-overview__course--new")]
     public function new(Request $request): Response
     {
         $course = new Course();
@@ -191,10 +189,8 @@ class CourseController extends AbstractController
         $this->entityManager->flush();
     }
 
-    /**
-     * @IsGranted("edit", subject="course")
-     * @Route("/exercise-overview/course/edit/{id}", name="exercise-overview__course--edit")
-     */
+    #[IsGranted("edit", subject: "course")]
+    #[Route("/exercise-overview/course/edit/{id}", name: "exercise-overview__course--edit")]
     public function edit(Request $request, Course $course): Response
     {
         $form = $this->createForm(CourseFormType::class, $course);
@@ -231,10 +227,8 @@ class CourseController extends AbstractController
         ]);
     }
 
-    /**
-     * @IsGranted("delete", subject="course")
-     * @Route("/exercise-overview/course/delete/{id}", name="exercise-overview__course--delete")
-     */
+    #[IsGranted("delete", subject: "course")]
+    #[Route("/exercise-overview/course/delete/{id}", name: "exercise-overview__course--delete")]
     public function delete(Course $course): Response
     {
         if (count($course->getExercises()) > 0) {

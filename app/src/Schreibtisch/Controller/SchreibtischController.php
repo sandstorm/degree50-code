@@ -11,14 +11,13 @@ use App\Schreibtisch\Service\SchreibtischService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
- */
+#[IsGranted("ROLE_USER")]
+ #[isGranted("user-verified")]
+ #[IsGranted("data-privacy-accepted")]
+ #[IsGranted("terms-of-use-accepted")]
 class SchreibtischController extends AbstractController
 {
 
@@ -30,17 +29,13 @@ class SchreibtischController extends AbstractController
     {
     }
 
-    /**
-     * @Route("/schreibtisch", name="schreibtisch")
-     */
+    #[Route("/schreibtisch", name: "schreibtisch")]
     public function index(): Response
     {
         return $this->render('Schreibtisch/Index.html.twig');
     }
 
-    /**
-     * @Route("/schreibtisch/exercises", name="schreibtisch-exercises-api")
-     */
+    #[Route("/schreibtisch/exercises", name: "schreibtisch-exercises-api")]
     public function getExercises(): Response
     {
         $responseData = json_encode($this->schreibtischService->getExercisesApiResponse());
@@ -48,9 +43,7 @@ class SchreibtischController extends AbstractController
         return new Response($responseData, 200);
     }
 
-    /**
-     * @Route("/schreibtisch/material", name="schreibtisch-material-api")
-     */
+    #[Route("/schreibtisch/material", name: "schreibtisch-material-api")]
     public function getMaterial(): Response
     {
         $responseData = json_encode($this->schreibtischService->getMaterialResponse());
@@ -58,9 +51,7 @@ class SchreibtischController extends AbstractController
         return new Response($responseData, 200);
     }
 
-    /**
-     * @Route("/schreibtisch/material/update/{id}", name="schreibtisch-material-update")
-     */
+    #[Route("/schreibtisch/material/update/{id}", name: "schreibtisch-material-update")]
     public function updateMaterial(Request $request, Material $material): Response
     {
         if ($content = $request->getContent()) {
@@ -71,9 +62,7 @@ class SchreibtischController extends AbstractController
         return new Response();
     }
 
-    /**
-     * @Route("/schreibtisch/video-favorites", name="schreibtisch-video-favorites-api")
-     */
+    #[Route("/schreibtisch/video-favorites", name: "schreibtisch-video-favorites-api")]
     public function getVideoFavorites(): Response
     {
         $responseData = json_encode($this->schreibtischService->getVideoFavoritesResponse());
@@ -94,10 +83,7 @@ class SchreibtischController extends AbstractController
         return new Response();
     }
 
-    /**
-     * @Route("/schreibtisch/fachbereiche", name="schreibtisch-fachbereiche-api")
-     * @return Response
-     */
+    #[Route("/schreibtisch/fachbereiche", name: "schreibtisch-fachbereiche-api")]
     public function getFachbereiche(): Response
     {
         /** @var User $user */
@@ -107,10 +93,7 @@ class SchreibtischController extends AbstractController
         return new Response($responseData, 200);
     }
 
-    /**
-     * @Route("/schreibtisch/courses", name="schreibtisch-courses-api")
-     * @return Response
-     */
+    #[Route("/schreibtisch/courses", name: "schreibtisch-courses-api")]
     public function getCourses(): Response
     {
         /** @var User $user */

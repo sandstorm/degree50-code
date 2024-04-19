@@ -18,7 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -33,12 +34,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * NOTE: The upload of the original files which are later encoded by the WebEncodingTask is handled by our UploadListener-Implementation
  * @see UploadListener
- *
- * @IsGranted("ROLE_USER")
- * @isGranted("user-verified")
- * @IsGranted("data-privacy-accepted")
- * @IsGranted("terms-of-use-accepted")
  */
+ #[IsGranted("ROLE_USER")]
+ #[isGranted("user-verified")]
+ #[IsGranted("data-privacy-accepted")]
+ #[IsGranted("terms-of-use-accepted")]
 class VideoUploadController extends AbstractController
 {
     public function __construct(
@@ -56,11 +56,10 @@ class VideoUploadController extends AbstractController
      * Either shows the video upload form or redirects to the mediathek if the form has been submitted.
      * After a successful submit a WebEncodingTask is being dispatched, so that the original video gets encoded.
      * @see WebEncodingHandler
-     *
-     * @IsGranted("create")
-     * @Route("/video/uploads/{id?}", name="mediathek__video--upload")
      * @see WebEncodingTask
      */
+    #[IsGranted("create")]
+    #[Route("/video/uploads/{id?}", name: "mediathek__video--upload")]
     public function showVideoUploadForm(Request $request, Course $course = null): Response
     {
         $videoUuid = $request->query->get('videoUuid');
@@ -118,10 +117,8 @@ class VideoUploadController extends AbstractController
         ]);
     }
 
-    /**
-     * @IsGranted("edit", subject="video")
-     * @Route("/video/edit/{id}", name="mediathek__video--edit")
-     */
+    #[IsGranted("edit", subject: "video")]
+    #[Route("/video/edit/{id}", name: "mediathek__video--edit")]
     public function edit(Request $request, Video $video): Response
     {
         $form = $this->createForm(MediathekVideoFormType::class, $video);
@@ -152,10 +149,9 @@ class VideoUploadController extends AbstractController
     /**
      * TODO show delete page to confirm and show usage of the video on delete
      * Delete the video entity and the encoded video
-     *
-     * @IsGranted("delete", subject="video")
-     * @Route("/video/delete/{id}/{confirm}", name="mediathek__video--delete")
      */
+    #[IsGranted("delete", subject: "video")]
+    #[Route("/video/delete/{id}/{confirm}", name: "mediathek__video--delete")]
     public function delete(Video $video, bool $confirm = false): Response
     {
         if ($confirm) {
@@ -174,9 +170,8 @@ class VideoUploadController extends AbstractController
 
     /**
      * Triggered by VideoUploadController.js to remove newly uploaded videos
-     *
-     * @Route("/video/delete-ajax/{id}", name="mediathek__video--delete-ajax")
      */
+    #[Route("/video/delete-ajax/{id}", name: "mediathek__video--delete-ajax")]
     public function deleteAjax(Video $video): Response
     {
         /** @var User $user */
@@ -193,9 +188,8 @@ class VideoUploadController extends AbstractController
 
     /**
      * Triggered by VideoUploadController.js to remove newly uploaded subtitles
-     *
-     * @Route("/video/delete-subtitle-ajax/{id}", name="mediathek__subtitle--delete-ajax")
      */
+    #[Route("/video/delete-subtitle-ajax/{id}", name: "mediathek__subtitle--delete-ajax")]
     public function deleteSubtitleAjax(Video $video): Response
     {
         /** @var User $user */
@@ -212,9 +206,8 @@ class VideoUploadController extends AbstractController
 
     /**
      * Triggered by AudioDescriptionUploadController.js to remove newly uploaded audioDescriptions
-     *
-     * @Route("/video/delete-audio-description-ajax/{id}", name="mediathek__audio_description--delete-ajax")
      */
+    #[Route("/video/delete-audio-description-ajax/{id}", name: "mediathek__audio_description--delete-ajax")]
     public function deleteAudioDescriptionAjax(Video $video): Response
     {
         /** @var User $user */
