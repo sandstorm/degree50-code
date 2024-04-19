@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace migrations;
+namespace DoctrineMigrations;
 
 use App\Domain\User\Model\User;
 use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
