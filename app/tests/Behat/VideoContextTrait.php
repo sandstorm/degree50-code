@@ -24,7 +24,7 @@ trait VideoContextTrait
      * NOTE: The video you are trying to add needs to be available inside the same course, the
      * exercisePhase belongs to
      */
-    public function iHaveAVideoWithIdBelongingToExercisePhaseWithId($videoId, $exercisePhaseId)
+    public function iHaveAVideoWithIdBelongingToExercisePhaseWithId($videoId, $exercisePhaseId): void
     {
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
@@ -37,14 +37,13 @@ trait VideoContextTrait
         $exercisePhase->addVideo($video);
 
         $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I have a video with ID :videoId belonging to course :courseId
      */
-    public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId, $courseId)
+    public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId, $courseId): void
     {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
@@ -56,7 +55,6 @@ trait VideoContextTrait
         }
 
         $this->entityManager->persist($video);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -85,7 +83,6 @@ trait VideoContextTrait
             $video->setEncodedVideoDirectory($outputDirectory);
 
             $this->entityManager->persist($video);
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         }
 
@@ -95,7 +92,7 @@ trait VideoContextTrait
     /**
      * @Then No Video created by User :username should exist
      */
-    public function assertVideosByUserDoNotExist($username)
+    public function assertVideosByUserDoNotExist($username): void
     {
         /**
          * Why
@@ -124,7 +121,7 @@ trait VideoContextTrait
      *
      * @Given I have a cut video :cutVideoId belonging to solution :solutionId
      */
-    public function iHaveACutVideoBelongingToSolution($cutVideoId, $solutionId)
+    public function iHaveACutVideoBelongingToSolution($cutVideoId, $solutionId): void
     {
         // NOTE: we do not save a video file here only the wrapping model,
         // because we do not test for the file itself!
@@ -135,7 +132,6 @@ trait VideoContextTrait
         $solution->setCutVideo($cutVideo);
 
         $this->entityManager->persist($solution);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 

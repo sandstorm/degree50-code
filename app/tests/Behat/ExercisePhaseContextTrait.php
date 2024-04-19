@@ -21,9 +21,6 @@ use function PHPUnit\Framework\assertEqualsCanonicalizing;
 use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotNull;
 
-/**
- *
- */
 trait ExercisePhaseContextTrait
 {
     /**

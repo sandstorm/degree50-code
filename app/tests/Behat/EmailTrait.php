@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Behat;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;
 use function PHPUnit\Framework\assertNotNull;
@@ -13,6 +14,7 @@ trait EmailTrait
 {
     /**
      * @BeforeScenario @email
+     * @throws GuzzleException
      */
     public function resetEmails(): void
     {
@@ -27,7 +29,7 @@ trait EmailTrait
     {
         $responseBody = $this->findEmailBySubjectAndReceiver($subject, $emailAddress);
 
-        assertNotNull($responseBody, "No email found with the subject '{$subject}' and receiver '{$emailAddress}'");
+        assertNotNull($responseBody, "No email found with the subject '$subject' and receiver '$emailAddress'");
     }
 
     /**
@@ -37,7 +39,7 @@ trait EmailTrait
     {
         $responseBody = $this->findEmailBySubjectAndReceiver($subject, $emailAddress);
 
-        assertNotNull($responseBody, "No email found with the subject '{$subject}' and receiver '{$emailAddress}'");
+        assertNotNull($responseBody, "No email found with the subject '$subject' and receiver '$emailAddress'");
 
         $emailHtml = $responseBody['HTML'];
         $linkRegexExp = '/<a.*href="(?<link>.*)".*>.*' . $linkText . '.*<\/a>/';
@@ -88,7 +90,7 @@ trait EmailTrait
             return null;
         }
 
-        return $this->emailApiGet("/message/{$messageId}");
+        return $this->emailApiGet("/message/$messageId");
     }
 
     /**

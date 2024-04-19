@@ -10,9 +10,6 @@ use function PHPUnit\Framework\assertStringContainsString;
 use function PHPUnit\Framework\assertStringNotContainsString;
 use function PHPUnit\Framework\assertTrue;
 
-/**
- *
- */
 trait PlaywrightContextTrait
 {
     /**
@@ -82,14 +79,12 @@ trait PlaywrightContextTrait
 
     private function getPageContent(): string
     {
-        $content = $this->playwrightConnector->execute(
+        return $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
                 return await vars.page.content();
             JS
         );
-
-        return $content;
     }
 
     /**
@@ -193,7 +188,7 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-                await vars.page.click(`[aria-label="${ariaLabel}"]`)
+                await vars.page.click(`[aria-label="$ariaLabel"]`)
             JS
         );
     }
@@ -402,14 +397,15 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute($this->playwrightContext, sprintf(
             <<<JS
                 // evaluate the event listener
-                await vars.page.evaluate((eventName) => {
+                await vars.page.evaluate(() => {
                     return new Promise((resolve) => {
-                        window.addEventListener(eventName, () => {
+                        window.addEventListener('%s', () => {
                             resolve();
                         });
                     });
-                }, '$eventName');
-            JS
+                });
+            JS,
+            $eventName
         ));
     }
 

@@ -3,38 +3,34 @@
 namespace App\Tests\Behat;
 
 use App\Domain\Course\Model\Course;
+use App\Domain\Exercise\Repository\ExerciseRepository;
 use App\Domain\User\Model\User;
 use App\Domain\Exercise\Model\Exercise;
-use App\Repository\Exercise\ExerciseRepository;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertSame;
 
-/**
- *
- */
 trait ExerciseContextTrait
 {
     /**
      * TODO: setting status is only possible when the Exercise has at least one ExercisePhase (via UI)
      * @Given Exercise :exerciseId is published
      */
-    public function ensureExerciseIsPublished($exerciseId)
+    public function ensureExerciseIsPublished($exerciseId): void
     {
         /** @var Exercise $exercise */
         $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
         $exercise->setStatus(Exercise::EXERCISE_PUBLISHED);
 
         $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given An Exercise with the following data exists:
      */
-    public function assureAnExerciseWithTheFollowingDataExists(TableNode $tableNode)
+    public function assureAnExerciseWithTheFollowingDataExists(TableNode $tableNode): void
     {
         $exerciseData = $tableNode->getHash()[0];
         /** @var Course $course */
@@ -48,7 +44,6 @@ trait ExerciseContextTrait
         $exercise->setCourse($course);
 
         $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -58,7 +53,7 @@ trait ExerciseContextTrait
      * This is just another way to use the step above, because oftentimes configuring
      * the step via JSON is much more convenient and easier to read for large data sets.
      */
-    public function assureAnExerciseWithTheFollowingJsonDataExists(PyStringNode $exerciseDataJson)
+    public function assureAnExerciseWithTheFollowingJsonDataExists(PyStringNode $exerciseDataJson): void
     {
         $exerciseData = json_decode($exerciseDataJson->getRaw(), true);
         /** @var Course $course */
@@ -73,14 +68,13 @@ trait ExerciseContextTrait
         $exercise->setStatus($exerciseData['status']);
 
         $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given An Exercise with ID :exerciseId created by User :username in Course :courseId exists
      */
-    public function ensureExerciseByUserInCourseExists($exerciseId, $username, $courseId)
+    public function ensureExerciseByUserInCourseExists($exerciseId, $username, $courseId): void
     {
         /** @var Exercise $exercise */
         $exercise = $this->entityManager->getRepository(Exercise::class)->find($exerciseId);
@@ -102,7 +96,6 @@ trait ExerciseContextTrait
         $this->entityManager->persist($course);
         $this->entityManager->persist($exercise);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
 
         /**
@@ -121,7 +114,7 @@ trait ExerciseContextTrait
     /**
      * @Then No Exercise created by User :username should exist
      */
-    public function assertExercisesByUserDoNotExist($username)
+    public function assertExercisesByUserDoNotExist($username): void
     {
         /** @var ExerciseRepository $repository */
         $repository = $this->entityManager->getRepository(Exercise::class);
@@ -152,7 +145,7 @@ trait ExerciseContextTrait
     /**
      * @Given Course :courseId belongs to exercise :exerciseId
      */
-    public function courseWithIdBelongsToExercise($courseId, $exerciseId)
+    public function courseWithIdBelongsToExercise($courseId, $exerciseId): void
     {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
@@ -165,7 +158,6 @@ trait ExerciseContextTrait
 
         $this->entityManager->persist($exercise);
         $this->entityManager->persist($course);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -186,7 +178,6 @@ trait ExerciseContextTrait
 
         $this->entityManager->persist($exercise);
         $this->entityManager->persist($course);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 

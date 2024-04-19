@@ -1,3 +1,4 @@
+// TODO: used?
 export const fixtureState = {
     toolbar: {
         activeToolbarItem: '',

@@ -37,7 +37,6 @@ use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\ORM\EntityManagerInterface;
 use Sandstorm\E2ETestTools\Tests\Behavior\Bootstrap\PlaywrightTrait;

@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
 trait DatabaseFixtureContextTrait
 {
-    /**
-     * @var Schema
-     */
-    protected static $databaseSchema;
+    protected static Schema $databaseSchema;
 
     /**
      * @BeforeScenario @fixtures
+     * @throws Exception|ExceptionInterface
      */
     public function resetTestFixtures($event): void
     {
@@ -36,7 +35,7 @@ trait DatabaseFixtureContextTrait
                 $input->setInteractive(false);
                 $cmd->run($input, new NullOutput());
                 $needsTruncate = true;
-            } catch (DBALException $exception) {
+            } catch (\Exception $exception) {
                 $schemaTool = new SchemaTool($this->entityManager);
                 $schemaTool->dropDatabase();
 
@@ -69,6 +68,7 @@ trait DatabaseFixtureContextTrait
      *
      * @param EntityManagerInterface $entityManager
      * @return void
+     * @throws Exception
      */
     private static function truncateTables(EntityManagerInterface $entityManager): void
     {
