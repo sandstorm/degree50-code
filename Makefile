@@ -15,35 +15,35 @@ logs:
 	docker-compose logs -f
 
 logs-api:
-	docker-compose logs -f api
+	docker-compose logs -f degree
 
 import-fixtures:
-	docker-compose exec api php bin/console doctrine:fixtures:load
+	docker-compose exec degree php bin/console doctrine:fixtures:load
 
 test-integration:
 	docker-compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \
-		api ./vendor/bin/behat --tags integration
+		degree ./vendor/bin/behat --tags integration
 
 test-e2e:
 	docker-compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \
-		api ./vendor/bin/behat --tags playwright
+		degree ./vendor/bin/behat --tags playwright
 
 test-debug:
 	docker-compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \
-		api ./vendor/bin/behat --tags debug
+		degree ./vendor/bin/behat --tags debug
 
 test:
 	docker-compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \
-		api ./vendor/bin/behat
+		degree ./vendor/bin/behat
