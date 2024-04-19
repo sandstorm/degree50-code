@@ -20,7 +20,7 @@ class Solution
     #[ORM\Column(type: "datetimetz_immutable")]
     private DateTimeImmutable $update_timestamp;
 
-    #[ORM\OneToOne(targetEntity: "App\Domain\Video\Video", cascade: ["remove"])]
+    #[ORM\OneToOne(targetEntity: Video::class, cascade: ["remove"])]
     private ?Video $cutVideo = null;
 
     public function __construct(string $id = null, string $initialMaterial = null)

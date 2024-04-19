@@ -12,9 +12,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class VideoCodeController extends AbstractController
 {
 
@@ -27,7 +27,7 @@ class VideoCodeController extends AbstractController
     /**
      * Used only asynchronous
      */
-     #[Route("/video-codes/add/{id}", name: "video-code__add", methods: ["POST"])]
+    #[Route("/video-codes/add/{id}", name: "video-code__add", methods: ["POST"])]
     public function add(Request $request, VideoAnalysisPhase $exercisePhase): Response
     {
         $color = json_decode($request->getContent(), true)['color'];

@@ -39,11 +39,11 @@ class Exercise
     /**
      * @var Collection<ExercisePhase>
      */
-    #[ORM\OneToMany(targetEntity: "ExercisePhase", mappedBy: "belongsToExercise", cascade: ["all"])]
+    #[ORM\OneToMany(targetEntity: ExercisePhase::class, mappedBy: "belongsToExercise", cascade: ["all"])]
     #[ORM\OrderBy(["sorting" => "ASC"])]
     private Collection $phases;
 
-    #[ORM\ManyToOne(targetEntity: "App\Domain\Account\Course", inversedBy: "exercises")]
+    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: "exercises")]
     #[ORM\JoinColumn(nullable: true)]
     private ?Course $course;
 

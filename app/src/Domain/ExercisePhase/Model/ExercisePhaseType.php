@@ -5,7 +5,6 @@ namespace App\Domain\ExercisePhase\Model;
 /**
  * These values are used all over the place. As keys for translations, in frontend, everywhere.
  */
-
 enum ExercisePhaseType: string
 {
     case VIDEO_ANALYSIS = 'videoAnalysis';

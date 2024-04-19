@@ -25,7 +25,7 @@ class AutosavedSolution
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $owner;
 
-    #[ORM\ManyToOne(targetEntity: "App\Domain\Exercise\ExercisePhaseTeam", inversedBy: "autosavedSolutions")]
+    #[ORM\ManyToOne(targetEntity: ExercisePhaseTeam::class, inversedBy: "autosavedSolutions")]
     #[ORM\JoinColumn(nullable: false)]
     private ExercisePhaseTeam $team;
 

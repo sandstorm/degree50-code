@@ -62,32 +62,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<CourseRole>
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Account\CourseRole", mappedBy: "user", orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CourseRole::class, mappedBy: "user", orphanRemoval: true)]
     private Collection $courseRoles;
 
     /**
      * @var Collection<Exercise>
      *
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Exercise\Exercise", mappedBy: "creator")]
+    #[ORM\OneToMany(targetEntity: Exercise::class, mappedBy: "creator")]
     private Collection $createdExercises;
 
     /**
      * @var Collection<Video>
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Video\Video", mappedBy: "creator")]
+    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: "creator")]
     private Collection $createdVideos;
 
     /**
      * @var Collection<VideoFavorite>
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Video\VideoFavorite", mappedBy: "user")]
+    #[ORM\OneToMany(targetEntity: VideoFavorite::class, mappedBy: "user")]
     private Collection $favoriteVideos;
 
     /**
      * @var Collection<Material>
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Material\Material", mappedBy: "owner")]
+    #[ORM\OneToMany(targetEntity: Material::class, mappedBy: "owner")]
     private Collection $materials;
 
     #[ORM\Column(type: "boolean")]

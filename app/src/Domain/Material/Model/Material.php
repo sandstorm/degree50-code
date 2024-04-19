@@ -27,7 +27,7 @@ class Material
     #[ORM\Column(name: "last_updated_at", type: "datetimetz_immutable", nullable: true)]
     private ?DateTimeImmutable $lastUpdatedAt = null;
 
-    #[ORM\ManyToOne(targetEntity: "App\Domain\Exercise\ExercisePhaseTeam")]
+    #[ORM\ManyToOne(targetEntity: ExercisePhaseTeam::class)]
     private ?ExercisePhaseTeam $originalPhaseTeam;
 
     public function __construct(string $id = null)

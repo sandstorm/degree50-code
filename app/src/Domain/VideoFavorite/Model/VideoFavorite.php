@@ -17,7 +17,7 @@ class VideoFavorite
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: "App\Domain\Video\Video")]
+    #[ORM\ManyToOne(targetEntity: Video::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Video $video;
 

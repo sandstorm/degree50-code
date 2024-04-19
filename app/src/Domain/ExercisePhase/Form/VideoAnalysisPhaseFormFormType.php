@@ -16,8 +16,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class VideoAnalysisPhaseFormFormType extends ExercisePhaseFormType
 {
     public function __construct(
-        ExercisePhaseRepository $exercisePhaseRepository,
-        ExercisePhaseService $exercisePhaseService,
+        ExercisePhaseRepository          $exercisePhaseRepository,
+        ExercisePhaseService             $exercisePhaseService,
         private readonly VideoRepository $videoRepository,
     )
     {

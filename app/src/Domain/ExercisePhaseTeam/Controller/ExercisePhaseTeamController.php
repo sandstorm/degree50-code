@@ -27,19 +27,19 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
- #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[IsGranted("ROLE_USER")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class ExercisePhaseTeamController extends AbstractController
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly TranslatorInterface $translator,
-        private readonly LiveSyncService $liveSyncService,
-        private readonly MessageBusInterface $messageBus,
-        private readonly SolutionService $solutionService,
-        private readonly ExercisePhaseService $exercisePhaseService,
+        private readonly EntityManagerInterface      $entityManager,
+        private readonly TranslatorInterface         $translator,
+        private readonly LiveSyncService             $liveSyncService,
+        private readonly MessageBusInterface         $messageBus,
+        private readonly SolutionService             $solutionService,
+        private readonly ExercisePhaseService        $exercisePhaseService,
         private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository
     )
     {
@@ -248,40 +248,6 @@ class ExercisePhaseTeamController extends AbstractController
         }
     }
 
-    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam): void
-    {
-        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-
-        if (!$exercisePhase instanceof VideoCutPhase) {
-            return;
-        }
-
-        $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutList = $solution->getCutList();
-
-        if (empty($cutList)) {
-            return;
-        }
-
-        $cutListVideo = $this->createVideo($exercisePhaseTeam->getCreator());
-        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutListVideo->getId()));
-    }
-
-    private function createVideo(User $creator): ?Video
-    {
-        $videoUuid = Uuid::uuid4()->toString();
-        $video = new Video($videoUuid);
-        $video->setCreator($creator);
-
-        $video->setTitle('Video to be cut <' . $videoUuid . '>');
-        $video->setDataPrivacyAccepted(true);
-        $video->setDataPrivacyPermissionsAccepted(true);
-        $this->entityManager->persist($video);
-        $this->entityManager->flush();
-
-        return $video;
-    }
-
     #[Route("/exercise-phase/finish-reflexion/{id}", name: "exercise-phase-team--finish-reflexion")]
     public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam): Response
     {
@@ -431,5 +397,39 @@ class ExercisePhaseTeamController extends AbstractController
         } else {
             return new Response('Not updated!', Response::HTTP_NOT_MODIFIED);
         }
+    }
+
+    private function dispatchCutListEncodingTask(ExercisePhaseTeam $exercisePhaseTeam): void
+    {
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+
+        if (!$exercisePhase instanceof VideoCutPhase) {
+            return;
+        }
+
+        $solution = $exercisePhaseTeam->getSolution()->getSolution();
+        $cutList = $solution->getCutList();
+
+        if (empty($cutList)) {
+            return;
+        }
+
+        $cutListVideo = $this->createVideo($exercisePhaseTeam->getCreator());
+        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutListVideo->getId()));
+    }
+
+    private function createVideo(User $creator): ?Video
+    {
+        $videoUuid = Uuid::uuid4()->toString();
+        $video = new Video($videoUuid);
+        $video->setCreator($creator);
+
+        $video->setTitle('Video to be cut <' . $videoUuid . '>');
+        $video->setDataPrivacyAccepted(true);
+        $video->setDataPrivacyPermissionsAccepted(true);
+        $this->entityManager->persist($video);
+        $this->entityManager->flush();
+
+        return $video;
     }
 }

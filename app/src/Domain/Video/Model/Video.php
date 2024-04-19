@@ -65,7 +65,7 @@ class Video
     /**
      * @var Collection<ExercisePhase>
      */
-    #[ORM\ManyToMany(targetEntity: "App\Domain\Exercise\ExercisePhase", mappedBy: "videos")]
+    #[ORM\ManyToMany(targetEntity: ExercisePhase::class, mappedBy: "videos")]
     private Collection $exercisePhases;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdVideos")]

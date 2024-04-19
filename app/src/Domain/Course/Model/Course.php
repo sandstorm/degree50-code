@@ -30,13 +30,13 @@ class Course
     /**
      * @var Collection<Exercise>
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Exercise\Exercise", mappedBy: "course", orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Exercise::class, mappedBy: "course", orphanRemoval: true)]
     private Collection $exercises;
 
     /**
      * @var Collection<CourseRole>
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Account\CourseRole", mappedBy: "course", cascade: ["all"], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CourseRole::class, mappedBy: "course", cascade: ["all"], orphanRemoval: true)]
     private Collection $courseRoles;
 
     /**

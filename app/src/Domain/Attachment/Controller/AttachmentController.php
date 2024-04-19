@@ -27,9 +27,9 @@ class AttachmentController extends AbstractController
 {
 
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly KernelInterface $kernel,
-        private readonly AttachmentRepository $attachmentRepository,
+        private readonly TranslatorInterface    $translator,
+        private readonly KernelInterface        $kernel,
+        private readonly AttachmentRepository   $attachmentRepository,
         private readonly EntityManagerInterface $entityManager
     )
     {
@@ -61,18 +61,6 @@ class AttachmentController extends AbstractController
         return $this->redirectToRoute('exercise-phase__edit', ['id' => $attachment->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $attachment->getExercisePhase()->getId()]);
     }
 
-    private function removeAttachment(AppRuntime $appRuntime, Attachment $attachment): void
-    {
-        $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
-        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
-
-        $filesystem = new Filesystem();
-        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
-
-        $this->entityManager->remove($attachment);
-        $this->entityManager->flush();
-    }
-
     #[Route("/attachment/delete-ajax", name: "exercise-overview__attachment--delete-ajax")]
     public function deleteAjax(AppRuntime $appRuntime, Request $request): Response
     {
@@ -97,5 +85,17 @@ class AttachmentController extends AbstractController
         return $this->render('ExercisePhase/AttachmentList.html.twig', [
             'attachmentList' => $exercisePhase->getAttachments()
         ]);
+    }
+
+    private function removeAttachment(AppRuntime $appRuntime, Attachment $attachment): void
+    {
+        $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
+        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
+
+        $filesystem = new Filesystem();
+        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
+
+        $this->entityManager->remove($attachment);
+        $this->entityManager->flush();
     }
 }

@@ -20,7 +20,7 @@ class VideoCode
     #[ORM\Column(type: "string", length: 255)]
     private string $name = '';
 
-    #[ORM\ManyToOne(targetEntity: "App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase", inversedBy: "videoCodes")]
+    #[ORM\ManyToOne(targetEntity: VideoAnalysisPhase::class, inversedBy: "videoCodes")]
     #[ORM\JoinColumn(nullable: true)]
     private ?VideoAnalysisPhase $exercisePhase;
 

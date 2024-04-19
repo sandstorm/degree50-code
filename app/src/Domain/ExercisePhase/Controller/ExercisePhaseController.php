@@ -36,22 +36,22 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
- #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[IsGranted("ROLE_USER")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class ExercisePhaseController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly LiveSyncService $liveSyncService,
-        private readonly RouterInterface $router,
-        private readonly ExercisePhaseRepository $exercisePhaseRepository,
-        private readonly ExercisePhaseService $exercisePhaseService,
+        private readonly TranslatorInterface         $translator,
+        private readonly LiveSyncService             $liveSyncService,
+        private readonly RouterInterface             $router,
+        private readonly ExercisePhaseRepository     $exercisePhaseRepository,
+        private readonly ExercisePhaseService        $exercisePhaseService,
         private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        private readonly SolutionService $solutionService,
-        private readonly ExerciseService $exerciseService,
-        private readonly EntityManagerInterface $entityManager
+        private readonly SolutionService             $solutionService,
+        private readonly ExerciseService             $exerciseService,
+        private readonly EntityManagerInterface      $entityManager
     )
     {
     }
@@ -62,7 +62,7 @@ class ExercisePhaseController extends AbstractController
      */
     #[Route("/exercise-phase/show/{id}/{team_id}", name: "exercise-phase__show")]
     public function show(
-        ExercisePhase $exercisePhase,
+        ExercisePhase     $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
     ): Response
     {
@@ -75,161 +75,13 @@ class ExercisePhaseController extends AbstractController
         }
     }
 
-    private function reflectInPhase(
-        ExercisePhase $reflexionPhase,
-        ExercisePhaseTeam $exercisePhaseTeam,
-        bool $testMode = false
-    ): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $phaseReflexionDependsOn = $reflexionPhase->getDependsOnExercisePhase();
-        $exercise = $reflexionPhase->getBelongsToExercise();
-
-        $teams = [];
-        if ($testMode && $exercisePhaseTeam->getSolution() !== null) {
-            $teams[] = $exercisePhaseTeam;
-        } else {
-            $teams = $this->exercisePhaseTeamRepository->findAllByPhaseExcludingTests($phaseReflexionDependsOn);
-            // HOTFIX: It's possible to create a team without solutions right now, e.g. when a user creates a team in a
-            // group phase and does not start the phase for this group at least once.
-            // This leads to an 500 Error down the line, when the cut video of the solution is accessed. (can't get a
-            // cut video from a solution that does not exist).
-            // This is a quick fix and should be addressed with more insight later.
-            $teams = array_filter($teams, fn($team) => $team->getSolution() !== null);
-        }
-
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
-        $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
-            $clientSideSolutionDataBuilder,
-            $teams
-        );
-
-        $configOfDependingPhase = $this->exercisePhaseService->getConfig($phaseReflexionDependsOn, $user);
-
-        return $this->render('ExercisePhase/Show.html.twig', [
-            'config' => array_merge($this->exercisePhaseService->getConfig($reflexionPhase, $user), [
-                'type' => $configOfDependingPhase['type'],
-                'videos' => $configOfDependingPhase['videos'],
-            ]),
-            'data' => $clientSideSolutionDataBuilder,
-            'exercise' => $exercise,
-            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
-            'exercisePhaseTeam' => $exercisePhaseTeam,
-            'exercisePhase' => $reflexionPhase,
-            'testMode' => $testMode,
-        ]);
-    }
-
-    private function workOnPhase(
-        ExercisePhase $exercisePhase,
-        ExercisePhaseTeam $exercisePhaseTeam,
-        bool $testMode = false
-    ): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        // config for the ui to render the react components
-        $config = $this->getConfigWithSolutionApiEndpoints($exercisePhase, $exercisePhaseTeam);
-
-        $this->initiateExercisePhaseTeamWithSolution($exercisePhase, $exercisePhaseTeam, $user);
-
-        $response = new Response();
-        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhaseTeam));
-
-        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
-        $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
-            $clientSideSolutionDataBuilder,
-            $exercisePhaseTeam,
-            $exercisePhase
-        );
-
-        $exercise = $exercisePhase->getBelongsToExercise();
-
-        return $this->render('ExercisePhase/Show.html.twig', [
-            'config' => $config,
-            'data' => $clientSideSolutionDataBuilder,
-            'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
-            'exercisePhase' => $exercisePhase,
-            'exercise' => $exercise,
-            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
-            'exercisePhaseTeam' => $exercisePhaseTeam,
-            'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId(),
-            'testMode' => $testMode,
-        ], $response);
-    }
-
-    private function getConfigWithSolutionApiEndpoints(
-        ExercisePhase $exercisePhase,
-        ExercisePhaseTeam $exercisePhaseTeam,
-        ?bool $readOnly = false
-    ): array
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $config = $this->exercisePhaseService->getConfig($exercisePhase, $user, $readOnly);
-        $config['apiEndpoints'] = [
-            'updateSolution' => $this->router->generate('exercise-phase-team__update-solution', [
-                'id' => $exercisePhaseTeam->getId()
-            ]),
-            'updateCurrentEditor' => $this->router->generate('exercise-phase-team__update-current-editor', [
-                'id' => $exercisePhaseTeam->getId()
-            ]),
-        ];
-
-        return $config;
-    }
-
-    private function initiateExercisePhaseTeamWithSolution(
-        ExercisePhase $exercisePhase,
-        ExercisePhaseTeam $exercisePhaseTeam,
-        User $user
-    ): void
-    {
-        if (!$exercisePhaseTeam->getCurrentEditor()) {
-            $exercisePhaseTeam->setCurrentEditor($user);
-        }
-
-        if (!$exercisePhaseTeam->getSolution()) {
-            $this->initNewSolution($exercisePhase, $exercisePhaseTeam);
-        }
-
-        $this->entityManager->persist($exercisePhaseTeam);
-        $this->entityManager->flush();
-    }
-
-    private function initNewSolution(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): void
-    {
-        // NOTE:
-        // It would be preferable to use a match expression here.
-        // However we would then not be able to use the @var comment with the type
-        // assertion...
-        if ($exercisePhase->getType() == ExercisePhaseType::MATERIAL) {
-            /**
-             * @var MaterialPhase $exercisePhase
-             **/
-            $newSolution = new Solution(
-                null,
-                $exercisePhase->getMaterial()
-            );
-        } else {
-            $newSolution = new Solution();
-        }
-
-        $exercisePhaseTeam->setSolution($newSolution);
-
-        $this->entityManager->persist($newSolution);
-    }
-
     /**
      * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
      */
     #[IsGranted("test", subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/{team_id}", name: "exercise-phase__test")]
     public function test(
-        ExercisePhase $exercisePhase,
+        ExercisePhase     $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
     ): Response
     {
@@ -248,7 +100,7 @@ class ExercisePhaseController extends AbstractController
     #[IsGranted("test", subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/{team_id}/reset", name: "exercise-phase__reset-test")]
     public function resetTest(
-        ExercisePhase $exercisePhase,
+        ExercisePhase     $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
     ): Response
     {
@@ -319,24 +171,6 @@ class ExercisePhaseController extends AbstractController
         ]);
     }
 
-    private function persistPhaseAndRedirectToEdit(Exercise $exercise, ExercisePhase $exercisePhase, string $type): RedirectResponse
-    {
-        $existingPhaseWithHighestSorting = $this
-            ->exercisePhaseRepository
-            ->findOneBy(['belongsToExercise' => $exercise], ['sorting' => 'desc']);
-
-        $exercisePhase->setSorting(
-            $existingPhaseWithHighestSorting
-                ? $existingPhaseWithHighestSorting->getSorting() + 1
-                : 0
-        );
-
-        $this->entityManager->persist($exercisePhase);
-        $this->entityManager->flush();
-
-        return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-    }
-
     /**
      * @Entity("exercisePhase", expr="repository.find(phase_id)")
      */
@@ -357,75 +191,6 @@ class ExercisePhaseController extends AbstractController
             'exercisePhase' => $exercisePhase,
             'form' => $form->createView(),
         ]);
-    }
-
-    private function getPhaseForm(ExercisePhase $exercisePhase): FormInterface
-    {
-        return match ($exercisePhase->getType()) {
-            ExercisePhaseType::VIDEO_ANALYSIS => $this->createForm(VideoAnalysisPhaseFormFormType::class, $exercisePhase),
-            ExercisePhaseType::VIDEO_CUT => $this->createForm(VideoCutPhaseFormFormType::class, $exercisePhase),
-            ExercisePhaseType::REFLEXION => $this->createForm(ReflexionPhaseFormType::class, $exercisePhase),
-            ExercisePhaseType::MATERIAL => $this->createForm(MaterialPhaseFormType::class, $exercisePhase),
-        };
-    }
-
-    private function handlePhaseEditFormSubmit(FormInterface $form, Exercise $exercise): RedirectResponse
-    {
-        /** @var ExercisePhase $exercisePhase */
-        $exercisePhase = $form->getData();
-
-        if ($this->hasInvalidPreviousPhase($exercisePhase)) {
-            $this->addFlash(
-                'danger',
-                'Verknüpfung von Phasen aktuell nur möglich wenn die vorherige Phase vom Typ "Video-Analyse" ist.'
-            );
-
-            return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-        } elseif ($this->hasNoActiveComponent($exercisePhase)) {
-            $this->addFlash(
-                'danger',
-                'Mindestens eine Komponente muss aktiv sein'
-            );
-
-            return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-        } else {
-            $this->entityManager->persist($exercisePhase);
-            $this->entityManager->flush();
-
-            $this->addFlash(
-                'success',
-                $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
-            );
-        }
-
-        return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-    }
-
-    /**
-     * TODO: rather check for 'hasValidPreviousPhase'
-     * @deprecated
-     */
-    private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
-    {
-        $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();
-
-        if ($exercisePhaseDependedOn == null) {
-            return false;
-        }
-
-        return !$this->exercisePhaseService->isValidDependingOnExerciseCombination($exercisePhaseDependedOn, $exercisePhase);
-    }
-
-    private function hasNoActiveComponent(ExercisePhase $exercisePhase): bool
-    {
-        $isVideoAnalysis = $exercisePhase->getType() == ExercisePhaseType::VIDEO_ANALYSIS;
-
-        if (!$isVideoAnalysis) {
-            return false;
-        }
-
-        /** @var VideoAnalysisPhase $exercisePhase */
-        return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
     }
 
     #[IsGranted("reviewSolution", subject: "solution")]
@@ -509,7 +274,7 @@ class ExercisePhaseController extends AbstractController
      */
     #[Route("/exercise-phase/show-others/{id}/{team_id}", name: "exercise-phase__show-other-solution")]
     public function showOtherStudentsSolution(
-        ExercisePhase $exercisePhase,
+        ExercisePhase     $exercisePhase,
         ExercisePhaseTeam $exercisePhaseTeam
     ): Response
     {
@@ -541,5 +306,240 @@ class ExercisePhaseController extends AbstractController
             'exercisePhaseTeam' => $exercisePhaseTeam,
             'currentEditor' => null
         ], $response);
+    }
+
+    private function reflectInPhase(
+        ExercisePhase     $reflexionPhase,
+        ExercisePhaseTeam $exercisePhaseTeam,
+        bool              $testMode = false
+    ): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $phaseReflexionDependsOn = $reflexionPhase->getDependsOnExercisePhase();
+        $exercise = $reflexionPhase->getBelongsToExercise();
+
+        $teams = [];
+        if ($testMode && $exercisePhaseTeam->getSolution() !== null) {
+            $teams[] = $exercisePhaseTeam;
+        } else {
+            $teams = $this->exercisePhaseTeamRepository->findAllByPhaseExcludingTests($phaseReflexionDependsOn);
+            // HOTFIX: It's possible to create a team without solutions right now, e.g. when a user creates a team in a
+            // group phase and does not start the phase for this group at least once.
+            // This leads to an 500 Error down the line, when the cut video of the solution is accessed. (can't get a
+            // cut video from a solution that does not exist).
+            // This is a quick fix and should be addressed with more insight later.
+            $teams = array_filter($teams, fn($team) => $team->getSolution() !== null);
+        }
+
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilderForSolutionView(
+            $clientSideSolutionDataBuilder,
+            $teams
+        );
+
+        $configOfDependingPhase = $this->exercisePhaseService->getConfig($phaseReflexionDependsOn, $user);
+
+        return $this->render('ExercisePhase/Show.html.twig', [
+            'config' => array_merge($this->exercisePhaseService->getConfig($reflexionPhase, $user), [
+                'type' => $configOfDependingPhase['type'],
+                'videos' => $configOfDependingPhase['videos'],
+            ]),
+            'data' => $clientSideSolutionDataBuilder,
+            'exercise' => $exercise,
+            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
+            'exercisePhaseTeam' => $exercisePhaseTeam,
+            'exercisePhase' => $reflexionPhase,
+            'testMode' => $testMode,
+        ]);
+    }
+
+    private function workOnPhase(
+        ExercisePhase     $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam,
+        bool              $testMode = false
+    ): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // config for the ui to render the react components
+        $config = $this->getConfigWithSolutionApiEndpoints($exercisePhase, $exercisePhaseTeam);
+
+        $this->initiateExercisePhaseTeamWithSolution($exercisePhase, $exercisePhaseTeam, $user);
+
+        $response = new Response();
+        $response->headers->setCookie($this->liveSyncService->getSubscriberJwtCookie($user, $exercisePhaseTeam));
+
+        $clientSideSolutionDataBuilder = new ClientSideSolutionDataBuilder($this->exercisePhaseService);
+        $this->solutionService->retrieveAndAddDataToClientSideDataBuilder(
+            $clientSideSolutionDataBuilder,
+            $exercisePhaseTeam,
+            $exercisePhase
+        );
+
+        $exercise = $exercisePhase->getBelongsToExercise();
+
+        return $this->render('ExercisePhase/Show.html.twig', [
+            'config' => $config,
+            'data' => $clientSideSolutionDataBuilder,
+            'liveSyncConfig' => $this->liveSyncService->getClientSideLiveSyncConfig($exercisePhaseTeam),
+            'exercisePhase' => $exercisePhase,
+            'exercise' => $exercise,
+            'phases' => $this->exerciseService->getPhasesWithStatusMetadata($exercise, $user),
+            'exercisePhaseTeam' => $exercisePhaseTeam,
+            'currentEditor' => $exercisePhaseTeam->getCurrentEditor()->getId(),
+            'testMode' => $testMode,
+        ], $response);
+    }
+
+    private function getConfigWithSolutionApiEndpoints(
+        ExercisePhase     $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam,
+        ?bool             $readOnly = false
+    ): array
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $config = $this->exercisePhaseService->getConfig($exercisePhase, $user, $readOnly);
+        $config['apiEndpoints'] = [
+            'updateSolution' => $this->router->generate('exercise-phase-team__update-solution', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
+            'updateCurrentEditor' => $this->router->generate('exercise-phase-team__update-current-editor', [
+                'id' => $exercisePhaseTeam->getId()
+            ]),
+        ];
+
+        return $config;
+    }
+
+    private function initiateExercisePhaseTeamWithSolution(
+        ExercisePhase     $exercisePhase,
+        ExercisePhaseTeam $exercisePhaseTeam,
+        User              $user
+    ): void
+    {
+        if (!$exercisePhaseTeam->getCurrentEditor()) {
+            $exercisePhaseTeam->setCurrentEditor($user);
+        }
+
+        if (!$exercisePhaseTeam->getSolution()) {
+            $this->initNewSolution($exercisePhase, $exercisePhaseTeam);
+        }
+
+        $this->entityManager->persist($exercisePhaseTeam);
+        $this->entityManager->flush();
+    }
+
+    private function initNewSolution(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): void
+    {
+        // NOTE:
+        // It would be preferable to use a match expression here.
+        // However we would then not be able to use the @var comment with the type
+        // assertion...
+        if ($exercisePhase->getType() == ExercisePhaseType::MATERIAL) {
+            /**
+             * @var MaterialPhase $exercisePhase
+             **/
+            $newSolution = new Solution(
+                null,
+                $exercisePhase->getMaterial()
+            );
+        } else {
+            $newSolution = new Solution();
+        }
+
+        $exercisePhaseTeam->setSolution($newSolution);
+
+        $this->entityManager->persist($newSolution);
+    }
+
+    private function persistPhaseAndRedirectToEdit(Exercise $exercise, ExercisePhase $exercisePhase, string $type): RedirectResponse
+    {
+        $existingPhaseWithHighestSorting = $this
+            ->exercisePhaseRepository
+            ->findOneBy(['belongsToExercise' => $exercise], ['sorting' => 'desc']);
+
+        $exercisePhase->setSorting(
+            $existingPhaseWithHighestSorting
+                ? $existingPhaseWithHighestSorting->getSorting() + 1
+                : 0
+        );
+
+        $this->entityManager->persist($exercisePhase);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+    }
+
+    private function getPhaseForm(ExercisePhase $exercisePhase): FormInterface
+    {
+        return match ($exercisePhase->getType()) {
+            ExercisePhaseType::VIDEO_ANALYSIS => $this->createForm(VideoAnalysisPhaseFormFormType::class, $exercisePhase),
+            ExercisePhaseType::VIDEO_CUT => $this->createForm(VideoCutPhaseFormFormType::class, $exercisePhase),
+            ExercisePhaseType::REFLEXION => $this->createForm(ReflexionPhaseFormType::class, $exercisePhase),
+            ExercisePhaseType::MATERIAL => $this->createForm(MaterialPhaseFormType::class, $exercisePhase),
+        };
+    }
+
+    private function handlePhaseEditFormSubmit(FormInterface $form, Exercise $exercise): RedirectResponse
+    {
+        /** @var ExercisePhase $exercisePhase */
+        $exercisePhase = $form->getData();
+
+        if ($this->hasInvalidPreviousPhase($exercisePhase)) {
+            $this->addFlash(
+                'danger',
+                'Verknüpfung von Phasen aktuell nur möglich wenn die vorherige Phase vom Typ "Video-Analyse" ist.'
+            );
+
+            return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+        } elseif ($this->hasNoActiveComponent($exercisePhase)) {
+            $this->addFlash(
+                'danger',
+                'Mindestens eine Komponente muss aktiv sein'
+            );
+
+            return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+        } else {
+            $this->entityManager->persist($exercisePhase);
+            $this->entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
+            );
+        }
+
+        return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
+    }
+
+    /**
+     * TODO: rather check for 'hasValidPreviousPhase'
+     * @deprecated
+     */
+    private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
+    {
+        $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();
+
+        if ($exercisePhaseDependedOn == null) {
+            return false;
+        }
+
+        return !$this->exercisePhaseService->isValidDependingOnExerciseCombination($exercisePhaseDependedOn, $exercisePhase);
+    }
+
+    private function hasNoActiveComponent(ExercisePhase $exercisePhase): bool
+    {
+        $isVideoAnalysis = $exercisePhase->getType() == ExercisePhaseType::VIDEO_ANALYSIS;
+
+        if (!$isVideoAnalysis) {
+            return false;
+        }
+
+        /** @var VideoAnalysisPhase $exercisePhase */
+        return !$exercisePhase->getVideoAnnotationsActive() && !$exercisePhase->getVideoCodesActive();
     }
 }

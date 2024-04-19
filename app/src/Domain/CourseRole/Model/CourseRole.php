@@ -27,7 +27,7 @@ class CourseRole
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: "App\Domain\Account\Course", inversedBy: "courseRoles")]
+    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: "courseRoles")]
     #[ORM\JoinColumn(nullable: false)]
     private Course $course;
 

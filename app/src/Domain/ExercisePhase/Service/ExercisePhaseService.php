@@ -29,16 +29,28 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ExercisePhaseService
 {
     public function __construct(
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
-        private readonly UserMaterialService          $materialService,
-        private readonly AutosavedSolutionRepository  $autoSavedSolutionRepository,
-        private readonly TranslatorInterface          $translator,
-        private readonly AppRuntime                   $appRuntime,
-        private readonly VideoFavouritesService       $videoFavouritesService,
-        private readonly UrlGeneratorInterface        $router
+        private readonly EntityManagerInterface      $entityManager,
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private readonly UserMaterialService         $materialService,
+        private readonly AutosavedSolutionRepository $autoSavedSolutionRepository,
+        private readonly TranslatorInterface         $translator,
+        private readonly AppRuntime                  $appRuntime,
+        private readonly VideoFavouritesService      $videoFavouritesService,
+        private readonly UrlGeneratorInterface       $router
     )
     {
+    }
+
+    /**
+     * Get the exercise phase status for a single team
+     */
+    public static function getStatusForTeam(?ExercisePhaseTeam $exercisePhaseTeam): ExercisePhaseStatus
+    {
+        if (is_null($exercisePhaseTeam)) {
+            return ExercisePhaseStatus::INITIAL;
+        } else {
+            return $exercisePhaseTeam->getStatus();
+        }
     }
 
     public function getPhaseTypeTitle(ExercisePhaseType $exercisePhaseType): string
@@ -206,45 +218,6 @@ class ExercisePhaseService
         }
     }
 
-    private function finishRegularPhase(ExercisePhaseTeam $phaseTeam): void
-    {
-        $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
-
-        $this->entityManager->persist($phaseTeam);
-        $this->entityManager->flush();
-    }
-
-    /**
-     * Sets the status to "Beendet" for an exercisePhaseTeam of a material phase and
-     * also creates a copy of the material for each individual member of the team.
-     * */
-    private function finishMaterialPhase(ExercisePhaseTeam $phaseTeam): void
-    {
-        $exercisePhase = $phaseTeam->getExercisePhase();
-        /** @var MaterialPhase $materialPhase */
-        $materialPhase = $exercisePhase;
-
-        if (
-            $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_BEARBEITUNG
-            && $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_REVIEW
-        ) {
-            return;
-        }
-
-        if (
-            $materialPhase->getReviewRequired()
-            && $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_REVIEW
-        ) {
-            $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
-        } else {
-            $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
-            $this->materialService->createMaterialsForExercisePhaseTeamMembers($phaseTeam);
-        }
-
-        $this->entityManager->flush();
-        $this->entityManager->persist($phaseTeam);
-    }
-
     /**
      * Finds the last auto saved solution by an exercisePhaseTeam and
      * Creates a solution entity using its contents.
@@ -312,18 +285,6 @@ class ExercisePhaseService
 
             $this->entityManager->persist($exercisePhaseTeam);
             $this->entityManager->flush();
-        }
-    }
-
-    /**
-     * Get the exercise phase status for a single team
-     */
-    public static function getStatusForTeam(?ExercisePhaseTeam $exercisePhaseTeam): ExercisePhaseStatus
-    {
-        if (is_null($exercisePhaseTeam)) {
-            return ExercisePhaseStatus::INITIAL;
-        } else {
-            return $exercisePhaseTeam->getStatus();
         }
     }
 
@@ -421,6 +382,45 @@ class ExercisePhaseService
                 ]);
             }, $exercisePhase->getVideos()->toArray()),
         ];
+    }
+
+    private function finishRegularPhase(ExercisePhaseTeam $phaseTeam): void
+    {
+        $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
+
+        $this->entityManager->persist($phaseTeam);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Sets the status to "Beendet" for an exercisePhaseTeam of a material phase and
+     * also creates a copy of the material for each individual member of the team.
+     * */
+    private function finishMaterialPhase(ExercisePhaseTeam $phaseTeam): void
+    {
+        $exercisePhase = $phaseTeam->getExercisePhase();
+        /** @var MaterialPhase $materialPhase */
+        $materialPhase = $exercisePhase;
+
+        if (
+            $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_BEARBEITUNG
+            && $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_REVIEW
+        ) {
+            return;
+        }
+
+        if (
+            $materialPhase->getReviewRequired()
+            && $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_REVIEW
+        ) {
+            $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
+        } else {
+            $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
+            $this->materialService->createMaterialsForExercisePhaseTeamMembers($phaseTeam);
+        }
+
+        $this->entityManager->flush();
+        $this->entityManager->persist($phaseTeam);
     }
 
     private function getComponentsOfExercisePhase(ExercisePhase $exercisePhase): array

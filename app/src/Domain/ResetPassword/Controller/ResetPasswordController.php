@@ -27,10 +27,10 @@ class ResetPasswordController extends AbstractController
     use ResetPasswordControllerTrait;
 
     public function __construct(
-        private readonly ResetPasswordHelperInterface $resetPasswordHelper,
+        private readonly ResetPasswordHelperInterface   $resetPasswordHelper,
         private readonly ResetPasswordRequestRepository $resetPasswordRequestRepository,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly TranslatorInterface $translator,
+        private readonly EntityManagerInterface         $entityManager,
+        private readonly TranslatorInterface            $translator,
     )
     {
     }
@@ -56,62 +56,6 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(
-        string $emailFormData,
-        MailerInterface $mailer,
-    ): RedirectResponse
-    {
-        /* @var User|null $user */
-        $user = $this->entityManager->getRepository(User::class)->findOneBy([
-            'email' => $emailFormData,
-        ]);
-
-        // Do not reveal whether a user account was found or not.
-        if (!$user) {
-            return $this->redirectToRoute('app_check_email');
-        }
-
-        if ($user->isSSOUser()) {
-            $this->addFlash('danger', $this->translator->trans('process.error.sso-user', [], 'user-password-reset'));
-            return $this->redirectToRoute('app_forgot_password_request');
-        }
-
-        // remove all previous tokens for user
-        $this->resetPasswordRequestRepository->removeRequests($user);
-
-        try {
-            $resetToken = $this->resetPasswordHelper->generateResetToken($user);
-        } catch (ResetPasswordExceptionInterface $e) {
-            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
-            return $this->redirectToRoute('app');
-        }
-
-        $email = (new TemplatedEmail())
-            ->to($user->getEmail())
-            ->subject($this->translator->trans('email.subject', [], 'user-password-reset'))
-            ->htmlTemplate('reset_password/email.html.twig')
-            ->context([
-                'resetToken' => $resetToken,
-                'expirationTime' => $this->translator->trans(
-                    $resetToken->getExpirationMessageKey(),
-                    $resetToken->getExpirationMessageData(),
-                    'ResetPasswordBundle'
-                ),
-            ]);
-
-        try {
-            $mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
-            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
-            return $this->redirectToRoute('app');
-        }
-
-        // Store the token object in session for retrieval in check-email route.
-        $this->setTokenObjectInSession($resetToken);
-
-        return $this->redirectToRoute('app_check_email');
-    }
-
     /**
      * Confirmation page after a user has requested a password reset.
      */
@@ -126,9 +70,9 @@ class ResetPasswordController extends AbstractController
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
     public function reset(
-        Request $request,
+        Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        string $token = null,
+        string                      $token = null,
     ): Response
     {
         if ($token) {
@@ -187,5 +131,61 @@ class ResetPasswordController extends AbstractController
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form->createView(),
         ]);
+    }
+
+    private function processSendingPasswordResetEmail(
+        string          $emailFormData,
+        MailerInterface $mailer,
+    ): RedirectResponse
+    {
+        /* @var User|null $user */
+        $user = $this->entityManager->getRepository(User::class)->findOneBy([
+            'email' => $emailFormData,
+        ]);
+
+        // Do not reveal whether a user account was found or not.
+        if (!$user) {
+            return $this->redirectToRoute('app_check_email');
+        }
+
+        if ($user->isSSOUser()) {
+            $this->addFlash('danger', $this->translator->trans('process.error.sso-user', [], 'user-password-reset'));
+            return $this->redirectToRoute('app_forgot_password_request');
+        }
+
+        // remove all previous tokens for user
+        $this->resetPasswordRequestRepository->removeRequests($user);
+
+        try {
+            $resetToken = $this->resetPasswordHelper->generateResetToken($user);
+        } catch (ResetPasswordExceptionInterface $e) {
+            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
+            return $this->redirectToRoute('app');
+        }
+
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->subject($this->translator->trans('email.subject', [], 'user-password-reset'))
+            ->htmlTemplate('reset_password/email.html.twig')
+            ->context([
+                'resetToken' => $resetToken,
+                'expirationTime' => $this->translator->trans(
+                    $resetToken->getExpirationMessageKey(),
+                    $resetToken->getExpirationMessageData(),
+                    'ResetPasswordBundle'
+                ),
+            ]);
+
+        try {
+            $mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
+            return $this->redirectToRoute('app');
+        }
+
+        // Store the token object in session for retrieval in check-email route.
+        $this->setTokenObjectInSession($resetToken);
+
+        return $this->redirectToRoute('app_check_email');
     }
 }

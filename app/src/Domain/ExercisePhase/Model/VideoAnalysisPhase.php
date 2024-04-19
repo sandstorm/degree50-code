@@ -16,7 +16,7 @@ class VideoAnalysisPhase extends ExercisePhase
     /**
      * @var Collection<VideoCode>
      */
-    #[ORM\OneToMany(targetEntity: "App\Domain\Exercise\VideoCode", mappedBy: "exercisePhase", cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(targetEntity: VideoCode::class, mappedBy: "exercisePhase", cascade: ["persist", "remove"])]
     #[ORM\OrderBy(["name" => "ASC"])]
     private Collection $videoCodes;
 

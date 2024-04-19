@@ -5,7 +5,6 @@ namespace App\Domain\ExercisePhase\Model;
 /**
  * The Status of an ExercisePhase
  */
-
 enum ExercisePhaseStatus: string
 {
     case INITIAL = 'INITIAL';
