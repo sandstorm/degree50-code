@@ -95,7 +95,7 @@ class AttachmentController extends AbstractController
     public function uploadedAttachment(ExercisePhase $exercisePhase): Response
     {
         return $this->render('ExercisePhase/AttachmentList.html.twig', [
-            'attachmentList' => $exercisePhase->getAttachment()
+            'attachmentList' => $exercisePhase->getAttachments()
         ]);
     }
 }

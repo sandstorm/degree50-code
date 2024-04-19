@@ -9,33 +9,23 @@ use App\Domain\User\Model\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Entity(repositoryClass="App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository")]
+#[ORM\HasLifecycleCallbacks()]
 class AutosavedSolution
 {
     use IdentityTrait;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: "json")]
     private array $solution = [];
 
-    /**
-     * @ORM\Column(type="datetimetz_immutable")
-     */
+    #[ORM\Column(type: "datetimetz_immutable")]
     private ?DateTimeImmutable $update_timestamp;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\User")
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $owner;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Exercise\ExercisePhaseTeam", inversedBy="autosavedSolutions")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Domain\Exercise\ExercisePhaseTeam", inversedBy: "autosavedSolutions")]
+    #[ORM\JoinColumn(nullable: false)]
     private ExercisePhaseTeam $team;
 
     // TODO: get id of original Solution (via Team)
@@ -58,9 +48,7 @@ class AutosavedSolution
         return $this->update_timestamp;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function setUpdateTimestampValue(): void
     {
         $this->update_timestamp = new DateTimeImmutable();

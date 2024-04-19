@@ -4,12 +4,10 @@ namespace App\Domain\ExercisePhase\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")]
 class ReflexionPhase extends ExercisePhase
 {
-    const type = ExercisePhaseType::REFLEXION;
+    const ?ExercisePhaseType type = ExercisePhaseType::REFLEXION;
 
     public function __construct(string $id = null)
     {

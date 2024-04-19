@@ -161,7 +161,7 @@ class ExercisePhaseService
                 $newPhase->setIsGroupPhase($originalPhase->isGroupPhase());
                 $newPhase->setOtherSolutionsAreAccessible($originalPhase->getOtherSolutionsAreAccessible());
 
-                foreach ($originalPhase->getAttachment() as $attachment) {
+                foreach ($originalPhase->getAttachments() as $attachment) {
                     $newPhase->addAttachment($attachment);
                 }
 
@@ -414,7 +414,7 @@ class ExercisePhaseService
                     'type' => $entry->getMimeType(),
                     'url' => $this->router->generate('exercise-overview__attachment--download', ['id' => $entry->getId()])
                 ];
-            }, $exercisePhase->getAttachment()->toArray()),
+            }, $exercisePhase->getAttachments()->toArray()),
             'videos' => array_map(function (Video $video) use ($user) {
                 return array_merge($video->getAsClientSideVideo($this->appRuntime)->toArray(), [
                     'isFavorite' => $this->videoFavouritesService->videoIsFavorite($video, $user)

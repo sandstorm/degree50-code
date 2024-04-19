@@ -15,26 +15,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Video\Repository\VideoRepository")
- */
+ #[ORM\Entity(repositoryClass: "App\Domain\Video\Repository\VideoRepository")]
 class Video
 {
     use IdentityTrait;
 
-    const ENCODING_NOT_STARTED = 0;
-    const ENCODING_STARTED = 2;
-    const ENCODING_ERROR = 3;
-    const ENCODING_FINISHED = 1;
+    // TODO: use enum
+    const int ENCODING_NOT_STARTED = 0;
+    const int ENCODING_STARTED = 2;
+    const int ENCODING_ERROR = 3;
+    const int ENCODING_FINISHED = 1;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: "text")]
     private string $title = '';
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $description = '';
 
     // NOTE
@@ -54,59 +49,41 @@ class Video
     // For example if $uploadedVideoFile would be NULL inside the database,
     // its respective VirtualizedFile->getVirtualPathAndFilename() would also return NULL.
 
-    /**
-     * @ORM\Embedded(class=VirtualizedFile::class)
-     */
+    #[ORM\Embedded(class: VirtualizedFile::class)]
     private ?VirtualizedFile $uploadedVideoFile;
 
-    /**
-     * @ORM\Embedded(class=VirtualizedFile::class)
-     */
+    #[ORM\Embedded(class: VirtualizedFile::class)]
     private ?VirtualizedFile $uploadedSubtitleFile;
 
-    /**
-     * @ORM\Embedded(class=VirtualizedFile::class)
-     */
+    #[ORM\Embedded(class: VirtualizedFile::class)]
     private ?VirtualizedFile $uploadedAudioDescriptionFile;
 
-    /**
-     * @ORM\Embedded(class=VirtualizedFile::class)
-     */
+    #[ORM\Embedded(class: VirtualizedFile::class)]
     private ?VirtualizedFile $encodedVideoDirectory;
 
     /**
      * @var Collection<ExercisePhase>
-     *
-     * @ORM\ManyToMany(targetEntity="App\Domain\Exercise\ExercisePhase", mappedBy="videos")
      */
+    #[ORM\ManyToMany(targetEntity: "App\Domain\Exercise\ExercisePhase", mappedBy: "videos")]
     private Collection $exercisePhases;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="createdVideos")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdVideos")]
+    #[ORM\JoinColumn(nullable: false)]
     private User $creator;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetimetz_immutable")
-     */
+    #[ORM\Column(name: "created_at", type: "datetimetz_immutable")]
     private ?DateTimeImmutable $createdAt;
 
     /**
      * @var Collection<Course>
-     *
-     * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="videos")
      */
+    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: "videos")]
     private Collection $courses;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private ?bool $dataPrivacyAccepted;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private ?bool $dataPrivacyPermissionsAccepted;
 
     /**
@@ -114,33 +91,22 @@ class Video
      * 1 = finished
      * 2 = started
      * 3 = error
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: "integer")]
     private int $encodingStatus = self::ENCODING_NOT_STARTED;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: "float", nullable: true)]
     private ?float $videoDuration = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $visiblePersons = null;
 
-    /**
-     * @ORM\Column(type="datetimetz_immutable", nullable=true)
-     */
+    #[ORM\Column(type: "datetimetz_immutable", nullable: true)]
     private ?DateTimeImmutable $encodingStarted = null;
 
-    /**
-     * @ORM\Column(type="datetimetz_immutable", nullable=true)
-     */
+    #[ORM\Column(type: "datetimetz_immutable", nullable: true)]
     private ?DateTimeImmutable $encodingFinished = null;
 
-    /**
-     * Video constructor.
-     */
     public function __construct(string $id = '')
     {
         $this->generateOrSetId($id);
@@ -246,9 +212,6 @@ class Video
         return $this;
     }
 
-    /**
-     * Get videoDuration.
-     */
     public function getVideoDuration(): ?float
     {
         if ($this->videoDuration) {
@@ -259,9 +222,6 @@ class Video
         }
     }
 
-    /**
-     * Set videoDuration.
-     */
     public function setVideoDuration(?float $videoDuration): void
     {
         $this->videoDuration = $videoDuration;

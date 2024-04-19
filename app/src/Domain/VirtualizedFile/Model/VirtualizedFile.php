@@ -4,22 +4,15 @@ namespace App\Domain\VirtualizedFile\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Embeddable
- */
+#[ORM\Embeddable]
 class VirtualizedFile
 {
 
     /**
      * file name in the form "storage_prefix://filename"
-     * @ORM\Column(type="string", nullable=true)
      */
+    #[ORM\Column(type: "string", nullable: true)]
     private ?string $virtualPathAndFilename;
-
-    public function getVirtualPathAndFilename(): ?string
-    {
-        return $this->virtualPathAndFilename;
-    }
 
     public static function fromString(string $virtualPathAndFilename): self
     {
@@ -33,6 +26,11 @@ class VirtualizedFile
         $file = new self();
         $file->virtualPathAndFilename = $mountPoint . '://' . $filename;
         return $file;
+    }
+
+    public function getVirtualPathAndFilename(): ?string
+    {
+        return $this->virtualPathAndFilename;
     }
 
     public function getMountPoint(): string

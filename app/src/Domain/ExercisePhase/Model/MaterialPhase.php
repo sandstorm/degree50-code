@@ -4,23 +4,16 @@ namespace App\Domain\ExercisePhase\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")]
 class MaterialPhase extends ExercisePhase
 {
-    const type = ExercisePhaseType::MATERIAL;
+    const ?ExercisePhaseType type = ExercisePhaseType::MATERIAL;
 
-    /**
-     * @orm\column(name="material", type="text")
-     */
-    private string | null $material = '';
+    #[ORM\column(name: "material", type: "text")]
+    private string|null $material = '';
 
-    /**
-     * @orm\column(name="reviewRequired", type="boolean")
-     */
-    private bool | null $reviewRequired = false;
-
+    #[ORM\column(name: "reviewRequired", type: "boolean")]
+    private bool|null $reviewRequired = false;
 
     public function __construct(string $id = null)
     {

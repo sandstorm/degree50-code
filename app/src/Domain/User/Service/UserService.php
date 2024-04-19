@@ -11,7 +11,9 @@ use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Service\VideoService;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -48,7 +50,7 @@ class UserService
     public function deleteStudent(User $user): void
     {
         if ($user->isAdmin() || $user->isDozent()) {
-            throw new \InvalidArgumentException('User is not a Student');
+            throw new InvalidArgumentException('User is not a Student');
         }
 
         $this->exerciseService->deleteExercisesCreatedByUser($user);
@@ -78,7 +80,7 @@ class UserService
             $user->setTermsOfUseVersion(-1);
 
             // set expiration date to 1 year from now
-            $user->setExpirationDate(new \DateTimeImmutable('+1 year'));
+            $user->setExpirationDate(new DateTimeImmutable('+1 year'));
             // prevent emails from being sent to user due to expiration
             $user->setExpirationNoticeSent(true);
 
@@ -113,7 +115,7 @@ class UserService
                 $this->deleteStudent($user);
                 break;
             default:
-                throw new \InvalidArgumentException('User is not a Student, Dozent or Admin');
+                throw new InvalidArgumentException('User is not a Student, Dozent or Admin');
         }
     }
 
@@ -146,7 +148,7 @@ class UserService
         $user->setTermsOfUseVersion(-1);
 
         // set expiration date to 1 year from now
-        $user->setExpirationDate(new \DateTimeImmutable('+1 year'));
+        $user->setExpirationDate(new DateTimeImmutable('+1 year'));
         // prevent emails from being sent to user due to expiration
         $user->setExpirationNoticeSent(true);
 

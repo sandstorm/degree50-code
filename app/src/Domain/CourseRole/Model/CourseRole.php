@@ -8,34 +8,28 @@ use App\Domain\User\Model\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\CourseRole\Repository\CourseRoleRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Domain\CourseRole\Repository\CourseRoleRepository")]
 class CourseRole
 {
     use IdentityTrait;
 
-    const DOZENT = 'DOZENT';
-    const STUDENT = 'STUDENT';
-    const ROLES = [self::DOZENT, self::STUDENT];
+    const string DOZENT = 'DOZENT';
+    const string STUDENT = 'STUDENT';
+    const array ROLES = [self::DOZENT, self::STUDENT];
 
     /**
-     * @ORM\Column
      * @Assert\NotBlank
-     * @Assert\Choice(choices=CourseRole::ROLES, message="Choose a valid role.")
+     * @Assert\Choice(choices=CourseRole::ROLES)
      */
+    #[ORM\Column]
     public string $name = '';
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="courseRoles")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "courseRoles")]
+    #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\Course", inversedBy="courseRoles")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Domain\Account\Course", inversedBy: "courseRoles")]
+    #[ORM\JoinColumn(nullable: false)]
     private Course $course;
 
     public function getUser(): ?User

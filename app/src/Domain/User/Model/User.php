@@ -10,6 +10,8 @@ use App\Domain\Video\Model\Video;
 use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,35 +20,31 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Domain\User\Repository\UserRepository")
- * TODO: possible leak of used email!
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * TODO: leak of user email!
  */
+#[ORM\Entity(repositoryClass: "App\Domain\User\Repository\UserRepository")]
+#[UniqueEntity(fields: ["email"])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use IdentityTrait;
 
-    const ROLE_USER = 'ROLE_USER';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_STUDENT = 'ROLE_STUDENT';
-    const ROLE_DOZENT = 'ROLE_DOZENT';
-    const ROLE_SSO_USER = 'ROLE_SSO_USER';
+    const string ROLE_USER = 'ROLE_USER';
+    const string ROLE_ADMIN = 'ROLE_ADMIN';
+    const string ROLE_STUDENT = 'ROLE_STUDENT';
+    const string ROLE_DOZENT = 'ROLE_DOZENT';
+    const string ROLE_SSO_USER = 'ROLE_SSO_USER';
 
-    const EXPIRATION_DURATION_STRING = '5 years';
-    const DB_DATE_FORMAT = 'Y-m-d H:i:s';
-    const EXPIRATION_NOTICE_DURATION_STRING = '8 months';
-    const VERIFICATION_TIMEOUT_DURATION_STRING = '5 days';
+    const string EXPIRATION_DURATION_STRING = '5 years';
+    const string DB_DATE_FORMAT = 'Y-m-d H:i:s';
+    const string EXPIRATION_NOTICE_DURATION_STRING = '8 months';
+    const string VERIFICATION_TIMEOUT_DURATION_STRING = '5 days';
 
-    const MIN_PASSWORD_LENGTH = 8;
+    const int MIN_PASSWORD_LENGTH = 8;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
+    #[ORM\Column(type: "string", length: 180, unique: true)]
     private string $email;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: "json")]
     private array $roles = [];
 
     /**
@@ -57,84 +55,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?string $plainPassword = '';
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: "string")]
     private string $password;
 
     /**
      * @var Collection<CourseRole>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Account\CourseRole", mappedBy="user", orphanRemoval=true)
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Account\CourseRole", mappedBy: "user", orphanRemoval: true)]
     private Collection $courseRoles;
 
     /**
      * @var Collection<Exercise>
      *
-     * @ORM\OneToMany(targetEntity="App\Domain\Exercise\Exercise", mappedBy="creator")
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Exercise\Exercise", mappedBy: "creator")]
     private Collection $createdExercises;
 
     /**
      * @var Collection<Video>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Video\Video", mappedBy="creator")
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Video\Video", mappedBy: "creator")]
     private Collection $createdVideos;
 
     /**
      * @var Collection<VideoFavorite>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Video\VideoFavorite", mappedBy="user")
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Video\VideoFavorite", mappedBy: "user")]
     private Collection $favoriteVideos;
 
     /**
      * @var Collection<Material>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Material\Material", mappedBy="owner")
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Material\Material", mappedBy: "owner")]
     private Collection $materials;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $dataPrivacyAccepted = false;
 
-    /**
-     * @ORM\Column(type="smallint", options={"default":1})
-     */
+    #[ORM\Column(type: "smallint", options: ["default" => 1])]
     private int $dataPrivacyVersion = 1;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $termsOfUseAccepted = false;
 
-    /**
-     * @ORM\Column(type="smallint", options={"default":0})
-     */
+    #[ORM\Column(type: "smallint", options: ["default" => 0])]
     private int $termsOfUseVersion = 0;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetimetz_immutable")
-     */
-    private \DateTimeImmutable $createdAt;
+    #[ORM\Column(name: "created_at", type: "datetimetz_immutable")]
+    private DateTimeImmutable $createdAt;
 
-    /**
-     * @ORM\Column(name="expiration_date", type="datetimetz_immutable")
-     */
-    private \DateTimeImmutable $expirationDate;
+    #[ORM\Column(name: "expiration_date", type: "datetimetz_immutable")]
+    private DateTimeImmutable $expirationDate;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $isVerified = false;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $expirationNoticeSent = false;
 
     public function __construct(?string $id = null)
@@ -144,9 +120,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdVideos = new ArrayCollection();
         $this->favoriteVideos = new ArrayCollection();
         $this->generateOrSetId($id);
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
         $this->expirationDate = $this->createdAt->add(
-            \DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING)
+            DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING)
         );
     }
 
@@ -290,17 +266,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->setRole(self::ROLE_SSO_USER, $isSSOUser);
     }
 
-    private function setRole(string $roleToSet, bool $set): void
-    {
-        if ($set) {
-            $this->roles[] = $roleToSet;
-        } else {
-            $this->roles = array_filter($this->roles, function ($role) use ($roleToSet) {
-                return $role !== $roleToSet;
-            });
-        }
-    }
-
     public function isAdmin(): bool
     {
         return in_array(self::ROLE_ADMIN, $this->roles);
@@ -347,7 +312,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->dataPrivacyAccepted && $this->dataPrivacyVersion >= DataPrivacyVoter::DATA_PRIVACY_VERSION;
     }
 
-
     public function getTermsOfUseAccepted(): ?bool
     {
         return $this->termsOfUseAccepted;
@@ -384,17 +348,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = $plainPassword;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getExpirationDate(): \DateTimeImmutable
+    public function getExpirationDate(): DateTimeImmutable
     {
         return $this->expirationDate;
     }
 
-    public function setExpirationDate(\DateTimeImmutable $expirationDate): void
+    public function setExpirationDate(DateTimeImmutable $expirationDate): void
     {
         $this->expirationDate = $expirationDate;
     }
@@ -419,5 +383,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setExpirationNoticeSent(bool $expirationNoticeSent): void
     {
         $this->expirationNoticeSent = $expirationNoticeSent;
+    }
+
+    private function setRole(string $roleToSet, bool $set): void
+    {
+        if ($set) {
+            $this->roles[] = $roleToSet;
+        } else {
+            $this->roles = array_filter($this->roles, function ($role) use ($roleToSet) {
+                return $role !== $roleToSet;
+            });
+        }
     }
 }

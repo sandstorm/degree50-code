@@ -4,6 +4,8 @@ namespace App\Domain\User\Service;
 
 use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -105,7 +107,7 @@ class UserExpirationService
     public function increaseExpirationDateByOneYearForUser(User $user): void
     {
         $oldExpirationDate = $user->getExpirationDate();
-        $newExpirationDate = $oldExpirationDate->add(\DateInterval::createFromDateString('1 year'));
+        $newExpirationDate = $oldExpirationDate->add(DateInterval::createFromDateString('1 year'));
 
         $user->setExpirationDate($newExpirationDate);
         $user->setExpirationNoticeSent(false);
@@ -120,8 +122,8 @@ class UserExpirationService
      */
     public function userCanUpdateExpirationDate(User $user): bool
     {
-        $expirationNotificationWindowStart = (new \DateTimeImmutable())
-            ->add(\DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
+        $expirationNotificationWindowStart = (new DateTimeImmutable())
+            ->add(DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
 
         // For example: Expiration date is smaller than "6 month from now".
         return $user->getExpirationDate() < $expirationNotificationWindowStart;

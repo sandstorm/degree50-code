@@ -25,6 +25,7 @@ use App\Domain\User\Model\User;
 use App\LiveSync\LiveSyncService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -300,7 +301,7 @@ class ExercisePhaseController extends AbstractController
             ExercisePhaseType::VIDEO_CUT => new VideoCutPhase(),
             ExercisePhaseType::REFLEXION => new ReflexionPhase(),
             ExercisePhaseType::MATERIAL => new MaterialPhase(),
-            default => throw new \InvalidArgumentException(
+            default => throw new InvalidArgumentException(
                 "ExercisePhaseType has to be one of ["
                 . implode(', ', ExercisePhaseType::getPossibleValues()) .
                 "]! '$type' given."

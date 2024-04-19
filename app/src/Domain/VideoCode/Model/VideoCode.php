@@ -10,31 +10,21 @@ use Doctrine\ORM\Mapping as ORM;
 // NOTE:
 // This actually what we call a 'VideoCodePrototype' not an actual 'videoCode'!!!
 // The naming was very misleading in the past. It might make sense to
-// change the schema in the future. (I am just currently in the middle of
-// a rather big refactoring and don't know how to easily change the schema and
-// migrate existing data)
+// change the schema in the future.
 
-/**
- * @ORM\Entity(repositoryClass=VideoCodeRepository::class)
- */
+ #[ORM\Entity(repositoryClass: VideoCodeRepository::class)]
 class VideoCode
 {
     use IdentityTrait;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: "string", length: 255)]
     private string $name = '';
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase", inversedBy="videoCodes")
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase", inversedBy: "videoCodes")]
+    #[ORM\JoinColumn(nullable: true)]
     private ?VideoAnalysisPhase $exercisePhase;
 
-    /**
-     * @ORM\Column(type="string", length=7)
-     */
+    #[ORM\Column(type: "string", length: 7)]
     private string $color = '';
 
     public function __construct($id = null)

@@ -3,6 +3,8 @@
 namespace App\Domain\User\Repository;
 
 use App\Domain\User\Model\User;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -48,7 +50,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function findAllExpiredUsers(): array
     {
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         return $this->createQueryBuilder('user')
             ->where('user.expirationDate < :now')
             ->setParameter('now', $now->format(User::DB_DATE_FORMAT))
@@ -63,9 +65,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         // we calculate the verification deadline by subtracting the timeout duration from the current date
         // Example: createdAt < now - 5 days
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $verificationDeadline = $now
-            ->sub(\DateInterval::createFromDateString(User::VERIFICATION_TIMEOUT_DURATION_STRING));
+            ->sub(DateInterval::createFromDateString(User::VERIFICATION_TIMEOUT_DURATION_STRING));
 
         // expiration_date - notice_duration < now
         return $this->createQueryBuilder('user')
@@ -81,9 +83,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function findAllUnNotifiedSoonToBeExpiredUsers(): array
     {
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $notificationTimeWindowStart = $now
-            ->add(\DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
+            ->add(DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
 
         // expiration_date - notice_duration < now
         return $this->createQueryBuilder('user')

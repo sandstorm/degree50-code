@@ -8,32 +8,20 @@ use App\Domain\Video\Model\Video;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ApiResource()
- * @ORM\Entity(repositoryClass="App\Domain\Solution\Repository\SolutionRepository")
- */
+ #[ORM\Entity(repositoryClass: "App\Domain\Solution\Repository\SolutionRepository")]
 class Solution
 {
     use IdentityTrait;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: "json")]
     private array $solution;
 
-    /**
-     * @ORM\Column(type="datetimetz_immutable")
-     */
+    #[ORM\Column(type: "datetimetz_immutable")]
     private DateTimeImmutable $update_timestamp;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Domain\Video\Video", cascade={"remove"})
-     */
+    #[ORM\OneToOne(targetEntity: "App\Domain\Video\Video", cascade: ["remove"])]
     private ?Video $cutVideo = null;
 
-    /**
-     * Solution constructor.
-     */
     public function __construct(string $id = null, string $initialMaterial = null)
     {
         $solutionPrototype = [

@@ -9,16 +9,15 @@ trait IdentityTrait
 {
     /**
      * The entity Id
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\Column(type="guid")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "NONE")]
+    #[ORM\Column(type: "guid")]
     private string $id;
 
-    private function generateOrSetId(?string $id = null): void
+    public function __construct(?string $id = null)
     {
-        $this->id = $id ?: Uuid::uuid4()->toString();
+        $this->generateOrSetId($id);
     }
 
     public function getId(): ?string
@@ -26,8 +25,8 @@ trait IdentityTrait
         return $this->id;
     }
 
-    public function __construct(?string $id = null)
+    private function generateOrSetId(?string $id = null): void
     {
-        $this->generateOrSetId($id);
+        $this->id = $id ?: Uuid::uuid4()->toString();
     }
 }

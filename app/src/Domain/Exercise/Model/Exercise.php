@@ -12,11 +12,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * TODO: life cycle callbacks?
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Entity
- */
+ // TODO: life cycle callbacks?
+#[ORM\HasLifecycleCallbacks()]
+#[ORM\Entity]
 class Exercise
 {
     use IdentityTrait;
@@ -27,49 +25,42 @@ class Exercise
     const int EXERCISE_PUBLISHED = 2;
 
     /**
-     * @ORM\Column
      * @Assert\NotBlank
      */
+    #[ORM\Column]
     public string $name = '';
 
     /**
-     * @ORM\Column(type="text")
      * @Assert\NotBlank
      * NOTE: the assertion is currently necessary as a validation workaround for our CKEditor-Formtype
      */
+    #[ORM\Column(type: "text")]
     public string $description = '';
 
     /**
      * @var Collection<ExercisePhase>
-     *
-     * @ORM\OneToMany(targetEntity="ExercisePhase", mappedBy="belongsToExercise", cascade={"all"})
-     * @ORM\OrderBy({"sorting" = "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: "ExercisePhase", mappedBy: "belongsToExercise", cascade: ["all"])]
+    #[ORM\OrderBy(["sorting" => "ASC"])]
     private Collection $phases;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Account\Course", inversedBy="exercises")
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Domain\Account\Course", inversedBy: "exercises")]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Course $course;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="createdExercises")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdExercises")]
+    #[ORM\JoinColumn(nullable: false)]
     private User $creator;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetimetz_immutable")
-     */
+    #[ORM\Column(name: "created_at", type: "datetimetz_immutable")]
     private ?DateTimeImmutable $createdAt;
 
     /**
      * 0 = created
      * 1 = finished
      * 2 = published
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: "integer")]
     private int $status = self::EXERCISE_CREATED;
 
     public function __construct(string $id = null)
@@ -78,9 +69,7 @@ class Exercise
         $this->generateOrSetId($id);
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
         $this->createdAt = new DateTimeImmutable();

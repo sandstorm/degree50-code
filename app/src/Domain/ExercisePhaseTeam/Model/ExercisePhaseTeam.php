@@ -6,6 +6,7 @@ use App\Domain\AutosavedSolution\Model\AutosavedSolution;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\ExercisePhaseStatus;
+use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
 use DateTimeImmutable;
@@ -13,66 +14,44 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository")
- */
+#[ORM\Entity(repositoryClass: ExercisePhaseTeamRepository::class)]
 class ExercisePhaseTeam
 {
     use IdentityTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Exercise\ExercisePhase", inversedBy="teams")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: ExercisePhase::class, inversedBy: "teams")]
+    #[ORM\JoinColumn(nullable: false)]
     private ExercisePhase $exercisePhase;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Domain\Exercise\Solution", cascade={"remove"})
-     */
+    #[ORM\OneToOne(targetEntity: Solution::class, cascade: ["remove"])]
     private ?Solution $solution = null;
 
     /**
      * @var Collection<User>
-     *
-     * @ORM\ManyToMany(targetEntity="App\Domain\User")
      */
+    #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $members;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\User")
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $currentEditor;
 
     /**
      * @var Collection<AutosavedSolution>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Exercise\AutosavedSolution", mappedBy="team", orphanRemoval=true, cascade={"remove"})
      */
+    #[ORM\OneToMany(targetEntity: AutosavedSolution::class, mappedBy: "team", cascade: ["remove"], orphanRemoval: true)]
     private Collection $autosavedSolutions;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\User")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private User $creator;
 
-    /**
-     * @var ExercisePhaseStatus
-     *
-     * @ORM\Column(type="string", enumType=ExercisePhaseStatus::class)
-     */
+    #[ORM\Column(type: "string", enumType: ExercisePhaseStatus::class)]
     private ExercisePhaseStatus $status = ExercisePhaseStatus::IN_BEARBEITUNG;
 
-    /**
-     * @ORM\Column(name="phase_last_opened_at", type="datetimetz_immutable", nullable=true)
-     */
+    #[ORM\Column(name: "phase_last_opened_at", type: "datetimetz_immutable", nullable: true)]
     private ?DateTimeImmutable $phaseLastOpenedAt = null;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $isTest = false;
 
     public function __construct(?string $id = null)

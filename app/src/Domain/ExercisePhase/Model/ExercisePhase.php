@@ -24,9 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * If "otherSolutionsAreAccessible" it is possible for "studierende" to display the solutions
  * of other "studierende" for the phase.
  *
- * @ORM\Entity
  * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name="phaseType", type="string")
+ * @DiscriminatorColumn(name: "phaseType", type="string")
  * @DiscriminatorMap({
  *     "videoAnalysisPhase" = "App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase",
  *     "videoCutPhase" = "App\Domain\Exercise\ExercisePhaseTypes\VideoCutPhase",
@@ -34,77 +33,63 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "materialPhase" = "App\Domain\Exercise\ExercisePhaseTypes\MaterialPhase",
  * })
  */
+#[ORM\Entity]
 abstract class ExercisePhase
 {
     use IdentityTrait;
 
-    const type = null;
+    // TODO: maybe just a getter?
+    const ?ExercisePhaseType type = null;
 
     // components for phases
+    // TODO: maybe use an enum?
     const string VIDEO_CODE = 'videoCode';
     const string VIDEO_CUTTING = 'videoCutting';
     const string VIDEO_ANNOTATION = 'videoAnnotation';
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     public bool $isGroupPhase = false;
 
     /**
-     * @ORM\Column
      * @Assert\NotBlank
      */
+    #[ORM\Column]
     public string $name = '';
 
-    /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
+    #[ORM\Column(type: "text")]
     public string $task = '';
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Exercise", inversedBy="phases")
-     */
+    #[ORM\ManyToOne(targetEntity: Exercise::class, inversedBy: "phases")]
     public Exercise $belongsToExercise;
 
-    /**
-     * @ORM\Column
-     */
+    #[ORM\Column]
     public int $sorting;
 
     /**
      * @var Collection<ExercisePhaseTeam>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Exercise\ExercisePhaseTeam", mappedBy="exercisePhase", cascade={"all"})
      */
+    #[ORM\OneToMany(targetEntity: ExercisePhaseTeam::class, mappedBy: "exercisePhase", cascade: ["all"])]
     private Collection $teams;
 
     /**
      * @var Collection<Attachment>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Exercise\Attachment", mappedBy="exercisePhase", cascade={"all"})
-     * @ORM\OrderBy({"uploadAt" = "DESC"})
      */
-    private Collection $attachment;
+    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: "exercisePhase", cascade: ["all"])]
+    #[ORM\OrderBy(["uploadAt" => "DESC"])]
+    private Collection $attachments;
 
     /**
      * @var Collection<Video>
-     *
-     * @ORM\ManyToMany(targetEntity="App\Domain\Video\Video", inversedBy="exercisePhases")
      */
+    #[ORM\ManyToMany(targetEntity: Video::class, inversedBy: "exercisePhases")]
     private Collection $videos;
 
-    /**
-     * @var ExercisePhase|null
-     *
-     * @ORM\ManyToOne(targetEntity="ExercisePhase")
-     * @ORM\JoinColumn(referencedColumnName="id", nullable=true, onDelete="SET NULL")
-     */
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(referencedColumnName: "id", nullable: true, onDelete: "SET NULL")]
     private ?ExercisePhase $dependsOnExercisePhase = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $otherSolutionsAreAccessible = false;
 
     /**
@@ -116,7 +101,7 @@ abstract class ExercisePhase
     {
         $this->generateOrSetId($id);
         $this->teams = new ArrayCollection();
-        $this->attachment = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->phasesDependentOnThis = new ArrayCollection();
         $this->isGroupPhase = false;
@@ -227,26 +212,26 @@ abstract class ExercisePhase
 
     public function addAttachment(Attachment $attachment): self
     {
-        $this->attachment->add($attachment);
+        $this->attachments->add($attachment);
         $attachment->setExercisePhase($this);
         return $this;
     }
 
     public function removeAttachment(Attachment $attachment): void
     {
-        $this->attachment->removeElement($attachment);
+        $this->attachments->removeElement($attachment);
     }
 
     /**
-     * @return Attachment[]
+     * @return Collection<Attachment>
      */
-    public function getAttachment(): Collection
+    public function getAttachments(): Collection
     {
-        return $this->attachment;
+        return $this->attachments;
     }
 
     /**
-     * @return Video[]
+     * @return Collection<Video>
      */
     public function getVideos(): Collection
     {

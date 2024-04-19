@@ -16,6 +16,7 @@ use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use App\LiveSync\LiveSyncService;
 use App\VideoEncoding\Message\CutListEncodingTask;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -363,7 +364,7 @@ class ExercisePhaseTeamController extends AbstractController
         $serverSideSolutionData = ServerSideSolutionData::fromClientJSON($solutionDataFromJson);
 
         $solution->setSolution($serverSideSolutionData);
-        $solution->setUpdateTimestamp(new \DateTimeImmutable());
+        $solution->setUpdateTimestamp(new DateTimeImmutable());
 
         $this->entityManager->persist($solution);
         $this->entityManager->flush();

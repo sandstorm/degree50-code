@@ -13,45 +13,34 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * Attachment
  *
- * @ORM\Entity(repositoryClass="App\Domain\Attachment\Repository\AttachmentRepository")
- * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
  */
+//TODO: what are lifecycle callbacks?
+#[ORM\Entity(repositoryClass: "App\Domain\Attachment\Repository\AttachmentRepository")]
+#[ORM\HasLifecycleCallbacks()]
 class Attachment
 {
     use IdentityTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
+    #[ORM\Column(name: "name", type: "string", length: 255)]
     private string $name = "";
 
-    /**
-     * @ORM\Embedded(class=VirtualizedFile::class)
-     */
+    #[ORM\Embedded(class: VirtualizedFile::class)]
     private ?VirtualizedFile $uploadedFile;
 
-    /**
-     * @ORM\Column(name="mime_type", type="string", length=255)
-     */
+    #[ORM\Column(name: "mime_type", type: "string", length: 255)]
     private string $mimeType;
 
-    /**
-     * @ORM\Column(name="upload_at", type="datetimetz_immutable")
-     */
+    #[ORM\Column(name: "upload_at", type: "datetimetz_immutable")]
     private ?DateTimeImmutable $uploadAt;
 
-    /**
-     * // TODO: inversedBy="createdVideos" -- is this a bug?
-     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="createdVideos")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    // TODO: inversedBy="createdVideos" -- is this a bug?
+    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdVideos")]
     private User $creator;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="ExercisePhase", inversedBy="attachment")
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: "ExercisePhase", inversedBy: "attachment")]
+    #[ORM\JoinColumn(nullable: true)]
     private ?ExercisePhase $exercisePhase;
 
     /**
@@ -62,21 +51,18 @@ class Attachment
         $this->generateOrSetId($id);
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * TODO: used?
-     * @ORM\PrePersist
-     */
+    // TODO: used?
+    #[ORM\PrePersist]
     public function setUploadedAtValue(): void
     {
         $this->uploadAt = new DateTimeImmutable();
@@ -87,24 +73,24 @@ class Attachment
         return $this->uploadAt;
     }
 
-    public function setExercisePhase(?ExercisePhase $exercisePhase): void
-    {
-        $this->exercisePhase = $exercisePhase;
-    }
-
     public function getExercisePhase(): ?ExercisePhase
     {
         return $this->exercisePhase;
     }
 
-    public function setMimeType(string $mimeType): void
+    public function setExercisePhase(?ExercisePhase $exercisePhase): void
     {
-        $this->mimeType = $mimeType;
+        $this->exercisePhase = $exercisePhase;
     }
 
     public function getMimeType(): string
     {
         return $this->mimeType;
+    }
+
+    public function setMimeType(string $mimeType): void
+    {
+        $this->mimeType = $mimeType;
     }
 
     public function getCreator(): User

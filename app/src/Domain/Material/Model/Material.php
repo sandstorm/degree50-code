@@ -8,39 +8,25 @@ use App\Domain\User\Model\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Material\Repository\MaterialRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Domain\Material\Repository\MaterialRepository")]
 class Material
 {
     use IdentityTrait;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: "text", nullable: true)]
     private string $material;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\User", inversedBy="materials")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "materials")]
+    #[ORM\JoinColumn(nullable: false)]
     private User $owner;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetimetz_immutable")
-     */
+    #[ORM\Column(name: "created_at", type: "datetimetz_immutable")]
     private ?DateTimeImmutable $createdAt;
 
-    /**
-     * @ORM\Column(name="last_updated_at", type="datetimetz_immutable", nullable=true)
-     */
+    #[ORM\Column(name: "last_updated_at", type: "datetimetz_immutable", nullable: true)]
     private ?DateTimeImmutable $lastUpdatedAt = null;
 
-    /**
-     * @var ExercisePhaseTeam|null
-     *
-     * @ORM\ManyToOne(targetEntity="App\Domain\Exercise\ExercisePhaseTeam")
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Domain\Exercise\ExercisePhaseTeam")]
     private ?ExercisePhaseTeam $originalPhaseTeam;
 
     public function __construct(string $id = null)

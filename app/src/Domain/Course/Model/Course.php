@@ -13,51 +13,42 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Course\Repository\CourseRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Domain\Course\Repository\CourseRepository")]
 class Course
 {
     use IdentityTrait;
 
     /**
-     * @var string
-     *
-     * @ORM\Column
      * @Assert\NotBlank
      */
+    #[ORM\Column]
     public string $name = '';
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(type="datetime")
      * @Assert\NotBlank
      */
+    #[ORM\Column(type: "datetime")]
     public DateTime $creationDate;
 
     /**
      * @var Collection<Exercise>
-     * @ORM\OneToMany(targetEntity="App\Domain\Exercise\Exercise", mappedBy="course", orphanRemoval=true)
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Exercise\Exercise", mappedBy: "course", orphanRemoval: true)]
     private Collection $exercises;
 
     /**
      * @var Collection<CourseRole>
-     * @ORM\OneToMany(targetEntity="App\Domain\Account\CourseRole", mappedBy="course", cascade={"all"}, orphanRemoval=true)
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Account\CourseRole", mappedBy: "course", cascade: ["all"], orphanRemoval: true)]
     private Collection $courseRoles;
 
     /**
      * @var Collection<Video>
-     * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="courses")
      */
+    #[ORM\ManyToMany(targetEntity: Video::class, mappedBy: "courses")]
     private Collection $videos;
 
-    /**
-     * @var Fachbereich | null
-     * @ORM\ManyToOne(targetEntity=Fachbereich::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Fachbereich::class)]
     private ?Fachbereich $fachbereich;
 
     public function __construct($id = null)

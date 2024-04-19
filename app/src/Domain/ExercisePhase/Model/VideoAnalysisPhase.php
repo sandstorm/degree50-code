@@ -7,29 +7,22 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Domain\ExercisePhase\Repository\ExercisePhaseRepository")]
 class VideoAnalysisPhase extends ExercisePhase
 {
-    const type = ExercisePhaseType::VIDEO_ANALYSIS;
+    const ?ExercisePhaseType type = ExercisePhaseType::VIDEO_ANALYSIS;
 
     /**
      * @var Collection<VideoCode>
-     *
-     * @ORM\OneToMany(targetEntity="App\Domain\Exercise\VideoCode", mappedBy="exercisePhase", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"name" = "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: "App\Domain\Exercise\VideoCode", mappedBy: "exercisePhase", cascade: ["persist", "remove"])]
+    #[ORM\OrderBy(["name" => "ASC"])]
     private Collection $videoCodes;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $videoAnnotationsActive = true;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private bool $videoCodesActive = false;
 
     public function __construct(string $id = null)
@@ -40,7 +33,7 @@ class VideoAnalysisPhase extends ExercisePhase
     }
 
     /**
-     * @return VideoCode[]
+     * @return Collection<VideoCode>
      */
     public function getVideoCodes(): Collection
     {

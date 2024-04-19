@@ -7,6 +7,7 @@ use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -91,7 +92,7 @@ class RegistrationController extends AbstractController
         try {
             if (!$user) {
                 $id = $request->get('id');
-                throw new \Exception("User with '$id' not found!");
+                throw new Exception("User with '$id' not found!");
             }
 
             // validate email confirmation link, sets User::isVerified = true
@@ -103,7 +104,7 @@ class RegistrationController extends AbstractController
             );
             return $this->redirectToRoute('app');
 
-        } catch (VerifyEmailExceptionInterface|\Exception $e) {
+        } catch (VerifyEmailExceptionInterface|Exception $e) {
             // Show generic error
             $this->addFlash(
                 'danger',
