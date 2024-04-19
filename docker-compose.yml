@@ -6,6 +6,13 @@ services:
     entrypoint: sleep 1000000
     environment:
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-setup
+      LOCAL_DEVELOPMENT: 1
+      APP_ENV: "dev"
+      JWT_KEY: changeme-setup
+    depends_on:
+      - db
+      - redis
+      - mailpit
     volumes:
       - ./app:/app:rw,cached
 
@@ -21,6 +28,8 @@ services:
       - 443:443
     depends_on:
       - db
+      - redis
+      - mailpit
     environment:
       # TODO move in .env files
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-dev
@@ -48,7 +57,7 @@ services:
       - 8002:8900
 
   db:
-    image: mariadb:11.3.2
+    image: mariadb:10.11.7
     ports:
       - 13306:3306
     environment:

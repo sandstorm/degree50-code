@@ -87,7 +87,7 @@ services:
   #####
   # DB
   db:
-    image: mariadb:11.3.2
+    image: mariadb:10.11.7
     restart: always
     ports:
       # MySQL will only be exposed to LOCALHOST, so it can be accessed via SSH tunnel
