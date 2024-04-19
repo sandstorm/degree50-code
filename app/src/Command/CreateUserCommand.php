@@ -49,7 +49,6 @@ class CreateUserCommand extends Command
         ));
         $user->setIsAdmin($isAdmin);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 

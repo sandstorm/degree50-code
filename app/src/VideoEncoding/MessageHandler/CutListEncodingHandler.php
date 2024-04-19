@@ -117,11 +117,6 @@ class CutListEncodingHandler implements MessageHandlerInterface
 
             $cutVideo->setEncodingStatus(Video::ENCODING_FINISHED);
 
-            $this->eventStore->addEvent('VideoEncodedCompletely', [
-                'videoId' => $cutVideo->getId(),
-                'encodedVideoDirectory' => $outputDirectory->getVirtualPathAndFilename(),
-            ]);
-
             $this->entityManager->persist($cutVideo);
             $this->entityManager->persist($solution);
             $this->entityManager->flush();

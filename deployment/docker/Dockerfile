@@ -85,8 +85,8 @@ COPY app/.env.test ./
 
 COPY app/bin bin/
 COPY app/config config/
-COPY app/events events/
 COPY app/public public/
+COPY app/migrations migrations/
 COPY app/src src/
 COPY app/templates templates/
 COPY app/translations translations/

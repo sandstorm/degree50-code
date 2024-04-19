@@ -48,7 +48,6 @@ class SetAdminCommand extends Command
 
         $user->setIsAdmin(true);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
