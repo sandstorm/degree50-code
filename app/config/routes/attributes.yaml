@@ -23,7 +23,7 @@ controllers_easy-admin:
     type: attribute
     
 controllers_domain:
-    resource: ../../src/Domain/*/Controller/
+    resource: ../../src/Domain/**/Controller/*
     type: attribute
 
 kernel:
