@@ -3,6 +3,7 @@
 namespace App\Domain\Video\Repository;
 
 use App\Domain\Course\Model\Course;
+use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -31,7 +32,7 @@ class VideoRepository extends ServiceEntityRepository
         // and check if the video is actually a cut video on the solution and if so, filter it out.
         return $qb
             ->leftJoin(
-                'App\Domain\Exercise\Solution',
+                Solution::class,
                 'solution',
                 Join::WITH,
                 'v.id = solution.cutVideo'

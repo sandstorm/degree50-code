@@ -6,7 +6,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Domain\User
+                class: App\Domain\User\Model\User
                 property: email
     
     password_hashers:
@@ -29,20 +29,21 @@ security:
                 identifier_attribute: mail
                 check_path: saml_acs
                 login_path: saml_login
-                failure_path: /login
+                failure_path: app_login
                 always_use_default_target_path: true
                 user_factory: saml_user_factory
                 persist_user: true
 
             form_login:
-                login_path: /login
-                check_path: /login_check
+                username_parameter: email
+                password_parameter: password
+                login_path: app_login
+                check_path: app_login
                 always_use_default_target_path: true
             logout:
                 # this URL must match the `app_logout` route.
                 # DO NOT CHANGE THE URL, as the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
-                # TODO: configure this in authentication controller see: https://symfony.com/doc/6.4/security.html#form-login
-                path: saml_logout
+                path: /saml/logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

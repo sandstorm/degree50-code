@@ -3,23 +3,17 @@
 namespace App\Security;
 
 use App\Domain\User\Model\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
 use Twig\Environment;
 
 class AccessDeniedHandler implements AccessDeniedHandlerInterface
 {
-    /**
-     * AccessDeniedHandler constructor.
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param Security $security
-     * @param Environment $twig
-     */
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly Security              $security,
