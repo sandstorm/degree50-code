@@ -18,15 +18,11 @@ class Course
 {
     use IdentityTrait;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     #[ORM\Column]
     public string $name = '';
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     #[ORM\Column(type: "datetime")]
     public DateTime $creationDate;
 

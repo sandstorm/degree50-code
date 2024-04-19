@@ -17,10 +17,8 @@ class CourseRole
     const string STUDENT = 'STUDENT';
     const array ROLES = [self::DOZENT, self::STUDENT];
 
-    /**
-     * @Assert\NotBlank
-     * @Assert\Choice(choices=CourseRole::ROLES)
-     */
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: CourseRole::ROLES)]
     #[ORM\Column]
     public string $name = '';
 

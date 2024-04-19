@@ -50,9 +50,7 @@ abstract class ExercisePhase
     #[ORM\Column(type: "boolean")]
     public bool $isGroupPhase = false;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     #[ORM\Column]
     public string $name = '';
 

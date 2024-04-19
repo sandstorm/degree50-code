@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
- // TODO: life cycle callbacks?
+// TODO: life cycle callbacks?
 #[ORM\HasLifecycleCallbacks()]
 #[ORM\Entity]
 class Exercise
@@ -24,16 +24,14 @@ class Exercise
     const int EXERCISE_FINISHED = 1;
     const int EXERCISE_PUBLISHED = 2;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     #[ORM\Column]
     public string $name = '';
 
     /**
-     * @Assert\NotBlank
      * NOTE: the assertion is currently necessary as a validation workaround for our CKEditor-Formtype
      */
+    #[Assert\NotBlank]
     #[ORM\Column(type: "text")]
     public string $description = '';
 
