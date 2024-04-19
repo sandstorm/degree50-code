@@ -17,7 +17,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthenticationController extends AbstractController
 {
     public function __construct(
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly EntityManagerInterface $entityManager
     )
     {
@@ -71,11 +70,6 @@ class AuthenticationController extends AbstractController
         $user = $this->getUser();
 
         if ($accepted) {
-            $this->eventStore->addEvent('DataPrivacyAccepted', [
-                'userId' => $user->getId(),
-                'data_privacy_version' => DataPrivacyVoter::DATA_PRIVACY_VERSION,
-            ]);
-
             $user->setDataPrivacyAccepted(true);
             $user->setDataPrivacyVersion(DataPrivacyVoter::DATA_PRIVACY_VERSION);
 
@@ -99,11 +93,6 @@ class AuthenticationController extends AbstractController
         $user = $this->getUser();
 
         if ($accepted) {
-            $this->eventStore->addEvent('TermsOfUseAccepted', [
-                'userId' => $user->getId(),
-                'terms_of_use_version' => TermsOfUseVoter::TERMS_OF_USE_VERSION,
-            ]);
-
             $user->setTermsOfUseAccepted(true);
             $user->setTermsOfUseVersion(TermsOfUseVoter::TERMS_OF_USE_VERSION);
 

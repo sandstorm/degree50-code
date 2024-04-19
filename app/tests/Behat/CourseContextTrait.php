@@ -4,11 +4,7 @@ namespace App\Tests\Behat;
 
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
-use App\Domain\User\Model\User;
 
-/**
- *
- */
 trait CourseContextTrait
 {
 
@@ -31,7 +27,6 @@ trait CourseContextTrait
         $course->addCourseRole($courseRole);
 
         $this->entityManager->persist($course);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -50,7 +45,6 @@ trait CourseContextTrait
             $course->setName($courseId);
 
             $this->entityManager->persist($course);
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         }
 

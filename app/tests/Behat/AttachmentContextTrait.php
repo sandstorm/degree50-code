@@ -5,15 +5,12 @@ namespace App\Tests\Behat;
 use App\Domain\Attachment\Model\Attachment;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 
-/**
- *
- */
 trait AttachmentContextTrait
 {
     /**
      * @Given I have an attachment with ID :attachmentId
      */
-    public function iHaveAnAttachmentWithId($attachmentId)
+    public function iHaveAnAttachmentWithId($attachmentId): void
     {
         $attachment = new Attachment($attachmentId);
         $fileName = tempnam(sys_get_temp_dir(), 'foo');
@@ -25,14 +22,13 @@ trait AttachmentContextTrait
         $attachment->setCreator($user);
 
         $this->entityManager->persist($attachment);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given An Attachment with Id :attachmentId created by User :username exists for ExercisePhase :exercisePhaseId
      */
-    public function ensureAttachmentByUserExistsInExercisePhase($attachmentId, $username, $exercisePhaseId)
+    public function ensureAttachmentByUserExistsInExercisePhase($attachmentId, $username, $exercisePhaseId): void
     {
         $user = $this->getUserByEmail($username);
         /** @var ExercisePhase $exercisePhase */
@@ -54,7 +50,6 @@ trait AttachmentContextTrait
         $this->entityManager->persist($exercisePhase);
         $this->entityManager->persist($attachment);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 }

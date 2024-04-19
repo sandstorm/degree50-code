@@ -17,7 +17,6 @@ class EmailVerifier
         private readonly VerifyEmailHelperInterface $verifyEmailHelper,
         private readonly MailerInterface $mailer,
         private readonly EntityManagerInterface $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly TranslatorInterface $translator,
     )
     {
@@ -59,10 +58,6 @@ class EmailVerifier
         $user->setIsVerified(true);
 
         $this->entityManager->persist($user);
-
-        $this->eventStore->addEvent('UserVerified', [
-            'userId' => $user->getId(),
-        ]);
 
         $this->entityManager->flush();
     }

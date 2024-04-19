@@ -22,7 +22,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function __construct(
         ManagerRegistry $registry,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly EntityManagerInterface $entityManager
     )
     {
@@ -39,7 +38,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         $user->setPassword($newHashedPassword);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }

@@ -43,7 +43,6 @@ class VideoUploadController extends AbstractController
 {
     public function __construct(
         private readonly TranslatorInterface          $translator,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly MessageBusInterface          $messageBus,
         private readonly VideoRepository              $videoRepository,
         private readonly VideoService                 $videoService,
@@ -96,12 +95,6 @@ class VideoUploadController extends AbstractController
             $video = $form->getData();
             assert($video instanceof Video);
 
-            $this->eventStore->addEvent('VideoNameAndDescriptionAdded', [
-                'videoId' => $video->getId(),
-                'title' => $video->getTitle(),
-                'description' => $video->getDescription() ?: '',
-            ]);
-
             // dispatch event to start encoding when form is submitted
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
             $this->messageBus->dispatch(new WebEncodingTask($video->getId(), $outputDirectory));
@@ -137,12 +130,6 @@ class VideoUploadController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $video = $form->getData();
             assert($video instanceof Video);
-
-            $this->eventStore->addEvent('VideoNameAndDescriptionUpdated', [
-                'videoId' => $video->getId(),
-                'title' => $video->getTitle(),
-                'description' => $video->getDescription() ?: '',
-            ]);
 
             $this->entityManager->persist($video);
             $this->entityManager->flush();

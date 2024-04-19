@@ -22,8 +22,6 @@ use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
 use App\Domain\Solution\Model\Solution;
 use App\Domain\Solution\Service\SolutionService;
 use App\Domain\User\Model\User;
-use App\Domain\Video\Model\Video;
-use App\Domain\VideoCode\Model\VideoCode;
 use App\LiveSync\LiveSyncService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -46,7 +44,6 @@ class ExercisePhaseController extends AbstractController
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly LiveSyncService $liveSyncService,
         private readonly RouterInterface $router,
         private readonly ExercisePhaseRepository $exercisePhaseRepository,
@@ -195,8 +192,6 @@ class ExercisePhaseController extends AbstractController
             $exercisePhaseTeam->setCurrentEditor($user);
         }
 
-        $this->eventStore->disableEventPublishingForNextFlush();
-
         if (!$exercisePhaseTeam->getSolution()) {
             $this->initNewSolution($exercisePhase, $exercisePhaseTeam);
         }
@@ -207,8 +202,6 @@ class ExercisePhaseController extends AbstractController
 
     private function initNewSolution(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): void
     {
-        $this->eventStore->disableEventPublishingForNextFlush();
-
         // NOTE:
         // It would be preferable to use a match expression here.
         // However we would then not be able to use the @var comment with the type
@@ -259,7 +252,6 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseTeam $exercisePhaseTeam
     ): Response
     {
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->remove($exercisePhaseTeam);
         $this->entityManager->flush();
 
@@ -343,11 +335,6 @@ class ExercisePhaseController extends AbstractController
                 : 0
         );
 
-        $this->eventStore->addEvent('ExercisePhaseCreated', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'type' => $type
-        ]);
-
         $this->entityManager->persist($exercisePhase);
         $this->entityManager->flush();
 
@@ -391,8 +378,6 @@ class ExercisePhaseController extends AbstractController
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $form->getData();
 
-        $this->addExercisePhaseEditedEvent($exercisePhase);
-
         if ($this->hasInvalidPreviousPhase($exercisePhase)) {
             $this->addFlash(
                 'danger',
@@ -418,85 +403,6 @@ class ExercisePhaseController extends AbstractController
         }
 
         return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
-    }
-
-    private function addExercisePhaseEditedEvent(ExercisePhase $phase): void
-    {
-        switch ($phase->getType()) {
-            case ExercisePhaseType::VIDEO_ANALYSIS:
-                /** @var VideoAnalysisPhase $phase */
-                $this->addVideoAnalyseExercisePhaseEditedEvent($phase);
-                break;
-            case ExercisePhaseType::VIDEO_CUT:
-                /** @var VideoCutPhase $phase */
-                $this->addVideoCutExercisePhaseEditedEvent($phase);
-                break;
-            case ExercisePhaseType::REFLEXION:
-                /** @var ReflexionPhase $phase */
-                $this->addReflexionExercisePhaseEditedEvent($phase);
-                break;
-            case ExercisePhaseType::MATERIAL:
-                /** @var MaterialPhase $phase */
-                $this->addMaterialExercisePhaseEditedEvent($phase);
-                break;
-        }
-    }
-
-    private function addVideoAnalyseExercisePhaseEditedEvent(VideoAnalysisPhase $phase): void
-    {
-        $this->eventStore->addEvent('VideoAnalyseExercisePhaseEdited', [
-            'exercisePhaseId' => $phase->getId(),
-            'name' => $phase->getName(),
-            'task' => $phase->getTask(),
-            'isGroupPhase' => $phase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'videos' => $phase->getVideos()->map(fn(Video $video) => [
-                'videoId' => $video->getId()
-            ])->toArray(),
-            'videoCodes' => $phase->getVideoCodes()->map(fn(VideoCode $videoCode) => [
-                'videoCodeId' => $videoCode->getId()
-            ])->toArray(),
-            'components' => []
-        ]);
-    }
-
-    private function addVideoCutExercisePhaseEditedEvent(VideoCutPhase $phase): void
-    {
-        $this->eventStore->addEvent('VideoCutExercisePhaseEdited', [
-            'exercisePhaseId' => $phase->getId(),
-            'name' => $phase->getName(),
-            'task' => $phase->getTask(),
-            'isGroupPhase' => $phase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'videos' => $phase->getVideos()->map(fn(Video $video) => [
-                'videoId' => $video->getId()
-            ])->toArray(),
-            'components' => []
-        ]);
-    }
-
-    private function addReflexionExercisePhaseEditedEvent(ReflexionPhase $phase): void
-    {
-        $this->eventStore->addEvent('ReflexionExercisePhaseEdited', [
-            'exercisePhaseId' => $phase->getId(),
-            'name' => $phase->getName(),
-            'task' => $phase->getTask(),
-            'isGroupPhase' => $phase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'components' => []
-        ]);
-    }
-
-    private function addMaterialExercisePhaseEditedEvent(MaterialPhase $phase): void
-    {
-        $this->eventStore->addEvent('MaterialExercisePhaseEdited', [
-            'exercisePhaseId' => $phase->getId(),
-            'name' => $phase->getName(),
-            'task' => $phase->getTask(),
-            'isGroupPhase' => $phase->isGroupPhase(),
-            'dependsOnPreviousPhase' => $phase->getDependsOnExercisePhase() !== null,
-            'components' => []
-        ]);
     }
 
     /**
@@ -568,7 +474,6 @@ class ExercisePhaseController extends AbstractController
         $exercisePhase->setSorting($exercisePhaseAtNewSortIndex->getSorting());
         $exercisePhaseAtNewSortIndex->setSorting($currentSortIndex);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->persist($exercisePhase);
         $this->entityManager->persist($exercisePhaseAtNewSortIndex);
         $this->entityManager->flush();
@@ -590,8 +495,6 @@ class ExercisePhaseController extends AbstractController
         $remainingPhases = $this->exercisePhaseRepository->findAllSortedBySorting($exercise);
 
         foreach ($remainingPhases as $index => $phase) {
-            $this->addExercisePhaseEditedEvent($phase);
-
             $phase->setSorting($index);
             $this->entityManager->persist($phase);
         }

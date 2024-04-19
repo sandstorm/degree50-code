@@ -2,26 +2,22 @@
 
 namespace App\Tests\Behat;
 
-use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
 use App\Domain\Attachment\Model\Attachment;
 use App\Domain\Exercise\Model\Exercise;
-use App\Domain\Exercise\ExercisePhaseTeam;
 use App\Domain\Video\Model\Video;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
-use Behat\Behat\Tester\Exception\PendingException;
+use InvalidArgumentException;
 use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertTrue;
 
-/**
- *
- */
 trait UserContextTrait
 {
     private function createUser(
@@ -53,7 +49,6 @@ trait UserContextTrait
         }
 
         $this->entityManager->persist($user);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
 
         return $user;
@@ -62,7 +57,7 @@ trait UserContextTrait
     /**
      * @Given A user :username exists
      */
-    public function aUserExists(string $username)
+    public function aUserExists(string $username): void
     {
         $user = $this->getUserByEmail($username);
         if (!$user) {
@@ -74,7 +69,7 @@ trait UserContextTrait
     /**
      * @Given A User :username with the role :role exists
      */
-    public function aUserWithTheRoleExists($username, $role)
+    public function aUserWithTheRoleExists($username, $role): void
     {
         // create user if it does not exist
         $this->aUserExists($username);
@@ -85,14 +80,13 @@ trait UserContextTrait
 
         // persist
         $this->entityManager->persist($user);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @When I delete User :username
      */
-    public function iDeleteUser($username)
+    public function iDeleteUser($username): void
     {
         $user = $this->getUserByEmail($username);
         $this->userService->removeUser($user);
@@ -101,7 +95,7 @@ trait UserContextTrait
     /**
      * @Given The User :username has CourseRole :courseRole in Course :courseId
      */
-    public function userHasCourseRole($username, $courseRoleRole, $courseId)
+    public function userHasCourseRole($username, $courseRoleRole, $courseId): void
     {
         if (!in_array($courseRoleRole, CourseRole::ROLES)) {
             throw new InvalidArgumentException(
@@ -126,7 +120,6 @@ trait UserContextTrait
         $this->entityManager->persist($courseRole);
         $this->entityManager->persist($user);
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -153,7 +146,7 @@ trait UserContextTrait
      *
      * TODO: userId vs userName? It's the same string but not the same meaning.
      */
-    public function assertNoCourseRoleOfUserExists($username)
+    public function assertNoCourseRoleOfUserExists($username): void
     {
         /** @var CourseRole[] $allCourseRoles */
         $allCourseRoles = $this->entityManager->getRepository(CourseRole::class)->findAll();
@@ -167,8 +160,9 @@ trait UserContextTrait
     /**
      * @Then The User :username is anonymized and their unused content removed
      */
-    public function assertUserIsAnonymizedAndUnusedContentIsRemoved($username)
+    public function assertUserIsAnonymizedAndUnusedContentIsRemoved($username): void
     {
+        /** @var User $user */
         $user = $this->entityManager->getRepository(User::class)->find($username);
 
         /**
@@ -244,7 +238,6 @@ trait UserContextTrait
         $user = $this->getUserByEmail($username);
         $user->setExpirationDate(new \DateTimeImmutable($relativeTime));
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }
@@ -312,7 +305,6 @@ trait UserContextTrait
         $user->setIsVerified(false);
 
         $this->entityManager->persist($user);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -325,7 +317,6 @@ trait UserContextTrait
         $user->setIsVerified(true);
 
         $this->entityManager->persist($user);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 

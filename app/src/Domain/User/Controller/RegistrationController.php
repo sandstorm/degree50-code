@@ -33,7 +33,6 @@ class RegistrationController extends AbstractController
         Request                      $request,
         UserPasswordHasherInterface  $userPasswordHasher,
         EntityManagerInterface       $entityManager,
-        DoctrineIntegratedEventStore $eventStore,
     ): Response
     {
         $user = new User();
@@ -50,11 +49,6 @@ class RegistrationController extends AbstractController
             );
             // new users are ROLE::STUDENT by default
             $user->setIsStudent(true);
-
-            $eventStore->addEvent('UserRegistered', [
-                'userId' => $user->getId(),
-                'method' => 'RegistrationForm',
-            ]);
 
             $entityManager->persist($user);
             $entityManager->flush();

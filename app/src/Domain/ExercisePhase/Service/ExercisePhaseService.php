@@ -30,7 +30,6 @@ class ExercisePhaseService
 {
     public function __construct(
         private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
         private readonly UserMaterialService          $materialService,
         private readonly AutosavedSolutionRepository  $autoSavedSolutionRepository,
@@ -174,11 +173,6 @@ class ExercisePhaseService
 
                 $newPhase->setBelongsToExercise($newExercise);
 
-                $this->eventStore->addEvent('ExercisePhaseCreated', [
-                    'exercisePhaseId' => $newPhase->getId(),
-                    'type' => $newPhase->getType()->value,
-                ]);
-
                 return $newPhase;
             }
         );
@@ -216,11 +210,6 @@ class ExercisePhaseService
     {
         $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
 
-        $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [
-            'exercisePhaseTeamId' => $phaseTeam->getId(),
-            'status' => ExercisePhaseStatus::BEENDET
-        ]);
-
         $this->entityManager->persist($phaseTeam);
         $this->entityManager->flush();
     }
@@ -247,19 +236,9 @@ class ExercisePhaseService
             && $phaseTeam->getStatus() !== ExercisePhaseStatus::IN_REVIEW
         ) {
             $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
-
-            $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [
-                'exercisePhaseTeamId' => $phaseTeam->getId(),
-                'status' => ExercisePhaseStatus::IN_REVIEW
-            ]);
         } else {
             $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
             $this->materialService->createMaterialsForExercisePhaseTeamMembers($phaseTeam);
-
-            $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [
-                'exercisePhaseTeamId' => $phaseTeam->getId(),
-                'status' => ExercisePhaseStatus::BEENDET
-            ]);
         }
 
         $this->entityManager->flush();
@@ -285,14 +264,6 @@ class ExercisePhaseService
             $solution->setUpdateTimestamp($latestAutoSavedSolution->getUpdateTimestamp());
         }
 
-        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-
-        $this->eventStore->addEvent('SolutionUpdated', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'solutionId' => $solution->getId()
-        ]);
-
         $this->entityManager->persist($solution);
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
@@ -307,10 +278,6 @@ class ExercisePhaseService
         foreach ($autoSavedSolutions as $autoSavedSolution) {
             $this->entityManager->remove($autoSavedSolution);
         }
-
-        $this->eventStore->addEvent('AutoSavedSolutionsRemoved', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-        ]);
 
         $this->entityManager->flush();
     }
@@ -342,11 +309,6 @@ class ExercisePhaseService
             // In that case we want the phase to reflect that, by having the "IN_BEARBEITUNG" status again.
             $exercisePhaseTeam->setStatus(ExercisePhaseStatus::IN_BEARBEITUNG);
             $exercisePhaseTeam->setPhaseLastOpenedAt(new DateTimeImmutable());
-
-            $this->eventStore->addEvent('ExercisePhaseStatusUpdated', [
-                'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-                'status' => ExercisePhaseStatus::IN_BEARBEITUNG
-            ]);
 
             $this->entityManager->persist($exercisePhaseTeam);
             $this->entityManager->flush();
@@ -403,11 +365,6 @@ class ExercisePhaseService
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->setIsTest($testMode);
 
-        $this->eventStore->addEvent('TeamCreated', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
 
@@ -418,21 +375,12 @@ class ExercisePhaseService
     {
         $exercisePhaseTeam->addMember($user);
 
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhaseTeam->getExercisePhase()->getId()
-        ]);
-
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
     }
 
     public function deleteExercisePhase(ExercisePhase $exercisePhase): void
     {
-        $this->eventStore->addEvent('ExercisePhaseDeleted', [
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
         $this->entityManager->remove($exercisePhase);
         $this->entityManager->flush();
     }

@@ -24,7 +24,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CourseController extends AbstractController
 {
     public function __construct(
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly TranslatorInterface          $translator,
         private readonly EntityManagerInterface       $entityManager
     )
@@ -50,14 +49,6 @@ class CourseController extends AbstractController
                 $courseRole->setUser($newMember);
                 $course->addCourseRole($courseRole);
             }
-
-            $this->eventStore->addEvent('CourseRolesAdded', [
-                'courseId' => $course->getId(),
-                'courseRoles' => $course->getCourseRoles()->map(fn(CourseRole $courseRole) => [
-                    'courseRoleId' => $courseRole->getId(),
-                    'userName' => $courseRole->getUser()->getUsername()
-                ])->toArray(),
-            ]);
 
             $this->entityManager->persist($course);
             $this->entityManager->flush();
@@ -102,12 +93,6 @@ class CourseController extends AbstractController
     {
         $redirectToEdit = (bool)$request->get('redirectToEdit');
 
-        $this->eventStore->addEvent('CourseRoleRemoved', [
-            'courseRoleId' => $courseRole->getId(),
-            'courseId' => $course->getId(),
-            'userName' => $courseRole->getUser()->getUsername(),
-        ]);
-
         $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $courseRole) => $courseRole->isCourseDozent());
         if ($redirectToEdit && count($courseRolesWithDozent) == 1) {
             $this->addFlash(
@@ -135,12 +120,6 @@ class CourseController extends AbstractController
      */
     public function upgradeCourseMember(Course $course, CourseRole $courseRole): Response
     {
-        $this->eventStore->addEvent('CourseRoleUpgraded', [
-            'courseRoleId' => $courseRole->getId(),
-            'courseId' => $course->getId(),
-            'userName' => $courseRole->getUser()->getUsername(),
-        ]);
-
         $courseRole->setName(CourseRole::DOZENT);
 
         $this->entityManager->persist($courseRole);
@@ -156,12 +135,6 @@ class CourseController extends AbstractController
      */
     public function downgradeCourseMember(Course $course, CourseRole $courseRole): Response
     {
-        $this->eventStore->addEvent('CourseRoleDowngraded', [
-            'courseRoleId' => $courseRole->getId(),
-            'courseId' => $course->getId(),
-            'userName' => $courseRole->getUser()->getUsername(),
-        ]);
-
         $courseRole->setName(CourseRole::STUDENT);
 
         $this->entityManager->persist($courseRole);
@@ -213,19 +186,6 @@ class CourseController extends AbstractController
             $courseRole->setUser($newMember);
             $course->addCourseRole($courseRole);
         }
-
-        $this->eventStore->addEvent('CourseRolesAdded', [
-            'courseId' => $course->getId(),
-            'courseRoles' => $course->getCourseRoles()->map(fn(CourseRole $courseRole) => [
-                'courseRoleId' => $courseRole->getId(),
-                'userName' => $courseRole->getUser()->getUsername()
-            ])->toArray(),
-        ]);
-
-        $this->eventStore->addEvent('CourseCreated', [
-            'courseId' => $course->getId(),
-            'name' => $course->getName(),
-        ]);
 
         $this->entityManager->persist($course);
         $this->entityManager->flush();
@@ -285,10 +245,6 @@ class CourseController extends AbstractController
 
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
-
-        $this->eventStore->addEvent('CourseDeleted', [
-            'courseId' => $course->getId(),
-        ]);
 
         $this->entityManager->remove($course);
         $this->entityManager->flush();

@@ -36,7 +36,6 @@ class ExercisePhaseTeamController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly LiveSyncService $liveSyncService,
         private readonly MessageBusInterface $messageBus,
         private readonly SolutionService $solutionService,
@@ -176,15 +175,6 @@ class ExercisePhaseTeamController extends AbstractController
      */
     public function delete(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $this->eventStore->addEvent('TeamDeleted', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
         $this->entityManager->remove($exercisePhaseTeam);
         $this->entityManager->flush();
 
@@ -213,12 +203,6 @@ class ExercisePhaseTeamController extends AbstractController
         $user = $this->getUser();
 
         $exercisePhaseTeam->removeMember($user);
-
-        $this->eventStore->addEvent('MemberRemovedFromTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
 
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
@@ -298,7 +282,6 @@ class ExercisePhaseTeamController extends AbstractController
         $video->setTitle('Video to be cut <' . $videoUuid . '>');
         $video->setDataPrivacyAccepted(true);
         $video->setDataPrivacyPermissionsAccepted(true);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->persist($video);
         $this->entityManager->flush();
 
@@ -317,10 +300,6 @@ class ExercisePhaseTeamController extends AbstractController
         $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
 
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
-        $this->eventStore->addEvent('ReflexionFinished', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-        ]);
 
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
@@ -355,7 +334,6 @@ class ExercisePhaseTeamController extends AbstractController
             $autosaveSolution->setSolution($serverSideSolutionData);
             $autosaveSolution->setOwner($user);
 
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->persist($autosaveSolution);
             $this->entityManager->flush();
 
@@ -398,7 +376,6 @@ class ExercisePhaseTeamController extends AbstractController
         $solution->setSolution($serverSideSolutionData);
         $solution->setUpdateTimestamp(new \DateTimeImmutable());
 
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->persist($solution);
         $this->entityManager->flush();
 
@@ -441,7 +418,6 @@ class ExercisePhaseTeamController extends AbstractController
             $exercisePhaseTeam->setCurrentEditor($currentEditorCandidate);
 
             // Why: We do not need the event info about the currentEditor
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->persist($exercisePhaseTeam);
             $this->entityManager->flush();
 

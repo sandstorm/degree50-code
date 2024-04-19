@@ -2,17 +2,17 @@
 
 namespace App\Tests\Behat;
 
-use App\Domain\Exercise\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
-use App\Domain\Exercise\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\User\Model\User;
-use App\Domain\Exercise\AutosavedSolution;
+use App\Domain\AutosavedSolution\Model\AutosavedSolution;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\ExercisePhaseTypes\VideoAnalysisPhase;
+use App\Domain\ExercisePhase\Model\ExercisePhaseType;
+use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
+use App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder;
+use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
 use App\Domain\Solution\Model\Solution;
-use App\Domain\Exercise\VideoCode;
+use App\Domain\User\Model\User;
+use App\Domain\VideoCode\Model\VideoCode;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -26,25 +26,23 @@ use function PHPUnit\Framework\assertNotNull;
  */
 trait ExercisePhaseContextTrait
 {
-
     /**
      * @Given I have an exercise phase :exercisePhaseId belonging to exercise :exerciseId
      */
-    public function iHaveAnExercisePhaseBelongingToExercise($exercisePhaseId, $exerciseId)
+    public function iHaveAnExercisePhaseBelongingToExercise($exercisePhaseId, $exerciseId): void
     {
         /** @var Exercise $exercise */
         $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
         $exercise->addPhase(new VideoAnalysisPhase($exercisePhaseId));
 
         $this->entityManager->persist($exercise);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I have a team with ID :teamId belonging to exercise phase :exercisePhaseId
      */
-    public function iHaveATeamWithIdBelongingToExercisePhase($teamId, $exercisePhaseId)
+    public function iHaveATeamWithIdBelongingToExercisePhase($teamId, $exercisePhaseId): void
     {
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
@@ -57,14 +55,13 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I have a team with ID :teamId belonging to exercise phase :exercisePhaseId and creator :creatorId
      */
-    public function iHaveATeamWithIdBelongingToExercisePhaseAndCreatorId($teamId, $exercisePhaseId, $creatorId)
+    public function iHaveATeamWithIdBelongingToExercisePhaseAndCreatorId($teamId, $exercisePhaseId, $creatorId): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
         /** @var User $creator */
@@ -78,14 +75,13 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I have a video :videoId belonging to exercise phase :exercisePhaseId
      */
-    public function iHaveAVideoBelongingToExercisePhase($videoId, $exercisePhaseId)
+    public function iHaveAVideoBelongingToExercisePhase($videoId, $exercisePhaseId): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
         $video = $this->videoRepository->find($videoId);
@@ -96,17 +92,17 @@ trait ExercisePhaseContextTrait
         $exercisePhase->addVideo($video);
 
         $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I have a predefined videoCodePrototype belonging to exercise phase :exercisePhaseId and with properties
      */
-    public function iHaveAPredefinedVideocodeprototypeWithIdBelongingToExecisePhaseAndWithProperties(
+    public function iHaveAPredefinedVideoCodePrototypeWithIdBelongingToExercisePhaseAndWithProperties(
         $exercisePhaseId,
         TableNode $propertyTable
-    ) {
+    ): void
+    {
         /** @var VideoAnalysisPhase $exercisePhase */
         $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
 
@@ -120,14 +116,13 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($videoCodePrototype);
         $this->entityManager->persist($exercisePhase);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I have a solution with ID :solutionId belonging to team with ID :teamId with solutionData as JSON
      */
-    public function iHaveASolutionWithIdBelongingToTeamWithIdWithSolutionlistsAsJson($solutionId, $teamId, PyStringNode $serverSideSolutionListsAsJSON)
+    public function iHaveASolutionWithIdBelongingToTeamWithIdWithSolutionListsAsJson($solutionId, $teamId, PyStringNode $serverSideSolutionListsAsJSON): void
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
@@ -140,14 +135,13 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($solution);
         $this->entityManager->persist($exercisePhaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I have an empty solution with ID :solutionId belonging to team :teamId
      */
-    public function iHaveAnEmptySolutionWithIdBelongingToTeam($solutionId, $teamId)
+    public function iHaveAnEmptySolutionWithIdBelongingToTeam($solutionId, $teamId): void
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
@@ -157,7 +151,6 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($solution);
         $this->entityManager->persist($exercisePhaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
@@ -168,7 +161,8 @@ trait ExercisePhaseContextTrait
         $autoSavedSolutionId,
         $teamId,
         PyStringNode $serverSideSolutionListsAsJSON
-    ) {
+    ): void
+    {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
         $autosaveSolution = new AutosavedSolution($autoSavedSolutionId);
@@ -184,14 +178,13 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($autosaveSolution);
         $this->entityManager->persist($exercisePhaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @When I convert the persisted serverSideSolution for team :teamId to the clientSideSolution
      */
-    public function iConvertThePersistedServersidesolutionForTeamToTheClientsidesolution($teamId)
+    public function iConvertThePersistedServersideSolutionForTeamToTheClientsideSolution($teamId): void
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
@@ -210,7 +203,7 @@ trait ExercisePhaseContextTrait
     /**
      * @Then I get normalized client side data as JSON
      */
-    public function iGetNormalizedClientSideDataAsJson(PyStringNode $expectedJSON)
+    public function iGetNormalizedClientSideDataAsJson(PyStringNode $expectedJSON): void
     {
         $expected = json_decode($expectedJSON->getRaw(), true);
         $actual = json_decode($this->clientSideJSON, true);
@@ -221,7 +214,7 @@ trait ExercisePhaseContextTrait
     /**
      * @Given The exercise phase :exercisePhaseId1 depends on the previous phase :exercisePhaseId2
      */
-    public function theExercisePhaseDependsOnThePreviousPhase($exercisePhaseId1, $exercisePhaseId2)
+    public function theExercisePhaseDependsOnThePreviousPhase($exercisePhaseId1, $exercisePhaseId2): void
     {
         $exercisePhase1 = $this->exercisePhaseRepository->find($exercisePhaseId1);
         $exercisePhase2 = $this->exercisePhaseRepository->find($exercisePhaseId2);
@@ -232,14 +225,13 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($exercisePhase1);
         $this->entityManager->persist($exercisePhase2);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given I am a member of :teamId
      */
-    public function iAmAMemberOf($teamId)
+    public function iAmAMemberOf($teamId): void
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
@@ -254,7 +246,7 @@ trait ExercisePhaseContextTrait
     /**
      * @When I convert the persisted serverSideSolutions for all teams of exercise phase :exercisePhaseId to the client side data
      */
-    public function iConvertThePersistedServersidesolutionsForAllTeamsOfExercisePhaseToTheClientSideData($exercisePhaseId)
+    public function iConvertThePersistedServersideSolutionsForAllTeamsOfExercisePhaseToTheClientSideData($exercisePhaseId): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
         $exercisePhaseTeams = $exercisePhase->getTeams()->toArray();
@@ -271,7 +263,7 @@ trait ExercisePhaseContextTrait
     /**
      * @Given User :username belongs to :teamId
      */
-    public function userBelongsTo($username, $teamId)
+    public function userBelongsTo($username, $teamId): void
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
@@ -283,7 +275,7 @@ trait ExercisePhaseContextTrait
     /**
      * @Given The User :username is member of ExercisePhaseTeam :teamId
      */
-    public function ensureTheUserIsMemberOfExercisePhaseTeam($username, $teamId)
+    public function ensureTheUserIsMemberOfExercisePhaseTeam($username, $teamId): void
     {
         /** @var ExercisePhaseTeam $team */
         $team = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
@@ -293,14 +285,13 @@ trait ExercisePhaseContextTrait
         $team->setCreator($user);
 
         $this->entityManager->persist($team);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given The ExercisePhaseTeam :teamId has a Solution :solutionId
      */
-    public function ensureTheExercisePhaseTeamHasASolution($teamId, $solutionId)
+    public function ensureTheExercisePhaseTeamHasASolution($teamId, $solutionId): void
     {
         /** @var ExercisePhaseTeam $team */
         $team = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
@@ -315,14 +306,13 @@ trait ExercisePhaseContextTrait
         $team->setSolution($solution);
 
         $this->entityManager->persist($team);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Given The User :username has created an AutosavedSolution :autosavedSolutionId for ExercisePhaseTeam :teamId
      */
-    public function ensureTheUserHasCreatedAnAutosavedSolutionForExerciseTeam($username, $autosavedSolutionId, $teamId)
+    public function ensureTheUserHasCreatedAnAutosavedSolutionForExerciseTeam($username, $autosavedSolutionId, $teamId): void
     {
         $user = $this->getUserByEmail($username);
         /** @var ExercisePhaseTeam $team */
@@ -339,14 +329,13 @@ trait ExercisePhaseContextTrait
 
         $this->entityManager->persist($autosavedSolution);
         $this->entityManager->persist($team);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @Then No ExercisePhaseTeam created by User :username should exist
      */
-    public function assertExercisePhaseTeamsCreatedByUserDoNotExist($username)
+    public function assertExercisePhaseTeamsCreatedByUserDoNotExist($username): void
     {
         $allTeams = $this->entityManager->getRepository(ExercisePhaseTeam::class)->findAll();
         $teamsCreatedByUser = array_filter($allTeams, function (ExercisePhaseTeam $team) use ($username) {
@@ -359,7 +348,7 @@ trait ExercisePhaseContextTrait
     /**
      * @Then No AutosavedSolution of User :username does exist
      */
-    public function assertAutosavedSolutionsOfUserDoNotExist($username)
+    public function assertAutosavedSolutionsOfUserDoNotExist($username): void
     {
         $allAutosavedSolutions = $this->entityManager->getRepository(AutosavedSolution::class)->findAll();
         $autosavedSolutionsOfUser = array_filter($allAutosavedSolutions, function (AutosavedSolution $autosavedSolution) use ($username) {
@@ -406,14 +395,13 @@ trait ExercisePhaseContextTrait
         }
 
         $this->entityManager->persist($phase);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
 
         return $phase;
     }
 
 
-    public function assertExercisePhaseTeamForUserExists(User $user, ExercisePhase $exercisePhase)
+    public function assertExercisePhaseTeamForUserExists(User $user, ExercisePhase $exercisePhase): void
     {
         $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $exercisePhase);
 
@@ -603,7 +591,6 @@ trait ExercisePhaseContextTrait
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
 
         $this->entityManager->persist($exercisePhaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 

@@ -4,50 +4,49 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
-use App\Administration\Service\UserExpirationService;
-use App\Administration\Service\UserService;
+use App\DataExport\Dto\TextFileDto;
+use App\DataExport\Service\DegreeDataToCsvService;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\Exercise\Model\Exercise;
-use App\Domain\ExercisePhase\Model\ExercisePhase;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseType;
-use App\Domain\Exercise\ExercisePhaseTeam;
-use App\Domain\Exercise\ExercisePhaseTypes\MaterialPhase;
 use App\Domain\Exercise\Model\ExerciseStatus;
+use App\Domain\Exercise\Repository\ExerciseRepository;
 use App\Domain\Exercise\Service\ExerciseService;
-use App\Domain\Solution\Model\Solution;
+use App\Domain\ExercisePhase\Model\ExercisePhase;
+use App\Domain\ExercisePhase\Model\ExercisePhaseStatus;
+use App\Domain\ExercisePhase\Model\ExercisePhaseType;
+use App\Domain\ExercisePhase\Model\MaterialPhase;
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
+use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Fachbereich\Model\Fachbereich;
 use App\Domain\Material\Model\Material;
+use App\Domain\Material\Repository\MaterialRepository;
+use App\Domain\Solution\Model\Solution;
+use App\Domain\Solution\Repository\SolutionRepository;
+use App\Domain\Solution\Service\SolutionService;
 use App\Domain\User\Model\User;
+use App\Domain\User\Repository\UserRepository;
+use App\Domain\User\Service\UserExpirationService;
+use App\Domain\User\Service\UserMaterialService;
+use App\Domain\User\Service\UserService;
 use App\Domain\Video\Model\Video;
+use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\Video\Service\VideoService;
-use App\Domain\Video\VideoFavorite;
+use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
-use App\Repository\Account\UserRepository;
-use App\Repository\Exercise\ExercisePhaseRepository;
-use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
-use App\Repository\Exercise\ExerciseRepository;
-use App\Repository\Exercise\SolutionRepository;
-use App\Repository\Material\MaterialRepository;
-use App\Domain\Video\Repository\VideoRepository;
-use App\Service\UserMaterialService;
-use App\Solution\Service\SolutionService;
-use app\src\DataExport\Dto\TextFileDto;
-use app\src\DataExport\Service\DegreeDataToCsvService;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Session;
 use Doctrine\ORM\EntityManagerInterface;
 use Sandstorm\E2ETestTools\Tests\Behavior\Bootstrap\PlaywrightTrait;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Security;
 use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
@@ -97,26 +96,24 @@ final class DegreeContext implements Context
     private ?Exercise $currentExercise = null;
     private ?User $currentUser = null;
 
-    const TEST_STUDENT = "test-student@sandstorm.de";
-    const TEST_DOZENT = "test-dozent@sandstorm.de";
-    const TEST_COURSE_1 = "course1";
-    const TEST_COURSE_2 = "course2";
-    const TEST_EXERCISE_1 = "exercise1";
-    const TEST_EXERCISE_2 = "exercise2";
-    const TEST_EXERCISE_3 = "exercise3";
-    const TEST_EXERCISE_4 = "exercise4";
-    const ANALYSIS_PHASE_BASE_ID = 'analysis1';
-    const CUT_PHASE_BASE_ID = 'cut1';
-    const REFLEXION_PHASE_BASE_ID = 'reflexion1';
-    const MATERIAL_PHASE_BASE_ID = 'material1';
-    const GROUP_PHASE_BASE_ID = 'groupPhase1';
-    const TEST_FACHBEREICH_1 = 'fachbereich1';
+    const string TEST_STUDENT = "test-student@sandstorm.de";
+    const string TEST_DOZENT = "test-dozent@sandstorm.de";
+    const string TEST_COURSE_1 = "course1";
+    const string TEST_COURSE_2 = "course2";
+    const string TEST_EXERCISE_1 = "exercise1";
+    const string TEST_EXERCISE_2 = "exercise2";
+    const string TEST_EXERCISE_3 = "exercise3";
+    const string TEST_EXERCISE_4 = "exercise4";
+    const string ANALYSIS_PHASE_BASE_ID = 'analysis1';
+    const string CUT_PHASE_BASE_ID = 'cut1';
+    const string REFLEXION_PHASE_BASE_ID = 'reflexion1';
+    const string MATERIAL_PHASE_BASE_ID = 'material1';
+    const string GROUP_PHASE_BASE_ID = 'groupPhase1';
+    const string TEST_FACHBEREICH_1 = 'fachbereich1';
 
     public function __construct(
-        private readonly Session $minkSession,
         private readonly RouterInterface $router,
         private readonly EntityManagerInterface $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly KernelInterface $kernel,
         private readonly Security $security,
         private readonly SolutionService $solutionService,
@@ -144,7 +141,7 @@ final class DegreeContext implements Context
     /**
      * @Given I am logged in as :username
      */
-    public function iAmLoggedInAs($username)
+    public function iAmLoggedInAs($username): void
     {
         $user = $this->getUserByEmail($username);
         if (!$user) {
@@ -154,6 +151,7 @@ final class DegreeContext implements Context
         // create security token in tokenStorage and set user
         /** @var $tokenStorage TokenStorageInterface */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
+        // TODO: This might change with the new login system
         $tokenStorage->setToken(new UsernamePasswordToken($username, 'foo', 'foo'));
         $tokenStorage->getToken()->setUser($user);
 
@@ -163,14 +161,14 @@ final class DegreeContext implements Context
     /**
      * @Given I am not logged in
      */
-    public function iAmNotLoggedIn()
+    public function iAmNotLoggedIn(): void
     {
         /** @var TokenStorageInterface $tokenStorage */
         $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
         $tokenStorage->setToken(null);
     }
 
-    private function createExercisePhaseId(string $exerciseId, string $courseId, string $baseId)
+    private function createExercisePhaseId(string $exerciseId, string $courseId, string $baseId): string
     {
         return $exerciseId . '_' . $courseId . '_' . $baseId;
     }
@@ -202,13 +200,8 @@ final class DegreeContext implements Context
 
     /**
      * Create an exercise with the given ID and adds a course role "DOZENT" for a mocked dozent
-     *
-     * @param string $exerciseId
-     * @param string $courseId
-     * @param User $user
-     * @return void
      */
-    private function createExerciseInCourseByUser(string $exerciseId, string $courseId, User $user)
+    private function createExerciseInCourseByUser(string $exerciseId, string $courseId, User $user): void
     {
         // ensure user has course role dozent for the given course
         $this->userHasCourseRole($user, CourseRole::DOZENT, $courseId);
@@ -220,7 +213,7 @@ final class DegreeContext implements Context
      *
      * @Given an exercise with id :id in course :courseId exists
      */
-    public function anExerciseWithIdExistsInCourse(string $id, string $courseId)
+    public function anExerciseWithIdExistsInCourse(string $id, string $courseId): void
     {
         $testDozent = $this->createUser(self::TEST_DOZENT);
         $this->createExerciseInCourseByUser($id, $courseId, $testDozent);
@@ -229,7 +222,7 @@ final class DegreeContext implements Context
     /**
      * @Given The exercise :exerciseId has these phases:
      */
-    public function theExerciseHasThesePhases(string $exerciseId, TableNode $phases)
+    public function theExerciseHasThesePhases(string $exerciseId, TableNode $phases): void
     {
         foreach ($phases as $_key => $phase) {
             $phaseId = $phase['id'];
@@ -249,11 +242,11 @@ final class DegreeContext implements Context
     /**
      * @Given I am a student working on :exerciseId
      * */
-    public function iAmAStudentWorkingOnExercise($exerciseId)
+    public function iAmAStudentWorkingOnExercise($exerciseId): void
     {
         $this->createUser(self::TEST_STUDENT, null, false, true);
-        $exericse = $this->exerciseRepository->find($exerciseId);
-        $course = $exericse->getCourse();
+        $exercise = $this->exerciseRepository->find($exerciseId);
+        $course = $exercise->getCourse();
         $this->userHasCourseRole(self::TEST_STUDENT, CourseRole::STUDENT, $course->getId());
 
         // Log in as the actual user we want to progress further with
@@ -263,7 +256,7 @@ final class DegreeContext implements Context
     /**
      * @When I have not yet started an exercise phase of :exerciseId
      */
-    public function iHaveNotYetStartedAnExercisePhase($exerciseId)
+    public function iHaveNotYetStartedAnExercisePhase($exerciseId): void
     {
         $this->assertExercisePhaseTeamsCreatedByUserDoNotExist(self::TEST_STUDENT);
     }
@@ -271,7 +264,7 @@ final class DegreeContext implements Context
     /**
      * @Then The derived exercise phase status of :phaseId should be :phaseStatus for the student
      */
-    public function theDerivedExercisePhaseStatusOfShouldBe(string $phaseId, string $phaseStatus)
+    public function theDerivedExercisePhaseStatusOfShouldBe(string $phaseId, string $phaseStatus): void
     {
         $user = $this->userRepository->find(self::TEST_STUDENT);
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
@@ -282,7 +275,7 @@ final class DegreeContext implements Context
     /**
      * @Then The derived exercise phase status of the first phase should be :exercisePhaseStatus
      */
-    public function theDerivedExercisePhaseStatusOfTheFirstPhaseShouldBe(string $exercisePhaseStatus)
+    public function theDerivedExercisePhaseStatusOfTheFirstPhaseShouldBe(string $exercisePhaseStatus): void
     {
         $exercise = $this->exerciseRepository->find(self::TEST_EXERCISE_1);
         $exercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
@@ -295,7 +288,7 @@ final class DegreeContext implements Context
     /**
      * @Then The derived exercise phase status of the group phase should be :exercisePhaseStatus
      */
-    public function theDerivedExercisePhaseStatusOfTheGroupPhaseShouldBe(string $exercisePhaseStatus)
+    public function theDerivedExercisePhaseStatusOfTheGroupPhaseShouldBe(string $exercisePhaseStatus): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::GROUP_PHASE_BASE_ID));
         $user = $this->userRepository->find(self::TEST_STUDENT);
@@ -307,7 +300,7 @@ final class DegreeContext implements Context
     /**
      * @When I am not part of a group for a group exercise phase
      */
-    public function iAmNotPartOfAGroupForAGroupExercisePhase()
+    public function iAmNotPartOfAGroupForAGroupExercisePhase(): void
     {
         $this->assertExercisePhaseTeamsCreatedByUserDoNotExist(self::TEST_STUDENT);
     }
@@ -315,7 +308,7 @@ final class DegreeContext implements Context
     /**
      * @Then My exercise phase status of the group phase should be :exercisePhaseStatus
      */
-    public function myExercisePhaseStatusOfTheGroupPhaseShouldBe(string $exercisePhaseStatus)
+    public function myExercisePhaseStatusOfTheGroupPhaseShouldBe(string $exercisePhaseStatus): void
     {
         $user = $this->userRepository->find(self::TEST_STUDENT);
         $exercisePhase = $this->exercisePhaseRepository->find($this->createExercisePhaseId(self::TEST_EXERCISE_1, self::TEST_COURSE_1, self::GROUP_PHASE_BASE_ID));
@@ -326,7 +319,7 @@ final class DegreeContext implements Context
     /**
      * @Then The students exercise phase status of :phaseId should be :status
      */
-    public function theStudentsExercisePhaseStatusOfShouldBe(string $phaseId, string $phaseStatus)
+    public function theStudentsExercisePhaseStatusOfShouldBe(string $phaseId, string $phaseStatus): void
     {
         $user = $this->userRepository->find(self::TEST_STUDENT);
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
@@ -336,7 +329,7 @@ final class DegreeContext implements Context
     /**
      * @When I enter a group in :phaseId
      */
-    public function iEnterAGroupIn($phaseId)
+    public function iEnterAGroupIn($phaseId): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
@@ -348,7 +341,7 @@ final class DegreeContext implements Context
     /**
      * @Then The phase status of :phaseId should be :status
      */
-    public function thePhaseStatusOfPhaseShouldBe($phaseId, $status)
+    public function thePhaseStatusOfPhaseShouldBe($phaseId, $status): void
     {
         $user = $this->userRepository->find(self::TEST_STUDENT);
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
@@ -359,7 +352,7 @@ final class DegreeContext implements Context
     /**
      * @Then The exercise phase status should be :exercisePhaseStatus
      */
-    public function theExercisePhaseStatusShouldBe(string $exercisePhaseStatus)
+    public function theExercisePhaseStatusShouldBe(string $exercisePhaseStatus): void
     {
         $user = $this->userRepository->find(self::TEST_STUDENT);
         $exercisePhase = $this->currentExercisePhase;
@@ -370,7 +363,7 @@ final class DegreeContext implements Context
     /**
      * @When I start :phaseId for the first time
      */
-    public function iStartAnExercisePhaseForTheFirstTime(string $phaseId)
+    public function iStartAnExercisePhaseForTheFirstTime(string $phaseId): ?ExercisePhase
     {
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
@@ -385,7 +378,7 @@ final class DegreeContext implements Context
     /**
      * @When I finish phase :phaseId
      */
-    public function iFinishTheExercisePhase(string $phaseId)
+    public function iFinishTheExercisePhase(string $phaseId): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
         $user = $this->userRepository->find(self::TEST_STUDENT);
@@ -400,7 +393,7 @@ final class DegreeContext implements Context
     /**
      * @Given I am working on a phase :phaseId where a review is required: :reviewIsRequired
      */
-    public function iAmWorkingOnAPhaseThatHasTheReviewState(string $phaseId, string $reviewIsRequired)
+    public function iAmWorkingOnAPhaseThatHasTheReviewState(string $phaseId, string $reviewIsRequired): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
 
@@ -414,16 +407,6 @@ final class DegreeContext implements Context
             $reviewRequired = $reviewIsRequired === 'yes';
             $exercisePhase->setReviewRequired($reviewRequired);
 
-            $this->eventStore->addEvent('MaterialExercisePhaseEdited', [
-                'exercisePhaseId' => $exercisePhase->getId(),
-                'name' => $exercisePhase->getName(),
-                'task' => $exercisePhase->getTask(),
-                'isGroupPhase' => $exercisePhase->isGroupPhase(),
-                'dependsOnPreviousPhase' => $exercisePhase->getDependsOnExercisePhase() !== null,
-                'components' => [],
-                'reviewRequired' => $reviewRequired,
-            ]);
-
             $this->entityManager->persist($exercisePhase);
         }
 
@@ -435,9 +418,9 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Given I am a dozent in course :coursId
+     * @Given I am a dozent in course :courseId
      */
-    public function iAmADozentInCourse($courseId)
+    public function iAmADozentInCourse($courseId): void
     {
         $dozent = $this->userRepository->find(self::TEST_DOZENT);
         if (is_null($dozent)) {
@@ -449,7 +432,7 @@ final class DegreeContext implements Context
     /**
      * @When I finish the review of a solution of a material phase :phaseId
      **/
-    public function iFinishTheReviewOfAMaterialPhase($phaseId)
+    public function iFinishTheReviewOfAMaterialPhase($phaseId): void
     {
         $phase = $this->exercisePhaseRepository->find($phaseId);
 
@@ -464,9 +447,9 @@ final class DegreeContext implements Context
     /**
      * @When I open an exercise phase :phaseId with status :phaseStatus
      */
-    public function iOpenAnExercisePhaseWithStatus($phaseId, $phaseStatus)
+    public function iOpenAnExercisePhaseWithStatus($phaseId, $phaseStatus): void
     {
-        $status = ExercisePhase\ExercisePhaseStatus::tryFrom($phaseStatus);
+        $status = ExercisePhaseStatus::tryFrom($phaseStatus);
 
         $exercisePhase = $this->iStartAnExercisePhaseForTheFirstTime($phaseId);
 
@@ -481,17 +464,9 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @When I am part of a course
-     */
-    public function iAmPartOfACourse()
-    {
-        throw new PendingException();
-    }
-
-    /**
      * @Then The derived exercise status of :exerciseId should be :exerciseStatus
      */
-    public function theDerivedExerciseStatusShouldBe($exerciseId, string $exerciseStatus)
+    public function theDerivedExerciseStatusShouldBe($exerciseId, string $exerciseStatus): void
     {
         $status = ExerciseStatus::tryFrom($exerciseStatus);
         $user = $this->userRepository->find(self::TEST_STUDENT);
@@ -500,18 +475,12 @@ final class DegreeContext implements Context
         assertEquals($status, $this->exerciseService->getExerciseStatusForUser($exercise, $user));
     }
 
-    private function finishPhase(ExercisePhase $exercisePhase, User $user)
+    private function finishPhase(ExercisePhase $exercisePhase, User $user): void
     {
         $exercisePhaseTeam = new ExercisePhaseTeam();
         $exercisePhaseTeam->setExercisePhase($exercisePhase);
         $exercisePhaseTeam->addMember($user);
         $exercisePhaseTeam->setCreator($user);
-
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
 
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
@@ -522,7 +491,7 @@ final class DegreeContext implements Context
     /**
      * @When I have finished all phases of exercise :exerciseId
      */
-    public function iHaveFinishedAllPhasesOfAnExercise($exerciseId)
+    public function iHaveFinishedAllPhasesOfAnExercise($exerciseId): void
     {
         $student = $this->userRepository->find(self::TEST_STUDENT);
         $exercise = $this->exerciseRepository->find($exerciseId);
@@ -535,7 +504,7 @@ final class DegreeContext implements Context
     /**
      * @Given I am a student logged in via browser
      */
-    public function iAmStudentLoggedInViaBrowser()
+    public function iAmStudentLoggedInViaBrowser(): void
     {
         $this->currentUser = $this->createUser(self::TEST_STUDENT, null, true, true);
 
@@ -549,12 +518,6 @@ final class DegreeContext implements Context
         $exercisePhaseTeam->addMember($user);
         $exercisePhaseTeam->setCreator($user);
 
-        $this->eventStore->addEvent('MemberAddedToTeam', [
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'userId' => $user->getId(),
-            'exercisePhaseId' => $exercisePhase->getId()
-        ]);
-
         $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
 
@@ -564,7 +527,7 @@ final class DegreeContext implements Context
     /**
      * @Given I am part of two courses with multiple exercises
      */
-    public function iAmPartOfTwoCoursesWithMultipleExercises()
+    public function iAmPartOfTwoCoursesWithMultipleExercises(): void
     {
         // WHY: we have to set logged in user to dozent to create exercises
         // so we need to set it to the previously logged in user afterwards
@@ -728,7 +691,7 @@ final class DegreeContext implements Context
     /**
      * @When I navigate to "Schreibtisch"
      */
-    public function iNavigateToSchreibtisch()
+    public function iNavigateToSchreibtisch(): void
     {
         $this->iClickOnFirstElementWithTestId('header-menu-schreibtisch');
     }
@@ -736,7 +699,7 @@ final class DegreeContext implements Context
     /**
      * @Then I get access to "Meine Aufgaben", "Meine Videofavoriten", "Meine Materialien"
      */
-    public function iGetAccessToSchreibtisch()
+    public function iGetAccessToSchreibtisch(): void
     {
         $this->waitForSelector('schreibtisch-navigation');
         $this->pageContainsTexts(["Meine Aufgaben", "Meine Videofavoriten", "Meine Materialien"]);
@@ -759,7 +722,7 @@ final class DegreeContext implements Context
     /**
      * @Given I am a student
      */
-    public function iAmAStudent()
+    public function iAmAStudent(): void
     {
         $this->iAmLoggedInAs(self::TEST_STUDENT);
     }
@@ -767,7 +730,7 @@ final class DegreeContext implements Context
     /**
      * @When I access "Meine Aufgaben"
      */
-    public function iAccessMeineAufgaben()
+    public function iAccessMeineAufgaben(): void
     {
         $this->queryResult = $this->exerciseService->getExercisesForUser($this->currentUser);
     }
@@ -775,7 +738,7 @@ final class DegreeContext implements Context
     /**
      * @When I access "Meine Videofavoriten"
      */
-    public function iAccessMeineVideofavoriten()
+    public function iAccessMeineVideofavoriten(): void
     {
         $videoFavorites = $this->videoFavouritesService->getFavouriteVideosForUser($this->currentUser);
         $videos = array_map(fn (VideoFavorite $videoFavourite) => $videoFavourite->getVideo(), $videoFavorites);
@@ -786,7 +749,7 @@ final class DegreeContext implements Context
     /**
      * @Then All my available exercises from both courses are shown
      */
-    public function allMyAvailableExercisesFromBothCoursesAreShown()
+    public function allMyAvailableExercisesFromBothCoursesAreShown(): void
     {
         $results = array_map(fn (Exercise $exercise) => $exercise->getId(), $this->queryResult);
         $expected = [
@@ -804,7 +767,7 @@ final class DegreeContext implements Context
     /**
      * @Given I have some video favorites
      */
-    public function iHaveSomeVideoFavorites()
+    public function iHaveSomeVideoFavorites(): void
     {
         $videos = $this->createExampleVideos();
 
@@ -815,7 +778,7 @@ final class DegreeContext implements Context
     /**
      * @Then All my favorite videos are shown
      */
-    public function allMyFavoriteVideosAreShown()
+    public function allMyFavoriteVideosAreShown(): void
     {
         /** @var Video[] $result */
         $result = array_map(fn (Video $video) => $video->getId(), $this->queryResult);
@@ -826,7 +789,7 @@ final class DegreeContext implements Context
         }
     }
 
-    private function createExampleVideos()
+    private function createExampleVideos(): array
     {
         $actualCurrentUser = $this->currentUser;
 
@@ -843,7 +806,6 @@ final class DegreeContext implements Context
 
         $videoIdList = ["video1", "video2", "video3"];
 
-        /** @var Video[] $videos */
         $videos = array_map(function ($videoId) use ($dozent, $course) {
             $video = new Video($videoId);
             $video->addCourse($course);
@@ -864,7 +826,7 @@ final class DegreeContext implements Context
     /**
      * @When I add a video to my favorite videos
      */
-    public function iAddAVideoToMyFavoriteVideos()
+    public function iAddAVideoToMyFavoriteVideos(): void
     {
         // add other video favorites
         $this->iHaveSomeVideoFavorites();
@@ -880,7 +842,7 @@ final class DegreeContext implements Context
     /**
      * @When I Navigate to "Meine Videofavoriten" on the "Schreibtisch"
      */
-    public function iNavigateToMeineVideofavoritenOnTheSchreibtisch()
+    public function iNavigateToMeineVideofavoritenOnTheSchreibtisch(): void
     {
         $this->iNavigateToSchreibtisch();
         $this->iClickOn('Meine Videofavoriten');
@@ -893,7 +855,7 @@ final class DegreeContext implements Context
     /**
      * @Then I see all my favorite videos
      */
-    public function iSeeAllMyFavoriteVideos()
+    public function iSeeAllMyFavoriteVideos(): void
     {
         $this->pageContainsTexts([
             'video1',
@@ -905,7 +867,7 @@ final class DegreeContext implements Context
     /**
      * @When I remove a video from my favorites
      */
-    public function iRemoveAVideoFromMyFavorites()
+    public function iRemoveAVideoFromMyFavorites(): void
     {
 
         assertTrue($this->currentUser->isStudent(), "User is not a student!");
@@ -919,7 +881,7 @@ final class DegreeContext implements Context
     /**
      * @Then I no longer see this video in "Meine Videofavoriten"
      */
-    public function iNoLongerSeeThisVideoIn()
+    public function iNoLongerSeeThisVideoIn(): void
     {
         $this->iNavigateToMeineVideofavoritenOnTheSchreibtisch();
 
@@ -936,7 +898,8 @@ final class DegreeContext implements Context
         ExercisePhaseTeam $exercisePhaseTeam,
         string $id,
         string $content,
-    ) {
+    ): void
+    {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         // create solution
@@ -944,12 +907,6 @@ final class DegreeContext implements Context
 
         // add solution to team
         $exercisePhaseTeam->setSolution($solution);
-
-        $this->eventStore->addEvent('SolutionShared', [
-            'exercisePhaseId' => $exercisePhase->getId(),
-            'exercisePhaseTeamId' => $exercisePhaseTeam->getId(),
-            'solutionId' => $solution->getId()
-        ]);
 
         $this->entityManager->persist($solution);
         $this->entityManager->persist($exercisePhaseTeam);
@@ -959,7 +916,7 @@ final class DegreeContext implements Context
     /**
      * @Given I have a "Material" :materialId
      */
-    public function iHaveAMaterial($materialId)
+    public function iHaveAMaterial($materialId): void
     {
         $user = $this->currentUser;
         $testDozent = $this->createUser(self::TEST_DOZENT);
@@ -993,7 +950,7 @@ final class DegreeContext implements Context
     /**
      * @When I access "Meine Materialien"
      */
-    public function iAccessMeineMaterialien()
+    public function iAccessMeineMaterialien(): void
     {
         $this->queryResult = $this->materialService->getMaterialsForUser($this->currentUser);
     }
@@ -1001,7 +958,7 @@ final class DegreeContext implements Context
     /**
      * @Then My Material is shown
      */
-    public function myMaterialIsShown()
+    public function myMaterialIsShown(): void
     {
         /** @var Material $result */
         $result = array_map(fn ($material) => $material->getId(), $this->queryResult)[0];
@@ -1045,7 +1002,7 @@ final class DegreeContext implements Context
     /**
      * @Then The material :materialId should be :materialValue after a page reload
      */
-    public function materialShouldBe($materialId, $materialValue)
+    public function materialShouldBe($materialId, $materialValue): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,
@@ -1060,7 +1017,7 @@ final class DegreeContext implements Context
     /**
      * @Then The original solution of phase :phaseId remains untouched
      */
-    public function theOriginalSolutionRemainsUntouched($phaseId)
+    public function theOriginalSolutionRemainsUntouched($phaseId): void
     {
         // get team's solution
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
@@ -1076,7 +1033,7 @@ final class DegreeContext implements Context
     /**
      * @Then A copy of the material from :phaseId should be added to the "Schreibtisch" of each user who was part of the Group which created the solution
      */
-    public function aCopyOfTheMaterialShouldBeAddedToTheOfEachUserWhoWasPartOfTheGroupWhichCreatedTheSolution($phaseId)
+    public function aCopyOfTheMaterialShouldBeAddedToTheOfEachUserWhoWasPartOfTheGroupWhichCreatedTheSolution($phaseId): void
     {
         $student = $this->userRepository->find(self::TEST_STUDENT);
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
@@ -1097,21 +1054,20 @@ final class DegreeContext implements Context
     /**
      * @When the material phase :phaseId is "IN_REVIEW"
      */
-    public function theMaterialPhaseIs($phaseId)
+    public function theMaterialPhaseIs($phaseId): void
     {
         $materialPhase = $this->exercisePhaseRepository->find($phaseId);
         $phaseTeam = $this->exercisePhaseTeamRepository->findOneBy(["exercisePhase" => $materialPhase]);
 
         $phaseTeam->setStatus(ExercisePhaseStatus::IN_REVIEW);
         $this->entityManager->persist($phaseTeam);
-        $this->eventStore->disableEventPublishingForNextFlush();
         $this->entityManager->flush();
     }
 
     /**
      * @When Save this material
      */
-    public function saveThisMaterial()
+    public function saveThisMaterial(): void
     {
         // edit material
         $this->playwrightConnector->execute(
@@ -1126,23 +1082,13 @@ final class DegreeContext implements Context
     /**
      * @Given material phase :phaseId requires a review: :reviewRequired
      */
-    public function materialPhaseRequiresAReview($phaseId, $reviewRequired)
+    public function materialPhaseRequiresAReview($phaseId, $reviewRequired): void
     {
         $exercisePhase = $this->exercisePhaseRepository->find($phaseId);
 
         if ($exercisePhase instanceof MaterialPhase) {
             $reviewRequired = $reviewRequired === 'yes';
             $exercisePhase->setReviewRequired($reviewRequired);
-
-            $this->eventStore->addEvent('MaterialExercisePhaseEdited', [
-                'exercisePhaseId' => $exercisePhase->getId(),
-                'name' => $exercisePhase->getName(),
-                'task' => $exercisePhase->getTask(),
-                'isGroupPhase' => $exercisePhase->isGroupPhase(),
-                'dependsOnPreviousPhase' => $exercisePhase->getDependsOnExercisePhase() !== null,
-                'components' => [],
-                'reviewRequired' => $reviewRequired,
-            ]);
 
             $this->entityManager->persist($exercisePhase);
             $this->entityManager->flush();
@@ -1167,7 +1113,6 @@ final class DegreeContext implements Context
             $fachbereich->setName($fachbereichId);
 
             $this->entityManager->persist($fachbereich);
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
         }
 

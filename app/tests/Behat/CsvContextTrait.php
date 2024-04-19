@@ -2,18 +2,14 @@
 
 namespace App\Tests\Behat;
 
+use App\DataExport\Dto\TextFileDto;
 use App\Domain\Course\Model\Course;
-use app\src\DataExport\Dto\TextFileDto;
 use Behat\Gherkin\Node\PyStringNode;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertIsObject;
 
-/**
- *
- */
 trait CsvContextTrait
 {
-
     /**
      * @When I convert all data for :courseId to csv
      */

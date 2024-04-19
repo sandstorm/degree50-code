@@ -35,7 +35,6 @@ class ExerciseController extends AbstractController
         private readonly ExercisePhaseRepository      $exercisePhaseRepository,
         private readonly ExercisePhaseService         $exercisePhaseService,
         private readonly TranslatorInterface          $translator,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly ExerciseService              $exerciseService,
         private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
         private readonly SolutionService              $solutionService,
@@ -80,8 +79,6 @@ class ExerciseController extends AbstractController
      */
     public function test(Exercise $exercise): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
         $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
 
         return $this->render(
@@ -210,13 +207,6 @@ class ExerciseController extends AbstractController
             // but, the original `$exercise` variable has also been updated
             $exercise = $form->getData();
 
-            $this->eventStore->addEvent('ExerciseCreated', [
-                'exerciseId' => $exercise->getId(),
-                'courseId' => $course->getId(),
-                'name' => $exercise->getName(),
-                'description' => $exercise->getDescription(),
-            ]);
-
             $this->entityManager->persist($exercise);
             $this->entityManager->flush();
 
@@ -248,12 +238,6 @@ class ExerciseController extends AbstractController
             // but, the original `$exercise` variable has also been updated
             /** @var Exercise $exercise */
             $exercise = $form->getData();
-
-            $this->eventStore->addEvent('ExerciseNameOrDescriptionUpdated', [
-                'exerciseId' => $exercise->getId(),
-                'name' => $exercise->getName(),
-                'description' => $exercise->getDescription(),
-            ]);
 
             $this->entityManager->persist($exercise);
             $this->entityManager->flush();
@@ -327,11 +311,6 @@ class ExerciseController extends AbstractController
             return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
         }
 
-        $this->eventStore->addEvent('ExerciseStatusUpdated', [
-            'exerciseId' => $exercise->getId(),
-            'status' => $newStatus,
-        ]);
-
         $this->entityManager->persist($exercise);
         $this->entityManager->flush();
 
@@ -393,13 +372,6 @@ class ExerciseController extends AbstractController
                 $newPhases = $this->exercisePhaseService->duplicatePhasesOfExercise($exercise, $newExercise);
                 $newExercise->setPhases($newPhases);
             }
-
-            $this->eventStore->addEvent('ExerciseCreated', [
-                'exerciseId' => $newExercise->getId(),
-                'courseId' => $formDto->getCourse()->getId(),
-                'name' => $newExercise->getName(),
-                'description' => $newExercise->getDescription(),
-            ]);
 
             $this->entityManager->persist($newExercise);
             $this->entityManager->flush();

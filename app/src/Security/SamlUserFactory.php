@@ -11,12 +11,6 @@ use Nbgrp\OneloginSamlBundle\Security\User\SamlUserFactoryInterface;
  */
 class SamlUserFactory implements SamlUserFactoryInterface
 {
-    public function __construct(
-        private readonly DoctrineIntegratedEventStore $eventStore
-    )
-    {
-    }
-
     public function createUser(string $identifier, array $attributes): User
     {
         $userIdentifier = $attributes['mail'][0];
@@ -28,11 +22,6 @@ class SamlUserFactory implements SamlUserFactoryInterface
         $user->setEmail($userIdentifier);
         // SAML users are verified by default
         $user->setIsVerified(true);
-
-        $this->eventStore->addEvent('UserRegistered', [
-            'userId' => $user->getId(),
-            'method' => 'SAML',
-        ]);
 
         return $user;
     }

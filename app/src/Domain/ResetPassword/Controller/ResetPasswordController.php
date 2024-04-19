@@ -30,7 +30,6 @@ class ResetPasswordController extends AbstractController
         private readonly ResetPasswordHelperInterface $resetPasswordHelper,
         private readonly ResetPasswordRequestRepository $resetPasswordRequestRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly TranslatorInterface $translator,
     )
     {
@@ -76,10 +75,6 @@ class ResetPasswordController extends AbstractController
             $this->addFlash('danger', $this->translator->trans('process.error.sso-user', [], 'user-password-reset'));
             return $this->redirectToRoute('app_forgot_password_request');
         }
-
-        $this->eventStore->addEvent('UserPasswordChangRequested', [
-            'userId' => $user->getId(),
-        ]);
 
         // remove all previous tokens for user
         $this->resetPasswordRequestRepository->removeRequests($user);
@@ -178,10 +173,6 @@ class ResetPasswordController extends AbstractController
             );
 
             $user->setPassword($encodedPassword);
-
-            $this->eventStore->addEvent('UserPasswordChanged', [
-                'userId' => $user->getId(),
-            ]);
 
             $this->entityManager->flush();
 

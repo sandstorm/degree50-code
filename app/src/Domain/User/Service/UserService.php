@@ -31,7 +31,6 @@ class UserService
     public function __construct(
         private readonly Security                     $security,
         private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly VideoService                 $videoService,
         private readonly ExerciseService              $exerciseService,
         private readonly VideoFavouritesService       $videoFavoritesService,
@@ -61,11 +60,6 @@ class UserService
         $teamsWhereUserCanNotBeRemoved = $this->removeFromExerciseTeams($user);
 
         if (count($teamsWhereUserCanNotBeRemoved) === 0) {
-            $this->eventStore->addEvent('UserDeleted', [
-                'userId' => $user->getId(),
-                "method" => 'deleted',
-            ]);
-
             /**
              * Due to ORM cascading options the following things will also happen when we delete a user:
              *
@@ -87,12 +81,6 @@ class UserService
             $user->setExpirationDate(new \DateTimeImmutable('+1 year'));
             // prevent emails from being sent to user due to expiration
             $user->setExpirationNoticeSent(true);
-
-            // set expiration date to 1 year from now
-            $this->eventStore->addEvent('UserDeleted', [
-                'userId' => $user->getId(),
-                "method" => 'anonymized',
-            ]);
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
@@ -178,11 +166,6 @@ class UserService
          */
         $user->getCourseRoles()->map(fn(CourseRole $courseRole) => $this->entityManager->remove($courseRole));
 
-        $this->eventStore->addEvent('UserDeleted', [
-            'userId' => $user->getId(),
-            'method' => 'anonymized',
-        ]);
-
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }
@@ -199,11 +182,6 @@ class UserService
         foreach ($teamsWhereUserIsOnlyMember as $team) {
             $this->entityManager->remove($team);
         }
-
-        $this->eventStore->addEvent('UserDeleted', [
-            'userId' => $user->getId(),
-            "method" => 'deleted',
-        ]);
 
         /**
          * Due to ORM cascading options the following things will also happen when we delete a user:
@@ -239,26 +217,14 @@ class UserService
                     return $autosavedSolution->getOwner() === $user;
                 })
                 ->forAll(fn($_i, AutosavedSolution $autosavedSolution) => $this->entityManager->remove($autosavedSolution));
-            $this->eventStore->disableEventPublishingForNextFlush();
             $this->entityManager->flush();
 
             if ($team->getMembers()->count() > 1) {
                 $team->removeMember($user);
 
-                $this->eventStore->addEvent('MemberRemovedFromTeam', [
-                    "exercisePhaseTeamId" => $team->getId(),
-                    "userId" => $user->getId(),
-                    "exercisePhaseId" => $team->getExercisePhase()->getId(),
-                ]);
-
                 $this->entityManager->persist($team);
                 $this->entityManager->flush();
             } elseif ($team->isTest()) {
-                $this->eventStore->addEvent('TeamDeleted', [
-                    "exercisePhaseTeamId" => $team->getId(),
-                    "userId" => $user->getId(),
-                    "exercisePhaseId" => $team->getExercisePhase()->getId(),
-                ]);
                 $this->entityManager->remove($team);
                 $this->entityManager->flush();
             } else {

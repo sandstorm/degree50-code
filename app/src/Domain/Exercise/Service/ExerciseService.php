@@ -22,7 +22,6 @@ class ExerciseService
 
     public function __construct(
         private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly ExerciseRepository           $exerciseRepository,
         private readonly ExercisePhaseService         $exercisePhaseService,
         private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
@@ -212,15 +211,11 @@ class ExerciseService
 
     public function deleteExercise(Exercise $exercise): void
     {
-        $this->eventStore->addEvent('ExerciseDeleted', [
-            'exerciseId' => $exercise->getId(),
-            'courseId' => $exercise->getCourse()->getId(),
-        ]);
-
         /**
          * Due to ORM cascading options the following things will also happen when we delete an Exercise:
          *
          *   1. All attached ExercisePhases will be removed @see Exercise::$phases
+         *   // TODO: userExerciseInteractions do not exist anymore, right?
          *   2. All attached UserExerciseInteractions will be removed @see Exercise::$userExerciseInteractions
          *
          * TODO: There will be no Events triggered like "ExercisePhaseDeleted" or "AttachmentDeleted" (cascaded removal when

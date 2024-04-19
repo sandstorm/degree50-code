@@ -21,7 +21,6 @@ class VideoCodeController extends AbstractController
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore
     )
     {
     }
@@ -40,12 +39,6 @@ class VideoCodeController extends AbstractController
         $videoCode->setColor($color);
         $videoCode->setExercisePhase($exercisePhase);
 
-        $this->eventStore->addEvent('VideoCodeCreated', [
-            'videoCodeId' => $videoCode->getId(),
-            'name' => $videoCode->getName(),
-            'color' => $videoCode->getColor(),
-        ]);
-
         $this->entityManager->persist($videoCode);
         $this->entityManager->flush();
 
@@ -59,12 +52,6 @@ class VideoCodeController extends AbstractController
      */
     public function delete(VideoCode $videoCode): Response
     {
-        $this->eventStore->addEvent('VideoCodeDeleted', [
-            'videoCodeId' => $videoCode->getId(),
-            'name' => $videoCode->getName(),
-            'color' => $videoCode->getColor(),
-        ]);
-
         $this->entityManager->remove($videoCode);
         $this->entityManager->flush();
 

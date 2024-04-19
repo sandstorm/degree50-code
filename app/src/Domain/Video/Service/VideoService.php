@@ -23,7 +23,6 @@ class VideoService
 
     public function __construct(
         private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly VideoRepository              $videoRepository,
         private readonly AppRuntime                   $appRuntime,
         private readonly KernelInterface              $kernel,
@@ -80,11 +79,6 @@ class VideoService
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
         $this->removeVideoFile($fileUrl);
 
-        $this->eventStore->addEvent('VideoDeleted', [
-            'videoId' => $video->getId(),
-            'uploadedFile' => $fileUrl
-        ]);
-
         $this->entityManager->remove($video);
         $this->entityManager->flush();
     }
@@ -102,11 +96,6 @@ class VideoService
         $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
 
         $video->setUploadedVideoFile(null);
-
-        $this->eventStore->addEvent('VideoDeleted', [
-            'videoId' => $video->getId(),
-            'uploadedFile' => $fileUrl
-        ]);
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
@@ -127,11 +116,6 @@ class VideoService
 
         $video->setUploadedSubtitleFile(null);
 
-        $this->eventStore->addEvent('SubtitleDeleted', [
-            'videoId' => $video->getId(),
-            'uploadedFile' => $fileUrl
-        ]);
-
         $this->entityManager->persist($video);
         $this->entityManager->flush();
     }
@@ -151,11 +135,6 @@ class VideoService
         $video->setUploadedVideoFile($uploadedVideoFile);
         $video->setDataPrivacyAccepted(false);
         $video->setDataPrivacyPermissionsAccepted(false);
-
-        $this->eventStore->addEvent('VideoUploaded', [
-            'videoId' => $video->getId(),
-            'uploadedVideoFile' => $video->getUploadedVideoFile()->getVirtualPathAndFilename(),
-        ]);
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
@@ -178,11 +157,6 @@ class VideoService
         $video->setUploadedSubtitleFile($uploadedSubtitleFile);
         $video->setDataPrivacyAccepted(false);
         $video->setDataPrivacyPermissionsAccepted(false);
-
-        $this->eventStore->addEvent('SubtitleUploaded', [
-            'videoId' => $video->getId(),
-            'uploadedSubtitleFile' => $video->getUploadedSubtitleFile()->getVirtualPathAndFilename(),
-        ]);
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
@@ -212,11 +186,6 @@ class VideoService
         $video->setDataPrivacyAccepted(false);
         $video->setDataPrivacyPermissionsAccepted(false);
 
-        $this->eventStore->addEvent('AudioDescriptionUploaded', [
-            'videoId' => $video->getId(),
-            'uploadedAudioDescriptionFile' => $video->getUploadedAudioDescriptionFile()->getVirtualPathAndFilename(),
-        ]);
-
         $this->entityManager->persist($video);
         $this->entityManager->flush();
     }
@@ -233,11 +202,6 @@ class VideoService
         $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
 
         $video->setUploadedAudioDescriptionFile(null);
-
-        $this->eventStore->addEvent('AudioDescriptionDeleted', [
-            'videoId' => $video->getId(),
-            'uploadedFile' => $fileUrl
-        ]);
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();

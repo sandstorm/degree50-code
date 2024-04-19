@@ -13,7 +13,6 @@ class UserMaterialService
 {
     public function __construct(
         private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly MaterialRepository           $materialRepository,
     )
     {
@@ -33,10 +32,6 @@ class UserMaterialService
     {
         $material->setMaterial($newValue);
         $material->setLastUpdatedAt(new DateTimeImmutable());
-
-        $this->eventStore->addEvent('MaterialUpdated', [
-            'materialId' => $material->getId(),
-        ]);
 
         $this->entityManager->persist($material);
         $this->entityManager->flush();
@@ -78,11 +73,6 @@ class UserMaterialService
         }
 
         $newMaterial->setMaterial($solution->getSolution()->getMaterial()->toString());
-
-        $this->eventStore->addEvent('MaterialCreated', [
-            'materialId' => $newMaterial->getId(),
-            'ownerId' => $user->getId(),
-        ]);
 
         $this->entityManager->persist($newMaterial);
         $this->entityManager->flush();

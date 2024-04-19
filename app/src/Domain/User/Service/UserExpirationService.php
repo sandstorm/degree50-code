@@ -17,7 +17,6 @@ class UserExpirationService
         private readonly UserService                  $userService,
         private readonly UserRepository               $userRepository,
         private readonly EntityManagerInterface       $entityManager,
-        private readonly DoctrineIntegratedEventStore $eventStore,
         private readonly MailerInterface              $mailer,
         private readonly LoggerInterface              $logger,
         private readonly TranslatorInterface          $translator,
@@ -44,9 +43,6 @@ class UserExpirationService
             // Only mark the user as notified if the email was sent successfully
             if ($successfullySent) {
                 $user->setExpirationNoticeSent(true);
-
-                // We don't care about this event
-                $this->eventStore->disableEventPublishingForNextFlush();
 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
@@ -113,12 +109,6 @@ class UserExpirationService
 
         $user->setExpirationDate($newExpirationDate);
         $user->setExpirationNoticeSent(false);
-
-        $this->eventStore->addEvent('UserExpirationDateIncreased', [
-            'userId' => $user->getId(),
-            'oldDate' => $oldExpirationDate->format(User::DB_DATE_FORMAT),
-            'newDate' => $newExpirationDate->format(User::DB_DATE_FORMAT),
-        ]);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
