@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Legal;
+namespace App\Legal\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

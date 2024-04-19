@@ -4,6 +4,8 @@ services:
       context: ./
       dockerfile: deployment/docker/Dockerfile
     entrypoint: sleep 1000000
+    environment:
+      LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-setup
     volumes:
       - ./app:/app:rw,cached
 

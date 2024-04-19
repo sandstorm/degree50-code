@@ -8,6 +8,12 @@ security:
             entity:
                 class: App\Domain\User
                 property: email
+    
+    password_hashers:
+        # Use native password hasher, which auto-selects and migrates the best
+        # possible hashing algorithm (which currently is "bcrypt")
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -32,8 +38,6 @@ security:
                 login_path: /login
                 check_path: /login_check
                 always_use_default_target_path: true
-            custom_authenticators:
-                - App\Security\LoginFormAuthenticator
             logout:
                 # this URL must match the `app_logout` route.
                 # DO NOT CHANGE THE URL, as the SAML IDP calls /saml/logout. This is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata
