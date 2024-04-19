@@ -2,7 +2,6 @@
 
 namespace App\Administration\Controller;
 
-use App\Administration\EventSubscriber\EasyAdminSubscriber;
 use App\Domain\User\Model\User;
 use App\Domain\User\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
