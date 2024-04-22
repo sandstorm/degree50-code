@@ -1,5 +1,4 @@
 services:
-    # TODO: defaults are the same as in services.yaml - remove
     _defaults:
         autowire: true
         autoconfigure: true

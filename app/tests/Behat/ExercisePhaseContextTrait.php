@@ -167,10 +167,8 @@ trait ExercisePhaseContextTrait
         $solutionListsFromJson = json_decode($serverSideSolutionListsAsJSON->getRaw(), true);
         $serverSideSolutionLists = ServerSideSolutionData::fromArray($solutionListsFromJson);
         $autosaveSolution->setSolution($serverSideSolutionLists);
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        /* @var User $loggedInUser */
-        $loggedInUser = $tokenStorage->getToken()->getUser();
+
+        $loggedInUser = $this->tokenStorage->getToken()->getUser();
         $autosaveSolution->setOwner($loggedInUser);
 
         $this->entityManager->persist($autosaveSolution);
@@ -232,10 +230,7 @@ trait ExercisePhaseContextTrait
     {
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        /** @var User $loggedInUser */
-        $loggedInUser = $tokenStorage->getToken()->getUser();
+        $loggedInUser = $this->tokenStorage->getToken()->getUser();
 
         $exercisePhaseTeam->addMember($loggedInUser);
     }

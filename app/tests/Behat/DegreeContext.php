@@ -68,7 +68,6 @@ require_once(__DIR__ . '/VideoContextTrait.php');
  */
 final class DegreeContext implements Context
 {
-
     use DatabaseFixtureContextTrait;
     use PlaywrightTrait;
     use EmailTrait;
@@ -111,6 +110,7 @@ final class DegreeContext implements Context
     const string TEST_FACHBEREICH_1 = 'fachbereich1';
 
     public function __construct(
+        // TODO: looks like auto wiring is not working here
         private readonly RouterInterface $router,
         private readonly EntityManagerInterface $entityManager,
         private readonly KernelInterface $kernel,
@@ -131,7 +131,8 @@ final class DegreeContext implements Context
         private readonly UserMaterialService $materialService,
         private readonly MaterialRepository $materialRepository,
         private readonly VideoRepository $videoRepository,
-        private readonly SolutionRepository $solutionRepository
+        private readonly SolutionRepository $solutionRepository,
+        private readonly TokenStorageInterface $tokenStorage,
     ) {
         $this->setupPlaywright();
     }
@@ -147,12 +148,8 @@ final class DegreeContext implements Context
             $user = $this->createUser($username);
         }
 
-        // create security token in tokenStorage and set user
-        /** @var $tokenStorage TokenStorageInterface */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        // TODO: This might change with the new login system
-        $tokenStorage->setToken(new UsernamePasswordToken($username, 'foo', 'foo'));
-        $tokenStorage->getToken()->setUser($user);
+        $this->tokenStorage->setToken(new UsernamePasswordToken($user, 'main', ['ROLE_USER']));
+        $this->tokenStorage->getToken()->setUser($user);
 
         $this->currentUser = $user;
     }
@@ -162,9 +159,7 @@ final class DegreeContext implements Context
      */
     public function iAmNotLoggedIn(): void
     {
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $this->kernel->getContainer()->get('security.token_storage');
-        $tokenStorage->setToken(null);
+        $this->tokenStorage->setToken(null);
     }
 
     private function createExercisePhaseId(string $exerciseId, string $courseId, string $baseId): string

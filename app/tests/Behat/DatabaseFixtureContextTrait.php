@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\NullOutput;
 
 trait DatabaseFixtureContextTrait
 {
-    protected static Schema $databaseSchema;
+    protected static ?Schema $databaseSchema = null;
 
     /**
      * @BeforeScenario @fixtures
@@ -48,7 +48,7 @@ trait DatabaseFixtureContextTrait
                 $needsTruncate = false;
             }
 
-            $schema = $this->entityManager->getConnection()->getSchemaManager()->createSchema();
+            $schema = $this->entityManager->getConnection()->createSchemaManager()->introspectSchema();
             self::$databaseSchema = $schema;
 
             if ($needsTruncate) {

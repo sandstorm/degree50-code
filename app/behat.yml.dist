@@ -3,3 +3,9 @@ default:
         default:
             contexts:
                 - App\Tests\Behat\DegreeContext
+
+    extensions:
+            FriendsOfBehat\SymfonyExtension:
+                bootstrap: tests/bootstrap.php
+                kernel:
+                    class: App\Kernel

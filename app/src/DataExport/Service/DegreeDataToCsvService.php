@@ -7,7 +7,7 @@ use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
-use App\Domain\ExercisePhaseTeam;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideAnnotation;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCode;
@@ -28,9 +28,9 @@ use Symfony\Component\Serializer\Serializer;
  */
 class DegreeDataToCsvService
 {
-    private const DEFAULT_DELIMITER = ';';
-    private const DEFAULT_ENCLOSURE = '"';
-    private const DEFAULT_ENCODING_CONTEXT = [
+    private const string DEFAULT_DELIMITER = ';';
+    private const string DEFAULT_ENCLOSURE = '"';
+    private const array DEFAULT_ENCODING_CONTEXT = [
         CsvEncoder::DELIMITER_KEY => self::DEFAULT_DELIMITER,
         CsvEncoder::ENCLOSURE_KEY => self::DEFAULT_ENCLOSURE,
         CsvEncoder::NO_HEADERS_KEY => true,

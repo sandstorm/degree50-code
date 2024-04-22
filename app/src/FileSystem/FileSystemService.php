@@ -43,6 +43,7 @@ class FileSystemService
      *
      * @param Filesystem $filesystem
      * @return string
+     * // TODO: @ api?
      * @api
      */
     public function getMountPrefixForFilesystem(Filesystem $filesystem): string

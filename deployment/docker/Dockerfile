@@ -53,6 +53,7 @@ ADD deployment/config-files/bash.colorprompt.sh /etc/bash.colorprompt.sh
 RUN echo '. /etc/bash.colorprompt.sh' >>  /etc/bash.bashrc
 
 # application entrypoint
+# TODO why do we use entrypoint.sh for e2e and integration tests?
 ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-e2e.sh /
 ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-integration.sh /
 ADD /deployment/config-files/php.override.ini /usr/local/etc/php/conf.d/php.override.ini

@@ -27,7 +27,7 @@
         "shivas/versioning-bundle": "^4.1",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",
-        "symfony/flex": "^2",
+        "symfony/flex": "^2.4",
         "symfony/form": "6.4.*",
         "symfony/framework-bundle": "6.4.*",
         "symfony/mailer": "6.4.*",
@@ -45,13 +45,13 @@
         "symfony/yaml": "6.4.*",
         "symfonycasts/reset-password-bundle": "^1.21",
         "symfonycasts/verify-email-bundle": "^1.17",
-        "vich/uploader-bundle": "*"
+        "vich/uploader-bundle": "^2.3"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.5",
-        "friends-of-behat/symfony-extension": "*",
-        "phpunit/phpunit": "*",
-        "sandstorm/e2etesttools": "*",
+        "friends-of-behat/symfony-extension": "^2.0",
+        "phpunit/phpunit": "^11.1",
+        "sandstorm/e2etesttools": "@dev",
         "symfony/maker-bundle": "^1.58",
         "symfony/web-profiler-bundle": "6.4.*"
     },

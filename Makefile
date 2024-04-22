@@ -14,7 +14,7 @@ stop:
 logs:
 	docker-compose logs -f
 
-logs-api:
+logs-degree:
 	docker-compose logs -f degree
 
 import-fixtures:
