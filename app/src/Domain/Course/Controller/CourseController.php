@@ -9,6 +9,7 @@ use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,10 +85,14 @@ class CourseController extends AbstractController
 
     /**
      * @Security("is_granted('edit', course) or is_granted('editMembers', course)")
-     * @Entity("courseRole", expr="repository.find(userRole_id)")
      */
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name: "exercise-overview__course--remove-role")]
-    public function removeCourseMember(Request $request, Course $course, CourseRole $courseRole): Response
+    public function removeCourseMember(
+        Request $request,
+        Course $course,
+        #[MapEntity(expr: "repository.find(userRole_id)")]
+        CourseRole $courseRole
+    ): Response
     {
         $redirectToEdit = (bool)$request->get('redirectToEdit');
 
@@ -111,12 +116,13 @@ class CourseController extends AbstractController
         }
     }
 
-    /**
-     * @Entity("courseRole", expr="repository.find(userRole_id)")
-     */
     #[IsGranted("editMembers", subject: "course")]
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name: "exercise-overview__course--upgrade-role")]
-    public function upgradeCourseMember(Course $course, CourseRole $courseRole): Response
+    public function upgradeCourseMember(
+        Course $course,
+        #[MapEntity(expr: "repository.find(userRole_id)")]
+        CourseRole $courseRole
+    ): Response
     {
         $courseRole->setName(CourseRole::DOZENT);
 
@@ -126,12 +132,13 @@ class CourseController extends AbstractController
         return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
     }
 
-    /**
-     * @Entity("courseRole", expr="repository.find(userRole_id)")
-     */
     #[IsGranted("editMembers", subject: "course")]
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name: "exercise-overview__course--downgrade-role")]
-    public function downgradeCourseMember(Course $course, CourseRole $courseRole): Response
+    public function downgradeCourseMember(
+        Course $course,
+        #[MapEntity(expr: "repository.find(userRole_id)")]
+        CourseRole $courseRole
+    ): Response
     {
         $courseRole->setName(CourseRole::STUDENT);
 

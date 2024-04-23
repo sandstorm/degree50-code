@@ -19,6 +19,7 @@ use App\VideoEncoding\Message\CutListEncodingTask;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -138,12 +139,13 @@ class ExercisePhaseTeamController extends AbstractController
         }
     }
 
-    /**
-     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
-     */
     #[IsGranted("join", subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/join", name: "exercise-phase-team__join")]
-    public function join(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function join(
+        ExercisePhase $exercisePhase,
+        #[MapEntity(expr: "repository.find(team_id)")]
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -164,12 +166,13 @@ class ExercisePhaseTeamController extends AbstractController
         );
     }
 
-    /**
-     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
-     */
     #[IsGranted("delete", subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/delete", name: "exercise-phase-team__delete")]
-    public function delete(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function delete(
+        ExercisePhase $exercisePhase,
+        #[MapEntity(expr: "repository.find(team_id)")]
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response
     {
         $this->entityManager->remove($exercisePhaseTeam);
         $this->entityManager->flush();
@@ -188,12 +191,13 @@ class ExercisePhaseTeamController extends AbstractController
         );
     }
 
-    /**
-     * @Entity("exercisePhaseTeam", expr="repository.find(team_id)")
-     */
     #[IsGranted("leave", subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/leave", name: "exercise-phase-team__leave")]
-    public function leave(ExercisePhase $exercisePhase, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function leave(
+        ExercisePhase $exercisePhase,
+        #[MapEntity(expr: "repository.find(team_id)")]
+        ExercisePhaseTeam $exercisePhaseTeam
+    ): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -208,7 +212,6 @@ class ExercisePhaseTeamController extends AbstractController
             $this->translator->trans('exercisePhaseTeam.leave.messages.success', [], 'forms')
         );
 
-        // TODO change route from int to id of phase
         return $this->redirectToRoute(
             'exercise__show-phase',
             [

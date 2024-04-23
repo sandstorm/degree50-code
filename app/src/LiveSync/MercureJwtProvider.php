@@ -10,13 +10,11 @@ use Firebase\JWT\JWT;
  * Used by the SERVER; so the secret is only sent out from the PHP server side
  * to the Mercure server side (server2server communication).
  */
-class MercureJwtProvider
+readonly class MercureJwtProvider
 {
-
     public function __construct(private string $jwtPrivateSigningKey)
     {
     }
-
 
     public function __invoke(): string
     {
@@ -24,6 +22,6 @@ class MercureJwtProvider
         $payload['mercure'] = [
             "publish" => ['*']
         ];
-        return JWT::encode($payload, $this->jwtPrivateSigningKey);
+        return JWT::encode($payload, $this->jwtPrivateSigningKey, 'HS256');
     }
 }

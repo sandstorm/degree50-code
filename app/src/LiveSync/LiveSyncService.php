@@ -6,7 +6,7 @@ use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
 use Firebase\JWT\JWT;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\Mercure\PublisherInterface;
+use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 
 /**
@@ -18,12 +18,13 @@ use Symfony\Component\Mercure\Update;
  */
 class LiveSyncService
 {
-
     public function __construct(
         private readonly string             $jwtPrivateSigningKey,
-        private readonly PublisherInterface $publisher
+        private readonly HubInterface $publisher,
+        protected bool $secureCookie = true
     )
     {
+        $this->secureCookie = $_ENV['APP_ENV'] === 'prod';
     }
 
     public static function getBaseJwtPayload(): array
@@ -71,10 +72,9 @@ class LiveSyncService
             ]
         ];
 
-        $jwt = JWT::encode($payload, $this->jwtPrivateSigningKey);
+        $jwt = JWT::encode($payload, $this->jwtPrivateSigningKey, 'HS256');
 
-        // TODO: maybe secure:true
-        return new Cookie('mercureAuthorization', $jwt, time() + 3600, '/', null, false, true);
+        return new Cookie('mercureAuthorization', $jwt, time() + 3600, '/', null, $this->secureCookie, true);
     }
 
     public function getClientSideLiveSyncConfig(ExercisePhaseTeam $exercisePhaseTeam): array
@@ -103,6 +103,6 @@ class LiveSyncService
             json_encode($data),
             true
         );
-        $this->publisher->__invoke($update);
+        $this->publisher->publish($update);
     }
 }
