@@ -48,8 +48,12 @@ class ExerciseController extends AbstractController
      */
     #[IsGranted("view", subject: "exercise")]
     #[Route("/exercise/{id}/show", name: "exercise__show")]
-    public function show(Exercise $exercise): Response
+    public function show(Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
@@ -74,8 +78,12 @@ class ExerciseController extends AbstractController
      */
     #[IsGranted("test", subject: "exercise")]
     #[Route("/exercise/{id}/test", name: "exercise__test")]
-    public function test(Exercise $exercise): Response
+    public function test(Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
 
         return $this->render(
@@ -99,8 +107,12 @@ class ExerciseController extends AbstractController
      */
     #[IsGranted("view", subject: "exercise")]
     #[Route("/exercise/{id}/phase/{phaseId}", name: "exercise__show-phase")]
-    public function showExercisePhase(Exercise $exercise, string $phaseId = ''): Response
+    public function showExercisePhase(Exercise $exercise = null, string $phaseId = ''): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -144,8 +156,12 @@ class ExerciseController extends AbstractController
      */
     #[IsGranted("test", subject: "exercise")]
     #[Route("/exercise/test/{id}/phase/{phaseId}", name: "exercise__show-test-phase")]
-    public function showTestExercisePhase(Exercise $exercise, string $phaseId = ''): Response
+    public function showTestExercisePhase(Exercise $exercise = null, string $phaseId = ''): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -183,8 +199,12 @@ class ExerciseController extends AbstractController
 
     #[IsGranted("newExercise", subject: "course")]
     #[Route("/exercise/new/{id}", name: "exercise__new")]
-    public function new(Request $request, Course $course): Response
+    public function new(Request $request, Course $course = null): Response
     {
+        if (!$course) {
+            throw $this->createNotFoundException();
+        }
+
         $exercise = new Exercise();
         $exercise->setCourse($course);
         /** @var User $user */
@@ -219,8 +239,12 @@ class ExerciseController extends AbstractController
 
     #[IsGranted("edit", subject: "exercise")]
     #[Route("/exercise/{id}/edit", name: "exercise__edit")]
-    public function edit(Request $request, Exercise $exercise): Response
+    public function edit(Request $request, Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $form = $this->createForm(ExerciseFormType::class, $exercise);
 
         $form->handleRequest($request);
@@ -272,8 +296,12 @@ class ExerciseController extends AbstractController
 
     #[IsGranted("edit", subject: "exercise")]
     #[Route("/exercise/{id}/edit/change-status", name: "exercise__change-status")]
-    public function changeStatus(Request $request, Exercise $exercise): Response
+    public function changeStatus(Request $request, Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $newStatus = (int)$request->query->get('status', Exercise::EXERCISE_CREATED);
         $exercise->setStatus($newStatus);
 
@@ -294,8 +322,12 @@ class ExerciseController extends AbstractController
 
     #[IsGranted("delete", subject: "exercise")]
     #[Route("/exercise/{id}/delete", name: "exercise__delete")]
-    public function delete(Exercise $exercise): Response
+    public function delete(Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $this->exerciseService->deleteExercise($exercise);
 
         $this->addFlash(
@@ -308,8 +340,12 @@ class ExerciseController extends AbstractController
 
     #[IsGranted("edit", subject: "exercise")]
     #[Route("/exercise/{id}/copy", name: "exercise__copy")]
-    public function copy(Request $request, Exercise $exercise): Response
+    public function copy(Request $request, Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $form = $this->createForm(CopyExerciseFormType::class, CopyExerciseFormDto::fromExercise($exercise));
 
         $form->handleRequest($request);
@@ -362,8 +398,12 @@ class ExerciseController extends AbstractController
      */
     #[IsGranted("showSolution", subject: "exercise")]
     #[Route("/exercise/{id}/show-solutions/{phaseId?}", name: "exercise__show-solutions")]
-    public function showSolutions(Request $request, Exercise $exercise): Response
+    public function showSolutions(Request $request, Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $phaseId = $request->get('phaseId');
 
         /** @var ExercisePhase $exercisePhase */

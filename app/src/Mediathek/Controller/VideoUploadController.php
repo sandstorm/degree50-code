@@ -35,19 +35,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * NOTE: The upload of the original files which are later encoded by the WebEncodingTask is handled by our UploadListener-Implementation
  * @see UploadListener
  */
- #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[IsGranted("ROLE_USER")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class VideoUploadController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface          $translator,
-        private readonly MessageBusInterface          $messageBus,
-        private readonly VideoRepository              $videoRepository,
-        private readonly VideoService                 $videoService,
-        private readonly AppRuntime                   $appRuntime,
-        private readonly EntityManagerInterface       $entityManager
+        private readonly TranslatorInterface    $translator,
+        private readonly MessageBusInterface    $messageBus,
+        private readonly VideoRepository        $videoRepository,
+        private readonly VideoService           $videoService,
+        private readonly AppRuntime             $appRuntime,
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
@@ -115,8 +115,12 @@ class VideoUploadController extends AbstractController
 
     #[IsGranted("edit", subject: "video")]
     #[Route("/video/edit/{id}", name: "mediathek__video--edit")]
-    public function edit(Request $request, Video $video): Response
+    public function edit(Request $request, Video $video = null): Response
     {
+        if (!$video) {
+            throw $this->createNotFoundException();
+        }
+
         $form = $this->createForm(MediathekVideoFormType::class, $video);
 
         $form->handleRequest($request);
@@ -143,13 +147,16 @@ class VideoUploadController extends AbstractController
     }
 
     /**
-     * TODO show delete page to confirm and show usage of the video on delete
      * Delete the video entity and the encoded video
      */
     #[IsGranted("delete", subject: "video")]
     #[Route("/video/delete/{id}/{confirm}", name: "mediathek__video--delete")]
-    public function delete(Video $video, bool $confirm = false): Response
+    public function delete(Video $video = null, bool $confirm = false): Response
     {
+        if (!$video) {
+            throw $this->createNotFoundException();
+        }
+
         if ($confirm) {
             $this->videoService->deleteVideo($video);
             $this->addFlash(

@@ -4,7 +4,6 @@ namespace App\Mediathek\Controller;
 
 use App\Domain\Video\Model\Video;
 use App\Twig\AppRuntime;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,8 +19,8 @@ class VideoPlayerController extends AbstractController
     {
     }
 
-    #[Route("/video/play/{id}", name: "mediathek__video--player")]
     #[IsGranted("view", subject: "video")]
+    #[Route("/video/play/{id}", name: "mediathek__video--player")]
     public function videoPlayer(
         Video $video = null
     ): Response

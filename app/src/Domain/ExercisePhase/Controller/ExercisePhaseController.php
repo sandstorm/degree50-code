@@ -120,8 +120,12 @@ class ExercisePhaseController extends AbstractController
 
     #[IsGranted("edit", subject: "exercise")]
     #[Route("/exercise/{id}/edit/phase/new", name: "exercise-phase__new")]
-    public function new(Exercise $exercise): Response
+    public function new(Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $types = [];
 
         foreach (ExercisePhaseType::getPossibleValues() as $type) {
@@ -140,8 +144,12 @@ class ExercisePhaseController extends AbstractController
 
     #[IsGranted("edit", subject: "exercise")]
     #[Route("/exercise/{id}/edit/phase/type", name: "exercise-phase__set-type")]
-    public function initializePhaseByType(Request $request, Exercise $exercise): Response
+    public function initializePhaseByType(Request $request, Exercise $exercise = null): Response
     {
+        if (!$exercise) {
+            throw $this->createNotFoundException();
+        }
+
         $type = $request->query->get('type');
 
         // Initialize phase by type (mandatory)
@@ -172,11 +180,15 @@ class ExercisePhaseController extends AbstractController
     #[Route("/exercise/{id}/edit/phase/{phase_id}/edit", name: "exercise-phase__edit")]
     public function edit(
         Request $request,
-        Exercise $exercise,
+        Exercise $exercise = null,
         #[MapEntity(expr: "repository.find(phase_id)")]
-        ExercisePhase $exercisePhase
+        ExercisePhase $exercisePhase = null
     ): Response
     {
+        if (!$exercise || !$exercisePhase) {
+            throw $this->createNotFoundException();
+        }
+
         $form = $this->getPhaseForm($exercisePhase);
 
         $form->handleRequest($request);
@@ -244,11 +256,15 @@ class ExercisePhaseController extends AbstractController
     #[IsGranted("delete", subject: "exercisePhase")]
     #[Route("/exercise/{id}/edit/phase/{phase_id}/delete", name: "exercise-phase__delete")]
     public function delete(
-        Exercise $exercise,
+        Exercise $exercise = null,
         #[MapEntity(expr: "repository.find(phase_id)")]
-        ExercisePhase $exercisePhase
+        ExercisePhase $exercisePhase = null
     ): Response
     {
+        if (!$exercise || !$exercisePhase) {
+            throw $this->createNotFoundException();
+        }
+
         $this->exercisePhaseService->deleteExercisePhase($exercisePhase);
 
         // Update sorting

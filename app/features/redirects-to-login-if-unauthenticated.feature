@@ -6,8 +6,8 @@ Feature: Redirections to the login if unauthenticated
         And I have a course with ID "c"
         And I have an exercise with ID "ex" belonging to course "c"
         And I have an exercise phase "ex-p1" belonging to exercise "ex"
-        And A Video with Id "video1" created by User "foo@bar.de" exists
-        And the Video with Id "video1" is added to Course "c"
+        And A Video with Id "foo" created by User "foo@bar.de" exists
+        And the Video with Id "foo" is added to Course "c"
         And I have an attachment with ID "m"
         And I am not logged in
 
