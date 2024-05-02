@@ -8,8 +8,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class DataPrivacyVoter extends Voter
 {
-    const ACCEPTED = 'data-privacy-accepted';
-    const DATA_PRIVACY_VERSION = 3;
+    const string ACCEPTED = 'data-privacy-accepted';
+    const int DATA_PRIVACY_VERSION = 3;
 
     public function supports($attribute, $subject): bool
     {

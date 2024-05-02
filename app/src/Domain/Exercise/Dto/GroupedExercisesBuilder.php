@@ -17,7 +17,7 @@ class GroupedExercisesBuilder
 
     public function addOwnExercise($exercise): static
     {
-        $this->ownExercises[] = ExerciseWithReviewStatusDTO::create(
+        $this->ownExercises[] = new ExerciseWithReviewStatusDTO(
             $exercise,
             $this->exerciseService->needsReview($exercise)
         );
@@ -27,7 +27,7 @@ class GroupedExercisesBuilder
 
     public function addOtherExercise($exercise): static
     {
-        $this->otherExercises[] = ExerciseWithReviewStatusDto::create(
+        $this->otherExercises[] = new ExerciseWithReviewStatusDTO(
             $exercise,
             $this->exerciseService->needsReview($exercise)
         );

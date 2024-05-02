@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class SolutionVoter extends Voter
 {
-    const REVIEW_SOLUTION = 'reviewSolution';
+    const string REVIEW_SOLUTION = 'reviewSolution';
 
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 

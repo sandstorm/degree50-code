@@ -10,12 +10,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ExercisePhaseTeamVoter extends Voter
 {
-    const JOIN = 'join';
-    const SHOW = 'show';
-    const SHOW_SOLUTION = 'showSolution';
-    const LEAVE = 'leave';
-    const DELETE = 'delete';
-    const UPDATE_SOLUTION = 'updateSolution';
+    const string JOIN = 'join';
+    const string SHOW = 'show';
+    const string SHOW_SOLUTION = 'showSolution';
+    const string LEAVE = 'leave';
+    const string DELETE = 'delete';
+    const string UPDATE_SOLUTION = 'updateSolution';
 
     protected function supports(string $attribute, $subject): bool
     {

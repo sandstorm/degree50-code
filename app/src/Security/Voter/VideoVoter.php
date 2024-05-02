@@ -19,11 +19,8 @@ class VideoVoter extends Voter
     const string DELETE = 'delete';
     const string CREATE = 'create';
 
-    private UserService $userService;
-
-    public function __construct(UserService $userService)
+    public function __construct(private readonly UserService $userService)
     {
-        $this->userService = $userService;
     }
 
     protected function supports(string $attribute, mixed $subject): bool

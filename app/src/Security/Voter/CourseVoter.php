@@ -11,11 +11,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CourseVoter extends Voter
 {
-    const EDIT_MEMBERS = 'editMembers';
-    const EDIT = 'edit';
-    const DELETE = 'delete';
-    const NEW_EXERCISE = 'newExercise';
-    const EXPORT_CSV = 'exportCSV';
+    const string EDIT_MEMBERS = 'editMembers';
+    const string EDIT = 'edit';
+    const string DELETE = 'delete';
+    const string NEW_EXERCISE = 'newExercise';
+    const string EXPORT_CSV = 'exportCSV';
 
     protected function supports(string $attribute, $subject): bool
     {

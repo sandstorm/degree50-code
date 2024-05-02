@@ -12,15 +12,14 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ExercisePhaseVoter extends Voter
 {
-    const SHOW = 'show';
-    const NEXT = 'next';
-    const DELETE = 'delete';
-    const TEST = 'test';
-
-    const SHOW_SOLUTIONS = 'showSolutions';
-    const CREATE_TEAM = 'createTeam';
-    const VIEW_OTHER_SOLUTIONS = 'viewOtherSolutions';
-    const VIEW = 'viewExercisePhase';
+    const string SHOW = 'show';
+    const string NEXT = 'next';
+    const string DELETE = 'delete';
+    const string TEST = 'test';
+    const string SHOW_SOLUTIONS = 'showSolutions';
+    const string CREATE_TEAM = 'createTeam';
+    const string VIEW_OTHER_SOLUTIONS = 'viewOtherSolutions';
+    const string VIEW = 'viewExercisePhase';
 
     protected function supports(string $attribute, $subject): bool
     {

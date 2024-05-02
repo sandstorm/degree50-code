@@ -21,11 +21,8 @@ class ExerciseVoter extends Voter
     const string IS_OPENED = 'isOpened';
     const string IS_FINISHED = 'isFinished';
 
-    private ExerciseService $exerciseService;
-
-    public function __construct(ExerciseService $exerciseService)
+    public function __construct(private readonly ExerciseService $exerciseService)
     {
-        $this->exerciseService = $exerciseService;
     }
 
     public static function canTest(Exercise $exercise, User $user): bool

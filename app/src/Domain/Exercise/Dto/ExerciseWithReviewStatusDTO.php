@@ -9,16 +9,11 @@ use App\Domain\Exercise\Model\Exercise;
  */
 class ExerciseWithReviewStatusDTO
 {
-    private function __construct(
+    public function __construct(
         private readonly Exercise $exercise,
         private bool              $needsReview
     )
     {
-    }
-
-    public static function create(Exercise $exercise, bool $needsReview): ExerciseWithReviewStatusDTO
-    {
-        return new self($exercise, $needsReview);
     }
 
     public function getExercise(): Exercise
