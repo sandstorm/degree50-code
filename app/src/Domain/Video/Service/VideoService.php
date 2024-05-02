@@ -19,8 +19,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class VideoService
 {
-    const string VIDEO_DOCTRINE_FILTER_NAME = 'video_doctrine_filter';
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly VideoRepository        $videoRepository,
@@ -38,11 +36,7 @@ class VideoService
      */
     public function getVideosCreatedByUserWithoutFilters(User $user): array
     {
-        $this->entityManager->getFilters()->disable(self::VIDEO_DOCTRINE_FILTER_NAME);
-        $videos = $this->videoRepository->findBy(['creator' => $user]);
-        $this->entityManager->getFilters()->enable(self::VIDEO_DOCTRINE_FILTER_NAME);
-
-        return $videos;
+        return $this->videoRepository->findBy(['creator' => $user]);
     }
 
     public function deleteVideosCreatedByUser(User $user): void

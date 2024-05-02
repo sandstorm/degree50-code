@@ -63,8 +63,6 @@ class CutListEncodingHandler implements MessageHandlerInterface
             return;
         }
 
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
-
         $cutVideo = $this->videoRepository->find($encodingTask->getVideoId());
 
         try {
@@ -125,10 +123,6 @@ class CutListEncodingHandler implements MessageHandlerInterface
             $cutVideo->setEncodingStatus(Video::ENCODING_ERROR);
             $this->entityManager->persist($cutVideo);
             $this->entityManager->flush();
-        } finally {
-            // Disabling the filter happens globally and not on a per request basis.
-            // Therefore we have to re-enable the filter after we are done encoding.
-            $this->entityManager->getFilters()->enable('video_doctrine_filter');
         }
     }
 

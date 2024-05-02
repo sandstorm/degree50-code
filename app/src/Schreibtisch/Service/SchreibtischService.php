@@ -119,8 +119,6 @@ class SchreibtischService
     {
         $user = $this->userService->getLoggendInUser();
 
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
-
         $videoFavorites = $this->videoFavouritesService->getFavouriteVideosForUser($user);
 
         $response = array_reduce($videoFavorites, function ($acc, VideoFavorite $videoFavorite) use ($user) {
@@ -149,8 +147,6 @@ class SchreibtischService
                 )
             ]];
         }, []);
-
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         return $response;
     }

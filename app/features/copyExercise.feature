@@ -8,7 +8,7 @@ Feature: Copy Exercises
     #       * id -> new
     #       * name -> copied
     #       * description -> copied
-    #       * creator -> TODO (probably new)
+    #       * creator -> new (copying user)
     #       * createdAt -> new
     #       * course -> new
     #       * userExerciseInteractions -> new
@@ -42,7 +42,8 @@ Feature: Copy Exercises
         And A Course with ID 'course2' exists
 
         And I am logged in as 'test-admin@sandstorm.de'
-        And I have a video with ID 'video1' belonging to course 'course1'
+        And A Video with Id "video1" created by User "test-admin@sandstorm.de" exists
+        And the Video with Id "video1" is added to Course "course1"
 
         And An Exercise with the following data exists:
             | id   | name      | description              | creator                 | course  |
@@ -53,7 +54,7 @@ Feature: Copy Exercises
             | p1 | exercisePhase1 | description of exercisePhase1 | false        | 0       | true                        | e1ID              | null           | videoAnalysis | true                   | true             |
             | p2 | exercisePhase2 | description of exercisePhase2 | true         | 1       | true                        | e1ID              | p1             | videoCutting  |                        |                  |
 
-        And I have a video with ID 'video1' belonging exercisePhase with ID 'p1'
+        And The Video with Id "video1" is added to exercisePhase with Id "p1"
         And An Attachment with Id 'attachment1' created by User 'test-admin@sandstorm.de' exists for ExercisePhase 'p1'
 
         And I have a predefined videoCodePrototype belonging to exercise phase p1 and with properties

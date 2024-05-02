@@ -4,9 +4,9 @@
         {% set groupIdTransVar = 'mediathek.groups.' ~ (group.id) %}
         <h5>{{ groupIdTransVar | trans }}</h5>
         <ul class="overview">
-            {% for video in group.videos %}
+            {% for videoDto in group.videos %}
                 <li>
-                    {{ include('Mediathek/Video.html.twig', {video: video}) }}
+                    {{ include('Mediathek/Video.html.twig', {videoDto: videoDto}) }}
                 </li>
             {% endfor %}
         </ul>

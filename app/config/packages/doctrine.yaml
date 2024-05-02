@@ -28,8 +28,3 @@ doctrine:
                 enabled: true
                 parameters:
                     userId: -1
-            video_doctrine_filter:
-                class: App\Security\DoctrineFilter\VideoDoctrineFilter
-                enabled: true
-                parameters:
-                    userId: -1

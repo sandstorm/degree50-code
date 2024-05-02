@@ -26,7 +26,7 @@ class VideoVoter extends Voter
         $this->userService = $userService;
     }
 
-    protected function supports(string $attribute, $subject): bool
+    protected function supports(string $attribute, mixed $subject): bool
     {
         if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::FAVOR, self::CREATE])) {
             return false;
@@ -45,6 +45,7 @@ class VideoVoter extends Voter
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
+            die('User is not an instance of User');
             // the user must be logged in; if not, deny access
             return false;
         }

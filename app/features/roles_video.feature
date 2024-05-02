@@ -34,23 +34,22 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And A Course with ID "course1" exists
         And A Course with ID "course2" exists
 
-        Given The User "test-dozent@sandstorm.de" has CourseRole "DOZENT" in Course course1
-        Given The User "test-student@sandstorm.de" has CourseRole "STUDENT" in Course course1
+        And The User "test-dozent@sandstorm.de" has CourseRole "DOZENT" in Course course1
+        And The User "test-student@sandstorm.de" has CourseRole "STUDENT" in Course course1
 
-        And I am logged in as "test-admin@sandstorm.de"
-        And I have a video with ID "admin_video_no_course" belonging to course "nocourse"
-        And I have a video with ID "admin_video_course1" belonging to course "course1"
-        And I have a video with ID "admin_video_course2" belonging to course "course2"
+        And A Video with Id "admin_video_no_course" created by User "test-admin@sandstorm.de" exists
+        And A Video with Id "admin_video_course1" created by User "test-admin@sandstorm.de" exists
+        And A Video with Id "admin_video_course2" created by User "test-admin@sandstorm.de" exists
+        And the Video with Id "admin_video_course1" is added to Course "course1"
+        And the Video with Id "admin_video_course2" is added to Course "course2"
 
-        And I am logged in as "test-dozent@sandstorm.de"
-        And I have a video with ID "dozent_video_no_course" belonging to course "nocourse"
-        And I have a video with ID "dozent_video_course1" belonging to course "course1"
+        And A Video with Id "dozent_video_no_course" created by User "test-dozent@sandstorm.de" exists
+        And A Video with Id "dozent_video_course1" created by User "test-dozent@sandstorm.de" exists
+        And the Video with Id "dozent_video_course1" is added to Course "course1"
 
-        And I am logged in as "test-student@sandstorm.de"
-        And I have a video with ID "student_video_no_course" belonging to course "nocourse"
-        And I have a video with ID "student_video_course1" belonging to course "course1"
-
-        And I am not logged in
+        And A Video with Id "student_video_no_course" created by User "test-student@sandstorm.de" exists
+        And A Video with Id "student_video_course1" created by User "test-student@sandstorm.de" exists
+        And the Video with Id "student_video_course1" is added to Course "course1"
 
     #########################
     ### View
@@ -206,10 +205,10 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit route "mediathek--index"
         Then the page contains all the following texts:
-            | /video/edit/dozent_video_no_course  |
-            | /video/edit/dozent_video_course1    |
-            | /video/edit/student_video_course1   |
-            | /video/edit/admin_video_course1     |
+            | /video/edit/dozent_video_no_course |
+            | /video/edit/dozent_video_course1   |
+            | /video/edit/student_video_course1  |
+            | /video/edit/admin_video_course1    |
         And the page contains none of the following texts:
             | /video/edit/admin_video_no_course   |
             | /video/edit/admin_video_course2     |
@@ -295,10 +294,10 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit route "mediathek--index"
         Then the page contains all the following texts:
-            | /video/delete/dozent_video_no_course  |
-            | /video/delete/dozent_video_course1    |
-            | /video/delete/admin_video_course1     |
-            | /video/delete/student_video_course1   |
+            | /video/delete/dozent_video_no_course |
+            | /video/delete/dozent_video_course1   |
+            | /video/delete/admin_video_course1    |
+            | /video/delete/student_video_course1  |
         And the page contains none of the following texts:
             | /video/delete/admin_video_no_course   |
             | /video/delete/admin_video_course2     |

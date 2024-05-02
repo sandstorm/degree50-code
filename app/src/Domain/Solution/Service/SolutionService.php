@@ -39,12 +39,6 @@ class SolutionService
         array                         $teams
     ): ClientSideSolutionDataBuilder
     {
-        // FIXME
-        // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
-        // However it is rather intransparent when and why that happens.
-        // Therefore we should probably find a way to fix and document this.
-        $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
-
         $previousSolutionDtos = array_map(function ($exercisePhaseTeam) {
             $solutionEntity = $exercisePhaseTeam->getSolution();
             $exercisePhase = $exercisePhaseTeam->getExercisePhase();
@@ -114,12 +108,6 @@ class SolutionService
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
         $previousSolutionDtos = $this->getPreviousSolutionDtosForVideoEditor($exercisePhase, $exercisePhaseTeam);
 
-        // FIXME
-        // apparently we need to disable this filter here, because otherwise we can't access the cutVideo on our solution.
-        // However it is rather intransparent when and why that happens.
-        // Therefore we should probably find a way to fix and document this.
-        // TODO we need to at least test this (@see {server-to-client-solution-conversion.feature}
-        $this->managerRegistry->getManager()->getFilters()->disable('video_doctrine_filter');
         $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
 
         $clientSideCutVideo = $cutVideo?->getAsClientSideVideo($this->appRuntime);

@@ -2,6 +2,7 @@
 
 namespace App\Domain\User\Model;
 
+use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\Exercise\Model\Exercise;
@@ -384,6 +385,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setExpirationNoticeSent(bool $expirationNoticeSent): void
     {
         $this->expirationNoticeSent = $expirationNoticeSent;
+    }
+
+    /**
+     * @return Collection<Course>
+     */
+    public function getCourses(): Collection
+    {
+        return $this->getCourseRoles()->map(function (CourseRole $courseRole) {
+            return $courseRole->getCourse();
+        });
     }
 
     private function setRole(string $roleToSet, bool $set): void

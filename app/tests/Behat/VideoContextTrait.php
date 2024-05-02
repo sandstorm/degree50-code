@@ -19,12 +19,12 @@ use function PHPUnit\Framework\assertNotEmpty;
 trait VideoContextTrait
 {
     /**
-     * @Given I have a video with ID :videoId belonging exercisePhase with ID :exercisePhaseId
+     * @Given The Video with Id :videoId is added to exercisePhase with Id :exercisePhaseId
      *
      * NOTE: The video you are trying to add needs to be available inside the same course, the
      * exercisePhase belongs to
      */
-    public function iHaveAVideoWithIdBelongingToExercisePhaseWithId($videoId, $exercisePhaseId): void
+    public function theVideoWithIdIsAddedToExercisePhaseWithId($videoId, $exercisePhaseId): void
     {
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $this->entityManager->find(ExercisePhase::class, $exercisePhaseId);
@@ -41,14 +41,13 @@ trait VideoContextTrait
     }
 
     /**
-     * @Given I have a video with ID :videoId belonging to course :courseId
+     * @Given the Video with Id :videoId is added to Course :courseId
      */
-    public function iHaveAVideoRememberingItsIDAsVIDEOID($videoId, $courseId): void
+    public function theVideoWithIdIsAddedToCourse($videoId, $courseId): void
     {
         /** @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
-
-        $video = $this->ensureVideoByUserExists($videoId, $this->currentUser->getId());
+        $video = $this->entityManager->find(Video::class, $videoId);
 
         if ($course) {
             $video->addCourse($course);
@@ -59,7 +58,7 @@ trait VideoContextTrait
     }
 
     /**
-     * @Given A Video with ID :videoId created by User :username exists
+     * @Given A Video with Id :videoId created by User :username exists
      */
     public function ensureVideoByUserExists($videoId, $username): Video
     {
@@ -94,13 +93,7 @@ trait VideoContextTrait
      */
     public function assertVideosByUserDoNotExist($username): void
     {
-        /**
-         * Why
-         * We want to find _all_ Videos of the user without doctrine filtering out any of them
-         */
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $videos = $this->videoRepository->findAll();
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         /**
          * Why
@@ -143,9 +136,7 @@ trait VideoContextTrait
         /** @var User $user */
         $user = $this->entityManager->find(User::class, $userId);
 
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $queryResult = $this->videoRepository->findByCreatorWithoutCutVideos($user);
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         assertNotEmpty($queryResult, 'Query result is empty!');
 

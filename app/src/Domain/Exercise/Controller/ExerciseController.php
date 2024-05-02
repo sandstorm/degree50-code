@@ -345,6 +345,7 @@ class ExerciseController extends AbstractController
             }
 
             $this->entityManager->persist($newExercise);
+            $this->entityManager->persist($newExercise->getCourse());
             $this->entityManager->flush();
 
             return $this->redirectToRoute('exercise__edit', ['id' => $newExercise->getId()]);

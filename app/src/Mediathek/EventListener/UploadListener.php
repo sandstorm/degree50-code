@@ -94,7 +94,6 @@ class UploadListener
         $id = $event->getRequest()->get('id');
         assert($id !== '', 'ID is set');
 
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($id);
 
         if (!$video) {
@@ -104,8 +103,6 @@ class UploadListener
         $uploadedSubtitleFile = $this->uploadFile($id, $event);
 
         $this->videoService->persistUploadedSubtitleFile($video, $uploadedSubtitleFile, $user);
-
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         $response = $event->getResponse();
         $response['success'] = true;
@@ -117,7 +114,6 @@ class UploadListener
         $id = $event->getRequest()->get('id');
         assert($id !== '', 'ID is set');
 
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($id);
 
         if (!$video) {
@@ -127,8 +123,6 @@ class UploadListener
         $uploadedVideoFile = $this->uploadFile($id, $event);
 
         $this->videoService->persistUploadedVideoFile($video, $uploadedVideoFile, $user);
-
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         $response = $event->getResponse();
         $response['success'] = true;
@@ -158,7 +152,6 @@ class UploadListener
         $id = $event->getRequest()->get('id');
         assert($id !== '', 'ID is set');
 
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($id);
 
         if (!$video) {
@@ -168,8 +161,6 @@ class UploadListener
         $uploadedAudioDescriptionFile = $this->uploadFile($id, $event);
 
         $this->videoService->persistUploadedAudioDescriptionFile($video, $uploadedAudioDescriptionFile, $user);
-
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         $response = $event->getResponse();
         $response['success'] = true;

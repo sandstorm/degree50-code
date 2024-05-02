@@ -49,14 +49,14 @@
 #}
 
 <div
-    id="tile-{{ video.data.id }}"
-    data-test-id="video-tile--{{ video.data.id }}"
+    id="tile-{{ videoDto.video.id }}"
+    data-test-id="video-tile--{{ videoDto.video.id }}"
     class="overview-item"
 >
-    <div class="overview-item__date" aria-label="{% trans %}video.labels.createdLabel{% endtrans %}: {{ video.data.createdAt|date("d.m.Y") }}">
-        {{ video.data.createdAt|date("d.m.Y") }}
+    <div class="overview-item__date" aria-label="{% trans %}video.labels.createdLabel{% endtrans %}: {{ videoDto.video.createdAt|date("d.m.Y") }}">
+        {{ videoDto.video.createdAt|date("d.m.Y") }}
     </div>
-    {% if video.data.courses | length == 0 %}
+    {% if videoDto.video.courses | length == 0 %}
         <div class="overview-item__status" aria-label="{% trans %}video.labels.statusLabel{% endtrans %}: {% trans %}video.labels.statusPrivate{% endtrans %}">
             <i class="fas fa-eye-slash" title="{% trans %}video.labels.statusPrivate{% endtrans %}"></i>
         </div>
@@ -67,29 +67,29 @@
     {% endif %}
     <a
         tabindex="0"
-        href="{{ path("mediathek__video--player", {id: video.data.id}) }}"
+        href="{{ path("mediathek__video--player", {id: videoDto.video.id}) }}"
         class="overview-item__title"
-        aria-label="{% trans %}video.labels.titleLabel{% endtrans %}: {{ video.data.title }}"
+        aria-label="{% trans %}video.labels.titleLabel{% endtrans %}: {{ videoDto.video.title }}"
     >
-        <img alt="{% trans %}video.labels.previewImage{% endtrans %}" height="50" width="100" src="{{ video.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg"/>
-        {{ video.data.title }}
+        <img alt="{% trans %}video.labels.previewImage{% endtrans %}" height="50" width="100" src="{{ videoDto.video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg"/>
+        {{ videoDto.video.title }}
     </a>
-    {% if is_granted('edit', video.data) %}
+    {% if is_granted('edit', videoDto.video) %}
         <div class="overview-item__actions" aria-label="{% trans %}video.labels.actionsLabel{% endtrans %}">
             {% if app.user.isStudent %}
-                {{ _self.favorButton(video) }}
+                {{ _self.favorButton(videoDto) }}
             {% endif %}
-            <button class="button button--type-link" aria-label="{% trans %}video.labels.toggleActions{% endtrans%} {{ video.data.title }}">
+            <button class="button button--type-link" aria-label="{% trans %}video.labels.toggleActions{% endtrans%} {{ videoDto.video.title }}">
                 <i class="fas fa-ellipsis-v"></i>
                 <div class="overview-item__actions-dropdown">
-                    <a href="{{ path('mediathek__video--player', {id: video.data.id}) }}">
+                    <a href="{{ path('mediathek__video--player', {id: videoDto.video.id}) }}">
                         <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
                     </a>
-                    <a href="{{ path('mediathek__video--edit', {id: video.data.id}) }}">
+                    <a href="{{ path('mediathek__video--edit', {id: videoDto.video.id}) }}">
                         <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
                     </a>
                     <a
-                        href="{{ path('mediathek__video--delete', {id: video.data.id}) }}"
+                        href="{{ path('mediathek__video--delete', {id: videoDto.video.id}) }}"
                         class="color-alert"
                     >
                         <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
@@ -100,30 +100,30 @@
     {% else %}
         <div class="overview-item__actions">
             {% if app.user.isStudent %}
-                {{ _self.favorButton(video) }}
+                {{ _self.favorButton(videoDto) }}
             {% endif %}
         </div>
     {% endif %}
 </div>
 
-{% macro favorButton(video)  %}
-    {% if video.isFavorite %}
+{% macro favorButton(videoDto)  %}
+    {% if videoDto.isFavorite %}
         <a
-            href="{{ path('mediathek__video--favor', {id: video.data.id}) }}"
+            href="{{ path('mediathek__video--favor', {id: videoDto.video.id}) }}"
             class="overview-item__action-favourite"
             title="{% trans %}video.unfavor.title{% endtrans %}"
-            data-test-id="tile__favor-button-{{ video.data.id }}"
+            data-test-id="tile__favor-button-{{ videoDto.video.id }}"
         >
-            <i class="fas fa-star" data-test-id="remove-video-from-favorites--{{ video.data.id }}"></i>
+            <i class="fas fa-star" data-test-id="remove-video-from-favorites--{{ videoDto.video.id }}"></i>
         </a>
     {% else %}
         <a
-            href="{{ path('mediathek__video--favor', {id: video.data.id}) }}"
+            href="{{ path('mediathek__video--favor', {id: videoDto.video.id}) }}"
             class="overview-item__action-favourite"
-            data-test-id="tile__favor-button-{{ video.data.id }}"
+            data-test-id="tile__favor-button-{{ videoDto.video.id }}"
             title="{% trans %}video.favor.title{% endtrans %}"
         >
-            <i class="far fa-star" data-test-id="add-video-to-favorites--{{ video.data.id }}"></i>
+            <i class="far fa-star" data-test-id="add-video-to-favorites--{{ videoDto.video.id }}"></i>
         </a>
     {% endif %}
 {% endmacro %}

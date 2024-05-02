@@ -10,7 +10,7 @@ Feature: CRUD operations on the videoRepository
         And I have an exercise phase "ex-p2" belonging to exercise "ex"
         And I have an exercise phase "ex-p3" belonging to exercise "ex-2"
         And I have a team with ID "team-1" belonging to exercise phase "ex-p1"
-        And A Video with ID "video-1" created by User "foo@bar.de" exists
+        And A Video with Id "video-1" created by User "foo@bar.de" exists
         And I have a video "video-1" belonging to exercise phase "ex-p1"
         And I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """

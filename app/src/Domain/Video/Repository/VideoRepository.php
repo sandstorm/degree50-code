@@ -10,17 +10,57 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @method Video|null find($id, $lockMode = null, $lockVersion = null)
- * @method Video|null findOneBy(array $criteria, array $orderBy = null)
- * @method Video[]    findAll()
- * @method Video[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class VideoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Video::class);
+    }
+
+    /**
+     * @return Video[]
+     */
+    public function findAllForUser(User $user): array
+    {
+        $qb = $this
+            ->createQueryBuilder('video')
+            ->orderBy('video.createdAt', 'DESC');
+
+
+        if (!$user->isAdmin()) {
+            $videosInUserCourses = $user->getCourses()->reduce(
+                fn($videos, Course $course) => [...$videos, ...$course->getVideos()->toArray()],
+                []
+            );
+
+            $qb
+                // current user is the creator of the video
+                ->orWhere('video.creator = :user')
+                // current user is in a course that the video is assigned to
+                ->orWhere('video.id IN (:videosInUserCourses)')
+                ->setParameter('user', $user)
+                ->setParameter('videosInUserCourses', $videosInUserCourses);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllForCourse(Course $course): array
+    {
+        $qb = $this
+            ->createQueryBuilder('video')
+            ->orderBy('video.createdAt', 'DESC');
+
+
+        $qb
+            ->andWhere(':course MEMBER OF video.courses')
+            ->setParameter('course', $course);
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 
     public function findByCreatorWithoutCutVideos(User $user)

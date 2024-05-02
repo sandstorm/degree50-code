@@ -8,7 +8,8 @@ use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Mediathek\Dto\VideoWithFavoriteStatusDto;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,9 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted("ROLE_USER")]
- #[isGranted("user-verified")]
- #[IsGranted("data-privacy-accepted")]
- #[IsGranted("terms-of-use-accepted")]
+#[isGranted("user-verified")]
+#[IsGranted("data-privacy-accepted")]
+#[IsGranted("terms-of-use-accepted")]
 class MediathekOverviewController extends AbstractController
 {
     public function __construct(
@@ -26,7 +27,6 @@ class MediathekOverviewController extends AbstractController
         private readonly CourseRepository       $courseRepository,
         private readonly VideoFavouritesService $videoFavouritesService,
         private readonly Security               $security,
-        private readonly EntityManagerInterface $entityManager,
     )
     {
     }
@@ -34,16 +34,19 @@ class MediathekOverviewController extends AbstractController
     #[Route("/mediathek/{id?}", name: "mediathek--index")]
     public function index(Course $course = null): Response
     {
+        /** @var User $user */
+        $user = $this->security->getUser();
+
         if ($course) {
-            $videos = $this->videoRepository->findByCourse($course);
+            $videos = $this->videoRepository->findAllForCourse($course);
         } else {
-            $videos = $this->videoRepository->findBy(array(), array('createdAt' => 'DESC'));
+            $videos = $this->videoRepository->findAllForUser($user);
         }
 
         return $this->render('Mediathek/Index.html.twig', [
             'sidebarItems' => $this->getSideBarItems(),
             'course' => $course,
-            'groupedVideos' => $this->getVideosGrouped($videos)
+            'groupedVideos' => $this->groupSelfCreatedAndOtherVideos($user, $videos),
         ]);
     }
 
@@ -60,35 +63,35 @@ class MediathekOverviewController extends AbstractController
     }
 
     /**
-     * @param Video[] $otherVideos
+     * @param Video[] $videos
      * @return array[]
      */
-    private function getVideosGrouped(array $otherVideos): array
+    private function groupSelfCreatedAndOtherVideos(User $user, array $videos): array
     {
-        /** @var User $user */
-        $user = $this->security->getUser();
+        $videoCollection = new ArrayCollection($videos);
 
-        $groupedVideosBuilder = new GroupedVideosBuilder($this->videoFavouritesService);
-        $groupedVideosBuilder->setUser($user);
+        $videosWithFavoriteStatus = $videoCollection->map(
+            fn(Video $video) => new VideoWithFavoriteStatusDto(
+                $video,
+                $this->videoFavouritesService->videoIsFavorite($video, $user),
+            )
+        );
 
-        // we need all the videos, also the private ones that dont belong to any course
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
+        $partitionedVideos = $videosWithFavoriteStatus->partition(
+            fn($_key, VideoWithFavoriteStatusDto $videoDto) => $videoDto->video->getCreator() === $user
+        );
 
-        $ownVideos = $this->videoRepository->findByCreatorWithoutCutVideos($user);
-
-        foreach ($ownVideos as $ownVideo) {
-            $groupedVideosBuilder->addOwnVideo($ownVideo);
-        }
-
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
-
-        foreach ($otherVideos as $video) {
-            if ($video->getCreator() !== $user) {
-                $groupedVideosBuilder->addOtherVideo($video);
-            }
-        }
-
-        return $groupedVideosBuilder->create();
+        // this is the data structure used by the template
+        return [
+            [
+                'id' => 'ownVideos',
+                'videos' => $partitionedVideos[0]->toArray(),
+            ],
+            [
+                'id' => 'otherVideos',
+                'videos' => $partitionedVideos[1]->toArray(),
+            ]
+        ];
     }
 
     /**
@@ -96,6 +99,7 @@ class MediathekOverviewController extends AbstractController
      */
     private function getSideBarItems(): array
     {
+        // TODO: refactor when removing doctrine filters
         $courses = $this->courseRepository->findAll();
 
         $sidebarItems = [];

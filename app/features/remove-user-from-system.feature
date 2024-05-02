@@ -11,7 +11,7 @@ Feature: Degree User is removed completely from system
     Scenario: Remove Student with Exercise
         Given The User "student1@test.de" has CourseRole "DOZENT" in Course "course1"
         And An Exercise with ID "exerciseByStudent1" created by User "student1@test.de" in Course "course1" exists
-        And A Video with ID "video1" created by User "student1@test.de" exists
+        And A Video with Id "video1" created by User "student1@test.de" exists
         # Why only an admin can delete a user
         And I am logged in as 'admin@test.de'
         When I delete User "student1@test.de"
@@ -95,12 +95,13 @@ Feature: Degree User is removed completely from system
         And I am logged in as "dozent@test.de"
         # will persist
         And I have an exercise phase "exercisePhase1" belonging to exercise "exerciseByDozent1"
-        And I have a video with ID "video1" belonging to course "course1"
+        And A Video with Id "video1" created by User "dozent@test.de" exists
+        And the Video with Id "video1" is added to Course "course1"
         And An Attachment with Id "attachment1" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase1"
         And Exercise "exerciseByDozent1" is published
         # will be removed
         And I have an exercise phase "exercisePhase2" belonging to exercise "exerciseByDozent2"
-        And A Video with ID "video2" created by User "dozent@test.de" exists
+        And A Video with Id "video2" created by User "dozent@test.de" exists
         And An Attachment with Id "attachment2" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase2"
 
         And I am logged in as "admin@test.de"

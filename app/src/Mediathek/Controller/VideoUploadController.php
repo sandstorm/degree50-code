@@ -68,11 +68,7 @@ class VideoUploadController extends AbstractController
             $videoUuid = Uuid::uuid4()->toString();
         }
 
-        // we need to disable the video-filter here, cause the uploaded video has already created an video db entry
-        // but without courses set. With the filter active we could not find the existing db entry at this point.
-        $this->entityManager->getFilters()->disable('video_doctrine_filter');
         $video = $this->videoRepository->find($videoUuid);
-        $this->entityManager->getFilters()->enable('video_doctrine_filter');
 
         if (!$video) {
             $video = new Video($videoUuid);
