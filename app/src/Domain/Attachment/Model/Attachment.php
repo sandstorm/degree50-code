@@ -40,7 +40,7 @@ class Attachment
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdVideos")]
     private User $creator;
 
-    #[ORM\ManyToOne(targetEntity: ExercisePhase::class, inversedBy: "attachment")]
+    #[ORM\ManyToOne(targetEntity: ExercisePhase::class, inversedBy: "attachments")]
     #[ORM\JoinColumn(nullable: true)]
     private ?ExercisePhase $exercisePhase;
 
