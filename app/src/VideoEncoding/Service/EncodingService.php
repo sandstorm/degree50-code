@@ -112,10 +112,10 @@ class EncodingService
 
     public function encodeMP4WithAudioDescription(Video $video, string $localOutputDirectory): void
     {
-        $inputVideoFileName = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedVideoFile());
+        $inputVideoFileName = $this->fileSystemService->localPath($video->getUploadedVideoFile());
         $inputAudioDescriptionFileName = empty($video->getUploadedAudioDescriptionFile()->getVirtualPathAndFilename())
             ? null
-            : $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedAudioDescriptionFile());
+            : $this->fileSystemService->localPath($video->getUploadedAudioDescriptionFile());
 
         $this->logger->info('Start encoding MP4 of file <' . $inputVideoFileName . '>.');
 

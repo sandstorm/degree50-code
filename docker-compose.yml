@@ -15,6 +15,7 @@ services:
       - mailpit
     volumes:
       - ./app:/app:rw,cached
+      - app-var:/app/var
 
   degree:
     build:

@@ -104,6 +104,10 @@ class VideoService
      */
     public function removeOriginalSubtitleFile(Video $video): void
     {
+        if (!$video->getUploadedSubtitleFile()->hasFile()) {
+            return;
+        }
+
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedSubtitleFile());
         $filesystem = new Filesystem();
         $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
@@ -183,6 +187,10 @@ class VideoService
      */
     public function removeOriginalAudioDescriptionFile(Video $video): void
     {
+        if (!$video->getUploadedAudioDescriptionFile()->hasFile()) {
+            return;
+        }
+
         $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedAudioDescriptionFile());
         $filesystem = new Filesystem();
         $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);

@@ -3,15 +3,15 @@
 
 namespace App\Mediathek\EventListener;
 
-use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
-use App\FileSystem\FileSystemService;
 use App\Domain\Attachment\Model\Attachment;
+use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
+use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\Video\Service\VideoService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
+use App\FileSystem\FileSystemService;
 use App\Mediathek\Controller\VideoUploadController;
-use App\Domain\Video\Repository\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
@@ -36,12 +36,12 @@ class UploadListener
     const string TARGET_AUDIO_DESCRIPTION = 'audio_description';
 
     public function __construct(
-        private readonly FileSystemService            $fileSystemService,
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly VideoRepository              $videoRepository,
-        private readonly Security                     $security,
-        private readonly ExercisePhaseRepository      $exercisePhaseRepository,
-        private readonly VideoService                 $videoService,
+        private readonly FileSystemService       $fileSystemService,
+        private readonly EntityManagerInterface  $entityManager,
+        private readonly VideoRepository         $videoRepository,
+        private readonly Security                $security,
+        private readonly ExercisePhaseRepository $exercisePhaseRepository,
+        private readonly VideoService            $videoService,
     )
     {
     }
@@ -141,8 +141,7 @@ class UploadListener
         );
         $uploadedFile = VirtualizedFile::fromMountPointAndFilename($mountPrefix, $targetFileName);
 
-        $renamingSuccessful = $fileSystem->rename($event->getFile()->getPathname(), $targetFileName);
-        assert($renamingSuccessful, 'Renaming the file did not work');
+        $fileSystem->move($event->getFile()->getPathname(), $targetFileName);
 
         return $uploadedFile;
     }

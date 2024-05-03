@@ -3,11 +3,11 @@
 namespace App\VideoEncoding\MessageHandler;
 
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
-use App\FileSystem\FileSystemService;
-use App\Domain\Video\Model\Video;
-use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
+use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
+use App\FileSystem\FileSystemService;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use App\VideoEncoding\Service\EncodingService;
 use App\VideoEncoding\Service\SubtitleService;
@@ -33,24 +33,24 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  * Start workers:
  * ./symfony-console messenger:consume async -vV
  */
-class CutListEncodingHandler implements MessageHandlerInterface
+readonly class CutListEncodingHandler implements MessageHandlerInterface
 {
     public function __construct(
-        private readonly LoggerInterface              $logger,
-        private readonly FileSystemService            $fileSystemService,
-        private readonly VideoRepository              $videoRepository,
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly ExercisePhaseTeamRepository  $exercisePhaseTeamRepository,
-        private readonly EncodingService              $encodingService,
-        private readonly SubtitleService              $subtitleService,
-        private readonly ParameterBagInterface        $parameterBag
+        private LoggerInterface             $logger,
+        private FileSystemService           $fileSystemService,
+        private VideoRepository             $videoRepository,
+        private EntityManagerInterface      $entityManager,
+        private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private EncodingService             $encodingService,
+        private SubtitleService             $subtitleService,
+        private ParameterBagInterface       $parameterBag
     )
     {
     }
 
     public function __invoke(CutListEncodingTask $encodingTask): void
     {
-        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($encodingTask->getExercisePhaseTeamId());
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($encodingTask->exercisePhaseTeamId);
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         if (!$exercisePhase instanceof VideoCutPhase) {
@@ -63,7 +63,7 @@ class CutListEncodingHandler implements MessageHandlerInterface
             return;
         }
 
-        $cutVideo = $this->videoRepository->find($encodingTask->getVideoId());
+        $cutVideo = $this->videoRepository->find($encodingTask->videoId);
 
         try {
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $cutVideo->getId());

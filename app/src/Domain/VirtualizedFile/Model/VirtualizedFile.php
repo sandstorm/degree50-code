@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Embeddable]
 class VirtualizedFile
 {
-
     /**
      * file name in the form "storage_prefix://filename"
      */
@@ -60,5 +59,8 @@ class VirtualizedFile
         return 'VirtualizedFile[' . $this->getVirtualPathAndFilename() . ']';
     }
 
-
+    public function hasFile(): bool
+    {
+        return $this->virtualPathAndFilename !== null;
+    }
 }

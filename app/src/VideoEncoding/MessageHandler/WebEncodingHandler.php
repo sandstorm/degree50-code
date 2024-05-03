@@ -2,16 +2,15 @@
 
 namespace App\VideoEncoding\MessageHandler;
 
-use App\FileSystem\FileSystemService;
 use App\Domain\Video\Model\Video;
-use App\Domain\Video\Service\VideoService;
-use App\Mediathek\Controller\VideoUploadController;
 use App\Domain\Video\Repository\VideoRepository;
+use App\Domain\Video\Service\VideoService;
+use App\FileSystem\FileSystemService;
+use App\Mediathek\Controller\VideoUploadController;
 use App\VideoEncoding\Message\WebEncodingTask;
 use App\VideoEncoding\Service\EncodingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use League\Flysystem\FileExistsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
@@ -29,58 +28,59 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  * ./symfony-console messenger:consume async -vv
  * Note: the -v|-vv|-vvv option determines the log level
  */
-class WebEncodingHandler implements MessageHandlerInterface
+readonly class WebEncodingHandler implements MessageHandlerInterface
 {
     public function __construct(
-        private readonly LoggerInterface              $logger,
-        private readonly FileSystemService            $fileSystemService,
-        private readonly VideoRepository              $videoRepository,
-        private readonly EntityManagerInterface       $entityManager,
-        private readonly VideoService                 $videoService,
-        private readonly EncodingService              $encodingService,
+        private LoggerInterface        $logger,
+        private FileSystemService      $fileSystemService,
+        private VideoRepository        $videoRepository,
+        private EntityManagerInterface $entityManager,
+        private VideoService           $videoService,
+        private EncodingService        $encodingService,
     )
     {
     }
 
     public function __invoke(WebEncodingTask $encodingTask): void
     {
-        $video = $this->videoRepository->find($encodingTask->getVideoId());
+        /* @var Video|null $video */
+        $video = $this->videoRepository->find($encodingTask->videoId);
 
         try {
             if ($video === null) {
-                $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
-                throw new Exception('Video not found for encoding', ['videoId' => $encodingTask->getVideoId()]);
+                $this->logger->warning('Video not found for encoding', ['videoId' => $encodingTask->videoId]);
+                throw new Exception('Video not found for encoding', ['videoId' => $encodingTask->videoId]);
             }
 
             $video->setEncodingStatus(Video::ENCODING_STARTED);
             $this->entityManager->persist($video);
             $this->entityManager->flush();
 
-            $outputDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
-            $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
+            $temporaryDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
+            $temporaryDirectoryPath = $this->fileSystemService->localPath($temporaryDirectory);
 
-            $this->encodingService->encodeMP4WithAudioDescription($video, $localOutputDirectory);
+            $this->encodingService->encodeMP4WithAudioDescription($video, $temporaryDirectoryPath);
 
             // We use our encoded mp4 file as baseline for further encoding to HLS
             // That way we can guarantee that the resulting HLS will be playable.
-            $mp4Url = $localOutputDirectory . '/x264.mp4';
+            $mp4Url = $temporaryDirectoryPath . '/x264.mp4';
             $videoDuration = $this->encodingService->probeForVideoDuration($mp4Url);
-            $this->encodingService->encodeHLS($mp4Url, $localOutputDirectory);
+            $this->encodingService->encodeHLS($mp4Url, $temporaryDirectoryPath);
 
-            $this->encodingService->createPreviewImage($mp4Url, $localOutputDirectory, $videoDuration);
+            $this->encodingService->createPreviewImage($mp4Url, $temporaryDirectoryPath, $videoDuration);
 
             if (!empty($video->getUploadedSubtitleFile()->getVirtualPathAndFilename())) {
-                $this->copyUploadedSubtitleFileToOutputDirectory($video, $localOutputDirectory);
+                $this->copyUploadedSubtitleFileToOutputDirectory($video, $temporaryDirectoryPath);
             } else {
-                $this->createEmptyDefaultSubtitlesFile($localOutputDirectory);
+                $this->createEmptyDefaultSubtitlesFile($temporaryDirectoryPath);
             }
 
             $video->setVideoDuration($videoDuration);
             $video->setEncodingStatus(Video::ENCODING_FINISHED);
 
-            $this->fileSystemService->moveDirectory($outputDirectory, $encodingTask->getDesiredOutputDirectory());
+            $this->fileSystemService->moveDirectory($temporaryDirectory, $encodingTask->desiredOutputDirectory);
 
-            $video->setEncodedVideoDirectory($encodingTask->getDesiredOutputDirectory());
+            $video->setEncodedVideoDirectory($encodingTask->desiredOutputDirectory);
 
             $this->pingAndReconnectDB();
 
@@ -93,6 +93,7 @@ class WebEncodingHandler implements MessageHandlerInterface
             $this->entityManager->flush();
         } catch (Exception $exception) {
             $video->setEncodingStatus(Video::ENCODING_ERROR);
+            $this->logger->error('Error while encoding video', ['exception' => $exception]);
             $this->entityManager->persist($video);
             $this->entityManager->flush();
         } finally {
@@ -103,7 +104,7 @@ class WebEncodingHandler implements MessageHandlerInterface
 
     private function copyUploadedSubtitleFileToOutputDirectory(Video $video, $localOutputDirectory): void
     {
-        $uploadedFilePath = $this->fileSystemService->fetchIfNeededAndGetLocalPath($video->getUploadedSubtitleFile());
+        $uploadedFilePath = $this->fileSystemService->localPath($video->getUploadedSubtitleFile());
         $destinationPath = $localOutputDirectory . '/subtitles.vtt';
         copy($uploadedFilePath, $destinationPath);
     }

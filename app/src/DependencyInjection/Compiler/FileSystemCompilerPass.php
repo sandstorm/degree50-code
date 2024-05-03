@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Initializes
+ * Inializes Filesystems for @FileSystemService
  *
  * Modelled after {@see FilesystemPass}
  */
@@ -23,18 +23,29 @@ class FileSystemCompilerPass implements CompilerPassInterface
 
         $fileSystemServiceDefinition = $container->findDefinition(FileSystemService::class);
 
-        // find all service IDs with the app.mail_transport tag
-        $taggedServices = $container->findTaggedServiceIds('oneup_flysystem.filesystem');
+        $filesystems = $container->findTaggedServiceIds('oneup_flysystem.filesystem');
 
-        foreach ($taggedServices as $id => $attributes) {
+        $oneupFlysystemConfig = $container->getExtensionConfig('oneup_flysystem')[0];
+        $adaptersConfig = $oneupFlysystemConfig['adapters'];
+        $filesystemsConfig = $oneupFlysystemConfig['filesystems'];
+
+        foreach ($filesystems as $id => $attributes) {
             foreach ($attributes as $attribute) {
                 if (!isset($attribute['mount'])) {
                     continue;
                 }
 
+                $fileSystemConfig = $filesystemsConfig[$attribute['mount']];
+                $adapterLocation = str_replace(
+                    '%kernel.project_dir%',
+                    $container->getParameter('kernel.project_dir'),
+                    $adaptersConfig[$fileSystemConfig['adapter']]['local']['location'] . '/'
+                );
+
                 $fileSystemServiceDefinition->addMethodCall('registerFilesystem', [
                     new Reference($id),
-                    $attribute['mount']
+                    $attribute['mount'],
+                    $adapterLocation,
                 ]);
             }
         }
