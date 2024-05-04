@@ -136,7 +136,7 @@ trait VideoContextTrait
         /** @var User $user */
         $user = $this->entityManager->find(User::class, $userId);
 
-        $queryResult = $this->videoRepository->findByCreatorWithoutCutVideos($user);
+        $queryResult = $this->videoRepository->findAllForUser($user);
 
         assertNotEmpty($queryResult, 'Query result is empty!');
 

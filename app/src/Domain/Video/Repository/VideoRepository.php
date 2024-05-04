@@ -43,6 +43,17 @@ class VideoRepository extends ServiceEntityRepository
         }
 
         return $qb
+            // We only want to show videos which where manually uploaded, and not
+            // cut videos. Therefore we left join with the solutions table
+            // and check if the video is actually a cut video on the solution and if so, filter it out.
+            ->leftJoin(
+                Solution::class,
+                'solution',
+                Join::WITH,
+                'video.id = solution.cutVideo'
+            )
+            ->andWhere('solution.cutVideo IS NULL')
+            // run query
             ->getQuery()
             ->getResult();
     }
@@ -63,31 +74,8 @@ class VideoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByCreatorWithoutCutVideos(User $user)
-    {
-        $qb = $this->createQueryBuilder('v');
-
-        // We only want to show videos which where manually uploaded, and not
-        // cut videos. Therefore we left join with the solutions table
-        // and check if the video is actually a cut video on the solution and if so, filter it out.
-        return $qb
-            ->leftJoin(
-                Solution::class,
-                'solution',
-                Join::WITH,
-                'v.id = solution.cutVideo'
-            )
-            ->where('v.creator = :user')
-            ->andWhere('solution.cutVideo IS NULL')
-            ->setParameter('user', $user)
-            ->orderBy('v.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
     /**
      * @param Course $course
-     * TODO: Collection?
      * @return Video[]|iterable
      */
     public function findByCourse(Course $course): iterable

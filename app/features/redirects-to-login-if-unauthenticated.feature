@@ -1,4 +1,4 @@
-@fixtures @playwright @debug
+@fixtures @playwright
 Feature: Redirections to the login if unauthenticated
 
     Background:
