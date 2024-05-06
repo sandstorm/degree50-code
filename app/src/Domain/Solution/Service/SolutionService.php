@@ -17,14 +17,14 @@ use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 
-class SolutionService
+readonly class SolutionService
 {
     public function __construct(
-        private readonly AutosavedSolutionRepository $autosavedSolutionRepository,
-        private readonly AppRuntime                  $appRuntime,
-        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        private readonly ManagerRegistry             $managerRegistry,
-        private readonly ExercisePhaseService        $exercisePhaseService,
+        private AutosavedSolutionRepository $autosavedSolutionRepository,
+        private AppRuntime                  $appRuntime,
+        private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private ManagerRegistry             $managerRegistry,
+        private ExercisePhaseService        $exercisePhaseService,
     )
     {
     }

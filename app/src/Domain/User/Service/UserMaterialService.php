@@ -9,11 +9,11 @@ use App\Domain\User\Model\User;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
-class UserMaterialService
+readonly class UserMaterialService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly MaterialRepository     $materialRepository,
+        private EntityManagerInterface $entityManager,
+        private MaterialRepository     $materialRepository,
     )
     {
     }

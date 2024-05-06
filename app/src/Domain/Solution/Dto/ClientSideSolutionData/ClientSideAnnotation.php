@@ -10,16 +10,16 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideAnnotation implements JsonSerializable
+final readonly class ClientSideAnnotation implements JsonSerializable
 {
     private function __construct(
-        private readonly string  $start,
-        private readonly string  $end,
-        private readonly string  $text,
-        private readonly string  $memo,
-        private readonly ?string $color,
-        private readonly string  $solutionId,
-        private readonly string  $id
+        private string  $start,
+        private string  $end,
+        private string  $text,
+        private string  $memo,
+        private ?string $color,
+        private string  $solutionId,
+        private string  $id
     )
     {
     }

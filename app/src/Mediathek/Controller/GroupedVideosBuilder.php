@@ -24,7 +24,7 @@ class GroupedVideosBuilder
 
     public function addOwnVideo(Video $video): static
     {
-        $this->ownVideos[] = VideoWithFavoriteStatusDto::create(
+        $this->ownVideos[] = new VideoWithFavoriteStatusDto(
             $video,
             $this->videoFavouritesService->videoIsFavorite($video, $this->user),
         );
@@ -34,7 +34,7 @@ class GroupedVideosBuilder
 
     public function addOtherVideo(Video $video): static
     {
-        $this->otherVideos[] = VideoWithFavoriteStatusDto::create(
+        $this->otherVideos[] = new VideoWithFavoriteStatusDto(
             $video,
             $this->videoFavouritesService->videoIsFavorite($video, $this->user),
         );

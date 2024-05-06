@@ -10,20 +10,20 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideCut implements JsonSerializable
+final readonly class ClientSideCut implements JsonSerializable
 {
 
     private function __construct(
-        private readonly string  $start,
-        private readonly string  $end,
-        private readonly string  $text,
-        private readonly string  $memo,
-        private readonly ?string $color,
-        private readonly string  $solutionId,
-        private readonly string  $url,
-        private readonly float   $offset,
-        private readonly float   $playbackRate,
-        private readonly string  $id
+        private string  $start,
+        private string  $end,
+        private string  $text,
+        private string  $memo,
+        private ?string $color,
+        private string  $solutionId,
+        private string  $url,
+        private float   $offset,
+        private float   $playbackRate,
+        private string  $id
     )
     {
     }

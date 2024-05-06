@@ -10,11 +10,11 @@ use App\Domain\User\Repository\UserRepository;
  *
  * This Service handles the domain specific use cases.
  */
-class UserEmailValidationService
+readonly class UserEmailValidationService
 {
     public function __construct(
-        private readonly UserService    $userService,
-        private readonly UserRepository $userRepository
+        private UserService    $userService,
+        private UserRepository $userRepository
     )
     {
     }

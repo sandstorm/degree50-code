@@ -18,12 +18,12 @@ class PreviousSolutionDto
      * @param ExercisePhaseStatus|null $status
      */
     private function __construct(
-        private User                   $teamMember,
-        private ServerSideSolutionData $serverSideSolutionData,
-        private string                 $solutionId,
-        private ?ClientSideCutVideo    $cutVideo,
-        private ?bool                  $fromGroupPhase,
-        private ?ExercisePhaseStatus   $status = ExercisePhaseStatus::INITIAL,
+        private readonly User                   $teamMember,
+        private readonly ServerSideSolutionData $serverSideSolutionData,
+        private readonly string                 $solutionId,
+        private readonly ?ClientSideCutVideo    $cutVideo,
+        private readonly ?bool                  $fromGroupPhase,
+        private ?ExercisePhaseStatus            $status = ExercisePhaseStatus::INITIAL,
     )
     {
     }

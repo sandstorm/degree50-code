@@ -119,13 +119,7 @@ trait ExerciseContextTrait
         /** @var ExerciseRepository $repository */
         $repository = $this->entityManager->getRepository(Exercise::class);
 
-        /**
-         * Why
-         * We want to find _all_ Exercises of the user without doctrine filtering out any of them
-         */
-        $this->entityManager->getFilters()->disable('exercise_doctrine_filter');
         $exercises = $repository->findAll();
-        $this->entityManager->getFilters()->enable('exercise_doctrine_filter');
 
         /**
          * Why

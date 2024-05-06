@@ -9,7 +9,7 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideSolutionData implements JsonSerializable
+final readonly class ClientSideSolutionData implements JsonSerializable
 {
     /**
      * @param string[] $annotationIds
@@ -19,11 +19,11 @@ final class ClientSideSolutionData implements JsonSerializable
      * @param string|null $materialId
      */
     private function __construct(
-        private readonly array   $annotationIds,
-        private readonly array   $videoCodeIds,
-        private readonly array   $cutIds,
-        private readonly array   $videoCodePrototypeIds,
-        private readonly ?string $materialId,
+        private array   $annotationIds,
+        private array   $videoCodeIds,
+        private array   $cutIds,
+        private array   $videoCodePrototypeIds,
+        private ?string $materialId,
     )
     {
         foreach ($annotationIds as $annotationId) {

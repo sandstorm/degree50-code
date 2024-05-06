@@ -5,11 +5,11 @@ namespace App\VideoEncoding;
 /**
  * WHY: PHP uses unix time stamps wich are seconds. We need milliseconds.
  */
-final class TimeCode
+final readonly class TimeCode
 {
     private function __construct(
-        public readonly int $unixTimeStamp,
-        public readonly int $milliseconds
+        public int $unixTimeStamp,
+        public int $milliseconds
     )
     {
     }
@@ -35,7 +35,7 @@ final class TimeCode
         $minutes = array_key_exists(1, $timeStringAsArray) ? intval($timeStringAsArray[1]) : 0;
         $hours = array_key_exists(2, $timeStringAsArray) ? intval($timeStringAsArray[2]) : 0;
 
-        $unixTimeStamp = $hours * 3600 + $minutes * 60 + intval($seconds);
+        $unixTimeStamp = $hours * 3600 + $minutes * 60 + $seconds;
 
         $milliseconds = str_contains($timeString, ".")
             ? intval(explode(".", $timeString)[1])

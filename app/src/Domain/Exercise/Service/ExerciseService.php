@@ -14,17 +14,16 @@ use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\User\Model\User;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ExerciseService
+readonly class ExerciseService
 {
-    const EXERCISE_DOCTRINE_FILTER_NAME = 'exercise_doctrine_filter';
-
     public function __construct(
-        private readonly EntityManagerInterface      $entityManager,
-        private readonly ExerciseRepository          $exerciseRepository,
-        private readonly ExercisePhaseService        $exercisePhaseService,
-        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private EntityManagerInterface      $entityManager,
+        private ExerciseRepository          $exerciseRepository,
+        private ExercisePhaseService        $exercisePhaseService,
+        private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
     )
     {
     }
@@ -47,9 +46,7 @@ class ExerciseService
      */
     public function getExercisesCreatedByUserWithoutFilters(User $user): array
     {
-        $this->entityManager->getFilters()->disable(self::EXERCISE_DOCTRINE_FILTER_NAME);
         $exercises = $this->exerciseRepository->findBy(['creator' => $user]);
-        $this->entityManager->getFilters()->enable(self::EXERCISE_DOCTRINE_FILTER_NAME);
 
         return $exercises;
     }
@@ -107,7 +104,8 @@ class ExerciseService
 
     public function deleteExercisesCreatedByUser(User $user): void
     {
-        $exercises = $this->getExercisesCreatedByUserWithoutFilters($user);
+        $criteria = Criteria::create()->andWhere(Criteria::expr()->eq('creator', $user));
+        $exercises = $this->exerciseRepository->findAllForUserWithCriteria($user, $criteria);
 
         foreach ($exercises as $exercise) {
             $this->deleteExercise($exercise);
@@ -185,11 +183,21 @@ class ExerciseService
          * Due to ORM cascading options the following things will also happen when we delete an Exercise:
          *
          *   1. All attached ExercisePhases will be removed @see Exercise::$phases
-         *   // TODO: userExerciseInteractions do not exist anymore, right?
-         *   2. All attached UserExerciseInteractions will be removed @see Exercise::$userExerciseInteractions
          */
         $this->entityManager->remove($exercise);
         $this->entityManager->flush();
+    }
+
+    public function removeUnpublishedExercisesOfUser(User $user): void
+    {
+        $unpublishedExercisesOfUser = $this->exerciseRepository->findBy([
+            'creator' => $user,
+            'status' => Exercise::EXERCISE_CREATED
+        ]);
+
+        foreach ($unpublishedExercisesOfUser as $exercise) {
+            $this->deleteExercise($exercise);
+        }
     }
 
     private function getPhaseWithStatusMetadataForStudent(ExercisePhase $phase, User $user): array

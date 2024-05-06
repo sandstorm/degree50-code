@@ -334,9 +334,6 @@ class DegreeDataToCsvService
     {
         $exercisePhaseTeams = $this->getExercisePhaseTeamsByCourse($course);
 
-        $this->managerRegistry->getManager()->getFilters()->disable('exercise_doctrine_filter');
-        $this->managerRegistry->getManager()->getFilters()->disable('course_doctrine_filter');
-
         $solutionDataRows = array_reduce($exercisePhaseTeams, function ($carry, ExercisePhaseTeam $team) {
             $exercisePhase = $team->getExercisePhase();
 

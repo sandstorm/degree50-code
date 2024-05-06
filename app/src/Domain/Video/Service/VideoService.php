@@ -17,31 +17,22 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  * This service handles operations on video entities.
  */
-class VideoService
+readonly class VideoService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly VideoRepository        $videoRepository,
-        private readonly AppRuntime             $appRuntime,
-        private readonly KernelInterface        $kernel,
-        private readonly VideoFavouritesService $videoFavouritesService,
-        private readonly ExerciseService        $exerciseService,
+        private EntityManagerInterface $entityManager,
+        private VideoRepository        $videoRepository,
+        private AppRuntime             $appRuntime,
+        private KernelInterface        $kernel,
+        private VideoFavouritesService $videoFavouritesService,
+        private ExerciseService        $exerciseService,
     )
     {
     }
 
-    /**
-     * @param User $user
-     * @return Video[]
-     */
-    public function getVideosCreatedByUserWithoutFilters(User $user): array
-    {
-        return $this->videoRepository->findBy(['creator' => $user]);
-    }
-
     public function deleteVideosCreatedByUser(User $user): void
     {
-        $videosCreatedByUser = $this->getVideosCreatedByUserWithoutFilters($user);
+        $videosCreatedByUser = $this->videoRepository->findByCreator($user);
 
         foreach ($videosCreatedByUser as $video) {
             $this->deleteVideo($video);
@@ -199,6 +190,18 @@ class VideoService
 
         $this->entityManager->persist($video);
         $this->entityManager->flush();
+    }
+
+    public function removeUnUsedVideosOfUser(User $user): void
+    {
+        /** @var Video[] $videos */
+        $videos = $this->videoRepository->findByCreator($user);
+
+        foreach ($videos as $video) {
+            if ($video->getExercisePhases()->isEmpty()) {
+                $this->deleteVideo($video);
+            }
+        }
     }
 
     private function removeVideoFile(string $fileUrl): void

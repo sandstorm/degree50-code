@@ -21,7 +21,10 @@ class ExerciseRepository extends ServiceEntityRepository
         parent::__construct($registry, Exercise::class);
     }
 
-    public function findAllForUserWithCriteria(User $user, Criteria $criteria = null)
+    /**
+     * @return Exercise[]
+     */
+    public function findAllForUserWithCriteria(User $user, Criteria $criteria = null): array
     {
         $criteria = $criteria ?? Criteria::create();
 

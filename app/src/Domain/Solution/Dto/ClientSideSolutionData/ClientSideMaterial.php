@@ -10,13 +10,13 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideMaterial implements JsonSerializable
+final readonly class ClientSideMaterial implements JsonSerializable
 {
 
     private function __construct(
-        private readonly string $id,
-        private readonly string $solutionId,
-        private readonly string $material
+        private string $id,
+        private string $solutionId,
+        private string $material
     )
     {
     }

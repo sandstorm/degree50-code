@@ -108,11 +108,11 @@ class ExercisePhaseVoter extends Voter
                 }
 
                 if ($phase->getType() === ExercisePhaseType::REFLEXION) {
-                    return $allAreDone && true;
+                    return $allAreDone;
                 }
 
                 if ($phase->getHasSolutionForUser($user)) {
-                    return $allAreDone && true;
+                    return $allAreDone;
                 }
 
                 return false;

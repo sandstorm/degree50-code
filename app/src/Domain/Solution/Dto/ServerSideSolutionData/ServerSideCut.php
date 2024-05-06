@@ -9,16 +9,16 @@ use App\VideoEncoding\TimeCode;
  *
  * @see \App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
-final class ServerSideCut
+final readonly class ServerSideCut
 {
-    public readonly string $start;
-    public readonly string $end;
-    public readonly string $text;
-    public readonly string $memo;
-    public readonly ?string $color;
-    public readonly string $url;
-    public readonly float $offset;
-    public readonly float $playbackRate;
+    public string $start;
+    public string $end;
+    public string $text;
+    public string $memo;
+    public ?string $color;
+    public string $url;
+    public float $offset;
+    public float $playbackRate;
 
     private function __construct(
         string  $start,

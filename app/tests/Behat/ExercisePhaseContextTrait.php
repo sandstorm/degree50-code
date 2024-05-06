@@ -15,7 +15,6 @@ use App\Domain\User\Model\User;
 use App\Domain\VideoCode\Model\VideoCode;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
 use function PHPUnit\Framework\assertNotEquals;
@@ -479,7 +478,7 @@ trait ExercisePhaseContextTrait
     {
         // working path is the /e2e-testrunner directory
         // we mount this path into the container when the tests run inside the gitlab pipeline
-        $fixturePath ='./FileUploadFixtures';
+        $fixturePath = './FileUploadFixtures';
 
         $this->playwrightConnector->execute(
             $this->playwrightContext,

@@ -46,7 +46,7 @@ class UploadListener
     {
     }
 
-    public function onUpload(PostUploadEvent $event)
+    public function onUpload(PostUploadEvent $event): ?ResponseInterface
     {
         $target = $event->getRequest()->get('target');
         /** @var User $user */

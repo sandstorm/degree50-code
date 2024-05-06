@@ -12,12 +12,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
 use Twig\Environment;
 
-class AccessDeniedHandler implements AccessDeniedHandlerInterface
+readonly class AccessDeniedHandler implements AccessDeniedHandlerInterface
 {
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly Security              $security,
-        private readonly Environment           $twig
+        private UrlGeneratorInterface $urlGenerator,
+        private Security              $security,
+        private Environment           $twig
     )
     {
     }

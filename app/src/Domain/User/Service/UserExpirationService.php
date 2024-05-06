@@ -13,15 +13,15 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class UserExpirationService
+readonly class UserExpirationService
 {
     public function __construct(
-        private readonly UserService            $userService,
-        private readonly UserRepository         $userRepository,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly MailerInterface        $mailer,
-        private readonly LoggerInterface        $logger,
-        private readonly TranslatorInterface    $translator,
+        private UserService            $userService,
+        private UserRepository         $userRepository,
+        private EntityManagerInterface $entityManager,
+        private MailerInterface        $mailer,
+        private LoggerInterface        $logger,
+        private TranslatorInterface    $translator,
     )
     {
     }

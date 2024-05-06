@@ -8,11 +8,11 @@ use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Domain\VideoFavorite\Repository\VideoFavoritesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class VideoFavouritesService
+readonly class VideoFavouritesService
 {
     public function __construct(
-        private readonly EntityManagerInterface   $entityManager,
-        private readonly VideoFavoritesRepository $videoFavoritesRepository,
+        private EntityManagerInterface   $entityManager,
+        private VideoFavoritesRepository $videoFavoritesRepository,
     )
     {
     }

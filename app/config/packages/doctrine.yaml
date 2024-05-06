@@ -16,15 +16,3 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Domain'
                 prefix: 'App\Domain'
                 alias: App
-        filters:
-            # TODO: let's just remove those?
-            exercise_doctrine_filter:
-                class: App\Security\DoctrineFilter\ExerciseDoctrineFilter
-                enabled: true
-                parameters:
-                    userId: -1
-            course_doctrine_filter:
-                class: App\Security\DoctrineFilter\CourseDoctrineFilter
-                enabled: true
-                parameters:
-                    userId: -1

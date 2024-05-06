@@ -7,11 +7,11 @@ namespace App\DataExport\Dto;
  * We currently mainly use this as a DTO between our
  * DegreeDataToCsvService and our DataExportController.
  */
-final class TextFileDto
+final readonly class TextFileDto
 {
     public function __construct(
-        private readonly string $fileName,
-        private readonly string $contentString
+        private string $fileName,
+        private string $contentString
     )
     {
     }

@@ -10,17 +10,17 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideSolution implements JsonSerializable
+final readonly class ClientSideSolution implements JsonSerializable
 {
 
     private function __construct(
-        private readonly ClientSideSolutionData $clientSideSolutionData,
-        private readonly string                 $id,
-        private readonly string                 $userName,
-        private readonly string                 $userId,
-        private readonly ?ClientSideCutVideo    $cutVideo,
-        private readonly ?bool                  $fromGroupPhase,
-        private readonly ?ExercisePhaseStatus   $status,
+        private ClientSideSolutionData $clientSideSolutionData,
+        private string                 $id,
+        private string                 $userName,
+        private string                 $userId,
+        private ?ClientSideCutVideo    $cutVideo,
+        private ?bool                  $fromGroupPhase,
+        private ?ExercisePhaseStatus   $status,
     )
     {
     }

@@ -28,15 +28,15 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  *
  * Events will not be removed as, at the time of writing, they do not seem to include any sensitive data.
  */
-class UserService
+readonly class UserService
 {
     public function __construct(
-        private readonly Security               $security,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly VideoService           $videoService,
-        private readonly ExerciseService        $exerciseService,
-        private readonly VideoFavouritesService $videoFavoritesService,
-        private readonly UserMaterialService    $userMaterialService,
+        private Security               $security,
+        private EntityManagerInterface $entityManager,
+        private VideoService           $videoService,
+        private ExerciseService        $exerciseService,
+        private VideoFavouritesService $videoFavoritesService,
+        private UserMaterialService    $userMaterialService,
     )
     {
     }
@@ -180,8 +180,8 @@ class UserService
             $this->entityManager->remove($team);
         }
 
-        $this->removeUnpublishedExercisesOfUser($user);
-        $this->removeUnUsedVideosOfUser($user);
+        $this->exerciseService->removeUnpublishedExercisesOfUser($user);
+        $this->videoService->removeUnUsedVideosOfUser($user);
 
         /**
          * Why
@@ -256,29 +256,5 @@ class UserService
         }
 
         return $teamsNotRemoved;
-    }
-
-    private function removeUnpublishedExercisesOfUser(User $user): void
-    {
-        $exercisesOfUser = $this->exerciseService->getExercisesCreatedByUserWithoutFilters($user);
-        $unpublishedExercisesOfUser = array_filter($exercisesOfUser, function ($exercise) {
-            return $exercise->getStatus() === Exercise::EXERCISE_CREATED;
-        });
-
-        foreach ($unpublishedExercisesOfUser as $exercise) {
-            $this->exerciseService->deleteExercise($exercise);
-        }
-    }
-
-    private function removeUnUsedVideosOfUser(User $user): void
-    {
-        $videosOfUser = $this->videoService->getVideosCreatedByUserWithoutFilters($user);
-        $unUsedVideosOfUser = array_filter($videosOfUser, function ($video) {
-            return $video->getExercisePhases()->count() === 0 && $video->getCourses()->count() === 0;
-        });
-
-        foreach ($unUsedVideosOfUser as $video) {
-            $this->videoService->deleteVideo($video);
-        }
     }
 }

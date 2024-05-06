@@ -87,4 +87,9 @@ class VideoRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByCreator(User $user): array
+    {
+        return $this->findBy(['creator' => $user]);
+    }
 }

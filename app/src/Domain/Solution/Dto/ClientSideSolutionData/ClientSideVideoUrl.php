@@ -9,14 +9,14 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideVideoUrl implements JsonSerializable
+final readonly class ClientSideVideoUrl implements JsonSerializable
 {
 
     private function __construct(
-        private readonly string $hls,
-        private readonly string $mp4,
-        private readonly string $vtt,
-        private readonly string $thumbnail,
+        private string $hls,
+        private string $mp4,
+        private string $vtt,
+        private string $thumbnail,
     )
     {
     }

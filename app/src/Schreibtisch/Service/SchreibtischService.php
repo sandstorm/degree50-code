@@ -22,17 +22,17 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class SchreibtischService
+readonly class SchreibtischService
 {
     public function __construct(
-        private readonly ExerciseService        $exerciseService,
-        private readonly UserService            $userService,
-        private readonly ExercisePhaseService   $exercisePhaseService,
-        private readonly VideoFavouritesService $videoFavouritesService,
-        private readonly UserMaterialService    $materialService,
-        private readonly AppRuntime             $appRuntime,
-        private readonly UrlGeneratorInterface  $router,
-        private readonly EntityManagerInterface $entityManager,
+        private ExerciseService        $exerciseService,
+        private UserService            $userService,
+        private ExercisePhaseService   $exercisePhaseService,
+        private VideoFavouritesService $videoFavouritesService,
+        private UserMaterialService    $materialService,
+        private AppRuntime             $appRuntime,
+        private UrlGeneratorInterface  $router,
+        private EntityManagerInterface $entityManager,
     )
     {
     }

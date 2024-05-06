@@ -10,16 +10,16 @@ use JsonSerializable;
  *
  * @see ClientSideSolutionDataBuilder
  **/
-final class ClientSideVideoCodePrototype implements JsonSerializable
+final readonly class ClientSideVideoCodePrototype implements JsonSerializable
 {
 
     private function __construct(
-        private readonly string  $id,
-        private readonly string  $name,
-        private readonly string  $color,
-        private readonly array   $childClientSidePrototypes,
-        private readonly ?string $parentId,
-        private readonly bool    $userCreated
+        private string  $id,
+        private string  $name,
+        private string  $color,
+        private array   $childClientSidePrototypes,
+        private ?string $parentId,
+        private bool    $userCreated
     )
     {
     }

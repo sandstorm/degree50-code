@@ -21,7 +21,7 @@ trait DatabaseFixtureContextTrait
      * @BeforeScenario @fixtures
      * @throws Exception|ExceptionInterface
      */
-    public function resetTestFixtures($event): void
+    public function resetTestFixtures(): void
     {
         $this->entityManager->clear();
 

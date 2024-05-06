@@ -2,13 +2,13 @@
 
 namespace App\VideoEncoding\Service;
 
-final class SubtitleEntry
+final readonly class SubtitleEntry
 {
     public function __construct(
-        public readonly string  $block,
-        public readonly ?int    $indexOfLineTimeEntryInBlock = null,
-        public readonly ?string $start = null,
-        public readonly ?string $end = null
+        public string  $block,
+        public ?int    $indexOfLineTimeEntryInBlock = null,
+        public ?string $start = null,
+        public ?string $end = null
     )
     {
     }

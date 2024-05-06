@@ -26,17 +26,17 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ExercisePhaseService
+readonly class ExercisePhaseService
 {
     public function __construct(
-        private readonly EntityManagerInterface      $entityManager,
-        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        private readonly UserMaterialService         $materialService,
-        private readonly AutosavedSolutionRepository $autoSavedSolutionRepository,
-        private readonly TranslatorInterface         $translator,
-        private readonly AppRuntime                  $appRuntime,
-        private readonly VideoFavouritesService      $videoFavouritesService,
-        private readonly UrlGeneratorInterface       $router
+        private EntityManagerInterface      $entityManager,
+        private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private UserMaterialService         $materialService,
+        private AutosavedSolutionRepository $autoSavedSolutionRepository,
+        private TranslatorInterface         $translator,
+        private AppRuntime                  $appRuntime,
+        private VideoFavouritesService      $videoFavouritesService,
+        private UrlGeneratorInterface       $router
     )
     {
     }

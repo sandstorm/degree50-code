@@ -186,7 +186,7 @@ trait UserContextTrait
         assertEquals(0, count($attachmentNotCorrectlyRemoved), "Unused Attachment should be removed.");
 
         // videos
-        $videos = $this->videoService->getVideosCreatedByUserWithoutFilters($user);
+        $videos = $this->videoRepository->findByCreator($user);
         $videosNotCorrectlyRemoved = array_filter($videos, function (Video $video) use ($username) {
             // video is not _only_ used in unpublished Exercise
             // If it is used in just a single published Exercise it has to persist
