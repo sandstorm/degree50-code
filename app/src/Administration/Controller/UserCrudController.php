@@ -61,7 +61,6 @@ class UserCrudController extends AbstractCrudController
             case Crud::PAGE_EDIT:
                 return [$name, $password, $isAdmin, $isStudent, $isDozent];
             default:
-                // TODO: Should we throw?
                 return [];
         }
     }

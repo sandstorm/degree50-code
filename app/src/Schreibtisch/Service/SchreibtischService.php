@@ -130,7 +130,6 @@ class SchreibtischService
         $materialListCopy = [...$materialList];
 
         usort($materialListCopy, function (Material $materialA, Material $materialB) {
-            // TODO: refactor to match expression
             if (is_null($materialA->getLastUpdatedAt()) && is_null($materialB->getLastUpdatedAt())) {
                 return $this->sortByDateTimeImmutable($materialA->getCreatedAt(), $materialB->getCreatedAt());
             } elseif (is_null($materialA->getLastUpdatedAt()) && !is_null($materialB->getLastUpdatedAt())) {
@@ -217,7 +216,6 @@ class SchreibtischService
     private function sortByExerciseStatus(ExerciseStatus $statusA, ExerciseStatus $statusB): int
     {
         // NEU < IN_BEARBEITUNG < BEENDET
-        // TODO: refactor to match expression
         if ($statusA === ExerciseStatus::NEU && $statusB !== ExerciseStatus::NEU) {
             return -1;
         } elseif ($statusA !== ExerciseStatus::NEU && $statusB === ExerciseStatus::NEU) {
@@ -233,7 +231,6 @@ class SchreibtischService
 
     private function sortByDateTimeImmutable(?DateTimeImmutable $dateA, ?DateTimeImmutable $dateB): int
     {
-        // TODO: refactor to match expression
         if ($dateA === $dateB) {
             return 0;
         } else {

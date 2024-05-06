@@ -16,6 +16,7 @@ class CourseDoctrineFilter extends AbstractDoctrineFilter
 {
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
+        return '';
         if ($targetEntity->getName() !== Course::class) {
             return '';
         }

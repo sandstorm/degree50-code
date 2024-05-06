@@ -92,7 +92,7 @@ class CourseController extends AbstractController
         ]);
     }
 
-    #[IsGranted(CourseVoter::EDIT_MEMBERS)]
+    #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name: "exercise-overview__course--remove-role")]
     public function removeCourseMember(
         Request    $request,
@@ -102,7 +102,7 @@ class CourseController extends AbstractController
     ): Response
     {
         if (!$course || !$courseRole) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $redirectToEdit = (bool)$request->get('redirectToEdit');
@@ -136,7 +136,7 @@ class CourseController extends AbstractController
     ): Response
     {
         if (!$course || !$courseRole) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $courseRole->setName(CourseRole::DOZENT);
@@ -156,7 +156,7 @@ class CourseController extends AbstractController
     ): Response
     {
         if (!$course || !$courseRole) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $courseRole->setName(CourseRole::STUDENT);
@@ -198,7 +198,7 @@ class CourseController extends AbstractController
     public function edit(Request $request, Course $course = null): Response
     {
         if (!$course) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $form = $this->createForm(CourseFormType::class, $course);
@@ -240,7 +240,7 @@ class CourseController extends AbstractController
     public function delete(Course $course = null): Response
     {
         if (!$course) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         if (count($course->getExercises()) > 0) {

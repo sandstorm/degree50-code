@@ -57,6 +57,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | /exercise-overview/course1 | 200        | course1 - Alle Aufgaben |
             | /exercise-overview/course2 | 200        | course2 - Alle Aufgaben |
 
+    @debug
     Scenario: As dozent I can see my assigned courses in exercise overview
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit route "exercise-overview"
@@ -65,6 +66,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And the page contains none of the following texts:
             | /exercise-overview/course2 |
 
+    @debug
     Scenario Outline: As dozent I can view course pages of my assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit url "<url>"
@@ -72,11 +74,11 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And the page should contain the text "<text>"
 
         Examples:
-            | url                        | statusCode | text                       |
-            | /exercise-overview/course1 | 200        | course1 - Alle Aufgaben    |
-            # this is how the frontend currently behaves - the url still has the course ID in it, even if we can not access the course data itself
-            | /exercise-overview/course2 | 200        | Alle Kurse - Alle Aufgaben |
+            | url                        | statusCode | text                    |
+            | /exercise-overview/course1 | 200        | course1 - Alle Aufgaben |
+            | /exercise-overview/course2 | 403        | Zugriff verweigert      |
 
+    @debug
     Scenario: As student I can see my assigned courses in exercise overview
         Given I am logged in via browser as "test-student@sandstorm.de"
         When I visit route "exercise-overview"
@@ -85,6 +87,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And the page contains none of the following texts:
             | /exercise-overview/course2 |
 
+    @debug
     Scenario Outline: As student I can view course pages of my assigned courses
         Given I am logged in via browser as "test-student@sandstorm.de"
         When I visit url "<url>"
@@ -92,10 +95,9 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And the page should contain the text "<text>"
 
         Examples:
-            | url                        | statusCode | text                       |
-            | /exercise-overview/course1 | 200        | course1 - Alle Aufgaben    |
-            # this is how the frontend currently behaves - the url still has the course ID in it, even if we can not access the course data itself
-            | /exercise-overview/course2 | 200        | Alle Kurse - Alle Aufgaben |
+            | url                        | statusCode | text                    |
+            | /exercise-overview/course1 | 200        | course1 - Alle Aufgaben |
+            | /exercise-overview/course2 | 403        | Zugriff verweigert      |
 
     #########################
     ### Create

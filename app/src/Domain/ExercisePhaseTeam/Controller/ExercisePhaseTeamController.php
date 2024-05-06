@@ -163,7 +163,7 @@ class ExercisePhaseTeamController extends AbstractController
     ): Response
     {
         if (!$exercisePhase || !$exercisePhaseTeam) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         /** @var User $user */
@@ -194,7 +194,7 @@ class ExercisePhaseTeamController extends AbstractController
     ): Response
     {
         if (!$exercisePhase || $exercisePhaseTeam) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $this->entityManager->remove($exercisePhaseTeam);
@@ -223,7 +223,7 @@ class ExercisePhaseTeamController extends AbstractController
     ): Response
     {
         if (!$exercisePhase || !$exercisePhaseTeam) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         /** @var User $user */

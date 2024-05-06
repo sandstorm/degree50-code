@@ -74,7 +74,7 @@ class ExercisePhaseController extends AbstractController
     ): Response
     {
         if (!$exercisePhase || !$exercisePhaseTeam) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $this->exercisePhaseService->openPhase($exercisePhaseTeam);
@@ -95,7 +95,7 @@ class ExercisePhaseController extends AbstractController
     ): Response
     {
         if (!$exercisePhase || !$exercisePhaseTeam) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $this->exercisePhaseService->openPhase($exercisePhaseTeam);
@@ -116,7 +116,7 @@ class ExercisePhaseController extends AbstractController
     ): Response
     {
         if (!$exercisePhase || !$exercisePhaseTeam) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $this->entityManager->remove($exercisePhaseTeam);
@@ -141,7 +141,7 @@ class ExercisePhaseController extends AbstractController
     public function new(Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $types = [];
@@ -165,7 +165,7 @@ class ExercisePhaseController extends AbstractController
     public function initializePhaseByType(Request $request, Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $type = $request->query->get('type');
@@ -204,7 +204,7 @@ class ExercisePhaseController extends AbstractController
     ): Response
     {
         if (!$exercise || !$exercisePhase) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $form = $this->getPhaseForm($exercisePhase);
@@ -250,7 +250,7 @@ class ExercisePhaseController extends AbstractController
     ): Response
     {
         if (!$exercise || !$exercisePhase) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $sortUp = $request->query->get('sortUp', false);
@@ -288,7 +288,7 @@ class ExercisePhaseController extends AbstractController
     ): Response
     {
         if (!$exercise || !$exercisePhase) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $this->exercisePhaseService->deleteExercisePhase($exercisePhase);
@@ -321,7 +321,7 @@ class ExercisePhaseController extends AbstractController
     ): Response
     {
         if (!$exercisePhase || !$exercisePhaseTeam) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         /** @var User $user */

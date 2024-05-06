@@ -60,7 +60,7 @@ class AttachmentController extends AbstractController
     public function delete(AppRuntime $appRuntime, Attachment $attachment = null): Response
     {
         if (!$attachment) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         $this->removeAttachment($appRuntime, $attachment);
@@ -95,7 +95,7 @@ class AttachmentController extends AbstractController
     public function uploadedAttachment(ExercisePhase $exercisePhase = null): Response
     {
         if (!$exercisePhase) {
-            return $this->render('Security/403.html.twig');
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
         return $this->render('ExercisePhase/AttachmentList.html.twig', [

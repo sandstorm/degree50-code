@@ -3,7 +3,9 @@
 namespace App\Domain\Exercise\Repository;
 
 use App\Domain\Exercise\Model\Exercise;
+use App\Domain\User\Model\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,5 +19,26 @@ class ExerciseRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Exercise::class);
+    }
+
+    public function findAllForUserWithCriteria(User $user, Criteria $criteria = null)
+    {
+        $criteria = $criteria ?? Criteria::create();
+
+        $qb = $this
+            ->createQueryBuilder('exercise')
+            ->addCriteria($criteria);
+
+        if (!$user->isAdmin()) {
+            $userCourses = $user->getCourses();
+
+            $qb
+                ->andWhere('exercise.course IN (:userCourses)')
+                ->setParameter('userCourses', $userCourses);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -14,6 +14,7 @@ use App\Security\Voter\TermsOfUseVoter;
 use App\Security\Voter\UserVerifiedVoter;
 use App\Security\Voter\VideoVoter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -108,8 +109,12 @@ class MediathekOverviewController extends AbstractController
      */
     private function getSideBarItems(): array
     {
-        // TODO: refactor when removing doctrine filters
-        $courses = $this->courseRepository->findAll();
+        /** @var User $user */
+        $user = $this->security->getUser();
+
+        $criteria = Criteria::create()->orderBy(['name' => 'ASC']);
+
+        $courses = $this->courseRepository->findAllForUserWithCriteria($user, $criteria);
 
         $sidebarItems = [];
         foreach ($courses as $course) {

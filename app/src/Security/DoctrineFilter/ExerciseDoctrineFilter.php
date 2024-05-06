@@ -16,6 +16,7 @@ class ExerciseDoctrineFilter extends AbstractDoctrineFilter
 {
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
+        return '';
         if ($targetEntity->getName() !== Exercise::class) {
             return '';
         }

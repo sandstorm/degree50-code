@@ -12,6 +12,7 @@ use App\Domain\User\Model\User;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
 use App\Security\Voter\UserVerifiedVoter;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,20 +59,37 @@ class ExerciseOverviewController extends AbstractController
     }
 
     #[Route("/exercise-overview/{id?}", name: "exercise-overview")]
-    public function overview(Request $request, Course $course = null): Response
+    public function overview(Request $request, ?string $id): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        /* @var Course|null $course */
+        $course = null;
+
         $statusFilter = $request->query->get('status');
 
-        $queryCriteria = [];
-        if ($course) {
-            $queryCriteria['course'] = $course;
+        $queryCriteria = Criteria::create();
+        if ($id != null) {
+            $course = $this->courseRepository->findOneForUserWithCriteria(
+                $user,
+                Criteria::create()->andWhere(Criteria::expr()->eq('id', $id))
+            );
+
+            if ($course == null) {
+                return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
+            }
+
+            $queryCriteria->andWhere(Criteria::expr()->eq('course', $course));
         }
 
         if ($statusFilter != null) {
-            $queryCriteria['status'] = intval($statusFilter);
+            $queryCriteria->andWhere(Criteria::expr()->eq('status', intval($statusFilter)));
         }
 
-        $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findBy($queryCriteria, array('createdAt' => 'DESC')));
+        $queryCriteria->orderBy(['createdAt' => 'DESC']);
+
+        $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findAllForUserWithCriteria($user, $queryCriteria));
 
         return $this->render('ExerciseOverview/Index.html.twig', [
             'sidebarItems' => $this->getSideBarItems(),
@@ -106,7 +124,10 @@ class ExerciseOverviewController extends AbstractController
      */
     private function getSideBarItems(): array
     {
-        $courses = $this->courseRepository->findAll();
+        /* @var User $user */
+        $user = $this->getUser();
+
+        $courses = $this->courseRepository->findAllForUserWithCriteria($user);
 
         $sidebarItems = [];
         foreach ($courses as $course) {
