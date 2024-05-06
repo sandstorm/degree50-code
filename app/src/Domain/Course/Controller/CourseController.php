@@ -7,6 +7,10 @@ use App\Domain\Course\Form\CourseMembersType;
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
+use App\Security\Voter\CourseVoter;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
+use App\Security\Voter\UserVerifiedVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -15,13 +19,14 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted("ROLE_USER")]
-#[isGranted("user-verified")]
-#[IsGranted("data-privacy-accepted")]
-#[IsGranted("terms-of-use-accepted")]
+#[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(DataPrivacyVoter::ACCEPTED)]
+#[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class CourseController extends AbstractController
 {
     public function __construct(
@@ -31,9 +36,9 @@ class CourseController extends AbstractController
     {
     }
 
+    #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
     #[Route("/exercise-overview/{id}/course-members", name: "exercise-overview__course--members")]
-    #[IsGranted("editMembers", subject: "course")]
-    public function editCourseMembers(Request $request, Course $course): Response
+    public function editCourseMembers(Request $request, Course $course = null): Response
     {
         $form = $this->createForm(CourseMembersType::class, $course);
         $form->handleRequest($request);
@@ -83,13 +88,11 @@ class CourseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('edit', course) or is_granted('editMembers', course)")
-     */
+    #[IsGranted(CourseVoter::EDIT_MEMBERS)]
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name: "exercise-overview__course--remove-role")]
     public function removeCourseMember(
-        Request $request,
-        Course $course,
+        Request    $request,
+        Course     $course = null,
         #[MapEntity(expr: "repository.find(userRole_id)")]
         CourseRole $courseRole
     ): Response
@@ -116,10 +119,10 @@ class CourseController extends AbstractController
         }
     }
 
-    #[IsGranted("editMembers", subject: "course")]
+    #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name: "exercise-overview__course--upgrade-role")]
     public function upgradeCourseMember(
-        Course $course,
+        Course     $course = null,
         #[MapEntity(expr: "repository.find(userRole_id)")]
         CourseRole $courseRole
     ): Response
@@ -132,10 +135,10 @@ class CourseController extends AbstractController
         return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
     }
 
-    #[IsGranted("editMembers", subject: "course")]
+    #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name: "exercise-overview__course--downgrade-role")]
     public function downgradeCourseMember(
-        Course $course,
+        Course     $course = null,
         #[MapEntity(expr: "repository.find(userRole_id)")]
         CourseRole $courseRole
     ): Response
@@ -148,9 +151,7 @@ class CourseController extends AbstractController
         return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
     }
 
-    /**
-     * @Security("is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN')")
-     */
+    #[IsGranted(CourseVoter::CREATE)]
     #[Route("/exercise-overview/course/new", name: "exercise-overview__course--new")]
     public function new(Request $request): Response
     {
@@ -176,9 +177,9 @@ class CourseController extends AbstractController
         ]);
     }
 
-    #[IsGranted("edit", subject: "course")]
+    #[IsGranted(CourseVoter::EDIT, subject: "course")]
     #[Route("/exercise-overview/course/edit/{id}", name: "exercise-overview__course--edit")]
-    public function edit(Request $request, Course $course): Response
+    public function edit(Request $request, Course $course = null): Response
     {
         $form = $this->createForm(CourseFormType::class, $course);
 
@@ -214,9 +215,9 @@ class CourseController extends AbstractController
         ]);
     }
 
-    #[IsGranted("delete", subject: "course")]
+    #[IsGranted(CourseVoter::DELETE, subject: "course")]
     #[Route("/exercise-overview/course/delete/{id}", name: "exercise-overview__course--delete")]
-    public function delete(Course $course): Response
+    public function delete(Course $course = null): Response
     {
         if (count($course->getExercises()) > 0) {
             $this->addFlash(

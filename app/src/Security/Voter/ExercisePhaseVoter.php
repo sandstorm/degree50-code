@@ -6,20 +6,20 @@ use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\ExercisePhaseType;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
-use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ExercisePhaseVoter extends Voter
 {
-    const string SHOW = 'show';
-    const string NEXT = 'next';
-    const string DELETE = 'delete';
-    const string TEST = 'test';
-    const string SHOW_SOLUTIONS = 'showSolutions';
-    const string CREATE_TEAM = 'createTeam';
-    const string VIEW_OTHER_SOLUTIONS = 'viewOtherSolutions';
-    const string VIEW = 'viewExercisePhase';
+    const string SHOW = 'exercisePhase_show';
+    const string NEXT = 'exercisePhase_next';
+    const string DELETE = 'exercisePhase_delete';
+    const string TEST = 'exercisePhase_test';
+    // TODO: some of these are not used
+    const string SHOW_SOLUTIONS = 'exercisePhase_showSolutions';
+    const string CREATE_TEAM = 'exercisePhase_createTeam';
+    const string VIEW_OTHER_SOLUTIONS = 'exercisePhase_viewOtherSolutions';
+    const string VIEW = 'exercisePhase_viewExercisePhase';
 
     protected function supports(string $attribute, $subject): bool
     {
@@ -57,27 +57,17 @@ class ExercisePhaseVoter extends Voter
             return false;
         }
 
-        // TODO: use match expression
-        switch ($attribute) {
-            case self::SHOW:
-                return $this->canShow($exercisePhase, $user);
-            case self::NEXT:
-                return $this->canGetToNextPhase($exercisePhase, $user);
-            case self::DELETE:
-                return $this->canDelete($exercisePhase, $user);
-            case self::SHOW_SOLUTIONS:
-                return $this->canShowSolutions($exercisePhase, $user);
-            case self::CREATE_TEAM:
-                return $this->canCreateTeam($exercisePhase, $user);
-            case self::VIEW_OTHER_SOLUTIONS:
-                return $this->canViewOtherSolutions($exercisePhase, $user);
-            case self::VIEW:
-                return $this->canViewExercisePhase($exercisePhase, $user);
-            case self::TEST:
-                return $this->canTest($exercisePhase, $user);
-        }
-
-        throw new LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::SHOW => $this->canShow($exercisePhase, $user),
+            self::NEXT => $this->canGetToNextPhase($exercisePhase, $user),
+            self::DELETE => $this->canDelete($exercisePhase, $user),
+            self::SHOW_SOLUTIONS => $this->canShowSolutions($exercisePhase, $user),
+            self::CREATE_TEAM => $this->canCreateTeam($exercisePhase, $user),
+            self::VIEW_OTHER_SOLUTIONS => $this->canViewOtherSolutions($exercisePhase, $user),
+            self::VIEW => $this->canViewExercisePhase($exercisePhase, $user),
+            self::TEST => $this->canTest($exercisePhase, $user),
+            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+        };
     }
 
     private function canShow(ExercisePhase $exercisePhase, User $user): bool

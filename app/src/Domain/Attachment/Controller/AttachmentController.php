@@ -6,6 +6,9 @@ use App\Domain\Attachment\Model\Attachment;
 use App\Domain\Attachment\Repository\AttachmentRepository;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\User\Model\User;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
+use App\Security\Voter\UserVerifiedVoter;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,13 +19,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted("ROLE_USER")]
-#[isGranted("user-verified")]
-#[IsGranted("data-privacy-accepted")]
-#[IsGranted("terms-of-use-accepted")]
+#[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(DataPrivacyVoter::ACCEPTED)]
+#[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class AttachmentController extends AbstractController
 {
 

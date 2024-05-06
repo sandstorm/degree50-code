@@ -11,36 +11,37 @@
     <header class="content-header">
         {% if course %}
             <h3>{{ course.name }} - Alle Aufgaben</h3>
-            {% if is_granted('edit', course) or is_granted('newExercise', course) %}
+            {% if is_granted('course_edit', course) or is_granted('course_newExercise', course) %}
                 <div class="button-group">
-                    {% if is_granted('edit', course) %}
+                    {% if is_granted('course_edit', course) %}
                         <div class="dropdown">
-                            <button class="button button--type-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                            <button class="button button--type-link dropdown-toggle" type="button"
+                                    id="dropdownMenuButton"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Kurs verwalten
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                {% if is_granted('editMembers', course) %}
+                                {% if is_granted('course_editMembers', course) %}
                                     <a href="{{ path('exercise-overview__course--members', {id: course.id}) }}"
                                        class="dropdown-item">
                                         <i class="fas fa-users"></i> {% trans %}course.editMembers.title{% endtrans %}
                                     </a>
                                 {% endif %}
-                                {% if is_granted('edit', course) %}
+                                {% if is_granted('course_edit', course) %}
                                     <a href="{{ path('exercise-overview__course--edit', {id: course.id}) }}"
                                        class="dropdown-item">
                                         <i class="fas fa-pencil-alt"></i> {% trans %}course.edit.title{% endtrans %}
                                     </a>
                                 {% endif %}
 
-                                {% if is_granted('exportCSV', course) %}
+                                {% if is_granted('course_exportCSV', course) %}
                                     <a href="{{ path('exercise-overview__course-export-csv', {id: course.id}) }}"
                                        class="dropdown-item"
-                                       ><i class="fas fa-file-export"></i>  {% trans %}course.exportCSV.title{% endtrans %}
+                                    ><i class="fas fa-file-export"></i> {% trans %}course.exportCSV.title{% endtrans %}
                                     </a>
                                 {% endif %}
 
-                                {% if is_granted('delete', course) %}
+                                {% if is_granted('course_delete', course) %}
                                     <div class="dropdown-divider"></div>
                                     <a href="{{ path('exercise-overview__course--delete', {id: course.id}) }}"
                                        class="dropdown-item text-danger">
@@ -50,7 +51,7 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if is_granted('newExercise', course) %}
+                    {% if is_granted('course_newExercise', course) %}
                         <a href="{{ path('exercise__new', {id: course.id}) }}"
                            class="button button--type-primary">
                             <i class="fas fa-plus-circle"></i> {% trans %}exercise.new.title{% endtrans %}
@@ -80,7 +81,8 @@
 
 {% macro filter(courseId, filter, activeFilter, label) %}
     {% if filter == activeFilter and activeFilter is not null %}
-        <a href="{{ path('exercise-overview', {id: courseId, status: null}) }}" class="button button--type-primary">{{ label }}</a>
+        <a href="{{ path('exercise-overview', {id: courseId, status: null}) }}"
+           class="button button--type-primary">{{ label }}</a>
     {% else %}
         <a href="{{ path('exercise-overview', {id: courseId, status: filter}) }}"
            class="button button--type-outline-primary">{{ label }}</a>

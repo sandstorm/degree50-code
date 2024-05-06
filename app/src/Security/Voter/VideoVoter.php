@@ -7,17 +7,16 @@ use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
 use App\Domain\User\Service\UserService;
 use App\Domain\Video\Model\Video;
-use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class VideoVoter extends Voter
 {
-    const string VIEW = 'view';
-    const string FAVOR = 'favor';
-    const string EDIT = 'edit';
-    const string DELETE = 'delete';
-    const string CREATE = 'create';
+    const string VIEW = 'video_view';
+    const string FAVOR = 'video_favor';
+    const string EDIT = 'video_edit';
+    const string DELETE = 'video_delete';
+    const string CREATE = 'video_create';
 
     public function __construct(private readonly UserService $userService)
     {
@@ -25,7 +24,13 @@ class VideoVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::FAVOR, self::CREATE])) {
+        if (!in_array($attribute, [
+            self::VIEW,
+            self::EDIT,
+            self::DELETE,
+            self::FAVOR,
+            self::CREATE
+        ])) {
             return false;
         }
 
@@ -42,7 +47,6 @@ class VideoVoter extends Voter
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
-            die('User is not an instance of User');
             // the user must be logged in; if not, deny access
             return false;
         }
@@ -50,20 +54,13 @@ class VideoVoter extends Voter
         /** @var Video $video */
         $video = $subject;
 
-        // TODO: use match expression
-        switch ($attribute) {
-            case self::CREATE:
-                return $this->canCreate($user);
-            case self::VIEW:
-                return $this->canView($video, $user);
-            case self::EDIT:
-            case self::DELETE:
-                return $this->canEditOrDelete($video, $user);
-            case self::FAVOR:
-                return $this->canFavor($user);
-        }
-
-        throw new LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::CREATE => $this->canCreate($user),
+            self::VIEW => $this->canView($video, $user),
+            self::EDIT, self::DELETE => $this->canEditOrDelete($video, $user),
+            self::FAVOR => $this->canFavor($user),
+            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+        };
     }
 
     private function canCreate(User $user): bool

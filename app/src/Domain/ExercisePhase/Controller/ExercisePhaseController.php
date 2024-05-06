@@ -23,6 +23,13 @@ use App\Domain\Solution\Model\Solution;
 use App\Domain\Solution\Service\SolutionService;
 use App\Domain\User\Model\User;
 use App\LiveSync\LiveSyncService;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\ExercisePhaseTeamVoter;
+use App\Security\Voter\ExercisePhaseVoter;
+use App\Security\Voter\ExerciseVoter;
+use App\Security\Voter\SolutionVoter;
+use App\Security\Voter\TermsOfUseVoter;
+use App\Security\Voter\UserVerifiedVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use InvalidArgumentException;
@@ -34,13 +41,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted("ROLE_USER")]
-#[isGranted("user-verified")]
-#[IsGranted("data-privacy-accepted")]
-#[IsGranted("terms-of-use-accepted")]
+#[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(DataPrivacyVoter::ACCEPTED)]
+#[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class ExercisePhaseController extends AbstractController
 {
     public function __construct(
@@ -57,9 +65,7 @@ class ExercisePhaseController extends AbstractController
     {
     }
 
-    /**
-     * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
-     */
+    #[IsGranted(ExercisePhaseTeamVoter::SHOW_SOLUTION, subject: "exercisePhase")]
     #[Route("/exercise-phase/show/{id}/{team_id}", name: "exercise-phase__show")]
     public function show(
         ExercisePhase     $exercisePhase,
@@ -76,7 +82,7 @@ class ExercisePhaseController extends AbstractController
         }
     }
 
-    #[IsGranted("test", subject: "exercisePhase")]
+    #[IsGranted(ExercisePhaseVoter::TEST, subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/{team_id}", name: "exercise-phase__test")]
     public function test(
         ExercisePhase     $exercisePhase,
@@ -93,7 +99,7 @@ class ExercisePhaseController extends AbstractController
         }
     }
 
-    #[IsGranted("test", subject: "exercisePhase")]
+    #[IsGranted(ExercisePhaseVoter::TEST, subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/{team_id}/reset", name: "exercise-phase__reset-test")]
     public function resetTest(
         ExercisePhase     $exercisePhase,
@@ -118,7 +124,7 @@ class ExercisePhaseController extends AbstractController
         );
     }
 
-    #[IsGranted("edit", subject: "exercise")]
+    #[IsGranted(ExerciseVoter::EDIT, subject: "exercise")]
     #[Route("/exercise/{id}/edit/phase/new", name: "exercise-phase__new")]
     public function new(Exercise $exercise = null): Response
     {
@@ -142,7 +148,7 @@ class ExercisePhaseController extends AbstractController
         ]);
     }
 
-    #[IsGranted("edit", subject: "exercise")]
+    #[IsGranted(ExerciseVoter::EDIT, subject: "exercise")]
     #[Route("/exercise/{id}/edit/phase/type", name: "exercise-phase__set-type")]
     public function initializePhaseByType(Request $request, Exercise $exercise = null): Response
     {
@@ -176,11 +182,11 @@ class ExercisePhaseController extends AbstractController
         ]);
     }
 
-    #[IsGranted("edit", subject: "exercise")]
+    #[IsGranted(ExerciseVoter::EDIT, subject: "exercise")]
     #[Route("/exercise/{id}/edit/phase/{phase_id}/edit", name: "exercise-phase__edit")]
     public function edit(
-        Request $request,
-        Exercise $exercise = null,
+        Request       $request,
+        Exercise      $exercise = null,
         #[MapEntity(expr: "repository.find(phase_id)")]
         ExercisePhase $exercisePhase = null
     ): Response
@@ -204,7 +210,7 @@ class ExercisePhaseController extends AbstractController
         ]);
     }
 
-    #[IsGranted("reviewSolution", subject: "solution")]
+    #[IsGranted(SolutionVoter::REVIEW_SOLUTION, subject: "solution")]
     #[Route("/exercise-phase-solution/finish-review/{id}", name: "exercise-phase-solution__finish-review", methods: ["POST"])]
     public function finishReview(Solution $solution): Response
     {
@@ -218,11 +224,11 @@ class ExercisePhaseController extends AbstractController
         }
     }
 
-    #[IsGranted("edit", subject: "exercise")]
+    #[IsGranted(ExerciseVoter::EDIT, subject: "exercise")]
     #[Route("/exercise/{id}/edit/phase/{phase_id}/change-sorting", name: "exercise-phase__change-sorting")]
     public function changeSorting(
-        Request $request,
-        Exercise $exercise,
+        Request       $request,
+        Exercise      $exercise,
         #[MapEntity(expr: "repository.find(phase_id)")]
         ExercisePhase $exercisePhase
     ): Response
@@ -253,10 +259,10 @@ class ExercisePhaseController extends AbstractController
         return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
     }
 
-    #[IsGranted("delete", subject: "exercisePhase")]
+    #[IsGranted(ExercisePhaseVoter::DELETE, subject: "exercisePhase")]
     #[Route("/exercise/{id}/edit/phase/{phase_id}/delete", name: "exercise-phase__delete")]
     public function delete(
-        Exercise $exercise = null,
+        Exercise      $exercise = null,
         #[MapEntity(expr: "repository.find(phase_id)")]
         ExercisePhase $exercisePhase = null
     ): Response
@@ -286,9 +292,7 @@ class ExercisePhaseController extends AbstractController
         return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
     }
 
-    /**
-     * @Security("is_granted('showSolution', exercisePhaseTeam) or is_granted('show', exercisePhaseTeam)")
-     */
+    #[IsGranted(ExercisePhaseTeamVoter::SHOW_SOLUTION, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/show-others/{id}/{team_id}", name: "exercise-phase__show-other-solution")]
     public function showOtherStudentsSolution(
         ExercisePhase     $exercisePhase,

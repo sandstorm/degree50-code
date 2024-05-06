@@ -4,22 +4,28 @@ namespace App\Security\Voter;
 
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
-use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ExercisePhaseTeamVoter extends Voter
 {
-    const string JOIN = 'join';
-    const string SHOW = 'show';
-    const string SHOW_SOLUTION = 'showSolution';
-    const string LEAVE = 'leave';
-    const string DELETE = 'delete';
-    const string UPDATE_SOLUTION = 'updateSolution';
+    const string JOIN = 'exercisePhaseTeam_join';
+    const string SHOW = 'exercisePhaseTeam_show';
+    const string SHOW_SOLUTION = 'exercisePhaseTeam_showSolution';
+    const string LEAVE = 'exercisePhaseTeam_leave';
+    const string DELETE = 'exercisePhaseTeam_delete';
+    const string UPDATE_SOLUTION = 'exercisePhaseTeam_updateSolution';
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::JOIN, self::SHOW, self::SHOW_SOLUTION, self::LEAVE, self::DELETE, self::UPDATE_SOLUTION])) {
+        if (!in_array($attribute, [
+            self::JOIN,
+            self::SHOW,
+            self::SHOW_SOLUTION,
+            self::LEAVE,
+            self::DELETE,
+            self::UPDATE_SOLUTION
+        ])) {
             return false;
         }
 
@@ -44,23 +50,15 @@ class ExercisePhaseTeamVoter extends Voter
             return false;
         }
 
-        // TODO: use match expression
-        switch ($attribute) {
-            case self::SHOW:
-                return $this->canShow($exercisePhaseTeam, $user);
-            case self::SHOW_SOLUTION:
-                return $this->canShowSolution($exercisePhaseTeam);
-            case self::JOIN:
-                return $this->canJoin($exercisePhaseTeam, $user);
-            case self::LEAVE:
-                return $this->canLeave($exercisePhaseTeam, $user);
-            case self::DELETE:
-                return $this->canDelete($exercisePhaseTeam, $user);
-            case self::UPDATE_SOLUTION:
-                return $this->canUpdateSolution($exercisePhaseTeam, $user);
-        }
-
-        throw new LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::SHOW => $this->canShow($exercisePhaseTeam, $user),
+            self::SHOW_SOLUTION => $this->canShowSolution($exercisePhaseTeam, $user),
+            self::JOIN => $this->canJoin($exercisePhaseTeam, $user),
+            self::LEAVE => $this->canLeave($exercisePhaseTeam, $user),
+            self::DELETE => $this->canDelete($exercisePhaseTeam, $user),
+            self::UPDATE_SOLUTION => $this->canUpdateSolution($exercisePhaseTeam, $user),
+            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+        };
     }
 
     private function canLeave(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
@@ -86,9 +84,9 @@ class ExercisePhaseTeamVoter extends Voter
         return $exercisePhaseTeam->getMembers()->contains($user);
     }
 
-    private function canShowSolution(ExercisePhaseTeam $exercisePhaseTeam): bool
+    private function canShowSolution(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool
     {
-        return $exercisePhaseTeam->getExercisePhase()->getOtherSolutionsAreAccessible();
+        return $this->canShow($exercisePhaseTeam, $user) || $exercisePhaseTeam->getExercisePhase()->getOtherSolutionsAreAccessible();
     }
 
     private function canJoin(ExercisePhaseTeam $exercisePhaseTeam, User $user): bool

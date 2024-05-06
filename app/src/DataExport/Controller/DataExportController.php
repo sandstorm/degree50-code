@@ -2,19 +2,24 @@
 
 namespace App\DataExport\Controller;
 
-use App\Domain\Course\Model\Course;
 use App\DataExport\Service\DegreeDataToCsvService;
+use App\Domain\Course\Model\Course;
+use App\Security\Voter\CourseVoter;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
+use App\Security\Voter\UserVerifiedVoter;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use ZipArchive;
 
-#[isGranted("user-verified")]
-#[IsGranted("data-privacy-accepted")]
-#[IsGranted("terms-of-use-accepted")]
+#[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(DataPrivacyVoter::ACCEPTED)]
+#[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class DataExportController extends AbstractController
 {
     public function __construct(
@@ -23,9 +28,9 @@ class DataExportController extends AbstractController
     {
     }
 
-    #[IsGranted("exportCSV", subject: "course")]
+    #[IsGranted(CourseVoter::EXPORT_CSV, subject: "course")]
     #[Route("/exercise-overview/{id}/export-csv", name: "exercise-overview__course-export-csv")]
-    public function exportData(Request $request, Course $course): Response
+    public function exportData(Course $course = null): Response
     {
         $csvList = $this->degreeDataToCsvService->getAllAsVirtualCSVs($course);
 

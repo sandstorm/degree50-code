@@ -36,14 +36,14 @@
                         class="button button--type-outline-primary footer__left button--size-small"
                         href="{{ path('exercise__show-test-phase', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}"
                     >
-                        {{ (is_granted('updateSolution', exercisePhaseTeam)) ? 'Speichern und Zurück' : 'Zurück' }}
+                        {{ (is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam)) ? 'Speichern und Zurück' : 'Zurück' }}
                     </a>
                 {% else %}
                     <a
                         class="button button--type-outline-primary footer__left button--size-small"
                         href="{{ path('exercise__show-phase', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}"
                     >
-                        {{ (is_granted('updateSolution', exercisePhaseTeam)) ? 'Speichern und Zurück' : 'Zurück' }}
+                        {{ (is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam)) ? 'Speichern und Zurück' : 'Zurück' }}
                     </a>
                 {% endif %}
 
@@ -57,7 +57,7 @@
                 {% endif %}
             </span>
             <div class="footer__right">
-                {% if is_granted('updateSolution', exercisePhaseTeam) %}
+                {% if is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam) %}
                     {% if exercisePhase.type.value == 'material' %}
                         {% if exercisePhaseTeam.status.value == 'BEENDET' or exercisePhaseTeam.status.value == 'IN_REVIEW' %}
                             <button id="finish-phase" class="button button--type-primary button--size-small" disabled="disabled">Phase abschließen</button>

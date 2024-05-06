@@ -2,47 +2,47 @@ help:
 	cat Makefile
 
 build-docker:
-	docker-compose pull
-	docker-compose build --pull
+	docker compose pull
+	docker compose build --pull
 
 start:
-	docker-compose up -d
+	docker compose up -d
 
 stop:
-	docker-compose stop
+	docker compose stop
 
 logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 logs-degree:
-	docker-compose logs -f degree
+	docker compose logs -f degree
 
 import-fixtures:
-	docker-compose exec degree php bin/console doctrine:fixtures:load
+	docker compose exec degree php bin/console doctrine:fixtures:load
 
 test-integration:
-	docker-compose exec \
+	docker compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \
 		degree ./vendor/bin/behat --tags integration
 
 test-e2e:
-	docker-compose exec \
+	docker compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \
 		degree ./vendor/bin/behat --tags playwright
 
 test-debug:
-	docker-compose exec \
+	docker compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \
 		degree ./vendor/bin/behat --tags debug
 
 test:
-	docker-compose exec \
+	docker compose exec \
 		--env PLAYWRIGHT_API_URL="http://host.docker.internal:3000" \
 		--env SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT="http://localhost:9090" \
 		--env APP_ENV=test \

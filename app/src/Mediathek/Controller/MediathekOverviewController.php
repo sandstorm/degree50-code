@@ -9,17 +9,22 @@ use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Mediathek\Dto\VideoWithFavoriteStatusDto;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
+use App\Security\Voter\UserVerifiedVoter;
+use App\Security\Voter\VideoVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted("ROLE_USER")]
-#[isGranted("user-verified")]
-#[IsGranted("data-privacy-accepted")]
-#[IsGranted("terms-of-use-accepted")]
+#[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(DataPrivacyVoter::ACCEPTED)]
+#[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class MediathekOverviewController extends AbstractController
 {
     public function __construct(
@@ -50,7 +55,7 @@ class MediathekOverviewController extends AbstractController
         ]);
     }
 
-    #[IsGranted("favor", subject: "video")]
+    #[IsGranted(VideoVoter::FAVOR, subject: "video")]
     #[Route("/mediathek/favor/{id?}", name: "mediathek__video--favor")]
     public function toggleFavorVideo(Video $video): Response
     {

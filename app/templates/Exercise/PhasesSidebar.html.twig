@@ -15,7 +15,7 @@
             <ul class="list">
                 {% for item in sidebarItems %}
                     <li
-                        class="sidebar-item {{ (item.phase.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ testMode == true or is_granted('viewExercisePhase', item.phase) ? "" : "sidebar-item--disabled" }}"
+                        class="sidebar-item {{ (item.phase.id == currentItemId) ? 'sidebar-item--active' : '' }} {{ testMode == true or is_granted('exercisePhase_viewExercisePhase', item.phase) ? "" : "sidebar-item--disabled" }}"
                         data-test-id="exercisePhaseSidebarItem"
                     >
                         {% if showSolution %}
@@ -62,7 +62,7 @@
                                         'exercise__show-phase',
                                         {id: exercise.id, phaseId: item.phase.id}
                                     ),
-                                    is_granted('viewExercisePhase', item.phase),
+                                    is_granted('exercisePhase_viewExercisePhase', item.phase),
                                     item.metadata.isDone,
                                     item.metadata.needsReview,
                                     item.metadata.iconClass,

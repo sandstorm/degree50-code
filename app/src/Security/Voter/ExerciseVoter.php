@@ -7,19 +7,18 @@ use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Model\ExerciseStatus;
 use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\User\Model\User;
-use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ExerciseVoter extends Voter
 {
-    const string VIEW = 'view';
-    const string TEST = 'test';
-    const string SHOW_SOLUTION = 'showSolution';
-    const string EDIT = 'edit';
-    const string DELETE = 'delete';
-    const string IS_OPENED = 'isOpened';
-    const string IS_FINISHED = 'isFinished';
+    const string VIEW = 'exercise_view';
+    const string TEST = 'exercise_test';
+    const string SHOW_SOLUTION = 'exercise_showSolution';
+    const string EDIT = 'exercise_edit';
+    const string DELETE = 'exercise_delete';
+    const string IS_OPENED = 'exercise_isOpened';
+    const string IS_FINISHED = 'exercise_isFinished';
 
     public function __construct(private readonly ExerciseService $exerciseService)
     {
@@ -67,7 +66,7 @@ class ExerciseVoter extends Voter
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-        if (!$user instanceof User) {
+        if (!$user instanceof User || !$subject instanceof Exercise) {
             // the user must be logged in; if not, deny access
             return false;
         }
@@ -77,29 +76,14 @@ class ExerciseVoter extends Voter
             return true;
         }
 
-        if ($subject instanceof Exercise) {
-            $exercise = $subject;
-
-            // TODO: use match expression
-            switch ($attribute) {
-                case self::IS_FINISHED:
-                    return $this->exerciseHasBeenFinished($exercise, $user);
-                case self::IS_OPENED:
-                    return $this->exerciseHasBeenStarted($exercise, $user);
-                case self::VIEW:
-                    return $this->canView($exercise, $user);
-                case self::TEST:
-                    return $this->canTest($exercise, $user);
-                case self::EDIT:
-                case self::DELETE:
-                case self::SHOW_SOLUTION:
-                    return $this->canEditOrDelete($exercise, $user);
-            }
-        } else {
-            return false;
-        }
-
-        throw new LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::IS_FINISHED => $this->exerciseHasBeenFinished($subject, $user),
+            self::IS_OPENED => $this->exerciseHasBeenStarted($subject, $user),
+            self::VIEW => $this->canView($subject, $user),
+            self::TEST => $this->canTest($subject, $user),
+            self::EDIT, self::DELETE, self::SHOW_SOLUTION => $this->canEditOrDelete($subject, $user),
+            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+        };
     }
 
     private function exerciseHasBeenStarted(Exercise $exercise, User $user): bool

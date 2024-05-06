@@ -33,7 +33,7 @@
 
         <div class="row">
             <div class="col-3">
-                {% if is_granted('createTeam', exercisePhase) %}
+                {% if is_granted('exercisePhase_createTeam', exercisePhase) %}
                     <a class="tile" href="{{ path((testMode) ? 'exercise-phase-team__test-new' :'exercise-phase-team__new', {id: exercisePhase.id}) }}" data-test-id="createGroupButton">
                         <div class="tile__content">
                             <i class="tile__icon fas fa-plus-circle"></i>
@@ -73,7 +73,7 @@
                                             {% trans %}exercisePhase.resetTest.title{% endtrans %}
                                         </a>
                                     {% else %}
-                                        {% if is_granted('join', team) %}
+                                        {% if is_granted('exercisePhaseTeam_join', team) %}
                                             <a
                                                 class="button button--type-primary button--size-small"
                                                 href="{{ path('exercise-phase-team__join', { 'id':exercisePhase.id, 'team_id': team.id }) }}"
@@ -81,7 +81,7 @@
                                                 {% trans %}exercise.showPhase.joinGroup{% endtrans %}
                                             </a>
                                         {% endif %}
-                                        {% if is_granted('leave', team) %}
+                                        {% if is_granted('exercisePhaseTeam_leave', team) %}
                                             <a
                                                 class="button button--type-outline-primary button--size-small"
                                                 href="{{ path('exercise-phase-team__leave', { 'id':exercisePhase.id, 'team_id': team.id }) }}"
@@ -89,7 +89,7 @@
                                                 {% trans %}exercise.showPhase.leaveGroup{% endtrans %}
                                             </a>
                                         {% endif %}
-                                        {% if is_granted('delete', team) %}
+                                        {% if is_granted('exercisePhaseTeam_delete', team) %}
                                             <a
                                                 class="button button--type-danger button--size-small"
                                                 href="{{ path('exercise-phase-team__delete', { 'id':exercisePhase.id, 'team_id': team.id }) }}"
@@ -99,7 +99,7 @@
                                         {% endif %}
                                     {% endif %}
 
-                                    {% if is_granted('show', team) %}
+                                    {% if is_granted('exercisePhaseTeam_show', team) %}
                                         <a
                                            class="button button--type-primary button--size-small"
                                            href="{{ path('exercise-phase__show', { 'id':exercisePhase.id, 'team_id': team.id }) }}"
@@ -108,7 +108,7 @@
                                             <i class="fas fa-play"></i> {% trans %}exercise.showPhase.startPhase{% endtrans %}
                                        </a>
                                     {% else %}
-                                        {% if is_granted('viewOtherSolutions', exercisePhase) %}
+                                        {% if is_granted('exercisePhase_viewOtherSolutions', exercisePhase) %}
                                             <a class="button button--type-outline-primary button--size-small"
                                                href="{{ path('exercise-phase__show', { 'id':exercisePhase.id, 'team_id': team.id, 'showSolution': true }) }}"
                                             >
@@ -133,7 +133,7 @@
                     {% trans %}exercise.showPhase.myResult{% endtrans %}
                 </a>
             {% else %}
-                {% if is_granted('createTeam', exercisePhase) or testMode %}
+                {% if is_granted('exercisePhase_createTeam', exercisePhase) or testMode %}
                     <a
                         class="button button--size-large button--type-primary"
                         href="{{ path((testMode) ? 'exercise-phase-team__test-new' : 'exercise-phase-team__new', {id: exercisePhase.id}) }}"
@@ -170,7 +170,7 @@
                     <tr>
                         <td>{{ team.creator.username }}</td>
                         <td>
-                            {% if is_granted('viewOtherSolutions', exercisePhase) %}
+                            {% if is_granted('exercisePhase_viewOtherSolutions', exercisePhase) %}
                                 <a
                                     href="{{ path('exercise-phase__show-other-solution', { 'id':exercisePhase.id, 'team_id': team.id }) }}">
                                     {% trans %}exercise.showPhase.showResult{% endtrans %}

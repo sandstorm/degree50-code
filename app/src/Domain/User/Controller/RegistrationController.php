@@ -105,7 +105,7 @@ class RegistrationController extends AbstractController
         }
     }
 
-    #[isGranted("ROLE_USER")]
+    #[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
     #[Route("/verify-email", name: "app_verify_email_pending")]
     public function verifyUserEmailPending(): Response
     {
@@ -119,7 +119,7 @@ class RegistrationController extends AbstractController
         return $this->render('Security/VerifyEmail.html.twig');
     }
 
-    #[isGranted("ROLE_USER")]
+    #[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
     #[Route("/verify-email-resend", name: "app_resend-verification-email")]
     public function resendVerificationEmail(): Response
     {

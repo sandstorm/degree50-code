@@ -12,7 +12,7 @@
     {% else %}
         <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
     {% endif %}
-    {% if testMode and is_granted('edit', exercise) %}
+    {% if testMode and is_granted('exercise_edit', exercise) %}
         <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise__edit', {id: exercise.id}) }}">
             <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
         </a>
@@ -33,7 +33,7 @@
                 {{ (currentPhaseIndex < 0) ? 'Aufgabe starten' : 'Nächste Phase' }}
             </a>
         {% else %}
-            {% if is_granted('viewExercisePhase', nextExercisePhase) %}
+            {% if is_granted('exercisePhase_viewExercisePhase', nextExercisePhase) %}
                 <a class="button button--type-primary  button--size-small" href="{{ path('exercise__show-phase', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">
                     {{ (currentPhaseIndex < 0) ? 'Aufgabe starten' : 'Nächste Phase' }}
                 </a>

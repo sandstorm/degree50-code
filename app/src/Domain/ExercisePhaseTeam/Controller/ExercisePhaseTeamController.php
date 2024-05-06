@@ -15,6 +15,12 @@ use App\Domain\Solution\Service\SolutionService;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use App\LiveSync\LiveSyncService;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\ExercisePhaseTeamVoter;
+use App\Security\Voter\ExercisePhaseVoter;
+use App\Security\Voter\SolutionVoter;
+use App\Security\Voter\TermsOfUseVoter;
+use App\Security\Voter\UserVerifiedVoter;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,13 +31,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted("ROLE_USER")]
-#[isGranted("user-verified")]
-#[IsGranted("data-privacy-accepted")]
-#[IsGranted("terms-of-use-accepted")]
+#[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(DataPrivacyVoter::ACCEPTED)]
+#[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class ExercisePhaseTeamController extends AbstractController
 {
     public function __construct(
@@ -46,7 +53,7 @@ class ExercisePhaseTeamController extends AbstractController
     {
     }
 
-    #[IsGranted("createTeam", subject: "exercisePhase")]
+    #[IsGranted(ExercisePhaseVoter::CREATE_TEAM, subject: "exercisePhase")]
     #[Route("/exercise-phase/{id}/team/new", name: "exercise-phase-team__new")]
     public function new(ExercisePhase $exercisePhase): Response
     {
@@ -104,7 +111,7 @@ class ExercisePhaseTeamController extends AbstractController
         }
     }
 
-    #[IsGranted("test", subject: "exercisePhase")]
+    #[IsGranted(ExercisePhaseVoter::TEST, subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/team/new", name: "exercise-phase-team__test-new")]
     public function test(ExercisePhase $exercisePhase): Response
     {
@@ -139,7 +146,7 @@ class ExercisePhaseTeamController extends AbstractController
         }
     }
 
-    #[IsGranted("join", subject: "exercisePhaseTeam")]
+    #[IsGranted(ExercisePhaseTeamVoter::JOIN, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/join", name: "exercise-phase-team__join")]
     public function join(
         ExercisePhase $exercisePhase,
@@ -166,7 +173,7 @@ class ExercisePhaseTeamController extends AbstractController
         );
     }
 
-    #[IsGranted("delete", subject: "exercisePhaseTeam")]
+    #[IsGranted(ExercisePhaseTeamVoter::DELETE, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/delete", name: "exercise-phase-team__delete")]
     public function delete(
         ExercisePhase $exercisePhase,
@@ -191,7 +198,7 @@ class ExercisePhaseTeamController extends AbstractController
         );
     }
 
-    #[IsGranted("leave", subject: "exercisePhaseTeam")]
+    #[IsGranted(ExercisePhaseTeamVoter::LEAVE, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/leave", name: "exercise-phase-team__leave")]
     public function leave(
         ExercisePhase $exercisePhase,
@@ -277,7 +284,7 @@ class ExercisePhaseTeamController extends AbstractController
     /**
      * Try to create a new AutosaveSolution and then publish the most recent version of the solution.
      */
-    #[IsGranted("updateSolution", subject: "exercisePhaseTeam")]
+    #[IsGranted(ExercisePhaseTeamVoter::UPDATE_SOLUTION, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/update-solution/{id}", name: "exercise-phase-team__update-solution")]
     public function updateSolution(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {
@@ -324,7 +331,7 @@ class ExercisePhaseTeamController extends AbstractController
      * This is only possible for MaterialPhases, where the Dozent can edit the material solution of a student
      * as a review process.
      */
-    #[IsGranted("reviewSolution", subject: "solution")]
+    #[IsGranted(SolutionVoter::REVIEW_SOLUTION, subject: "solution")]
     #[Route("/exercise-phase/review-solution/{id}", name: "exercise-phase-team__review-solution")]
     public function reviewSolution(Request $request, Solution $solution): Response
     {
@@ -344,7 +351,7 @@ class ExercisePhaseTeamController extends AbstractController
     /**
      * Try to update the currentEditor of the TeamPhase and then publish the most recent solution
      */
-    #[IsGranted("updateSolution", subject: "exercisePhaseTeam")]
+    #[IsGranted(ExercisePhaseTeamVoter::UPDATE_SOLUTION, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/update-current-editor/{id}", name: "exercise-phase-team__update-current-editor")]
     public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
     {

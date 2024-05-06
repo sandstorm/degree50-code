@@ -105,10 +105,11 @@ trait UserContextTrait
             );
         }
 
-        /* @var Course $course */
         $course = $this->entityManager->find(Course::class, $courseId);
+        assert($course instanceof Course, 'Course not found!');
 
         $user = $this->getUserByEmail($username);
+        assert($user instanceof User, 'User not found!');
 
         $courseRole = new CourseRole();
         $courseRole->setCourse($course);

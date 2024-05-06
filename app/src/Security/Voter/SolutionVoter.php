@@ -6,13 +6,12 @@ use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
-use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class SolutionVoter extends Voter
 {
-    const string REVIEW_SOLUTION = 'reviewSolution';
+    const string REVIEW_SOLUTION = 'solution_reviewSolution';
 
     private ExercisePhaseTeamRepository $exercisePhaseTeamRepository;
 
@@ -23,7 +22,7 @@ class SolutionVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::REVIEW_SOLUTION])) {
+        if ($attribute != self::REVIEW_SOLUTION) {
             return false;
         }
 
@@ -48,13 +47,10 @@ class SolutionVoter extends Voter
             return false;
         }
 
-        // TODO: use match expression
-        switch ($attribute) {
-            case self::REVIEW_SOLUTION:
-                return $this->canReviewSolution($solution, $user);
-        }
-
-        throw new LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::REVIEW_SOLUTION => $this->canReviewSolution($solution, $user),
+            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+        };
     }
 
     private function canReviewSolution(Solution $solution, User $user): bool

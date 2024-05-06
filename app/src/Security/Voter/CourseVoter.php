@@ -5,25 +5,32 @@ namespace App\Security\Voter;
 use App\Domain\Course\Model\Course;
 use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\User\Model\User;
-use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CourseVoter extends Voter
 {
-    const string EDIT_MEMBERS = 'editMembers';
-    const string EDIT = 'edit';
-    const string DELETE = 'delete';
-    const string NEW_EXERCISE = 'newExercise';
-    const string EXPORT_CSV = 'exportCSV';
+    const string CREATE = 'course_create';
+    const string EDIT_MEMBERS = 'course_editMembers';
+    const string EDIT = 'course_edit';
+    const string DELETE = 'course_delete';
+    const string NEW_EXERCISE = 'course_newExercise';
+    const string EXPORT_CSV = 'course_exportCSV';
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::EDIT_MEMBERS, self::EDIT, self::DELETE, self::NEW_EXERCISE, self::EXPORT_CSV])) {
+        if (!in_array($attribute, [
+            self::CREATE,
+            self::EDIT_MEMBERS,
+            self::EDIT,
+            self::DELETE,
+            self::NEW_EXERCISE,
+            self::EXPORT_CSV,
+        ])) {
             return false;
         }
 
-        if (!$subject instanceof Course) {
+        if (!$subject instanceof Course && $attribute !== self::CREATE) {
             return false;
         }
 
@@ -38,21 +45,20 @@ class CourseVoter extends Voter
             return false;
         }
 
-        if ($subject instanceof Course) {
-            $course = $subject;
-        } else {
-            return false;
-        }
+        /** @var Course $course */
+        $course = $subject;
 
-        // TODO: use match expression
-        switch ($attribute) {
-            case self::NEW_EXERCISE:
-                return $this->canCreateNewExercise($user, $course);
-            case self::EDIT || self::DELETE || self::EDIT_MEMBERS || self::EXPORT_CSV:
-                return $this->canEdit($user, $course);
-        }
+        return match ($attribute) {
+            self::CREATE => $this->canCreateCourse($user),
+            self::NEW_EXERCISE => $this->canCreateNewExercise($user, $course),
+            self::EDIT, self::DELETE, self::EDIT_MEMBERS, self::EXPORT_CSV => $this->canEdit($user, $course),
+            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+        };
+    }
 
-        throw new LogicException('This code should not be reached!');
+    private function canCreateCourse(User $user): bool
+    {
+        return $user->isAdmin() || $user->isDozent();
     }
 
     private function canCreateNewExercise(User $user, Course $course): bool

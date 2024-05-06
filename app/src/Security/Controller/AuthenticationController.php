@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -57,7 +58,7 @@ class AuthenticationController extends AbstractController
         throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[IsGranted("ROLE_USER")]
+    #[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
     #[Route("/user/data-privacy", name: "app_data-privacy")]
     public function dataPrivacy(Request $request): Response
     {
@@ -78,7 +79,7 @@ class AuthenticationController extends AbstractController
         return $this->render('Security/DataPrivacy.html.twig');
     }
 
-    #[IsGranted("ROLE_USER")]
+    #[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
     #[Route("/user/terms-of-use", name: "app_terms-of-use")]
     public function termsOfUse(Request $request): Response
     {

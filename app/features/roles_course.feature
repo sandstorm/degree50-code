@@ -271,6 +271,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And I click on "Kurs verwalten"
         Then I should be able to download the CSV export for "course1" when clicking on "CSV exportieren"
 
+    @debug
     Scenario: As dozent I can not download CSV export for unassigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         # we can't navigate to the course via mouse as it shouldn't even be visible to us
@@ -319,6 +320,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | course1  |
             | course2  |
 
+    @debug
     Scenario Outline: As student I can not download CSV export for any courses
         Given I am logged in via browser as "test-student@sandstorm.de"
         When I visit url "/exercise-overview/<courseId>/export-csv"

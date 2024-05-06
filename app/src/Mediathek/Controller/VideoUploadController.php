@@ -9,6 +9,10 @@ use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\Video\Service\VideoService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\Mediathek\Form\MediathekVideoFormType;
+use App\Security\Voter\DataPrivacyVoter;
+use App\Security\Voter\TermsOfUseVoter;
+use App\Security\Voter\UserVerifiedVoter;
+use App\Security\Voter\VideoVoter;
 use App\Twig\AppRuntime;
 use App\VideoEncoding\Message\WebEncodingTask;
 use App\VideoEncoding\MessageHandler\WebEncodingHandler;
@@ -19,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -35,10 +40,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * NOTE: The upload of the original files which are later encoded by the WebEncodingTask is handled by our UploadListener-Implementation
  * @see UploadListener
  */
-#[IsGranted("ROLE_USER")]
-#[isGranted("user-verified")]
-#[IsGranted("data-privacy-accepted")]
-#[IsGranted("terms-of-use-accepted")]
+#[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(DataPrivacyVoter::ACCEPTED)]
+#[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class VideoUploadController extends AbstractController
 {
     public function __construct(
@@ -58,7 +63,7 @@ class VideoUploadController extends AbstractController
      * @see WebEncodingHandler
      * @see WebEncodingTask
      */
-    #[IsGranted("create")]
+    #[IsGranted(VideoVoter::CREATE)]
     #[Route("/video/uploads/{id?}", name: "mediathek__video--upload")]
     public function showVideoUploadForm(Request $request, Course $course = null): Response
     {
@@ -113,7 +118,7 @@ class VideoUploadController extends AbstractController
         ]);
     }
 
-    #[IsGranted("edit", subject: "video")]
+    #[IsGranted(VideoVoter::EDIT, subject: "video")]
     #[Route("/video/edit/{id}", name: "mediathek__video--edit")]
     public function edit(Request $request, Video $video = null): Response
     {
@@ -149,7 +154,7 @@ class VideoUploadController extends AbstractController
     /**
      * Delete the video entity and the encoded video
      */
-    #[IsGranted("delete", subject: "video")]
+    #[IsGranted(VideoVoter::DELETE, subject: "video")]
     #[Route("/video/delete/{id}/{confirm}", name: "mediathek__video--delete")]
     public function delete(Video $video = null, bool $confirm = false): Response
     {

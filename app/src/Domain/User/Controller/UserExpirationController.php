@@ -24,7 +24,7 @@ class UserExpirationController extends AbstractController
     /**
      * Display & process form to request a password reset.
      */
-    #[isGranted("ROLE_USER")]
+    #[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
     #[Route('/account-expiration', name: 'app_increase_user_expiration_date')]
     public function increaseUserExpirationDatePage(): Response
     {
@@ -52,7 +52,7 @@ class UserExpirationController extends AbstractController
         }
     }
 
-    #[isGranted("ROLE_USER")]
+    #[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
     #[Route('/account-expiration-increase', name: 'app_increase_user_expiration_date_process')]
     public function increaseUserExpirationDateAction(): RedirectResponse
     {

@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)]
-#[isGranted(UserVerifiedVoter::USER_VERIFIED)]
+#[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
 #[IsGranted(DataPrivacyVoter::ACCEPTED)]
 #[IsGranted(TermsOfUseVoter::ACCEPTED)]
 class VideoPlayerController extends AbstractController
@@ -31,7 +31,7 @@ class VideoPlayerController extends AbstractController
     ): Response
     {
         if (!$video) {
-            throw $this->createNotFoundException();
+            return $this->redirectToRoute('mediathek--index');
         }
 
         return $this->render('Mediathek/VideoUpload/VideoPlayer.html.twig', [
