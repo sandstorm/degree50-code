@@ -58,6 +58,20 @@ final class TimeCode
         return new self($unixTimeStamp, $milliseconds);
     }
 
+    public static function equals(TimeCode $x, TimeCode $y): bool
+    {
+        return $x->unixTimeStamp === $y->unixTimeStamp && $x->milliseconds === $y->milliseconds;
+    }
+
+    public static function greaterThan(TimeCode $x, TimeCode $y): bool
+    {
+        if ($x->unixTimeStamp === $y->unixTimeStamp) {
+            return $x->milliseconds > $y->milliseconds;
+        } else {
+            return $x->unixTimeStamp > $y->unixTimeStamp;
+        }
+    }
+
     public function toTimeString(): string
     {
         $dateString = date("H:i:s", $this->unixTimeStamp);
@@ -74,19 +88,5 @@ final class TimeCode
     public function toFloat(): float
     {
         return floatval("$this->unixTimeStamp.$this->milliseconds");
-    }
-
-    public static function equals(TimeCode $x, TimeCode $y): bool
-    {
-        return $x->unixTimeStamp === $y->unixTimeStamp && $x->milliseconds === $y->milliseconds;
-    }
-
-    public static function greaterThan(TimeCode $x, TimeCode $y): bool
-    {
-        if ($x->unixTimeStamp === $y->unixTimeStamp) {
-            return $x->milliseconds > $y->milliseconds;
-        } else {
-            return $x->unixTimeStamp > $y->unixTimeStamp;
-        }
     }
 }

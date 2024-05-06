@@ -40,6 +40,10 @@ class CourseController extends AbstractController
     #[Route("/exercise-overview/{id}/course-members", name: "exercise-overview__course--members")]
     public function editCourseMembers(Request $request, Course $course = null): Response
     {
+        if (!$course) {
+            return $this->render("Security/403.html.twig");
+        }
+
         $form = $this->createForm(CourseMembersType::class, $course);
         $form->handleRequest($request);
 
@@ -93,13 +97,17 @@ class CourseController extends AbstractController
     public function removeCourseMember(
         Request    $request,
         Course     $course = null,
-        #[MapEntity(expr: "repository.find(userRole_id)")]
-        CourseRole $courseRole
+        #[MapEntity(id: "userRole_id")]
+        CourseRole $courseRole = null,
     ): Response
     {
+        if (!$course || !$courseRole) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $redirectToEdit = (bool)$request->get('redirectToEdit');
 
-        $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $courseRole) => $courseRole->isCourseDozent());
+        $courseRolesWithDozent = $course->getCourseRoles()->filter(fn(CourseRole $role) => $role->isCourseDozent());
         if ($redirectToEdit && count($courseRolesWithDozent) == 1) {
             $this->addFlash(
                 'danger',
@@ -123,10 +131,14 @@ class CourseController extends AbstractController
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name: "exercise-overview__course--upgrade-role")]
     public function upgradeCourseMember(
         Course     $course = null,
-        #[MapEntity(expr: "repository.find(userRole_id)")]
-        CourseRole $courseRole
+        #[MapEntity(id: "userRole_id")]
+        CourseRole $courseRole = null,
     ): Response
     {
+        if (!$course || !$courseRole) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $courseRole->setName(CourseRole::DOZENT);
 
         $this->entityManager->persist($courseRole);
@@ -139,10 +151,14 @@ class CourseController extends AbstractController
     #[Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name: "exercise-overview__course--downgrade-role")]
     public function downgradeCourseMember(
         Course     $course = null,
-        #[MapEntity(expr: "repository.find(userRole_id)")]
-        CourseRole $courseRole
+        #[MapEntity(id: "userRole_id")]
+        CourseRole $courseRole = null,
     ): Response
     {
+        if (!$course || !$courseRole) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $courseRole->setName(CourseRole::STUDENT);
 
         $this->entityManager->persist($courseRole);
@@ -181,6 +197,10 @@ class CourseController extends AbstractController
     #[Route("/exercise-overview/course/edit/{id}", name: "exercise-overview__course--edit")]
     public function edit(Request $request, Course $course = null): Response
     {
+        if (!$course) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $form = $this->createForm(CourseFormType::class, $course);
 
         $form->handleRequest($request);
@@ -219,6 +239,10 @@ class CourseController extends AbstractController
     #[Route("/exercise-overview/course/delete/{id}", name: "exercise-overview__course--delete")]
     public function delete(Course $course = null): Response
     {
+        if (!$course) {
+            return $this->render('Security/403.html.twig');
+        }
+
         if (count($course->getExercises()) > 0) {
             $this->addFlash(
                 'danger',

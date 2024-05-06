@@ -32,8 +32,12 @@ class VideoCodeController extends AbstractController
      * Used only asynchronous
      */
     #[Route("/video-codes/add/{id}", name: "video-code__add", methods: ["POST"])]
-    public function add(Request $request, VideoAnalysisPhase $exercisePhase): Response
+    public function add(Request $request, VideoAnalysisPhase $exercisePhase = null): Response
     {
+        if (!$exercisePhase) {
+            return new Response('not allowed', 403);
+        }
+
         $color = json_decode($request->getContent(), true)['color'];
         $name = json_decode($request->getContent(), true)['name'];
         $videoCode = new VideoCode();
@@ -51,8 +55,12 @@ class VideoCodeController extends AbstractController
      * Used only asynchronous
      */
     #[Route("/video-codes/delete/{id}", name: "video-code__delete", methods: ["GET"])]
-    public function delete(VideoCode $videoCode): Response
+    public function delete(VideoCode $videoCode = null): Response
     {
+        if (!$videoCode) {
+            return new Response('not allowed', 403);
+        }
+
         $this->entityManager->remove($videoCode);
         $this->entityManager->flush();
 
@@ -60,8 +68,12 @@ class VideoCodeController extends AbstractController
     }
 
     #[Route("/video-codes/list/{id}", name: "video-code__list")]
-    public function videoCodes(VideoAnalysisPhase $exercisePhase): Response
+    public function videoCodes(VideoAnalysisPhase $exercisePhase = null): Response
     {
+        if (!$exercisePhase) {
+            return $this->render("Security/403.html.twig");
+        }
+
         return $this->render('ExercisePhase/VideoCodesList.html.twig', [
             'videoCodes' => $exercisePhase->getVideoCodes()
         ]);

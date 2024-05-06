@@ -31,7 +31,7 @@ class VideoPlayerController extends AbstractController
     ): Response
     {
         if (!$video) {
-            return $this->redirectToRoute('mediathek--index');
+            return $this->render("Security/403.html.twig");
         }
 
         return $this->render('Mediathek/VideoUpload/VideoPlayer.html.twig', [

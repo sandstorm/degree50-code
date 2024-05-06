@@ -32,6 +32,10 @@ class DataExportController extends AbstractController
     #[Route("/exercise-overview/{id}/export-csv", name: "exercise-overview__course-export-csv")]
     public function exportData(Course $course = null): Response
     {
+        if (!$course) {
+            return new Response('not allowed', '403');
+        }
+
         $csvList = $this->degreeDataToCsvService->getAllAsVirtualCSVs($course);
 
         // Create temporary zip file

@@ -5,6 +5,7 @@ namespace App\Security\Voter;
 use App\Domain\Course\Model\Course;
 use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\User\Model\User;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -52,7 +53,7 @@ class CourseVoter extends Voter
             self::CREATE => $this->canCreateCourse($user),
             self::NEW_EXERCISE => $this->canCreateNewExercise($user, $course),
             self::EDIT, self::DELETE, self::EDIT_MEMBERS, self::EXPORT_CSV => $this->canEdit($user, $course),
-            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+            default => throw new InvalidArgumentException('Unknown attribute ' . $attribute),
         };
     }
 

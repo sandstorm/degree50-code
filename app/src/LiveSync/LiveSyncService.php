@@ -19,9 +19,9 @@ use Symfony\Component\Mercure\Update;
 class LiveSyncService
 {
     public function __construct(
-        private readonly string             $jwtPrivateSigningKey,
+        private readonly string       $jwtPrivateSigningKey,
         private readonly HubInterface $publisher,
-        protected bool $secureCookie = true
+        protected bool                $secureCookie = true
     )
     {
         $this->secureCookie = $_ENV['APP_ENV'] === 'prod';

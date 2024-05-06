@@ -57,7 +57,7 @@ class ExerciseController extends AbstractController
     public function show(Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         /** @var User $user */
@@ -87,7 +87,7 @@ class ExerciseController extends AbstractController
     public function test(Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $nextExercisePhase = $this->exercisePhaseRepository->findFirstExercisePhase($exercise);
@@ -116,7 +116,7 @@ class ExerciseController extends AbstractController
     public function showExercisePhase(Exercise $exercise = null, string $phaseId = ''): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         /** @var User $user */
@@ -165,7 +165,7 @@ class ExerciseController extends AbstractController
     public function showTestExercisePhase(Exercise $exercise = null, string $phaseId = ''): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         /** @var User $user */
@@ -208,7 +208,7 @@ class ExerciseController extends AbstractController
     public function new(Request $request, Course $course = null): Response
     {
         if (!$course) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $exercise = new Exercise();
@@ -248,7 +248,7 @@ class ExerciseController extends AbstractController
     public function edit(Request $request, Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $form = $this->createForm(ExerciseFormType::class, $exercise);
@@ -305,7 +305,7 @@ class ExerciseController extends AbstractController
     public function changeStatus(Request $request, Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $newStatus = (int)$request->query->get('status', Exercise::EXERCISE_CREATED);
@@ -331,7 +331,7 @@ class ExerciseController extends AbstractController
     public function delete(Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $this->exerciseService->deleteExercise($exercise);
@@ -349,7 +349,7 @@ class ExerciseController extends AbstractController
     public function copy(Request $request, Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $form = $this->createForm(CopyExerciseFormType::class, CopyExerciseFormDto::fromExercise($exercise));
@@ -407,7 +407,7 @@ class ExerciseController extends AbstractController
     public function showSolutions(Request $request, Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $phaseId = $request->get('phaseId');

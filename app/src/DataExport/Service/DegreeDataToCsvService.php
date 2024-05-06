@@ -42,6 +42,11 @@ class DegreeDataToCsvService
     {
     }
 
+    private static function removeLineBreaksFromCellContent(string $cellContent): string
+    {
+        return str_replace(["\n", "\r"], " ", $cellContent);
+    }
+
     /**
      * @return TextFileDto[]
      */
@@ -76,150 +81,6 @@ class DegreeDataToCsvService
             new TextFileDto('video-kodierungen.csv', $videoCodeCSV),
             new TextFileDto('schnitte.csv', $cutCSV)
         ];
-    }
-
-    private function getREADME(): string
-    {
-        $content = <<<'EOT'
-# README
-
-## Import der CSV-Dateien in gängige Programme
-
-Damit die Dateien und ihre Spalten korrekt importiert werden. Müssen folgende Dinge beachtet werden:
-
-1. Das verwendete Trennzeichen ist das Semikolon `;` und muss ggf. beim Import (bspw. in Excel) manuell konfiguriert werden
-2. Der verwendete Textidentifizierer sind doppelte Anführungszeichen `"` und müssen ebenfalls ggf. konfiguriert werden
-
-
-### Import in Excel
-
-Um eine CSV-Datei in Excel korrekt anzuzeigen, muss diese über die Funktion "Importieren" geladen werden.
-Ein einfaches öffnen der Datei **ist nicht ausreichend**!
-Beim Import können dann **CSV** als Format ausgewählt und die oben beschriebenen Einstellungen vorgenommen werden.
-
-
-## Aufbau der Dateien
-
-Da CSV-Dateien nur sehr bedingt dazu in der Lage sind relationale Daten abzubilden, sind die exportierten Daten auf
-mehrere Dateien aufgeteilt.
-Sind alle Dateien einmal in ein Programm (bspw. Excel) importiert worden, können die Daten beliebig untereinander verknüpft werden.
-Zu diesem Zweck sind je nach Datei verschiedene Spalten mit IDs enthalten, welche eine Verknüpfung ermöglichen.
-Im Folgenden wird ein allgemeiner Überblick über den Aufbau jeder einzelnen Datei gegeben.
-
-
-### loesungen.csv
-
-Jede Zeile in dieser Datei repräsentiert eine Lösung.
-Eine Lösung wurde entsprechend von einem Team bestehen aus verschiedenen Nutzer:innen im Rahmen einer Aufgabe gelöst.
-
-> **ACHTUNG** Zugehörige Annotationen/Kodierungen/Schnitte liegen entsprechend in ihren eigenen CSV-Dateien und
-> können über die loesungsID referenziert werden!
-
-#### Spaltenübersicht
-
-- **loesungsID**: Identifier der Loesung
-- **kursID**: Identifier des Kurses, zu welchem die Aufgabe gehört
-- **kursName**: Name des Kurses, zu welchem die Aufgabe gehört
-- **aufgabenID**: Identifier der Aufgabe
-- **aufgabenTitel**: Title der Aufgabe
-- **aufgabenBeschreibung**: Beschreibung der Aufgabe
-- **erstellungsDatum**: Erstellungsdatum der Aufgabe
-- **status**: Status der Aufgabe
-- **phasenID**: Identifier der Aufgaben-Phase, zu welcher die Lösung gehört
-- **istGruppenphase**: Bestimmt, ob es sich um eine Gruppenphase handelt
-- **phasenTitel**: Titel der Aufgaben-Phase, zu welcher die Lösung gehört
-- **phasenBeschreibung**: Beschreibung der Aufgaben-Phase, zu welcher die Lösung gehört
-- **phasenTyp**: Typ der Aufgaben-Phase, zu welcher die Lösung gehört
-- **bautAufVorherigerPhaseAuf**: Bestimmt, ob die Phase auf ihrer vorherigen aufbaut
-- **vorherigePhasenID**: Identifier der vorherigen Phase (wird nur angezeigt, wenn die aktuell Phase auf ihrer vorherigen aufbaut)
-- **teamID**: Identifier des Teams, welches die Lösung erstellt hat (ein Team kann auch nur aus einer einzigen Person bestehen!)
-- **teamErsteller**: Nutzername der Nutzer:in, welche das Team dieser Lösung erstellt hat
-
-
-### kurs-mitglieder.csv
-
-In dieser Datei sind alle Mitglieder des exportierten Kurses aufgelistet.
-Eine Zeile repräsentiert entsprechend eine Nutzer:in.
-
-#### Spaltenübersicht
-
-- **kursID**: Identifier des Kurses, zu welchem die Nutzer:in gehört
-- **kursName**: Name des Kurses, zu welchem die Nutzer:in gehört
-- **kursRolle**: Rolle, welche die Nutzer:in in diesem Kurs inne hat (DOZENT oder STUDENT)
-- **nutzerName**: Name der Nutzer:in
-
-
-### team-mitglieder.csv
-
-Jeder Lösung wird von genau einem Team erstellt.
-Diese Datei gibt eine Übersicht über die zum Team gehörenden Nutzer:innen.
-Jede Zeile repräsentiert entsprechend eine Nutzer:in.
-
-#### Spaltenübersicht
-
-- **nutzerID**: Identifier der Nutzer:in
-- **nutzerName**: Name der Nutzer:in
-- **teamID**: Identifier des Teams, zu welchem die Nutzerin gehört
-- **teamErstellerID**: Identifier der Ersteller:in des Teams
-- **loesungsID**: Identifier der Lösung, zu welchem das Team gehört
-
-
-### annotationen.csv
-
-Annotationen sind immer Teil einer Lösung.
-Jede Zeile in dieser Datei repräsentiert eine Annotation.
-Um die dazugehörige Lösung zu finden, sollte eine Auswertung erstellt werden,
-welche die Dateien `annotationen.csv` und `loesungen.csv` über die "loesungsID" miteinander verknüpft.
-
-#### Spaltenübersicht
-
-- **loesungsID**: Identifier der Lösung zu welcher die Annotation gehört
-- **start**: Startzeit der Annotation im Video
-- **end**: Endzeit der Annotation im Video
-- **text**: Text der Annotation
-- **memo**: Hinterlegter Memotext der Annotation
-- **farbe**: Farbe der Annotation (wird momentan nicht genutzt)
-
-
-### video-kodierungen.csv
-
-VideoKodierungen sind immer Teil einer Lösung.
-Jede Zeile in dieser Datei repräsentiert eine VideoKodierung.
-Um die dazugehörige Lösung zu finden, sollte eine Auswertung erstellt werden,
-welche die Dateien `video-kodierungen.csv` und `loesungen.csv` über die "loesungsID" miteinander verknüpft.
-
-#### Spaltenübersicht
-
-- **loesungsID**: Identifier der Lösung zu welcher die VideoKodierung gehört
-- **start**: Startzeit der VideoKodierung im Video
-- **end**: Endzeit der VideoKodierung im Video
-- **text**: Text der VideoKodierung
-- **memo**: Hinterlegter Memotext der VideoKodierung
-- **farbe**: Farbe der VideoKodierung (wird momentan nicht genutzt)
-- **codeID**: Identifier des zur Kodierung gehörenden Codes
-- **codeName**: Name des zur Kodierung gehörenden Codes
-- **codeFarbe**: Farbe des zur Kodierung gehörenden Codes
-- **elternCodeID**: Identifier des Eltern-Codes (sofern vorhanden)
-- **selbstErstellterCode**: Bestimmt, ob es sich um einen an der Phase vordefinierten oder von Nutzer:innen selbst erstellten Code handelt
-
-
-### schnitte.csv
-
-Schnitten sind immer Teil einer Lösung.
-Jede Zeile in dieser Datei repräsentiert eine Schnitt.
-Um die dazugehörige Lösung zu finden, sollte eine Auswertung erstellt werden,
-welche die Dateien `annotationen.csv` und `loesungen.csv` über die "loesungsID" miteinander verknüpft.
-
-#### Spaltenübersicht
-
-- **loesungsID**: Identifier der Lösung zu welcher die Schnitt gehört
-- **start**: Startzeit der Schnitt im Video
-- **end**: Endzeit der Schnitt im Video
-- **text**: Text der Schnitt
-- **memo**: Hinterlegter Memotext der Schnitt
-- **farbe**: Farbe der Schnitt (wird momentan nicht genutzt)
-EOT;
-        return $content;
     }
 
     public function getVideoCodeData(Course $course): array
@@ -551,6 +412,153 @@ EOT;
         return $solutionDataRows;
     }
 
+    private function getREADME(): string
+    {
+        $content = <<<'EOT'
+# README
+
+## Import der CSV-Dateien in gängige Programme
+
+Damit die Dateien und ihre Spalten korrekt importiert werden. Müssen folgende Dinge beachtet werden:
+
+1. Das verwendete Trennzeichen ist das Semikolon `;` und muss ggf. beim Import (bspw. in Excel) manuell konfiguriert werden
+2. Der verwendete Textidentifizierer sind doppelte Anführungszeichen `"` und müssen ebenfalls ggf. konfiguriert werden
+
+
+### Import in Excel
+
+Um eine CSV-Datei in Excel korrekt anzuzeigen, muss diese über die Funktion "Importieren" geladen werden.
+Ein einfaches öffnen der Datei **ist nicht ausreichend**!
+Beim Import können dann **CSV** als Format ausgewählt und die oben beschriebenen Einstellungen vorgenommen werden.
+
+
+## Aufbau der Dateien
+
+Da CSV-Dateien nur sehr bedingt dazu in der Lage sind relationale Daten abzubilden, sind die exportierten Daten auf
+mehrere Dateien aufgeteilt.
+Sind alle Dateien einmal in ein Programm (bspw. Excel) importiert worden, können die Daten beliebig untereinander verknüpft werden.
+Zu diesem Zweck sind je nach Datei verschiedene Spalten mit IDs enthalten, welche eine Verknüpfung ermöglichen.
+Im Folgenden wird ein allgemeiner Überblick über den Aufbau jeder einzelnen Datei gegeben.
+
+
+### loesungen.csv
+
+Jede Zeile in dieser Datei repräsentiert eine Lösung.
+Eine Lösung wurde entsprechend von einem Team bestehen aus verschiedenen Nutzer:innen im Rahmen einer Aufgabe gelöst.
+
+> **ACHTUNG** Zugehörige Annotationen/Kodierungen/Schnitte liegen entsprechend in ihren eigenen CSV-Dateien und
+> können über die loesungsID referenziert werden!
+
+#### Spaltenübersicht
+
+- **loesungsID**: Identifier der Loesung
+- **kursID**: Identifier des Kurses, zu welchem die Aufgabe gehört
+- **kursName**: Name des Kurses, zu welchem die Aufgabe gehört
+- **aufgabenID**: Identifier der Aufgabe
+- **aufgabenTitel**: Title der Aufgabe
+- **aufgabenBeschreibung**: Beschreibung der Aufgabe
+- **erstellungsDatum**: Erstellungsdatum der Aufgabe
+- **status**: Status der Aufgabe
+- **phasenID**: Identifier der Aufgaben-Phase, zu welcher die Lösung gehört
+- **istGruppenphase**: Bestimmt, ob es sich um eine Gruppenphase handelt
+- **phasenTitel**: Titel der Aufgaben-Phase, zu welcher die Lösung gehört
+- **phasenBeschreibung**: Beschreibung der Aufgaben-Phase, zu welcher die Lösung gehört
+- **phasenTyp**: Typ der Aufgaben-Phase, zu welcher die Lösung gehört
+- **bautAufVorherigerPhaseAuf**: Bestimmt, ob die Phase auf ihrer vorherigen aufbaut
+- **vorherigePhasenID**: Identifier der vorherigen Phase (wird nur angezeigt, wenn die aktuell Phase auf ihrer vorherigen aufbaut)
+- **teamID**: Identifier des Teams, welches die Lösung erstellt hat (ein Team kann auch nur aus einer einzigen Person bestehen!)
+- **teamErsteller**: Nutzername der Nutzer:in, welche das Team dieser Lösung erstellt hat
+
+
+### kurs-mitglieder.csv
+
+In dieser Datei sind alle Mitglieder des exportierten Kurses aufgelistet.
+Eine Zeile repräsentiert entsprechend eine Nutzer:in.
+
+#### Spaltenübersicht
+
+- **kursID**: Identifier des Kurses, zu welchem die Nutzer:in gehört
+- **kursName**: Name des Kurses, zu welchem die Nutzer:in gehört
+- **kursRolle**: Rolle, welche die Nutzer:in in diesem Kurs inne hat (DOZENT oder STUDENT)
+- **nutzerName**: Name der Nutzer:in
+
+
+### team-mitglieder.csv
+
+Jeder Lösung wird von genau einem Team erstellt.
+Diese Datei gibt eine Übersicht über die zum Team gehörenden Nutzer:innen.
+Jede Zeile repräsentiert entsprechend eine Nutzer:in.
+
+#### Spaltenübersicht
+
+- **nutzerID**: Identifier der Nutzer:in
+- **nutzerName**: Name der Nutzer:in
+- **teamID**: Identifier des Teams, zu welchem die Nutzerin gehört
+- **teamErstellerID**: Identifier der Ersteller:in des Teams
+- **loesungsID**: Identifier der Lösung, zu welchem das Team gehört
+
+
+### annotationen.csv
+
+Annotationen sind immer Teil einer Lösung.
+Jede Zeile in dieser Datei repräsentiert eine Annotation.
+Um die dazugehörige Lösung zu finden, sollte eine Auswertung erstellt werden,
+welche die Dateien `annotationen.csv` und `loesungen.csv` über die "loesungsID" miteinander verknüpft.
+
+#### Spaltenübersicht
+
+- **loesungsID**: Identifier der Lösung zu welcher die Annotation gehört
+- **start**: Startzeit der Annotation im Video
+- **end**: Endzeit der Annotation im Video
+- **text**: Text der Annotation
+- **memo**: Hinterlegter Memotext der Annotation
+- **farbe**: Farbe der Annotation (wird momentan nicht genutzt)
+
+
+### video-kodierungen.csv
+
+VideoKodierungen sind immer Teil einer Lösung.
+Jede Zeile in dieser Datei repräsentiert eine VideoKodierung.
+Um die dazugehörige Lösung zu finden, sollte eine Auswertung erstellt werden,
+welche die Dateien `video-kodierungen.csv` und `loesungen.csv` über die "loesungsID" miteinander verknüpft.
+
+#### Spaltenübersicht
+
+- **loesungsID**: Identifier der Lösung zu welcher die VideoKodierung gehört
+- **start**: Startzeit der VideoKodierung im Video
+- **end**: Endzeit der VideoKodierung im Video
+- **text**: Text der VideoKodierung
+- **memo**: Hinterlegter Memotext der VideoKodierung
+- **farbe**: Farbe der VideoKodierung (wird momentan nicht genutzt)
+- **codeID**: Identifier des zur Kodierung gehörenden Codes
+- **codeName**: Name des zur Kodierung gehörenden Codes
+- **codeFarbe**: Farbe des zur Kodierung gehörenden Codes
+- **elternCodeID**: Identifier des Eltern-Codes (sofern vorhanden)
+- **selbstErstellterCode**: Bestimmt, ob es sich um einen an der Phase vordefinierten oder von Nutzer:innen selbst erstellten Code handelt
+
+
+### schnitte.csv
+
+Schnitten sind immer Teil einer Lösung.
+Jede Zeile in dieser Datei repräsentiert eine Schnitt.
+Um die dazugehörige Lösung zu finden, sollte eine Auswertung erstellt werden,
+welche die Dateien `annotationen.csv` und `loesungen.csv` über die "loesungsID" miteinander verknüpft.
+
+#### Spaltenübersicht
+
+- **loesungsID**: Identifier der Lösung zu welcher die Schnitt gehört
+- **start**: Startzeit der Schnitt im Video
+- **end**: Endzeit der Schnitt im Video
+- **text**: Text der Schnitt
+- **memo**: Hinterlegter Memotext der Schnitt
+- **farbe**: Farbe der Schnitt (wird momentan nicht genutzt)
+EOT;
+        return $content;
+    }
+
+    // WHY:
+    // Linebreaks might lead to broken csv rows (e.g. upon importing them into MS excel etc.)
+
     private function getExercisePhaseTeamsByCourse(Course $course)
     {
         $exercises = $course->getExercises()->toArray();
@@ -562,13 +570,6 @@ EOT;
 
             return array_merge($carry, $teams);
         }, []);
-    }
-
-    // WHY:
-    // Linebreaks might lead to broken csv rows (e.g. upon importing them into MS excel etc.)
-    private static function removeLineBreaksFromCellContent(string $cellContent): string
-    {
-        return str_replace(["\n", "\r"], " ", $cellContent);
     }
 
     private function getExerciseStatus(int $statusCode): string

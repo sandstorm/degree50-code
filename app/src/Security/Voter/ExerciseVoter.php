@@ -7,6 +7,7 @@ use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Model\ExerciseStatus;
 use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\User\Model\User;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -82,7 +83,7 @@ class ExerciseVoter extends Voter
             self::VIEW => $this->canView($subject, $user),
             self::TEST => $this->canTest($subject, $user),
             self::EDIT, self::DELETE, self::SHOW_SOLUTION => $this->canEditOrDelete($subject, $user),
-            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+            default => throw new InvalidArgumentException('Unknown attribute ' . $attribute),
         };
     }
 

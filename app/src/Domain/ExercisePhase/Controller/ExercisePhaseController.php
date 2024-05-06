@@ -65,14 +65,18 @@ class ExercisePhaseController extends AbstractController
     {
     }
 
-    #[IsGranted(ExercisePhaseTeamVoter::SHOW_SOLUTION, subject: "exercisePhase")]
+    #[IsGranted(ExercisePhaseTeamVoter::SHOW_SOLUTION, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/show/{id}/{team_id}", name: "exercise-phase__show")]
     public function show(
-        ExercisePhase     $exercisePhase,
-        #[MapEntity(expr: "repository.find(team_id)")]
-        ExercisePhaseTeam $exercisePhaseTeam
+        ExercisePhase     $exercisePhase = null,
+        #[MapEntity(id: "team_id")]
+        ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
+        if (!$exercisePhase || !$exercisePhaseTeam) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $this->exercisePhaseService->openPhase($exercisePhaseTeam);
 
         if ($exercisePhase->getType() === ExercisePhaseType::REFLEXION) {
@@ -85,11 +89,15 @@ class ExercisePhaseController extends AbstractController
     #[IsGranted(ExercisePhaseVoter::TEST, subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/{team_id}", name: "exercise-phase__test")]
     public function test(
-        ExercisePhase     $exercisePhase,
-        #[MapEntity(expr: "repository.find(team_id)")]
-        ExercisePhaseTeam $exercisePhaseTeam
+        ExercisePhase     $exercisePhase = null,
+        #[MapEntity(id: "team_id")]
+        ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
+        if (!$exercisePhase || !$exercisePhaseTeam) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $this->exercisePhaseService->openPhase($exercisePhaseTeam);
 
         if ($exercisePhase->getType() === ExercisePhaseType::REFLEXION) {
@@ -102,11 +110,15 @@ class ExercisePhaseController extends AbstractController
     #[IsGranted(ExercisePhaseVoter::TEST, subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/{team_id}/reset", name: "exercise-phase__reset-test")]
     public function resetTest(
-        ExercisePhase     $exercisePhase,
-        #[MapEntity(expr: 'repository.find(team_id)')]
-        ExercisePhaseTeam $exercisePhaseTeam
+        ExercisePhase     $exercisePhase = null,
+        #[MapEntity(id: "team_id")]
+        ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
+        if (!$exercisePhase || !$exercisePhaseTeam) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $this->entityManager->remove($exercisePhaseTeam);
         $this->entityManager->flush();
 
@@ -129,7 +141,7 @@ class ExercisePhaseController extends AbstractController
     public function new(Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render('Security/403.html.twig');
         }
 
         $types = [];
@@ -153,7 +165,7 @@ class ExercisePhaseController extends AbstractController
     public function initializePhaseByType(Request $request, Exercise $exercise = null): Response
     {
         if (!$exercise) {
-            throw $this->createNotFoundException();
+            return $this->render('Security/403.html.twig');
         }
 
         $type = $request->query->get('type');
@@ -187,12 +199,12 @@ class ExercisePhaseController extends AbstractController
     public function edit(
         Request       $request,
         Exercise      $exercise = null,
-        #[MapEntity(expr: "repository.find(phase_id)")]
-        ExercisePhase $exercisePhase = null
+        #[MapEntity(id: "phase_id")]
+        ExercisePhase $exercisePhase = null,
     ): Response
     {
         if (!$exercise || !$exercisePhase) {
-            throw $this->createNotFoundException();
+            return $this->render('Security/403.html.twig');
         }
 
         $form = $this->getPhaseForm($exercisePhase);
@@ -212,8 +224,12 @@ class ExercisePhaseController extends AbstractController
 
     #[IsGranted(SolutionVoter::REVIEW_SOLUTION, subject: "solution")]
     #[Route("/exercise-phase-solution/finish-review/{id}", name: "exercise-phase-solution__finish-review", methods: ["POST"])]
-    public function finishReview(Solution $solution): Response
+    public function finishReview(Solution $solution = null): Response
     {
+        if (!$solution) {
+            return new Response('not allowed', 403);
+        }
+
         try {
             $exercisePhaseTeam = $this->exercisePhaseTeamRepository->findBySolution($solution);
             $this->exercisePhaseService->finishReview($exercisePhaseTeam);
@@ -228,11 +244,15 @@ class ExercisePhaseController extends AbstractController
     #[Route("/exercise/{id}/edit/phase/{phase_id}/change-sorting", name: "exercise-phase__change-sorting")]
     public function changeSorting(
         Request       $request,
-        Exercise      $exercise,
-        #[MapEntity(expr: "repository.find(phase_id)")]
-        ExercisePhase $exercisePhase
+        Exercise      $exercise = null,
+        #[MapEntity(id: "phase_id")]
+        ExercisePhase $exercisePhase = null,
     ): Response
     {
+        if (!$exercise || !$exercisePhase) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $sortUp = $request->query->get('sortUp', false);
         $currentSortIndex = $exercisePhase->getSorting();
 
@@ -263,12 +283,12 @@ class ExercisePhaseController extends AbstractController
     #[Route("/exercise/{id}/edit/phase/{phase_id}/delete", name: "exercise-phase__delete")]
     public function delete(
         Exercise      $exercise = null,
-        #[MapEntity(expr: "repository.find(phase_id)")]
-        ExercisePhase $exercisePhase = null
+        #[MapEntity(id: "phase_id")]
+        ExercisePhase $exercisePhase = null,
     ): Response
     {
         if (!$exercise || !$exercisePhase) {
-            throw $this->createNotFoundException();
+            return $this->render('Security/403.html.twig');
         }
 
         $this->exercisePhaseService->deleteExercisePhase($exercisePhase);
@@ -295,11 +315,15 @@ class ExercisePhaseController extends AbstractController
     #[IsGranted(ExercisePhaseTeamVoter::SHOW_SOLUTION, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/show-others/{id}/{team_id}", name: "exercise-phase__show-other-solution")]
     public function showOtherStudentsSolution(
-        ExercisePhase     $exercisePhase,
-        #[MapEntity(expr: "repository.find(team_id)")]
-        ExercisePhaseTeam $exercisePhaseTeam
+        ExercisePhase     $exercisePhase = null,
+        #[MapEntity(id: "team_id")]
+        ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
+        if (!$exercisePhase || !$exercisePhaseTeam) {
+            return $this->render('Security/403.html.twig');
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 

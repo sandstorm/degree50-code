@@ -37,35 +37,6 @@ class SchreibtischService
     {
     }
 
-    private function sortByExerciseStatus(ExerciseStatus $statusA, ExerciseStatus $statusB): int
-    {
-        // NEU < IN_BEARBEITUNG < BEENDET
-        // TODO: refactor to match expression
-        if ($statusA === ExerciseStatus::NEU && $statusB !== ExerciseStatus::NEU) {
-            return -1;
-        } elseif ($statusA !== ExerciseStatus::NEU && $statusB === ExerciseStatus::NEU) {
-            return 1;
-        } elseif ($statusA === ExerciseStatus::IN_BEARBEITUNG && $statusB === ExerciseStatus::BEENDET) {
-            return -1;
-        } elseif ($statusB === ExerciseStatus::IN_BEARBEITUNG && $statusA === ExerciseStatus::BEENDET) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    private function sortByDateTimeImmutable(?DateTimeImmutable $dateA, ?DateTimeImmutable $dateB): int
-    {
-        // TODO: refactor to match expression
-        if ($dateA === $dateB) {
-            return 0;
-        } else {
-            return $dateA < $dateB
-                ? 1
-                : -1;
-        }
-    }
-
     public function getExercisesApiResponse(): array
     {
         $user = $this->userService->getLoggendInUser();
@@ -241,5 +212,34 @@ class SchreibtischService
         }
 
         return $result;
+    }
+
+    private function sortByExerciseStatus(ExerciseStatus $statusA, ExerciseStatus $statusB): int
+    {
+        // NEU < IN_BEARBEITUNG < BEENDET
+        // TODO: refactor to match expression
+        if ($statusA === ExerciseStatus::NEU && $statusB !== ExerciseStatus::NEU) {
+            return -1;
+        } elseif ($statusA !== ExerciseStatus::NEU && $statusB === ExerciseStatus::NEU) {
+            return 1;
+        } elseif ($statusA === ExerciseStatus::IN_BEARBEITUNG && $statusB === ExerciseStatus::BEENDET) {
+            return -1;
+        } elseif ($statusB === ExerciseStatus::IN_BEARBEITUNG && $statusA === ExerciseStatus::BEENDET) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private function sortByDateTimeImmutable(?DateTimeImmutable $dateA, ?DateTimeImmutable $dateB): int
+    {
+        // TODO: refactor to match expression
+        if ($dateA === $dateB) {
+            return 0;
+        } else {
+            return $dateA < $dateB
+                ? 1
+                : -1;
+        }
     }
 }

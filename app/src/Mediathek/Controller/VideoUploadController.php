@@ -123,7 +123,7 @@ class VideoUploadController extends AbstractController
     public function edit(Request $request, Video $video = null): Response
     {
         if (!$video) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         $form = $this->createForm(MediathekVideoFormType::class, $video);
@@ -159,7 +159,7 @@ class VideoUploadController extends AbstractController
     public function delete(Video $video = null, bool $confirm = false): Response
     {
         if (!$video) {
-            throw $this->createNotFoundException();
+            return $this->render("Security/403.html.twig");
         }
 
         if ($confirm) {
@@ -180,8 +180,12 @@ class VideoUploadController extends AbstractController
      * Triggered by VideoUploadController.js to remove newly uploaded videos
      */
     #[Route("/video/delete-ajax/{id}", name: "mediathek__video--delete-ajax")]
-    public function deleteAjax(Video $video): Response
+    public function deleteAjax(Video $video = null): Response
     {
+        if (!$video) {
+            return new Response('not allowed', 403);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -198,8 +202,12 @@ class VideoUploadController extends AbstractController
      * Triggered by VideoUploadController.js to remove newly uploaded subtitles
      */
     #[Route("/video/delete-subtitle-ajax/{id}", name: "mediathek__subtitle--delete-ajax")]
-    public function deleteSubtitleAjax(Video $video): Response
+    public function deleteSubtitleAjax(Video $video = null): Response
     {
+        if (!$video) {
+            return new Response('not allowed', 403);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -216,8 +224,12 @@ class VideoUploadController extends AbstractController
      * Triggered by AudioDescriptionUploadController.js to remove newly uploaded audioDescriptions
      */
     #[Route("/video/delete-audio-description-ajax/{id}", name: "mediathek__audio_description--delete-ajax")]
-    public function deleteAudioDescriptionAjax(Video $video): Response
+    public function deleteAudioDescriptionAjax(Video $video = null): Response
     {
+        if (!$video) {
+            return new Response('not allowed', 403);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 

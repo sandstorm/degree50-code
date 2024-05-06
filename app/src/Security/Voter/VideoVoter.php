@@ -7,6 +7,7 @@ use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
 use App\Domain\User\Service\UserService;
 use App\Domain\Video\Model\Video;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -59,7 +60,7 @@ class VideoVoter extends Voter
             self::VIEW => $this->canView($video, $user),
             self::EDIT, self::DELETE => $this->canEditOrDelete($video, $user),
             self::FAVOR => $this->canFavor($user),
-            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+            default => throw new InvalidArgumentException('Unknown attribute ' . $attribute),
         };
     }
 

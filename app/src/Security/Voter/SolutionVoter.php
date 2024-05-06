@@ -6,6 +6,7 @@ use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -49,7 +50,7 @@ class SolutionVoter extends Voter
 
         return match ($attribute) {
             self::REVIEW_SOLUTION => $this->canReviewSolution($solution, $user),
-            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+            default => throw new InvalidArgumentException('Unknown attribute ' . $attribute),
         };
     }
 

@@ -56,8 +56,12 @@ class SchreibtischController extends AbstractController
     }
 
     #[Route("/schreibtisch/material/update/{id}", name: "schreibtisch-material-update")]
-    public function updateMaterial(Request $request, Material $material): Response
+    public function updateMaterial(Request $request, Material $material = null): Response
     {
+        if (!$material) {
+            return new Response('not allowed', 403);
+        }
+
         if ($content = $request->getContent()) {
             $updatedContent = json_decode($content, true);
             $this->materialService->updateMaterial($material, $updatedContent['material']);
@@ -74,12 +78,13 @@ class SchreibtischController extends AbstractController
         return new Response($responseData, 200);
     }
 
-    /**
-     * @Entity("video", expr="repository.find(id)")
-     */
     #[Route("/schreibtisch/video-favorites/toggle/{id}", name: "schreibtisch-video-favorite-toggle", methods: ["POST"])]
-    public function toggleVideoFavorite(Video $video): Response
+    public function toggleVideoFavorite(Video $video = null): Response
     {
+        if (!$video) {
+            return new Response('not allowed', 403);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $this->videoFavouritesService->toggleFavorite($video, $user);

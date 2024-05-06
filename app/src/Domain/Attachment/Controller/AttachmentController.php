@@ -40,8 +40,12 @@ class AttachmentController extends AbstractController
     }
 
     #[Route("/attachment/download/{id}", name: "exercise-overview__attachment--download")]
-    public function download(AppRuntime $appRuntime, Attachment $attachment): BinaryFileResponse
+    public function download(AppRuntime $appRuntime, Attachment $attachment = null): BinaryFileResponse|Response
     {
+        if (!$attachment) {
+            return new Response('not allowed', 403);
+        }
+
         $fileUrl = $appRuntime->virtualizedFileUrl($attachment->getUploadedFile());
         $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
         $response = new BinaryFileResponse($publicResourcesFolderPath . $fileUrl);
@@ -53,8 +57,12 @@ class AttachmentController extends AbstractController
     }
 
     #[Route("/attachment/delete/{id}", name: "exercise-overview__attachment--delete")]
-    public function delete(AppRuntime $appRuntime, Attachment $attachment): Response
+    public function delete(AppRuntime $appRuntime, Attachment $attachment = null): Response
     {
+        if (!$attachment) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $this->removeAttachment($appRuntime, $attachment);
 
         $this->addFlash(
@@ -84,8 +92,12 @@ class AttachmentController extends AbstractController
     }
 
     #[Route("/attachment/list/{id}", name: "exercise-overview__attachment--list")]
-    public function uploadedAttachment(ExercisePhase $exercisePhase): Response
+    public function uploadedAttachment(ExercisePhase $exercisePhase = null): Response
     {
+        if (!$exercisePhase) {
+            return $this->render('Security/403.html.twig');
+        }
+
         return $this->render('ExercisePhase/AttachmentList.html.twig', [
             'attachmentList' => $exercisePhase->getAttachments()
         ]);

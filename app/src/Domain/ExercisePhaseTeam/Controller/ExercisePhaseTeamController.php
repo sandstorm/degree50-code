@@ -55,8 +55,12 @@ class ExercisePhaseTeamController extends AbstractController
 
     #[IsGranted(ExercisePhaseVoter::CREATE_TEAM, subject: "exercisePhase")]
     #[Route("/exercise-phase/{id}/team/new", name: "exercise-phase-team__new")]
-    public function new(ExercisePhase $exercisePhase): Response
+    public function new(ExercisePhase $exercisePhase = null): Response
     {
+        if (!$exercisePhase) {
+            return $this->render("Security/403.html.twig");
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $exercise = $exercisePhase->getBelongsToExercise();
@@ -113,8 +117,12 @@ class ExercisePhaseTeamController extends AbstractController
 
     #[IsGranted(ExercisePhaseVoter::TEST, subject: "exercisePhase")]
     #[Route("/exercise-phase/test/{id}/team/new", name: "exercise-phase-team__test-new")]
-    public function test(ExercisePhase $exercisePhase): Response
+    public function test(ExercisePhase $exercisePhase = null): Response
     {
+        if (!$exercisePhase) {
+            return $this->render("Security/403.html.twig");
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $exercise = $exercisePhase->getBelongsToExercise();
@@ -149,11 +157,15 @@ class ExercisePhaseTeamController extends AbstractController
     #[IsGranted(ExercisePhaseTeamVoter::JOIN, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/join", name: "exercise-phase-team__join")]
     public function join(
-        ExercisePhase $exercisePhase,
-        #[MapEntity(expr: "repository.find(team_id)")]
-        ExercisePhaseTeam $exercisePhaseTeam
+        ExercisePhase     $exercisePhase = null,
+        #[MapEntity(id: "team_id")]
+        ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
+        if (!$exercisePhase || !$exercisePhaseTeam) {
+            return $this->render('Security/403.html.twig');
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -176,11 +188,15 @@ class ExercisePhaseTeamController extends AbstractController
     #[IsGranted(ExercisePhaseTeamVoter::DELETE, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/delete", name: "exercise-phase-team__delete")]
     public function delete(
-        ExercisePhase $exercisePhase,
-        #[MapEntity(expr: "repository.find(team_id)")]
-        ExercisePhaseTeam $exercisePhaseTeam
+        ExercisePhase     $exercisePhase = null,
+        #[MapEntity(id: "team_id")]
+        ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
+        if (!$exercisePhase || $exercisePhaseTeam) {
+            return $this->render('Security/403.html.twig');
+        }
+
         $this->entityManager->remove($exercisePhaseTeam);
         $this->entityManager->flush();
 
@@ -201,11 +217,15 @@ class ExercisePhaseTeamController extends AbstractController
     #[IsGranted(ExercisePhaseTeamVoter::LEAVE, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/{id}/team/{team_id}/leave", name: "exercise-phase-team__leave")]
     public function leave(
-        ExercisePhase $exercisePhase,
-        #[MapEntity(expr: "repository.find(team_id)")]
-        ExercisePhaseTeam $exercisePhaseTeam
+        ExercisePhase     $exercisePhase = null,
+        #[MapEntity(id: "team_id")]
+        ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
+        if (!$exercisePhase || !$exercisePhaseTeam) {
+            return $this->render('Security/403.html.twig');
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -229,8 +249,12 @@ class ExercisePhaseTeamController extends AbstractController
     }
 
     #[Route("/exercise-phase/share-result/{id}", name: "exercise-phase-team__share-result")]
-    public function shareResult(ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function shareResult(ExercisePhaseTeam $exercisePhaseTeam = null): Response
     {
+        if (!$exercisePhaseTeam) {
+            return $this->render("Security/403.html.twig");
+        }
+
         $this->exercisePhaseService->promoteLastAutoSavedSolutionToRealSolution($exercisePhaseTeam);
         $this->exercisePhaseService->cleanupAutoSavedSolutions($exercisePhaseTeam);
         $this->exercisePhaseService->finishPhase($exercisePhaseTeam);
@@ -259,8 +283,12 @@ class ExercisePhaseTeamController extends AbstractController
     }
 
     #[Route("/exercise-phase/finish-reflexion/{id}", name: "exercise-phase-team--finish-reflexion")]
-    public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function finishReflexion(ExercisePhaseTeam $exercisePhaseTeam = null): Response
     {
+        if (!$exercisePhaseTeam) {
+            return $this->render("Security/403.html.twig");
+        }
+
         // TODO
         // We might refactor this, so that this can be part of share_result instead and we
         // no longer have the distinction inside the template (and also would not need this route anymore)
@@ -286,8 +314,12 @@ class ExercisePhaseTeamController extends AbstractController
      */
     #[IsGranted(ExercisePhaseTeamVoter::UPDATE_SOLUTION, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/update-solution/{id}", name: "exercise-phase-team__update-solution")]
-    public function updateSolution(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function updateSolution(Request $request, ExercisePhaseTeam $exercisePhaseTeam = null): Response
     {
+        if (!$exercisePhaseTeam) {
+            return new Response('not allowed', 403);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
         $solutionDataFromJson = json_decode($request->getContent(), true);
@@ -333,8 +365,12 @@ class ExercisePhaseTeamController extends AbstractController
      */
     #[IsGranted(SolutionVoter::REVIEW_SOLUTION, subject: "solution")]
     #[Route("/exercise-phase/review-solution/{id}", name: "exercise-phase-team__review-solution")]
-    public function reviewSolution(Request $request, Solution $solution): Response
+    public function reviewSolution(Request $request, Solution $solution = null): Response
     {
+        if (!$solution) {
+            return new Response('not allowed', 403);
+        }
+
         $solutionDataFromJson = json_decode($request->getContent(), true);
 
         $serverSideSolutionData = ServerSideSolutionData::fromClientJSON($solutionDataFromJson);
@@ -353,8 +389,12 @@ class ExercisePhaseTeamController extends AbstractController
      */
     #[IsGranted(ExercisePhaseTeamVoter::UPDATE_SOLUTION, subject: "exercisePhaseTeam")]
     #[Route("/exercise-phase/update-current-editor/{id}", name: "exercise-phase-team__update-current-editor")]
-    public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam): Response
+    public function updateCurrentEditor(Request $request, ExercisePhaseTeam $exercisePhaseTeam = null): Response
     {
+        if (!$exercisePhaseTeam) {
+            return new Response('not allowed', 403);
+        }
+
         $user = $this->getUser();
 
         // get teamMember with the candidate id

@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class DoctrineFilterConfigurerSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly Security       $security,
+        private readonly Security               $security,
         private readonly EntityManagerInterface $entityManager
     )
     {

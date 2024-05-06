@@ -250,12 +250,12 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-                await vars.page.fill('input#exercise_name', 'Test-Aufgabe')
+                await vars.page.fill('input#exercise_form_name', 'Test-Aufgabe')
                 // here we have to use this way to navigate to the description field because we use ckeditor
                 await vars.page.keyboard.press('Tab')
                 await vars.page.keyboard.type('Test-Aufgaben-Beschreibung')
 
-                await vars.page.click('button#exercise_save')
+                await vars.page.click('button#exercise_form_save')
             JS
         );
     }

@@ -6,6 +6,7 @@ use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\ExercisePhaseType;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -66,7 +67,7 @@ class ExercisePhaseVoter extends Voter
             self::VIEW_OTHER_SOLUTIONS => $this->canViewOtherSolutions($exercisePhase, $user),
             self::VIEW => $this->canViewExercisePhase($exercisePhase, $user),
             self::TEST => $this->canTest($exercisePhase, $user),
-            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+            default => throw new InvalidArgumentException('Unknown attribute ' . $attribute),
         };
     }
 

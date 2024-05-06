@@ -57,8 +57,12 @@ class MediathekOverviewController extends AbstractController
 
     #[IsGranted(VideoVoter::FAVOR, subject: "video")]
     #[Route("/mediathek/favor/{id?}", name: "mediathek__video--favor")]
-    public function toggleFavorVideo(Video $video): Response
+    public function toggleFavorVideo(Video $video = null): Response
     {
+        if (!$video) {
+            return $this->render("Security/403.html.twig");
+        }
+
         /** @var User $user */
         $user = $this->security->getUser();
 

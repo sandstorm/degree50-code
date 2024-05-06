@@ -4,6 +4,7 @@ namespace App\Security\Voter;
 
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\User\Model\User;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -57,7 +58,7 @@ class ExercisePhaseTeamVoter extends Voter
             self::LEAVE => $this->canLeave($exercisePhaseTeam, $user),
             self::DELETE => $this->canDelete($exercisePhaseTeam, $user),
             self::UPDATE_SOLUTION => $this->canUpdateSolution($exercisePhaseTeam, $user),
-            default => throw new \InvalidArgumentException('Unknown attribute ' . $attribute),
+            default => throw new InvalidArgumentException('Unknown attribute ' . $attribute),
         };
     }
 

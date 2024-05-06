@@ -1,4 +1,4 @@
-@fixtures
+@fixtures @debug
 Feature: Users expire and are removed automatically. They are notified before expiration and can extend their account.
 
     @integration

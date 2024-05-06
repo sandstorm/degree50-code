@@ -4,8 +4,8 @@ namespace App\DataFixtures;
 
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
-use App\Domain\User\Model\User;
 use App\Domain\Fachbereich\Model\Fachbereich;
+use App\Domain\User\Model\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -16,7 +16,7 @@ class AccountFixtures extends Fixture
     public const string CREATOR_REFERENCE = 'creator';
 
     public function __construct(
-        private readonly UserPasswordHasherInterface  $userPasswordHasher,
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
     )
     {
     }
