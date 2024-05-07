@@ -1,22 +1,4 @@
 services:
-  degree-setup:
-    build:
-      context: ./
-      dockerfile: deployment/docker/Dockerfile
-    entrypoint: sleep 1000000
-    environment:
-      LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-setup
-      LOCAL_DEVELOPMENT: 1
-      APP_ENV: "dev"
-      JWT_KEY: changeme-setup
-    depends_on:
-      - db
-      - redis
-      - mailpit
-    volumes:
-      - ./app:/app:rw,cached
-      - app-var:/app/var
-
   degree:
     build:
       context: ./

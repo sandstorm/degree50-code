@@ -118,6 +118,14 @@ readonly class UserService
         }
     }
 
+    // used in twig templates
+    public function userCanUploadVideo(): bool
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        return $this->canUploadVideo($user);
+    }
+
     public function canUploadVideo(User $user): bool
     {
         if ($user->isAdmin() || $user->isDozent()) {
