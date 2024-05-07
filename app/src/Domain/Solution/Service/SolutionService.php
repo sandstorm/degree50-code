@@ -15,7 +15,6 @@ use App\Domain\User\Model\User;
 use App\Domain\VideoCode\Model\VideoCode;
 use App\Twig\AppRuntime;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\Persistence\ManagerRegistry;
 
 readonly class SolutionService
 {
@@ -23,7 +22,6 @@ readonly class SolutionService
         private AutosavedSolutionRepository $autosavedSolutionRepository,
         private AppRuntime                  $appRuntime,
         private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
-        private ManagerRegistry             $managerRegistry,
         private ExercisePhaseService        $exercisePhaseService,
     )
     {

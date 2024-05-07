@@ -11,6 +11,7 @@ use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Video\Model\Video;
 use App\Security\Voter\DataPrivacyVoter;
 use App\Security\Voter\TermsOfUseVoter;
+use DateTimeImmutable;
 use InvalidArgumentException;
 use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertEquals;
@@ -237,7 +238,7 @@ trait UserContextTrait
     public function theExpirationDateOfUserIsSetTo(string $username, string $relativeTime): void
     {
         $user = $this->getUserByEmail($username);
-        $user->setExpirationDate(new \DateTimeImmutable($relativeTime));
+        $user->setExpirationDate(new DateTimeImmutable($relativeTime));
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -250,7 +251,7 @@ trait UserContextTrait
     {
         $user = $this->getUserByEmail($username);
 
-        $expectedDateDiff = (new \DateTimeImmutable($relativeTime))->diff($user->getExpirationDate());
+        $expectedDateDiff = (new DateTimeImmutable($relativeTime))->diff($user->getExpirationDate());
         assertEquals($expectedDateDiff->days, 0);
     }
 

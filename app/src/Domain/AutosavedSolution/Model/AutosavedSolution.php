@@ -10,8 +10,9 @@ use App\Domain\User\Model\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
+// Lifecycle callbacks are used to automatically set the createdAt value
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: AutosavedSolutionRepository::class)]
-#[ORM\HasLifecycleCallbacks()]
 class AutosavedSolution
 {
     use IdentityTrait;

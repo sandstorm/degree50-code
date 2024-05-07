@@ -16,9 +16,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *
  * @Vich\Uploadable
  */
-//TODO: what are lifecycle callbacks?
 #[ORM\Entity(repositoryClass: AttachmentRepository::class)]
-#[ORM\HasLifecycleCallbacks()]
+#[ORM\HasLifecycleCallbacks]
 class Attachment
 {
     use IdentityTrait;
@@ -62,7 +61,6 @@ class Attachment
         $this->name = $name;
     }
 
-    // TODO: used?
     #[ORM\PrePersist]
     public function setUploadedAtValue(): void
     {

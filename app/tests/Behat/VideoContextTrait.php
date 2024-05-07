@@ -9,6 +9,7 @@ use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 
+use DateTimeImmutable;
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;
@@ -68,7 +69,7 @@ trait VideoContextTrait
         if (!$video) {
             $user = $this->getUserByEmail($username);
             // fixed creation date for video
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             $creationDateForVideo = $now->setTimestamp(1711960922); // 2024-04-01 08:42:02
 
             $video = new Video($videoId);

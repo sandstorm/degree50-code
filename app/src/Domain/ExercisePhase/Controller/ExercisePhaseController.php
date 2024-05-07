@@ -502,7 +502,7 @@ class ExercisePhaseController extends AbstractController
         $this->entityManager->persist($newSolution);
     }
 
-    private function persistPhaseAndRedirectToEdit(Exercise $exercise, ExercisePhase $exercisePhase, string $type): RedirectResponse
+    private function persistPhaseAndRedirectToEdit(Exercise $exercise, ExercisePhase $exercisePhase): RedirectResponse
     {
         $existingPhaseWithHighestSorting = $this
             ->exercisePhaseRepository

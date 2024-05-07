@@ -13,7 +13,6 @@ use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCode;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideVideoCodePrototype;
 use App\Domain\User\Model\User;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Serializer;
 
@@ -36,9 +35,7 @@ class DegreeDataToCsvService
         CsvEncoder::NO_HEADERS_KEY => true,
     ];
 
-    public function __construct(
-        private readonly ManagerRegistry $managerRegistry
-    )
+    public function __construct()
     {
     }
 

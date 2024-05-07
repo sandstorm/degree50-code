@@ -378,10 +378,10 @@ class ExerciseController extends AbstractController
             // set status to "created" (unpublished)
             $newExercise->setStatus(Exercise::EXERCISE_CREATED);
             // set course to Course the user selected in form
-            $newExercise->setCourse($formDto->getCourse());
+            $newExercise->setCourse($formDto->course);
 
             // create new ExercisePhases by duplicating the original ones
-            if ($formDto->getCopyPhases()) {
+            if ($formDto->copyPhases) {
                 $newPhases = $this->exercisePhaseService->duplicatePhasesOfExercise($exercise, $newExercise);
                 $newExercise->setPhases($newPhases);
             }

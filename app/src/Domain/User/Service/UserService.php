@@ -4,7 +4,6 @@ namespace App\Domain\User\Service;
 
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
 use App\Domain\CourseRole\Model\CourseRole;
-use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
@@ -117,13 +116,6 @@ readonly class UserService
             default:
                 throw new InvalidArgumentException('User is not a Student, Dozent or Admin');
         }
-    }
-
-    public function userCanUploadVideo(): bool
-    {
-        /** @var User $user */
-        $user = $this->security->getUser();
-        return $this->canUploadVideo($user);
     }
 
     public function canUploadVideo(User $user): bool

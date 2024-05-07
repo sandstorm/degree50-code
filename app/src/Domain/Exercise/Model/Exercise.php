@@ -12,9 +12,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// TODO: life cycle callbacks?
-// TODO: Entity repository?
-#[ORM\HasLifecycleCallbacks()]
+// Lifecycle callbacks are used to automatically set the createdAt value
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity]
 class Exercise
 {

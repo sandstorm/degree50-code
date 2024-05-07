@@ -5,6 +5,7 @@ namespace App\Tests\Behat;
 use App\DataExport\Dto\TextFileDto;
 use App\Domain\Course\Model\Course;
 use Behat\Gherkin\Node\PyStringNode;
+use DateTimeImmutable;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertIsObject;
 
@@ -30,7 +31,7 @@ trait CsvContextTrait
             return $cSVDto->getFileName() === $fileName;
         }));
 
-        $currentDate = new \DateTimeImmutable();
+        $currentDate = new DateTimeImmutable();
         $expected = str_replace('{{CREATED_AT_DATE}}', $currentDate->format("d.m.Y"), $contentString->getRaw());
 
         assertIsObject($csvDto, "Virtual File <" . $fileName . "> not found in dtoList!");

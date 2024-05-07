@@ -19,7 +19,6 @@ use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Twig\AppRuntime;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class SchreibtischService
@@ -32,7 +31,6 @@ readonly class SchreibtischService
         private UserMaterialService    $materialService,
         private AppRuntime             $appRuntime,
         private UrlGeneratorInterface  $router,
-        private EntityManagerInterface $entityManager,
     )
     {
     }

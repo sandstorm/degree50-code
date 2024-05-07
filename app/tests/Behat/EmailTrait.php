@@ -6,6 +6,7 @@ namespace App\Tests\Behat;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use InvalidArgumentException;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;
 use function PHPUnit\Framework\assertNotNull;
@@ -100,7 +101,7 @@ trait EmailTrait
     private function emailApiGet(string $apiPath): mixed
     {
         if (str_starts_with($apiPath, '/') === false) {
-            throw new \InvalidArgumentException("The api path must start with a leading '/'");
+            throw new InvalidArgumentException("The api path must start with a leading '/'");
         }
 
         $client = new Client();

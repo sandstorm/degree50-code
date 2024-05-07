@@ -249,6 +249,7 @@ final class DegreeContext implements Context
 
     /**
      * @When I have not yet started an exercise phase of :exerciseId
+     * // TODO: fix
      */
     public function iHaveNotYetStartedAnExercisePhase($exerciseId): void
     {
@@ -984,10 +985,10 @@ final class DegreeContext implements Context
             $this->playwrightContext,
             // language=JavaScript
             "
-                await vars.page.fill('.ck-content', '{$materialValue}')
+                await vars.page.fill('.ck-content', '$materialValue')
                 await Promise.all([
                     vars.page.click('text=Speichern'),
-                    vars.page.waitForRequest('**/schreibtisch/material/update/{$materialId}')
+                    vars.page.waitForRequest('**/schreibtisch/material/update/$materialId')
                 ])
             "
         );
@@ -995,6 +996,7 @@ final class DegreeContext implements Context
 
     /**
      * @Then The material :materialId should be :materialValue after a page reload
+     * // TODO: either go to page of material (via id) or remove that parameter
      */
     public function materialShouldBe($materialId, $materialValue): void
     {
@@ -1003,7 +1005,7 @@ final class DegreeContext implements Context
             // language=JavaScript
             "
                 await vars.page.reload()
-                await vars.page.waitForSelector('text={$materialValue}')
+                await vars.page.waitForSelector('text=$materialValue')
             "
         );
     }

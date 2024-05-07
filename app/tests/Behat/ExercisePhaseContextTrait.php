@@ -231,6 +231,8 @@ trait ExercisePhaseContextTrait
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
         $loggedInUser = $this->tokenStorage->getToken()->getUser();
 
+        assert($loggedInUser instanceof User, 'User not found!');
+
         $exercisePhaseTeam->addMember($loggedInUser);
     }
 
