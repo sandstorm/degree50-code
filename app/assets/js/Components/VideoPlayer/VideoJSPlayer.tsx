@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import videojs, { VideoJsPlayerOptions, VideoJsPlayer } from 'video.js'
 import videojsDE from 'video.js/dist/lang/de.json'
-
 import 'video.js/dist/video-js.css'
+
 import { Video } from './VideoPlayerWrapper'
 import { generate } from 'shortid'
 import { useAddCustomVideoJsComponent } from '../VideoEditor/useCustomVideoJsComponent'

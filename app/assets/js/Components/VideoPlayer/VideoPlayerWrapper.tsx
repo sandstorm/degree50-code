@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import VideoPlayer from './ConnectedVideoJSPlayer'
-import { VideoJsPlayerOptions } from 'video.js'
+import type { VideoJsPlayerOptions } from 'video.js'
 
 export type Video = {
     id: string
@@ -28,7 +28,7 @@ const VideoPlayerWrapper: React.FC<Props> = (props) => {
             autoplay: false,
             controls: true,
         }),
-        [activeVideo]
+        [activeVideo],
     )
 
     const actions = useMemo(() => {
