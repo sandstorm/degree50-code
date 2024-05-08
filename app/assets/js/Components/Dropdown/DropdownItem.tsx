@@ -26,7 +26,7 @@ const DropdownItem = ({ item, state, onAction, onClose }: DropdownItemProps) => 
         ref
     )
 
-    // Handle focus events so we can apply highlighted
+    // Handle focus events, so we can apply highlighted
     // style to the focused menu item
     const [isFocused, setFocused] = React.useState(false)
     const { focusProps } = useFocus({ onFocusChange: setFocused })

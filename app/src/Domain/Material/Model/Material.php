@@ -8,7 +8,6 @@ use App\Domain\Material\Repository\MaterialRepository;
 use App\Domain\User\Model\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use FontLib\Table\Type\name;
 
 #[ORM\Entity(repositoryClass: MaterialRepository::class)]
 class Material

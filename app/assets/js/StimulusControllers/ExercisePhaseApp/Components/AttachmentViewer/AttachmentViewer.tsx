@@ -113,7 +113,7 @@ const AttachmentViewer: React.FC<Props> = (props) => {
                             }
                             alert={() => (
                                 <div className={'pdf-viewer__error'}>
-                                    <h4>Dokument konte nicht geladen werden</h4>
+                                    <h4>Dokument konnte nicht geladen werden</h4>
                                 </div>
                             )}
                             navigation={{

@@ -49,7 +49,7 @@ const VideoContextPlayer: FC<Props> = (props) => {
     )
     const { currentTime, setCurrentTime } = useVideoContextCurrentTime(videoContext)
 
-    // handleKeyDown to catch play/pause toggle via short cut
+    // handleKeyDown to catch play/pause toggle via shortcut
     const handleKeyDown = (ev: React.KeyboardEvent<HTMLElement>) => {
         // TODO: What combination is _wanted_?
         const isKeyCombination = ev.key === ' '

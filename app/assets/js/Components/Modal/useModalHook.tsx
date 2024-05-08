@@ -7,8 +7,8 @@ import Modal from './Modal'
 // of this modal.
 //
 // NOTE: Each modal you want to render should use a separate hook!!!
-// Otherwise your modals will share their visibility state which might lead
-// to overlapping and unclosable elements.
+// Otherwise, your modals will share their visibility state which might lead
+// to overlapping and un-closable elements.
 export const useModalHook = () => {
     const state = useOverlayTriggerState({})
 

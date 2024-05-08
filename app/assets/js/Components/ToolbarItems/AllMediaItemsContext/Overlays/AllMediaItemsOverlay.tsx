@@ -66,8 +66,8 @@ const AllMediaItemsOverlay = (props: Props) => {
                 {allMediaItems.map((mediaItem, index) => {
                     // WHY:
                     // Our media items do not have an actual unique ID.
-                    // Instead we dynamically build an ID from the exercisePhaseTeamID and the
-                    // annotation/code/cut-index. Therefore an annotation and a code might have
+                    // Instead, we dynamically build an ID from the exercisePhaseTeamID and the
+                    // annotation/code/cut-index. Therefore, an annotation and a code might have
                     // the same ID. By postfixing them with their type we assure, that we don't
                     // have colliding keys.
                     const key = `${mediaItem.id}_${mediaItem.type}`

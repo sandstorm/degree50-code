@@ -118,7 +118,7 @@ const selectComponents = createSelector([selectComponentsById, selectComponentId
         .map((id) => byId[id])
         .sort((component) => {
             // WHY:
-            // currently cutting should alway come first, because we only show previous
+            // currently cutting should always come first, because we only show previous
             // components inside the cutting phase to reference while cutting.
             // If we at some point plan to change this to the component for the current phase coming first
             // this would need to be implemented.

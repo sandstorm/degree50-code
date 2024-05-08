@@ -3,7 +3,7 @@ import { useRadioGroupState } from '@react-stately/radio'
 import { useRadioGroup } from '@react-aria/radio'
 import { RadioGroupProps } from '@react-types/radio'
 
-// Ignoring due to how react-aria handles the initialisiation
+// Ignoring due to how react-aria handles the initialization
 // @ts-ignore
 export const RadioContext = React.createContext()
 

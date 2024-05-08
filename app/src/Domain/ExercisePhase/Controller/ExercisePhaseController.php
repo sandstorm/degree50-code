@@ -185,13 +185,7 @@ class ExercisePhaseController extends AbstractController
 
         $exercisePhase->setBelongsToExercise($exercise);
 
-        if ($type != null) {
-            return $this->persistPhaseAndRedirectToEdit($exercise, $exercisePhase, $type);
-        }
-
-        return $this->render('ExercisePhase/ChooseType.html.twig', [
-            'exercise' => $exercise
-        ]);
+        return $this->persistPhaseAndRedirectToEdit($exercise, $exercisePhase);
     }
 
     #[IsGranted(ExerciseVoter::EDIT, subject: "exercise")]
@@ -562,10 +556,6 @@ class ExercisePhaseController extends AbstractController
         return $this->redirectToRoute('exercise-phase__edit', ['id' => $exercise->getId(), 'phase_id' => $exercisePhase->getId()]);
     }
 
-    /**
-     * TODO: rather check for 'hasValidPreviousPhase'
-     * @deprecated
-     */
     private function hasInvalidPreviousPhase(ExercisePhase $exercisePhase): bool
     {
         $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();

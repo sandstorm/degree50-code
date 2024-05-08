@@ -33,7 +33,7 @@ const itemC = new MediaItem({
 })
 
 describe('adjustItemTimelinePositionInList()', () => {
-    it('should correctly adjust startTime and endtime of item', () => {
+    it('should correctly adjust startTime and endTime of item', () => {
         const index = 1
         const result = adjustItemTimelinePositionInList([itemA, itemB, itemC], itemB, index, '00:00:05.000')
 

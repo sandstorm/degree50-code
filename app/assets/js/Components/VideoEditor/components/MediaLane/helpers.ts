@@ -1,6 +1,6 @@
 // FIXME refactor to simplify (and implement 'todo'-tests):
 // * determine if either out of right bound, left bound or not out of bound at all
-// * --> extract functions for left/right bound andjustment
+// * --> extract functions for left/right bound adjustment
 export const calculateTimelineStartTime = (currentTime: number, newRenderedDuration: number, videoDuration: number) => {
     // we zoom around the current time (cursor)
     const newRenderStartTime = currentTime - newRenderedDuration / 2

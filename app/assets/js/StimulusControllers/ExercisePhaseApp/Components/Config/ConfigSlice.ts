@@ -100,7 +100,7 @@ const selectUserId = (state: ConfigStateSlice) => state.config.userId
 const selectUserName = (state: ConfigStateSlice) => state.config.userName
 const selectReadOnly = (state: ConfigStateSlice) => state.config.readOnly
 const selectVideos = (state: ConfigStateSlice) => state.config.videos
-const selectApiEndpoits = (state: ConfigStateSlice) => state.config.apiEndpoints
+const selectApiEndpoints = (state: ConfigStateSlice) => state.config.apiEndpoints
 const selectIsStudent = (state: ConfigStateSlice) => state.config.isStudent ?? false
 
 export const selectComponents = (state: ConfigStateSlice) => state.config.components
@@ -132,7 +132,7 @@ export const selectors = {
     selectTitle,
     selectDescription,
     selectDependsOnPreviousPhase,
-    selectApiEndpoits,
+    selectApiEndpoints,
     selectIsStudent,
 }
 

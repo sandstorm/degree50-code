@@ -10,8 +10,8 @@ export const useDebouncedResizeObserver = (
 
     const onResize = useMemo(() => debounce(setSize, wait, { leading: true }), [wait])
     // bit weird code, because given the onResize handler the observer does not return width or height.
-    // But in order to use this hook outside we init width and height with 0.
-    // Otherwise an empty object would be returned.
+    // But in order to use this hook outside we initialize width and height with 0.
+    // Otherwise, an empty object would be returned.
     const { width = 0, height = 0, ref } = useResizeObserver({ ref: $containerRef, onResize })
 
     return { width, height, ...size, ref }

@@ -96,9 +96,9 @@ export const MediaItem = ({
     // DOM node or the item changes. This means, that even if just some part of item.originalData
     //  (e.g. the offset on a cutList item) has been changed, the width will be explicitly set to the DOM node.
     // This is necessary, because our useItemInteraction() hook directly messes with the DOM nodes of media items and
-    // updating the width of the react virtual dom node wont take effect after some renders otherwise.
+    // updating the width of the React virtual dom node won't take effect after some renders otherwise.
     //
-    // This helps preventing bugs like this: https://gitlab.sandstorm.de/degree-4.0/code/-/issues/59
+    // This helps to prevent bugs like this: https://gitlab.sandstorm.de/degree-4.0/code/-/issues/59
     useEffect(() => {
         if (itemRef.current) {
             // eslint-disable-next-line

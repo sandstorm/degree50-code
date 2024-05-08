@@ -55,7 +55,7 @@ export const findNonOverlappingItemsRecursively = trampoline(
  * HOW:
  * * we start at lane 0
  * * the current item will be placed on the current lane as well as all other items which do not have any conflicts with each other or the current item
- * * as soon as items have a lane assigned, we wont touch them anymore (they will no longer be part of the items to process)
+ * * as soon as items have a lane assigned, we won't touch them anymore (they will no longer be part of the items to process)
  *
  * NOTE: This still does not work perfectly, as the way items are placed is not transparent to the user and feels random (bad UX)
  */

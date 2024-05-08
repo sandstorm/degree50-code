@@ -54,7 +54,7 @@ export default class extends Controller {
          * WHY:
          * We want to read the colors that are picked with a screen reader.
          * So we hook into the "change" event of the color picker and
-         * translate the color via ntc-ts into a human readable name.
+         * translate the color via ntc-ts into a human-readable name.
          *
          * For more info:
          * @see updateVideoCodeListAriaLabels

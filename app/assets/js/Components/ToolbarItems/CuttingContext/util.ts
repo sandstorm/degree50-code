@@ -209,7 +209,7 @@ const CUT_PADDING_SECS = 0.001
 
 /**
  * Transforms a list of MediaItemType<Cut> into elements which are playable by the video context player.
- * All items are snapped back to back to their predecessor, so that there remains no empty space between cuts.
+ * All items are snapped back-to-back to their predecessor, so that there remains no empty space between cuts.
  */
 export const transformCutListToVideoContextPlayList = (cuts: CutList): Array<VideoContextPlayListElement> =>
     cuts.reduce(

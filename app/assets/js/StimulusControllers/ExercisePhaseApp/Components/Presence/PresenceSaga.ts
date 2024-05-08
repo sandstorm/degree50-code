@@ -60,12 +60,12 @@ function connect(eventSource: EventSource) {
     return eventChannel((emit) => {
         // eslint-disable-next-line
     eventSource.onmessage = () => {
-            emit(eventStreamMessageAction()) // the payload is irrelevant because we call the subscription api anyways
+            emit(eventStreamMessageAction()) // the payload is irrelevant because we call the subscription api anyway
         }
 
         // eslint-disable-next-line
     eventSource.onopen = () => {
-            emit(eventStreamOpenedAction()) // the payload is irrelevant because we call the subscription api anyways
+            emit(eventStreamOpenedAction()) // the payload is irrelevant because we call the subscription api anyway
         }
 
         return () => {

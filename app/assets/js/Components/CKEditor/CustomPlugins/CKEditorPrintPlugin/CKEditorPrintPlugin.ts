@@ -21,8 +21,7 @@ export default class CKEditorPrintPlugin extends Plugin {
 
     init() {
         document.body.appendChild(this.iframe)
-        // @ts-ignore -- WHY: ck's typings fail here :(
-        const ui = this.editor.ui as EditorUI
+        const ui = this.editor.ui
 
         ui.componentFactory.add('print', (locale: Locale) => {
             const view = new ButtonView(locale)
