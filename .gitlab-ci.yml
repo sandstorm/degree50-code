@@ -25,7 +25,7 @@ compile_and_test_frontend:
     image: node:20.12.2-bookworm-slim
     script:
         - yarn config set cache-folder .yarn
-        - cd api
+        - cd app
         # set up FontAwesomePro - CI provides $FONTAWESOME_NPM_AUTH_TOKEN (GitLab->Settings->CI/CD->Variables)
         - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
         - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_NPM_AUTH_TOKEN
@@ -39,12 +39,12 @@ compile_and_test_frontend:
     artifacts:
         expire_in: 1 week
         paths:
-            - api/public/build
+            - app/public/build
     cache:
         # Cache node_modules project wide - only change when node version is changed.
         key: "degree-frontend-node-cache_node-version-20-12-2"
         paths:
-            - api/node_modules
+            - app/node_modules
             - .yarn
 
 package_app:
@@ -55,7 +55,7 @@ package_app:
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
     script:
         - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        # Also make sure that ./api/VERSION is copied into the docker container (see deployment/docker/Dockerfile)
+        # Also make sure that ./app/VERSION is copied into the docker container (see deployment/docker/Dockerfile)
         - ./scripts/versioning.sh
         # performance improvement for CI
         - docker pull $CI_REGISTRY_IMAGE:main || true
