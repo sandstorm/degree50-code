@@ -12,6 +12,7 @@ use App\VideoEncoding\Service\EncodingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
@@ -28,7 +29,8 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  * ./symfony-console messenger:consume async -vv
  * Note: the -v|-vv|-vvv option determines the log level
  */
-readonly class WebEncodingHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+readonly class WebEncodingHandler
 {
     public function __construct(
         private LoggerInterface        $logger,

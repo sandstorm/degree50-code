@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
@@ -33,7 +34,8 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
  * Start workers:
  * ./symfony-console messenger:consume async -vV
  */
-readonly class CutListEncodingHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+readonly class CutListEncodingHandler
 {
     public function __construct(
         private LoggerInterface             $logger,
