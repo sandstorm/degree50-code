@@ -12,7 +12,7 @@ Dropzone.autoDiscover = false
 export default class extends Controller {
     connect() {
         // Submit button inside the footer
-        const formSubmitButton = document.getElementById('video_save')
+        const formSubmitButton = document.getElementById('mediathek_video_form_save')
         formSubmitButton.setAttribute('disabled', '')
         const endpoint = this.data.get('endpoint')
         const removeEndpoint = this.data.get('removeEndpoint')

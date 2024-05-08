@@ -10,10 +10,10 @@ class MaterialPhase extends ExercisePhase
 {
     const ?ExercisePhaseType type = ExercisePhaseType::MATERIAL;
 
-    #[ORM\column(name: "material", type: "text")]
+    #[ORM\Column(name: "material", type: "text")]
     private string|null $material = '';
 
-    #[ORM\column(name: "reviewRequired", type: "boolean")]
+    #[ORM\Column(name: "reviewRequired", type: "boolean")]
     private bool|null $reviewRequired = false;
 
     public function __construct(string $id = null)

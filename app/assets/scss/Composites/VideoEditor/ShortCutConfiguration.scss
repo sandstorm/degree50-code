@@ -27,7 +27,7 @@
     display: grid;
     grid-template-columns: 4fr 1fr;
     align-items: center;
-    justify-items: end;
+    justify-items: flex-end;
 
     .short-cut-configuration__modifier {
         padding: 0 $theme__spacing--small;
