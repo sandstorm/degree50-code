@@ -106,31 +106,7 @@ ClassicEditor.defaultConfig = {
             'print',
         ],
     },
-    language: 'de',
-    restrictedEditing: {
-        // TODO allow all commands except RestrictedMode specific ones. get them via editor.commands in dev console
-        allowedCommands: [
-            'enter',
-            'deleteForward',
-            'forwardDelete',
-            'delete',
-            'selectAll',
-            'shiftEnter',
-            'input',
-            'undo',
-            'redo',
-            'paragraph',
-            'insertParagraph',
-            'heading',
-            'bold',
-            'italic',
-            'underline',
-            'strikethrough',
-            'subscript',
-            'superscript',
-        ],
-        allowedAttributes: [],
-    },
+    // @ts-ignore
     table: {
         contentToolbar: [
             'toggleTableCaption',
@@ -152,6 +128,7 @@ ClassicEditor.defaultConfig = {
             reversed: true,
         },
     },
+    // @ts-ignore
     image: {
         toolbar: [
             'imageStyle:inline',
@@ -165,4 +142,5 @@ ClassicEditor.defaultConfig = {
             types: ['jpeg', 'gif', 'webp'],
         },
     },
+    language: 'de',
 }

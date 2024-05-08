@@ -27,10 +27,11 @@ class CourseMembersType extends AbstractType
         $courseRoles = $course->getCourseRoles();
 
         $userChoices = array_filter($this->userRepository->findBy([], array('email' => 'ASC')), function (User $user) use ($courseRoles) {
-            // skip users that are ROLE_DOZENT
-            if ($user->isDozent()) {
+            // only students
+            if (!$user->isStudent()) {
                 return false;
             }
+            // skip users that are already in the course
             $exists = $courseRoles->exists(fn($i, CourseRole $courseRole) => $courseRole->getUser() === $user);
             return !$exists;
         });

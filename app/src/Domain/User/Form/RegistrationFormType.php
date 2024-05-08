@@ -41,7 +41,6 @@ class RegistrationFormType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'translation_domain' => 'user-registration',
-                // TODO: somehow the default way to translate is not working with validation messages.
                 'invalid_message' => $this->translator
                     ->trans('form.validation.password-mismatch', [], 'user-registration'),
                 'first_options' => [

@@ -4,8 +4,10 @@ namespace App\Mediathek\Form;
 
 use App\Domain\Course\Model\Course;
 use App\Domain\Course\Repository\CourseRepository;
+use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -16,8 +18,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediathekVideoFormType extends AbstractType
 {
+    public function __construct(
+        private readonly Security $security,
+        private readonly CourseRepository $courseRepository,
+    )
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        $courseChoices = $this->courseRepository->findAllForUserWithCriteria($user);
+
         $builder
             ->add('title', TextType::class, ['label' => "video.labels.title", 'translation_domain' => 'forms'])
             ->add('description', TextareaType::class, ['label' => "video.labels.description", 'translation_domain' => 'forms', 'required' => false])
@@ -30,6 +43,7 @@ class MediathekVideoFormType extends AbstractType
             ->add('dataPrivacyPermissionsAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyPermissionsAccepted", 'translation_domain' => 'forms', 'required' => true])
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
+                'choices' => $courseChoices,
                 'required' => false,
                 'choice_label' => function (Course $choice) {
                     return $choice->getCreationDateYear() . ' - ' . $choice->getName();
@@ -39,10 +53,6 @@ class MediathekVideoFormType extends AbstractType
                 'label' => 'video.labels.courses',
                 'translation_domain' => 'forms',
                 'help' => 'video.help.courses',
-                'query_builder' => function (CourseRepository $courseRepository) {
-                    return $courseRepository->createQueryBuilder('c')
-                        ->orderBy('c.name', 'ASC');
-                },
             ])
             ->add('save', SubmitType::class, ['label' => "video.labels.submit", 'translation_domain' => 'forms']);
     }

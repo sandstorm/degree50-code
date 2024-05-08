@@ -141,8 +141,9 @@ readonly class SchreibtischService
 
         return array_map(function (Material $material) {
             $originalExercisePhaseTeam = $material->getOriginalPhaseTeam();
-            $originalExercisePhase = $originalExercisePhaseTeam->getExercisePhase();
-            $originalExercise = $originalExercisePhase->getBelongsToExercise();
+
+            $originalExercisePhase = $originalExercisePhaseTeam?->getExercisePhase();
+            $originalExercise = $originalExercisePhase?->getBelongsToExercise();
             $course = $material->getOriginalPhaseTeam()?->getExercisePhase()->getBelongsToExercise()->getCourse();
             $fachbereich = $material->getOriginalPhaseTeam()?->getExercisePhase()->getBelongsToExercise()->getCourse()->getFachbereich();
 
@@ -150,15 +151,16 @@ readonly class SchreibtischService
                 'id' => $material->getId(),
                 'material' => $material->getMaterial(),
                 'owner' => $material->getOwner()->getUsername(),
-                'originalExercisePhaseTeamId' => $originalExercisePhaseTeam->getId(),
-                'originalExercisePhaseName' => $originalExercisePhase->getName(),
-                'originalExercisePhaseUrl' => $this->router->generate(
+                "name" => $material->getName(),
+                'originalExercisePhaseTeamId' => $originalExercisePhaseTeam?->getId(),
+                'originalExercisePhaseName' => $originalExercisePhase?->getName(),
+                'originalExercisePhaseUrl' => $originalExercisePhaseTeam ? $this->router->generate(
                     "exercise__show-phase",
                     [
                         "id" => $originalExercise->getId(),
                         "phaseId" => $originalExercisePhase->getId()
                     ]
-                ),
+                ) : null,
                 'createdAt' => $material->getCreatedAt(),
                 'lastUpdatedAt' => $material->getLastUpdatedAt(),
                 'fachbereich' => $fachbereich ? [

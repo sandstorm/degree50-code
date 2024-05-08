@@ -26,7 +26,6 @@ class ChangePasswordFormType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'translation_domain' => 'user-password-reset',
-                // TODO: somehow the default way to translate is not working with validation messages.
                 'invalid_message' => $this->translator
                     ->trans('form.validation.password-mismatch', [], 'user-password-reset'),
                 'first_options' => [

@@ -16,11 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CourseFormType extends AbstractType
 {
-
-    /**
-     * CourseType constructor.
-     * @param UserRepository $userRepository
-     */
     public function __construct(
         private readonly UserRepository $userRepository
     )
@@ -33,10 +28,11 @@ class CourseFormType extends AbstractType
         $course = $options['data'];
         $courseRoles = $course->getCourseRoles();
         $userChoices = array_filter($this->userRepository->findBy([], array('email' => 'ASC')), function (User $user) use ($courseRoles) {
-            // skip users that are ROLE_STUDENT or ROLE_ADMIN
-            if ($user->isStudent() || $user->isAdmin()) {
+            // only dozent
+            if (!$user->isDozent()) {
                 return false;
             }
+            // skip users that are already in the course
             $exists = $courseRoles->exists(fn($i, CourseRole $courseRole) => $courseRole->getUser() === $user);
             return !$exists;
         });

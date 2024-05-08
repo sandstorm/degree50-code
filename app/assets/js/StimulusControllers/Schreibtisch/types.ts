@@ -36,6 +36,7 @@ export type Material = {
     id: MaterialId
     material: string
     owner: string
+    name: string
     originalExercisePhaseTeamId: string
     originalExercisePhaseName: string
     originalExercisePhaseUrl: string

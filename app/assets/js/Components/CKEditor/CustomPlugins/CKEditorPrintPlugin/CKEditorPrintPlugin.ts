@@ -1,8 +1,8 @@
-import type EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui'
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin'
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 // @ts-ignore -- WHY: typings missing
 import faPrint from '@fortawesome/fontawesome-pro/svgs/regular/print.svg'
+import type {Locale} from "@ckeditor/ckeditor5-utils";
 
 // WHY: each editor will use its own iframe for printing
 const createPrintIframe = () => {
@@ -24,7 +24,7 @@ export default class CKEditorPrintPlugin extends Plugin {
         // @ts-ignore -- WHY: ck's typings fail here :(
         const ui = this.editor.ui as EditorUI
 
-        ui.componentFactory.add('print', (locale) => {
+        ui.componentFactory.add('print', (locale: Locale) => {
             const view = new ButtonView(locale)
 
             view.set({

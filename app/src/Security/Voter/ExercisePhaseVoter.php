@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\ExercisePhaseType;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
@@ -56,6 +57,23 @@ class ExercisePhaseVoter extends Voter
             $exercisePhase = $subject;
         } else {
             return false;
+        }
+
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        /* @var CourseRole|null $courseRoleOfUser */
+        $courseRoleOfUser = $user->getCourseRoles()->findFirst(
+            fn($i, $courseRole) => $courseRole->getCourse() === $exercisePhase->getBelongsToExercise()->getCourse()
+        );
+
+        if ($user->isDozent()) {
+            return $courseRoleOfUser->isCourseDozent();
+        }
+
+        if ($exercisePhase->getBelongsToExercise()->getCreator() === $user) {
+            return true;
         }
 
         return match ($attribute) {

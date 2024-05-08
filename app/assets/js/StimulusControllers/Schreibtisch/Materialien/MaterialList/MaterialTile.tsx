@@ -19,7 +19,7 @@ const MaterialTile = (props: Props) => {
     return (
         <NavLink
             className="overview-item"
-            title={material.originalExercisePhaseName}
+            title={material.name}
             to={`${ROUTE_EDIT_MATERIAL}/${material.id}`}
         >
             <div className="overview-item__date" title={lastUpdatedAt ? 'Zuletzt geändert' : 'Erstellt am'}>
@@ -28,7 +28,7 @@ const MaterialTile = (props: Props) => {
             <div className="overview-item__status">
                 <i className="fas fa-square-quote"></i>
             </div>
-            <div className="overview-item__title">{material.originalExercisePhaseName}</div>
+            <div className="overview-item__title">{material.name}</div>
         </NavLink>
     )
 }

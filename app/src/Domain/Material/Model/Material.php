@@ -8,11 +8,15 @@ use App\Domain\Material\Repository\MaterialRepository;
 use App\Domain\User\Model\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use FontLib\Table\Type\name;
 
 #[ORM\Entity(repositoryClass: MaterialRepository::class)]
 class Material
 {
     use IdentityTrait;
+
+    #[ORM\Column(type: "string", length: 255)]
+    private string $name;
 
     #[ORM\Column(type: "text", nullable: true)]
     private string $material;
@@ -28,11 +32,17 @@ class Material
     private ?DateTimeImmutable $lastUpdatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: ExercisePhaseTeam::class)]
+    #[ORM\JoinColumn(name: "original_phase_team", nullable: true, onDelete: "SET NULL")]
     private ?ExercisePhaseTeam $originalPhaseTeam;
 
     public function __construct(string $id = null)
     {
         $this->generateOrSetId($id);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getMaterial(): string
@@ -63,6 +73,10 @@ class Material
     public function setOriginalPhaseTeam(?ExercisePhaseTeam $originalPhaseTeam): void
     {
         $this->originalPhaseTeam = $originalPhaseTeam;
+
+        if ($originalPhaseTeam !== null) {
+            $this->name = $this->generateNameFromExercisePhaseTeam($originalPhaseTeam);
+        }
     }
 
     public function getCreatedAt(): ?DateTimeImmutable
@@ -83,5 +97,16 @@ class Material
     public function setLastUpdatedAt(?DateTimeImmutable $lastUpdatedAt): void
     {
         $this->lastUpdatedAt = $lastUpdatedAt;
+    }
+
+    private function generateNameFromExercisePhaseTeam(ExercisePhaseTeam $exercisePhaseTeam): string
+    {
+        $exercisePhase = $exercisePhaseTeam->getExercisePhase();
+        $exercisePhaseName = $exercisePhase->getName();
+        $exercise = $exercisePhase->getBelongsToExercise();
+        $exerciseName = $exercise->getName();
+        $courseName = $exercise->getCourse()->getName();
+
+        return "$courseName - $exerciseName - $exercisePhaseName";
     }
 }

@@ -5,7 +5,9 @@ namespace App\Domain\Exercise\Form;
 use App\Domain\Course\Model\Course;
 use App\Domain\Course\Repository\CourseRepository;
 use App\Domain\Exercise\Dto\CopyExerciseFormDto;
+use App\Domain\User\Model\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -14,18 +16,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CopyExerciseFormType extends AbstractType
 {
+    public function __construct(
+        private readonly Security $security,
+        private readonly CourseRepository $courseRepository,
+    )
+    {
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        $courseChoices = $this->courseRepository->findAllForUserWithCriteria($user);
+
         $builder
             ->add('course', EntityType::class, [
                 'class' => Course::class,
-                'query_builder' => function (CourseRepository $courseRepository) {
-                    return $courseRepository->createQueryBuilder('c')
-                        ->orderBy('c.name', 'ASC');
-                },
+                'choices' => $courseChoices,
                 'choice_label' => 'name',
                 'multiple' => false,
-                // FIXME: The combo 'required' & 'expanded' renders a '*' before every option :( maybe suppress via css
                 'required' => true,
                 'expanded' => true,
                 'label' => 'Zu Kurs hinzufügen',

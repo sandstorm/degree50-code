@@ -217,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return CourseRole[]
+     * @return Collection<CourseRole>
      */
     public function getCourseRoles(): Collection
     {
