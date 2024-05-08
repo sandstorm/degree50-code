@@ -207,7 +207,7 @@ trait UserContextTrait
         assertEquals(0, $user->getCourseRoles()->count(), "User should not have CourseRoles.");
 
         // exercises (unpublished)
-        $exercises = $this->exerciseService->getExercisesCreatedByUserWithoutFilters($user);
+        $exercises = $this->exerciseRepository->findBy(['creator' => $user]);
         $exercisesNotUnpublishedAndAnonymized =
             count(
                 array_filter($exercises, function (Exercise $exercise) use ($username) {

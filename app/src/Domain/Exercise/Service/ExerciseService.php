@@ -44,17 +44,6 @@ readonly class ExerciseService
      * @param User $user
      * @return Exercise[]
      */
-    public function getExercisesCreatedByUserWithoutFilters(User $user): array
-    {
-        $exercises = $this->exerciseRepository->findBy(['creator' => $user]);
-
-        return $exercises;
-    }
-
-    /**
-     * @param User $user
-     * @return Exercise[]
-     */
     public function getExercisesForUser(User $user): array
     {
         /** @var Exercise[] $result */
