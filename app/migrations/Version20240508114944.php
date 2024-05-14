@@ -14,7 +14,7 @@ final class Version20240508114944 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add name to material and automatically set it to "course - exercise - phase" if we can find the original phase team.';
     }
 
     public function up(Schema $schema): void
@@ -28,6 +28,21 @@ final class Version20240508114944 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_7CBE759559D06CA5 ON material (original_phase_team)');
         $this->addSql('ALTER TABLE solution CHANGE solution solution JSON NOT NULL COMMENT \'(DC2Type:json)\'');
         $this->addSql('ALTER TABLE user CHANGE roles roles JSON NOT NULL COMMENT \'(DC2Type:json)\'');
+    }
+
+    public function postUp(Schema $schema): void
+    {
+        // this does the same as {Material->generateNameFromExercisePhaseTeam()}
+        $this->connection->executeStatement('
+            UPDATE material
+                JOIN exercise_phase_team ON material.original_phase_team = exercise_phase_team.id
+                JOIN exercise_phase ON exercise_phase_team.exercise_phase_id = exercise_phase.id
+                JOIN exercise ON exercise_phase.belongs_to_exercise_id = exercise.id
+                JOIN course ON exercise.course_id = course.id
+            SET material.name = CONCAT(course.name, " - ", exercise.name, " - ", exercise_phase.name)
+            WHERE material.name = ""
+                AND material.original_phase_team IS NOT NULL;
+        ');
     }
 
     public function down(Schema $schema): void

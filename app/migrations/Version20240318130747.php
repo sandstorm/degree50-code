@@ -23,6 +23,17 @@ final class Version20240318130747 extends AbstractMigration
         $this->addSql('ALTER TABLE user ADD is_verified TINYINT(1) NOT NULL');
     }
 
+    public function postUp(Schema $schema): void
+    {
+        // set all currently existing users as verified
+        $this->connection->executeStatement('
+            UPDATE user
+            SET is_verified = true
+            WHERE is_verified = false
+                AND data_privacy_accepted = true;
+        ');
+    }
+
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs

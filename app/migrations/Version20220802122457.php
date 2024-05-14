@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DoctrineMigrations;
 
 use App\Domain\User\Model\User;
-use App\Domain\Exercise\ExercisePhase\ExercisePhaseStatus;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
