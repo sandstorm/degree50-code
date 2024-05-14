@@ -57,14 +57,14 @@ body {
         padding: 5px;
 
         background-image: linear-gradient(
-                125deg,
-                $theme__color__primary 25%,
-                $theme__color__white 25%,
-                $theme__color__white 50%,
-                $theme__color__primary 50%,
-                $theme__color__primary 75%,
-                $theme__color__white 75%,
-                $theme__color__white 100%
+            125deg,
+            $theme__color__primary 25%,
+            $theme__color__white 25%,
+            $theme__color__white 50%,
+            $theme__color__primary 50%,
+            $theme__color__primary 75%,
+            $theme__color__white 75%,
+            $theme__color__white 100%
         );
         background-size: 24.42px 34.87px;
 
@@ -80,7 +80,8 @@ body {
     overflow: hidden;
     overflow-y: scroll;
 
-    > .container, > form {
+    > .container,
+    > form {
         padding-top: 20px;
         padding-bottom: 20px;
     }

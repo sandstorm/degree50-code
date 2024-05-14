@@ -51,10 +51,10 @@ const CheckboxWithIndeterminate: FC<Props> = (props) => {
             if (props.value === CheckboxValue.INDETERMINATE) {
                 // WHY: this is not possible with just HTML, so we have to set it like this
                 // Link: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes
-        ref.current.indeterminate = true // eslint-disable-line
+                ref.current.indeterminate = true // eslint-disable-line
             } else {
                 // WHY: see above
-        ref.current.indeterminate = false // eslint-disable-line
+                ref.current.indeterminate = false // eslint-disable-line
             }
         }
     }, [props.value])

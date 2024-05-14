@@ -110,7 +110,7 @@ export const useMediaItemHandling = <T>({
             const { clone } = item
 
             // eslint-disable-next-line
-      Object.assign(clone, updatedValues)
+            Object.assign(clone, updatedValues)
 
             if (clone.check) {
                 updateMediaItems([...copiedItems.slice(0, index), clone, ...copiedItems.slice(index + 1)])

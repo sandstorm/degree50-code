@@ -59,12 +59,12 @@ function* presenceListener() {
 function connect(eventSource: EventSource) {
     return eventChannel((emit) => {
         // eslint-disable-next-line
-    eventSource.onmessage = () => {
+        eventSource.onmessage = () => {
             emit(eventStreamMessageAction()) // the payload is irrelevant because we call the subscription api anyway
         }
 
         // eslint-disable-next-line
-    eventSource.onopen = () => {
+        eventSource.onopen = () => {
             emit(eventStreamOpenedAction()) // the payload is irrelevant because we call the subscription api anyway
         }
 
@@ -107,7 +107,7 @@ const transformSubscriptionsToTeamMembers = (subscriptions: Array<Subscription>)
 /**
  * Push actions emitted from custom channel to root saga
  */
-function* handleMessages(channel: EventChannel<unknown>) {
+function* handleMessages(channel: EventChannel<any>) {
     try {
         while (true) {
             // FIXME

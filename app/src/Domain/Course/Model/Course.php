@@ -80,7 +80,7 @@ class Course
         if ($this->courseRoles->contains($courseRole)) {
             $this->courseRoles->removeElement($courseRole);
             // set the owning side to null (unless already changed)
-            // TODO: What?
+            // TODO: What? -> this should remove the whole course role
             if ($courseRole->getCourse() === $this) {
                 $courseRole->setCourse(null);
             }

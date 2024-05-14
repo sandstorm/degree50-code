@@ -39,6 +39,7 @@ abstract class ExercisePhase
 
     // components for phases
     // TODO: maybe use an enum?
+    // "Components" for ExercisePhases is an old concept/approach that is rarely used anymore.
     const string VIDEO_CODE = 'videoCode';
     const string VIDEO_CUTTING = 'videoCutting';
     const string VIDEO_ANNOTATION = 'videoAnnotation';

@@ -154,6 +154,7 @@ export const useShortCuts = () => {
         toggleVideoFavoriteHotkey,
         (keyboardEvent) => {
             if (video) {
+                // @ts-ignore
                 dispatch(actions.config.toggleVideoFavorite(video.id))
             }
 

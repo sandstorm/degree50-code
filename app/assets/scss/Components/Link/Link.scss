@@ -1,4 +1,5 @@
-a, a.nav-link {
+a,
+a.nav-link {
     color: $theme__color__primary;
 
     &:focus {
@@ -6,7 +7,9 @@ a, a.nav-link {
         outline-offset: 2px;
     }
 
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
         color: $theme__color__primary--dark;
     }
 
@@ -22,7 +25,9 @@ a:focus:not(:focus-visible) {
 a.color-alert {
     color: $theme__color__red;
 
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
         color: darken($theme__color__red, 20%);
     }
 }

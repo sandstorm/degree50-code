@@ -7,6 +7,7 @@ const renderTabs = (tabs: Array<Tab>, activeTabId: TabsTypesEnum, setActiveTabId
     tabs.map((tab) => (
         <li role="presentation" key={tab.id}>
             <div role="tab" className={tab.id === activeTabId ? 'active' : ''} onClick={() => setActiveTabId(tab.id)}>
+                {/* @ts-ignore */}
                 <Translate value={tab.id} />
             </div>
         </li>

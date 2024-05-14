@@ -28,7 +28,7 @@ const VideoPlayerWrapper: React.FC<Props> = (props) => {
             autoplay: false,
             controls: true,
         }),
-        [activeVideo],
+        [activeVideo]
     )
 
     const actions = useMemo(() => {

@@ -17,6 +17,7 @@ const CKEditor = (props: Props) => {
     }
 
     return (
+        // @ts-ignore
         <CKE5React
             editor={CustomCKEditor}
             data={props.value}

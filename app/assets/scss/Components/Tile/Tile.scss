@@ -21,8 +21,10 @@ $tileHeight--small: 150px;
     }
 
     &:hover,
-    &:active, &--active,
-    &:focus, &:focus-within {
+    &:active,
+    &--active,
+    &:focus,
+    &:focus-within {
         .tile__content {
             background-color: $theme__color__primary;
             border-color: $theme__color__primary;

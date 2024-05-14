@@ -34,7 +34,6 @@ class Attachment
     #[ORM\Column(name: "upload_at", type: "datetimetz_immutable")]
     private ?DateTimeImmutable $uploadAt;
 
-    // TODO: inversedBy="createdVideos" -- is this a bug?
     #[ORM\JoinColumn(nullable: false)]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdVideos")]
     private User $creator;

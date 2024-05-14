@@ -117,7 +117,7 @@ export class MediaItem<T> {
         memo: string
         color?: string | null
         lane: number
-        originalData: T
+        originalData: T & { id?: string }
     }) {
         this.start = start
         this.end = end

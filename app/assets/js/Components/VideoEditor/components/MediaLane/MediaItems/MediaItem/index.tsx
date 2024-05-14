@@ -102,7 +102,7 @@ export const MediaItem = ({
     useEffect(() => {
         if (itemRef.current) {
             // eslint-disable-next-line
-      itemRef.current.style.width = `${width}px`
+            itemRef.current.style.width = `${width}px`
         }
     }, [itemRef, item])
 

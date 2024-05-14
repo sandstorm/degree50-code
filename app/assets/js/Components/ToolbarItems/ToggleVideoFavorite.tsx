@@ -16,6 +16,7 @@ const ToggleVideoFavorite = () => {
     const isFavorite = video?.isFavorite ?? false
 
     const toggleVideoFavorite = useCallback(() => {
+        // @ts-ignore
         dispatch(actions.config.toggleVideoFavorite(video.id))
     }, [video, dispatch])
 

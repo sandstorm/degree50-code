@@ -22,8 +22,8 @@
         background-color: $theme__color__grey--light;
     }
 
-
-    th, td {
+    th,
+    td {
         padding: $theme__spacing--small;
     }
 
@@ -63,7 +63,9 @@
     tbody tr {
         border: 1px solid transparent;
 
-        &:hover, &:focus, &:focus-within {
+        &:hover,
+        &:focus,
+        &:focus-within {
             background-color: $theme__color__primary--lighter;
         }
 

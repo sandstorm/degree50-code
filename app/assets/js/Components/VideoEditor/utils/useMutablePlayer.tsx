@@ -9,7 +9,7 @@ export const useMutablePlayer = (worker?: Worker) => {
     useEffect(() => {
         if (player && worker && !worker.onmessage) {
             // eslint-disable-next-line
-      worker.onmessage = (event) => {
+            worker.onmessage = (event) => {
                 player.subtitle.switch(event.data)
             }
         }

@@ -17,11 +17,7 @@ const MaterialTile = (props: Props) => {
         : undefined
 
     return (
-        <NavLink
-            className="overview-item"
-            title={material.name}
-            to={`${ROUTE_EDIT_MATERIAL}/${material.id}`}
-        >
+        <NavLink className="overview-item" title={material.name} to={`${ROUTE_EDIT_MATERIAL}/${material.id}`}>
             <div className="overview-item__date" title={lastUpdatedAt ? 'Zuletzt geändert' : 'Erstellt am'}>
                 {lastUpdatedAt ? lastUpdatedAt : createdAt}
             </div>

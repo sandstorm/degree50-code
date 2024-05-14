@@ -17,8 +17,11 @@
         width: 100%;
     }
 
-    &:hover, &:active, &--active,
-    &:focus, &:focus-within {
+    &:hover,
+    &:active,
+    &--active,
+    &:focus,
+    &:focus-within {
         color: $theme__color__white;
         background-color: $theme__color__primary;
     }
@@ -34,7 +37,7 @@
     }
 
     &--disabled {
-        opacity: .5;
+        opacity: 0.5;
 
         cursor: default;
         pointer-events: none;

@@ -92,15 +92,15 @@ export const useItemInteraction = <T>(
 
                 if (lastClickedItemSide === 'left') {
                     // eslint-disable-next-line
-          lastTargetNode.style.width = `${lastTargetNodeWidth - lastDiffX}px`
+                    lastTargetNode.style.width = `${lastTargetNodeWidth - lastDiffX}px`
                     // eslint-disable-next-line
-          lastTargetNode.style.transform = `translate(${lastDiffX}px)`
+                    lastTargetNode.style.transform = `translate(${lastDiffX}px)`
                 } else if (lastClickedItemSide === 'right') {
                     // eslint-disable-next-line
-          lastTargetNode.style.width = `${lastTargetNodeWidth + lastDiffX}px`
+                    lastTargetNode.style.width = `${lastTargetNodeWidth + lastDiffX}px`
                 } else {
                     // eslint-disable-next-line
-          lastTargetNode.style.transform = `translate(${lastDiffX}px)`
+                    lastTargetNode.style.transform = `translate(${lastDiffX}px)`
                 }
             }
         },
@@ -121,7 +121,7 @@ export const useItemInteraction = <T>(
                     updateMediaItem(lastClickedItem, { start }, newStartTime)
                 } else {
                     // eslint-disable-next-line
-          lastTargetNode.style.width = `${lastTargetNodeWidth}px`
+                    lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             } else if (lastClickedItemSide === 'right') {
                 // drag right handle
@@ -136,7 +136,7 @@ export const useItemInteraction = <T>(
                     )
                 } else {
                     // eslint-disable-next-line
-          lastTargetNode.style.width = `${lastTargetNodeWidth}px`
+                    lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             } else {
                 // drag item itself
@@ -154,12 +154,12 @@ export const useItemInteraction = <T>(
                     )
                 } else {
                     // eslint-disable-next-line
-          lastTargetNode.style.width = `${lastTargetNodeWidth}px`
+                    lastTargetNode.style.width = `${lastTargetNodeWidth}px`
                 }
             }
 
             // eslint-disable-next-line
-      lastTargetNode.style.transform = `translate(0)`
+            lastTargetNode.style.transform = `translate(0)`
         }
 
         setLastClickedItemSide('center')

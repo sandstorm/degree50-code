@@ -15,6 +15,7 @@ const FinishReviewMenu = () => {
     const finishReview = () => {
         if (selectedSolutionId) {
             if (window.confirm(finishReviewConfirmText)) {
+                // @ts-ignore
                 dispatch(actions.data.materialSolution.finishReview(selectedSolutionId))
             }
         }

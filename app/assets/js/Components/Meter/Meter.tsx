@@ -10,7 +10,6 @@ const Meter = (props: AriaMeterProps) => {
     const percentage = (value - minValue) / (maxValue - minValue)
     const barWidth = `${Math.round(percentage * 100)}%`
 
-    // TODO: Styling
     return (
         <div className="meter" {...meterProps}>
             <div className="meter__label">

@@ -11,7 +11,7 @@ export const videoComponents = [
     TabsTypesEnum.VIDEO_CUTTING,
     TabsTypesEnum.VIDEO_ANNOTATIONS,
 ] as const
-export type VideoComponentId = typeof videoComponents[number]
+export type VideoComponentId = (typeof videoComponents)[number]
 
 export type ActiveComponent = { id: VideoComponentId; isVisible: boolean }
 export type ActivePreviousSolution = { id: string; isVisible: boolean }

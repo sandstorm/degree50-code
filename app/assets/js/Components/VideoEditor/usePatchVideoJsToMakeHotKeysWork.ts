@@ -14,7 +14,7 @@ export const usePatchVideoJsToMakeHotKeysWork = (player: VideoJsPlayer | undefin
             // overwrite the `handleKeyDown` method of the Component prototype
             // @ts-ignore
             // eslint-disable-next-line
-      player.handleKeyDown = function (event: KeyboardEvent) {
+            player.handleKeyDown = function (event: KeyboardEvent) {
                 // call original handler to ensure normal videojs behavior and bind the current instance of player to it
                 originalHandler(event)
                 // dispatch new Event on document which will be caught by hotkey-js

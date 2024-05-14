@@ -15,7 +15,8 @@
 .video-code__empty-message {
     padding: $theme__spacing--small $theme__spacing--base;
 
-    &:focus, &:focus-within {
+    &:focus,
+    &:focus-within {
         outline: 2px solid $theme__color__grey--dark;
         outline-offset: 2px;
     }
@@ -28,7 +29,8 @@
         display: flex;
         padding: $theme__spacing--small $theme__spacing--base;
 
-        &:focus, &:focus-within {
+        &:focus,
+        &:focus-within {
             outline: 2px solid $theme__color__grey--dark;
             outline-offset: 2px;
         }

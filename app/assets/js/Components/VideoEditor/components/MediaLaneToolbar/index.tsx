@@ -44,6 +44,7 @@ const Toolbar = ({ updateZoom, videoDuration, renderConfig, handleTimeLineAction
                 </MediaLaneToolbarItem>
                 <MediaLaneToolbarItem>
                     <label htmlFor="timeline-zoom-handler">
+                        {/* @ts-ignore */}
                         <Translate value="zoom" />
                     </label>
                     <input

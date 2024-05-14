@@ -1,4 +1,4 @@
-@import "NumberField.scss";
+@import 'NumberField.scss';
 
 .time-input-wrapper {
     margin-bottom: $theme__spacing--large;
@@ -13,7 +13,7 @@
         width: 8rem;
     }
 
-    .input[role="group"] {
+    .input[role='group'] {
         display: flex;
         justify-content: space-evenly;
     }
@@ -22,4 +22,3 @@
 .time-input__label {
     margin-bottom: $theme__spacing--small;
 }
-

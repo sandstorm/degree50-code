@@ -76,7 +76,9 @@ $sidebar__width--without-padding: $sidebar__width - 20px;
 
         @include transition(all 250ms ease);
 
-        &:hover, &:focus, &:active {
+        &:hover,
+        &:focus,
+        &:active {
             background-color: $theme__color__primary--dark;
             color: $theme__color__white;
         }

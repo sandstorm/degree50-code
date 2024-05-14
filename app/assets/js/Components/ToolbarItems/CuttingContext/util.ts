@@ -105,7 +105,7 @@ export const useCuttingMediaItemHandling = ({
             }
 
             // eslint-disable-next-line
-      Object.assign(clone, newValues)
+            Object.assign(clone, newValues)
 
             if (clone.check) {
                 updateMediaItems([...copiedItems.slice(0, index), clone, ...copiedItems.slice(index + 1)], false)
@@ -158,7 +158,7 @@ export const adjustItemTimelinePositionInList = (
     ...items.slice(0, index),
 
     // eslint-disable-next-line
-  Object.assign(item.clone, {
+    Object.assign(item.clone, {
         ...item,
         start: newStartTime,
         end: d2t((t2d(newStartTime) + parseFloat(item.duration)).toFixed(3)),
@@ -180,7 +180,7 @@ export const initVideoContext = (canvasRef: RefObject<HTMLCanvasElement>) => {
     // connect all sources
     combineEffect.connect(videoCtx.destination)
 
-  let requestAnimationFrameId: number = -1 // eslint-disable-line
+    let requestAnimationFrameId: number = -1 // eslint-disable-line
     // WHY: This is needed to keep the state updating
     // TODO: But Why and how is this working?
     function render() {
@@ -263,7 +263,7 @@ export const addVideoContextPlayListElement = (
     })
 
     // eslint-disable-next-line
-  videoNode._playbackRate = videoContextPlayListElement.playbackRate
+    videoNode._playbackRate = videoContextPlayListElement.playbackRate
     videoNode.start(videoContextPlayListElement.start)
     videoNode.stop(videoContextPlayListElement.start + videoContextPlayListElement.duration)
 

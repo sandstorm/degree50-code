@@ -67,7 +67,7 @@ const drawBackground = (
     ctx.clearRect(0, 0, width, height)
 
     // eslint-disable-next-line
-  ctx.fillStyle = backgroundColor
+    ctx.fillStyle = backgroundColor
 
     ctx.fillRect(0, 0, width, height)
 }
@@ -93,13 +93,13 @@ const drawGrid = (
     const { height } = canvas
 
     // eslint-disable-next-line
-  ctx.fillStyle = gridColor
+    ctx.fillStyle = gridColor
 
     const adjustmentFactor = getAdjustmentFactorForGrid(gridGap, gridNum, canvas.width)
 
     // Vertical grid lines
     // eslint-disable-next-line
-  for (let index = 0; index < gridNum; index += adjustmentFactor) {
+    for (let index = 0; index < gridNum; index += adjustmentFactor) {
         ctx.fillRect(gridGap * index, 0, pixelRatio, height)
     }
 }
@@ -120,7 +120,7 @@ const drawRulerBackground = (
     const { width } = canvas
 
     // eslint-disable-next-line
-  ctx.fillStyle = rulerBackgroundColor
+    ctx.fillStyle = rulerBackgroundColor
     ctx.fillRect(0, 0, width, rulerHeight)
 }
 
@@ -153,20 +153,20 @@ const drawRuler = (
     if (!ctx) return
 
     // eslint-disable-next-line
-  ctx.font = `${fontSize * pixelRatio}px Arial`
+    ctx.font = `${fontSize * pixelRatio}px Arial`
 
     // eslint-disable-next-line
-  ctx.fillStyle = rulerColor
+    ctx.fillStyle = rulerColor
 
     const adjustmentFactor = getAdjustmentFactorForGrid(gridGap, gridNum, canvas.width)
 
     // eslint-disable-next-line
-  let second = 0
+    let second = 0
     // eslint-disable-next-line
-  for (let index = 0; index < gridNum; index += 1) {
+    for (let index = 0; index < gridNum; index += 1) {
         if (index && index >= padding && index <= gridNum - padding && index % (10 * adjustmentFactor) === 0) {
             // eslint-disable-next-line
-      second += adjustmentFactor
+            second += adjustmentFactor
             ctx.fillRect(gridGap * index, 0, pixelRatio, (fontHeight / 2) * pixelRatio)
 
             const displayTime = secondToTime(timelineStartTime + second).split('.')[0]
@@ -202,7 +202,7 @@ const drawCursor = (
     const { height } = canvas
 
     // eslint-disable-next-line
-  ctx.fillStyle = cursorColor
+    ctx.fillStyle = cursorColor
     ctx.fillRect(padding * gridGap + (currentTime - timelineStartTime) * gridGap * 10, 0, pixelRatio, height)
 }
 

@@ -16,7 +16,7 @@ export function getExt(url: string): string | undefined {
     }
 
     // eslint-disable-next-line
-  return url.trim().toLowerCase().split('.').pop()
+    return url.trim().toLowerCase().split('.').pop()
 }
 
 export function notify(text = '', type: TypeOptions = 'info') {

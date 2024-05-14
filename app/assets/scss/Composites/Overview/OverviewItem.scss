@@ -7,7 +7,9 @@
 
     text-decoration: none !important;
 
-    &:hover, &:focus, &:focus-within {
+    &:hover,
+    &:focus,
+    &:focus-within {
         background-color: $theme__color__primary--lighter !important;
     }
 }
@@ -61,10 +63,12 @@
         font-size: 1.6rem;
 
         transform-style: preserve-3d;
-        @include transition(transform .5s);
+        @include transition(transform 0.5s);
     }
 
-    &:hover, &:focus, &:active {
+    &:hover,
+    &:focus,
+    &:active {
         i {
             // rotate icon on toggle
             transform: rotateY(180deg);
@@ -100,5 +104,3 @@
         }
     }
 }
-
-

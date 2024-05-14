@@ -34,8 +34,8 @@
         display: grid;
         grid-template-rows: auto 1fr;
         grid-template-areas:
-            "header"
-            "main";
+            'header'
+            'main';
 
         overflow-y: hidden;
 
@@ -55,7 +55,6 @@
                 height: 100%;
             }
         }
-
     }
 }
 

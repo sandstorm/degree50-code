@@ -25,7 +25,7 @@ import SidebarController from 'StimulusControllers/SidebarController'
 import { initColors, ORIGINAL_COLORS } from 'ntc-ts'
 import CKEditorController from 'StimulusControllers/CkeditorController'
 import SchreibtischController from 'StimulusControllers/Schreibtisch/SchreibtischController'
-import SearchableSelectFieldController from "StimulusControllers/SearchableSelectFieldController";
+import SearchableSelectFieldController from 'StimulusControllers/SearchableSelectFieldController'
 
 const application = Application.start()
 

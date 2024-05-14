@@ -5,8 +5,8 @@
     font-display: swap;
     src: url(../../fonts/lineto-akkurat-pro-regular.eot);
     src: url(../../fonts/lineto-akkurat-pro-regular.eot?#iefix) format('embedded-opentype'),
-    url(../../fonts/lineto-akkurat-pro-regular.woff2) format('woff2'),
-    url(../../fonts/lineto-akkurat-pro-regular.woff) format('woff');
+        url(../../fonts/lineto-akkurat-pro-regular.woff2) format('woff2'),
+        url(../../fonts/lineto-akkurat-pro-regular.woff) format('woff');
 }
 
 @font-face {
@@ -16,10 +16,9 @@
     font-display: swap;
     src: url(../../fonts/lineto-akkurat-pro-bold.eot);
     src: url(../../fonts/lineto-akkurat-pro-bold.eot?#iefix) format('embedded-opentype'),
-    url(../../fonts/lineto-akkurat-pro-bold.woff2) format('woff2'),
-    url(../../fonts/lineto-akkurat-pro-bold.woff) format('woff');
+        url(../../fonts/lineto-akkurat-pro-bold.woff2) format('woff2'),
+        url(../../fonts/lineto-akkurat-pro-bold.woff) format('woff');
 }
-
 
 $theme__color__red: #cc3f2d;
 $theme__color__red--dark: #9a2f21;
@@ -33,7 +32,7 @@ $theme__color__error: $theme__color__red;
 $theme__color__white: #fff;
 $theme__color__black: #000;
 
-$theme__color__primary: #5D8111;
+$theme__color__primary: #5d8111;
 $theme__color__primary--light: #84b819;
 $theme__color__primary--lighter: #e2e8d7;
 $theme__color__primary--dark: #395900;

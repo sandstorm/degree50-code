@@ -88,13 +88,16 @@
         color: $theme__color__grey--dark;
         font-weight: $theme__bold__fontWeight;
 
-        &:hover, &:focus, &:focus-within {
+        &:hover,
+        &:focus,
+        &:focus-within {
             background-color: $theme__color__primary;
 
             color: $theme__color__white;
         }
 
-        &:focus, &:focus-within {
+        &:focus,
+        &:focus-within {
             outline: none !important;
 
             span {

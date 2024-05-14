@@ -2,7 +2,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin'
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 // @ts-ignore -- WHY: typings missing
 import faPrint from '@fortawesome/fontawesome-pro/svgs/regular/print.svg'
-import type {Locale} from "@ckeditor/ckeditor5-utils";
+import type { Locale } from '@ckeditor/ckeditor5-utils'
 
 // WHY: each editor will use its own iframe for printing
 const createPrintIframe = () => {

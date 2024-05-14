@@ -12,7 +12,7 @@
     border-bottom: 2px solid $theme__color__primary;
 
     > * + * {
-      margin-top: $theme__spacing--base;
+        margin-top: $theme__spacing--base;
     }
 
     .user-expire-notice--actions {
