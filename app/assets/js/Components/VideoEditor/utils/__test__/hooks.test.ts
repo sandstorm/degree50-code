@@ -18,7 +18,9 @@ jest.mock('react-i18nify', () => {
 // Overwrite navigator for this test suite
 // @ts-ignore
 // eslint-disable-next-line
-global.navigator.language = 'EN'
+global.navigator = {
+    language: 'EN',
+}
 
 describe('useMediaItemHandling()', () => {
     const setMediaItemsSpy = jest.fn()
