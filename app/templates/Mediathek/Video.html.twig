@@ -76,7 +76,7 @@
              src="{{ videoDto.video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg" />
         {{ videoDto.video.title }}
     </a>
-    {% if is_granted('video_edit', video.data) %}
+    {% if is_granted('video_edit', videoDto.video) %}
         <div class="overview-item__actions" aria-label="{{ "video.labels.actionsLabel"|trans({}, 'base') }}">
             {% if app.user.isStudent %}
                 {{ _self.favorButton(videoDto) }}
