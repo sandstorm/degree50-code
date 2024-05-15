@@ -399,9 +399,6 @@ class ExerciseController extends AbstractController
         ]);
     }
 
-    /**
-     * FIXME: It is possible that there are Exercises with no Phases! This currently just throws a 500 Error, but shouldn't!
-     */
     #[IsGranted(ExerciseVoter::SHOW_SOLUTION, subject: "exercise")]
     #[Route("/exercise/{id}/show-solutions/{phaseId?}", name: "exercise__show-solutions")]
     public function showSolutions(Request $request, Exercise $exercise = null): Response
@@ -412,10 +409,18 @@ class ExerciseController extends AbstractController
 
         $phaseId = $request->get('phaseId');
 
-        /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $phaseId
             ? $this->exercisePhaseRepository->find($phaseId)
             : $exercise->getPhases()->first();
+
+        if (!($exercisePhase instanceof ExercisePhase)) {
+            $this->addFlash(
+                'danger',
+                $this->translator->trans('error.exercise-no-phase', [], 'exerciseOverview')
+            );
+
+            return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('exercise-overview'));
+        }
 
         $teams = $this->exercisePhaseTeamRepository->findAllByPhaseExcludingTests($exercisePhase);
 
