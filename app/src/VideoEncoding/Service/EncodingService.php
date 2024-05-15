@@ -13,6 +13,14 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * This service handles the encoding of video files.
+ *
+ * For now this service is pretty specific on what (few) codecs and formats it supports.
+ *
+ * TODO: The service could be more elaborate to support more video formats, aspect ratios and codecs.
+ *       Use FFProbe to determine the video's codec and resolution and adjust the encoding accordingly.
+ */
 class EncodingService
 {
     const array CONFIG = [
@@ -47,7 +55,7 @@ class EncodingService
 
         $hasAudioDescriptions = $this->hasAudioDescriptions($inputVideoFileName);
 
-        return array_map(function (ServerSideCut $cut) use ($localOutputDirectory, $rootDir, $inputVideoFileName, $hasAudioDescriptions) {
+        return array_map(function (ServerSideCut $cut) use ($localOutputDirectory, $inputVideoFileName, $hasAudioDescriptions) {
             $clipUuid = Uuid::uuid4()->toString();
             $this->logger->info('Creating new intermediate clip with ID ' . $clipUuid);
 
@@ -194,7 +202,6 @@ class EncodingService
         });
 
         $fileSystem = new Filesystem();
-        //$fileSystem->touch([$tmpPlaylistPath]);
         file_put_contents($tmpPlaylistPath, $tmpPlaylistContent);
 
         $hasAudioDescriptions = $this->hasAudioDescriptions($clipPaths[0]);

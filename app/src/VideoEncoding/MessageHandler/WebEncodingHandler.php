@@ -82,22 +82,20 @@ readonly class WebEncodingHandler
             $this->fileSystemService->moveDirectory($temporaryDirectory, $encodingTask->desiredOutputDirectory);
 
             $video->setEncodedVideoDirectory($encodingTask->desiredOutputDirectory);
-
-            $this->pingAndReconnectDB();
-
+        } catch (Exception $exception) {
+            $video->setEncodingStatus(Video::ENCODING_ERROR);
+            $this->logger->error('Error while encoding video', ['exception' => $exception]);
+        } finally {
             // Remove intermediate uploaded files to save disc space
             $this->videoService->removeOriginalSubtitleFile($video);
             $this->videoService->removeOriginalAudioDescriptionFile($video);
             $this->videoService->removeOriginalVideoFile($video);
 
+            $this->pingAndReconnectDB();
+
             $this->entityManager->persist($video);
             $this->entityManager->flush();
-        } catch (Exception $exception) {
-            $video->setEncodingStatus(Video::ENCODING_ERROR);
-            $this->logger->error('Error while encoding video', ['exception' => $exception]);
-            $this->entityManager->persist($video);
-            $this->entityManager->flush();
-        } finally {
+
             // WHY: chown output directory recursively because they're created as root by encoder process
             shell_exec('chown -R www-data:www-data ' . $this->fileSystemService->localPath($video->getEncodedVideoDirectory()));
         }

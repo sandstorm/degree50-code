@@ -85,6 +85,26 @@ class FileSystemService
         }
     }
 
+    public function deleteFile(VirtualizedFile $file): void
+    {
+        if (
+            $file->hasFile()
+            && $this->mountManager->fileExists($file->getVirtualPathAndFilename())
+        ) {
+            $this->mountManager->delete($file->getVirtualPathAndFilename());
+        }
+    }
+
+    public function deleteDirectory(VirtualizedFile $directory): void
+    {
+        if (
+            $directory->hasFile()
+            && $this->mountManager->directoryExists($directory->getVirtualPathAndFilename())
+        ) {
+            $this->mountManager->deleteDirectory($directory->getVirtualPathAndFilename());
+        }
+    }
+
     private function applyLocationPrefixOfMountPoint(string $mountPoint, string $path): string
     {
         $pathPrefix = $this->mountPrefixesAndFilesystems[$mountPoint]['pathPrefix'];

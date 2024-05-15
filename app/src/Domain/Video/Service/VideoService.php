@@ -9,10 +9,8 @@ use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VideoFavorite\Service\VideoFavouritesService;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
-use App\Twig\AppRuntime;
+use App\FileSystem\FileSystemService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * This service handles operations on video entities.
@@ -22,10 +20,9 @@ readonly class VideoService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private VideoRepository        $videoRepository,
-        private AppRuntime             $appRuntime,
-        private KernelInterface        $kernel,
         private VideoFavouritesService $videoFavouritesService,
         private ExerciseService        $exerciseService,
+        private FileSystemService      $fileSystemService,
     )
     {
     }
@@ -61,8 +58,7 @@ readonly class VideoService
         // remove VideoFavourites
         $this->videoFavouritesService->removeVideoFavoritesOfVideo($video);
 
-        $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getEncodedVideoDirectory());
-        $this->removeVideoFile($fileUrl);
+        $this->fileSystemService->deleteDirectory($video->getEncodedVideoDirectory());
 
         $this->entityManager->remove($video);
         $this->entityManager->flush();
@@ -76,9 +72,7 @@ readonly class VideoService
      */
     public function removeOriginalVideoFile(Video $video): void
     {
-        $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedVideoFile());
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
+        $this->fileSystemService->deleteFile($video->getUploadedVideoFile());
 
         $video->setUploadedVideoFile(null);
 
@@ -95,13 +89,7 @@ readonly class VideoService
      */
     public function removeOriginalSubtitleFile(Video $video): void
     {
-        if (!$video->getUploadedSubtitleFile()->hasFile()) {
-            return;
-        }
-
-        $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedSubtitleFile());
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
+        $this->fileSystemService->deleteFile($video->getUploadedSubtitleFile());
 
         $video->setUploadedSubtitleFile(null);
 
@@ -178,13 +166,7 @@ readonly class VideoService
      */
     public function removeOriginalAudioDescriptionFile(Video $video): void
     {
-        if (!$video->getUploadedAudioDescriptionFile()->hasFile()) {
-            return;
-        }
-
-        $fileUrl = $this->appRuntime->virtualizedFileUrl($video->getUploadedAudioDescriptionFile());
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->kernel->getProjectDir() . $fileUrl);
+        $this->fileSystemService->deleteFile($video->getUploadedAudioDescriptionFile());
 
         $video->setUploadedAudioDescriptionFile(null);
 
@@ -202,13 +184,5 @@ readonly class VideoService
                 $this->deleteVideo($video);
             }
         }
-    }
-
-    private function removeVideoFile(string $fileUrl): void
-    {
-        $publicResourcesFolderPath = $this->kernel->getProjectDir() . '/public/';
-
-        $filesystem = new Filesystem();
-        $filesystem->remove($publicResourcesFolderPath . $fileUrl);
     }
 }
