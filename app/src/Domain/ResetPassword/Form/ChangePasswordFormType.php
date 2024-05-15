@@ -35,6 +35,7 @@ class ChangePasswordFormType extends AbstractType
                 'second_options' => [
                     'label' => 'form.label.password-confirmation',
                     'attr' => ['autocomplete' => 'new-password'],
+                    'help' => $this->translator->trans('form.validation.password-too-short', ['{{ limit }}' => User::MIN_PASSWORD_LENGTH], 'user-registration'),
                 ],
                 'required' => true,
                 // instead of being set onto the object directly,

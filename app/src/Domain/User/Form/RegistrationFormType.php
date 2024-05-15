@@ -41,11 +41,11 @@ class RegistrationFormType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'translation_domain' => 'user-registration',
-                'invalid_message' => $this->translator
-                    ->trans('form.validation.password-mismatch', [], 'user-registration'),
+                'invalid_message' => $this->translator->trans('form.validation.password-mismatch', [], 'user-registration'),
                 'first_options' => [
                     'label' => 'form.label.password',
                     'attr' => ['autocomplete' => 'new-password'],
+                    'help' => $this->translator->trans('form.validation.password-too-short', ['{{ limit }}' => User::MIN_PASSWORD_LENGTH], 'user-registration'),
                 ],
                 'second_options' => [
                     'label' => 'form.label.password-confirmation',

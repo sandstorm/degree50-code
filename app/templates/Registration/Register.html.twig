@@ -1,6 +1,7 @@
 {% extends 'BaseNoHeader.html.twig' %}
 {% trans_default_domain 'user-registration' %}
 
+{% block layoutCssClass %}main--with-footer{% endblock %}
 {% block title %}{{ "common.degree"|trans({}, 'base') }} - {{ "registration.title"|trans({}, 'base') }}{% endblock %}
 
 {% block body %}
