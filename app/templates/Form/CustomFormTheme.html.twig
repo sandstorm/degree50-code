@@ -48,6 +48,7 @@
 {% block toggleable_button_checkbox_widget %}
     <div class="button-checkbox">
         <input
+            id="{{ id }}"
             type="checkbox"
             {{ block('widget_attributes') }}
             {% if value is defined %} value="{{ value }}"{% endif %}

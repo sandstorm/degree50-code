@@ -85,7 +85,7 @@
 
     {# show notification when browser is out of date (https://browser-update.org/) #}
     <script>
-        var $buoop = {
+        const $buoop = {
             {# browser: required version (0 is latest) #}
             required: {
                 e: 0,
@@ -103,7 +103,7 @@
             {# test: true, #}
         };
         function $buo_f(){
-            var e = document.createElement("script");
+            const e = document.createElement("script");
             e.src = "//browser-update.org/update.min.js";
             document.body.appendChild(e);
         }
