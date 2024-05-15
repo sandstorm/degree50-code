@@ -1,0 +1,7 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd app
+
+# https://blog.typicode.com/husky-git-hooks-javascript-config/
+npm run pre-commit
