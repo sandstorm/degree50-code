@@ -49,6 +49,7 @@
         }
     }
 
+    .button:focus .overview-item__actions-dropdown,
     .button:focus-within .overview-item__actions-dropdown {
         display: flex;
     }

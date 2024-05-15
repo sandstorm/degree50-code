@@ -29,6 +29,19 @@ import SearchableSelectFieldController from 'StimulusControllers/SearchableSelec
 
 const application = Application.start()
 
+// This is a workaround for safari to focus the button when it is clicked.
+// Safari does not support focus on buttons by default.
+// We need the focus state at some points to show additional content.
+const buttons = document.querySelectorAll('button')
+for (let i = 0; i <= buttons.length - 1; i++) {
+    ;(function (index) {
+        const button = buttons[index]
+        button.addEventListener('click', function () {
+            button.focus()
+        })
+    })(i)
+}
+
 application.register('videoUpload', VideoUploadController)
 application.register('subtitleUpload', SubtitlesUploadController)
 application.register('audioDescriptionUpload', AudioDescriptionUploadController)
