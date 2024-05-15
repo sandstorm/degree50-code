@@ -23,7 +23,7 @@ Feature: Test an exercise
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit url "/exercise/c1-exercise-dozent/test"
         Then the page should contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
-        When I click on "Aufgabe starten"
+        When I click on "Aufgabe testen"
         Then the page should contain the text "Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar."
         And the page should contain the text "Phase 1: analysis1"
         When I click on "reflexion1"

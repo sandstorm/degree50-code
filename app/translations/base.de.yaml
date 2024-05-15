@@ -100,7 +100,7 @@ exercise:
             error: 'Lösung kann nicht angesehen werden!'
     edit:
         title: 'Aufgabe bearbeiten'
-        alreadyUsed: 'Achtung: Aufgabe wird/wurde schon von Studierenden bearbeitet.'
+        alreadyUsed: 'Achtung: Aufgabe wird/wurde schon von Lernenden bearbeitet.'
         publish: 'Aufgabe veröffentlichen'
         unpublish: 'Aufgabe verstecken'
         changeSorting: 'Sortierung der Phase ändern'
@@ -215,7 +215,7 @@ exercisePhase:
         attachments: 'Bereits hochgeladene Dateien'
         noAttachments: 'Noch keine'
         deleteAttachment: 'Datei löschen'
-        alreadyStarted: 'Achtung: Phase wird/wurde schon von Studierenden bearbeitet.'
+        alreadyStarted: 'Achtung: Phase wird/wurde schon von Lernenden bearbeitet.'
         componentsInfo: 'Aktive Komponenten zur Lösung der Aufgabe:'
         videoCodesInfo: 'Stehen dem Nutzer zur Auswahl während der Aufgabe'
         videoCodeColor: 'Farbe des Video-Codes'

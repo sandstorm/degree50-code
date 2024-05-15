@@ -36,7 +36,7 @@
         {% if nextExercisePhase %}
             {% if testMode %}
                 <a class="button button--type-primary  button--size-small" href="{{ path('exercise__show-test-phase', {id: exercise.id, phaseId: nextExercisePhase.id}) }}">
-                    {{ (currentPhaseIndex < 0) ? "exercise.show.title"|trans({}, 'base') : "common.nextPhase"|trans({}, 'base') }}
+                    {{ (currentPhaseIndex < 0) ? "exercise.test.title"|trans({}, 'base') : "common.nextPhase"|trans({}, 'base') }}
                 </a>
             {% else %}
                 {% if is_granted('exercisePhase_viewExercisePhase', nextExercisePhase) %}
@@ -50,7 +50,9 @@
                 {% endif %}
             {% endif %}
         {% elseif amountOfPhases == currentPhaseIndex %}
-            <a class="button button--type-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{{ "exercise.labels.finish"|trans({}, 'base') }}</a>
+            <a class="button button--type-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                {{ "exercise.labels.finish"|trans({}, 'base') }}
+            </a>
         {% endif %}
     </div>
 </footer>
