@@ -32,7 +32,7 @@
             {% endif %}
         </header>
 
-        <h5>{{ "common.type"|trans({}, 'base') }}: {{ phaseTypeTransVar | trans }}</h5>
+        <h5>{{ "common.type"|trans({}, 'base') }}: {{ phaseTypeTransVar | trans({}, 'base') }}</h5>
 
         <div class="exercise-form">
             {{ form_start(form) }}
@@ -138,8 +138,16 @@
         </div>
     </div>
     <footer class="footer">
-        <a class="button button--type-outline-primary footer__left"
-           href="{{ path('exercise__edit', {id: exercise.id}) }}">{{ "exercisePhase.new.back"|trans({}, 'base') }}</a>
+        <div class="button-group footer__left">
+            <a class="button button--type-outline-primary" href="{{ path('exercise__edit', {id: exercise.id}) }}">
+                {{ "exercisePhase.new.back"|trans({}, 'base') }}
+            </a>
+            {% if is_granted('exercise_test', exercise) %}
+                <a class="button button--type-outline-primary" href="{{ path('exercise__show-test-phase', {id: exercise.id, phaseId: exercisePhase.id }) }}">
+                    {{ "exercisePhase.test.title"|trans({}, 'base') }}
+                </a>
+            {% endif %}
+        </div>
         <div class="footer__right">
             {{ form_row(form.save) }}
         </div>

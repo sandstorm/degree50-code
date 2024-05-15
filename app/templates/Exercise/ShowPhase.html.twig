@@ -69,7 +69,7 @@
                                             class="button button--size-small button--type-outline-primary"
                                             href="{{ path('exercise-phase__reset-test', { 'id':exercisePhase.id, 'team_id': teamOfCurrentUser.id }) }}"
                                         >
-                                            {{ "exercisePhase.resetTest.title"|trans({}, 'base') }}
+                                            {{ "exercisePhase.test.reset"|trans({}, 'base') }}
                                         </a>
                                     {% else %}
                                         {% if is_granted('exercisePhaseTeam_join', team) %}
@@ -148,7 +148,7 @@
                     class="button button--size-large button--type-outline-primary"
                     href="{{ path('exercise-phase__reset-test', { 'id':exercisePhase.id, 'team_id': teamOfCurrentUser.id }) }}"
                 >
-                    {{ "exercisePhase.resetTest.title"|trans({}, 'base') }}
+                    {{ "exercisePhase.test.reset"|trans({}, 'base') }}
                 </a>
             {% endif %}
         </div>

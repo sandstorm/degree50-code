@@ -13,9 +13,15 @@
             </a>
         {% endif %}
         {% if testMode and is_granted('exercise_edit', exercise) %}
-            <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise__edit', {id: exercise.id}) }}">
-                <i class="fas fa-pencil-alt"></i> {{ "exercise.edit.title"|trans({}, 'base') }}
-            </a>
+            {% if currentPhaseIndex + 1 > 0 %}
+                <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise-phase__edit', {id: exercise.id, phase_id: exercisePhase.id}) }}">
+                    <i class="fas fa-pencil-alt"></i> {{ "exercisePhase.edit.title"|trans({}, 'base') }}
+                </a>
+            {% else %}
+                <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise__edit', {id: exercise.id}) }}">
+                    <i class="fas fa-pencil-alt"></i> {{ "exercise.edit.title"|trans({}, 'base') }}
+                </a>
+            {% endif %}
         {% endif %}
     </div>
 

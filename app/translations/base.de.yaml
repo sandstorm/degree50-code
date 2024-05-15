@@ -68,7 +68,6 @@ exercise:
         name: 'Titel der Aufgabe'
         description: 'Lernauftrag / Beschreibung'
         submit: 'Aufgabe speichern'
-        test: 'Aufgabe testen'
         finish: 'Aufgabe abschließen'
         created: 'Erstellt'
         createdLabel: 'Aufgabe erstellt am'
@@ -197,6 +196,9 @@ exercisePhase:
         back: 'Zurück zur Aufgabe'
         title: 'Phase hinzufügen'
         titleForGroupPhase: 'Gruppenphase hinzufügen'
+    test:
+        title: 'Phase testen'
+        reset: 'Test Ergebnis zurücksetzen'
     show:
         finish: 'Phase abschließen'
         test: 'Testen von Phase'
@@ -228,7 +230,6 @@ exercisePhase:
         messages:
             success: 'Phase erfolgreich gelöscht!'
     resetTest:
-        title: 'Test Ergebnis zurücksetzen'
         messages:
             success: 'Test Ergebnis erfolgreich zurückgesetzt!'
     showSolution:

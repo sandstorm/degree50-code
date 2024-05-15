@@ -5,13 +5,13 @@
         <div class="overview-item__date" aria-label="{{ "exercise.labels.createdLabel"|trans({}, 'base') }}: {{ exercise.exercise.createdAt|date("d.m.Y") }}">
             {{ exercise.exercise.createdAt|date("d.m.Y") }}
         </div>
-        <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ statusTransVar | trans }}">
+        <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ statusTransVar | trans({}, 'base') }}">
             {% if exercise.exercise.status == 0 %}
-                <i class="fas fa-eye-slash" title="{{ statusTransVar | trans }}"></i>
+                <i class="fas fa-eye-slash" title="{{ statusTransVar | trans({}, 'base') }}"></i>
             {% elseif exercise.exercise.status == 1 %}
-                <i class="fas fa-check" title="{{ statusTransVar | trans }}"></i>
+                <i class="fas fa-check" title="{{ statusTransVar | trans({}, 'base') }}"></i>
             {% else %}
-                <i class="fas fa-eye" title="{{ statusTransVar | trans }}"></i>
+                <i class="fas fa-eye" title="{{ statusTransVar | trans({}, 'base') }}"></i>
             {% endif %}
         </div>
         <div

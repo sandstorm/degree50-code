@@ -26,7 +26,7 @@
         </header>
         <p>
             {% set statusTransVar = 'exercise.labels.status' ~ (exercise.status) %}
-            <strong>{{ "common.status"|trans({}, 'base') }}: </strong> {{ statusTransVar | trans }}
+            <strong>{{ "common.status"|trans({}, 'base') }}: </strong> {{ statusTransVar | trans({}, 'base') }}
             {% if exercise.status == 0 %}
                 <a href="{{ path('exercise__change-status', {id: exercise.id, status: 2}) }}"
                    class="button button--type-primary button--size-small">{{ "exercise.edit.publish"|trans({}, 'base') }}</a>
@@ -76,7 +76,7 @@
                                    title="{{ "exercisePhase.labels.usesResultFrom"|trans({}, 'base') }} '{{ exercisePhase.phase.dependsOnExercisePhase.name }}'"></i>
                             {% endif %}
                         </td>
-                        <td>{{ phaseTypeTransVar | trans }}</td>
+                        <td>{{ phaseTypeTransVar | trans({}, 'base') }}</td>
                         <td>{{ exercisePhase.phase.name }}</td>
                         <td>
                             {% if exercisePhase.phase.dependsOnExercisePhase %}
@@ -156,13 +156,17 @@
 
     <footer class="footer">
         <div class="button-group footer__left">
-            <a class="button button--type-outline-primary"
-               href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{{ "exercise.new.back"|trans({}, 'base') }}</a>
-            {% if is_granted('exercise_view', exercise) %}
-                <a class="button button--type-outline-primary"
-                   href="{{ path('exercise__test', {id: exercise.id}) }}">{{ "exercise.labels.test"|trans({}, 'base') }}</a>
+            <a class="button button--type-outline-primary" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                {{ "exercise.new.back"|trans({}, 'base') }}
+            </a>
+            {% if is_granted('exercise_test', exercise) %}
+                <a class="button button--type-outline-primary" href="{{ path('exercise__test', {id: exercise.id}) }}">
+                    {{ "exercise.test.title"|trans({}, 'base') }}
+                </a>
             {% else %}
-                <a class="button button--type-outline-primary disabled">{{ "exercise.labels.test"|trans({}, 'base') }}</a>
+                <a class="button button--type-outline-primary disabled">
+                    {{ "exercise.test.title"|trans({}, 'base') }}
+                </a>
             {% endif %}
         </div>
         <div class="footer__right">
