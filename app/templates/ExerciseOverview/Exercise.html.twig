@@ -1,13 +1,11 @@
-{% trans_default_domain 'forms' %}
-
 {% if is_granted('exercise_edit', exercise.exercise) %}
     {% set statusTransVar = 'exercise.labels.status' ~ (exercise.exercise.status) %}
     {% set statusClassVar = 'overview-item--status-' ~ (exercise.exercise.status) %}
-    <div tabindex="0" class="overview-item {{ statusClassVar }}">
-        <div class="overview-item__date" aria-label="{% trans %}exercise.labels.createdLabel{% endtrans %}: {{ exercise.exercise.createdAt|date("d.m.Y") }}">
+    <li tabindex="0" class="overview-item {{ statusClassVar }}">
+        <div class="overview-item__date" aria-label="{{ "exercise.labels.createdLabel"|trans({}, 'base') }}: {{ exercise.exercise.createdAt|date("d.m.Y") }}">
             {{ exercise.exercise.createdAt|date("d.m.Y") }}
         </div>
-        <div class="overview-item__status" aria-label="{% trans %}exercise.labels.statusLabel{% endtrans %}: {{ statusTransVar | trans }}">
+        <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ statusTransVar | trans }}">
             {% if exercise.exercise.status == 0 %}
                 <i class="fas fa-eye-slash" title="{{ statusTransVar | trans }}"></i>
             {% elseif exercise.exercise.status == 1 %}
@@ -18,81 +16,81 @@
         </div>
         <div
             class="overview-item__title"
-            aria-label="{% trans %}exercise.labels.name{% endtrans %}: {{ exercise.exercise.name }}"
+            aria-label="{{ "exercise.labels.name"|trans({}, 'base') }}: {{ exercise.exercise.name }}"
         >
             <strong>{{ exercise.exercise.name }}</strong>
-            <em>{{ exercise.exercise.phases|length }} {% trans %}exercise.labels.phases{% endtrans %}</em>
+            <em>{{ exercise.exercise.phases|length }} {{ "common.phases"|trans({}, 'base') }}</em>
             {% if exercise.needsReview %}
-                <div><i class="fa-regular fa-circle-exclamation-check"></i> {{ 'exercise.labels.reviewRequired' | trans }}</div>
+                <div><i class="fa-regular fa-circle-exclamation-check"></i> {{ 'exercise.labels.reviewRequired' | trans({}, 'base') }}</div>
             {% endif %}
         </div>
-        <div class="overview-item__actions" aria-label="{% trans %}exercise.labels.actionsLabel{% endtrans %}">
+        <div class="overview-item__actions" aria-label="{{ "exercise.labels.actionsLabel"|trans({}, 'base') }}">
             <button
                 class="button button--type-link"
-                aria-label="{% trans %}exercise.labels.toggleActions{% endtrans%} {{ exercise.exercise.name }}"
+                aria-label="{{ "exercise.labels.toggleActions"|trans({}, 'base') }} {{ exercise.exercise.name }}"
             >
                 <i class="fas fa-ellipsis-v"></i>
                 <div class="overview-item__actions-dropdown">
                     {% if is_granted('exercise_showSolution', exercise.exercise) %}
                         <a href="{{ path('exercise__show-solutions', {id: exercise.exercise.id}) }}">
-                            <i class="fas fa-clipboard-check"></i> {% trans %}exercise.showSolution.title{% endtrans %}
+                            <i class="fas fa-clipboard-check"></i> {{ "exercise.showSolution.title"|trans({}, 'base') }}
                         </a>
                     {% endif %}
                     {% if is_granted('exercise_test', exercise.exercise) %}
                         <a href="{{ path('exercise__test', {id: exercise.exercise.id}) }}">
-                            <i class="fas fa-vial"></i> {% trans %}exercise.test.title{% endtrans %}
+                            <i class="fas fa-vial"></i> {{ "exercise.test.title"|trans({}, 'base') }}
                         </a>
                     {% endif %}
                     {% if is_granted('exercise_view', exercise.exercise) %}
                         <a href="{{ path('exercise__show', {id: exercise.exercise.id}) }}">
-                            <i class="fas fa-play"></i> {% trans %}exercise.show.title{% endtrans %}
+                            <i class="fas fa-play"></i> {{ "exercise.show.title"|trans({}, 'base') }}
                         </a>
                     {% endif %}
                     {% if is_granted('exercise_edit', exercise.exercise) %}
                         <a href="{{ path('exercise__edit', {id: exercise.exercise.id}) }}">
-                            <i class="fas fa-pencil-alt"></i> {% trans %}exercise.edit.title{% endtrans %}
+                            <i class="fas fa-pencil-alt"></i> {{ "exercise.edit.title"|trans({}, 'base') }}
                         </a>
                         <a href="{{ path('exercise__copy', {id: exercise.exercise.id}) }}">
-                            <i class="fas fa-clone"></i> {% trans %}exercise.copy.title{% endtrans %}
+                            <i class="fas fa-clone"></i> {{ "exercise.copy.title"|trans({}, 'base') }}
                         </a>
                         <a
                             href="{{ path('exercise__delete', {id: exercise.exercise.id}) }}"
                             class="color-alert"
-                            onclick="return confirm('{% trans %}exercise.delete.confirm{% endtrans %}');"
+                            onclick="return confirm('{{ "exercise.delete.confirm"|trans({}, 'base') }}');"
                         >
-                            <i class="fas fa-trash-alt"></i> {% trans %}exercise.delete.title{% endtrans %}
+                            <i class="fas fa-trash-alt"></i> {{ "exercise.delete.title"|trans({}, 'base') }}
                         </a>
                     {% endif %}
                 </div>
             </button>
         </div>
-    </div>
+    </li>
 {% else %}
     {% if is_granted('exercise_view', exercise.exercise) %}
-        <div class="overview-item">
-            <div class="overview-item__date" aria-label="{% trans %}exercise.labels.createdLabel{% endtrans %}: {{ exercise.exercise.createdAt|date("d.m.Y") }}">
+        <li class="overview-item">
+            <div class="overview-item__date" aria-label="{{ "exercise.labels.createdLabel"|trans({}, 'base') }}: {{ exercise.exercise.createdAt|date("d.m.Y") }}">
                 {{ exercise.exercise.createdAt|date("d.m.Y") }}
             </div>
             {% if is_granted('exercise_isFinished', exercise.exercise) %}
-                <div class="overview-item__status" aria-label="{% trans %}exercise.labels.statusLabel{% endtrans %}: {% trans %}exercise.labels.statusFinished{% endtrans %}">
-                    <i class="fas fa-check" title="{% trans %}exercise.labels.statusFinished{% endtrans %}"></i>
+                <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ "exercise.labels.statusFinished"|trans({}, 'base') }}">
+                    <i class="fas fa-check" title="{{ "exercise.labels.statusFinished"|trans({}, 'base') }}"></i>
                 </div>
             {% elseif is_granted('exercise_isOpened', exercise.exercise) %}
-                <div class="overview-item__status" aria-label="{% trans %}exercise.labels.statusLabel{% endtrans %}: {% trans %}exercise.labels.statusStarted{% endtrans %}">
-                    <i class="fas fa-user-edit" title="{% trans %}exercise.labels.statusStarted{% endtrans %}"></i>
+                <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ "exercise.labels.statusStarted"|trans({}, 'base') }}">
+                    <i class="fas fa-user-edit" title="{{ "exercise.labels.statusStarted"|trans({}, 'base') }}"></i>
                 </div>
             {% else %}
-                <div class="overview-item__status" aria-label="{% trans %}exercise.labels.statusLabel{% endtrans %}: {% trans %}exercise.labels.statusNew{% endtrans %}">
-                    <i class="fas fa-envelope-open-text" title="{% trans %}exercise.labels.statusNew{% endtrans %}"></i>
+                <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ "exercise.labels.statusNew"|trans({}, 'base') }}">
+                    <i class="fas fa-envelope-open-text" title="{{ "exercise.labels.statusNew"|trans({}, 'base') }}"></i>
                 </div>
             {% endif %}
             <a
                 href="{{ path('exercise__show', {id: exercise.exercise.id}) }}"
                 class="overview-item__title"
-                aria-label="{% trans %}exercise.labels.name{% endtrans %}: {{ exercise.exercise.name }}"
+                aria-label="{{ "exercise.labels.name"|trans({}, 'base') }}: {{ exercise.exercise.name }}"
             >
                 {{ exercise.exercise.name }}
             </a>
-        </div>
+        </li>
     {% endif %}
 {% endif %}

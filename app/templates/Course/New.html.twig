@@ -1,21 +1,20 @@
-{% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 {% block layoutCssClass %}main--with-footer{% endblock %}
-{% block title %}{% trans %}course.new.title{% endtrans %}{% endblock %}
+{% block title %}{{ "course.new.title"|trans({}, 'base') }}{% endblock %}
 
 {% block body %}
     <div class="exercise-form">
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ path('exercise-overview') }}">Kurs-Übersicht</a>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('exercise-overview') }}">{{ "course.index.title"|trans({}, 'base') }}</a>
                     </li>
-                    <li class="breadcrumb-item active"
-                        aria-current="page">{% trans %}course.new.title{% endtrans %}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ "course.new.title"|trans({}, 'base') }}</li>
                 </ol>
             </nav>
             <header class="content-header">
-                <h3>{% trans %}course.new.title{% endtrans %}</h3>
+                <h3>{{ "course.new.title"|trans({}, 'base') }}</h3>
             </header>
 
             {{ form_start(form) }}
@@ -29,7 +28,12 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text"><i class="fa fa-search"></i></div>
                     </div>
-                    <input type="search" class="form-control searchable-select-field__input" aria-label="Lehrende filtern durch Texteingabe" placeholder="Lehrende filtern" />
+                    <input
+                        type="search"
+                        class="form-control searchable-select-field__input"
+                        aria-label="{{ "course.labels.filterTutorsAria"|trans({}, 'base') }}"
+                        placeholder="{{ "course.labels.filterTutors"|trans({}, 'base') }}"
+                    />
                 </div>
                 {{ form_errors(form.users) }}
                 <div class="searchable-select-field__list">
@@ -42,7 +46,7 @@
 
     <footer class="footer">
         <a class="button button--type-outline-primary footer__left"
-           href="{{ path('exercise-overview') }}">{% trans %}course.new.back{% endtrans %}</a>
+           href="{{ path('exercise-overview') }}">{{ "course.new.back"|trans({}, 'base') }}</a>
         <div class="footer__right">
             {{ form_row(form.save) }}
         </div>

@@ -2,9 +2,9 @@
 
 <header class="main-header">
     <nav class="navigation" role="navigation">
-        <a class="navigation__brand" href="/"><img src="{{ asset('build/images/logo.svg') }}" alt="Logo der TU Dortmund" /></a>
+        <a class="navigation__brand" href="/"><img src="{{ asset('build/images/logo.svg') }}" alt="{{ "common.logoAltText"|trans({}, 'base') }}" /></a>
         <button class="navigation__toggler" type="button" data-toggle="collapse" data-target="#navigation"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="{{ "common.toggleNavigation"|trans({}, 'base') }}">
             <i class="fas fa-bars"></i>
         </button>
         <div class="navigation__inner collapse" id="navigation">
@@ -12,31 +12,31 @@
                 {% if app.user.isStudent %}
                     <li class="navigation__item {{ 'schreibtisch' in route ? 'navigation__item--active' }}">
                         <a data-test-id="header-menu-schreibtisch" href="{{ path('schreibtisch') }}">
-                            <span>Schreibtisch</span>
+                            <span>{{ "desk.index.title"|trans({}, 'base') }}</span>
                         </a>
                     </li>
                 {% endif %}
 
                 <li class="navigation__item {{ 'exercise-overview' in route ? 'navigation__item--active' }}">
                     <a href="{{ path('exercise-overview') }}">
-                        <span>Kurs-Übersicht</span>
+                        <span>{{ "course.index.title"|trans({}, 'base') }}</span>
                     </a>
                 </li>
                 <li class="navigation__item {{ 'mediathek' in route ? 'navigation__item--active' }}">
                     <a data-test-id="header-menu-mediathek" href="{{ path('mediathek--index') }}">
-                        <span>Mediathek</span>
+                        <span>{{ "video.index.title"|trans({}, 'base') }}</span>
                     </a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
                     <li class="navigation__item">
-                        <a href="/admin"><span>Administration</span></a>
+                        <a href="/admin"><span>{{ "administration.index.title"|trans({}, 'base') }}</span></a>
                     </li>
                 {% endif %}
             </ul>
 
             <div class="navigation__user">
                 <i class="fas fa-user"></i> {{ app.user.username }}
-                <a href="{{ path('app_logout') }}">Logout</a>
+                <a href="{{ path('app_logout') }}">{{ "common.logout"|trans({}, 'base') }}</a>
             </div>
         </div>
     </nav>

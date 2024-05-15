@@ -54,7 +54,7 @@ class ExercisePhaseFormType extends AbstractType
                 'required' => $isReflexionPhase,
                 'disabled' => $exercisePhase->getSorting() === 0 || $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.labels.dependsOnPreviousPhase",
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
                 'help' => $isReflexionPhase
                     ? "exercisePhase.help.dependsOnPreviousPhase.reflexion"
                     : "exercisePhase.help.dependsOnPreviousPhase.regular",
@@ -63,17 +63,17 @@ class ExercisePhaseFormType extends AbstractType
                 'required' => false,
                 'label' => "exercisePhase.labels.isGroupPhase",
                 'disabled' => $exercisePhase->getHasSolutions() || $isReflexionPhase,
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
                 'block_prefix' => 'toggleable_button_checkbox',
                 'help' => "exercisePhase.help.isGroupPhase",
             ])
-            ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'forms'])
+            ->add('name', TextType::class, ['label' => "exercisePhase.labels.name", 'translation_domain' => 'base'])
             // NOTE: there seems to be a bug inside CKEditor where the editor does not respect the 'required' attribute
             // We currently work around this by falling back to symfony's own validation via Annotations on the ExercisePhase.php entity.
             // Therefore we added an @Assert\NotBlank to the entity field and also made the field setter property optional.
             ->add('task', TextType::class, [
                 'label' => "exercisePhase.labels.task",
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
                 'required' => true,
                 'attr' => [
                     'data-controller' => 'ckeditor',
@@ -82,7 +82,7 @@ class ExercisePhaseFormType extends AbstractType
                     'tabIndex' => '-1'
                 ],
             ])
-            ->add('save', SubmitType::class, ['label' => 'exercisePhase.labels.submit', 'translation_domain' => 'forms']);
+            ->add('save', SubmitType::class, ['label' => 'exercisePhase.labels.submit', 'translation_domain' => 'base']);
 
         // We can't just simply omit fields inside the twig template, because they will be appended to the form,
         // even if we "turn them off" inside the template.
@@ -93,7 +93,7 @@ class ExercisePhaseFormType extends AbstractType
                     'required' => false,
                     'disabled' => false,
                     'label' => "exercisePhase.labels.otherSolutionsAreAccessible",
-                    'translation_domain' => 'forms',
+                    'translation_domain' => 'base',
                     'block_prefix' => 'toggleable_button_checkbox',
                     'help' => "exercisePhase.help.otherSolutionsAreAccessible",
                 ])
@@ -102,7 +102,7 @@ class ExercisePhaseFormType extends AbstractType
                     'required' => false,
                     'label' => "exercisePhase.labels.isGroupPhase",
                     'disabled' => $exercisePhase->getHasSolutions(),
-                    'translation_domain' => 'forms',
+                    'translation_domain' => 'base',
                     'block_prefix' => 'toggleable_button_checkbox',
                     'help' => "exercisePhase.help.isGroupPhase",
                 ]);

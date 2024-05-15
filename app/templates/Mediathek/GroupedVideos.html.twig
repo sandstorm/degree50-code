@@ -1,4 +1,3 @@
-{% trans_default_domain 'mediathek' %}
 {% for group in groupedVideos %}
     {% if group.videos|length > 0 %}
         {% set groupIdTransVar = 'mediathek.groups.' ~ (group.id) %}

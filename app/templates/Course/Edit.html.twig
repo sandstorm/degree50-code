@@ -1,7 +1,6 @@
-{% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 {% block layoutCssClass %}main--with-footer{% endblock %}
-{% block title %}{% trans %}course.edit.title{% endtrans %}{% endblock %}
+{% block title %}{{ "course.edit.title"|trans({}, 'base') }}{% endblock %}
 
 {% block body %}
     <div class="exercise-form">
@@ -14,13 +13,12 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item active"
-                        aria-current="page">{% trans %}course.edit.title{% endtrans %}</li>
+                        aria-current="page">{{ "course.edit.title"|trans({}, 'base') }}</li>
                 </ol>
             </nav>
             <header class="content-header">
-                <h3>{% trans %}course.edit.title{% endtrans %}</h3>
+                <h3>{{ "course.edit.title"|trans({}, 'base') }}</h3>
             </header>
-
 
             {{ form_start(form) }}
             {{ form_errors(form) }}
@@ -34,7 +32,12 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text"><i class="fa fa-search"></i></div>
                     </div>
-                    <input type="search" class="form-control searchable-select-field__input" aria-label="Lehrende filtern durch Texteingabe" placeholder="Lehrende filtern" />
+                    <input
+                        type="search"
+                        class="form-control searchable-select-field__input"
+                        aria-label="{{ "course.labels.filterTutorsAria"|trans({}, 'base') }}"
+                        placeholder="{{ "course.labels.filterTutors"|trans({}, 'base') }}"
+                    />
                 </div>
                 {{ form_errors(form.users) }}
                 <div class="searchable-select-field__list">
@@ -43,12 +46,12 @@
                 {{ form_help(form.users) }}
             </div>
 
-            <h5>{% trans %}course.labels.currentTutors{% endtrans %} ({{ tutors.count }} {% trans %}course.labels.tutors{% endtrans %})</h5>
+            <h5>{{ "course.labels.currentTutors"|trans({}, 'base') }} ({{ tutors.count }} {{ "course.labels.tutors"|trans({}, 'base') }})</h5>
             <table class="table table-sm">
                 <thead>
                 <tr>
-                    <th>{% trans %}course.labels.tutor{% endtrans %}</th>
-                    <th>{% trans %}course.labels.role{% endtrans %}</th>
+                    <th>{{ "course.labels.tutor"|trans({}, 'base') }}</th>
+                    <th>{{ "course.labels.role"|trans({}, 'base') }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -56,10 +59,10 @@
                     {% if tutor.name == 'DOZENT' %}
                         <tr>
                             <td>{{ tutor.user.userName }}</td>
-                            <td>{% trans %}course.labels.tutor{% endtrans %}</td>
+                            <td>{{ "course.labels.tutor"|trans({}, 'base') }}</td>
                             <td class="text-right">
                                 <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: tutor.id, redirectToEdit: true}) }}"
-                                   class="button button--type-danger button--size-small">{% trans %}course.removeMember.title{% endtrans %}</a>
+                                   class="button button--type-danger button--size-small">{{ "course.removeMember.title"|trans({}, 'base') }}</a>
                             </td>
                         </tr>
                     {% endif %}
@@ -70,7 +73,7 @@
 
     <footer class="footer">
         <a class="button button--type-outline-primary"
-           href="{{ path('exercise-overview', {id: course.id}) }}">{% trans %}course.new.back{% endtrans %}</a>
+           href="{{ path('exercise-overview', {id: course.id}) }}">{{ "course.new.back"|trans({}, 'base') }}</a>
         {{ form_row(form.save) }}
     </footer>
     {{ form_end(form) }}

@@ -63,7 +63,7 @@ class CourseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('course.editMembers.messages.success', [], 'forms')
+                $this->translator->trans('course.editMembers.messages.success', [], 'base')
             );
 
             return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
@@ -111,7 +111,7 @@ class CourseController extends AbstractController
         if ($redirectToEdit && count($courseRolesWithDozent) == 1) {
             $this->addFlash(
                 'danger',
-                $this->translator->trans('course.removeMember.messages.notPossible', [], 'forms')
+                $this->translator->trans('course.removeMember.messages.notPossible', [], 'base')
             );
 
             return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
@@ -181,7 +181,7 @@ class CourseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('course.new.messages.success', [], 'forms')
+                $this->translator->trans('course.new.messages.success', [], 'base')
             );
 
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
@@ -209,7 +209,7 @@ class CourseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('course.edit.messages.success', [], 'forms')
+                $this->translator->trans('course.edit.messages.success', [], 'base')
             );
 
             return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
@@ -246,7 +246,7 @@ class CourseController extends AbstractController
         if (count($course->getExercises()) > 0) {
             $this->addFlash(
                 'danger',
-                $this->translator->trans('course.delete.messages.notPossible', [], 'forms')
+                $this->translator->trans('course.delete.messages.notPossible', [], 'base')
             );
 
             return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
@@ -257,7 +257,7 @@ class CourseController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('course.delete.messages.success', [], 'forms')
+            $this->translator->trans('course.delete.messages.success', [], 'base')
         );
 
         return $this->redirectToRoute('exercise-overview');

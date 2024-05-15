@@ -62,15 +62,19 @@ const MaterialList = () => {
         activeCourseFilters
     )
 
-    // TODO a11y
     return (
-        <ul data-test-id="material" className="overview material">
-            {filteredMaterials.map((material) => (
-                <li key={material.id}>
-                    <MaterialTile material={material} />
-                </li>
-            ))}
-        </ul>
+        <>
+            <header className={'content-header'}>
+                <h3>Meine Materialien</h3>
+            </header>
+            <ul data-test-id="material" className="overview material">
+                {filteredMaterials.map((material) => (
+                    <li key={material.id}>
+                        <MaterialTile material={material} />
+                    </li>
+                ))}
+            </ul>
+        </>
     )
 }
 

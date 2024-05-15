@@ -1,14 +1,14 @@
-{% trans_default_domain 'forms' %}
-
-<a class="button button--type-primary button--block" href="{{ path('exercise-overview') }}">Alle Kurse</a>
+<a class="button button--type-primary button--block" href="{{ path('exercise-overview') }}">{{ "exerciseOverview.index.allCourses"|trans({}, 'base') }}</a>
 {% if is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN') %}
-    <a class="button button--type-outline-primary button--block" href="{{ path('exercise-overview__course--new') }}"><i class="fas fa-plus"></i> {% trans %}course.new.title{% endtrans %}</a>
+    <a class="button button--type-outline-primary button--block" href="{{ path('exercise-overview__course--new') }}">
+        <i class="fas fa-plus"></i> {{ "course.new.title"|trans({}, 'base') }}
+    </a>
 {% endif %}
 
 <hr />
 
 {% if sidebarItems | length == 0 %}
-    <p>Du bist keinem Kurs zugeordnet</p>
+    <p>{{ "exerciseOverview.index.noCourseAssigned"|trans({}, 'base') }}</p>
 {% endif %}
 
 {% for item in sidebarItems %}

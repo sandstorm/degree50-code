@@ -231,7 +231,7 @@ class ExerciseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('exercise.new.messages.success', [], 'forms')
+                $this->translator->trans('exercise.new.messages.success', [], 'base')
             );
 
             return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
@@ -265,7 +265,7 @@ class ExerciseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('exercise.edit.messages.success', [], 'forms')
+                $this->translator->trans('exercise.edit.messages.success', [], 'base')
             );
 
             return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
@@ -338,7 +338,7 @@ class ExerciseController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('exercise.delete.messages.success', [], 'forms')
+            $this->translator->trans('exercise.delete.messages.success', [], 'base')
         );
 
         return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);

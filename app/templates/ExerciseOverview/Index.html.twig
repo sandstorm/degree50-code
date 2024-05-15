@@ -1,5 +1,4 @@
 {% extends 'BaseWithSidebar.html.twig' %}
-{% trans_default_domain 'forms' %}
 
 {% block title %}Aufgaben Übersicht{% endblock %}
 
@@ -10,34 +9,39 @@
 {% block body %}
     <header class="content-header">
         {% if course %}
-            <h3>{{ course.name }} - Alle Aufgaben</h3>
+            <h3>{{ course.name }} - {{ "exerciseOverview.index.allExercises"|trans({}, 'base') }}</h3>
             {% if is_granted('course_edit', course) or is_granted('course_newExercise', course) %}
                 <div class="button-group">
                     {% if is_granted('course_edit', course) %}
                         <div class="dropdown">
-                            <button class="button button--type-link dropdown-toggle" type="button"
-                                    id="dropdownMenuButton"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Kurs verwalten
+                            <button
+                                class="button button--type-link dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                {{ "exerciseOverview.index.manageCourse"|trans({}, 'base') }}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 {% if is_granted('course_editMembers', course) %}
                                     <a href="{{ path('exercise-overview__course--members', {id: course.id}) }}"
                                        class="dropdown-item">
-                                        <i class="fas fa-users"></i> {% trans %}course.editMembers.title{% endtrans %}
+                                        <i class="fas fa-users"></i> {{ "course.editMembers.title"|trans({}, 'base') }}
                                     </a>
                                 {% endif %}
                                 {% if is_granted('course_edit', course) %}
                                     <a href="{{ path('exercise-overview__course--edit', {id: course.id}) }}"
                                        class="dropdown-item">
-                                        <i class="fas fa-pencil-alt"></i> {% trans %}course.edit.title{% endtrans %}
+                                        <i class="fas fa-pencil-alt"></i> {{ "course.edit.title"|trans({}, 'base') }}
                                     </a>
                                 {% endif %}
 
                                 {% if is_granted('course_exportCSV', course) %}
                                     <a href="{{ path('exercise-overview__course-export-csv', {id: course.id}) }}"
                                        class="dropdown-item"
-                                    ><i class="fas fa-file-export"></i> {% trans %}course.exportCSV.title{% endtrans %}
+                                    ><i class="fas fa-file-export"></i>  {{ "course.exportCSV.title"|trans({}, 'base') }}
                                     </a>
                                 {% endif %}
 
@@ -45,7 +49,7 @@
                                     <div class="dropdown-divider"></div>
                                     <a href="{{ path('exercise-overview__course--delete', {id: course.id}) }}"
                                        class="dropdown-item text-danger">
-                                        <i class="fas fa-trash"></i> {% trans %}course.delete.title{% endtrans %}
+                                        <i class="fas fa-trash"></i> {{ "course.delete.title"|trans({}, 'base') }}
                                     </a>
                                 {% endif %}
                             </div>
@@ -54,24 +58,24 @@
                     {% if is_granted('course_newExercise', course) %}
                         <a href="{{ path('exercise__new', {id: course.id}) }}"
                            class="button button--type-primary">
-                            <i class="fas fa-plus-circle"></i> {% trans %}exercise.new.title{% endtrans %}
+                            <i class="fas fa-plus-circle"></i> {{ "exercise.new.title"|trans({}, 'base') }}
                         </a>
                     {% endif %}
                 </div>
             {% endif %}
         {% else %}
-            <h3>Alle Kurse - Alle Aufgaben</h3>
+            <h3>{{ "exerciseOverview.index.allCourses"|trans({}, 'base') }} - {{ "exerciseOverview.index.allExercises"|trans({}, 'base') }}</h3>
         {% endif %}
     </header>
     {% if is_granted('ROLE_DOZENT') %}
         <div class="overview-filter">
-            <div class="button-group" role="group" aria-label="Aufgaben filtern nach Status">
+            <div class="button-group" role="group" aria-label="{{ "exerciseOverview.index.filterByStatus"|trans({}, 'base') }}">
                 <div class="input-group-prepend">
-                    <div class="input-group-text">Filter</div>
+                    <div class="input-group-text">{{ "common.filter"|trans({}, 'base') }}</div>
                 </div>
-                {{ _self.filter(courseId, 0, activeFilter, 'Versteckt') }}
-                {{ _self.filter(courseId, 2, activeFilter, 'Veröffentlicht') }}
-                {{ _self.filter(courseId, 1, activeFilter, 'Abgeschlossen') }}
+                {{ _self.filter(courseId, 0, activeFilter, "common.hidden"|trans({}, 'base')) }}
+                {{ _self.filter(courseId, 2, activeFilter, "common.public"|trans({}, 'base')) }}
+                {{ _self.filter(courseId, 1, activeFilter, "common.finished"|trans({}, 'base')) }}
             </div>
         </div>
     {% endif %}
@@ -81,8 +85,7 @@
 
 {% macro filter(courseId, filter, activeFilter, label) %}
     {% if filter == activeFilter and activeFilter is not null %}
-        <a href="{{ path('exercise-overview', {id: courseId, status: null}) }}"
-           class="button button--type-primary">{{ label }}</a>
+        <a href="{{ path('exercise-overview', {id: courseId, status: null}) }}" class="button button--type-primary">{{ label }}</a>
     {% else %}
         <a href="{{ path('exercise-overview', {id: courseId, status: filter}) }}"
            class="button button--type-outline-primary">{{ label }}</a>

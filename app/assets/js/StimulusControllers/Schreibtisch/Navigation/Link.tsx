@@ -9,7 +9,7 @@ type Props = {
 const Link = (props: Props) => {
     const { children, to } = props
     return (
-        <NavLink tabIndex={0} to={to} className="nav-link">
+        <NavLink to={to} className="nav-link">
             {children}
         </NavLink>
     )

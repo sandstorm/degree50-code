@@ -1,6 +1,4 @@
-{% trans_default_domain 'forms' %}
-
-{# NOTE: There's also a matching react component 'VideoFavourite.tsx' which maybe used in the context of a React app/widget! #}
+{# NOTE: There's also a matching react component 'VideoFavorite.tsx' which maybe used in the context of a React app/widget! #}
 
 {#
     A11y + action handling concept:
@@ -53,46 +51,51 @@
     data-test-id="video-tile--{{ videoDto.video.id }}"
     class="overview-item"
 >
-    <div class="overview-item__date" aria-label="{% trans %}video.labels.createdLabel{% endtrans %}: {{ videoDto.video.createdAt|date("d.m.Y") }}">
+    <div class="overview-item__date"
+         aria-label="{{ "video.labels.createdLabel"|trans({}, 'base') }}: {{ videoDto.video.createdAt|date("d.m.Y") }}">
         {{ videoDto.video.createdAt|date("d.m.Y") }}
     </div>
     {% if videoDto.video.courses | length == 0 %}
-        <div class="overview-item__status" aria-label="{% trans %}video.labels.statusLabel{% endtrans %}: {% trans %}video.labels.statusPrivate{% endtrans %}">
-            <i class="fas fa-eye-slash" title="{% trans %}video.labels.statusPrivate{% endtrans %}"></i>
+        <div class="overview-item__status"
+             aria-label="{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPrivate"|trans({}, 'base') }}">
+            <i class="fas fa-eye-slash" title="{{ "video.labels.statusPrivate"|trans({}, 'base') }}"></i>
         </div>
     {% else %}
-        <div class="overview-item__status" aria-label="{% trans %}video.labels.statusLabel{% endtrans %}: {% trans %}video.labels.statusPublic{% endtrans %}">
-            <i class="fas fa-eye" title="{% trans %}video.labels.statusPublic{% endtrans %}"></i>
+        <div class="overview-item__status"
+             aria-label="{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPublic"|trans({}, 'base') }}">
+            <i class="fas fa-eye" title="{{ "video.labels.statusPublic"|trans({}, 'base') }}"></i>
         </div>
     {% endif %}
     <a
         tabindex="0"
         href="{{ path("mediathek__video--player", {id: videoDto.video.id}) }}"
         class="overview-item__title"
-        aria-label="{% trans %}video.labels.titleLabel{% endtrans %}: {{ videoDto.video.title }}"
+        aria-label="{{ "video.labels.titleLabel"|trans({}, 'base') }}: {{ videoDto.video.title }}"
     >
-        <img alt="{% trans %}video.labels.previewImage{% endtrans %}" height="50" width="100" src="{{ videoDto.video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg"/>
+        <img alt="{{ "video.labels.previewImage"|trans({}, 'base') }}" height="50" width="100"
+             src="{{ videoDto.video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg" />
         {{ videoDto.video.title }}
     </a>
-    {% if is_granted('video_edit', videoDto.video) %}
-        <div class="overview-item__actions" aria-label="{% trans %}video.labels.actionsLabel{% endtrans %}">
+    {% if is_granted('video_edit', video.data) %}
+        <div class="overview-item__actions" aria-label="{{ "video.labels.actionsLabel"|trans({}, 'base') }}">
             {% if app.user.isStudent %}
                 {{ _self.favorButton(videoDto) }}
             {% endif %}
-            <button class="button button--type-link" aria-label="{% trans %}video.labels.toggleActions{% endtrans%} {{ videoDto.video.title }}">
+            <button class="button button--type-link"
+                    aria-label="{{ "video.labels.toggleActions"|trans({}, 'base') }} {{ videoDto.video.title }}">
                 <i class="fas fa-ellipsis-v"></i>
                 <div class="overview-item__actions-dropdown">
                     <a href="{{ path('mediathek__video--player', {id: videoDto.video.id}) }}">
-                        <i class="fas fa-play"></i> {% trans %}video.show.title{% endtrans %}
+                        <i class="fas fa-play"></i> {{ "video.show.title"|trans({}, 'base') }}
                     </a>
                     <a href="{{ path('mediathek__video--edit', {id: videoDto.video.id}) }}">
-                        <i class="fas fa-pencil-alt"></i> {% trans %}video.edit.title{% endtrans %}
+                        <i class="fas fa-pencil-alt"></i> {{ "video.edit.title"|trans({}, 'base') }}
                     </a>
                     <a
                         href="{{ path('mediathek__video--delete', {id: videoDto.video.id}) }}"
                         class="color-alert"
                     >
-                        <i class="fas fa-trash-alt"></i> {% trans %}video.delete.title{% endtrans %}
+                        <i class="fas fa-trash-alt"></i> {{ "video.delete.title"|trans({}, 'base') }}
                     </a>
                 </div>
             </button>
@@ -106,12 +109,12 @@
     {% endif %}
 </div>
 
-{% macro favorButton(videoDto)  %}
+{% macro favorButton(videoDto) %}
     {% if videoDto.isFavorite %}
         <a
             href="{{ path('mediathek__video--favor', {id: videoDto.video.id}) }}"
             class="overview-item__action-favourite"
-            title="{% trans %}video.unfavor.title{% endtrans %}"
+            title="{{ "video.unfavor.title"|trans({}, 'base') }}"
             data-test-id="tile__favor-button-{{ videoDto.video.id }}"
         >
             <i class="fas fa-star" data-test-id="remove-video-from-favorites--{{ videoDto.video.id }}"></i>
@@ -121,7 +124,7 @@
             href="{{ path('mediathek__video--favor', {id: videoDto.video.id}) }}"
             class="overview-item__action-favourite"
             data-test-id="tile__favor-button-{{ videoDto.video.id }}"
-            title="{% trans %}video.favor.title{% endtrans %}"
+            title="{{ "video.favor.title"|trans({}, 'base') }}"
         >
             <i class="far fa-star" data-test-id="add-video-to-favorites--{{ videoDto.video.id }}"></i>
         </a>

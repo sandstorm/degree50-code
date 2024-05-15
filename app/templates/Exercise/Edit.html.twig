@@ -1,8 +1,7 @@
-{% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 {% block layoutCssClass %}main--with-footer{% endblock %}
 
-{% block title %}{% trans %}exercise.edit.title{% endtrans %}{% endblock %}
+{% block title %}{{ "exercise.edit.title"|trans({}, 'base') }}{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -13,27 +12,27 @@
                         {{ exercise.course.name }}
                     </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">{% trans %}exercise.edit.title{% endtrans %}</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ "exercise.edit.title"|trans({}, 'base') }}</li>
             </ol>
         </nav>
 
         <header class="content-header">
-            <h3>{% trans %}exercise.edit.title{% endtrans %}</h3>
+            <h3>{{ "exercise.edit.title"|trans({}, 'base') }}</h3>
             {% if exerciseHasSolutions %}
                 <div class="alert alert-warning">
-                    Achtung: Aufgabe wird/wurde schon von Studierenden bearbeitet.
+                    {{ "exercise.edit.alreadyUsed"|trans({}, 'base') }}
                 </div>
             {% endif %}
         </header>
         <p>
             {% set statusTransVar = 'exercise.labels.status' ~ (exercise.status) %}
-            <strong>Status: </strong> {{ statusTransVar | trans }}
+            <strong>{{ "common.status"|trans({}, 'base') }}: </strong> {{ statusTransVar | trans }}
             {% if exercise.status == 0 %}
                 <a href="{{ path('exercise__change-status', {id: exercise.id, status: 2}) }}"
-                   class="button button--type-primary button--size-small">Aufgabe veröffentlichen</a>
+                   class="button button--type-primary button--size-small">{{ "exercise.edit.publish"|trans({}, 'base') }}</a>
             {% elseif exercise.status == 2 %}
                 <a href="{{ path('exercise__change-status', {id: exercise.id, status: 0}) }}"
-                   class="button button--type-danger button--size-small">Aufgabe verstecken</a>
+                   class="button button--type-danger button--size-small">{{ "exercise.edit.unpublish"|trans({}, 'base') }}</a>
             {% endif %}
         </p>
         <div class="exercise-form">
@@ -44,10 +43,10 @@
             {{ form_row(form.description) }}
 
             <div class="exercise-form__table-header">
-                <h5>Phasen ({{ exercise.phases|length }})</h5>
+                <h5>{{ "common.phases"|trans({}, 'base') }} ({{ exercise.phases|length }})</h5>
                 <a class="button button--type-primary button--size-small"
                    href="{{ path('exercise-phase__new', {id: exercise.id}) }}">
-                    <i class="fas fa-plus"></i> {% trans %}exercisePhase.new.title{% endtrans %}
+                    <i class="fas fa-plus"></i> {{ "exercisePhase.new.title"|trans({}, 'base') }}
                 </a>
             </div>
 
@@ -55,9 +54,9 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th>{% trans %}exercisePhase.labels.type{% endtrans %}</th>
-                    <th>{% trans %}exercisePhase.labels.name{% endtrans %}</th>
-                    <th>{% trans %}exercisePhase.labels.dependsOnPhaseName{% endtrans %}</th>
+                    <th>{{ "exercisePhase.labels.type"|trans({}, 'base') }}</th>
+                    <th>{{ "exercisePhase.labels.name"|trans({}, 'base') }}</th>
+                    <th>{{ "exercisePhase.labels.dependsOnPhaseName"|trans({}, 'base') }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -68,13 +67,13 @@
                         <td class="table-cell--no-wrap">
                             {% if exercisePhase.phase.isGroupPhase %}
                                 <i class="fas fa-users"
-                                   title="{% trans %}exercisePhase.labels.isGroupPhase{% endtrans %}"></i>
+                                   title="{{ "exercisePhase.labels.isGroupPhase"|trans({}, 'base') }}"></i>
                             {% else %}
                                 <i class="fas fa-user"></i>
                             {% endif %}
                             {% if exercisePhase.phase.dependsOnExercisePhase %}
                                 <i class="fas fa-arrow-up"
-                                   title="Nutzt Ergebnis von Phase '{{ exercisePhase.phase.dependsOnExercisePhase.name }}'"></i>
+                                   title="{{ "exercisePhase.labels.usesResultFrom"|trans({}, 'base') }} '{{ exercisePhase.phase.dependsOnExercisePhase.name }}'"></i>
                             {% endif %}
                         </td>
                         <td>{{ phaseTypeTransVar | trans }}</td>
@@ -87,31 +86,31 @@
                         <td class="table-cell--no-wrap text-right">
                             {% if exercisePhase.phase.hasSolutions %}
                                 <a class="button button--type-outline-danger disabled button--size-small">
-                                    <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
+                                    <i class="fas fa-trash-alt"></i> {{ "exercisePhase.delete.button"|trans({}, 'base') }}
                                 </a>
                             {% else %}
                                 <a
                                     class="button button--type-outline-danger button--size-small"
                                     href="{{ path('exercise-phase__delete', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}"
-                                    onclick="return confirm('{% trans %}exercisePhase.delete.confirm{% endtrans %}');"
+                                    onclick="return confirm('{{ "exercisePhase.delete.confirm"|trans({}, 'base') }}');"
                                 >
-                                    <i class="fas fa-trash-alt"></i> {% trans %}exercisePhase.delete.button{% endtrans %}
+                                    <i class="fas fa-trash-alt"></i> {{ "exercisePhase.delete.button"|trans({}, 'base') }}
                                 </a>
                             {% endif %}
                             <a class="button button--type-primary button--size-small"
                                href="{{ path('exercise-phase__edit', {id: exercise.id, phase_id: exercisePhase.phase.id}) }}"
                                data-test-id="exercisePhaseEditButton"
-                               >
-                                <i class="fas fa-pencil-alt"></i> {% trans %}exercisePhase.edit.button{% endtrans %}
+                            >
+                                <i class="fas fa-pencil-alt"></i> {{ "exercisePhase.edit.button"|trans({}, 'base') }}
                             </a>
 
-                            <div class="button-group" role="group" aria-label="Sortierung der Phase ändern">
+                            <div class="button-group" role="group" aria-label="{{ "exercise.edit.changeSorting"|trans({}, 'base') }}">
                                 {% if exercisePhase.canMoveUp != true %}
                                     <button
                                         class="button button--type-outline-primary button--size-small"
                                         disabled="disabled"
                                         aria-disabled="true"
-                                        title="Phase nach oben sortieren"
+                                        title="{{ "exercise.edit.changeSortingUp"|trans({}, 'base') }}"
                                         data-test-id="movePhaseUp"
                                     >
                                         <i class="fas fa-arrow-up"></i>
@@ -119,7 +118,7 @@
                                 {% else %}
                                     <a
                                         class="button button--type-outline-primary button--size-small"
-                                        title="Phase nach oben sortieren"
+                                        title="{{ "exercise.edit.changeSortingUp"|trans({}, 'base') }}O"
                                         href="{{ path('exercise-phase__change-sorting', {id: exercise.id, phase_id: exercisePhase.phase.id, sortUp: true}) }}"
                                         data-test-id="movePhaseUp"
                                     >
@@ -132,7 +131,7 @@
                                         class="button button--type-outline-primary button--size-small"
                                         disabled="disabled"
                                         aria-disabled="true"
-                                        title="Phase nach unten sortieren"
+                                        title="{{ "exercise.edit.changeSortingDown"|trans({}, 'base') }}"
                                         data-test-id="movePhaseDown"
                                     >
                                         <i class="fas fa-arrow-down"></i>
@@ -140,7 +139,7 @@
                                 {% else %}
                                     <a
                                         class="button button--type-outline-primary button--size-small"
-                                        title="Phase nach unten sortieren"
+                                        title="{{ "exercise.edit.changeSortingDown"|trans({}, 'base') }}"
                                         href="{{ path('exercise-phase__change-sorting', {id: exercise.id, phase_id: exercisePhase.phase.id, sortUp: false}) }}"
                                         data-test-id="movePhaseDown"
                                     >
@@ -158,12 +157,12 @@
     <footer class="footer">
         <div class="button-group footer__left">
             <a class="button button--type-outline-primary"
-               href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{% trans %}exercise.new.back{% endtrans %}</a>
+               href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{{ "exercise.new.back"|trans({}, 'base') }}</a>
             {% if is_granted('exercise_view', exercise) %}
                 <a class="button button--type-outline-primary"
-                   href="{{ path('exercise__test', {id: exercise.id}) }}">{% trans %}exercise.labels.test{% endtrans %}</a>
+                   href="{{ path('exercise__test', {id: exercise.id}) }}">{{ "exercise.labels.test"|trans({}, 'base') }}</a>
             {% else %}
-                <a class="button button--type-outline-primary disabled">{% trans %}exercise.labels.test{% endtrans %}</a>
+                <a class="button button--type-outline-primary disabled">{{ "exercise.labels.test"|trans({}, 'base') }}</a>
             {% endif %}
         </div>
         <div class="footer__right">

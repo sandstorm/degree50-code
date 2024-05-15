@@ -12,9 +12,9 @@
 
     <footer class="footer footer--center">
         {{ include('Version.html.twig') }}
-        <a class="button button--type-link" href="{{ path('imprint') }}" role="link">Impressum</a>
-        <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">Datenschutz</a>
-        <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">Nutzungsbedingungen</a>
+        <a class="button button--type-link" href="{{ path('imprint') }}" role="link">{{ "common.imprint"|trans({}, 'base') }}</a>
+        <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">{{ "common.dataPrivacy"|trans({}, 'base') }}</a>
+        <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">{{ "common.termsOfUse"|trans({}, 'base') }}</a>
     </footer>
 {% endblock %}
 

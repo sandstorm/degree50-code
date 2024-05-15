@@ -37,14 +37,14 @@ class CopyExerciseFormType extends AbstractType
                 'required' => true,
                 'expanded' => true,
                 'label' => 'Zu Kurs hinzufügen',
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
             ])
             ->add('copyPhases', CheckboxType::class, [
                 'label' => 'Aufgabe mit Phasen kopieren',
                 'required' => false,
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
             ])
-            ->add('save', SubmitType::class, ['label' => 'exercise.copy.title', 'translation_domain' => 'forms']);
+            ->add('save', SubmitType::class, ['label' => 'exercise.copy.title', 'translation_domain' => 'base']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

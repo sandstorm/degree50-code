@@ -6,7 +6,7 @@ type Props = {
     video: Video
 }
 
-const VideoFavourite = (props: Props) => {
+const VideoFavorite = (props: Props) => {
     const { video } = props
     const [sendToggleRequest] = useToggleVideoFavoriteMutation()
 
@@ -23,20 +23,19 @@ const VideoFavourite = (props: Props) => {
     // split this further into sub-components on purpose!
     return (
         <div className="overview-item">
-            <div className="overview-item__date" aria-label="Video erstellt am:">
+            <div className="overview-item__date" aria-label={'Video erstellt am: ' + video.createdAt}>
                 {video.createdAt}
             </div>
-            <div className="overview-item__status" aria-label="Status des Videos:">
+            <div className="overview-item__status" aria-label="Status des Videos: Video ist öffentlich">
                 <i className="fas fa-eye" title="Video ist öffentlich"></i>
             </div>
             <a
                 id={`tile__title--${video.id}`}
                 href={`video/play/${video.id}`}
                 className="overview-item__title"
-                aria-label="Name des Videos:"
-                title={video.description}
+                aria-label={'Name des Videos: ' + video.name}
             >
-                <img height="50" alt="Vorschaubild" src={video.url.thumbnail} />
+                <img height="50" alt="Vorschaubild des Videos" src={video.url.thumbnail} />
                 {video.name}
             </a>
             <div className="overview-item__actions">
@@ -72,4 +71,4 @@ const VideoFavourite = (props: Props) => {
     )
 }
 
-export default React.memo(VideoFavourite)
+export default React.memo(VideoFavorite)

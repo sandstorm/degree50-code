@@ -1,13 +1,12 @@
 {% extends 'BaseNoHeader.html.twig' %}
 
-{% block title %}Datenschutzerklärung{% endblock %}
+{% block title %}{{ "common.dataPrivacy"|trans({}, 'base') }}{% endblock %}
 
 {% block body %}
-    <div class="container text-justified">
+    <div class="container">
         <header class="content-header">
-            <h1>Datenschutzerklärung</h1>
+            <h1>{{ "common.dataPrivacy"|trans({}, 'base') }}</h1>
         </header>
         {{ include('Partials/DataPrivacyContent.html.twig') }}
     </div>
-
 {% endblock %}

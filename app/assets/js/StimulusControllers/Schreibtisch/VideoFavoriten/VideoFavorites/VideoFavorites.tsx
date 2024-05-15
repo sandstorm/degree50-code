@@ -1,6 +1,6 @@
 import React from 'react'
 import { useVideoFavoritesQuery } from 'StimulusControllers/Schreibtisch/Store/SchreibtischApi'
-import VideoFavourite from './VideoFavourite'
+import VideoFavourite from './VideoFavorite'
 import { Course, Fachbereich, VideoFavorite } from 'StimulusControllers/Schreibtisch/types'
 import { useSelector } from 'react-redux'
 import { selectActiveCourseFilters } from 'StimulusControllers/Schreibtisch/Store/CourseFilterSlice'
@@ -47,7 +47,14 @@ const VideoFavorites = () => {
     }
 
     if (data.length === 0) {
-        return <p className="video-favorites">Keine Videos favorisiert</p>
+        return (
+            <>
+                <header className={'content-header'}>
+                    <h3>Meine Videofavoriten</h3>
+                </header>
+                <p className="video-favorites">Keine Videos favorisiert</p>
+            </>
+        )
     }
 
     const filteredVideos = filterVideoFavoritesByFachbereichAndCourseFilters(
@@ -56,15 +63,19 @@ const VideoFavorites = () => {
         activeCourseFilters
     )
 
-    // TODO: a11y
     return (
-        <ul data-test-id="video-favorites" className="overview">
-            {filteredVideos.map((videoFavorite) => (
-                <li key={videoFavorite.id}>
-                    <VideoFavourite video={videoFavorite.video} />
-                </li>
-            ))}
-        </ul>
+        <>
+            <header className={'content-header'}>
+                <h3>Meine Videofavoriten</h3>
+            </header>
+            <ul data-test-id="video-favorites" className="overview">
+                {filteredVideos.map((videoFavorite) => (
+                    <li key={videoFavorite.id}>
+                        <VideoFavourite video={videoFavorite.video} />
+                    </li>
+                ))}
+            </ul>
+        </>
     )
 }
 

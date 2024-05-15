@@ -15,6 +15,9 @@ const MyExercises = () => {
 
     return (
         <>
+            <header className={'content-header'}>
+                <h3>Meine Aufgaben</h3>
+            </header>
             <ExerciseList />
         </>
     )

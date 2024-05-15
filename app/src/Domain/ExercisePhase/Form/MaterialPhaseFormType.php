@@ -17,7 +17,7 @@ class MaterialPhaseFormType extends ExercisePhaseFormType
         $builder
             ->add('material', TextType::class, [
                 'label' => "exercisePhase.labels.material",
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
                 'required' => true,
                 'attr' => [
                     'data-controller' => 'ckeditor',

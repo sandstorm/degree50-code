@@ -124,7 +124,7 @@ class ExercisePhaseController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('exercisePhase.resetTest.messages.success', [], 'forms')
+            $this->translator->trans('exercisePhase.resetTest.messages.success', [], 'base')
         );
 
         return $this->redirectToRoute(
@@ -149,8 +149,8 @@ class ExercisePhaseController extends AbstractController
         foreach (ExercisePhaseType::getPossibleValues() as $type) {
             $types[] = [
                 'id' => $type,
-                'iconClass' => $this->translator->trans('exercisePhase.types.' . $type . '.iconClass', [], 'forms'),
-                'label' => $this->translator->trans('exercisePhase.types.' . $type . '.label', [], 'forms')
+                'iconClass' => $this->translator->trans('exercisePhase.types.' . $type . '.iconClass', [], 'base'),
+                'label' => $this->translator->trans('exercisePhase.types.' . $type . '.label', [], 'base')
             ];
         }
 
@@ -300,7 +300,7 @@ class ExercisePhaseController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('exercisePhase.delete.messages.success', [], 'forms')
+            $this->translator->trans('exercisePhase.delete.messages.success', [], 'base')
         );
 
         return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
@@ -549,7 +549,7 @@ class ExercisePhaseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('exercisePhase.edit.messages.success', [], 'forms')
+                $this->translator->trans('exercisePhase.edit.messages.success', [], 'base')
             );
         }
 

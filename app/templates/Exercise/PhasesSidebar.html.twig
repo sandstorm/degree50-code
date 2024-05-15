@@ -1,5 +1,3 @@
-{% trans_default_domain 'forms' %}
-
 <div class="sidebar__group">
     {{ _self.sidebarLink(exercise.course.name, false, '', path('exercise-overview', {id: exercise.course.id})) }}
     {% if testMode %}
@@ -8,7 +6,7 @@
         {{ _self.sidebarLink(exercise.name, false, '', path('exercise__show', {id: exercise.id})) }}
     {% endif %}
     <header id="heading-phases">
-        <h5>Phasen:</h5>
+        <h5>{{ "common.phases"|trans({}, 'base') }}:</h5>
     </header>
     <div id="collapse-phases" class="collapse show" aria-labelledby="heading-phases" data-parent="#sidebar">
         <div class="sidebar__group-body">
@@ -89,7 +87,7 @@
     reviewRequired = false,
     phaseIconClass = "",
     phaseTitle = "",
-)  %}
+)%}
     <a
         class="nav-link"
         {% if canView %} href="{{ href }}" {% endif %}
@@ -102,13 +100,13 @@
         {% endif %}
         {% if dependsOnExercisePhase %}
             <i class="fas fa-arrow-up"
-               title="Nutzt Ergebnis von Phase '{{ dependsOnExercisePhase.name }}'"></i>
+               title="{{ "exercisePhase.labels.usesResultFrom"|trans({}, 'base') }} '{{ dependsOnExercisePhase.name }}'"></i>
         {% endif %}
         {{ name }}
         {% if reviewRequired %}
-            <i class="fa-regular fa-circle-exclamation" title="{{ 'exercise.labels.reviewRequired' | trans }}"></i>
+            <i class="fa-regular fa-circle-exclamation" title="{{ 'exercise.labels.reviewRequired' | trans({}, 'base') }}"></i>
         {% elseif isDone %}
-            <i class="fa-regular fa-check" title="{{ 'exercise.labels.phaseDone' | trans }}"></i>
+            <i class="fa-regular fa-check" title="{{ 'exercise.labels.phaseDone' | trans({}, 'base') }}"></i>
         {% endif %}
     </a>
 {% endmacro %}

@@ -1,15 +1,67 @@
+# for VichUploaderBundle
 form:
     label:
         delete: 'Löschen'
         download: 'Datei herunterladen'
 
-login:
-    login-sso: 'Login mit Uni-Account (SSO)'
-    login-directly: 'Direkter Login'
-    register: 'Registrieren'
-    label:
-        email: 'E-Mail'
-        password: 'Passwort'
+common:
+    degree: 'Degree 4.0'
+    logoAltText: 'Logo der TU Dortmund'
+    videoLearningPlatform: 'Video-Lernplattform'
+    logout: 'Logout'
+    back: 'Zurück'
+    safeAndBack: 'Speichern und Zurück'
+    previousPhase: 'Vorherige Phase'
+    nextPhase: 'Nächste Phase'
+    phase: 'Phase'
+    phases: 'Phasen'
+    status: 'Status'
+    dataPrivacy: 'Datenschutzerklärung'
+    imprint: 'Impressum'
+    termsOfUse: 'Nutzungsbedingungen'
+    testingOf: 'Testen von '
+    exercise: 'Aufgabe'
+    task: 'Aufgabenstellung'
+    name: 'Name'
+    nothingFound: 'Keine vorhanden'
+    filter: 'Filter'
+    hidden: 'Versteckt'
+    public: 'Öffentlich'
+    finished: 'Abgeschlossen'
+    type: 'Typ'
+    hint: 'Hinweis'
+    for: 'für'
+    toggleNavigation: 'Navigation ein-/ausblenden'
+
+security:
+    403:
+        accessDenied: 'Zugriff verweigert'
+        info: 'Du hast leider keine Berechtigung für diese Seite.'
+    dataPrivacy:
+        accept: 'Datenschutzerklärung akzeptieren'
+    termsOfUse:
+        headline: 'Nutzungsbedingungen für die Webplattform degree40.tu-dortmund.de'
+        accept: 'Nutzungsbedingungen akzeptieren'
+    imprint:
+        headline: 'Impressum nach § 5 Abs. 1 Telemediengesetz (TMG)'
+    login:
+        labels:
+            email: 'E-Mail'
+            password: 'Passwort'
+        login-sso: 'Login mit Uni-Account (SSO)'
+        login-directly: 'Direkter Login'
+        register: 'Registrieren'
+
+registration:
+    title: 'Registrierung'
+
+desk:
+    index:
+        title: 'Schreibtisch'
+
+administration:
+    index:
+        title: 'Administration'
 
 exercise:
     labels:
@@ -17,9 +69,9 @@ exercise:
         description: 'Lernauftrag / Beschreibung'
         submit: 'Aufgabe speichern'
         test: 'Aufgabe testen'
+        finish: 'Aufgabe abschließen'
         created: 'Erstellt'
         createdLabel: 'Aufgabe erstellt am'
-        phases: 'Phasen'
         status: 'Status'
         statusLabel: 'Status der Aufgabe'
         status0: 'Aufgabe Erstellt'
@@ -32,8 +84,10 @@ exercise:
         phaseDone: 'Phase abgeschlossen'
         actionsLabel: 'Aktionen'
         toggleActions: 'Aktionen ein/ausblenden für Aufgabe:'
+        testInfo: 'Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.'
     show:
         title: 'Aufgabe starten'
+        overview: 'Übersicht der Phasen'
     test:
         title: 'Aufgabe testen'
     new:
@@ -47,6 +101,12 @@ exercise:
             error: 'Lösung kann nicht angesehen werden!'
     edit:
         title: 'Aufgabe bearbeiten'
+        alreadyUsed: 'Achtung: Aufgabe wird/wurde schon von Studierenden bearbeitet.'
+        publish: 'Aufgabe veröffentlichen'
+        unpublish: 'Aufgabe verstecken'
+        changeSorting: 'Sortierung der Phase ändern'
+        changeSortingUp: 'Phase nach oben sortieren'
+        changeSortingDown: 'Phase nach unten sortieren'
         messages:
             success: 'Aufgabe erfolgreich gespeichert!'
     delete:
@@ -59,7 +119,6 @@ exercise:
         message:
             success: 'Aufgabe erfolgreich kopert!'
     showPhase:
-        phase: 'Phase'
         dependsOnPreviousPhaseInfo: 'Diese Phase baut auf der vorherigen auf. Es muss ein Ergebnis aus der vorherigen Phase vorliegen.'
         myResult: 'Mein Ergebnis'
         showResult: 'Ergebnis anzeigen'
@@ -73,7 +132,15 @@ exercise:
         newGroup: 'Neue Gruppe anlegen'
         existingGroups: 'Bestehende Gruppen'
         existingGroupsInfo: 'Tritt einer Gruppe bei um die Aufgabe zu bearbeiten oder erstelle eine neue Gruppe.'
-        testInfo: 'Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.'
+        nothing: 'Keine vorhanden'
+
+exerciseOverview:
+    index:
+        allExercises: 'Alle Aufgaben'
+        allCourses: 'Alle Kurse'
+        manageCourse: 'Kurs verwalten'
+        filterByStatus: 'Aufgaben filtern nach Status'
+        noCourseAssigned: 'Du bist keinem Kurs zugeordnet'
 
 exercisePhase:
     labels:
@@ -91,6 +158,7 @@ exercisePhase:
         attachments: 'Anhänge'
         submit: 'Phase speichern'
         type: 'Typ'
+        usesResultFrom: 'Nutzt Ergebnis von Phase'
     help:
         isGroupPhase: 'Wenn aktiv, kann diese Phase nur in Gruppen von mindestens 2 Personen bearbeitet werden.'
         dependsOnPreviousPhase:
@@ -129,9 +197,28 @@ exercisePhase:
         back: 'Zurück zur Aufgabe'
         title: 'Phase hinzufügen'
         titleForGroupPhase: 'Gruppenphase hinzufügen'
+    show:
+        finish: 'Phase abschließen'
+        test: 'Testen von Phase'
+        messages:
+            confirmFinish: 'Nach Abschluss dieser Dokumentationsphase kann das Ergebnis nicht mehr angepasst werden. Das Material wird dann von einer lehrenden Person begutachtet. Zum Zwischenspeichern des Ergebnisses bitte auf "Speichern und Zurück" klicken.\n\n Fortfahren?'
+            confirmFinish2: 'Nach Abschluss einer Dokumentationsphase kann das Ergebnis nicht mehr angepasst werden. Zum Zwischenspeichern des Ergebnisses bitte auf "Speichern und Zurück" klicken.\n\n Fortfahren?'
     edit:
         title: 'Phase bearbeiten'
         button: 'Bearbeiten'
+        attachmentInfo: 'Anhang hochladen, der zur Lösung der Aufgabe bereit steht'
+        attachmentAccessabilityInfo: 'Achten Sie unbedingt darauf, dass die Dokumente barrierefrei sind.'
+        uploadAttachment: 'Hier klicken um Anhänge hochzuladen'
+        uploadAttachmentInfo: 'Hinweis: Kommt es zu Timeout-Fehlern beim Upload, ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.'
+        attachments: 'Bereits hochgeladene Dateien'
+        noAttachments: 'Noch keine'
+        deleteAttachment: 'Datei löschen'
+        alreadyStarted: 'Achtung: Phase wird/wurde schon von Studierenden bearbeitet.'
+        componentsInfo: 'Aktive Komponenten zur Lösung der Aufgabe:'
+        videoCodesInfo: 'Stehen dem Nutzer zur Auswahl während der Aufgabe'
+        videoCodeColor: 'Farbe des Video-Codes'
+        videoCodeName: 'Name des Video-Codes'
+        addVideoCode: 'Video-Code hinzufügen'
         messages:
             success: 'Phase erfolgreich gespeichert!'
     delete:
@@ -144,8 +231,32 @@ exercisePhase:
         title: 'Test Ergebnis zurücksetzen'
         messages:
             success: 'Test Ergebnis erfolgreich zurückgesetzt!'
+    showSolution:
+        shareResult: 'Ergebnis teilen'
     showSolutions:
+        title: 'Lösungen'
         back: 'Zurück zur Übersicht'
+        phaseHasNoSolutions: 'Dieser Phasentyp hat keine Lösungen'
+        noSolutions: 'Es gibt noch keine Lösungen'
+    videoCodesList:
+        delete: 'Video-Code löschen'
+        noVideoCodes: 'Keine Video Codes vorhanden.'
+
+exercisePhaseTeam:
+    new:
+        messages:
+            success: 'Neue Gruppe angelegt!'
+            alreadyCreatedATeam: 'Du hast bereits eine Gruppe angelegt!'
+    join:
+        messages:
+            success: 'Gruppe beigetreten'
+    delete:
+        messages:
+            hasSolution: 'Gruppe kann nicht gelöscht werden. Es gibt bereits ein Ergebnis.'
+            success: 'Gruppe gelöscht'
+    leave:
+        messages:
+            success: 'Gruppe verlassen'
 
 video:
     labels:
@@ -173,20 +284,41 @@ video:
         back: 'Zurück zur Übersicht'
         subtitleUploadTitle: 'Untertitel hochladen (WebVTT)'
         audioDescriptionUploadTitle: 'Audiodeskription hochladen (mp3)'
+        uploadVideo: 'Hier klicken um Video hochzuladen'
+        uploadSubtitle: 'Hier klicken um Untertitel hochzuladen'
+        uploadAudioDescription: 'Hier klicken um Audio-Datei hochzuladen'
+        onlyOneVideo: 'Es kann immer nur ein Video hochgeladen werden.'
+        onlyOneSubtitle: 'Es kann immer nur eine Untertiteldatei hochgeladen werden.'
+        onlyOneAudioDescription: 'Es kann immer nur eine Audio-Datei hochgeladen werden.'
+        subtitlesOptional: 'Untertitel sind optional.'
+        audioDescriptionOptional: 'Audio Deskriptionen sind optional, können aktuell aber NICHT im Nachhinein hinzugefügt werden.'
+        timeoutHint: 'Kommt es zu Timeout-Fehlern beim Upload ist die Upload-Geschwindigkeit geringer als 0,5 Mbit/s. Lade das Video an einem schnelleren Internetanschluss hoch.'
         messages:
             success: 'Video erfolgreich hochgeladen. Das Encoding wurde gestartet.'
     show:
         title: 'Video abspielen'
+        notAssigned: 'Achtung: Video ist aktuell keinen Kursen zugewiesen und nur für dich sichtbar.'
     favor:
         title: 'Favorisieren'
     unfavor:
         title: 'Entfavorisieren'
+    index:
+        title: 'Mediathek'
+        allVideos: 'Alle Videos'
+    new:
+        title: 'Neues Video'
     edit:
         title: 'Video bearbeiten'
+        videoEncodingFailed: 'Video-Encoding fehlgeschlagen...'
+        isEncoding: 'Video-Encoding läuft noch. Dieser Prozess kann mehrere Minuten in Anspruch nehmen. Je nach Länge des Videos.'
         messages:
             success: 'Video erfolgreich gespeichert!'
     delete:
         title: 'Video löschen'
+        usage: 'Das Video wird in folgenden Aufgaben/Phasen verwendet'
+        noUsage: 'Das Video wird in keiner Aufgabe/Phase verwendet.'
+        warning: 'Achtung: Aufgaben, Phasen und Ergebnisse werden bei Löschen des Videos mit gelöscht!'
+        hasSolutions: 'Hat Lösungen'
         messages:
             success: 'Video erfolgreich gelöscht!'
 
@@ -199,23 +331,24 @@ attachments:
         messages:
             success: 'Datei erfolgreich gelöscht!'
 
-exercisePhaseTeam:
-    new:
-        messages:
-            success: 'Neue Gruppe angelegt!'
-            alreadyCreatedATeam: 'Du hast bereits eine Gruppe angelegt!'
-    join:
-        messages:
-            success: 'Gruppe beigetreten'
-    delete:
-        messages:
-            hasSolution: 'Gruppe kann nicht gelöscht werden. Es gibt bereits ein Ergebnis.'
-            success: 'Gruppe gelöscht'
-    leave:
-        messages:
-            success: 'Gruppe verlassen'
-
 course:
+    labels:
+        name: 'Name'
+        role: 'Rolle'
+        submit: 'Kurs speichern'
+        addMember: 'Lernende speichern'
+        student: 'Lernende:r'
+        students: 'Lernende'
+        currentStudents: 'Aktuelle Lernende'
+        tutor: 'Lehrende:r'
+        tutors: 'Lehrende'
+        currentTutors: 'Aktuelle Lehrende'
+        filterTutors: 'Lehrende filtern'
+        filterTutorsAria: 'Lehrende filtern durch Texteingabe'
+        filterStudents: 'Lernende filtern'
+        filterStudentsAria: 'Lernende filtern durch Texteingabe'
+    index:
+        title: 'Kurs-Übersicht'
     new:
         title: 'Kurs anlegen'
         back: 'Zurück zur Übersicht'
@@ -229,19 +362,9 @@ course:
         title: 'CSV exportieren'
     editMembers:
         title: 'Lernende verwalten'
+        canCreate: 'Darf Aufgaben Erstellen'
         messages:
             success: 'Lernende erfolgreich gespeichert!'
-    labels:
-        name: 'Name'
-        role: 'Rolle'
-        submit: 'Kurs speichern'
-        addMember: 'Lernende speichern'
-        student: 'Lernende:r'
-        students: 'Lernende'
-        currentStudents: 'Aktuelle Lernende'
-        tutor: 'Lehrende:r'
-        tutors: 'Lehrende'
-        currentTutors: 'Aktuelle Lehrende'
     help:
         students: 'Hier können Lernende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
         tutors: 'Hier können Lehrende ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'

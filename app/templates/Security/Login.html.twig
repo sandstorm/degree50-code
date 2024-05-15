@@ -1,13 +1,13 @@
 {% extends 'BaseNoHeader.html.twig' %}
 {% block layoutCssClass %}main--with-footer{% endblock %}
 
-{% block title %}Degree 4.0{% endblock %}
+{% block title %}{{ "common.degree"|trans({}, 'base') }}{% endblock %}
 
 {% block body %}
     <div class="container">
         <form method="post" class="login-form" role="form">
             <img src="{{ asset('build/images/logo.svg') }}" alt="Logo der TU Dortmund" />
-            <h1 class="h1 mb-3 font-weight-normal login-form__headline">Video-Lernplattform Degree 4.0</h1>
+            <h1 class="h1 mb-3 font-weight-normal login-form__headline">Video-Lernplattform {{ "common.degree"|trans({}, 'base') }}</h1>
 
             {% if error %}
                 <div class="alert alert-danger">
@@ -27,7 +27,7 @@
                 href="{{ path('saml_login') }}"
                 aria-label="Klicken, um dich mit deinem Uni-Account (SSO) einzuloggen."
             >
-                {{ "login.login-sso"|trans({}, 'forms') }}
+                {{ "security.login.login-sso"|trans({}, 'base') }}
             </a>
 
             <br />
@@ -35,7 +35,7 @@
             <br />
 
             <div class="form-group">
-                <label for="inputEmail">{{ "login.label.email"|trans({}, 'forms') }}</label>
+                <label for="inputEmail">{{ "security.login.labels.email"|trans({}, 'base') }}</label>
                 <input
                     type="email"
                     value="{{ last_username }}"
@@ -48,7 +48,7 @@
                 >
             </div>
             <div class="form-group">
-                <label for="inputPassword">{{ "login.label.password"|trans({}, 'forms') }}</label>
+                <label for="inputPassword">{{ "security.login.labels.password"|trans({}, 'base') }}</label>
                 <input
                     type="password"
                     name="password"
@@ -68,19 +68,19 @@
                 type="submit"
                 role="button"
             >
-                {{ "login.login-directly"|trans({}, 'forms') }}
+                {{ "security.login.login-directly"|trans({}, 'base') }}
             </button>
             <hr />
             <div class="login-form__register">
-                <a href="{{ path('app_register') }}">{{ 'login.register'|trans({}, 'forms') }}</a>
+                <a href="{{ path('app_register') }}">{{ 'security.login.register'|trans({}, 'base') }}</a>
             </div>
         </form>
     </div>
     <footer class="footer footer--center">
         {{ include('Version.html.twig') }}
-        <a class="button button--type-link" href="{{ path('imprint') }}" role="link">Impressum</a>
-        <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">Datenschutz</a>
-        <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">Nutzungsbedingungen</a>
+        <a class="button button--type-link" href="{{ path('imprint') }}" role="link">{{ "common.imprint"|trans({}, 'base') }}</a>
+        <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">{{ "common.dataPrivacy"|trans({}, 'base') }}</a>
+        <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">{{ "common.termsOfUse"|trans({}, 'base') }}</a>
     </footer>
 
     {# show notification when browser is out of date (https://browser-update.org/) #}
@@ -106,7 +106,7 @@
             var e = document.createElement("script");
             e.src = "//browser-update.org/update.min.js";
             document.body.appendChild(e);
-        };
+        }
         try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
         catch(e){window.attachEvent("onload", $buo_f)}
     </script>

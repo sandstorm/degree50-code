@@ -46,10 +46,10 @@ class CourseMembersType extends AbstractType
                 'expanded' => true,
                 'label' => 'course.labels.students',
                 'help' => 'course.help.students',
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
                 'mapped' => false
             ])
-            ->add('save', SubmitType::class, ['label' => 'course.labels.addMember', 'translation_domain' => 'forms']);
+            ->add('save', SubmitType::class, ['label' => 'course.labels.addMember', 'translation_domain' => 'base']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

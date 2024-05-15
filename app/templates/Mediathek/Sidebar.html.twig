@@ -1,8 +1,8 @@
-<a class="button button--type-primary button--block" href="{{ path('mediathek--index') }}">Alle Videos</a>
+<a class="button button--type-primary button--block" href="{{ path('mediathek--index') }}">{{ "video.index.allVideos"|trans({}, 'base') }}</a>
 <hr />
 
 {% if sidebarItems | length == 0 %}
-    <p>Du bist keinem Kurs zugeordnet</p>
+    <p>{{ "exerciseOverview.index.noCourseAssigned"|trans({}, 'base') }}</p>
 {% endif %}
 
 {% for item in sidebarItems %}

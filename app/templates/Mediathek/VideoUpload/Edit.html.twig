@@ -1,61 +1,61 @@
-{% trans_default_domain 'forms' %}
 {% extends 'BaseFullscreen.html.twig' %}
 
-{% block title %}{% trans %}video.edit.title{% endtrans %}{% endblock %}
+{% block title %}{{ "video.edit.title"|trans({}, 'base') }}{% endblock %}
 {% block layoutCssClass %}main--with-footer{% endblock %}
 
 {% block body %}
     <div class="container">
         <header class="content-header content-header--center">
-            <h3>{% trans %}video.edit.title{% endtrans %}</h3>
+            <h3>{{ "video.edit.title"|trans({}, 'base') }}</h3>
         </header>
 
         {% if video.encodingStatus == 1 %}
             <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true }, videoMap: videoMap } | json_encode|e('html_attr')}}"></div>
         {% elseif video.encodingStatus == 3 %}
             <div class="alert alert-danger">
-                Video-Encoding fehlgeschlagen...
+                {{ "video.edit.videoEncodingFailed"|trans({}, 'base') }}
             </div>
         {% else %}
             <div class="alert alert-info">
-                Video-Encoding läuft noch. Dieser Prozess kann mehrere Minuten in Anspruch nehmen. Je nach Länge des Videos.
+                {{ "video.edit.isEncoding"|trans({}, 'base') }}
             </div>
         {% endif %}
     </div>
     {{ form_start(form) }}
-        <div class="container">
-            {{ form_row(form.title) }}
-            {{ form_row(form.description) }}
-            {{ form_row(form.visiblePersons) }}
-            {{ form_row(form.courses) }}
-            <div class="form__data-privacy">
-                {{ form_row(form.dataPrivacyAccepted) }}
-                {{ form_row(form.dataPrivacyPermissionsAccepted) }}
-                <a href="{{ path('data-privacy') }}" target="_blank">Datenschutzbestimmungen</a> | <a href="{{ path('terms-of-use') }}" target="_blank">Nutzungsbedingungen</a>
-            </div>
-            <hr />
-            <h4>Das Video wird in folgenden Aufgaben/Phasen verwendet</h4>
-            <ul class="list">
-                {% for phase in video.exercisePhases %}
-                    <li>{{ phase.belongsToExercise.name }} / {{ phase.name }}</li>
-                {% else %}
-                    <li>Bisher in keiner Phase verwendet</li>
-                {% endfor %}
-            </ul>
-            <hr />
-            <a
-                href="{{ path('mediathek__video--delete', {id: video.id}) }}"
-                class="button button--type-outline-danger"
-            >
-                Video löschen
-            </a>
+    <div class="container">
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.visiblePersons) }}
+        {{ form_row(form.courses) }}
+        <div class="form__data-privacy">
+            {{ form_row(form.dataPrivacyAccepted) }}
+            {{ form_row(form.dataPrivacyPermissionsAccepted) }}
+            <a href="{{ path('data-privacy') }}" target="_blank">{{ "common.dataPrivacy"|trans({}, 'base') }}</a> |
+            <a href="{{ path('terms-of-use') }}" target="_blank">{{ "common.termsOfUse"|trans({}, 'base') }}</a>
         </div>
+        <hr />
+        <h4>{{ "video.delete.usage"|trans({}, 'base') }}</h4>
+        <ul class="list">
+            {% for phase in video.exercisePhases %}
+                <li>{{ phase.belongsToExercise.name }} / {{ phase.name }}</li>
+            {% else %}
+                <li>{{ "video.delete.noUsage"|trans({}, 'base') }}</li>
+            {% endfor %}
+        </ul>
+        <hr />
+        <a
+            href="{{ path('mediathek__video--delete', {id: video.id}) }}"
+            class="button button--type-outline-danger"
+        >
+            {{ "video.delete.title"|trans({}, 'base') }}
+        </a>
+    </div>
 
-        <footer class="footer">
-            <a class="button button--type-outline-primary footer__left" href="{{ path('mediathek--index') }}">{% trans %}video.upload.back{% endtrans %}</a>
-            <div class="footer__right">
-                {{ form_row(form.save) }}
-            </div>
-        </footer>
+    <footer class="footer">
+        <a class="button button--type-outline-primary footer__left" href="{{ path('mediathek--index') }}">{{ "video.upload.back"|trans({}, 'base') }}</a>
+        <div class="footer__right">
+            {{ form_row(form.save) }}
+        </div>
+    </footer>
     {{ form_end(form) }}
 {% endblock %}

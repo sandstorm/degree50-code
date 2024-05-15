@@ -13,31 +13,26 @@
 
     a {
         display: inline-block;
-        padding: 5px;
+        padding: $theme__spacing--small $theme__spacing--base;
         width: 100%;
+
+        &:focus, &:hover, &:active {
+            background-color: $theme__color__primary;
+
+            color: $theme__color__white !important;
+        }
     }
 
-    &:hover,
-    &:active,
-    &--active,
-    &:focus,
-    &:focus-within {
-        color: $theme__color__white;
-        background-color: $theme__color__primary;
-    }
-
-    &:hover,
-    &:focus-within,
-    &:focus,
-    &--active,
-    &:active {
+    &--active {
         a {
+            background-color: $theme__color__primary;
+
             color: $theme__color__white !important;
         }
     }
 
     &--disabled {
-        opacity: 0.5;
+        opacity: .5;
 
         cursor: default;
         pointer-events: none;

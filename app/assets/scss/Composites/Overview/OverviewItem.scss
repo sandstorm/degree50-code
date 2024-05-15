@@ -7,11 +7,7 @@
 
     text-decoration: none !important;
 
-    &:hover,
-    &:focus,
-    &:focus-within {
-        background-color: $theme__color__primary--lighter !important;
-    }
+    border-bottom: 1px solid $theme__color__grey--light;
 }
 
 .overview-item__date {

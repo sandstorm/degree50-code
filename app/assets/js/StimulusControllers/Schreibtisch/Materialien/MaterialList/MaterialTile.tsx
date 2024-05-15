@@ -17,14 +17,19 @@ const MaterialTile = (props: Props) => {
         : undefined
 
     return (
-        <NavLink className="overview-item" title={material.name} to={`${ROUTE_EDIT_MATERIAL}/${material.id}`}>
-            <div className="overview-item__date" title={lastUpdatedAt ? 'Zuletzt geändert' : 'Erstellt am'}>
+        <NavLink className="overview-item" to={`${ROUTE_EDIT_MATERIAL}/${material.id}`}>
+            <div
+                className="overview-item__date"
+                aria-label={lastUpdatedAt ? 'Zuletzt geändert am: ' + lastUpdatedAt : 'Erstellt am: ' + createdAt}
+            >
                 {lastUpdatedAt ? lastUpdatedAt : createdAt}
             </div>
             <div className="overview-item__status">
                 <i className="fas fa-square-quote"></i>
             </div>
-            <div className="overview-item__title">{material.name}</div>
+            <div className="overview-item__title" aria-label={'Titel des Materials: ' + material.name}>
+                {material.name}
+            </div>
         </NavLink>
     )
 }

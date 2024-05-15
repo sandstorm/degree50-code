@@ -3,8 +3,4 @@
     margin: 0;
     margin-bottom: $theme__spacing--large;
     padding: 0;
-
-    > li:nth-child(even) .overview-item {
-        background-color: $theme__color__grey--lighter;
-    }
 }

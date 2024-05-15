@@ -1,5 +1,4 @@
 {% extends 'BaseWithSidebar.html.twig' %}
-{% trans_default_domain 'forms' %}
 
 {% block title %}{{ exercise.name }}{% endblock %}
 
@@ -12,20 +11,20 @@
 {% block body %}
     {% if testMode %}
         <div class="striped-banner">
-            <span class="striped-banner__text">Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.</span>
+            <span class="striped-banner__text">{{ "exercise.labels.testInfo"|trans({}, 'base') }}</span>
         </div>
     {% endif %}
-    <h5 class="text-center">Aufgabe:</h5>
+    <h5 class="text-center">{{ "common.exercise"|trans({}, 'base') }}:</h5>
     <h2 class="text-center">{{ exercise.name }}</h2>
     <hr />
 
-    <h5>Aufgabenstellung:</h5>
+    <h5>{{ "common.task"|trans({}, 'base') }}:</h5>
     <p class="text-center text-small">
         {{ exercise.description | raw }}
     </p>
 
     <hr />
-    <h5>Übersicht der Phasen:</h5>
+    <h5>{{ "exercise.show.overview"|trans({}, 'base') }}:</h5>
     <ul class="list">
         {% for phase in exercise.phases %}
             <li>

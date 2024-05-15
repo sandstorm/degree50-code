@@ -104,7 +104,7 @@ class VideoUploadController extends AbstractController
 
             $this->addFlash(
                 'info',
-                $this->translator->trans('video.upload.messages.success', [], 'forms')
+                $this->translator->trans('video.upload.messages.success', [], 'base')
             );
 
             return $this->redirectToRoute('mediathek__video--player', ['id' => $video->getId()]);
@@ -138,7 +138,7 @@ class VideoUploadController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('video.edit.messages.success', [], 'forms')
+                $this->translator->trans('video.edit.messages.success', [], 'base')
             );
 
             return $this->redirectToRoute('mediathek--index');
@@ -166,7 +166,7 @@ class VideoUploadController extends AbstractController
             $this->videoService->deleteVideo($video);
             $this->addFlash(
                 'success',
-                $this->translator->trans('video.delete.messages.success', [], 'forms')
+                $this->translator->trans('video.delete.messages.success', [], 'base')
             );
             return $this->redirectToRoute('mediathek--index');
         }

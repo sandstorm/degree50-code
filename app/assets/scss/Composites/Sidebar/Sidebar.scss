@@ -92,6 +92,7 @@ $sidebar__width--without-padding: $sidebar__width - 20px;
 .sidebar__group-toggle {
     justify-content: space-between;
     width: 100%;
+    padding: $theme__spacing--base;
 
     .fa-chevron-down {
         display: none;

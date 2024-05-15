@@ -67,7 +67,7 @@ class AttachmentController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('attachment.delete.messages.success', [], 'forms')
+            $this->translator->trans('attachment.delete.messages.success', [], 'base')
         );
 
         return $this->redirectToRoute('exercise-phase__edit', ['id' => $attachment->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $attachment->getExercisePhase()->getId()]);

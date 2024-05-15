@@ -55,12 +55,12 @@ readonly class ExercisePhaseService
 
     public function getPhaseTypeTitle(ExercisePhaseType $exercisePhaseType): string
     {
-        return $this->translator->trans("exercisePhase.types.$exercisePhaseType->value.label", [], 'forms');
+        return $this->translator->trans("exercisePhase.types.$exercisePhaseType->value.label", [], 'base');
     }
 
     public function getPhaseTypeIconClasses(ExercisePhaseType $exercisePhaseType): string
     {
-        return $this->translator->trans("exercisePhase.types.$exercisePhaseType->value.iconClass", [], 'forms');
+        return $this->translator->trans("exercisePhase.types.$exercisePhaseType->value.iconClass", [], 'base');
     }
 
     /**

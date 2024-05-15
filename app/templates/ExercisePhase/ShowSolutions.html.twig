@@ -1,7 +1,6 @@
-{% trans_default_domain 'forms' %}
 {% extends 'BaseWithSidebar.html.twig' %}
 
-{% block title %}{{ exercise.name }} - Lösungen{% endblock %}
+{% block title %}{{ exercise.name }} - {{ "exercisePhase.showSolutions.title"|trans({}, 'base') }}{% endblock %}
 
 {% block layoutCssClass %}main--without-scrollbar main--no-padding{% endblock %}
 
@@ -12,15 +11,15 @@
 {% block body %}
     <div class="solution-app">
         <header class="content-header content-header--center">
-            <h3>{{ exercise.name }} - Lösungen</h3>
+            <h3>{{ exercise.name }} - {{ "exercisePhase.showSolutions.title"|trans({}, 'base') }}</h3>
         </header>
         {% if currentExercisePhase.type.value == 'reflexion' %}
             <div class="exercise-phase exercise-phase--no-solutions">
-                <h5>Dieser Phasentyp hat keine Lösungen</h5>
+                <h5>{{ "exercisePhase.showSolutions.phaseHasNoSolutions"|trans({}, 'base') }}</h5>
             </div>
         {% elseif hasSolutions == false %}
             <div class="exercise-phase exercise-phase--no-solutions">
-                <h5>Es gibt noch keine Lösungen</h5>
+                <h5>{{ "exercisePhase.showSolutions.noSolutions"|trans({}, 'base') }}</h5>
             </div>
         {% else %}
             <div class="exercise-phase" data-controller="solutions" data-solutions-props="{{ {data: data, config: config} |json_encode|e('html_attr') }}">

@@ -38,7 +38,7 @@ class CourseFormType extends AbstractType
         });
 
         $builder
-            ->add('name', TextType::class, ['label' => "course.labels.name", 'translation_domain' => 'forms'])
+            ->add('name', TextType::class, ['label' => "course.labels.name", 'translation_domain' => 'base'])
             ->add('fachbereich', EntityType::class, [
                 'label' => 'zu Fachbereich hinzufügen',
                 'required' => false,
@@ -55,10 +55,10 @@ class CourseFormType extends AbstractType
                 'expanded' => true,
                 'label' => 'course.labels.tutors',
                 'help' => 'course.help.tutors',
-                'translation_domain' => 'forms',
+                'translation_domain' => 'base',
                 'mapped' => false
             ])
-            ->add('save', SubmitType::class, ['label' => 'course.labels.submit', 'translation_domain' => 'forms']);
+            ->add('save', SubmitType::class, ['label' => 'course.labels.submit', 'translation_domain' => 'base']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

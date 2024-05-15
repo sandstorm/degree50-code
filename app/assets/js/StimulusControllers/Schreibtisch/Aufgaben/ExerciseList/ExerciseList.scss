@@ -14,16 +14,7 @@
         border-bottom: 1px solid $theme__color__grey;
     }
 
-    tbody tr:nth-child(odd) {
-        background-color: $theme__color__white;
-    }
-
-    tbody tr:nth-child(even) {
-        background-color: $theme__color__grey--light;
-    }
-
-    th,
-    td {
+    th, td {
         padding: $theme__spacing--small;
     }
 
@@ -61,17 +52,6 @@
     }
 
     tbody tr {
-        border: 1px solid transparent;
-
-        &:hover,
-        &:focus,
-        &:focus-within {
-            background-color: $theme__color__primary--lighter;
-        }
-
-        &:focus {
-            outline: 2px solid $theme__color__grey--dark;
-            outline-offset: 2px;
-        }
+        border-bottom: 1px solid $theme__color__grey--light;
     }
 }
