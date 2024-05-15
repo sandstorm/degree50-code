@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.44.0-bionic
+FROM mcr.microsoft.com/playwright:v1.44.0
 
 #
 # THIS SCRIPT IS PART OF THE Sandstorm.E2ETestTools PACKAGE.
