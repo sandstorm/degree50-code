@@ -145,6 +145,7 @@ exercisePhase:
     labels:
         isGroupPhase: 'Ist eine Gruppenarbeit'
         dependsOnPreviousPhase: 'Nutzt Ergebnis von Phase'
+        dependsOnPreviousPhaseNone: 'Keine'
         dependsOnPhaseName: 'Nutzt Ergebnis von Phase'
         otherSolutionsAreAccessible: 'Lernende können gegenseitig Ergebnisse einsehen'
         name: 'Titel der Phase'

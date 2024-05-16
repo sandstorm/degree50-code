@@ -49,7 +49,7 @@ class ExercisePhaseFormType extends AbstractType
                     $type = $this->exercisePhaseService->getPhaseTypeTitle($exercisePhase->getType());
                     return "$name ($type)";
                 },
-                'placeholder' => 'Keine',
+                'placeholder' => 'exercisePhase.labels.dependsOnPreviousPhaseNone',
                 'multiple' => false,
                 'required' => $isReflexionPhase,
                 'disabled' => $exercisePhase->getSorting() === 0 || $exercisePhase->getHasSolutions(),
