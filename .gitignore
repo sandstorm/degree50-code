@@ -7,8 +7,6 @@ supervisord.pid
 /app/updates.db
 
 # IDE
-/.idea
-*.iml
 .vscode
 
 node_modules

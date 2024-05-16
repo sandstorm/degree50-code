@@ -1,7 +1,7 @@
 help:
 	cat Makefile
 
-build-docker:
+build:
 	docker compose pull
 	docker compose build --pull
 
@@ -11,6 +11,12 @@ start:
 stop:
 	docker compose stop
 
+down:
+	docker compose down --remove-orphans --volumes
+
+enter:
+	docker-compose exec degree /bin/bash
+
 logs:
 	docker compose logs -f
 
@@ -19,6 +25,12 @@ logs-degree:
 
 import-fixtures:
 	docker compose exec degree php bin/console doctrine:fixtures:load
+
+migration-generate:
+	docker-compose exec degree php bin/console doctrine:migrations:diff
+
+migration-migrate:
+	docker-compose exec degree php bin/console doctrine:migrations:migrate
 
 test-integration:
 	docker compose exec \
