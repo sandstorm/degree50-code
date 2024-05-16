@@ -14,7 +14,9 @@
             </div>
         {% endif %}
 
-        <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true }, videoMap: videoMap } | json_encode|e('html_attr')}}"></div>
+        <div class="video-player__wrapper">
+            <div data-controller="react" data-react-widget="VideoPlayer" data-react-props="{{ { 'videoJsOptions':{ 'controls': true }, videoMap: videoMap } | json_encode|e('html_attr')}}"></div>
+        </div>
     {% elseif video.encodingStatus == 3 %}
         <div class="alert alert-danger">
             {{ "video.edit.videoEncodingFailed"|trans({}, 'base') }}

@@ -53,9 +53,10 @@ class EncodingService
         $localOutputDirectory = $this->fileSystemService->localPath($this->fileSystemService->generateUniqueTemporaryDirectory());
         $inputVideoFileName = $rootDir . '/public' . $cutList[0]->url;
 
+        $hasAudio = $this->hasAudio($inputVideoFileName);
         $hasAudioDescriptions = $this->hasAudioDescriptions($inputVideoFileName);
 
-        return array_map(function (ServerSideCut $cut) use ($localOutputDirectory, $inputVideoFileName, $hasAudioDescriptions) {
+        return array_map(function (ServerSideCut $cut) use ($localOutputDirectory, $inputVideoFileName, $hasAudio, $hasAudioDescriptions) {
             $clipUuid = Uuid::uuid4()->toString();
             $this->logger->info('Creating new intermediate clip with ID ' . $clipUuid);
 
@@ -85,9 +86,14 @@ class EncodingService
                 '-ss', "$offset", # seek to start offset (seconds) (see https://trac.ffmpeg.org/wiki/Seeking)
                 '-i', "$inputVideoFileName", # input video
                 '-t', "$duration", # duration of cut in seconds
-                '-map', '0:v', # map video to video stream #0
-                '-map', '0:a:0', # map first audio to audio stream #0
+                '-map', '0:v' # map video to video stream #0
             ];
+
+            if ($hasAudio) {
+                # map first audio to audio stream #0
+                $inputWithCutAndMapping[] = '-map';
+                $inputWithCutAndMapping[] = '0:a:0';
+            }
 
             if ($hasAudioDescriptions) {
                 # map second audio to audio stream #1
@@ -108,9 +114,7 @@ class EncodingService
             ];
 
             $finalCommand = array_merge($inputWithCutAndMapping, $codecs, $outputTarget);
-
             $this->ffmpeg->getFFMpegDriver()->command($finalCommand);
-
             $this->logger->info("Finished encoding MP4 clip <$clipUuid> to $localOutputDirectory");
 
             return $clipPath;
@@ -145,11 +149,14 @@ class EncodingService
         ];
 
         $inputMapping = [
-            '-map', '0:v', # map video to video stream #0
-            '-map', '0:a:0', # map first audio to audio stream #0
+            '-map', '0:v' # map video to video stream #0
         ];
 
-        # add audio description stream if available
+        // map first audio to audio stream #0 if available
+        $inputMapping[] = '-map';
+        $inputMapping[] = '0:a:0?';
+
+        // add audio description stream if available
         if ($inputAudioDescriptionFileName) {
             $this->logger->info('Adding AudioDescriptions of file <' . $inputAudioDescriptionFileName . '> to MP4');
 
@@ -174,9 +181,7 @@ class EncodingService
         ];
 
         $finalCommand = array_merge($inputs, $inputMapping, $conversion, $outputTarget);
-
         $this->ffmpeg->getFFMpegDriver()->command($finalCommand);
-
         $this->logger->info("Finished encoding MP4 of file <$inputVideoFileName> to $localOutputDirectory/x264.mp4");
     }
 
@@ -204,23 +209,21 @@ class EncodingService
         $fileSystem = new Filesystem();
         file_put_contents($tmpPlaylistPath, $tmpPlaylistContent);
 
-        $hasAudioDescriptions = $this->hasAudioDescriptions($clipPaths[0]);
-
-
         $concat = [
             '-y',
             '-f', 'concat', # use concat via file
             '-safe', '0', # TODO: is this necessary?
             '-i', "$tmpPlaylistPath", # input playlist as text file
-            '-map', 'v:0', # map video
-            '-map', 'a:0', # map original audio
+            '-map', 'v:0' # map video
         ];
 
+        // map original audio if available
+        $concat[] = '-map';
+        $concat[] = 'a:0?';
+
         // map audio descriptions if available
-        if ($hasAudioDescriptions) {
-            $concat[] = '-map';
-            $concat[] = 'a:1';
-        }
+        $concat[] = '-map';
+        $concat[] = 'a:1?';
 
         // re-encode
         $codecs = [
@@ -272,7 +275,7 @@ class EncodingService
             '-map', '0:v', # map video to video stream #0
             '-map', '0:v', # map video to video stream #1
             '-map', '0:v', # map video to video stream #2
-            '-map', '0:a:0', # map first audio to audio stream #0
+            '-map', '0:a:0?', # map first audio to audio stream #0
         ];
 
         # WHY: conditional parameters depending on presence of additional audio (description) stream
@@ -285,7 +288,7 @@ class EncodingService
             # Note: unfortunately we can not set metadata like TITLE here. The name:XXX prop is only used for file naming.\
             $inputMapping[] = '-var_stream_map';
             $inputMapping[] = 'v:0,name:360p,agroup:audio v:1,agroup:audio,name:720p v:2,agroup:audio,name:1080p a:0,agroup:audio,name:Original,language:DE,default:YES a:1,agroup:audio,name:Descriptions,language:DE,default:NO';
-        } else {
+        } else if ($this->hasAudio($inputVideoFileName)) {
             # This map describes the structure of the streams.
             # We have 3 different video stream that use the audio of audio_group "audio" and one audio stream in that audio group.
             # Note: unfortunately we can not set metadata like TITLE here. The name:XXX prop is only used for file naming.\
@@ -312,22 +315,21 @@ class EncodingService
             '-hls_allow_cache', '1',
         ];
 
-        # low res video stream rendition
         $lowResStream = [
             '-b:v:0', '533k',
-            '-filter:v:0', "scale=w='min(640,iw)':h='min(360,ih)':force_original_aspect_ratio=decrease",
+            '-filter:v:0', "scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2",
         ];
 
         # medium res video stream rendition
         $mediumResStream = [
             '-b:v:1', '710k',
-            '-filter:v:1', "scale=w='min(1280,iw)':h='min(720,ih)':force_original_aspect_ratio=decrease",
+            '-filter:v:1', "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2",
         ];
 
         # high res video stream rendition
         $highResStream = [
             '-b:v:2', '1066k',
-            '-filter:v:2', "scale=w='min(1920,iw)':h='min(1080,ih)':force_original_aspect_ratio=decrease",
+            '-filter:v:2', "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2",
         ];
 
         $generalHlsOptions = [
@@ -385,13 +387,12 @@ class EncodingService
             ->get('duration');
     }
 
-    private function probeForFrameRate(string $filePath)
+    private function hasAudio(string $filePath): bool
     {
         return $this->ffprobe
             ->streams($filePath)
-            ->videos()
-            ->first()
-            ->get('r_frame_rate');
+            ->audios()
+            ->count() > 0;
     }
 
     private function hasAudioDescriptions(string $filePath): bool
