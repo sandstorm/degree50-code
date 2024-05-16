@@ -62,22 +62,6 @@ package_app:
         - docker build --cache-from $CI_REGISTRY_IMAGE:main -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f deployment/docker/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
-package_logging_sidecar:
-    stage: build
-    # run this job only on tag pipelines
-    rules:
-        -   if: '$CI_COMMIT_TAG'
-            when: always
-    interruptible: true
-    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.1-v2
-    script:
-        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        - cd deployment/loggingSidecar
-        # performance improvement for CI
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:main || true
-        - docker build --cache-from $CI_REGISTRY_IMAGE/logging-sidecar:main -t $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG .
-        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG
-
 build_e2e_testrunner:
     stage: build
     # run this job on every pipeline
@@ -196,9 +180,6 @@ deploy-prod:
         - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
         - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE:main
         - docker push $CI_REGISTRY_IMAGE:main
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:main
-        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:main
 
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
@@ -223,9 +204,6 @@ deploy-test:
         - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
         - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE:test-stage
         - docker push $CI_REGISTRY_IMAGE:test-stage
-        - docker pull $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE/logging-sidecar:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
-        - docker push $CI_REGISTRY_IMAGE/logging-sidecar:test-stage
 
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
