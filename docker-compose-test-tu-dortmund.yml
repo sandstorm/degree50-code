@@ -32,7 +32,7 @@ services:
       #- --certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
     container_name: traefik
 
-  api:
+  degree:
     image: docker-hub.sandstorm.de/degree-4.0/code:test-stage
     restart: always
     labels:
@@ -45,7 +45,7 @@ services:
     environment:
       # TODO: env var
       TRUSTED_HOSTS: degree40-test.tu-dortmund.de
-      DATABASE_URL: "mysql://api-platform:${MYSQL_PASSWORD}@db/api"
+      DATABASE_URL: "mysql://degree:${MYSQL_PASSWORD}@db/degree"
       APP_SECRET: "${APP_SECRET}"
       APP_ENV: "prod"
       LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: "${LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY}"
