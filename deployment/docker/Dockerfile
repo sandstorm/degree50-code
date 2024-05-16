@@ -110,9 +110,7 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -subj "/C=DE/ST=Sachsen/L=Dresden/O=Global Security/OU=IT Department/CN=degree40.tu-dortmund.de" \
   -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 
-COPY --from=fluent/fluent-bit:3.0 /fluent-bit/bin/fluent-bit /usr/bin/fluent-bit
 COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
-COPY /deployment/config-files/fluentbit.conf /etc/fluentbit.conf
 
 COPY /deployment/docker/degree_crontab /etc/cron.d/degree_crontab
 # Give execution rights on the cron tab

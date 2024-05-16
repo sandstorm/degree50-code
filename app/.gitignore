@@ -29,5 +29,8 @@ yarn-error.log
 /behat.yml
 ###< friends-of-behat/symfony-extension ###
 
-# ignore flysystem public data directory
+# flysystem public data directory
 /public/data/
+
+# npmrc with secrets
+.npmrc
