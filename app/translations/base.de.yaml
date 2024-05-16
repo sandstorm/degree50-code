@@ -348,6 +348,7 @@ course:
         filterTutorsAria: 'Lehrende filtern durch Texteingabe'
         filterStudents: 'Lernende filtern'
         filterStudentsAria: 'Lernende filtern durch Texteingabe'
+        fachbereich: 'zu Fachbereich hinzufügen'
     index:
         title: 'Kurs-Übersicht'
     new:
@@ -355,6 +356,7 @@ course:
         back: 'Zurück zur Übersicht'
         messages:
             success: 'Kurs erfolgreich angelegt!'
+            missingDozent: 'Es muss mindestens eine:n Lehrende:n pro Kurs geben!'
     edit:
         title: 'Kurs bearbeiten'
         messages:

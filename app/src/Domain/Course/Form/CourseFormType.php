@@ -40,7 +40,8 @@ class CourseFormType extends AbstractType
         $builder
             ->add('name', TextType::class, ['label' => "course.labels.name", 'translation_domain' => 'base'])
             ->add('fachbereich', EntityType::class, [
-                'label' => 'zu Fachbereich hinzufügen',
+                'label' => 'course.labels.fachbereich',
+                'translation_domain' => 'base',
                 'required' => false,
                 'class' => Fachbereich::class,
                 'choice_label' => 'name',
