@@ -177,14 +177,23 @@ class CourseController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->createOrUpdateCourse($form);
+
+            $newMembers = $form->get('users')->getData();
+            if (count($newMembers) > 0) {
+                $this->createOrUpdateCourse($form);
+
+                $this->addFlash(
+                    'success',
+                    $this->translator->trans('course.new.messages.success', [], 'base')
+                );
+
+                return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+            }
 
             $this->addFlash(
-                'success',
-                $this->translator->trans('course.new.messages.success', [], 'base')
+                'danger',
+                $this->translator->trans('course.new.messages.missingDozent', [], 'base'),
             );
-
-            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
         }
 
         return $this->render('Course/New.html.twig', [
