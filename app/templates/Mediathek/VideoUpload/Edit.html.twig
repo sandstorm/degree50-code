@@ -33,7 +33,7 @@
             <a href="{{ path('data-privacy') }}" target="_blank">{{ "common.dataPrivacy"|trans({}, 'base') }}</a> |
             <a href="{{ path('terms-of-use') }}" target="_blank">{{ "common.termsOfUse"|trans({}, 'base') }}</a>
         </div>
-        <hr />
+        <hr role="presentation"/>
         <h4>{{ "video.delete.usage"|trans({}, 'base') }}</h4>
         <ul class="list">
             {% for phase in video.exercisePhases %}
@@ -42,7 +42,7 @@
                 <li>{{ "video.delete.noUsage"|trans({}, 'base') }}</li>
             {% endfor %}
         </ul>
-        <hr />
+        <hr role="presentation"/>
         <a
             href="{{ path('mediathek__video--delete', {id: video.id}) }}"
             class="button button--type-outline-danger"

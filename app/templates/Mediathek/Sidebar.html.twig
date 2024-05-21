@@ -1,5 +1,5 @@
 <a class="button button--type-primary button--block" href="{{ path('mediathek--index') }}">{{ "video.index.allVideos"|trans({}, 'base') }}</a>
-<hr />
+<hr role="presentation"/>
 
 {% if sidebarItems | length == 0 %}
     <p>{{ "exerciseOverview.index.noCourseAssigned"|trans({}, 'base') }}</p>

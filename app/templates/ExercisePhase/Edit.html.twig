@@ -52,7 +52,7 @@
                     {{ form_row(form.dependsOnExercisePhase) }}
                 </div>
             </div>
-            <hr/>
+            <hr role="presentation"/>
 
             {{ form_row(form.name) }}
             {{ form_row(form.task) }}
@@ -61,20 +61,20 @@
                 {{ form_row(form.material) }}
             {% endif %}
 
-            <hr/>
+            <hr role="presentation"/>
             {% if exercisePhase.type.value == 'videoAnalysis' %}
                 <p>{{ "exercisePhase.edit.componentsInfo"|trans({}, 'base') }}</p>
                 {{ form_widget(form.videoAnnotationsActive) }}
                 {{ form_widget(form.videoCodesActive) }}
             {% endif %}
-            <hr/>
+            <hr role="presentation"/>
 
             {% if exercisePhase.type.value == 'videoAnalysis' or exercisePhase.type.value == 'videoCutting' %}
                 <h4>{{ "exercisePhase.labels.videosExtended"|trans({}, 'base') }}</h4>
                 <div data-controller="videosForm">
                     {{ form_row(form.videos) }}
                 </div>
-                <hr/>
+                <hr role="presentation"/>
             {% endif %}
 
             {% if exercisePhase.type.value == 'videoAnalysis' and exercisePhase.videoCodesActive %}
@@ -111,7 +111,7 @@
                     {{ render(path('video-code__list', {id: exercisePhase.id})) }}
                 </div>
 
-                <hr/>
+                <hr role="presentation"/>
             {% endif %}
 
             <h4>{{ "exercisePhase.labels.attachments"|trans({}, 'base') }}</h4>
