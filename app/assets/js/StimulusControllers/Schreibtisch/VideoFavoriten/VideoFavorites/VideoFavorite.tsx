@@ -23,20 +23,16 @@ const VideoFavorite = (props: Props) => {
     // split this further into sub-components on purpose!
     return (
         <div className="overview-item">
-            <div className="overview-item__date" aria-label={'Video erstellt am: ' + video.createdAt}>
-                {video.createdAt}
+            <div className="overview-item__date">
+                <span className="sr-only">Video erstellt am: </span> {video.createdAt}
             </div>
-            <div className="overview-item__status" aria-label="Status des Videos: Video ist öffentlich">
-                <i className="fas fa-eye" title="Video ist öffentlich"></i>
+            <div className="overview-item__status">
+                <span className="sr-only">Status des Videos: Video ist öffentlich</span>
+                <i className="fas fa-eye" aria-hidden={true} title="Video ist öffentlich"></i>
             </div>
-            <a
-                id={`tile__title--${video.id}`}
-                href={`video/play/${video.id}`}
-                className="overview-item__title"
-                aria-label={'Name des Videos: ' + video.name}
-            >
+            <a id={`tile__title--${video.id}`} href={`video/play/${video.id}`} className="overview-item__title">
                 <img height="50" alt="Vorschaubild des Videos" src={video.url.thumbnail} />
-                {video.name}
+                <span className="sr-only">Name des Videos: </span> {video.name}
             </a>
             <div className="overview-item__actions">
                 <button

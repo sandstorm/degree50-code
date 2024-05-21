@@ -2,32 +2,34 @@
     {% set statusTransVar = 'exercise.labels.status' ~ (exercise.exercise.status) %}
     {% set statusClassVar = 'overview-item--status-' ~ (exercise.exercise.status) %}
     <li tabindex="0" class="overview-item {{ statusClassVar }}">
-        <div class="overview-item__date" aria-label="{{ "exercise.labels.createdLabel"|trans({}, 'base') }}: {{ exercise.exercise.createdAt|date("d.m.Y") }}">
+        <div class="overview-item__date">
+            <span class="sr-only">{{ "exercise.labels.createdLabel"|trans({}, 'base') }}: </span>
             {{ exercise.exercise.createdAt|date("d.m.Y") }}
         </div>
-        <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ statusTransVar | trans({}, 'base') }}">
+        <div class="overview-item__status">
+            <span class="sr-only">{{ "exercise.labels.statusLabel"|trans({}, 'base') }}: {{ statusTransVar | trans({}, 'base') }}</span>
             {% if exercise.exercise.status == 0 %}
-                <i class="fas fa-eye-slash" title="{{ statusTransVar | trans({}, 'base') }}"></i>
+                <i class="fas fa-eye-slash" aria-hidden="true" title="{{ statusTransVar | trans({}, 'base') }}"></i>
             {% elseif exercise.exercise.status == 1 %}
-                <i class="fas fa-check" title="{{ statusTransVar | trans({}, 'base') }}"></i>
+                <i class="fas fa-check" aria-hidden="true" title="{{ statusTransVar | trans({}, 'base') }}"></i>
             {% else %}
-                <i class="fas fa-eye" title="{{ statusTransVar | trans({}, 'base') }}"></i>
+                <i class="fas fa-eye" aria-hidden="true" title="{{ statusTransVar | trans({}, 'base') }}"></i>
             {% endif %}
         </div>
-        <div
-            class="overview-item__title"
-            aria-label="{{ "exercise.labels.name"|trans({}, 'base') }}: {{ exercise.exercise.name }}"
-        >
+        <div class="overview-item__title">
+            <span class="sr-only">{{ "exercise.labels.name"|trans({}, 'base') }}: </span>
             <strong>{{ exercise.exercise.name }}</strong>
             <em>{{ exercise.exercise.phases|length }} {{ "common.phases"|trans({}, 'base') }}</em>
             {% if exercise.needsReview %}
-                <div><i class="fa-regular fa-circle-exclamation-check"></i> {{ 'exercise.labels.reviewRequired' | trans({}, 'base') }}</div>
+                <div>
+                    <i aria-hidden="true" class="fa-regular fa-circle-exclamation-check"></i> {{ 'exercise.labels.reviewRequired' | trans({}, 'base') }}
+                </div>
             {% endif %}
         </div>
         <div class="overview-item__actions" aria-label="{{ "exercise.labels.actionsLabel"|trans({}, 'base') }}">
             <button
                 class="button button--type-link"
-                aria-label="{{ "exercise.labels.toggleActions"|trans({}, 'base') }} {{ exercise.exercise.name }}"
+                aria-label="{{ "exercise.labels.toggleActions"|trans({}, 'base') }}"
             >
                 <i class="fas fa-ellipsis-v"></i>
                 <div class="overview-item__actions-dropdown">

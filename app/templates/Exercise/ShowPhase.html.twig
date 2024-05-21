@@ -26,7 +26,7 @@
     </p>
 
     {% if exercisePhase.isGroupPhase %}
-        <hr/>
+        <hr role="presentation"/>
         <h4>{{ "exercise.showPhase.existingGroups"|trans({}, 'base') }}</h4>
         <p>{{ "exercise.showPhase.existingGroupsInfo"|trans({}, 'base') }}</p>
 
@@ -153,7 +153,7 @@
             {% endif %}
         </div>
 
-        <hr/>
+        <hr role="presentation"/>
 
         <h5>{{ "exercise.showPhase.existingResults"|trans({}, 'base') }}</h5>
         {% if otherTeams %}

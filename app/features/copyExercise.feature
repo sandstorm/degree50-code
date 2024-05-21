@@ -1,4 +1,4 @@
-@fixtures @playwright
+@fixtures @playwright @debug
 Feature: Copy Exercises
 
     # This feature introduces the ability to copy an exercise.
@@ -65,7 +65,7 @@ Feature: Copy Exercises
             | videoCode2 | VideoCode2 | #000000 |
 
         When I am logged in via browser as 'test-admin@sandstorm.de'
-        And I click on the button with the aria label 'Aktionen ein/ausblenden für Aufgabe: exercise1'
+        And I click on the button with the aria label 'Aktionen ein/ausblenden'
         And I click on 'Aufgabe kopieren'
         And I click on 'course2'
         And I submit the form
@@ -74,7 +74,7 @@ Feature: Copy Exercises
         Then the page should contain the text 'exercise1'
         And the page should not contain the text 'e1ID'
 
-        When I click on the button with the aria label 'Aktionen ein/ausblenden für Aufgabe: Kopie - exercise1'
+        When I click on the button with the aria label 'Aktionen ein/ausblenden'
         And I click on 'Aufgabe bearbeiten'
 
         Then the page should contain the text 'exercisePhase1'

@@ -16,14 +16,14 @@
     {% endif %}
     <h5 class="text-center">{{ "common.exercise"|trans({}, 'base') }}:</h5>
     <h2 class="text-center">{{ exercise.name }}</h2>
-    <hr />
+    <hr role="presentation"/>
 
     <h5>{{ "common.task"|trans({}, 'base') }}:</h5>
     <p class="text-center text-small">
         {{ exercise.description | raw }}
     </p>
 
-    <hr />
+    <hr role="presentation"/>
     <h5>{{ "exercise.show.overview"|trans({}, 'base') }}:</h5>
     <ul class="list">
         {% for phase in exercise.phases %}

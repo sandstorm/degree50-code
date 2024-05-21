@@ -18,16 +18,15 @@ const MaterialTile = (props: Props) => {
 
     return (
         <NavLink className="overview-item" to={`${ROUTE_EDIT_MATERIAL}/${material.id}`}>
-            <div
-                className="overview-item__date"
-                aria-label={lastUpdatedAt ? 'Zuletzt geändert am: ' + lastUpdatedAt : 'Erstellt am: ' + createdAt}
-            >
+            <div className="overview-item__date">
+                <span className="sr-only">{lastUpdatedAt ? 'Zuletzt geändert am: ' : 'Erstellt am: '}</span>
                 {lastUpdatedAt ? lastUpdatedAt : createdAt}
             </div>
             <div className="overview-item__status">
-                <i className="fas fa-square-quote"></i>
+                <i aria-hidden={true} className="fas fa-square-quote"></i>
             </div>
-            <div className="overview-item__title" aria-label={'Titel des Materials: ' + material.name}>
+            <div className="overview-item__title">
+                <span className="sr-only">Titel des Materials: </span>
                 {material.name}
             </div>
         </NavLink>

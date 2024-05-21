@@ -51,30 +51,28 @@
     data-test-id="video-tile--{{ videoDto.video.id }}"
     class="overview-item"
 >
-    <div class="overview-item__date"
-         aria-label="{{ "video.labels.createdLabel"|trans({}, 'base') }}: {{ videoDto.video.createdAt|date("d.m.Y") }}">
-        {{ videoDto.video.createdAt|date("d.m.Y") }}
+    <div class="overview-item__date">
+        <span class="sr-only">{{ "video.labels.createdLabel"|trans({}, 'base') }}: </span>{{ videoDto.video.createdAt|date("d.m.Y") }}
     </div>
     {% if videoDto.video.courses | length == 0 %}
-        <div class="overview-item__status"
-             aria-label="{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPrivate"|trans({}, 'base') }}">
-            <i class="fas fa-eye-slash" title="{{ "video.labels.statusPrivate"|trans({}, 'base') }}"></i>
+        <div class="overview-item__status">
+            <span class="sr-only">{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPrivate"|trans({}, 'base') }}</span>
+            <i class="fas fa-eye-slash" aria-hidden="true" title="{{ "video.labels.statusPrivate"|trans({}, 'base') }}"></i>
         </div>
     {% else %}
-        <div class="overview-item__status"
-             aria-label="{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPublic"|trans({}, 'base') }}">
-            <i class="fas fa-eye" title="{{ "video.labels.statusPublic"|trans({}, 'base') }}"></i>
+        <div class="overview-item__status">
+            <span class="sr-only">{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPublic"|trans({}, 'base') }}</span>
+            <i class="fas fa-eye" aria-hidden="true" title="{{ "video.labels.statusPublic"|trans({}, 'base') }}"></i>
         </div>
     {% endif %}
     <a
         tabindex="0"
         href="{{ path("mediathek__video--player", {id: videoDto.video.id}) }}"
         class="overview-item__title"
-        aria-label="{{ "video.labels.titleLabel"|trans({}, 'base') }}: {{ videoDto.video.title }}"
     >
         <img alt="{{ "video.labels.previewImage"|trans({}, 'base') }}" height="50" width="100"
              src="{{ videoDto.video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg" />
-        {{ videoDto.video.title }}
+        <span class="sr-only">{{ "video.labels.titleLabel"|trans({}, 'base') }}: </span> {{ videoDto.video.title }}
     </a>
     {% if is_granted('video_edit', videoDto.video) %}
         <div class="overview-item__actions" aria-label="{{ "video.labels.actionsLabel"|trans({}, 'base') }}">
@@ -82,7 +80,7 @@
                 {{ _self.favorButton(videoDto) }}
             {% endif %}
             <button class="button button--type-link"
-                    aria-label="{{ "video.labels.toggleActions"|trans({}, 'base') }} {{ videoDto.video.title }}">
+                    aria-label="{{ "video.labels.toggleActions"|trans({}, 'base') }}">
                 <i class="fas fa-ellipsis-v"></i>
                 <div class="overview-item__actions-dropdown">
                     <a href="{{ path('mediathek__video--player', {id: videoDto.video.id}) }}">

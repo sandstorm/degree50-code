@@ -82,7 +82,7 @@ exercise:
         reviewRequired: "Überprüfung durch lehrende Person erforderlich"
         phaseDone: 'Phase abgeschlossen'
         actionsLabel: 'Aktionen'
-        toggleActions: 'Aktionen ein/ausblenden für Aufgabe:'
+        toggleActions: 'Aktionen ein/ausblenden'
         testInfo: 'Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.'
     show:
         title: 'Aufgabe starten'
@@ -282,7 +282,7 @@ video:
         submit: 'Video speichern'
         previewImage: 'Vorschaubild des Videos'
         actionsLabel: 'Aktionen'
-        toggleActions: 'Aktionen ein/ausblenden für Video:'
+        toggleActions: 'Aktionen ein/ausblenden'
     help:
         courses: 'Das Video kann nur von den jeweiligen Lernenden des Kurses angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
         visiblePersons: 'Bitte alle Personen auflisten (Vor- und Nachname) die im Video zu sehen sind. Dieses Feld ist aus Datenschutzgründen relevant.'
