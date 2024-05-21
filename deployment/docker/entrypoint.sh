@@ -24,8 +24,6 @@ mkdir -p /app/public/data
 mkdir -p /app/var/data
 
 setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
-# TODO: Why is/was that needed?
-# setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
 
 # chown of data directory to "www-data:www-data" so the app can write material to the FS
 chown -R www-data:www-data /app/public/data/
