@@ -111,8 +111,8 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 
 COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
-
 COPY /deployment/docker/degree_crontab /etc/cron.d/degree_crontab
+
 # Give execution rights on the cron tab
 RUN chmod 0644 /etc/cron.d/degree_crontab
 # Create the log file to be able to run tail
