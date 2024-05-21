@@ -202,6 +202,7 @@ class EncodingService
         $concatCommand = [
             '-y',
             '-f', 'concat', // use concat via file
+            '-safe', '0', // allow unsafe file names (we use absolute paths and uuids)
             '-i', "$tmpPlaylistPath", // input playlist as text file
             '-map', 'v', // map all video streams
             '-map', 'a', // map all audio streams
