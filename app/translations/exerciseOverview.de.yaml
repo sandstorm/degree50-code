@@ -1,7 +1,0 @@
-exerciseOverview:
-    groups:
-        ownExercises: 'Selbst erstellte Aufgaben'
-        otherExercises: 'Bereitgestellte Aufgaben'
-
-error:
-    exercise-no-phase: 'Die Aufgabe hat keine Phase!'

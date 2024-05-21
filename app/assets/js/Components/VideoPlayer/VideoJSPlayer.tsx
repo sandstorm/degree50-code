@@ -22,7 +22,7 @@ type Props = {
 }
 
 const defaultVideoJsOptions: VideoJsPlayerOptions = {
-    fluid: true,
+    fluid: false,
     language: 'de',
 }
 

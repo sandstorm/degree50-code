@@ -140,6 +140,11 @@ exerciseOverview:
         manageCourse: 'Kurs verwalten'
         filterByStatus: 'Aufgaben filtern nach Status'
         noCourseAssigned: 'Du bist keinem Kurs zugeordnet'
+    groups:
+        ownExercises: 'Selbst erstellte Aufgaben'
+        otherExercises: 'Bereitgestellte Aufgaben'
+    error:
+        exercise-no-phase: 'Die Aufgabe hat keine Phase!'
 
 exercisePhase:
     labels:
@@ -385,3 +390,7 @@ course:
         messages:
             success: 'Kurs erfolgreich gelöscht!'
             notPossible: 'Kurs kann nicht gelöscht werden, so lange Aufgaben zugewiesen sind!'
+mediathek:
+    groups:
+        ownVideos: 'Selbst erstellte Videos'
+        otherVideos: 'Bereitgestellte Videos'

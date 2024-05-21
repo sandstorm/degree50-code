@@ -416,7 +416,7 @@ class ExerciseController extends AbstractController
         if (!($exercisePhase instanceof ExercisePhase)) {
             $this->addFlash(
                 'danger',
-                $this->translator->trans('error.exercise-no-phase', [], 'exerciseOverview')
+                $this->translator->trans('exerciseOverview.error.exercise-no-phase', [], 'base')
             );
 
             return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('exercise-overview'));

@@ -30,7 +30,8 @@ export default class extends Controller {
             dictDefaultMessage: uploadLabel,
             maxFiles: 1,
             maxFilesize: 10000, // 10 GB
-            acceptedFiles: 'video/*,video/mp4',
+            // allow mp4 and mov
+            acceptedFiles: 'video/mp4,video/quicktime',
             addRemoveLinks: true,
             init: function() {
                 this.on('addedfile', function(file) {
