@@ -107,7 +107,8 @@ class EncodingService
             // map audio description stream
             $inputMapping[] = '-map';
             // if original video has no original audio, we have a additional input file (silent audio)
-            $inputFileIndex = $hasOriginalAudio ? 2 : 1;
+            // so the added Audio Descriptions are at input file index 2, because now the silent audio is at index 1
+            $inputFileIndex = $hasOriginalAudio ? 1 : 2;
             $inputMapping[] = "$inputFileIndex:a:0";
         }
 
