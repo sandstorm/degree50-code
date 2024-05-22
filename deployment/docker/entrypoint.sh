@@ -1,7 +1,8 @@
 #!/bin/bash
 set -ex
 
-mkdir -p var/cache var/log
+mkdir -p /app/var/cache
+mkdir -p /app/var/log
 
 # Why:
 # We create the mount points for local Flysystem adapter that is used by the OneUp\Uploader here to make sure they
@@ -17,17 +18,17 @@ mkdir -p var/cache var/log
 #			* Then a directory is added correctly the next time an upload is performed
 #
 # The permissions will be set in the `setfacl` command below.
-mkdir -p var/data/persistent/audio_descriptions/original
-mkdir -p var/data/persistent/subtitles/original
-mkdir -p var/data/persistent/videos/original
-mkdir -p /app/public/data
 mkdir -p /app/var/data
+mkdir -p /app/var/data/persistent/audio_descriptions/original
+mkdir -p /app/var/data/persistent/subtitles/original
+mkdir -p /app/var/data/persistent/videos/original
+mkdir -p /app/public/data
 
-setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
+setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX /app/var
 
-# chown of data directory to "www-data:www-data" so the app can write material to the FS
+# chown of directories "www-data:www-data" so the app can write files to the FS
 chown -R www-data:www-data /app/public/data/
-chown -R www-data:www-data /app/var/data/
+chown -R www-data:www-data /app/var/
 
 # install php dependencies for local development
 if [ "$LOCAL_DEVELOPMENT" == '1' ]; then
