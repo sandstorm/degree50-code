@@ -6,6 +6,7 @@ namespace App\Tests\Behat;
 
 use App\DataExport\Dto\TextFileDto;
 use App\DataExport\Service\DegreeDataToCsvService;
+use App\Domain\Attachment\Repository\AttachmentRepository;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Model\ExerciseStatus;

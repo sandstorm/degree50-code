@@ -17,7 +17,6 @@ use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertNotEquals;
-use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertTrue;
 
 trait UserContextTrait
@@ -119,6 +118,7 @@ trait UserContextTrait
         $courseRole->setName($courseRoleRole);
 
         $user->addCourseRole($courseRole);
+        $course->addCourseRole($courseRole);
 
         $this->entityManager->persist($courseRole);
         $this->entityManager->persist($user);

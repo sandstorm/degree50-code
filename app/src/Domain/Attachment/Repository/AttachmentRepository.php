@@ -3,6 +3,7 @@
 namespace App\Domain\Attachment\Repository;
 
 use App\Domain\Attachment\Model\Attachment;
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\User\Model\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,5 +24,16 @@ class AttachmentRepository extends ServiceEntityRepository
     public function getAttachmentsCreatedByUser(User $user): array
     {
         return $this->findBy(['creator' => $user]);
+    }
+
+    public function getAttachmentsCreatedByUserInExercise(User $user, Exercise $exercise): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.creator = :user')
+            ->andWhere('a.exercisePhase IN (:exercisePhases)')
+            ->setParameter('user', $user)
+            ->setParameter('exercisePhases', $exercise->getPhases())
+            ->getQuery()
+            ->getResult();
     }
 }

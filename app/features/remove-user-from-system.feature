@@ -85,7 +85,6 @@ Feature: Degree User is removed completely from system
         When I delete User "admin2@test.de"
         Then User "admin2@test.de" should not exist
 
-    @debug
     Scenario: Remove Dozent in a course with no other Dozent
         Given The User "dozent@test.de" has CourseRole "DOZENT" in Course "course1"
         And An Exercise with ID "exerciseByDozent1" created by User "dozent@test.de" in Course "course1" exists
@@ -109,7 +108,7 @@ Feature: Degree User is removed completely from system
         And The Attachment "attachment1" does not exist
 
     @debug
-    Scenario: Remove Dozent in a course with no other Dozent
+    Scenario: Remove Dozent in a course with another Dozent
         Given The User "dozent@test.de" has CourseRole "DOZENT" in Course "course1"
         And A User "dozent2@test.de" with the role "ROLE_DOZENT" exists
         And The User "dozent2@test.de" has CourseRole "DOZENT" in Course "course1"
@@ -131,4 +130,4 @@ Feature: Degree User is removed completely from system
         And The Exercise "exerciseByDozent1" exists
         And The ExercisePhase "exercisePhase1" exists
         And The Video "video1" does not exist
-        And The Attachment "attachment1" does not exist
+        And The Attachment "attachment1" exists

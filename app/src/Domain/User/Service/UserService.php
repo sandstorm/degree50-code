@@ -4,6 +4,7 @@ namespace App\Domain\User\Service;
 
 use App\Domain\Attachment\Service\AttachmentService;
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
+use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Service\ExerciseService;
@@ -139,22 +140,14 @@ readonly class UserService
 
     private function deleteDozent(User $user): void
     {
-        $this->videoService->deleteVideosCreatedByUser($user);
-        $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
-        $this->userMaterialService->deleteMaterialsOfUser($user);
-        $teamsWhereUserIsOnlyMember = $this->removeFromExerciseTeams($user);
-        $this->attachmentService->removeAttachmentsCreatedByUser($user);
-
-        foreach ($teamsWhereUserIsOnlyMember as $team) {
-            $this->entityManager->remove($team);
-        }
-
-        $courses = $user->getCourses()->toArray();
+        $courses = $user->getCourses();
 
         foreach ($courses as $course) {
+            /* @var Course $course */
+
             $dozents = $course->getDozents();
 
-            if ($dozents->count() > 1) {
+            if (count($dozents) > 1) {
                 // if user is NOT the only dozent in a course
                 //     - remove user from course
                 //     - transfer ownership of exercises to another dozent in the course
@@ -167,17 +160,32 @@ readonly class UserService
 
                 foreach ($exercises as $exercise) {
                     /* @var Exercise $exercise */
+                    $this->attachmentService->transferAttachmentsOfUserInExerciseToUser($user, $exercise, $nextDozent);
+
                     $exercise->setCreator($nextDozent);
                     $this->entityManager->persist($exercise);
                 }
 
+
                 $this->entityManager->persist($course);
-                $this->entityManager->flush();
             } else {
-                // delete all courses where user is the only dozent
+                // if user is the only dozent in a course
+                //   - delete all courses where user is the only dozent
+                //   - delete all attachments
+                $this->attachmentService->removeAttachmentsCreatedByUser($user);
                 $this->entityManager->remove($course);
-                $this->entityManager->flush();
             }
+
+            $this->entityManager->flush();
+        }
+
+        $this->videoService->deleteVideosCreatedByUser($user);
+        $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
+        $this->userMaterialService->deleteMaterialsOfUser($user);
+        $teamsWhereUserIsOnlyMember = $this->removeFromExerciseTeams($user);
+
+        foreach ($teamsWhereUserIsOnlyMember as $team) {
+            $this->entityManager->remove($team);
         }
 
         $this->entityManager->remove($user);
