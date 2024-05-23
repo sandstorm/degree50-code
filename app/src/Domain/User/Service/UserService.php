@@ -2,6 +2,7 @@
 
 namespace App\Domain\User\Service;
 
+use App\Domain\Attachment\Service\AttachmentService;
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\Exercise\Model\Exercise;
@@ -37,6 +38,7 @@ readonly class UserService
         private ExerciseService        $exerciseService,
         private VideoFavouritesService $videoFavoritesService,
         private UserMaterialService    $userMaterialService,
+        private AttachmentService      $attachmentService,
     )
     {
     }
@@ -57,18 +59,12 @@ readonly class UserService
         $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
         $this->userMaterialService->deleteMaterialsOfUser($user);
         $this->videoService->deleteVideosCreatedByUser($user);
+        $this->attachmentService->removeAttachmentsCreatedByUser($user);
 
         // remove user from teams
         $teamsWhereUserCanNotBeRemoved = $this->removeFromExerciseTeams($user);
 
         if (count($teamsWhereUserCanNotBeRemoved) === 0) {
-            /**
-             * Due to ORM cascading options the following things will also happen when we delete a user:
-             *
-             *   1. All orphaned CourseRoles will be removed @see User::$courseRoles
-             *   // TODO: UserExerciseInteractions are not part of the model anymore?
-             *   2. All orphaned UserExerciseInteractions will be removed @see User::$userExerciseInteractions
-             */
             $this->entityManager->remove($user);
             $this->entityManager->flush();
         } else {
@@ -147,6 +143,7 @@ readonly class UserService
         $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
         $this->userMaterialService->deleteMaterialsOfUser($user);
         $teamsWhereUserIsOnlyMember = $this->removeFromExerciseTeams($user);
+        $this->attachmentService->removeAttachmentsCreatedByUser($user);
 
         foreach ($teamsWhereUserIsOnlyMember as $team) {
             $this->entityManager->remove($team);
@@ -191,6 +188,7 @@ readonly class UserService
     {
         // remove created Exercises, Videos and Interactions
         $this->videoService->deleteVideosCreatedByUser($user);
+        $this->attachmentService->removeAttachmentsCreatedByUser($user);
         $this->exerciseService->deleteExercisesCreatedByUser($user);
         $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
         $this->userMaterialService->deleteMaterialsOfUser($user);

@@ -71,9 +71,6 @@ trait AttachmentContextTrait
     public function assertAttachmentDoesNotExist($attachmentId): void
     {
         $attachment = $this->entityManager->find(Attachment::class, $attachmentId);
-        if ($attachment) {
-            dd($attachment);
-        }
         assertEquals(null, $attachment);
     }
 }
