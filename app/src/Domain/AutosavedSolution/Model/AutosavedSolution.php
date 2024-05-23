@@ -2,7 +2,6 @@
 
 namespace App\Domain\AutosavedSolution\Model;
 
-use App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
@@ -12,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 // Lifecycle callbacks are used to automatically set the createdAt value
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Entity(repositoryClass: AutosavedSolutionRepository::class)]
+#[ORM\Entity]
 class AutosavedSolution
 {
     use IdentityTrait;

@@ -56,6 +56,7 @@ abstract class ExercisePhase
     public string $task = '';
 
     #[ORM\ManyToOne(targetEntity: Exercise::class, inversedBy: "phases")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     public Exercise $belongsToExercise;
 
     #[ORM\Column]
@@ -70,7 +71,7 @@ abstract class ExercisePhase
     /**
      * @var Collection<Attachment>
      */
-    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: "exercisePhase", cascade: ["all"])]
+    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: "exercisePhase", cascade: ["all"], orphanRemoval: true)]
     #[ORM\OrderBy(["uploadAt" => "DESC"])]
     private Collection $attachments;
 

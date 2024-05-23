@@ -16,7 +16,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *
  * @Vich\Uploadable
  */
-#[ORM\Entity(repositoryClass: AttachmentRepository::class)]
+#[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class Attachment
 {
@@ -34,13 +34,13 @@ class Attachment
     #[ORM\Column(name: "upload_at", type: "datetimetz_immutable")]
     private ?DateTimeImmutable $uploadAt;
 
-    #[ORM\JoinColumn(nullable: false)]
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdVideos")]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdAttachments")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private User $creator;
 
     #[ORM\ManyToOne(targetEntity: ExercisePhase::class, inversedBy: "attachments")]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?ExercisePhase $exercisePhase;
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    private ExercisePhase $exercisePhase;
 
     /**
      * Attachment constructor.
@@ -71,12 +71,12 @@ class Attachment
         return $this->uploadAt;
     }
 
-    public function getExercisePhase(): ?ExercisePhase
+    public function getExercisePhase(): ExercisePhase
     {
         return $this->exercisePhase;
     }
 
-    public function setExercisePhase(?ExercisePhase $exercisePhase): void
+    public function setExercisePhase(ExercisePhase $exercisePhase): void
     {
         $this->exercisePhase = $exercisePhase;
     }

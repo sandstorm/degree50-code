@@ -38,16 +38,16 @@ class Exercise
     /**
      * @var Collection<ExercisePhase>
      */
-    #[ORM\OneToMany(targetEntity: ExercisePhase::class, mappedBy: "belongsToExercise", cascade: ["all"])]
+    #[ORM\OneToMany(targetEntity: ExercisePhase::class, mappedBy: "belongsToExercise", cascade: ["all"], orphanRemoval: true)]
     #[ORM\OrderBy(["sorting" => "ASC"])]
     private Collection $phases;
 
     #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: "exercises")]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
     private ?Course $course;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "createdExercises")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private User $creator;
 
     #[ORM\Column(name: "created_at", type: "datetimetz_immutable")]

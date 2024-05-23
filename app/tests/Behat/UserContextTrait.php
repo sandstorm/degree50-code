@@ -17,6 +17,7 @@ use function PHPUnit\Framework\assertContains;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertNotEquals;
+use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertTrue;
 
 trait UserContextTrait
@@ -337,5 +338,14 @@ trait UserContextTrait
     {
         $user = $this->entityManager->getRepository(User::class)->find($userId);
         assertNotEquals($userId, $user->getUsername());
+    }
+
+    /**
+     * @Then The User with Id :userId does not exist
+     */
+    public function theUserWithIdDoesNotExist(string $userId): void
+    {
+        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        assertEquals(null, $user);
     }
 }

@@ -4,6 +4,9 @@ namespace App\Tests\Behat;
 
 use App\Domain\Attachment\Model\Attachment;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotNull;
+use function PHPUnit\Framework\assertNull;
 
 trait AttachmentContextTrait
 {
@@ -51,5 +54,26 @@ trait AttachmentContextTrait
         $this->entityManager->persist($attachment);
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * @Then The Attachment :attachmentId exists
+     */
+    public function assertAttachmentExists($attachmentId): void
+    {
+        $attachment = $this->entityManager->find(Attachment::class, $attachmentId);
+        assertNotNull($attachment);
+    }
+
+    /**
+     * @Then The Attachment :attachmentId does not exist
+     */
+    public function assertAttachmentDoesNotExist($attachmentId): void
+    {
+        $attachment = $this->entityManager->find(Attachment::class, $attachmentId);
+        if ($attachment) {
+            dd($attachment);
+        }
+        assertEquals(null, $attachment);
     }
 }

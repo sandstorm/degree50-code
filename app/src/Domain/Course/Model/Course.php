@@ -2,11 +2,11 @@
 
 namespace App\Domain\Course\Model;
 
-use App\Domain\Course\Repository\CourseRepository;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Fachbereich\Model\Fachbereich;
+use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: CourseRepository::class)]
+#[ORM\Entity]
 class Course
 {
     use IdentityTrait;
@@ -30,7 +30,7 @@ class Course
     /**
      * @var Collection<Exercise>
      */
-    #[ORM\OneToMany(targetEntity: Exercise::class, mappedBy: "course", orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Exercise::class, mappedBy: "course", cascade: ["all"], orphanRemoval: true)]
     private Collection $exercises;
 
     /**
@@ -75,20 +75,6 @@ class Course
         return $this;
     }
 
-    public function removeCourseRole(CourseRole $courseRole): self
-    {
-        if ($this->courseRoles->contains($courseRole)) {
-            $this->courseRoles->removeElement($courseRole);
-            // set the owning side to null (unless already changed)
-            // TODO: What? -> this should remove the whole course role
-            if ($courseRole->getCourse() === $this) {
-                $courseRole->setCourse(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getName(): string
     {
         return $this->name;
@@ -127,25 +113,6 @@ class Course
         return $this;
     }
 
-    public function removeExercise(Exercise $exercise): self
-    {
-        if ($this->exercises->contains($exercise)) {
-            $this->exercises->removeElement($exercise);
-            // set the owning side to null (unless already changed)
-            if ($exercise->getCourse() === $this) {
-                $exercise->setCourse(null);
-            }
-        }
-
-        return $this;
-    }
-
-    // TODO: what?
-    public function __sleep()
-    {
-        return [];
-    }
-
     /**
      * @return Collection<Video>
      */
@@ -159,16 +126,6 @@ class Course
         if (!$this->videos->contains($video)) {
             $this->videos[] = $video;
             $video->addCourse($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVideo(Video $video): self
-    {
-        if ($this->videos->contains($video)) {
-            $this->videos->removeElement($video);
-            $video->removeCourse($this);
         }
 
         return $this;
@@ -190,5 +147,18 @@ class Course
         $this->fachbereich = $fachbereich;
     }
 
-
+    /**
+     * @return Collection<User>
+     */
+    public function getDozents(): Collection
+    {
+        return $this->courseRoles
+            ->filter(function (CourseRole $courseRole) {
+                return $courseRole->isCourseDozent() && $courseRole->getUser()->isDozent();
+            })
+            ->map(function (CourseRole $courseRole) {
+                return $courseRole->getUser();
+            });
+        ;
+    }
 }

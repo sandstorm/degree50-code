@@ -4,7 +4,6 @@ namespace App\Domain\VideoCode\Model;
 
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
-use App\Domain\VideoCode\Repository\VideoCodeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 // NOTE:
@@ -12,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 // The naming was very misleading in the past. It might make sense to
 // change the schema in the future.
 
-#[ORM\Entity(repositoryClass: VideoCodeRepository::class)]
+#[ORM\Entity]
 class VideoCode
 {
     use IdentityTrait;

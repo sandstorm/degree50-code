@@ -1,4 +1,4 @@
-@fixtures @removalOfUser @integration
+@fixtures @integration
 Feature: Degree User is removed completely from system
 
     Background:
@@ -41,9 +41,9 @@ Feature: Degree User is removed completely from system
 
         Then User "student1@test.de" should not exist
         And No AutosavedSolution of User "student1@test.de" does exist
-        And The ExercisePhaseTeam "team" should exist
+        And The ExercisePhaseTeam "team" exists
         And The creator of ExercisePhaseTeam "team" should be "student2@test.de"
-        And The Solution "solution" should exist
+        And The Solution "solution" exists
         And No CourseRole of User "student1@test.de" exists
 
     Scenario: Removing a Student that is the only member of a team should anonymize the team creator
@@ -71,12 +71,12 @@ Feature: Degree User is removed completely from system
 
         Then The User with Id "student1@test.de" should be anonymized
         And No AutosavedSolution of User "student1@test.de" does exist
-        And The ExercisePhaseTeam "team1" should exist
-        And The ExercisePhaseTeam "team2" should exist
+        And The ExercisePhaseTeam "team1" exists
+        And The ExercisePhaseTeam "team2" exists
         And The creator of ExercisePhaseTeam "team1" should be "student2@test.de"
         And The creator of ExercisePhaseTeam "team2" should not be "student1@test.de"
-        And The Solution "solution1" should exist
-        And The Solution "solution2" should exist
+        And The Solution "solution1" exists
+        And The Solution "solution2" exists
         And No CourseRole of User "student1@test.de" exists
 
     Scenario: Remove Admin
@@ -85,7 +85,8 @@ Feature: Degree User is removed completely from system
         When I delete User "admin2@test.de"
         Then User "admin2@test.de" should not exist
 
-    Scenario: Remove Dozent
+    @debug
+    Scenario: Remove Dozent in a course with no other Dozent
         Given The User "dozent@test.de" has CourseRole "DOZENT" in Course "course1"
         # exerciseByDozent1 and it's content will persist because this exercise will be published
         And An Exercise with ID "exerciseByDozent1" created by User "dozent@test.de" in Course "course1" exists
@@ -106,4 +107,52 @@ Feature: Degree User is removed completely from system
 
         And I am logged in as "admin@test.de"
         When I delete User "dozent@test.de"
-        Then The User "dozent@test.de" is anonymized and their unused content removed
+
+        Then The User with Id "dozent@test.de" does not exist
+        And No CourseRole of User "dozent@test.de" exists
+        And The Course "course1" does not exist
+        And The Exercise "exerciseByDozent1" does not exist
+        And The Exercise "exerciseByDozent2" does not exist
+        And The ExercisePhase "exercisePhase1" does not exist
+        And The ExercisePhase "exercisePhase1" does not exist
+        And The Video "video1" does not exist
+        And The Video "video2" does not exist
+        And The Attachment "attachment1" does not exist
+        And The Attachment "attachment2" does not exist
+
+    @debug
+    Scenario: Remove Dozent in a course with no other Dozent
+        Given The User "dozent@test.de" has CourseRole "DOZENT" in Course "course1"
+        And A User "dozent2@test.de" with the role "ROLE_DOZENT" exists
+        And The User "dozent2@test.de" has CourseRole "DOZENT" in Course "course1"
+        # exerciseByDozent1 and it's content will persist because this exercise will be published
+        And An Exercise with ID "exerciseByDozent1" created by User "dozent@test.de" in Course "course1" exists
+        # exerciseByDozent2 and it's content will be removed because this exercise will not be published
+        And An Exercise with ID "exerciseByDozent2" created by User "dozent@test.de" in Course "course1" exists
+
+        And I am logged in as "dozent@test.de"
+        # will persist
+        And I have an exercise phase "exercisePhase1" belonging to exercise "exerciseByDozent1"
+        And A Video with Id "video1" created by User "dozent@test.de" exists
+        And the Video with Id "video1" is added to Course "course1"
+        And An Attachment with Id "attachment1" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase1"
+        And Exercise "exerciseByDozent1" is published
+        # will be removed
+        And I have an exercise phase "exercisePhase2" belonging to exercise "exerciseByDozent2"
+        And A Video with Id "video2" created by User "dozent@test.de" exists
+        And An Attachment with Id "attachment2" created by User "dozent@test.de" exists for ExercisePhase "exercisePhase2"
+
+        And I am logged in as "admin@test.de"
+        When I delete User "dozent@test.de"
+
+        Then The User with Id "dozent@test.de" does not exist
+        And No CourseRole of User "dozent@test.de" exists
+        And The Course "course1" does exist
+        And The Exercise "exerciseByDozent1" exists
+        And The Exercise "exerciseByDozent2" exists
+        And The ExercisePhase "exercisePhase1" exists
+        And The ExercisePhase "exercisePhase1" exists
+        And The Video "video1" does not exist
+        And The Video "video2" does not exist
+        And The Attachment "attachment1" does not exist
+        And The Attachment "attachment2" does not exist
