@@ -26,10 +26,6 @@ mkdir -p /app/public/data
 
 setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX /app/var
 
-# chown of directories "www-data:www-data" so the app can write files to the FS
-chown -R www-data:www-data /app/public/data/
-chown -R www-data:www-data /app/var/
-
 # install php dependencies for local development
 if [ "$LOCAL_DEVELOPMENT" == '1' ]; then
 	composer install --prefer-dist --no-progress --no-interaction
@@ -56,5 +52,9 @@ fi
 php bin/console assets:install
 # clear caches
 php bin/console cache:clear
+
+# chown of directories "www-data:www-data" so the app can write files to the FS
+chown -R www-data:www-data /app/public/data/
+chown -R www-data:www-data /app/var/
 
 /usr/bin/supervisord
