@@ -4,11 +4,11 @@ namespace App\Domain\Exercise\Dto;
 
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 
-readonly class PhaseWithMetadataDto
+readonly class ExercisePhaseWithMetadataDto
 {
     public function __construct(
-        private ExercisePhase $phase,
-        private PhaseMetadata $metadata
+        public ExercisePhase $phase,
+        public ExercisePhaseMetadata $metadata
     )
     {
     }

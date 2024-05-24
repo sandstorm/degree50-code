@@ -2,13 +2,13 @@
 
 namespace App\Domain\Exercise\Dto;
 
-readonly class PhaseMetadata
+readonly class ExercisePhaseMetadata
 {
     public function __construct(
-        private bool   $needsReview,
-        private bool   $isDone,
-        private string $phaseTitle,
-        private string $iconClass
+        public bool   $needsReview,
+        public bool   $isDone,
+        public string $phaseTitle,
+        public string $iconClass
     )
     {
     }
