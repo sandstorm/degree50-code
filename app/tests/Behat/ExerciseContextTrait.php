@@ -196,11 +196,20 @@ trait ExerciseContextTrait
     }
 
     /**
-     * @Then The exercise :exerciseId exists
+     * @Then The Exercise :exerciseId exists
      */
     public function theExerciseExists($exerciseId): void
     {
         $exercise = $this->exerciseRepository->find($exerciseId);
         assertSame($exerciseId, $exercise->getId());
+    }
+
+    /**
+     * @Then The Exercise :exerciseId does not exist
+     */
+    public function theExerciseDoesNotExist($exerciseId): void
+    {
+        $exercise = $this->exerciseRepository->find($exerciseId);
+        assertEquals(null, $exercise);
     }
 }

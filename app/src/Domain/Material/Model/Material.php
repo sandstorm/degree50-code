@@ -4,12 +4,11 @@ namespace App\Domain\Material\Model;
 
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
-use App\Domain\Material\Repository\MaterialRepository;
 use App\Domain\User\Model\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MaterialRepository::class)]
+#[ORM\Entity]
 class Material
 {
     use IdentityTrait;

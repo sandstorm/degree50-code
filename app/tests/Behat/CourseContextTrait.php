@@ -4,10 +4,12 @@ namespace App\Tests\Behat;
 
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotNull;
+use function PHPUnit\Framework\assertNull;
 
 trait CourseContextTrait
 {
-
     /**
      * Creates a new course with the given ID and adds a course role "DOZENT"
      * for the currently logged in user (use the according step to log in first)
@@ -49,5 +51,24 @@ trait CourseContextTrait
         }
 
         return $course;
+    }
+
+    /**
+     * @Then The Course :courseId does exist
+     */
+    public function theCourseWithIdDoesExist($courseId): void
+    {
+        $course = $this->entityManager->find(Course::class, $courseId);
+        assertNotNull($course);
+    }
+
+    /**
+     * @Then The Course :courseId does not exist
+     */
+    public function theCourseWithIdDoesNotExist($courseId): void
+    {
+        /** @var Course|null $course */
+        $course = $this->entityManager->find(Course::class, $courseId);
+        assertEquals(null, $course);
     }
 }

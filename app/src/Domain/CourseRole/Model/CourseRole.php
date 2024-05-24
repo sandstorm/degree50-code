@@ -3,13 +3,12 @@
 namespace App\Domain\CourseRole\Model;
 
 use App\Domain\Course\Model\Course;
-use App\Domain\CourseRole\Repository\CourseRoleRepository;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\User\Model\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: CourseRoleRepository::class)]
+#[ORM\Entity]
 class CourseRole
 {
     use IdentityTrait;
@@ -23,12 +22,12 @@ class CourseRole
     #[ORM\Column]
     public string $name = '';
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "courseRoles")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ["persist"] ,inversedBy: "courseRoles")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: "courseRoles")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Course::class, cascade: ["persist"], inversedBy: "courseRoles")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Course $course;
 
     public function getUser(): ?User

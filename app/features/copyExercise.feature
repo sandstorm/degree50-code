@@ -1,4 +1,4 @@
-@fixtures @playwright @debug
+@fixtures @playwright
 Feature: Copy Exercises
 
     # This feature introduces the ability to copy an exercise.

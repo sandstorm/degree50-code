@@ -118,6 +118,7 @@ trait UserContextTrait
         $courseRole->setName($courseRoleRole);
 
         $user->addCourseRole($courseRole);
+        $course->addCourseRole($courseRole);
 
         $this->entityManager->persist($courseRole);
         $this->entityManager->persist($user);
@@ -337,5 +338,14 @@ trait UserContextTrait
     {
         $user = $this->entityManager->getRepository(User::class)->find($userId);
         assertNotEquals($userId, $user->getUsername());
+    }
+
+    /**
+     * @Then The User with Id :userId does not exist
+     */
+    public function theUserWithIdDoesNotExist(string $userId): void
+    {
+        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        assertEquals(null, $user);
     }
 }

@@ -80,15 +80,15 @@ Feature: CRUD operations on the videoRepository
     Scenario: Find videos by creator and not cut videos
         Then I only receive the regular video "video-1" and not the cut video "cut-video-1" for creator "foo@bar.de"
 
-    Scenario: When I delete the video, the exercise and phases using this video, are deleted too
+    Scenario: When a Video is deleted, it is removed from Phases
         When I delete the video "video-1"
         Then The video "video-1" is deleted
-        And The exercise phase "ex-p1" is deleted
-        And The exercise phase "ex-p2" is deleted
-        And The exercise "ex" is deleted
-        And The team "team-1" is deleted
-        And The solution "solution-1" is deleted
-        And The video "cut-video-1" is deleted
-        And The exercise "ex-2" exists
-        And 1 exercise phases should exist
+        And The ExercisePhase "ex-p1" exists
+        And The ExercisePhase "ex-p2" exists
+        And The Exercise "ex" exists
+        And The ExercisePhaseTeam "team-1" exists
+        And The Solution "solution-1" exists
+        And The Video "cut-video-1" exists
+        And The Exercise "ex-2" exists
+        And 3 exercise phases should exist
 

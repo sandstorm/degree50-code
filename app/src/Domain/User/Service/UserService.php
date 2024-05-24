@@ -2,8 +2,11 @@
 
 namespace App\Domain\User\Service;
 
+use App\Domain\Attachment\Service\AttachmentService;
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
+use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
@@ -36,6 +39,7 @@ readonly class UserService
         private ExerciseService        $exerciseService,
         private VideoFavouritesService $videoFavoritesService,
         private UserMaterialService    $userMaterialService,
+        private AttachmentService      $attachmentService,
     )
     {
     }
@@ -56,18 +60,12 @@ readonly class UserService
         $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
         $this->userMaterialService->deleteMaterialsOfUser($user);
         $this->videoService->deleteVideosCreatedByUser($user);
+        $this->attachmentService->removeAttachmentsCreatedByUser($user);
 
         // remove user from teams
         $teamsWhereUserCanNotBeRemoved = $this->removeFromExerciseTeams($user);
 
         if (count($teamsWhereUserCanNotBeRemoved) === 0) {
-            /**
-             * Due to ORM cascading options the following things will also happen when we delete a user:
-             *
-             *   1. All orphaned CourseRoles will be removed @see User::$courseRoles
-             *   // TODO: UserExerciseInteractions are not part of the model anymore?
-             *   2. All orphaned UserExerciseInteractions will be removed @see User::$userExerciseInteractions
-             */
             $this->entityManager->remove($user);
             $this->entityManager->flush();
         } else {
@@ -108,7 +106,7 @@ readonly class UserService
                 $this->deleteAdmin($user);
                 break;
             case $user->isDozent():
-                $this->anonymizeDozent($user);
+                $this->deleteDozent($user);
                 break;
             case $user->isStudent():
                 $this->deleteStudent($user);
@@ -140,56 +138,57 @@ readonly class UserService
         return $userCourses->count() > 0;
     }
 
-    /**
-     * This will cause a User (Dozent) to be practically unusable and anonymous.
-     */
-    private function anonymizeDozent(User $user): void
+    private function deleteDozent(User $user): void
     {
-        /**
-         * WHY overwrite the email:
-         *     Email acts as the username in this system.
-         * @see User::getUsername()
-         */
-        $user->setEmail(Uuid::uuid4()->toString());
+        $courses = $user->getCourses();
 
-        /**
-         * WHY `md5(random_bytes((length))`:
-         * @see https://symfony.com/doc/current/components/security/secure_tools.html#generating-a-secure-random-string
-         *
-         * TODO: handle Exception?
-         *       random_bytes() throws if it can not gather enough entropy - which is rather unlikely
-         */
-        $user->setPassword(md5(random_bytes(20)));
+        foreach ($courses as $course) {
+            /* @var Course $course */
 
-        // remove roles
-        $user->setRoles([]);
+            $dozents = $course->getDozents();
 
-        // remove any other meta data that could be used to narrow down or identify the user
-        $user->setDataPrivacyVersion(-1);
-        $user->setTermsOfUseVersion(-1);
+            if (count($dozents) > 1) {
+                // if user is NOT the only dozent in a course
+                //     - remove user from course
+                //     - transfer ownership of exercises to another dozent in the course
+                $exercises = $course->getExercises();
+                $nextDozent = $dozents->filter(fn($dozent) => $dozent->getId() !== $user->getId())->first();
 
-        // set expiration date to 1 year from now
-        $user->setExpirationDate(new DateTimeImmutable('+1 year'));
-        // prevent emails from being sent to user due to expiration
-        $user->setExpirationNoticeSent(true);
+                if ($nextDozent === null) {
+                    throw new InvalidArgumentException('Could not find another Dozent in the Course');
+                }
 
-        // remove unused educational content
+                foreach ($exercises as $exercise) {
+                    /* @var Exercise $exercise */
+                    $this->attachmentService->transferAttachmentsOfUserInExerciseToUser($user, $exercise, $nextDozent);
+
+                    $exercise->setCreator($nextDozent);
+                    $this->entityManager->persist($exercise);
+                }
+
+
+                $this->entityManager->persist($course);
+            } else {
+                // if user is the only dozent in a course
+                //   - delete all courses where user is the only dozent
+                //   - delete all attachments
+                $this->attachmentService->removeAttachmentsCreatedByUser($user);
+                $this->entityManager->remove($course);
+            }
+
+            $this->entityManager->flush();
+        }
+
+        $this->videoService->deleteVideosCreatedByUser($user);
+        $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
+        $this->userMaterialService->deleteMaterialsOfUser($user);
         $teamsWhereUserIsOnlyMember = $this->removeFromExerciseTeams($user);
 
         foreach ($teamsWhereUserIsOnlyMember as $team) {
             $this->entityManager->remove($team);
         }
 
-        $this->exerciseService->removeUnpublishedExercisesOfUser($user);
-        $this->videoService->removeUnUsedVideosOfUser($user);
-
-        /**
-         * Why
-         *   Removal of CourseRoles is cascaded when removing a User but here we do _not_ remove the user.
-         */
-        $user->getCourseRoles()->map(fn(CourseRole $courseRole) => $this->entityManager->remove($courseRole));
-
-        $this->entityManager->persist($user);
+        $this->entityManager->remove($user);
         $this->entityManager->flush();
     }
 
@@ -197,6 +196,7 @@ readonly class UserService
     {
         // remove created Exercises, Videos and Interactions
         $this->videoService->deleteVideosCreatedByUser($user);
+        $this->attachmentService->removeAttachmentsCreatedByUser($user);
         $this->exerciseService->deleteExercisesCreatedByUser($user);
         $this->videoFavoritesService->deleteFavoriteVideosByUser($user);
         $this->userMaterialService->deleteMaterialsOfUser($user);

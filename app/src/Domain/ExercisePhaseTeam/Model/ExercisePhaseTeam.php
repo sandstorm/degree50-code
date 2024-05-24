@@ -6,7 +6,6 @@ use App\Domain\AutosavedSolution\Model\AutosavedSolution;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\ExercisePhaseStatus;
-use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
 use DateTimeImmutable;
@@ -14,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ExercisePhaseTeamRepository::class)]
+#[ORM\Entity]
 class ExercisePhaseTeam
 {
     use IdentityTrait;

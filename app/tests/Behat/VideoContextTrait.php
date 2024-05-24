@@ -13,6 +13,8 @@ use DateTimeImmutable;
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;
+use function PHPUnit\Framework\assertNotNull;
+use function PHPUnit\Framework\assertNull;
 
 /**
  *
@@ -170,6 +172,24 @@ trait VideoContextTrait
      * @Then The video :videoId is deleted
      */
     public function theVideoShouldIsDeleted($videoId): void
+    {
+        $video = $this->videoRepository->find($videoId);
+        assertEquals(null, $video);
+    }
+
+    /**
+     * @Then The Video :videoId exists
+     */
+    public function theVideoExists($videoId): void
+    {
+        $video = $this->videoRepository->find($videoId);
+        assertNotNull($video);
+    }
+
+    /**
+     * @Then The Video :videoId does not exist
+     */
+    public function theVideoDoesNotExist($videoId): void
     {
         $video = $this->videoRepository->find($videoId);
         assertEquals(null, $video);

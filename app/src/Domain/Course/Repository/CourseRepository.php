@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Course|null find($id, $lockMode = null, $lockVersion = null)
  * @method Course|null findOneBy(array $criteria, array $orderBy = null)
  * @method Course[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method
  */
 class CourseRepository extends ServiceEntityRepository
 {

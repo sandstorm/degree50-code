@@ -2,7 +2,6 @@
 
 namespace App\Domain\Video\Service;
 
-use App\Domain\Exercise\Service\ExerciseService;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
@@ -21,7 +20,6 @@ readonly class VideoService
         private EntityManagerInterface $entityManager,
         private VideoRepository        $videoRepository,
         private VideoFavouritesService $videoFavouritesService,
-        private ExerciseService        $exerciseService,
         private FileSystemService      $fileSystemService,
     )
     {
@@ -43,16 +41,11 @@ readonly class VideoService
     public function deleteVideo(Video $video): void
     {
         $exercisePhases = $video->getExercisePhases();
-        $exercisesToDelete = [];
-        // loop over exercisePhases and get the exercises
-        /** @var ExercisePhase $exercisePhase */
-        foreach ($exercisePhases as $exercisePhase) {
-            $exercise = $exercisePhase->getBelongsToExercise();
-            $exercisesToDelete[$exercise->getId()] = $exercise;
-        }
 
-        foreach ($exercisesToDelete as $exercise) {
-            $this->exerciseService->deleteExercise($exercise);
+        foreach ($exercisePhases as $exercisePhase) {
+            /** @var ExercisePhase $exercisePhase */
+            $exercisePhase->removeVideo($video);
+            $this->entityManager->persist($exercisePhase);
         }
 
         // remove VideoFavourites

@@ -447,6 +447,24 @@ trait ExercisePhaseContextTrait
     }
 
     /**
+     * @Then The ExercisePhase :exercisePhaseId exists
+     */
+    public function theExercisePhaseExists($exercisePhaseId): void
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        assertNotNull($exercisePhase);
+    }
+
+    /**
+     * @Then The ExercisePhase :exercisePhaseId does not exist
+     */
+    public function theExercisePhaseDoesNotExist($exercisePhaseId): void
+    {
+        $exercisePhase = $this->exercisePhaseRepository->find($exercisePhaseId);
+        assertEquals(null, $exercisePhase);
+    }
+
+    /**
      * @Then The team :teamId is deleted
      */
     public function theExercisePhaseTeamShouldIsDeleted($teamId): void
@@ -456,12 +474,31 @@ trait ExercisePhaseContextTrait
     }
 
     /**
-     * @Then The solution :solutionId is deleted
+     * @Then The ExercisePhaseTeam :teamId exists
+     */
+    public function theExercisePhaseTeamExists($teamId): void
+    {
+        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($teamId);
+        assertNotNull($exercisePhaseTeam);
+    }
+
+
+    /**
+     * @Then The Solution :solutionId is deleted
      */
     public function theSolutionShouldIsDeleted($solutionId): void
     {
         $solution = $this->solutionRepository->find($solutionId);
         assertEquals(null, $solution);
+    }
+
+    /**
+     * @Then The Solution :solutionId exists
+     */
+    public function theSolutionExists($solutionId): void
+    {
+        $solution = $this->solutionRepository->find($solutionId);
+        assertNotNull($solution);
     }
 
     /**
@@ -588,15 +625,6 @@ trait ExercisePhaseContextTrait
     }
 
     /**
-     * @Then The ExercisePhaseTeam :teamId should exist
-     */
-    public function theExercisePhaseTeamShouldExist(string $teamId): void
-    {
-        $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($teamId);
-        assertNotNull($exercisePhaseTeam);
-    }
-
-    /**
      * @Then The creator of ExercisePhaseTeam :teamId should be :username
      */
     public function theCreatorOfExercisePhaseTeamShouldBe(string $teamId, string $username): void
@@ -605,15 +633,6 @@ trait ExercisePhaseContextTrait
         $user = $this->getUserByEmail($username);
 
         assertEquals($user, $exercisePhaseTeam->getCreator());
-    }
-
-    /**
-     * @Then The Solution :solutionId should exist
-     */
-    public function theSolutionShouldExist(string $solutionId): void
-    {
-        $solution = $this->solutionRepository->find($solutionId);
-        assertNotNull($solution);
     }
 
     /**

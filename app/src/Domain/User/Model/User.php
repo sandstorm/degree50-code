@@ -2,12 +2,12 @@
 
 namespace App\Domain\User\Model;
 
+use App\Domain\Attachment\Model\Attachment;
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Material\Model\Material;
-use App\Domain\User\Repository\UserRepository;
 use App\Domain\Video\Model\Video;
 use App\Domain\VideoFavorite\Model\VideoFavorite;
 use App\Security\Voter\DataPrivacyVoter;
@@ -21,10 +21,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * TODO: leak of user email!
- */
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Entity]
 #[UniqueEntity(fields: ["email"])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -68,27 +65,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var Collection<Exercise>
-     *
      */
-    #[ORM\OneToMany(targetEntity: Exercise::class, mappedBy: "creator")]
+    #[ORM\OneToMany(targetEntity: Exercise::class, mappedBy: "creator", orphanRemoval: true)]
     private Collection $createdExercises;
 
     /**
      * @var Collection<Video>
      */
-    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: "creator")]
+    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: "creator", orphanRemoval: true)]
     private Collection $createdVideos;
 
     /**
      * @var Collection<VideoFavorite>
      */
-    #[ORM\OneToMany(targetEntity: VideoFavorite::class, mappedBy: "user")]
+    #[ORM\OneToMany(targetEntity: VideoFavorite::class, mappedBy: "user", orphanRemoval: true)]
     private Collection $favoriteVideos;
+
+    /**
+     * @var Collection<Attachment>
+     */
+    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: "creator", cascade: ["all"], orphanRemoval: true)]
+    private Collection $createdAttachments;
 
     /**
      * @var Collection<Material>
      */
-    #[ORM\OneToMany(targetEntity: Material::class, mappedBy: "owner")]
+    #[ORM\OneToMany(targetEntity: Material::class, mappedBy: "owner", orphanRemoval: true)]
     private Collection $materials;
 
     #[ORM\Column(type: "boolean")]
@@ -126,6 +128,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->expirationDate = $this->createdAt->add(
             DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING)
         );
+        $this->createdAttachments = new ArrayCollection();
+        $this->materials = new ArrayCollection();
     }
 
     public function getUserIdentifier(): string
@@ -395,6 +399,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->getCourseRoles()->map(function (CourseRole $courseRole) {
             return $courseRole->getCourse();
         });
+    }
+
+    /**
+     * @return Collection<Exercise>
+     */
+    public function getCreatedExercises(): Collection
+    {
+        return $this->createdExercises;
     }
 
     private function setRole(string $roleToSet, bool $set): void
