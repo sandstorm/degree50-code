@@ -34,11 +34,9 @@ abstract class ExercisePhase
 {
     use IdentityTrait;
 
-    // TODO: maybe just a getter?
     const ?ExercisePhaseType type = null;
 
     // components for phases
-    // TODO: maybe use an enum?
     // "Components" for ExercisePhases is an old concept/approach that is rarely used anymore.
     const string VIDEO_CODE = 'videoCode';
     const string VIDEO_CUTTING = 'videoCutting';

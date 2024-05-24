@@ -6,6 +6,7 @@ Feature: Redirections to the login if unauthenticated
         And I have a course with ID "c"
         And I have an exercise with ID "ex" belonging to course "c"
         And I have an exercise phase "ex-p1" belonging to exercise "ex"
+        And I have a team with ID "team-1" belonging to exercise phase "ex-p1"
         And A Video with Id "foo" created by User "foo@bar.de" exists
         And the Video with Id "foo" is added to Course "c"
         And An Attachment with Id "m" created by User "foo@bar.de" exists for ExercisePhase "ex-p1"
@@ -19,6 +20,7 @@ Feature: Redirections to the login if unauthenticated
 
         Examples:
             | route                                   | params                            |
+            | app                                     |                                   |
             | app_data-privacy                        |                                   |
             | app_terms-of-use                        |                                   |
             | mediathek--index                        |                                   |
@@ -31,13 +33,17 @@ Feature: Redirections to the login if unauthenticated
             | exercise__new                           | {"id": "c"}                       |
             | exercise__edit                          | {"id": "ex"}                      |
             | exercise-overview                       | {"id": "c"}                       |
+            | exercise-phase__show                    | {"id": "ex", "team_id": "team-1"} |
+            | exercise-phase__test                    | {"id": "ex", "team_id": "team-1"} |
+            | exercise-phase__reset-test              | {"id": "ex", "team_id": "team-1"} |
             | exercise-phase__new                     | {"id": "ex"}                      |
             | exercise-phase__set-type                | {"id": "ex"}                      |
             | exercise-phase__edit                    | {"id": "ex", "phase_id": "ex-p1"} |
             | exercise-phase__delete                  | {"id": "ex", "phase_id": "ex-p1"} |
             | exercise-overview__attachment--download | {"id": "m"}                       |
-
-      # TODO add missing routes!
-
-
-
+            | exercise-overview                       |                                   |
+            | exercise-overview                       | {"id": "c"}                       |
+            | exercise-overview__course--members      | {"id": "c"}                       |
+            | exercise-overview__course--new          |                                   |
+            | exercise-overview__course--edit         | {"id": "c"}                       |
+            | exercise-overview__course--delete       | {"id": "c"}                       |

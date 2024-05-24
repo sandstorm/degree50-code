@@ -41,9 +41,6 @@
 
         .ck-editor__top {
             grid-area: header;
-            // TODO: overflow changing von nothing to "auto" and then to "visible" makes the editor responsive
-            // Find out how to make ck-editor responsive in the first place
-            // overflow: visible;
         }
 
         .ck-editor__main {

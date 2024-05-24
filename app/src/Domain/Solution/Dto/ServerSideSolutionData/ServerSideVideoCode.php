@@ -14,11 +14,10 @@ final class ServerSideVideoCode
     private string $end;
     private string $text;
     private string $memo;
-    // TODO: Why optional?
-    private ?string $color;
+    private string $color;
     private string $idFromPrototype;
 
-    private function __construct(string $start, string $end, string $text, string $memo, ?string $color, string $idFromPrototype)
+    private function __construct(string $start, string $end, string $text, string $memo, string $color, string $idFromPrototype)
     {
         $this->start = $start;
         $this->end = $end;

@@ -238,20 +238,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeCourseRole(CourseRole $courseRole): self
-    {
-        if ($this->courseRoles->contains($courseRole)) {
-            $this->courseRoles->removeElement($courseRole);
-            // set the owning side to null (unless already changed)
-            // TODO: Why?
-            if ($courseRole->getUser() === $this) {
-                $courseRole->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function setIsAdmin(bool $isAdmin): void
     {
         $this->setRole(self::ROLE_ADMIN, $isAdmin);

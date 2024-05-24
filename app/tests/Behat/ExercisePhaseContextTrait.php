@@ -403,8 +403,6 @@ trait ExercisePhaseContextTrait
 
     /**
      * @Given An ExercisePhase with the following data exists:
-     *
-     * TODO: rename Given step so that it better represents, what this actually does
      */
     public function assureExercisePhasesWithTheFollowingDataExist(TableNode $tableNode): void
     {

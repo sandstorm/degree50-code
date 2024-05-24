@@ -96,7 +96,7 @@ class VideoUploadController extends AbstractController
             assert($video instanceof Video);
 
             // dispatch event to start encoding when form is submitted
-            $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $video->getId());
+            $outputDirectory = VirtualizedFile::fromMountPointAndFilename(AppRuntime::ENCODED_VIDEOS, $video->getId());
             $this->messageBus->dispatch(new WebEncodingTask($video->getId(), $outputDirectory));
 
             $this->entityManager->persist($video);

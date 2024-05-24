@@ -44,7 +44,7 @@ final readonly class ClientSideVideoCodePrototype implements JsonSerializable
     {
         $childClientSidePrototypes = array_map(function ($prototype) {
             return self::fromArray($prototype);
-        }, $input['videoCodes']); // => FIXME rename as soon as base refactoring is complete
+        }, $input['videoCodes']);
 
         return new self(
             $input['id'],
@@ -66,7 +66,7 @@ final readonly class ClientSideVideoCodePrototype implements JsonSerializable
             'id' => $this->id,
             'name' => $this->name,
             'color' => $this->color,
-            'videoCodes' => $childPrototypes, // => FIXME rename 'videoCodes' as soon as base refactoring is complete
+            'videoCodes' => $childPrototypes,
             'parentId' => $this->parentId,
             'userCreated' => $this->userCreated,
         ];

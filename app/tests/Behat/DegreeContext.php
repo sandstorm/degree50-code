@@ -111,7 +111,6 @@ final class DegreeContext implements Context
     const string TEST_FACHBEREICH_1 = 'fachbereich1';
 
     public function __construct(
-        // TODO: looks like auto wiring is not working here
         private readonly RouterInterface $router,
         private readonly EntityManagerInterface $entityManager,
         private readonly KernelInterface $kernel,
@@ -250,7 +249,6 @@ final class DegreeContext implements Context
 
     /**
      * @When I have not yet started an exercise phase of :exerciseId
-     * // TODO: fix
      */
     public function iHaveNotYetStartedAnExercisePhase($exerciseId): void
     {
@@ -996,10 +994,9 @@ final class DegreeContext implements Context
     }
 
     /**
-     * @Then The material :materialId should be :materialValue after a page reload
-     * // TODO: either go to page of material (via id) or remove that parameter
+     * @Then The material content should be :materialValue after a page reload
      */
-    public function materialShouldBe($materialId, $materialValue): void
+    public function materialShouldBe($materialValue): void
     {
         $this->playwrightConnector->execute(
             $this->playwrightContext,

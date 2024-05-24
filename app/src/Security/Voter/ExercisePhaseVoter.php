@@ -17,7 +17,6 @@ class ExercisePhaseVoter extends Voter
     const string NEXT = 'exercisePhase_next';
     const string DELETE = 'exercisePhase_delete';
     const string TEST = 'exercisePhase_test';
-    // TODO: some of these are not used
     const string SHOW_SOLUTIONS = 'exercisePhase_showSolutions';
     const string CREATE_TEAM = 'exercisePhase_createTeam';
     const string VIEW_OTHER_SOLUTIONS = 'exercisePhase_viewOtherSolutions';
@@ -115,7 +114,6 @@ class ExercisePhaseVoter extends Voter
         $phaseSortingsUpToThisPhase = range(0, $exercisePhase->getSorting() - 1);
         $exercise = $exercisePhase->getBelongsToExercise();
 
-        // TODO: this is not simple enough
         $phasesBeforeAreDone = array_reduce(
             $phaseSortingsUpToThisPhase,
             function ($allAreDone, $phaseSorting) use ($exercise, $user) {
@@ -141,7 +139,6 @@ class ExercisePhaseVoter extends Voter
 
     private function canViewOtherSolutions(ExercisePhase $exercisePhase, User $user): bool
     {
-        // FIXME
         // As there is a bug that crashes the app if the user himself (even the admin) has not
         // yet has startet the phase once (and thus created a Team -> which causes the crash)
         if ($exercisePhase->getHasSolutionForUser($user)) {
