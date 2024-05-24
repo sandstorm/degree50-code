@@ -110,7 +110,7 @@ readonly class UserExpirationService
     {
         $email = (new TemplatedEmail())
             ->to($user->getEmail())
-            ->subject($this->translator->trans('email.subject', [], 'user-expiration'))
+            ->subject($this->translator->trans('email.subject', [], 'UserExpiration'))
             ->htmlTemplate('UserExpiration/notification_email.html.twig')
             ->context([
                 'routeName' => 'app_increase_user_expiration_date',

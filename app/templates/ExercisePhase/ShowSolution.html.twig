@@ -16,13 +16,13 @@
     </div>
     <footer class="footer">
         <a class="button button--type-outline-primary footer__left" href="{{ path('exercise__show-phase', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id, showSolution: true}) }}">
-            {{ "common.back"|trans({}, 'base') }}
+            {{ "common.back"|trans({}, 'DegreeBase') }}
         </a>
         <span class="footer__center">
-            {{ "common.phase"|trans({}, 'base') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
+            {{ "common.phase"|trans({}, 'DegreeBase') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
         </span>
         <button class="button button--type-primary disabled footer__right" type="button" disabled="disabled">
-            {{ "exercisePhase.showSolution.shareResult"|trans({}, 'base') }}
+            {{ "exercisePhase.showSolution.shareResult"|trans({}, 'DegreeBase') }}
         </button>
     </footer>
 {% endblock %}

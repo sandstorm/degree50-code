@@ -1,6 +1,6 @@
 {% extends 'BaseWithSidebar.html.twig' %}
 
-{% block title %}{{ "video.index.title"|trans({}, 'base') }}{% endblock %}
+{% block title %}{{ "video.index.title"|trans({}, 'DegreeBase') }}{% endblock %}
 
 {% block sidebar %}
     {{ include('Mediathek/Sidebar.html.twig', {sidebarItems: sidebarItems, currentItem: course}) }}
@@ -8,11 +8,11 @@
 
 {% block body %}
     <header class="content-header">
-        <h3>{{ "video.index.allVideos"|trans({}, 'base') }} {{ course ? "common.for"|trans({}, 'base')~' '~course.name : '' }}</h3>
+        <h3>{{ "video.index.allVideos"|trans({}, 'DegreeBase') }} {{ course ? "common.for"|trans({}, 'DegreeBase')~' '~course.name : '' }}</h3>
         {% if userService.userCanUploadVideo() %}
             <a href="{{ path('mediathek__video--upload', {id: course ? course.id : null}) }}" class="button button--type-primary">
                 <i class="fas fa-plus-circle"></i>
-                {{ "video.new.title"|trans({}, 'base') }}
+                {{ "video.new.title"|trans({}, 'DegreeBase') }}
             </a>
         {% endif %}
     </header>

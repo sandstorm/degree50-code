@@ -1,7 +1,7 @@
 {% extends 'BaseFullscreen.html.twig' %}
 {% block layoutCssClass %}main--with-footer{% endblock %}
 
-{% block title %}{{ "exercisePhase.new.title"|trans({}, 'base') }}{% endblock %}
+{% block title %}{{ "exercisePhase.new.title"|trans({}, 'DegreeBase') }}{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -17,12 +17,12 @@
                         {{ exercise.name }}
                     </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">{{ "exercisePhase.new.title"|trans({}, 'base') }}</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ "exercisePhase.new.title"|trans({}, 'DegreeBase') }}</li>
             </ol>
         </nav>
 
         <header class="content-header content-header--center">
-            <h3>{{ "exercisePhase.new.title"|trans({}, 'base') }}</h3>
+            <h3>{{ "exercisePhase.new.title"|trans({}, 'DegreeBase') }}</h3>
         </header>
 
         <div class="tiles">
@@ -38,7 +38,7 @@
     </div>
 
     <footer class="footer">
-        <a class="button button--type-outline-primary footer__left" href="{{ path('exercise__edit', {id: exercise.id}) }}">{{ "exercisePhase.new.back"|trans({}, 'base') }}</a>
+        <a class="button button--type-outline-primary footer__left" href="{{ path('exercise__edit', {id: exercise.id}) }}">{{ "exercisePhase.new.back"|trans({}, 'DegreeBase') }}</a>
     </footer>
 
 {% endblock %}

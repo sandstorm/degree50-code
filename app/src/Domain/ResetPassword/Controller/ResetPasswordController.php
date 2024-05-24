@@ -123,7 +123,7 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            $this->addFlash('success', $this->translator->trans('process.success', [], 'user-password-reset'));
+            $this->addFlash('success', $this->translator->trans('process.success', [], 'UserPasswordReset'));
 
             return $this->redirectToRoute('app');
         }
@@ -149,7 +149,7 @@ class ResetPasswordController extends AbstractController
         }
 
         if ($user->isSSOUser()) {
-            $this->addFlash('danger', $this->translator->trans('process.error.sso-user', [], 'user-password-reset'));
+            $this->addFlash('danger', $this->translator->trans('process.error.sso-user', [], 'UserPasswordReset'));
             return $this->redirectToRoute('app_forgot_password_request');
         }
 
@@ -159,13 +159,13 @@ class ResetPasswordController extends AbstractController
         try {
             $resetToken = $this->resetPasswordHelper->generateResetToken($user);
         } catch (ResetPasswordExceptionInterface $e) {
-            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
+            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'UserPasswordReset'));
             return $this->redirectToRoute('app');
         }
 
         $email = (new TemplatedEmail())
             ->to($user->getEmail())
-            ->subject($this->translator->trans('email.subject', [], 'user-password-reset'))
+            ->subject($this->translator->trans('email.subject', [], 'UserPasswordReset'))
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
@@ -179,7 +179,7 @@ class ResetPasswordController extends AbstractController
         try {
             $mailer->send($email);
         } catch (TransportExceptionInterface $e) {
-            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'user-password-reset'));
+            $this->addFlash('danger', $this->translator->trans('process.error.generic', [], 'UserPasswordReset'));
             return $this->redirectToRoute('app');
         }
 

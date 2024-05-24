@@ -40,14 +40,14 @@ class VideoAnalysisPhaseFormFormType extends ExercisePhaseFormType
                 'required' => false,
                 'disabled' => $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.components.videoAnnotation.label",
-                'translation_domain' => 'base',
+                'translation_domain' => 'DegreeBase',
                 'block_prefix' => 'toggleable_button_checkbox',
             ])
             ->add('videoCodesActive', CheckboxType::class, [
                 'required' => false,
                 'disabled' => $exercisePhase->getHasSolutions(),
                 'label' => "exercisePhase.components.videoCode.label",
-                'translation_domain' => 'base',
+                'translation_domain' => 'DegreeBase',
                 'block_prefix' => 'toggleable_button_checkbox',
             ])
             ->add('videos', EntityType::class, [

@@ -76,7 +76,7 @@ class ExercisePhaseTeamController extends AbstractController
             if ($team->getCreator() === $user) {
                 $this->addFlash(
                     'danger',
-                    $this->translator->trans('exercisePhaseTeam.new.messages.alreadyCreatedATeam', [], 'base')
+                    $this->translator->trans('exercisePhaseTeam.new.messages.alreadyCreatedATeam', [], 'DegreeBase')
                 );
                 return $this->redirectToRoute(
                     'exercise__show-phase',
@@ -94,7 +94,7 @@ class ExercisePhaseTeamController extends AbstractController
         if ($exercisePhase->isGroupPhase()) {
             $this->addFlash(
                 'success',
-                $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'base')
+                $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'DegreeBase')
             );
 
             return $this->redirectToRoute(
@@ -133,7 +133,7 @@ class ExercisePhaseTeamController extends AbstractController
         if ($exercisePhase->isGroupPhase()) {
             $this->addFlash(
                 'success',
-                $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'base')
+                $this->translator->trans('exercisePhaseTeam.new.messages.success', [], 'DegreeBase')
             );
 
             return $this->redirectToRoute(
@@ -173,7 +173,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('exercisePhaseTeam.join.messages.success', [], 'base')
+            $this->translator->trans('exercisePhaseTeam.join.messages.success', [], 'DegreeBase')
         );
 
         return $this->redirectToRoute(
@@ -202,7 +202,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('exercisePhaseTeam.delete.messages.success', [], 'base')
+            $this->translator->trans('exercisePhaseTeam.delete.messages.success', [], 'DegreeBase')
         );
 
         return $this->redirectToRoute(
@@ -236,7 +236,7 @@ class ExercisePhaseTeamController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('exercisePhaseTeam.leave.messages.success', [], 'base')
+            $this->translator->trans('exercisePhaseTeam.leave.messages.success', [], 'DegreeBase')
         );
 
         return $this->redirectToRoute(
