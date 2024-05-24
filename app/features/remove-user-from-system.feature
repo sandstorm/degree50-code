@@ -107,7 +107,6 @@ Feature: Degree User is removed completely from system
         And The Video "video1" does not exist
         And The Attachment "attachment1" does not exist
 
-    @debug
     Scenario: Remove Dozent in a course with another Dozent
         Given The User "dozent@test.de" has CourseRole "DOZENT" in Course "course1"
         And A User "dozent2@test.de" with the role "ROLE_DOZENT" exists

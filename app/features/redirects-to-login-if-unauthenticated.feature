@@ -8,9 +8,10 @@ Feature: Redirections to the login if unauthenticated
         And I have an exercise phase "ex-p1" belonging to exercise "ex"
         And A Video with Id "foo" created by User "foo@bar.de" exists
         And the Video with Id "foo" is added to Course "c"
-        And I have an attachment with ID "m"
+        And An Attachment with Id "m" created by User "foo@bar.de" exists for ExercisePhase "ex-p1"
         And I am not logged in
 
+    @debug
     Scenario Outline: Redirections to the login page if we are not authenticated
         When I visit route "<route>" with parameters as JSON '<params>'
         Then I am redirected to the login page
