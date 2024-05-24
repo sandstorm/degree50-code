@@ -34,7 +34,7 @@ class UserExpirationController extends AbstractController
         if ($user === null) {
             $this->addFlash(
                 'danger',
-                $this->translator->trans('flash-message.error.not-authenticated', [], 'user-expiration')
+                $this->translator->trans('flash-message.error.not-authenticated', [], 'UserExpiration')
             );
             return $this->redirectToRoute('app');
         }
@@ -47,7 +47,7 @@ class UserExpirationController extends AbstractController
         } else {
             $this->addFlash(
                 'danger',
-                $this->translator->trans('flash-message.error.not-now', [], 'user-expiration')
+                $this->translator->trans('flash-message.error.not-now', [], 'UserExpiration')
             );
             return $this->redirectToRoute('app');
         }
@@ -62,7 +62,7 @@ class UserExpirationController extends AbstractController
         if ($user === null) {
             $this->addFlash(
                 'danger',
-                $this->translator->trans('flash-message.error.not-authenticated', [], 'user-expiration')
+                $this->translator->trans('flash-message.error.not-authenticated', [], 'UserExpiration')
             );
             return $this->redirectToRoute('app');
         }
@@ -71,7 +71,7 @@ class UserExpirationController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('flash-message.success', [], 'user-expiration')
+            $this->translator->trans('flash-message.success', [], 'UserExpiration')
         );
         return $this->redirectToRoute('app');
     }

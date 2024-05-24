@@ -5,7 +5,7 @@ import '@testing-library/jest-dom'
 import ToggleVideoFavorite from 'Components/ToolbarItems/ToggleVideoFavorite'
 import { ExercisePhaseTypesEnum } from 'StimulusControllers/ExerciseAndSolutionStore/ExercisePhaseTypesEnum'
 import { RootReducer } from 'StimulusControllers/ExerciseAndSolutionStore/rootSlice'
-import { render, screen, fireEvent, waitFor } from '../../../../../tests/jestUtils'
+import { render, screen } from '../../../../../tests/jestUtils'
 
 describe('toggleVideoFavorite-toolbar item', () => {
     const BASE_CONFIG = {

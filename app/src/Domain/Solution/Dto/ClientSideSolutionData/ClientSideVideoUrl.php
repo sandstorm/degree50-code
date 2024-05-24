@@ -2,6 +2,7 @@
 
 namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
+use App\Twig\AppRuntime;
 use JsonSerializable;
 
 /**
@@ -36,7 +37,7 @@ final readonly class ClientSideVideoUrl implements JsonSerializable
          * get the video's directory path
          * example: 'https://degree-instance.de/data/encoded_videos/uuid-123-456' -> '/app/public/data/encoded_videos/uuid-123-456'
          */
-        $videoDirectoryPathOnFileSystem = "/app/public/data/encoded_videos/" . implode("/", array_slice(explode("/", $baseUrl), -1));
+        $videoDirectoryPathOnFileSystem = "/app/public/data/" . AppRuntime::ENCODED_VIDEOS . "/" . implode("/", array_slice(explode("/", $baseUrl), -1));
         $hlsPath = "$videoDirectoryPathOnFileSystem/hls.m3u8";
         $mp4Path = "$videoDirectoryPathOnFileSystem/x264.mp4";
         $vttPath = "$videoDirectoryPathOnFileSystem/subtitles.vtt";

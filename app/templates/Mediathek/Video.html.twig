@@ -52,17 +52,17 @@
     class="overview-item"
 >
     <div class="overview-item__date">
-        <span class="sr-only">{{ "video.labels.createdLabel"|trans({}, 'base') }}: </span>{{ videoDto.video.createdAt|date("d.m.Y") }}
+        <span class="sr-only">{{ "video.labels.createdLabel"|trans({}, 'DegreeBase') }}: </span>{{ videoDto.video.createdAt|date("d.m.Y") }}
     </div>
     {% if videoDto.video.courses | length == 0 %}
         <div class="overview-item__status">
-            <span class="sr-only">{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPrivate"|trans({}, 'base') }}</span>
-            <i class="fas fa-eye-slash" aria-hidden="true" title="{{ "video.labels.statusPrivate"|trans({}, 'base') }}"></i>
+            <span class="sr-only">{{ "video.labels.statusLabel"|trans({}, 'DegreeBase') }}: {{ "video.labels.statusPrivate"|trans({}, 'DegreeBase') }}</span>
+            <i class="fas fa-eye-slash" aria-hidden="true" title="{{ "video.labels.statusPrivate"|trans({}, 'DegreeBase') }}"></i>
         </div>
     {% else %}
         <div class="overview-item__status">
-            <span class="sr-only">{{ "video.labels.statusLabel"|trans({}, 'base') }}: {{ "video.labels.statusPublic"|trans({}, 'base') }}</span>
-            <i class="fas fa-eye" aria-hidden="true" title="{{ "video.labels.statusPublic"|trans({}, 'base') }}"></i>
+            <span class="sr-only">{{ "video.labels.statusLabel"|trans({}, 'DegreeBase') }}: {{ "video.labels.statusPublic"|trans({}, 'DegreeBase') }}</span>
+            <i class="fas fa-eye" aria-hidden="true" title="{{ "video.labels.statusPublic"|trans({}, 'DegreeBase') }}"></i>
         </div>
     {% endif %}
     <a
@@ -70,30 +70,30 @@
         href="{{ path("mediathek__video--player", {id: videoDto.video.id}) }}"
         class="overview-item__title"
     >
-        <img alt="{{ "video.labels.previewImage"|trans({}, 'base') }}" height="50" width="100"
+        <img alt="{{ "video.labels.previewImage"|trans({}, 'DegreeBase') }}" height="50" width="100"
              src="{{ videoDto.video.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg" />
-        <span class="sr-only">{{ "video.labels.titleLabel"|trans({}, 'base') }}: </span> {{ videoDto.video.title }}
+        <span class="sr-only">{{ "video.labels.titleLabel"|trans({}, 'DegreeBase') }}: </span> {{ videoDto.video.title }}
     </a>
     {% if is_granted('video_edit', videoDto.video) %}
-        <div class="overview-item__actions" aria-label="{{ "video.labels.actionsLabel"|trans({}, 'base') }}">
+        <div class="overview-item__actions" aria-label="{{ "video.labels.actionsLabel"|trans({}, 'DegreeBase') }}">
             {% if app.user.isStudent %}
                 {{ _self.favorButton(videoDto) }}
             {% endif %}
             <button class="button button--type-link"
-                    aria-label="{{ "video.labels.toggleActions"|trans({}, 'base') }}">
+                    aria-label="{{ "video.labels.toggleActions"|trans({}, 'DegreeBase') }}">
                 <i class="fas fa-ellipsis-v"></i>
                 <div class="overview-item__actions-dropdown">
                     <a href="{{ path('mediathek__video--player', {id: videoDto.video.id}) }}">
-                        <i class="fas fa-play"></i> {{ "video.show.title"|trans({}, 'base') }}
+                        <i class="fas fa-play"></i> {{ "video.show.title"|trans({}, 'DegreeBase') }}
                     </a>
                     <a href="{{ path('mediathek__video--edit', {id: videoDto.video.id}) }}">
-                        <i class="fas fa-pencil-alt"></i> {{ "video.edit.title"|trans({}, 'base') }}
+                        <i class="fas fa-pencil-alt"></i> {{ "video.edit.title"|trans({}, 'DegreeBase') }}
                     </a>
                     <a
                         href="{{ path('mediathek__video--delete', {id: videoDto.video.id}) }}"
                         class="color-alert"
                     >
-                        <i class="fas fa-trash-alt"></i> {{ "video.delete.title"|trans({}, 'base') }}
+                        <i class="fas fa-trash-alt"></i> {{ "video.delete.title"|trans({}, 'DegreeBase') }}
                     </a>
                 </div>
             </button>
@@ -112,7 +112,7 @@
         <a
             href="{{ path('mediathek__video--favor', {id: videoDto.video.id}) }}"
             class="overview-item__action-favourite"
-            title="{{ "video.unfavor.title"|trans({}, 'base') }}"
+            title="{{ "video.unfavor.title"|trans({}, 'DegreeBase') }}"
             data-test-id="tile__favor-button-{{ videoDto.video.id }}"
         >
             <i class="fas fa-star" data-test-id="remove-video-from-favorites--{{ videoDto.video.id }}"></i>
@@ -122,7 +122,7 @@
             href="{{ path('mediathek__video--favor', {id: videoDto.video.id}) }}"
             class="overview-item__action-favourite"
             data-test-id="tile__favor-button-{{ videoDto.video.id }}"
-            title="{{ "video.favor.title"|trans({}, 'base') }}"
+            title="{{ "video.favor.title"|trans({}, 'DegreeBase') }}"
         >
             <i class="far fa-star" data-test-id="add-video-to-favorites--{{ videoDto.video.id }}"></i>
         </a>

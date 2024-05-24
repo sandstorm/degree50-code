@@ -1,6 +1,6 @@
 {% extends 'BaseFullscreen.html.twig' %}
 {% block layoutCssClass %}main--with-footer{% endblock %}
-{% block title %}{{ "course.new.title"|trans({}, 'base') }}{% endblock %}
+{% block title %}{{ "course.new.title"|trans({}, 'DegreeBase') }}{% endblock %}
 
 {% block body %}
     <div class="exercise-form">
@@ -8,13 +8,13 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="{{ path('exercise-overview') }}">{{ "course.index.title"|trans({}, 'base') }}</a>
+                        <a href="{{ path('exercise-overview') }}">{{ "course.index.title"|trans({}, 'DegreeBase') }}</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ "course.new.title"|trans({}, 'base') }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ "course.new.title"|trans({}, 'DegreeBase') }}</li>
                 </ol>
             </nav>
             <header class="content-header">
-                <h3>{{ "course.new.title"|trans({}, 'base') }}</h3>
+                <h3>{{ "course.new.title"|trans({}, 'DegreeBase') }}</h3>
             </header>
 
             {{ form_start(form) }}
@@ -31,8 +31,8 @@
                     <input
                         type="search"
                         class="form-control searchable-select-field__input"
-                        aria-label="{{ "course.labels.filterTutorsAria"|trans({}, 'base') }}"
-                        placeholder="{{ "course.labels.filterTutors"|trans({}, 'base') }}"
+                        aria-label="{{ "course.labels.filterTutorsAria"|trans({}, 'DegreeBase') }}"
+                        placeholder="{{ "course.labels.filterTutors"|trans({}, 'DegreeBase') }}"
                     />
                 </div>
                 {{ form_errors(form.users) }}
@@ -46,7 +46,7 @@
 
     <footer class="footer">
         <a class="button button--type-outline-primary footer__left"
-           href="{{ path('exercise-overview') }}">{{ "course.new.back"|trans({}, 'base') }}</a>
+           href="{{ path('exercise-overview') }}">{{ "course.new.back"|trans({}, 'DegreeBase') }}</a>
         <div class="footer__right">
             {{ form_row(form.save) }}
         </div>

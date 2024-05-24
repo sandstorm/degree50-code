@@ -54,13 +54,7 @@ trait DatabaseFixtureContextTrait
             if ($needsTruncate) {
                 $this->truncateTables($this->entityManager);
             }
-
-            // FIXME Check if this is needed at all!
-            //$proxyFactory = $entityManager->getProxyFactory();
-            //$proxyFactory->generateProxyClasses($entityManager->getMetadataFactory()->getAllMetadata());
         }
-
-        //$this->resetFactories();
     }
 
     /**

@@ -140,8 +140,6 @@ readonly class SolutionService
         // meaning we get the solutions of each of the members of the current team
         $exercisePhaseDependedOn = $exercisePhase->getDependsOnExercisePhase();
         if ($exercisePhaseDependedOn !== null && $exercisePhaseTeam != null) {
-            // FIXME
-            // we can probably retrieve previous phases with a single query instead
             return array_reduce(
                 $exercisePhaseTeam->getMembers()->toArray(),
                 function (array $carry, User $teamMember) use ($exercisePhaseDependedOn, $exercisePhaseTeam) {

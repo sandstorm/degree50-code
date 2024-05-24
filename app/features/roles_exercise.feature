@@ -347,7 +347,6 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
     #########################
     ### View Solutions
     #########################
-    # TODO: Once the ExercisePhaseController->showSolution method is fixed, implement tests for the view
     Scenario: As admin I can see the option to view solutions of all exercises in all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
         When I visit route "exercise-overview"

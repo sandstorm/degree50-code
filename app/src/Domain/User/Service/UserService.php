@@ -97,7 +97,7 @@ readonly class UserService
 
         /**
          * Why
-         *   We do not remove Dozent like a Student or Admin because we want to keep their
+         *   The different user groups are removed differently because in some conditions we want to keep their
          *   created educational content (used exercises, used videos, used attachments).
          *   Dozent will be anonymized and the Account made practically unusable.
          */
@@ -206,12 +206,6 @@ readonly class UserService
             $this->entityManager->remove($team);
         }
 
-        /**
-         * Due to ORM cascading options the following things will also happen when we delete a user:
-         *
-         *   1. All orphaned CourseRoles will be removed @see User::$courseRoles
-         *   2. All orphaned UserExerciseInteractions will be removed @see User::$userExerciseInteractions
-         */
         $this->entityManager->remove($user);
         $this->entityManager->flush();
     }

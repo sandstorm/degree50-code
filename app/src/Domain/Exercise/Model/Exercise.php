@@ -19,7 +19,6 @@ class Exercise
 {
     use IdentityTrait;
 
-    // TODO: exercise status enum
     const int EXERCISE_CREATED = 0;
     const int EXERCISE_FINISHED = 1;
     const int EXERCISE_PUBLISHED = 2;

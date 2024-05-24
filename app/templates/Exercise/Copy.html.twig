@@ -1,6 +1,6 @@
 {% extends 'BaseFullscreen.html.twig' %}
 
-{% block title %}{{ "exercise.edit.title"|trans({}, 'base') }}{% endblock %}
+{% block title %}{{ "exercise.edit.title"|trans({}, 'DegreeBase') }}{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -16,7 +16,7 @@
         </nav>
 
         <header class="content-header">
-            <h3>{{ "exercise.copy.title"|trans({}, 'base') }}</h3>
+            <h3>{{ "exercise.copy.title"|trans({}, 'DegreeBase') }}</h3>
         </header>
         <div class="exercise-form">
             {{ form_start(form) }}
@@ -30,7 +30,7 @@
     <footer class="footer">
         <div class="button-group footer__left">
             <a class="button button--type-outline-primary"
-               href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{{ "exercise.new.back"|trans({}, 'base') }}
+               href="{{ path('exercise-overview', {id: exercise.course.id}) }}">{{ "exercise.new.back"|trans({}, 'DegreeBase') }}
             </a>
         </div>
         <div class="footer__right">

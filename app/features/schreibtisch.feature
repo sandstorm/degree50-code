@@ -61,7 +61,7 @@ Feature: Students can access their available videos, exercises and materials via
         When I access "material1" from "Meine Materialien"
         And I edit material "material1" and change it to "updated material"
         And Save this material
-        Then The material "material1" should be "updated material" after a page reload
+        Then The material content should be "updated material" after a page reload
         And The original solution of phase "material1" remains untouched
 
     #############

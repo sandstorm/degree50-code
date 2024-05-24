@@ -101,7 +101,6 @@ body {
     @include transition(padding-left 250ms ease);
 }
 
-// TODO
 .highlight-focus-within {
     &:hover {
         color: $theme__color__white;

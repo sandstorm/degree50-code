@@ -4,6 +4,8 @@ namespace App\Domain\Exercise\Service;
 
 use App\Domain\Course\Model\Course;
 use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\Exercise\Dto\ExercisePhaseMetadata;
+use App\Domain\Exercise\Dto\ExercisePhaseWithMetadataDto;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Model\ExerciseStatus;
 use App\Domain\Exercise\Repository\ExerciseRepository;
@@ -192,31 +194,27 @@ readonly class ExerciseService
     private function getPhaseWithStatusMetadataForStudent(ExercisePhase $phase, User $user): array
     {
         $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
+        $phaseMetadata = new ExercisePhaseMetadata(
+            $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW,
+            $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::BEENDET,
+            $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
+            $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType())
+        );
+        $phaseWithMetadata = new ExercisePhaseWithMetadataDto($phase, $phaseMetadata);
 
-        // TODO: Refactor this in to Dtos
-        return [
-            'phase' => $phase,
-            'metadata' => [
-                'needsReview' => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::IN_REVIEW,
-                'isDone' => $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::BEENDET,
-                'phaseTitle' => $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
-                'iconClass' => $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType()),
-            ]
-        ];
+        return $phaseWithMetadata->toArray();
     }
 
     private function getPhaseWithStatusMetadataForDozent(ExercisePhase $phase): array
     {
-        // TODO: Refactor this in to Dtos
-        return [
-            'phase' => $phase,
-            'metadata' => [
-                'needsReview' => $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase),
-                'isDone' => false, // not relevant for dozenten, but needed inside the twig template
-                'phaseTitle' => $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
-                'iconClass' => $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType()),
-            ]
-        ];
+        $phaseMetadata = new ExercisePhaseMetadata(
+            $this->exercisePhaseService->phaseHasAtLeastOneSolutionToReview($phase),
+            false, // not relevant for dozenten, but needed inside the twig template
+            $this->exercisePhaseService->getPhaseTypeTitle($phase->getType()),
+            $this->exercisePhaseService->getPhaseTypeIconClasses($phase->getType())
+        );
+        $phaseWithMetadata = new ExercisePhaseWithMetadataDto($phase, $phaseMetadata);
+        return $phaseWithMetadata->toArray();
     }
 
     private function getPhaseWithStatusMetadataForTesting(ExercisePhase $phase): array

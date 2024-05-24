@@ -20,7 +20,6 @@ class Video
 {
     use IdentityTrait;
 
-    // TODO: use enum
     const int ENCODING_NOT_STARTED = 0;
     const int ENCODING_STARTED = 2;
     const int ENCODING_ERROR = 3;

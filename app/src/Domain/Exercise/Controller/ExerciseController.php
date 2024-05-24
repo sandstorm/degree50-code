@@ -231,7 +231,7 @@ class ExerciseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('exercise.new.messages.success', [], 'base')
+                $this->translator->trans('exercise.new.messages.success', [], 'DegreeBase')
             );
 
             return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
@@ -265,7 +265,7 @@ class ExerciseController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('exercise.edit.messages.success', [], 'base')
+                $this->translator->trans('exercise.edit.messages.success', [], 'DegreeBase')
             );
 
             return $this->redirectToRoute('exercise__edit', ['id' => $exercise->getId()]);
@@ -338,7 +338,7 @@ class ExerciseController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('exercise.delete.messages.success', [], 'base')
+            $this->translator->trans('exercise.delete.messages.success', [], 'DegreeBase')
         );
 
         return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);
@@ -416,7 +416,7 @@ class ExerciseController extends AbstractController
         if (!($exercisePhase instanceof ExercisePhase)) {
             $this->addFlash(
                 'danger',
-                $this->translator->trans('exerciseOverview.error.exercise-no-phase', [], 'base')
+                $this->translator->trans('exerciseOverview.error.exercise-no-phase', [], 'DegreeBase')
             );
 
             return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('exercise-overview'));

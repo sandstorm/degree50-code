@@ -21,13 +21,13 @@
                     href="{{ path('video-code__delete', {id: videoCode.id}) }}"
                     class="button button--type-danger button--size-small"
                 >
-                    <i class="fas fa-trash-alt"></i> {{ "exercisePhase.videoCodesList.delete"|trans({}, 'base') }}
+                    <i class="fas fa-trash-alt"></i> {{ "exercisePhase.videoCodesList.delete"|trans({}, 'DegreeBase') }}
                 </a>
             </div>
         </li>
     {% else %}
         <li>
-            {{ "exercisePhase.videoCodesList.noVideoCodes"|trans({}, 'base') }}
+            {{ "exercisePhase.videoCodesList.noVideoCodes"|trans({}, 'DegreeBase') }}
         </li>
     {% endfor %}
 </ul>

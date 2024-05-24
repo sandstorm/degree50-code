@@ -21,16 +21,16 @@ class ResetPasswordRequestFormType extends AbstractType
     {
         $builder
             ->add('email', null, [
-                'translation_domain' => 'user-password-reset',
+                'translation_domain' => 'UserPasswordReset',
                 'label' => 'form.label.email',
                 'attr' => ['autocomplete' => 'username'],
                 'required' => true,
                 'constraints' => [
                     new NotBlank([
-                        'message' => $this->translator->trans('form.validation.email-blank', [], 'user-registration'),
+                        'message' => $this->translator->trans('form.validation.email-blank', [], 'UserRegistration'),
                     ]),
                     new Email([
-                        'message' => $this->translator->trans('form.validation.email-invalid', [], 'user-registration'),
+                        'message' => $this->translator->trans('form.validation.email-invalid', [], 'UserRegistration'),
                     ]),
                 ],
             ]);

@@ -14,7 +14,7 @@ use function PHPUnit\Framework\assertSame;
 trait ExerciseContextTrait
 {
     /**
-     * TODO: setting status is only possible when the Exercise has at least one ExercisePhase (via UI)
+     * Setting status is only possible when the Exercise has at least one ExercisePhase (via UI)
      * @Given Exercise :exerciseId is published
      */
     public function ensureExerciseIsPublished($exerciseId): void
@@ -98,13 +98,7 @@ trait ExerciseContextTrait
 
         $this->entityManager->flush();
 
-        /**
-         * Why
-         *   I had the problem, that the Exercise was not created correctly.
-         *
-         * FIXME: Once the Exercise can be created via ExerciseService use that
-         *        instead. This functionality will be then tested there.
-         */
+        // Why: I had the problem, that the Exercise was not created correctly.
         /** @var Exercise $testExercise */
         $testExercise = $this->entityManager->find(Exercise::class, $exerciseId);
 

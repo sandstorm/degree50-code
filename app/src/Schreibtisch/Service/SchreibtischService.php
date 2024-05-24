@@ -105,7 +105,6 @@ readonly class SchreibtischService
                             'id' => $course->getId(),
                             'name' => $course->getName(),
                         ])->toArray(),
-                        // TODO: filter out duplicates?
                         'fachbereiche' => $video->getCourses()->map(function (Course $course) {
                             return $course->getFachbereich() ? [
                                 'id' => $course->getFachbereich()->getId(),

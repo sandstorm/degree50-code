@@ -58,7 +58,7 @@ class RegistrationController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('flash-message.registration.success', [], 'user-registration')
+                $this->translator->trans('flash-message.registration.success', [], 'UserRegistration')
             );
             return $this->redirectToRoute('app');
         }
@@ -88,7 +88,7 @@ class RegistrationController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->translator->trans('flash-message.email-confirmation.success', [], 'user-registration')
+                $this->translator->trans('flash-message.email-confirmation.success', [], 'UserRegistration')
             );
             return $this->redirectToRoute('app');
 
@@ -96,7 +96,7 @@ class RegistrationController extends AbstractController
             // Show generic error
             $this->addFlash(
                 'danger',
-                $this->translator->trans('flash-message.email-confirmation.error', [], 'user-registration')
+                $this->translator->trans('flash-message.email-confirmation.error', [], 'UserRegistration')
             );
 
             // Log exact error
@@ -135,7 +135,7 @@ class RegistrationController extends AbstractController
 
         $this->addFlash(
             'success',
-            $this->translator->trans('flash-message.email-confirmation.resend', [], 'user-registration')
+            $this->translator->trans('flash-message.email-confirmation.resend', [], 'UserRegistration')
         );
 
         return $this->redirectToRoute('app');
@@ -149,7 +149,7 @@ class RegistrationController extends AbstractController
             $user,
             (new TemplatedEmail())
                 ->to($user->getEmail())
-                ->subject($this->translator->trans('email.subject', [], 'user-registration'))
+                ->subject($this->translator->trans('email.subject', [], 'UserRegistration'))
                 ->htmlTemplate('Registration/confirmation_email.html.twig')
         );
     }

@@ -8,12 +8,12 @@
                 data-filename="{{ attachment.name }}"
                 href="{{ path('exercise-overview__attachment--delete', {id: attachment.id}) }}"
             >
-                <i class="fas fa-trash-alt"></i> {{ "exercisePhase.edit.deleteAttachment"|trans({}, 'base') }}
+                <i class="fas fa-trash-alt"></i> {{ "exercisePhase.edit.deleteAttachment"|trans({}, 'DegreeBase') }}
             </a>
         </li>
     {% else %}
         <li>
-            {{ "exercisePhase.edit.noAttachments"|trans({}, 'base') }}
+            {{ "exercisePhase.edit.noAttachments"|trans({}, 'DegreeBase') }}
         </li>
     {% endfor %}
 </ul>

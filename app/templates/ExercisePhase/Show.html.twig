@@ -13,13 +13,13 @@
         </div>
         <footer class="footer">
             <a class="button button--type-outline-primary footer_left" href="{{ path('exercise__show-phase', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}">
-                {{ "common.back"|trans({}, 'base') }}
+                {{ "common.back"|trans({}, 'DegreeBase') }}
             </a>
             <span class="footer__center">
-                {{ exercise.course.name }} / {{ exercise.name }} / {{ "common.phase"|trans({}, 'base') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
+                {{ exercise.course.name }} / {{ exercise.name }} / {{ "common.phase"|trans({}, 'DegreeBase') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
             </span>
             <a class="button button--type-primary footer_right" href="{{ path('exercise-phase-team--finish-reflexion', {id: exercisePhaseTeam.id}) }}">
-                {{ "exercisePhase.show.finish"|trans({}, 'base') }}
+                {{ "exercisePhase.show.finish"|trans({}, 'DegreeBase') }}
             </a>
         </footer>
     {% else %}
@@ -36,14 +36,14 @@
                         class="button button--type-outline-primary footer__left button--size-small"
                         href="{{ path('exercise__show-test-phase', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}"
                     >
-                        {{ (is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam)) ? "common.safeAndBack"|trans({}, 'base')  : "common.back"|trans({}, 'base') }}
+                        {{ (is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam)) ? "common.safeAndBack"|trans({}, 'DegreeBase')  : "common.back"|trans({}, 'DegreeBase') }}
                     </a>
                 {% else %}
                     <a
                         class="button button--type-outline-primary footer__left button--size-small"
                         href="{{ path('exercise__show-phase', {id: exercisePhase.belongsToExercise.id, phaseId: exercisePhase.id}) }}"
                     >
-                        {{ (is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam)) ? "common.safeAndBack"|trans({}, 'base') : "common.back"|trans({}, 'base') }}
+                        {{ (is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam)) ? "common.safeAndBack"|trans({}, 'DegreeBase') : "common.back"|trans({}, 'DegreeBase') }}
                     </a>
                 {% endif %}
 
@@ -51,20 +51,20 @@
 
             <span class="footer__center">
                 {% if testMode %}
-                    {{ "exercisePhase.show.test"|trans({}, 'base') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
+                    {{ "exercisePhase.show.test"|trans({}, 'DegreeBase') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
                 {% else %}
-                    {{ exercise.course.name }} / {{ exercise.name }} / {{ "common.phase"|trans({}, 'base') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
+                    {{ exercise.course.name }} / {{ exercise.name }} / {{ "common.phase"|trans({}, 'DegreeBase') }} {{ exercisePhase.sorting + 1 }}: {{ exercisePhase.name }}
                 {% endif %}
             </span>
             <div class="footer__right">
                 {% if is_granted('exercisePhaseTeam_updateSolution', exercisePhaseTeam) %}
                     {% if exercisePhase.type.value == 'material' %}
                     {% if exercisePhaseTeam.status.value == 'BEENDET' or exercisePhaseTeam.status.value == 'IN_REVIEW' %}
-                        <button id="finish-phase" class="button button--type-primary button--size-small" disabled="disabled">{{ "exercisePhase.show.finish"|trans({}, 'base') }}</button>
+                        <button id="finish-phase" class="button button--type-primary button--size-small" disabled="disabled">{{ "exercisePhase.show.finish"|trans({}, 'DegreeBase') }}</button>
                     {% else %}
                     {% if exercisePhase.reviewRequired %}
                         <script type="application/javascript">
-                            const confirmFinishPhaseText = '{{ "exercisePhase.show.messages.confirmFinish"|trans({}, 'base') }}'
+                            const confirmFinishPhaseText = '{{ "exercisePhase.show.messages.confirmFinish"|trans({}, 'DegreeBase') }}'
                             const finishReview = () => {
                                 if (window.confirm(confirmFinishPhaseText)) {
                                     window.location.assign("{{ path('exercise-phase-team__share-result', {id: exercisePhaseTeam.id}) }}")
@@ -73,7 +73,7 @@
                         </script>
                     {% else %}
                         <script type="application/javascript">
-                            const confirmFinishPhaseText = '{{ "exercisePhase.show.messages.confirmFinish2"|trans({}, 'base') }}'
+                            const confirmFinishPhaseText = '{{ "exercisePhase.show.messages.confirmFinish2"|trans({}, 'DegreeBase') }}'
                             const finishReview = () => {
                                 if (window.confirm(confirmFinishPhaseText)) {
                                     window.location.assign("{{ path('exercise-phase-team__share-result', {id: exercisePhaseTeam.id}) }}")
@@ -82,12 +82,12 @@
                         </script>
                     {% endif %}
                         <button id="finish-phase" class="button button--type-primary button--size-small" onclick="finishReview()">
-                            {{ "exercisePhase.show.finish"|trans({}, 'base') }}
+                            {{ "exercisePhase.show.finish"|trans({}, 'DegreeBase') }}
                         </button>
                     {% endif %}
                     {% else %}
                         <a class="button button--type-primary button--size-small" href="{{ path('exercise-phase-team__share-result', {id: exercisePhaseTeam.id}) }}">
-                            {{ "exercisePhase.show.finish"|trans({}, 'base') }}
+                            {{ "exercisePhase.show.finish"|trans({}, 'DegreeBase') }}
                         </a>
                     {% endif %}
                 {% endif %}

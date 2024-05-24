@@ -146,8 +146,6 @@ trait UserContextTrait
 
     /**
      * @Then No CourseRole of User :username exists
-     *
-     * TODO: userId vs userName? It's the same string but not the same meaning.
      */
     public function assertNoCourseRoleOfUserExists($username): void
     {

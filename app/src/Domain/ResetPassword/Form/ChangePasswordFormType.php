@@ -25,9 +25,9 @@ class ChangePasswordFormType extends AbstractType
         $builder
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'translation_domain' => 'user-password-reset',
+                'translation_domain' => 'UserPasswordReset',
                 'invalid_message' => $this->translator
-                    ->trans('form.validation.password-mismatch', [], 'user-password-reset'),
+                    ->trans('form.validation.password-mismatch', [], 'UserPasswordReset'),
                 'first_options' => [
                     'label' => 'form.label.password',
                     'attr' => ['autocomplete' => 'new-password'],
@@ -35,7 +35,7 @@ class ChangePasswordFormType extends AbstractType
                 'second_options' => [
                     'label' => 'form.label.password-confirmation',
                     'attr' => ['autocomplete' => 'new-password'],
-                    'help' => $this->translator->trans('form.validation.password-too-short', ['{{ limit }}' => User::MIN_PASSWORD_LENGTH], 'user-registration'),
+                    'help' => $this->translator->trans('form.validation.password-too-short', ['{{ limit }}' => User::MIN_PASSWORD_LENGTH], 'UserRegistration'),
                 ],
                 'required' => true,
                 // instead of being set onto the object directly,
@@ -45,12 +45,12 @@ class ChangePasswordFormType extends AbstractType
                 'constraints' => [
                     new NotBlank([
                         'message' => $this->translator
-                            ->trans('form.validation.password-blank', [], 'user-password-reset')
+                            ->trans('form.validation.password-blank', [], 'UserPasswordReset')
                     ]),
                     new Length([
                         'min' => User::MIN_PASSWORD_LENGTH,
                         'minMessage' => $this->translator
-                            ->trans('form.validation.password-too-short', ['{{ limit }}'], 'user-password-reset'),
+                            ->trans('form.validation.password-too-short', ['{{ limit }}'], 'UserPasswordReset'),
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),

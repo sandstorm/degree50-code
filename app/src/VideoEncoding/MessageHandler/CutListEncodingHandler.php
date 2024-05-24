@@ -8,6 +8,7 @@ use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\FileSystem\FileSystemService;
+use App\Twig\AppRuntime;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use App\VideoEncoding\Service\EncodingService;
 use App\VideoEncoding\Service\SubtitleService;
@@ -67,7 +68,7 @@ readonly class CutListEncodingHandler
         $cutVideo = $this->videoRepository->find($encodingTask->videoId);
 
         try {
-            $outputDirectory = VirtualizedFile::fromMountPointAndFilename('encoded_videos', $cutVideo->getId());
+            $outputDirectory = VirtualizedFile::fromMountPointAndFilename(AppRuntime::ENCODED_VIDEOS, $cutVideo->getId());
             $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
             $rootDir = $this->parameterBag->get('kernel.project_dir');
 

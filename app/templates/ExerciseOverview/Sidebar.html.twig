@@ -1,14 +1,14 @@
-<a class="button button--type-primary button--block" href="{{ path('exercise-overview') }}">{{ "exerciseOverview.index.allCourses"|trans({}, 'base') }}</a>
+<a class="button button--type-primary button--block" href="{{ path('exercise-overview') }}">{{ "exerciseOverview.index.allCourses"|trans({}, 'DegreeBase') }}</a>
 {% if is_granted('ROLE_DOZENT') or is_granted('ROLE_ADMIN') %}
     <a class="button button--type-outline-primary button--block" href="{{ path('exercise-overview__course--new') }}">
-        <i class="fas fa-plus"></i> {{ "course.new.title"|trans({}, 'base') }}
+        <i class="fas fa-plus"></i> {{ "course.new.title"|trans({}, 'DegreeBase') }}
     </a>
 {% endif %}
 
 <hr role="presentation"/>
 
 {% if sidebarItems | length == 0 %}
-    <p>{{ "exerciseOverview.index.noCourseAssigned"|trans({}, 'base') }}</p>
+    <p>{{ "exerciseOverview.index.noCourseAssigned"|trans({}, 'DegreeBase') }}</p>
 {% endif %}
 
 {% for item in sidebarItems %}

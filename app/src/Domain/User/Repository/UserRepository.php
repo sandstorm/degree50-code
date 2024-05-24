@@ -45,7 +45,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * TODO: don't we get Collections?
      * @return User[]
      */
     public function findAllExpiredUsers(): array

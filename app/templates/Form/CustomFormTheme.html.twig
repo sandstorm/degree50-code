@@ -39,7 +39,7 @@
                type="checkbox"/>
         <label for="{{ choice.value }}" class="video-checkbox__label">
             <img class="video-checkbox__image" alt="{{ choice.data.title }}" src="{{ choice.data.encodedVideoDirectory | virtualized_file_url }}/thumbnail.jpg" />
-            <span class="tile__date">{{ "video.labels.created"|trans({}, 'base') }}: {{ choice.data.createdAt|date("d.m.Y") }}</span>
+            <span class="tile__date">{{ "video.labels.created"|trans({}, 'DegreeBase') }}: {{ choice.data.createdAt|date("d.m.Y") }}</span>
             <span class="tile__title">{{ choice.data.title }}</span>
         </label>
     </div>

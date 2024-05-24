@@ -32,15 +32,15 @@ class MediathekVideoFormType extends AbstractType
         $courseChoices = $this->courseRepository->findAllForUserWithCriteria($user);
 
         $builder
-            ->add('title', TextType::class, ['label' => "video.labels.title", 'translation_domain' => 'base'])
-            ->add('description', TextareaType::class, ['label' => "video.labels.description", 'translation_domain' => 'base', 'required' => false])
+            ->add('title', TextType::class, ['label' => "video.labels.title", 'translation_domain' => 'DegreeBase'])
+            ->add('description', TextareaType::class, ['label' => "video.labels.description", 'translation_domain' => 'DegreeBase', 'required' => false])
             ->add('visiblePersons', TextareaType::class, [
                 'label' => "video.labels.visiblePersons",
                 'help' => 'video.help.visiblePersons',
-                'translation_domain' => 'base',
+                'translation_domain' => 'DegreeBase',
                 'required' => true])
-            ->add('dataPrivacyAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyAccepted", 'translation_domain' => 'base', 'required' => true])
-            ->add('dataPrivacyPermissionsAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyPermissionsAccepted", 'translation_domain' => 'base', 'required' => true])
+            ->add('dataPrivacyAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyAccepted", 'translation_domain' => 'DegreeBase', 'required' => true])
+            ->add('dataPrivacyPermissionsAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyPermissionsAccepted", 'translation_domain' => 'DegreeBase', 'required' => true])
             ->add('courses', EntityType::class, [
                 'class' => Course::class,
                 'choices' => $courseChoices,
@@ -51,10 +51,10 @@ class MediathekVideoFormType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'label' => 'video.labels.courses',
-                'translation_domain' => 'base',
+                'translation_domain' => 'DegreeBase',
                 'help' => 'video.help.courses',
             ])
-            ->add('save', SubmitType::class, ['label' => "video.labels.submit", 'translation_domain' => 'base']);
+            ->add('save', SubmitType::class, ['label' => "video.labels.submit", 'translation_domain' => 'DegreeBase']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
