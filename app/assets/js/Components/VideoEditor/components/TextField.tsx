@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 
 type Props = {
     id?: string
@@ -8,7 +8,7 @@ type Props = {
 
 const TextField = ({ id, text, updateText }: Props) => {
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        updateText(unescape(event.target.value))
+        updateText(decodeURI(event.target.value))
     }
 
     return (
@@ -16,10 +16,10 @@ const TextField = ({ id, text, updateText }: Props) => {
             <textarea
                 id={id}
                 placeholder={'Text einfügen'}
-                maxLength={200}
+                maxLength={1200}
                 spellCheck={false}
                 className="textarea"
-                value={unescape(text)}
+                value={decodeURI(text)}
                 onChange={handleChange}
             />
         </div>
