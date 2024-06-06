@@ -73,7 +73,7 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
-        if (!$exercisePhase || !$exercisePhaseTeam) {
+        if (!($exercisePhase && $exercisePhaseTeam)) {
             return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 

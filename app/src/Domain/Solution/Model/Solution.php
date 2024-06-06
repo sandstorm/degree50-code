@@ -19,7 +19,7 @@ class Solution
     #[ORM\Column(type: "datetimetz_immutable")]
     private DateTimeImmutable $update_timestamp;
 
-    #[ORM\OneToOne(targetEntity: Video::class, cascade: ["remove"])]
+    #[ORM\OneToOne(targetEntity: Video::class, cascade: ["remove"], orphanRemoval: true)]
     private ?Video $cutVideo = null;
 
     public function __construct(string $id = null, string $initialMaterial = null)

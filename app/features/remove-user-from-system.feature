@@ -1,4 +1,4 @@
-@fixtures @integration
+@fixtures @integration @debug
 Feature: Degree User is removed completely from system
 
     Background:
@@ -11,7 +11,35 @@ Feature: Degree User is removed completely from system
     Scenario: Remove Student with Exercise
         Given The User "student1@test.de" has CourseRole "DOZENT" in Course "course1"
         And An Exercise with ID "exerciseByStudent1" created by User "student1@test.de" in Course "course1" exists
+        And An ExercisePhase with the following data exists:
+            | id            | name | task                         | isGroupPhase | sorting | otherSolutionsAreAccessible | belongsToExercise  | dependsOnPhase | type          | videoAnnotationsActive | videoCodesActive |
+            | exercisePhase | Test | Description of ExercisePhase | true         | 0       | true                        | exerciseByStudent1 | null           | videoAnalysis | true                   | true             |
+
         And A Video with Id "video1" created by User "student1@test.de" exists
+
+        And I have a team with ID "team" belonging to exercise phase "exercisePhase" and creator "student1@test.de"
+        And I have a solution with ID "solution" belonging to team with ID "team" with solutionData as JSON
+        """
+            {
+              "annotations": [],
+              "videoCodes": [],
+              "customVideoCodesPool": [],
+              "cutList": [
+                  {
+                      "start": "00:01:03.315",
+                      "end": "00:01:30.000",
+                      "text": "Cut 1",
+                      "memo": "",
+                      "color": null,
+                      "url": "test",
+                      "offset": 0,
+                      "playbackRate": "1"
+                  }
+              ]
+            }
+        """
+        And A CutVideo with Id "cutVideo" belonging to Solution "solution" created by User "student1@test.de" exists
+
         # Why only an admin can delete a user
         And I am logged in as 'admin@test.de'
         When I delete User "student1@test.de"

@@ -22,7 +22,7 @@ class ExercisePhaseTeam
     #[ORM\JoinColumn(nullable: false)]
     private ExercisePhase $exercisePhase;
 
-    #[ORM\OneToOne(targetEntity: Solution::class, cascade: ["remove"])]
+    #[ORM\OneToOne(targetEntity: Solution::class, cascade: ["remove"], orphanRemoval: true)]
     private ?Solution $solution = null;
 
     /**

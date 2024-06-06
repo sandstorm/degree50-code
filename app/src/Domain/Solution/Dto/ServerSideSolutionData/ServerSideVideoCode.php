@@ -7,24 +7,23 @@ namespace App\Domain\Solution\Dto\ServerSideSolutionData;
  *
  * @see \App\Domain\Solution\Dto\ClientSideSolutionData\ClientSideSolutionDataBuilder
  **/
-final class ServerSideVideoCode
+final readonly class ServerSideVideoCode
 {
-    // TOD: public readonly
     private string $start;
     private string $end;
     private string $text;
     private string $memo;
-    private string $color;
     private string $idFromPrototype;
+    private ?string $color;
 
-    private function __construct(string $start, string $end, string $text, string $memo, string $color, string $idFromPrototype)
+    private function __construct(string $start, string $end, string $text, string $memo, string $idFromPrototype, ?string $color = null)
     {
         $this->start = $start;
         $this->end = $end;
         $this->text = $text;
         $this->memo = $memo;
-        $this->color = $color;
         $this->idFromPrototype = $idFromPrototype;
+        $this->color = $color;
     }
 
     /**
@@ -38,8 +37,8 @@ final class ServerSideVideoCode
             $input['end'],
             $input['text'],
             $input['memo'],
-            $input['color'],
             $input['idFromPrototype'],
+            $input['color'],
         );
     }
 
@@ -53,8 +52,8 @@ final class ServerSideVideoCode
             'end' => $this->end,
             'text' => $this->text,
             'memo' => $this->memo,
-            'color' => $this->color,
             'idFromPrototype' => $this->idFromPrototype,
+            'color' => $this->color,
         ];
     }
 
@@ -78,13 +77,13 @@ final class ServerSideVideoCode
         return $this->memo;
     }
 
-    public function getColor(): ?string
-    {
-        return $this->color;
-    }
-
     public function getIdFromPrototype(): string
     {
         return $this->idFromPrototype;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
     }
 }

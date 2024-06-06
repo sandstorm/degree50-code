@@ -194,4 +194,19 @@ trait VideoContextTrait
         $video = $this->videoRepository->find($videoId);
         assertEquals(null, $video);
     }
+
+    /**
+     * @Given A CutVideo with Id :cutVideoId belonging to Solution :solutionId created by User :username exists
+     */
+    public function aCutVideoWithIdBelongingToSolutionCreatedByUserExists(string $cutVideoId, string $solutionId, string $username): void
+    {
+        $cutVideo = $this->ensureVideoByUserExists($cutVideoId, $username);
+
+        /** @var Solution $solution */
+        $solution = $this->entityManager->find(Solution::class, $solutionId);
+        $solution->setCutVideo($cutVideo);
+
+        $this->entityManager->persist($solution);
+        $this->entityManager->flush();
+    }
 }
