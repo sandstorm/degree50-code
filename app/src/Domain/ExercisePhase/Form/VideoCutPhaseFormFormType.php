@@ -33,12 +33,15 @@ class VideoCutPhaseFormFormType extends ExercisePhaseFormType
 
         $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
 
+        $phaseHasVideoConfigured = $exercisePhase->getVideos()->count() > 0;
+
         $builder
             ->add('videos', EntityType::class, [
                 'class' => Video::class,
                 'choices' => $videoChoices,
                 'required' => true,
-                'disabled' => $exercisePhase->getHasSolutions(),
+                // Video selection is disabled if the exercise phase has solutions AND there is already a video selected
+                'disabled' => $exercisePhase->getHasSolutions() && $phaseHasVideoConfigured,
                 'choice_label' => 'title',
                 'multiple' => true,
                 'expanded' => true,
