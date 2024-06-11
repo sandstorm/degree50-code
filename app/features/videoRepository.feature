@@ -75,12 +75,12 @@ Feature: CRUD operations on the videoRepository
               ]
             }
             """
-        And I have a cut video "cut-video-1" belonging to solution "solution-1"
+        And A CutVideo with Id "cutVideo" of Video "video-1" belonging to Solution "solution-1" exists
 
     Scenario: Find videos by creator and not cut videos
         Then I only receive the regular video "video-1" and not the cut video "cut-video-1" for creator "foo@bar.de"
 
-    Scenario: When a Video is deleted, it is removed from Phases
+    Scenario: When a Video is deleted, it is removed from Phases and all cut videos are deleted as well
         When I delete the video "video-1"
         Then The video "video-1" is deleted
         And The ExercisePhase "ex-p1" exists
@@ -88,7 +88,7 @@ Feature: CRUD operations on the videoRepository
         And The Exercise "ex" exists
         And The ExercisePhaseTeam "team-1" exists
         And The Solution "solution-1" exists
-        And The Video "cut-video-1" exists
+        And No CutVideo of original "video-1" exists
+        And The CutVideo with Id "cutVideo" does not exist
         And The Exercise "ex-2" exists
         And 3 exercise phases should exist
-

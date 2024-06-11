@@ -19,6 +19,7 @@ trait CourseContextTrait
     public function iHaveACourseWithIDForUser($courseId): void
     {
         $course = new Course($courseId);
+        $course->setName($courseId);
         $courseRole = new CourseRole();
         $courseRole->setUser($this->currentUser);
         $courseRole->setCourse($course);

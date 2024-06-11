@@ -484,11 +484,12 @@ class ExercisePhaseController extends AbstractController
              * @var MaterialPhase $exercisePhase
              **/
             $newSolution = new Solution(
+                $exercisePhaseTeam,
                 null,
                 $exercisePhase->getMaterial()
             );
         } else {
-            $newSolution = new Solution();
+            $newSolution = new Solution($exercisePhaseTeam);
         }
 
         $exercisePhaseTeam->setSolution($newSolution);

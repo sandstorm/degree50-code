@@ -13,14 +13,14 @@ Feature: Users expire and are removed automatically. They are notified before ex
         Given A User "admin@test.de" with the role "ROLE_ADMIN" exists
         And the expiration date of user "admin@test.de" is set to "-1 day" from now
         When expired users are removed
-        Then User "admin@test.de" should exist
+        Then User with Username "admin@test.de" should exist
 
     @integration
     Scenario: Do not remove Dozent after expiration
         And A User "dozent@test.de" with the role "ROLE_DOZENT" exists
         And the expiration date of user "dozent@test.de" is set to "-1 day" from now
         When expired users are removed
-        Then User "dozent@test.de" should exist
+        Then User with Username "dozent@test.de" should exist
 
     @integration @email
     Scenario: User is notified before expiration

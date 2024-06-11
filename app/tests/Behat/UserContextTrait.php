@@ -127,16 +127,16 @@ trait UserContextTrait
     }
 
     /**
-     * @Then User :username should not exist
+     * @Then No User with Username :username does exist
      */
-    public function assertUserDoesNotExist($username): void
+    public function assertUserDoesNotExist(string $username): void
     {
         $user = $this->getUserByEmail($username);
         assertEquals(null, $user);
     }
 
     /**
-     * @Then User :username should exist
+     * @Then User with Username :username should exist
      */
     public function assertUserExists(string $username): void
     {

@@ -6,8 +6,8 @@ namespace App\Tests\Behat;
 
 use App\DataExport\Dto\TextFileDto;
 use App\DataExport\Service\DegreeDataToCsvService;
-use App\Domain\Attachment\Repository\AttachmentRepository;
 use App\Domain\CourseRole\Model\CourseRole;
+use App\Domain\CutVideo\Repository\CutVideoRepository;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Model\ExerciseStatus;
 use App\Domain\Exercise\Repository\ExerciseRepository;
@@ -133,6 +133,7 @@ final class DegreeContext implements Context
         private readonly VideoRepository $videoRepository,
         private readonly SolutionRepository $solutionRepository,
         private readonly TokenStorageInterface $tokenStorage,
+        private readonly CutVideoRepository $cutVideoRepository,
     ) {
         $this->setupPlaywright();
     }
@@ -897,7 +898,7 @@ final class DegreeContext implements Context
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
         // create solution
-        $solution = new Solution($id, $content);
+        $solution = new Solution($exercisePhaseTeam, $id, $content);
 
         // add solution to team
         $exercisePhaseTeam->setSolution($solution);

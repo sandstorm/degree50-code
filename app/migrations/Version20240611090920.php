@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20240611090920 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE TABLE cut_video (id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', original_video_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', solution_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetimetz_immutable)\', encoding_status INT NOT NULL, video_duration DOUBLE PRECISION DEFAULT NULL, encoding_started DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetimetz_immutable)\', encoding_finished DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetimetz_immutable)\', subtitle_file_virtual_path_and_filename VARCHAR(255) DEFAULT NULL, encoded_video_directory_virtual_path_and_filename VARCHAR(255) DEFAULT NULL, INDEX IDX_384D5510A9EE75F (original_video_id), UNIQUE INDEX UNIQ_384D55101C0BE183 (solution_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE cut_video ADD CONSTRAINT FK_384D5510A9EE75F FOREIGN KEY (original_video_id) REFERENCES video (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE cut_video ADD CONSTRAINT FK_384D55101C0BE183 FOREIGN KEY (solution_id) REFERENCES solution (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE exercise_phase_team DROP FOREIGN KEY FK_7416C7511C0BE183');
+        $this->addSql('ALTER TABLE exercise_phase_team DROP FOREIGN KEY FK_7416C7519F65B160');
+        $this->addSql('DROP INDEX UNIQ_7416C7511C0BE183 ON exercise_phase_team');
+        $this->addSql('ALTER TABLE exercise_phase_team DROP solution_id');
+        $this->addSql('ALTER TABLE exercise_phase_team ADD CONSTRAINT FK_7416C7519F65B160 FOREIGN KEY (exercise_phase_id) REFERENCES exercise_phase (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE solution DROP FOREIGN KEY FK_9F3329DBB5C6F244');
+        $this->addSql('DROP INDEX UNIQ_9F3329DBB5C6F244 ON solution');
+        $this->addSql('ALTER TABLE solution ADD exercise_phase_team_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', DROP cut_video_id');
+        $this->addSql('ALTER TABLE solution ADD CONSTRAINT FK_9F3329DB7B50751B FOREIGN KEY (exercise_phase_team_id) REFERENCES exercise_phase_team (id) ON DELETE CASCADE');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_9F3329DB7B50751B ON solution (exercise_phase_team_id)');
+    }
+
+    public function down(Schema $schema): void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE cut_video DROP FOREIGN KEY FK_384D5510A9EE75F');
+        $this->addSql('ALTER TABLE cut_video DROP FOREIGN KEY FK_384D55101C0BE183');
+        $this->addSql('DROP TABLE cut_video');
+        $this->addSql('ALTER TABLE exercise_phase_team DROP FOREIGN KEY FK_7416C7519F65B160');
+        $this->addSql('ALTER TABLE exercise_phase_team ADD solution_id CHAR(36) DEFAULT NULL COMMENT \'(DC2Type:guid)\'');
+        $this->addSql('ALTER TABLE exercise_phase_team ADD CONSTRAINT FK_7416C7511C0BE183 FOREIGN KEY (solution_id) REFERENCES solution (id)');
+        $this->addSql('ALTER TABLE exercise_phase_team ADD CONSTRAINT FK_7416C7519F65B160 FOREIGN KEY (exercise_phase_id) REFERENCES exercise_phase (id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_7416C7511C0BE183 ON exercise_phase_team (solution_id)');
+        $this->addSql('ALTER TABLE solution DROP FOREIGN KEY FK_9F3329DB7B50751B');
+        $this->addSql('DROP INDEX UNIQ_9F3329DB7B50751B ON solution');
+        $this->addSql('ALTER TABLE solution ADD cut_video_id CHAR(36) DEFAULT NULL COMMENT \'(DC2Type:guid)\', DROP exercise_phase_team_id');
+        $this->addSql('ALTER TABLE solution ADD CONSTRAINT FK_9F3329DBB5C6F244 FOREIGN KEY (cut_video_id) REFERENCES video (id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_9F3329DBB5C6F244 ON solution (cut_video_id)');
+    }
+}

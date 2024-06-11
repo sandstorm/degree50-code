@@ -17,6 +17,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
             | foo_bar | Foo  | #ffffff |
 
     Scenario: Conversion for general purpose (e.g. exercisePhase/show, exercisePhase/update-solution, exercisePhase/update-currentEditor)
+        Given A Video with Id "video-1" created by User "foo@bar.de" exists
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
@@ -78,7 +79,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
               ]
             }
             """
-        Given I have a cut video "cut-video-1" belonging to solution "solution-1"
+        Given A CutVideo with Id "cut-video-1" of Video "video-1" belonging to Solution "solution-1" exists
         When I convert the persisted serverSideSolution for team "team-1" to the clientSideSolution
         Then I get normalized client side data as JSON
         """

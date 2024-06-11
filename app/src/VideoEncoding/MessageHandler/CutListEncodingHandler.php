@@ -2,6 +2,8 @@
 
 namespace App\VideoEncoding\MessageHandler;
 
+use App\Domain\CutVideo\Model\CutVideo;
+use App\Domain\CutVideo\Repository\CutVideoRepository;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Video\Model\Video;
@@ -45,7 +47,8 @@ readonly class CutListEncodingHandler
         private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         private EncodingService             $encodingService,
         private SubtitleService             $subtitleService,
-        private ParameterBagInterface       $parameterBag
+        private ParameterBagInterface       $parameterBag,
+        private CutVideoRepository $cutVideoRepository
     )
     {
     }
@@ -65,7 +68,8 @@ readonly class CutListEncodingHandler
             return;
         }
 
-        $cutVideo = $this->videoRepository->find($encodingTask->videoId);
+        /* @var CutVideo $cutVideo */
+        $cutVideo = $this->cutVideoRepository->find($encodingTask->videoId);
 
         try {
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename(AppRuntime::ENCODED_VIDEOS, $cutVideo->getId());
@@ -78,7 +82,7 @@ readonly class CutListEncodingHandler
             $this->logger->info('Concatenating clips into video...');
             $mp4Url = $this->encodingService->concatMp4Clips($clipPaths, $localOutputDirectory);
 
-            // TODO: remove temporary clips?
+            // TODO: do we remove temporary clips?
 
             $cutVideo->setVideoDuration($this->encodingService->probeForVideoDuration($mp4Url));
 
@@ -87,8 +91,6 @@ readonly class CutListEncodingHandler
             $cutVideo->setEncodedVideoDirectory($outputDirectory);
 
             $this->logger->info("Done combining clips into video <$mp4Url>");
-
-            $cutVideo->setTitle('Cut_video, ' . $cutVideo->getCreator()->getUsername() . ', ' . $exercisePhaseTeam->getExercisePhase()->getName());
 
             $originalVideoPath = $rootDir . '/public' . $cutList[0]->url;
             // get path without file name of mp4 and append "subtitles.vtt"
@@ -104,7 +106,7 @@ readonly class CutListEncodingHandler
 
                 file_put_contents($newSubtitlesPath, $newSubtitles);
 
-                $cutVideo->setUploadedSubtitleFile(VirtualizedFile::fromString($newSubtitlesPath));
+                $cutVideo->setSubtitleFile(VirtualizedFile::fromString($newSubtitlesPath));
 
                 $this->logger->info("Done cutting subtitles");
             }

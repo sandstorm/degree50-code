@@ -12,6 +12,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given I have a team with ID "team-1" belonging to exercise phase "ex-p1"
         Given A user "testuser@bar.de" exists
         Given User "testuser@bar.de" belongs to "team-1"
+        Given A Video with Id "video-1" created by User "foo@bar.de" exists
         Given I have a predefined videoCodePrototype belonging to exercise phase "ex-p1" and with properties
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
@@ -78,7 +79,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
               ]
             }
             """
-        Given I have a cut video "cut-video-1" belonging to solution "solution-1"
+        Given A CutVideo with Id "cut-video-1" of Video "video-1" belonging to Solution "solution-1" exists
         When I convert all data for "course-1" to csv
         Then I have CSVDto-list containing a file "README.md"
         # Note that {{CREATED_AT_DATE}} will be interpolated during the step and be set to the current day.
@@ -87,13 +88,13 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Then I have a CSVDto-list containing a file "loesungen.csv" with a CSV content string
         """
         loesungsID;kursID;kursName;aufgabenID;aufgabenTitel;aufgabenBeschreibung;erstellungsDatum;status;phasenID;istGruppenphase;phasenTitel;phasenBeschreibung;phasenTyp;bautAufVorherigerPhaseAuf;vorherigePhasenID;teamID;teamErsteller
-        solution-1;course-1;;exercise-1;;;{{CREATED_AT_DATE}};created;ex-p1;Nein;;;videoAnalysis;Nein;-;team-1;foo@bar.de
+        solution-1;course-1;course-1;exercise-1;exercise-1;;{{CREATED_AT_DATE}};created;ex-p1;Nein;ex-p1;;videoAnalysis;Nein;-;team-1;foo@bar.de
 
         """
         Then I have a CSVDto-list containing a file "kurs-mitglieder.csv" with a CSV content string
         """
         kursID;kursName;kursRolle;nutzerName
-        course-1;;DOZENT;foo@bar.de
+        course-1;course-1;DOZENT;foo@bar.de
 
         """
         Then I have a CSVDto-list containing a file "team-mitglieder.csv" with a CSV content string
@@ -136,6 +137,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Given A user "testuser@bar.de" exists
         Given User "testuser@bar.de" belongs to "team-1"
         Given User "testuser@bar.de" belongs to "team-2"
+        Given A Video with Id "video-1" created by User "foo@bar.de" exists
         Given I have a predefined videoCodePrototype belonging to exercise phase "ex-p1" and with properties
             | id      | name | color   |
             | foo_bar | Foo  | #ffffff |
@@ -202,7 +204,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
               ]
             }
             """
-        Given I have a cut video "cut-video-1" belonging to solution "solution-1"
+        Given A CutVideo with Id "cut-video-1" of Video "video-1" belonging to Solution "solution-1" exists
         Given I have a solution with ID "solution-2" belonging to team with ID "team-2" with solutionData as JSON
             """
             {
@@ -230,7 +232,7 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
         Then I have a CSVDto-list containing a file "loesungen.csv" with a CSV content string
         """
         loesungsID;kursID;kursName;aufgabenID;aufgabenTitel;aufgabenBeschreibung;erstellungsDatum;status;phasenID;istGruppenphase;phasenTitel;phasenBeschreibung;phasenTyp;bautAufVorherigerPhaseAuf;vorherigePhasenID;teamID;teamErsteller
-        solution-1;course-1;;exercise-1;;;{{CREATED_AT_DATE}};created;ex-p1;Nein;;;videoAnalysis;Nein;-;team-1;foo@bar.de
-        solution-2;course-1;;exercise-1;;;{{CREATED_AT_DATE}};created;ex-p2;Nein;;;videoAnalysis;Ja;ex-p1;team-2;foo@bar.de
+        solution-1;course-1;course-1;exercise-1;exercise-1;;{{CREATED_AT_DATE}};created;ex-p1;Nein;ex-p1;;videoAnalysis;Nein;-;team-1;foo@bar.de
+        solution-2;course-1;course-1;exercise-1;exercise-1;;{{CREATED_AT_DATE}};created;ex-p2;Nein;ex-p2;;videoAnalysis;Ja;ex-p1;team-2;foo@bar.de
 
         """

@@ -13,6 +13,7 @@ use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
 use App\Domain\VideoCode\Model\VideoCode;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use function PHPUnit\Framework\assertEquals;
@@ -29,7 +30,9 @@ trait ExercisePhaseContextTrait
     {
         /** @var Exercise $exercise */
         $exercise = $this->entityManager->find(Exercise::class, $exerciseId);
-        $exercise->addPhase(new VideoAnalysisPhase($exercisePhaseId));
+        $exercisePhase = new VideoAnalysisPhase($exercisePhaseId);
+        $exercisePhase->setName($exercisePhaseId);
+        $exercise->addPhase($exercisePhase);
 
         $this->entityManager->persist($exercise);
         $this->entityManager->flush();
@@ -123,7 +126,7 @@ trait ExercisePhaseContextTrait
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
 
-        $solution = new Solution($solutionId);
+        $solution = new Solution($exercisePhaseTeam, $solutionId);
         $arrayFromJson = json_decode($serverSideSolutionListsAsJSON->getRaw(), true);
         $serverSideSolutionLists = ServerSideSolutionData::fromArray($arrayFromJson);
         $solution->setSolution($serverSideSolutionLists);
@@ -142,7 +145,7 @@ trait ExercisePhaseContextTrait
         /** @var ExercisePhaseTeam $exercisePhaseTeam */
         $exercisePhaseTeam = $this->entityManager->find(ExercisePhaseTeam::class, $teamId);
 
-        $solution = new Solution($solutionId);
+        $solution = new Solution($exercisePhaseTeam, $solutionId);
         $exercisePhaseTeam->setSolution($solution);
 
         $this->entityManager->persist($solution);
@@ -292,7 +295,7 @@ trait ExercisePhaseContextTrait
         $solution = $this->entityManager->find(Solution::class, $solutionId);
 
         if (!$solution) {
-            $solution = new Solution($solutionId);
+            $solution = new Solution($team, $solutionId);
             $this->entityManager->persist($solution);
         }
 
@@ -642,5 +645,14 @@ trait ExercisePhaseContextTrait
         $creator = $exercisePhaseTeam->getCreator();
 
         assertNotEquals($username, $creator->getUsername());
+    }
+
+    /**
+     * @Then The Solution with ID :solutionId does not exist
+     */
+    public function theSolutionWithIDDoesNotExist(string $solutionId): void
+    {
+        $solution = $this->solutionRepository->find($solutionId);
+        assertEquals(null, $solution);
     }
 }

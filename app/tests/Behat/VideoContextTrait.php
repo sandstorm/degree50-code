@@ -2,19 +2,18 @@
 
 namespace App\Tests\Behat;
 
-use App\Domain\Video\Model\Video;
 use App\Domain\Course\Model\Course;
-use App\Domain\User\Model\User;
+use App\Domain\CutVideo\Model\CutVideo;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\Solution\Model\Solution;
+use App\Domain\User\Model\User;
+use App\Domain\Video\Model\Video;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
-
 use DateTimeImmutable;
 use function PHPUnit\Framework\assertEmpty;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;
 use function PHPUnit\Framework\assertNotNull;
-use function PHPUnit\Framework\assertNull;
 
 /**
  *
@@ -113,25 +112,6 @@ trait VideoContextTrait
     }
 
     /**
-     * Creates a cut video for the currently logged in user (use the according step to log in first)
-     *
-     * @Given I have a cut video :cutVideoId belonging to solution :solutionId
-     */
-    public function iHaveACutVideoBelongingToSolution($cutVideoId, $solutionId): void
-    {
-        // NOTE: we do not save a video file here only the wrapping model,
-        // because we do not test for the file itself!
-        $cutVideo = $this->ensureVideoByUserExists($cutVideoId, $this->currentUser->getId());
-
-        /** @var Solution $solution */
-        $solution = $this->entityManager->find(Solution::class, $solutionId);
-        $solution->setCutVideo($cutVideo);
-
-        $this->entityManager->persist($solution);
-        $this->entityManager->flush();
-    }
-
-    /**
      * @Then I only receive the regular video :videoId and not the cut video :cutVideoId for creator :userId
      */
     public function iOnlyReceiveTheRegularVideoAndNotTheCutVideoForCreator($videoId, $cutVideoId, $userId): void
@@ -196,17 +176,53 @@ trait VideoContextTrait
     }
 
     /**
-     * @Given A CutVideo with Id :cutVideoId belonging to Solution :solutionId created by User :username exists
+     * @Given A CutVideo with Id :cutVideoId of Video :videoId belonging to Solution :solutionId exists
      */
-    public function aCutVideoWithIdBelongingToSolutionCreatedByUserExists(string $cutVideoId, string $solutionId, string $username): void
+    public function aCutVideoWithIdBelongingToSolutionCreatedByUserExists(string $cutVideoId, string $videoId, string $solutionId): void
     {
-        $cutVideo = $this->ensureVideoByUserExists($cutVideoId, $username);
-
+        /** @var Video $video */
+        $video = $this->videoRepository->find($videoId);
         /** @var Solution $solution */
         $solution = $this->entityManager->find(Solution::class, $solutionId);
+
+        $cutVideo = new CutVideo($video, $solution, $cutVideoId);
+        $cutVideo->setEncodedVideoDirectory(VirtualizedFile::fromMountPointAndFilename('encoded_videos', $cutVideoId));
+        $cutVideo->setEncodingStatus(Video::ENCODING_FINISHED);
+        // fixed creation date for video
+        $cutVideo->setCreatedAt((new DateTimeImmutable())->setTimestamp(1711960922));
+
         $solution->setCutVideo($cutVideo);
 
+        $this->entityManager->persist($cutVideo);
         $this->entityManager->persist($solution);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @Then The CutVideo with Id :videoId does not exist
+     */
+    public function theCutVideoDoesNotExist($cutVideoId): void
+    {
+        $cutVideo = $this->cutVideoRepository->find($cutVideoId);
+        assertEquals(null, $cutVideo);
+    }
+
+    /**
+     * @Then The CutVideo with Id :cutVideoId exists
+     */
+    public function theCutVideoExists($cutVideoId): void
+    {
+        $cutVideo = $this->cutVideoRepository->find($cutVideoId);
+        assertNotNull($cutVideo);
+    }
+
+    /**
+     * @Then No CutVideo of original :originalVideoId exists
+     */
+    public function noCutVideoOfOriginalExists(string $originalVideoId): void
+    {
+        $cutVideos = $this->cutVideoRepository->findBy(['originalVideo' => $originalVideoId]);
+        $count = count($cutVideos);
+        assertEquals(0, $count);
     }
 }

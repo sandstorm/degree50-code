@@ -3,6 +3,7 @@
 namespace App\Domain\ExercisePhaseTeam\Controller;
 
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
+use App\Domain\CutVideo\Model\CutVideo;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
@@ -457,29 +458,26 @@ class ExercisePhaseTeamController extends AbstractController
             return;
         }
 
-        $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutList = $solution->getCutList();
+        $solution = $exercisePhaseTeam->getSolution();
+        $solutionData = $solution->getSolution();
+        $cutList = $solutionData->getCutList();
 
         if (empty($cutList)) {
             return;
         }
 
-        $cutListVideo = $this->createVideo($exercisePhaseTeam->getCreator());
-        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutListVideo->getId()));
+        $cutVideo = $this->createCutVideo($exercisePhase->getVideos()->first(), $solution);
+        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutVideo->getId()));
     }
 
-    private function createVideo(User $creator): ?Video
+    private function createCutVideo(Video $originalVideo, Solution $solution): ?CutVideo
     {
-        $videoUuid = Uuid::uuid4()->toString();
-        $video = new Video($videoUuid);
-        $video->setCreator($creator);
+        $cutVideoUuid = Uuid::uuid4()->toString();
+        $cutVideo = new CutVideo($originalVideo, $solution, $cutVideoUuid);
 
-        $video->setTitle('Video to be cut <' . $videoUuid . '>');
-        $video->setDataPrivacyAccepted(true);
-        $video->setDataPrivacyPermissionsAccepted(true);
-        $this->entityManager->persist($video);
+        $this->entityManager->persist($cutVideo);
         $this->entityManager->flush();
 
-        return $video;
+        return $cutVideo;
     }
 }

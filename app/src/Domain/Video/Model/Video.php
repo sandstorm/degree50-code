@@ -211,14 +211,10 @@ class Video
         return $this;
     }
 
-    public function getVideoDuration(): ?float
+    public function getVideoDuration(): float
     {
-        if ($this->videoDuration) {
-            return $this->videoDuration;
-        } else {
-            // if the video has not yet been initialized, we do not yet have a duration
-            return 0;
-        }
+        // if the video has not yet been encoded, we do not yet have a duration
+        return $this->videoDuration ?? 0;
     }
 
     public function setVideoDuration(?float $videoDuration): void

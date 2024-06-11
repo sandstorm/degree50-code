@@ -3,11 +3,9 @@
 namespace App\Domain\Video\Repository;
 
 use App\Domain\Course\Model\Course;
-use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 class VideoRepository extends ServiceEntityRepository
@@ -43,17 +41,6 @@ class VideoRepository extends ServiceEntityRepository
         }
 
         return $qb
-            // We only want to show videos which where manually uploaded, and not
-            // cut videos. Therefore we left join with the solutions table
-            // and check if the video is actually a cut video on the solution and if so, filter it out.
-            ->leftJoin(
-                Solution::class,
-                'solution',
-                Join::WITH,
-                'video.id = solution.cutVideo'
-            )
-            ->andWhere('solution.cutVideo IS NULL')
-            // run query
             ->getQuery()
             ->getResult();
     }
@@ -91,5 +78,11 @@ class VideoRepository extends ServiceEntityRepository
     public function findByCreator(User $user): array
     {
         return $this->findBy(['creator' => $user]);
+    }
+
+    public function deleteVideo(Video $video): void
+    {
+        $this->getEntityManager()->remove($video);
+        $this->getEntityManager()->flush();
     }
 }
