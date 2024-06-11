@@ -88,7 +88,6 @@ Feature: CRUD operations on the videoRepository
         And The Exercise "ex" exists
         And The ExercisePhaseTeam "team-1" exists
         And The Solution "solution-1" exists
-        And No CutVideo of original "video-1" exists
         And The CutVideo with Id "cutVideo" does not exist
         And The Exercise "ex-2" exists
         And 3 exercise phases should exist

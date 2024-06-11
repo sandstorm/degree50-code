@@ -1,10 +1,6 @@
 @fixtures @conversionForAPI @integration
+@debug
 Feature: Solution from Model is converted to normalized APISolution by SolutionService
-
-    # TODO:
-    # we should also test the doctrine filter deactivation inside the SolutionService-methods.
-    # However I currently don't know how to best test this, because I don't understand why we sometimes need
-    # to deactivate the filter, to successfully retrieve certain models, yet.
 
     Background:
         Given I am logged in as "foo@bar.de"
@@ -83,7 +79,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
         When I convert the persisted serverSideSolution for team "team-1" to the clientSideSolution
         Then I get normalized client side data as JSON
         """
-                {
+        {
           "solutions": {
             "byId": {
               "solution-1": {
@@ -103,9 +99,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "userId": "foo@bar.de",
                 "cutVideo": {
                   "id": "cut-video-1",
-                  "name": "TEST_Video_cut-video-1",
+                  "name": "Video-Schnitt von c > ex > ex-p1",
                   "createdAt": "01.04.2024",
-                  "description": "",
                   "duration": 0,
                   "url": {
                     "hls": "",
