@@ -275,7 +275,7 @@ video:
         statusPublic: 'Video ist öffentlich'
         statusLabel: 'Status des Videos'
         description: 'Beschreibung'
-        visiblePersons: 'Zu sehende Personen im Video'
+        personalNotes: 'Persönliche Notizen zum Video'
         courses: 'Kurse mit Berechtigung für dieses Video'
         dataPrivacyAccepted: 'Ich bestätige, dass dieser Upload den Datenschutzbestimmungen und den Nutzungsbedingungen entspricht.'
         dataPrivacyPermissionsAccepted: 'Ich bestätige, dass die datenschutzrechtliche Einwilligung der betroffenen Personen schriftlich eingeholt wurde, bei minderjährigen Betroffenen von deren gesetzlichen Vertretern, und wirksam vorliegt. Die Betroffenen wurden über ihre Rechte im Rahmen der Datenschutzgrundverordnung informiert. Weiterhin bestätige ich, dass die hochgeladenen Inhalte (insbesondere Videos) mit pseudonymisierten Informationen über die abgebildeten oder zu hörenden Personen versehen wurden.'
@@ -285,7 +285,6 @@ video:
         toggleActions: 'Aktionen ein/ausblenden'
     help:
         courses: 'Das Video kann nur von den jeweiligen Lernenden des Kurses angeschaut werden. Ohne ausgewählte Kurse ist das Video privat.'
-        visiblePersons: 'Bitte alle Personen auflisten (Vor- und Nachname) die im Video zu sehen sind. Dieses Feld ist aus Datenschutzgründen relevant.'
     upload:
         title: 'Video hochladen'
         back: 'Zurück zur Übersicht'

@@ -14,7 +14,7 @@ final class Version20240611090920 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Introduce CutVideo entity and cascading foreign key constraints on db level';
     }
 
     public function up(Schema $schema): void
