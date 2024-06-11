@@ -23,7 +23,7 @@ class EncodingService
     const array CONFIG = [
         'ffmpeg.binaries' => '/usr/bin/ffmpeg',
         'ffprobe.binaries' => '/usr/bin/ffprobe',
-        'timeout' => 3600, // The timeout for the underlying process
+        'timeout' => 3600 * 3, // The timeout for the underlying process -> 3 hours
         'ffmpeg.threads' => 12,   // The number of threads that FFmpeg should use
     ];
 
