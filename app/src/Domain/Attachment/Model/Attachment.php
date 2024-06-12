@@ -2,7 +2,6 @@
 
 namespace App\Domain\Attachment\Model;
 
-use App\Domain\Attachment\Repository\AttachmentRepository;
 use App\Domain\EntityTraits\IdentityTrait;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\User\Model\User;

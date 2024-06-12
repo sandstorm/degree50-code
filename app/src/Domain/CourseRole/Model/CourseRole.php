@@ -22,7 +22,7 @@ class CourseRole
     #[ORM\Column]
     public string $name = '';
 
-    #[ORM\ManyToOne(targetEntity: User::class, cascade: ["persist"] ,inversedBy: "courseRoles")]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ["persist"], inversedBy: "courseRoles")]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private User $user;
 

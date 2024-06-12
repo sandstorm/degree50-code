@@ -7,7 +7,7 @@ use App\Domain\ExercisePhase\Model\ExercisePhase;
 readonly class ExercisePhaseWithMetadataDto
 {
     public function __construct(
-        public ExercisePhase $phase,
+        public ExercisePhase         $phase,
         public ExercisePhaseMetadata $metadata
     )
     {

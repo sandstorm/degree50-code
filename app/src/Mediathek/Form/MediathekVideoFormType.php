@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MediathekVideoFormType extends AbstractType
 {
     public function __construct(
-        private readonly Security $security,
+        private readonly Security         $security,
         private readonly CourseRepository $courseRepository,
     )
     {

@@ -148,7 +148,7 @@ class EncodingService
             $offset = round($cut->offset, 3);
             $videoDurationInSeconds = $cut->getDuration();
 
-            $duration =  max(1, $videoDurationInSeconds);
+            $duration = max(1, $videoDurationInSeconds);
 
             $this->logger->info('url: ' . $originalVideoFilePath);
             $this->logger->info('offset: ' . TimeCode::fromSeconds($offset)->toTimeString());

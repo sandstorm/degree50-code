@@ -16,7 +16,6 @@ use App\VideoEncoding\Service\SubtitleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
@@ -45,8 +44,7 @@ readonly class CutListEncodingHandler
         private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         private EncodingService             $encodingService,
         private SubtitleService             $subtitleService,
-        private ParameterBagInterface       $parameterBag,
-        private CutVideoRepository $cutVideoRepository
+        private CutVideoRepository          $cutVideoRepository
     )
     {
     }
