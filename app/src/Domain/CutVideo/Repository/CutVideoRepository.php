@@ -18,4 +18,10 @@ class CutVideoRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($cutVideo);
         $this->getEntityManager()->flush();
     }
+
+    public function add(CutVideo $cutVideo): void
+    {
+        $this->getEntityManager()->persist($cutVideo);
+        $this->getEntityManager()->flush();
+    }
 }

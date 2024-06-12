@@ -133,13 +133,12 @@ class EncodingService
      * @param $cutList ServerSideCut[]
      * @return string[]
      */
-    public function createTemporaryMp4ClipsFromCutList(array $cutList): array
+    public function createTemporaryMp4ClipsFromCutList(array $cutList, Video $originalVideo): array
     {
-        $rootDir = $this->parameterBag->get('kernel.project_dir');
         $tempDirectory = $this->fileSystemService->localPath($this->fileSystemService->generateUniqueTemporaryDirectory());
-        $videoToCut = $rootDir . '/public' . $cutList[0]->url;
+        $originalVideoFile = $this->fileSystemService->localPath($originalVideo->getEncodedVideoDirectory()) . '/x264.mp4';
 
-        return array_map(function (ServerSideCut $cut) use ($tempDirectory, $videoToCut) {
+        return array_map(function (ServerSideCut $cut) use ($tempDirectory, $originalVideoFile) {
             $clipUuid = Uuid::uuid4()->toString();
             $this->logger->info("Creating new intermediate clip with ID $clipUuid");
 
@@ -151,7 +150,7 @@ class EncodingService
 
             $duration =  max(1, $videoDurationInSeconds);
 
-            $this->logger->info('url: ' . $videoToCut);
+            $this->logger->info('url: ' . $originalVideoFile);
             $this->logger->info('offset: ' . TimeCode::fromSeconds($offset)->toTimeString());
             $this->logger->info('duration: ' . TimeCode::fromSeconds($duration)->toTimeString());
             $this->logger->info('clipPath: ' . $clipPath);
@@ -159,7 +158,7 @@ class EncodingService
             $command = [
                 '-y', // overwrite previous outputs
                 '-ss', "$offset", // seek to start offset (seconds) (see https://trac.ffmpeg.org/wiki/Seeking)
-                '-i', "$videoToCut", // input video
+                '-i', "$originalVideoFile", // input video
                 '-t', "$duration", // duration of cut in seconds
                 '-map', 'v', // map all video streams
                 '-map', 'a', // map all audio streams

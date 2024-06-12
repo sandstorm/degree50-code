@@ -4,6 +4,7 @@ namespace App\Domain\ExercisePhaseTeam\Controller;
 
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
 use App\Domain\CutVideo\Model\CutVideo;
+use App\Domain\CutVideo\Service\CutVideoService;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
@@ -25,7 +26,6 @@ use App\Security\Voter\UserVerifiedVoter;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +49,7 @@ class ExercisePhaseTeamController extends AbstractController
         private readonly MessageBusInterface         $messageBus,
         private readonly SolutionService             $solutionService,
         private readonly ExercisePhaseService        $exercisePhaseService,
-        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository, private readonly CutVideoService $cutVideoService
     )
     {
     }
@@ -454,7 +454,7 @@ class ExercisePhaseTeamController extends AbstractController
     {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
-        if (!$exercisePhase instanceof VideoCutPhase) {
+        if (!$exercisePhase instanceof VideoCutPhase && !$exercisePhase->getVideos()->first() instanceof Video) {
             return;
         }
 
@@ -466,18 +466,12 @@ class ExercisePhaseTeamController extends AbstractController
             return;
         }
 
-        $cutVideo = $this->createCutVideo($exercisePhase->getVideos()->first(), $solution);
+        // delete the previous cut video
+        $this->cutVideoService->deleteCutVideoOfSolution($solution);
+        // create a new one
+        $cutVideo = $this->cutVideoService->createCutVideoForVideoAndSolution($exercisePhase->getVideos()->first(), $solution);
+
+        // hand it over to the encoding service to create the actual video data
         $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutVideo->getId()));
-    }
-
-    private function createCutVideo(Video $originalVideo, Solution $solution): ?CutVideo
-    {
-        $cutVideoUuid = Uuid::uuid4()->toString();
-        $cutVideo = new CutVideo($originalVideo, $solution, $cutVideoUuid);
-
-        $this->entityManager->persist($cutVideo);
-        $this->entityManager->flush();
-
-        return $cutVideo;
     }
 }

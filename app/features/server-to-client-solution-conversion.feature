@@ -1,5 +1,4 @@
 @fixtures @conversionForAPI @integration
-@debug
 Feature: Solution from Model is converted to normalized APISolution by SolutionService
 
     Background:

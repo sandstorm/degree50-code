@@ -6,7 +6,7 @@ Feature: Users expire and are removed automatically. They are notified before ex
         Given A User "student@test.de" with the role "ROLE_STUDENT" exists
         And the expiration date of user "student@test.de" is set to "-1 day" from now
         When expired users are removed
-        Then User "student@test.de" should not exist
+        Then No User with Username "student@test.de" does exist
 
     @integration
     Scenario: Do not remove Admin after expiration

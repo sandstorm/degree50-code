@@ -7,7 +7,6 @@ use App\Domain\CutVideo\Repository\CutVideoRepository;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Video\Model\Video;
-use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\FileSystem\FileSystemService;
 use App\Twig\AppRuntime;
@@ -42,7 +41,6 @@ readonly class CutListEncodingHandler
     public function __construct(
         private LoggerInterface             $logger,
         private FileSystemService           $fileSystemService,
-        private VideoRepository             $videoRepository,
         private EntityManagerInterface      $entityManager,
         private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         private EncodingService             $encodingService,
@@ -77,7 +75,7 @@ readonly class CutListEncodingHandler
             $rootDir = $this->parameterBag->get('kernel.project_dir');
 
             $this->logger->info('Creating intermediate clips from cutList...');
-            $clipPaths = $this->encodingService->createTemporaryMp4ClipsFromCutList($cutList);
+            $clipPaths = $this->encodingService->createTemporaryMp4ClipsFromCutList($cutList, $cutVideo->getOriginalVideo());
 
             $this->logger->info('Concatenating clips into video...');
             $mp4Url = $this->encodingService->concatMp4Clips($clipPaths, $localOutputDirectory);
@@ -113,14 +111,9 @@ readonly class CutListEncodingHandler
 
             $this->pingAndReconnectDB();
 
-            // Add Video to Solution
-            $solution = $exercisePhaseTeam->getSolution();
-            $solution->setCutVideo($cutVideo);
-
             $cutVideo->setEncodingStatus(Video::ENCODING_FINISHED);
 
             $this->entityManager->persist($cutVideo);
-            $this->entityManager->persist($solution);
             $this->entityManager->flush();
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage());

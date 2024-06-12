@@ -61,8 +61,6 @@ readonly class VideoService
         $this->cutVideoService->deleteCutVideosOfOriginalVideo($video);
 
         $this->videoRepository->deleteVideo($video);
-        // clear entityManager to empty entity cache
-        $this->entityManager->clear();
     }
 
     /**

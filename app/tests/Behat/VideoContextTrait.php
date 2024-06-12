@@ -191,11 +191,9 @@ trait VideoContextTrait
         // fixed creation date for video
         $cutVideo->setCreatedAt((new DateTimeImmutable())->setTimestamp(1711960922));
 
-        $solution->setCutVideo($cutVideo);
-
         $this->entityManager->persist($cutVideo);
-        $this->entityManager->persist($solution);
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
     /**

@@ -26,7 +26,7 @@ class CutVideo
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Video $originalVideo;
 
-    #[ORM\OneToOne(targetEntity: Solution::class, inversedBy: "cutVideo")]
+    #[ORM\OneToOne(targetEntity: Solution::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Solution $solution;
 
@@ -158,5 +158,10 @@ class CutVideo
     public function setVideoDuration(?float $videoDuration): void
     {
         $this->videoDuration = $videoDuration;
+    }
+
+    public function getOriginalVideo(): Video
+    {
+        return $this->originalVideo;
     }
 }
