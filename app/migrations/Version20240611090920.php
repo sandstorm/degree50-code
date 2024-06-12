@@ -12,14 +12,72 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20240611090920 extends AbstractMigration
 {
+    /**
+     * shape:
+     *  [
+     *     'solution_id' => '...',
+     *     'cut_video_id' => '...',
+     *     'original_video_id' => '...',
+     *     ...
+     *  ]
+     */
+    private array $cutVideos = [];
+
+    /**
+     * shape:
+     * [
+     *    [
+     *      'solution_id' => '...',
+     *      'exercise_phase_team_id' => '...',
+     *    ]
+     * ]
+     */
+    private array $solutionExercisePhaseTeam = [];
+
     public function getDescription(): string
     {
         return 'Introduce CutVideo entity and cascading foreign key constraints on db level';
     }
 
+    public function preUp(Schema $schema): void
+    {
+        $cutVideoSql = <<<SQL
+            SELECT
+                solution.id as solution_id,
+                solution.cut_video_id as cut_video_id,
+                exercise_phase_video.video_id as original_video_id,
+                video.encoded_video_directory_virtual_path_and_filename as encoded_dir,
+                video.uploaded_subtitle_file_virtual_path_and_filename as subtitle_file,
+                video.video_duration as video_duration,
+                video.encoding_status as encoding_status,
+                video.encoding_started as encoding_started,
+                video.encoding_finished as encoding_finished,
+                video.created_at as created_at
+            FROM solution
+            JOIN exercise_phase_team ON solution.id = exercise_phase_team.solution_id
+            JOIN exercise_phase ON exercise_phase_team.exercise_phase_id = exercise_phase.id
+            JOIN exercise_phase_video ON exercise_phase.id = exercise_phase_video.exercise_phase_id
+            JOIN video ON solution.cut_video_id = video.id
+            WHERE solution.cut_video_id IS NOT NULL
+            ;
+        SQL;
+
+        $this->cutVideos = $this->connection->fetchAllAssociative($cutVideoSql);
+
+        $solutionExercisePhaseTeamSql = <<<SQL
+            SELECT
+                solution.id as solution_id,
+                exercise_phase_team.id as exercise_phase_team_id
+            FROM solution
+            JOIN exercise_phase_team ON solution.id = exercise_phase_team.solution_id
+            ;
+        SQL;
+
+        $this->solutionExercisePhaseTeam = $this->connection->fetchAllAssociative($solutionExercisePhaseTeamSql);
+    }
+
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE cut_video (id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', original_video_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', solution_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetimetz_immutable)\', encoding_status INT NOT NULL, video_duration DOUBLE PRECISION DEFAULT NULL, encoding_started DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetimetz_immutable)\', encoding_finished DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetimetz_immutable)\', subtitle_file_virtual_path_and_filename VARCHAR(255) DEFAULT NULL, encoded_video_directory_virtual_path_and_filename VARCHAR(255) DEFAULT NULL, INDEX IDX_384D5510A9EE75F (original_video_id), UNIQUE INDEX UNIQ_384D55101C0BE183 (solution_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE cut_video ADD CONSTRAINT FK_384D5510A9EE75F FOREIGN KEY (original_video_id) REFERENCES video (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE cut_video ADD CONSTRAINT FK_384D55101C0BE183 FOREIGN KEY (solution_id) REFERENCES solution (id) ON DELETE CASCADE');
@@ -31,8 +89,52 @@ final class Version20240611090920 extends AbstractMigration
         $this->addSql('ALTER TABLE solution DROP FOREIGN KEY FK_9F3329DBB5C6F244');
         $this->addSql('DROP INDEX UNIQ_9F3329DBB5C6F244 ON solution');
         $this->addSql('ALTER TABLE solution ADD exercise_phase_team_id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', DROP cut_video_id');
-        $this->addSql('ALTER TABLE solution ADD CONSTRAINT FK_9F3329DB7B50751B FOREIGN KEY (exercise_phase_team_id) REFERENCES exercise_phase_team (id) ON DELETE CASCADE');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_9F3329DB7B50751B ON solution (exercise_phase_team_id)');
+
+        // Foreign key constraint for solution.exercise_phase_team_id is added in postUp
+    }
+
+    public function postUp(Schema $schema): void
+    {
+        foreach ($this->cutVideos as $cutVideo) {
+            $this->connection->executeStatement(
+                'INSERT INTO cut_video
+                (
+                    id,
+                    original_video_id,
+                    solution_id,
+                    created_at,
+                    encoding_status,
+                    video_duration,
+                    encoding_started,
+                    encoding_finished,
+                    subtitle_file_virtual_path_and_filename,
+                    encoded_video_directory_virtual_path_and_filename
+                ) VALUES
+                (
+                    :cut_video_id,
+                    :original_video_id,
+                    :solution_id,
+                    :created_at,
+                    :encoding_status,
+                    :video_duration,
+                    :encoding_started,
+                    :encoding_finished,
+                    :subtitle_file,
+                    :encoded_dir
+                )',
+                $cutVideo
+            );
+        }
+
+        foreach ($this->solutionExercisePhaseTeam as $entry) {
+            $this->connection->executeStatement(
+                'UPDATE solution SET exercise_phase_team_id = :exercise_phase_team_id WHERE id = :solution_id',
+                $entry
+            );
+        }
+
+        $this->connection->executeStatement('ALTER TABLE solution ADD CONSTRAINT FK_9F3329DB7B50751B FOREIGN KEY (exercise_phase_team_id) REFERENCES exercise_phase_team (id) ON DELETE CASCADE');
+        $this->connection->executeStatement('CREATE UNIQUE INDEX UNIQ_9F3329DB7B50751B ON solution (exercise_phase_team_id)');
     }
 
     public function down(Schema $schema): void
