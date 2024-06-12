@@ -16,7 +16,6 @@ final readonly class ServerSideCut
     public string $text;
     public string $memo;
     public ?string $color;
-    public string $url;
     public float $offset;
     public float $playbackRate;
 
@@ -26,7 +25,6 @@ final readonly class ServerSideCut
         string  $text,
         string  $memo,
         ?string $color,
-        string  $url,
         float   $offset,
         float   $playbackRate
     )
@@ -36,7 +34,6 @@ final readonly class ServerSideCut
         $this->text = $text;
         $this->memo = $memo;
         $this->color = $color;
-        $this->url = $url;
         $this->offset = $offset;
         $this->playbackRate = $playbackRate;
     }
@@ -49,7 +46,6 @@ final readonly class ServerSideCut
             $input['text'],
             $input['memo'],
             $input['color'],
-            $input['url'],
             $input['offset'],
             $input['playbackRate']
         );
@@ -63,7 +59,6 @@ final readonly class ServerSideCut
             'text' => $this->text,
             'memo' => $this->memo,
             'color' => $this->color,
-            'url' => $this->url,
             'offset' => $this->offset,
             'playbackRate' => $this->playbackRate
         ];

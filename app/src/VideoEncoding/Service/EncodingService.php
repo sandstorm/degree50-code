@@ -4,6 +4,7 @@ namespace App\VideoEncoding\Service;
 
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;
 use App\Domain\Video\Model\Video;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\FileSystem\FileSystemService;
 use App\VideoEncoding\TimeCode;
 use FFMpeg\FFMpeg;
@@ -133,12 +134,11 @@ class EncodingService
      * @param $cutList ServerSideCut[]
      * @return string[]
      */
-    public function createTemporaryMp4ClipsFromCutList(array $cutList, Video $originalVideo): array
+    public function createTemporaryMp4ClipsFromCutList(VirtualizedFile $directory, array $cutList, string $originalVideoFilePath): array
     {
-        $tempDirectory = $this->fileSystemService->localPath($this->fileSystemService->generateUniqueTemporaryDirectory());
-        $originalVideoFile = $this->fileSystemService->localPath($originalVideo->getEncodedVideoDirectory()) . '/x264.mp4';
+        $tempDirectory = $this->fileSystemService->localPath($directory);
 
-        return array_map(function (ServerSideCut $cut) use ($tempDirectory, $originalVideoFile) {
+        return array_map(function (ServerSideCut $cut) use ($tempDirectory, $originalVideoFilePath) {
             $clipUuid = Uuid::uuid4()->toString();
             $this->logger->info("Creating new intermediate clip with ID $clipUuid");
 
@@ -150,7 +150,7 @@ class EncodingService
 
             $duration =  max(1, $videoDurationInSeconds);
 
-            $this->logger->info('url: ' . $originalVideoFile);
+            $this->logger->info('url: ' . $originalVideoFilePath);
             $this->logger->info('offset: ' . TimeCode::fromSeconds($offset)->toTimeString());
             $this->logger->info('duration: ' . TimeCode::fromSeconds($duration)->toTimeString());
             $this->logger->info('clipPath: ' . $clipPath);
@@ -158,7 +158,7 @@ class EncodingService
             $command = [
                 '-y', // overwrite previous outputs
                 '-ss', "$offset", // seek to start offset (seconds) (see https://trac.ffmpeg.org/wiki/Seeking)
-                '-i', "$originalVideoFile", // input video
+                '-i', "$originalVideoFilePath", // input video
                 '-t', "$duration", // duration of cut in seconds
                 '-map', 'v', // map all video streams
                 '-map', 'a', // map all audio streams

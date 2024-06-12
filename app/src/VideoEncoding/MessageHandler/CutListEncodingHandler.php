@@ -72,15 +72,16 @@ readonly class CutListEncodingHandler
         try {
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename(AppRuntime::ENCODED_VIDEOS, $cutVideo->getId());
             $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
-            $rootDir = $this->parameterBag->get('kernel.project_dir');
+            $originalVideoFilePath = $this->fileSystemService->localPath($cutVideo->getOriginalVideo()->getEncodedVideoDirectory()) . '/x264.mp4';
 
             $this->logger->info('Creating intermediate clips from cutList...');
-            $clipPaths = $this->encodingService->createTemporaryMp4ClipsFromCutList($cutList, $cutVideo->getOriginalVideo());
+            $tempClipsDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
+            $clipPaths = $this->encodingService->createTemporaryMp4ClipsFromCutList($tempClipsDirectory, $cutList, $originalVideoFilePath);
 
             $this->logger->info('Concatenating clips into video...');
             $mp4Url = $this->encodingService->concatMp4Clips($clipPaths, $localOutputDirectory);
 
-            // TODO: do we remove temporary clips?
+            $this->fileSystemService->deleteDirectory($tempClipsDirectory);
 
             $cutVideo->setVideoDuration($this->encodingService->probeForVideoDuration($mp4Url));
 
@@ -90,9 +91,8 @@ readonly class CutListEncodingHandler
 
             $this->logger->info("Done combining clips into video <$mp4Url>");
 
-            $originalVideoPath = $rootDir . '/public' . $cutList[0]->url;
             // get path without file name of mp4 and append "subtitles.vtt"
-            $originalSubtitlePath = str_replace("x264.mp4", "subtitles.vtt", $originalVideoPath);
+            $originalSubtitlePath = str_replace("x264.mp4", "subtitles.vtt", $originalVideoFilePath);
 
             // cut subtitles
             if (file_exists($originalSubtitlePath)) {

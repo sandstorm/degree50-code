@@ -1,9 +1,9 @@
-import { RefObject, useState, useCallback, useEffect } from 'react'
+import { RefObject, useCallback, useEffect, useState } from 'react'
 import VideoContext from 'videocontext'
 import { t } from 'react-i18nify'
 import { d2t, t2d } from 'duration-time-conversion'
 import { HandleSide } from 'Components/VideoEditor/components/MediaLane/MediaItems/types'
-import { MediaItem, Cut, CutList } from 'Components/VideoEditor/types'
+import { Cut, CutList, MediaItem } from 'Components/VideoEditor/types'
 import { notify } from 'Components/VideoEditor/utils'
 import { useMediaItemHandling } from 'Components/VideoEditor/utils/useMediaItemHandling'
 
@@ -211,7 +211,10 @@ const CUT_PADDING_SECS = 0.001
  * Transforms a list of MediaItemType<Cut> into elements which are playable by the video context player.
  * All items are snapped back-to-back to their predecessor, so that there remains no empty space between cuts.
  */
-export const transformCutListToVideoContextPlayList = (cuts: CutList): Array<VideoContextPlayListElement> =>
+export const transformCutListToVideoContextPlayList = (
+    cuts: CutList,
+    originalVideoUrl: string
+): Array<VideoContextPlayListElement> =>
     cuts.reduce(
         (
             acc: {
@@ -221,7 +224,7 @@ export const transformCutListToVideoContextPlayList = (cuts: CutList): Array<Vid
             cut
         ) => {
             const newElement: VideoContextPlayListElement = {
-                url: cut.url,
+                url: originalVideoUrl,
                 offset: cut.offset,
                 playbackRate: cut.playbackRate,
                 start: acc.nextStart,
@@ -276,7 +279,7 @@ export const getMediaItemFromCut = (cut: Cut) => {
     return new MediaItem({
         start: cut.start,
         end: cut.end,
-        text: cut.text || cut.url,
+        text: cut.text,
         memo: '',
         originalData: cut,
         lane: 0,

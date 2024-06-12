@@ -46,7 +46,6 @@ const CreateCutOverlay: FC<Props> = (props) => {
         end: end,
         offset: t2d(start),
         playbackRate: 1,
-        url: url.mp4 ?? '',
         text: '',
         memo: '',
         color: null,

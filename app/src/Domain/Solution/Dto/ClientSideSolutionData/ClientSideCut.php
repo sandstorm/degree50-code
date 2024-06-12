@@ -20,7 +20,6 @@ final readonly class ClientSideCut implements JsonSerializable
         private string  $memo,
         private ?string $color,
         private string  $solutionId,
-        private string  $url,
         private float   $offset,
         private float   $playbackRate,
         private string  $id
@@ -37,7 +36,6 @@ final readonly class ClientSideCut implements JsonSerializable
             $cut->memo,
             $cut->color,
             $solutionId,
-            $cut->url,
             $cut->offset,
             $cut->playbackRate,
             $solutionId . '_' . $index
@@ -53,7 +51,6 @@ final readonly class ClientSideCut implements JsonSerializable
             $input['memo'],
             $input['color'],
             $input['solutionId'],
-            $input['url'],
             $input['offset'],
             $input['playbackRate'],
             $input['solutionId'] . '_' . $index
@@ -71,7 +68,6 @@ final readonly class ClientSideCut implements JsonSerializable
             'color' => $this->color,
             'solutionId' => $this->solutionId,
             'offset' => $this->offset,
-            'url' => $this->url,
             'playbackRate' => $this->playbackRate,
         ];
     }

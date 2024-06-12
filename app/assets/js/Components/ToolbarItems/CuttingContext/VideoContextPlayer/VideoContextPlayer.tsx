@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState, FC, memo, useMemo, useLayoutEffect } from 'react'
+import React, { FC, memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import VideoContext from 'videocontext'
 
-import { initVideoContext, addVideoContextPlayListElement, transformCutListToVideoContextPlayList } from '../util'
+import { addVideoContextPlayListElement, initVideoContext, transformCutListToVideoContextPlayList } from '../util'
 import VideoContextCanvas from './VideoContextCanvas'
 import useVideoContextVolume from './hooks/useVideoContextVolume'
 import useVideoContextPlayback from './hooks/useVideoContextPlayback'
@@ -17,11 +17,15 @@ import { useDebouncedResizeObserver } from 'Components/VideoEditor/utils/useDebo
 
 type Props = {
     cutList: CutList
+    originalVideoUrl: string
 }
 
 const VideoContextPlayer: FC<Props> = (props) => {
     const [videoContext, setVideoContext] = useState<VideoContext | undefined>(undefined)
-    const videoContextPlayList = useMemo(() => transformCutListToVideoContextPlayList(props.cutList), [props.cutList])
+    const videoContextPlayList = useMemo(
+        () => transformCutListToVideoContextPlayList(props.cutList, props.originalVideoUrl),
+        [props.cutList, props.originalVideoUrl]
+    )
     const $videoContextPlayerRef = useRef<HTMLDivElement>(null)
     const $canvasWrapperRef = useRef<HTMLCanvasElement>(null)
     const [canvasWidth, setCanvasWidth] = useState(0)

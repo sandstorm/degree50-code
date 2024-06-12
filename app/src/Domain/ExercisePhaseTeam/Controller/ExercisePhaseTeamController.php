@@ -3,7 +3,6 @@
 namespace App\Domain\ExercisePhaseTeam\Controller;
 
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
-use App\Domain\CutVideo\Model\CutVideo;
 use App\Domain\CutVideo\Service\CutVideoService;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
