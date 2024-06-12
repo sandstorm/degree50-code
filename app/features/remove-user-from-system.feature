@@ -8,7 +8,6 @@ Feature: Degree User is removed completely from system
         And A User "student2@test.de" with the role "ROLE_STUDENT" exists
         And A Course with ID "course1" exists
 
-    @debug
     Scenario: Remove Student with Exercise
         Given The User "student1@test.de" has CourseRole "DOZENT" in Course "course1"
         And An Exercise with ID "exerciseByStudent1" created by User "student1@test.de" in Course "course1" exists
@@ -32,7 +31,6 @@ Feature: Degree User is removed completely from system
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }

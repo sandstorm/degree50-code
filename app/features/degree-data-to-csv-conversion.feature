@@ -72,7 +72,6 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -197,7 +196,6 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -218,7 +216,6 @@ Feature: Degree data (courses, solutions etc.) is converted into csv data
                       "text": "Awesome cut",
                       "memo": "Some memo",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }

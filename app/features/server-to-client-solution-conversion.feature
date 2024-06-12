@@ -67,7 +67,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -163,7 +162,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }
@@ -266,7 +264,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -396,7 +393,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }
@@ -500,7 +496,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -584,7 +579,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }
@@ -687,7 +681,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -894,7 +887,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }

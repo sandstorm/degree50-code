@@ -68,7 +68,6 @@ Feature: CRUD operations on the videoRepository
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
