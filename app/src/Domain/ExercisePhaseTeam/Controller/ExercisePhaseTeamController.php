@@ -48,7 +48,8 @@ class ExercisePhaseTeamController extends AbstractController
         private readonly MessageBusInterface         $messageBus,
         private readonly SolutionService             $solutionService,
         private readonly ExercisePhaseService        $exercisePhaseService,
-        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository, private readonly CutVideoService $cutVideoService
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private readonly CutVideoService             $cutVideoService
     )
     {
     }

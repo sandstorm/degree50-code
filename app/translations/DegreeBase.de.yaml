@@ -324,7 +324,7 @@ video:
         title: 'Video löschen'
         usage: 'Das Video wird in folgenden Aufgaben/Phasen verwendet'
         noUsage: 'Das Video wird in keiner Aufgabe/Phase verwendet.'
-        warning: 'Achtung: Aufgaben, Phasen und Ergebnisse werden bei Löschen des Videos mit gelöscht!'
+        warning: 'Achtung: Alle Video-Schnitte basierend auf diesem Video werden ebenfalls gelöscht.'
         hasSolutions: 'Hat Lösungen'
         messages:
             success: 'Video erfolgreich gelöscht!'
