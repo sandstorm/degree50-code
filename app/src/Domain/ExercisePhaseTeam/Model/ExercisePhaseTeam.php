@@ -19,10 +19,10 @@ class ExercisePhaseTeam
     use IdentityTrait;
 
     #[ORM\ManyToOne(targetEntity: ExercisePhase::class, inversedBy: "teams")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ExercisePhase $exercisePhase;
 
-    #[ORM\OneToOne(targetEntity: Solution::class, cascade: ["remove"])]
+    #[ORM\OneToOne(targetEntity: Solution::class, mappedBy: "exercisePhaseTeam", cascade: ["remove"], orphanRemoval: true)]
     private ?Solution $solution = null;
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Solution\Dto\ClientSideSolutionData;
 
+use App\Domain\CutVideo\Model\CutVideo;
 use App\Domain\Video\Model\Video;
 use JsonSerializable;
 
@@ -17,11 +18,21 @@ final readonly class ClientSideCutVideo implements JsonSerializable
         private string             $id,
         private string             $name,
         private string             $createdAt,
-        private ?string            $description,
-        private ?float             $duration,
+        private float              $duration,
         private ClientSideVideoUrl $url
     )
     {
+    }
+
+    public static function fromCutVideoEntity(CutVideo $cutVideo, ClientSideVideoUrl $url): ClientSideCutVideo
+    {
+        return new self(
+            $cutVideo->getId(),
+            $cutVideo->getName(),
+            $cutVideo->getCreatedAt()->format("d.m.Y"),
+            $cutVideo->getVideoDuration(),
+            $url,
+        );
     }
 
     public static function fromVideoEntity(Video $video, ClientSideVideoUrl $url): ClientSideCutVideo
@@ -30,7 +41,6 @@ final readonly class ClientSideCutVideo implements JsonSerializable
             $video->getId(),
             $video->getTitle(),
             $video->getCreatedAt()->format("d.m.Y"),
-            $video->getDescription(),
             $video->getVideoDuration(),
             $url,
         );
@@ -42,7 +52,6 @@ final readonly class ClientSideCutVideo implements JsonSerializable
             $input['id'],
             $input['name'],
             $input['createdAt'],
-            $input['description'],
             $input['duration'],
             $input['url']
         );
@@ -54,7 +63,6 @@ final readonly class ClientSideCutVideo implements JsonSerializable
             'id' => $this->id,
             'name' => $this->name,
             'createdAt' => $this->createdAt,
-            'description' => $this->description,
             'duration' => $this->duration,
             'url' => $this->url,
         ];

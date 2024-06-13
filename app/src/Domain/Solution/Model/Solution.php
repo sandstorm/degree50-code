@@ -3,8 +3,8 @@
 namespace App\Domain\Solution\Model;
 
 use App\Domain\EntityTraits\IdentityTrait;
+use App\Domain\ExercisePhaseTeam\Model\ExercisePhaseTeam;
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
-use App\Domain\Video\Model\Video;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,28 +13,34 @@ class Solution
 {
     use IdentityTrait;
 
+    #[ORM\OneToOne(targetEntity: ExercisePhaseTeam::class, inversedBy: "solution")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    private ExercisePhaseTeam $exercisePhaseTeam;
+
     #[ORM\Column(type: "json")]
     private array $solution;
 
     #[ORM\Column(type: "datetimetz_immutable")]
     private DateTimeImmutable $update_timestamp;
 
-    #[ORM\OneToOne(targetEntity: Video::class, cascade: ["remove"])]
-    private ?Video $cutVideo = null;
-
-    public function __construct(string $id = null, string $initialMaterial = null)
+    public function __construct(ExercisePhaseTeam $exercisePhaseTeam, string $id = null, string $initialMaterial = null)
     {
-        $solutionPrototype = [
+        $this->generateOrSetId($id);
+        $this->exercisePhaseTeam = $exercisePhaseTeam;
+        // empty initial solution
+        $this->solution = [
             'annotations' => [],
             'videoCodes' => [],
             'cutList' => [],
             'material' => $initialMaterial,
         ];
-        $this->solution = $solutionPrototype;
-        $this->generateOrSetId($id);
         $this->update_timestamp = new DateTimeImmutable();
     }
 
+    public function getExercisePhaseTeam(): ExercisePhaseTeam
+    {
+        return $this->exercisePhaseTeam;
+    }
 
     public function getSolution(): ?ServerSideSolutionData
     {
@@ -58,15 +64,8 @@ class Solution
         $this->update_timestamp = $update_timestamp;
     }
 
-    public function getCutVideo(): ?Video
+    public function __toString(): string
     {
-        return $this->cutVideo;
-    }
-
-    public function setCutVideo(?Video $cutVideo): self
-    {
-        $this->cutVideo = $cutVideo;
-
-        return $this;
+        return "Solution[$this->id()]";
     }
 }

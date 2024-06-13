@@ -11,14 +11,43 @@ Feature: Degree User is removed completely from system
     Scenario: Remove Student with Exercise
         Given The User "student1@test.de" has CourseRole "DOZENT" in Course "course1"
         And An Exercise with ID "exerciseByStudent1" created by User "student1@test.de" in Course "course1" exists
+        And An ExercisePhase with the following data exists:
+            | id            | name | task                         | isGroupPhase | sorting | otherSolutionsAreAccessible | belongsToExercise  | dependsOnPhase | type          | videoAnnotationsActive | videoCodesActive |
+            | exercisePhase | Test | Description of ExercisePhase | true         | 0       | true                        | exerciseByStudent1 | null           | videoAnalysis | true                   | true             |
+
         And A Video with Id "video1" created by User "student1@test.de" exists
+
+        And I have a team with ID "team" belonging to exercise phase "exercisePhase" and creator "student1@test.de"
+        And I have a solution with ID "solution" belonging to team with ID "team" with solutionData as JSON
+        """
+            {
+              "annotations": [],
+              "videoCodes": [],
+              "customVideoCodesPool": [],
+              "cutList": [
+                  {
+                      "start": "00:01:03.315",
+                      "end": "00:01:30.000",
+                      "text": "Cut 1",
+                      "memo": "",
+                      "color": null,
+                      "offset": 0,
+                      "playbackRate": "1"
+                  }
+              ]
+            }
+        """
+        And A CutVideo with Id "cutVideo" of Video "video1" belonging to Solution "solution" exists
+
         # Why only an admin can delete a user
         And I am logged in as 'admin@test.de'
         When I delete User "student1@test.de"
 
-        Then User "student1@test.de" should not exist
+        Then No User with Username "student1@test.de" does exist
         And No Exercise created by User "student1@test.de" should exist
         And No Video created by User "student1@test.de" should exist
+        And No CutVideo of original "video1" exists
+        And The Solution with ID "solution" does not exist
         And No CourseRole of User "student1@test.de" exists
 
     Scenario: Removing a Student that is not the only member of a team should move creator to the other member
@@ -26,6 +55,7 @@ Feature: Degree User is removed completely from system
         And The User "student1@test.de" has CourseRole "STUDENT" in Course "course1"
         And The User "student2@test.de" has CourseRole "STUDENT" in Course "course1"
         And An Exercise with ID "exerciseByDozent" created by User "dozent@test.de" in Course "course1" exists
+        And A Video with Id "video" created by User "dozent@test.de" exists
 
         And I am logged in as "dozent@test.de"
         And I have an exercise phase "exercisePhase" belonging to exercise "exerciseByDozent"
@@ -33,17 +63,19 @@ Feature: Degree User is removed completely from system
         And An ExercisePhaseTeam "team" belonging to exercise phase "exercisePhase" created by "student1@test.de" exists
         And The User "student2@test.de" is member of ExercisePhaseTeam "team"
         And The ExercisePhaseTeam "team" has a Solution "solution"
+        And A CutVideo with Id "cutVideo" of Video "video" belonging to Solution "solution" exists
         And The User "student1@test.de" has created an AutosavedSolution "autosavedSolution1" for ExercisePhaseTeam "team"
         And The User "student2@test.de" has created an AutosavedSolution "autosavedSolution2" for ExercisePhaseTeam "team"
 
         And I am logged in as "admin@test.de"
         When I delete User "student1@test.de"
 
-        Then User "student1@test.de" should not exist
+        Then No User with Username "student1@test.de" does exist
         And No AutosavedSolution of User "student1@test.de" does exist
         And The ExercisePhaseTeam "team" exists
         And The creator of ExercisePhaseTeam "team" should be "student2@test.de"
         And The Solution "solution" exists
+        And The CutVideo with Id "cutVideo" exists
         And No CourseRole of User "student1@test.de" exists
 
     Scenario: Removing a Student that is the only member of a team should anonymize the team creator
@@ -83,7 +115,7 @@ Feature: Degree User is removed completely from system
         Given A User "admin2@test.de" with the role "ROLE_ADMIN" exists
         And I am logged in as "admin@test.de"
         When I delete User "admin2@test.de"
-        Then User "admin2@test.de" should not exist
+        Then No User with Username "admin2@test.de" does exist
 
     Scenario: Remove Dozent in a course with no other Dozent
         Given The User "dozent@test.de" has CourseRole "DOZENT" in Course "course1"

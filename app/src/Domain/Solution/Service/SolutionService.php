@@ -3,6 +3,7 @@
 namespace App\Domain\Solution\Service;
 
 use App\Domain\AutosavedSolution\Repository\AutosavedSolutionRepository;
+use App\Domain\CutVideo\Service\CutVideoService;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\VideoAnalysisPhase;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
@@ -23,6 +24,7 @@ readonly class SolutionService
         private AppRuntime                  $appRuntime,
         private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         private ExercisePhaseService        $exercisePhaseService,
+        private CutVideoService             $cutVideoService,
     )
     {
     }
@@ -41,7 +43,7 @@ readonly class SolutionService
             $solutionEntity = $exercisePhaseTeam->getSolution();
             $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
-            $cutVideo = $solutionEntity->getCutVideo();
+            $cutVideo = $this->cutVideoService->getCutVideoOfSolution($solutionEntity);
             $clientSideCutVideo = $cutVideo?->getAsClientSideVideo($this->appRuntime);
 
             return PreviousSolutionDto::create(
@@ -106,7 +108,7 @@ readonly class SolutionService
         $solutionId = $exercisePhaseTeam->getSolution()->getId();
         $previousSolutionDtos = $this->getPreviousSolutionDtosForVideoEditor($exercisePhase, $exercisePhaseTeam);
 
-        $cutVideo = $exercisePhaseTeam->getSolution()->getCutVideo();
+        $cutVideo = $this->cutVideoService->getCutVideoOfSolution($exercisePhaseTeam->getSolution());
 
         $clientSideCutVideo = $cutVideo?->getAsClientSideVideo($this->appRuntime);
 
@@ -153,7 +155,7 @@ readonly class SolutionService
                     $clientSideCutVideo = null;
 
                     try {
-                        $clientSideCutVideo = $solutionEntity->getCutVideo()?->getAsClientSideVideo($this->appRuntime);
+                        $clientSideCutVideo = $this->cutVideoService->getCutVideoOfSolution($solutionEntity)?->getAsClientSideVideo($this->appRuntime);
                     } catch (EntityNotFoundException $e) {
                     }
 

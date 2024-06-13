@@ -3,6 +3,7 @@
 namespace App\Domain\ExercisePhaseTeam\Controller;
 
 use App\Domain\AutosavedSolution\Model\AutosavedSolution;
+use App\Domain\CutVideo\Service\CutVideoService;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
@@ -24,7 +25,6 @@ use App\Security\Voter\UserVerifiedVoter;
 use App\VideoEncoding\Message\CutListEncodingTask;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +48,8 @@ class ExercisePhaseTeamController extends AbstractController
         private readonly MessageBusInterface         $messageBus,
         private readonly SolutionService             $solutionService,
         private readonly ExercisePhaseService        $exercisePhaseService,
-        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository
+        private readonly ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
+        private readonly CutVideoService             $cutVideoService
     )
     {
     }
@@ -193,7 +194,7 @@ class ExercisePhaseTeamController extends AbstractController
         ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
-        if (!$exercisePhase || $exercisePhaseTeam) {
+        if (!($exercisePhase && $exercisePhaseTeam)) {
             return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
@@ -453,33 +454,24 @@ class ExercisePhaseTeamController extends AbstractController
     {
         $exercisePhase = $exercisePhaseTeam->getExercisePhase();
 
-        if (!$exercisePhase instanceof VideoCutPhase) {
+        if (!$exercisePhase instanceof VideoCutPhase && !$exercisePhase->getVideos()->first() instanceof Video) {
             return;
         }
 
-        $solution = $exercisePhaseTeam->getSolution()->getSolution();
-        $cutList = $solution->getCutList();
+        $solution = $exercisePhaseTeam->getSolution();
+        $solutionData = $solution->getSolution();
+        $cutList = $solutionData->getCutList();
 
         if (empty($cutList)) {
             return;
         }
 
-        $cutListVideo = $this->createVideo($exercisePhaseTeam->getCreator());
-        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutListVideo->getId()));
-    }
+        // delete the previous cut video
+        $this->cutVideoService->deleteCutVideoOfSolution($solution);
+        // create a new one
+        $cutVideo = $this->cutVideoService->createCutVideoForVideoAndSolution($exercisePhase->getVideos()->first(), $solution);
 
-    private function createVideo(User $creator): ?Video
-    {
-        $videoUuid = Uuid::uuid4()->toString();
-        $video = new Video($videoUuid);
-        $video->setCreator($creator);
-
-        $video->setTitle('Video to be cut <' . $videoUuid . '>');
-        $video->setDataPrivacyAccepted(true);
-        $video->setDataPrivacyPermissionsAccepted(true);
-        $this->entityManager->persist($video);
-        $this->entityManager->flush();
-
-        return $video;
+        // hand it over to the encoding service to create the actual video data
+        $this->messageBus->dispatch(new CutListEncodingTask($exercisePhaseTeam->getId(), $cutVideo->getId()));
     }
 }

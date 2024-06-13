@@ -1,8 +1,7 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
-    #TODO: enable csrf_protection?
-    #csrf_protection: true
+    csrf_protection: true
     annotations: false
     http_method_override: false
     handle_all_throwables: true
@@ -11,8 +10,8 @@ framework:
     # Remove or comment this section to explicitly disable session support.
     session:
         handler_id: null
-        # 24h in seconds
-        cookie_lifetime: 86400
+        # 6h in seconds
+        cookie_lifetime: 21600
         cookie_secure: auto
         cookie_samesite: lax
 

@@ -159,6 +159,5 @@ class Course
             ->map(function (CourseRole $courseRole) {
                 return $courseRole->getUser();
             });
-        ;
     }
 }

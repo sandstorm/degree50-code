@@ -27,12 +27,14 @@ const mapStateToProps = (state: AppState) => {
 
     const disableCreate =
         isSolutionView || activePhaseType !== ExercisePhaseTypesEnum.VIDEO_CUTTING || !userIsCurrentEditor
+    const disablePreview = isSolutionView
     const disabled = !cutsAreActive
 
     return {
         allCutsCount: selectors.selectAllCutIdsByStartTime(state).length,
         activeCutCount: selectors.selectCurrentCutIdsAtCursor(state).length,
         disableCreate,
+        disablePreview,
         disabled,
     }
 }
@@ -104,6 +106,7 @@ const CutsMenu: FC<Props> = (props) => {
                             closeOthers: true,
                         })
                     }
+                    disabled={props.disablePreview}
                 />
             </MenuButton>
         </div>

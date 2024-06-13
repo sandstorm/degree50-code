@@ -11,7 +11,7 @@ readonly class AttachmentService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private AttachmentRepository $attachmentRepository
+        private AttachmentRepository   $attachmentRepository
     )
     {
     }

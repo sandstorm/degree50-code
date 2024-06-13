@@ -8,6 +8,7 @@ import { AppState } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 
 const mapStateToProps = (state: AppState) => ({
     cutList: selectors.data.selectCurrentCuts(state),
+    originalVideoUrl: selectors.config.selectVideos(state)[0].url.mp4 ?? '',
 })
 
 const mapDispatchToProps = {
@@ -23,7 +24,7 @@ const CutPreviewOverlay: FC<Props> = (props) => {
 
     return (
         <Overlay closeCallback={close} title="Schnitt Ansehen">
-            <VideoContextPlayer cutList={props.cutList} />
+            <VideoContextPlayer cutList={props.cutList} originalVideoUrl={props.originalVideoUrl} />
         </Overlay>
     )
 }

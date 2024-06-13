@@ -1,11 +1,6 @@
 @fixtures @conversionForAPI @integration
 Feature: Solution from Model is converted to normalized APISolution by SolutionService
 
-    # TODO:
-    # we should also test the doctrine filter deactivation inside the SolutionService-methods.
-    # However I currently don't know how to best test this, because I don't understand why we sometimes need
-    # to deactivate the filter, to successfully retrieve certain models, yet.
-
     Background:
         Given I am logged in as "foo@bar.de"
         And I have a course with ID "c"
@@ -17,6 +12,7 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
             | foo_bar | Foo  | #ffffff |
 
     Scenario: Conversion for general purpose (e.g. exercisePhase/show, exercisePhase/update-solution, exercisePhase/update-currentEditor)
+        Given A Video with Id "video-1" created by User "foo@bar.de" exists
         Given I have a solution with ID "solution-1" belonging to team with ID "team-1" with solutionData as JSON
             """
             {
@@ -71,18 +67,17 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
               ]
             }
             """
-        Given I have a cut video "cut-video-1" belonging to solution "solution-1"
+        Given A CutVideo with Id "cut-video-1" of Video "video-1" belonging to Solution "solution-1" exists
         When I convert the persisted serverSideSolution for team "team-1" to the clientSideSolution
         Then I get normalized client side data as JSON
         """
-                {
+        {
           "solutions": {
             "byId": {
               "solution-1": {
@@ -102,9 +97,8 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "userId": "foo@bar.de",
                 "cutVideo": {
                   "id": "cut-video-1",
-                  "name": "TEST_Video_cut-video-1",
+                  "name": "Video-Schnitt von c > ex > ex-p1",
                   "createdAt": "01.04.2024",
-                  "description": "",
                   "duration": 0,
                   "url": {
                     "hls": "",
@@ -168,7 +162,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }
@@ -271,7 +264,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -401,7 +393,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }
@@ -505,7 +496,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -589,7 +579,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }
@@ -692,7 +681,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                       "text": "Cut 1",
                       "memo": "",
                       "color": null,
-                      "url": "test",
                       "offset": 0,
                       "playbackRate": "1"
                   }
@@ -899,7 +887,6 @@ Feature: Solution from Model is converted to normalized APISolution by SolutionS
                 "color": null,
                 "solutionId": "solution-1",
                 "offset": 0,
-                "url": "test",
                 "playbackRate": 1
               }
             }

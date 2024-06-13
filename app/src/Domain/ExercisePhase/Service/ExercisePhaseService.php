@@ -238,7 +238,6 @@ readonly class ExercisePhaseService
         }
 
         $this->entityManager->persist($solution);
-        $this->entityManager->persist($exercisePhaseTeam);
         $this->entityManager->flush();
     }
 

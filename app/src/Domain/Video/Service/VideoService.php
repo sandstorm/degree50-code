@@ -2,6 +2,8 @@
 
 namespace App\Domain\Video\Service;
 
+use App\Domain\CutVideo\Repository\CutVideoRepository;
+use App\Domain\CutVideo\Service\CutVideoService;
 use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
@@ -21,6 +23,8 @@ readonly class VideoService
         private VideoRepository        $videoRepository,
         private VideoFavouritesService $videoFavouritesService,
         private FileSystemService      $fileSystemService,
+        private CutVideoService        $cutVideoService,
+        private CutVideoRepository     $cutVideoRepository,
     )
     {
     }
@@ -53,8 +57,10 @@ readonly class VideoService
 
         $this->fileSystemService->deleteDirectory($video->getEncodedVideoDirectory());
 
-        $this->entityManager->remove($video);
-        $this->entityManager->flush();
+        // remove CutVideos of this video
+        $this->cutVideoService->deleteCutVideosOfOriginalVideo($video);
+
+        $this->videoRepository->deleteVideo($video);
     }
 
     /**

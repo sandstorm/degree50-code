@@ -4,6 +4,7 @@ namespace App\VideoEncoding\Service;
 
 use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideCut;
 use App\Domain\Video\Model\Video;
+use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\FileSystem\FileSystemService;
 use App\VideoEncoding\TimeCode;
 use FFMpeg\FFMpeg;
@@ -23,7 +24,7 @@ class EncodingService
     const array CONFIG = [
         'ffmpeg.binaries' => '/usr/bin/ffmpeg',
         'ffprobe.binaries' => '/usr/bin/ffprobe',
-        'timeout' => 3600, // The timeout for the underlying process
+        'timeout' => 3600 * 3, // The timeout for the underlying process -> 3 hours
         'ffmpeg.threads' => 12,   // The number of threads that FFmpeg should use
     ];
 
@@ -133,13 +134,11 @@ class EncodingService
      * @param $cutList ServerSideCut[]
      * @return string[]
      */
-    public function createTemporaryMp4ClipsFromCutList(array $cutList): array
+    public function createTemporaryMp4ClipsFromCutList(VirtualizedFile $directory, array $cutList, string $originalVideoFilePath): array
     {
-        $rootDir = $this->parameterBag->get('kernel.project_dir');
-        $tempDirectory = $this->fileSystemService->localPath($this->fileSystemService->generateUniqueTemporaryDirectory());
-        $videoToCut = $rootDir . '/public' . $cutList[0]->url;
+        $tempDirectory = $this->fileSystemService->localPath($directory);
 
-        return array_map(function (ServerSideCut $cut) use ($tempDirectory, $videoToCut) {
+        return array_map(function (ServerSideCut $cut) use ($tempDirectory, $originalVideoFilePath) {
             $clipUuid = Uuid::uuid4()->toString();
             $this->logger->info("Creating new intermediate clip with ID $clipUuid");
 
@@ -149,9 +148,9 @@ class EncodingService
             $offset = round($cut->offset, 3);
             $videoDurationInSeconds = $cut->getDuration();
 
-            $duration =  max(1, $videoDurationInSeconds);
+            $duration = max(1, $videoDurationInSeconds);
 
-            $this->logger->info('url: ' . $videoToCut);
+            $this->logger->info('url: ' . $originalVideoFilePath);
             $this->logger->info('offset: ' . TimeCode::fromSeconds($offset)->toTimeString());
             $this->logger->info('duration: ' . TimeCode::fromSeconds($duration)->toTimeString());
             $this->logger->info('clipPath: ' . $clipPath);
@@ -159,7 +158,7 @@ class EncodingService
             $command = [
                 '-y', // overwrite previous outputs
                 '-ss', "$offset", // seek to start offset (seconds) (see https://trac.ffmpeg.org/wiki/Seeking)
-                '-i', "$videoToCut", // input video
+                '-i', "$originalVideoFilePath", // input video
                 '-t', "$duration", // duration of cut in seconds
                 '-map', 'v', // map all video streams
                 '-map', 'a', // map all audio streams

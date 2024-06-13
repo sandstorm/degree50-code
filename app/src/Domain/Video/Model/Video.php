@@ -98,7 +98,7 @@ class Video
     private ?float $videoDuration = null;
 
     #[ORM\Column(type: "text", nullable: true)]
-    private ?string $visiblePersons = null;
+    private ?string $personalNotes = null;
 
     #[ORM\Column(type: "datetimetz_immutable", nullable: true)]
     private ?DateTimeImmutable $encodingStarted = null;
@@ -211,14 +211,10 @@ class Video
         return $this;
     }
 
-    public function getVideoDuration(): ?float
+    public function getVideoDuration(): float
     {
-        if ($this->videoDuration) {
-            return $this->videoDuration;
-        } else {
-            // if the video has not yet been initialized, we do not yet have a duration
-            return 0;
-        }
+        // if the video has not yet been encoded, we do not yet have a duration
+        return $this->videoDuration ?? 0;
     }
 
     public function setVideoDuration(?float $videoDuration): void
@@ -281,14 +277,14 @@ class Video
         $this->encodedVideoDirectory = $encodedVideoDirectory;
     }
 
-    public function getVisiblePersons(): ?string
+    public function getPersonalNotes(): ?string
     {
-        return $this->visiblePersons;
+        return $this->personalNotes;
     }
 
-    public function setVisiblePersons(?string $visiblePersons): self
+    public function setPersonalNotes(?string $personalNotes): self
     {
-        $this->visiblePersons = $visiblePersons;
+        $this->personalNotes = $personalNotes;
 
         return $this;
     }

@@ -17,11 +17,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CopyExerciseFormType extends AbstractType
 {
     public function __construct(
-        private readonly Security $security,
+        private readonly Security         $security,
         private readonly CourseRepository $courseRepository,
     )
     {
     }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var User $user */

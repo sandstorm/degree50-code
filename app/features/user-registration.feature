@@ -10,7 +10,7 @@ Feature: Users can register via a registration form.
         When I fill the registration form with email "register@test.de" and password "test1234"
         And I click on "Registrieren"
         Then the page should contain the text "Sie haben sich erfolgreich registriert. Bitte bestätigen Sie Ihre E-Mail-Adresse."
-        And User "register@test.de" should exist
+        And User with Username "register@test.de" should exist
         And User "register@test.de" should only have the role "ROLE_STUDENT"
         And User "register@test.de" should be marked as not notified
         And a user with the email address "register@test.de" should have received an email with the subject "Bestätigen Sie Ihre E-Mail-Adresse"

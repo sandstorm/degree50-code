@@ -141,7 +141,6 @@ Feature: A reflexionPhase should show solutions of the phase it depends on
               "text": "Cut 1",
               "memo": "",
               "color": null,
-              "url": "test",
               "offset": 0,
               "playbackRate": "1"
           }

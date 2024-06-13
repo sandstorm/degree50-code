@@ -160,6 +160,7 @@ trait ExerciseContextTrait
         $course = $this->entityManager->find(Course::class, $courseId);
 
         $exercise = new Exercise($exerciseId);
+        $exercise->setName($exerciseId);
         $exercise->setCourse($course);
         $exercise->setCreator($this->currentUser);
         $course->addExercise($exercise);

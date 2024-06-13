@@ -51,7 +51,6 @@ export type VideoCodeFromAPI = MediaItemType & { id?: string } & {
 export type VideoCode = Omit<VideoCodeFromAPI, 'id'> & { id: string }
 
 export type CutFromAPI = MediaItemType & { id?: string } & {
-    url: string
     offset: number
     playbackRate: number
 }

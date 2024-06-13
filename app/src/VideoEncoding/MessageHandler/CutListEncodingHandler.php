@@ -2,10 +2,11 @@
 
 namespace App\VideoEncoding\MessageHandler;
 
+use App\Domain\CutVideo\Model\CutVideo;
+use App\Domain\CutVideo\Repository\CutVideoRepository;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhaseTeam\Repository\ExercisePhaseTeamRepository;
 use App\Domain\Video\Model\Video;
-use App\Domain\Video\Repository\VideoRepository;
 use App\Domain\VirtualizedFile\Model\VirtualizedFile;
 use App\FileSystem\FileSystemService;
 use App\Twig\AppRuntime;
@@ -15,7 +16,6 @@ use App\VideoEncoding\Service\SubtitleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
@@ -40,12 +40,11 @@ readonly class CutListEncodingHandler
     public function __construct(
         private LoggerInterface             $logger,
         private FileSystemService           $fileSystemService,
-        private VideoRepository             $videoRepository,
         private EntityManagerInterface      $entityManager,
         private ExercisePhaseTeamRepository $exercisePhaseTeamRepository,
         private EncodingService             $encodingService,
         private SubtitleService             $subtitleService,
-        private ParameterBagInterface       $parameterBag
+        private CutVideoRepository          $cutVideoRepository
     )
     {
     }
@@ -65,20 +64,22 @@ readonly class CutListEncodingHandler
             return;
         }
 
-        $cutVideo = $this->videoRepository->find($encodingTask->videoId);
+        /* @var CutVideo $cutVideo */
+        $cutVideo = $this->cutVideoRepository->find($encodingTask->videoId);
 
         try {
             $outputDirectory = VirtualizedFile::fromMountPointAndFilename(AppRuntime::ENCODED_VIDEOS, $cutVideo->getId());
             $localOutputDirectory = $this->fileSystemService->localPath($outputDirectory);
-            $rootDir = $this->parameterBag->get('kernel.project_dir');
+            $originalVideoFilePath = $this->fileSystemService->localPath($cutVideo->getOriginalVideo()->getEncodedVideoDirectory()) . '/x264.mp4';
 
             $this->logger->info('Creating intermediate clips from cutList...');
-            $clipPaths = $this->encodingService->createTemporaryMp4ClipsFromCutList($cutList);
+            $tempClipsDirectory = $this->fileSystemService->generateUniqueTemporaryDirectory();
+            $clipPaths = $this->encodingService->createTemporaryMp4ClipsFromCutList($tempClipsDirectory, $cutList, $originalVideoFilePath);
 
             $this->logger->info('Concatenating clips into video...');
             $mp4Url = $this->encodingService->concatMp4Clips($clipPaths, $localOutputDirectory);
 
-            // TODO: remove temporary clips?
+            $this->fileSystemService->deleteDirectory($tempClipsDirectory);
 
             $cutVideo->setVideoDuration($this->encodingService->probeForVideoDuration($mp4Url));
 
@@ -88,11 +89,8 @@ readonly class CutListEncodingHandler
 
             $this->logger->info("Done combining clips into video <$mp4Url>");
 
-            $cutVideo->setTitle('Cut_video, ' . $cutVideo->getCreator()->getUsername() . ', ' . $exercisePhaseTeam->getExercisePhase()->getName());
-
-            $originalVideoPath = $rootDir . '/public' . $cutList[0]->url;
             // get path without file name of mp4 and append "subtitles.vtt"
-            $originalSubtitlePath = str_replace("x264.mp4", "subtitles.vtt", $originalVideoPath);
+            $originalSubtitlePath = str_replace("x264.mp4", "subtitles.vtt", $originalVideoFilePath);
 
             // cut subtitles
             if (file_exists($originalSubtitlePath)) {
@@ -104,21 +102,16 @@ readonly class CutListEncodingHandler
 
                 file_put_contents($newSubtitlesPath, $newSubtitles);
 
-                $cutVideo->setUploadedSubtitleFile(VirtualizedFile::fromString($newSubtitlesPath));
+                $cutVideo->setSubtitleFile(VirtualizedFile::fromString($newSubtitlesPath));
 
                 $this->logger->info("Done cutting subtitles");
             }
 
             $this->pingAndReconnectDB();
 
-            // Add Video to Solution
-            $solution = $exercisePhaseTeam->getSolution();
-            $solution->setCutVideo($cutVideo);
-
             $cutVideo->setEncodingStatus(Video::ENCODING_FINISHED);
 
             $this->entityManager->persist($cutVideo);
-            $this->entityManager->persist($solution);
             $this->entityManager->flush();
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage());

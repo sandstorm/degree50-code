@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MediathekVideoFormType extends AbstractType
 {
     public function __construct(
-        private readonly Security $security,
+        private readonly Security         $security,
         private readonly CourseRepository $courseRepository,
     )
     {
@@ -34,11 +34,11 @@ class MediathekVideoFormType extends AbstractType
         $builder
             ->add('title', TextType::class, ['label' => "video.labels.title", 'translation_domain' => 'DegreeBase'])
             ->add('description', TextareaType::class, ['label' => "video.labels.description", 'translation_domain' => 'DegreeBase', 'required' => false])
-            ->add('visiblePersons', TextareaType::class, [
-                'label' => "video.labels.visiblePersons",
-                'help' => 'video.help.visiblePersons',
+            ->add('personalNotes', TextareaType::class, [
+                'label' => "video.labels.personalNotes",
                 'translation_domain' => 'DegreeBase',
-                'required' => true])
+                'required' => false,
+            ])
             ->add('dataPrivacyAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyAccepted", 'translation_domain' => 'DegreeBase', 'required' => true])
             ->add('dataPrivacyPermissionsAccepted', CheckboxType::class, ['label' => "video.labels.dataPrivacyPermissionsAccepted", 'translation_domain' => 'DegreeBase', 'required' => true])
             ->add('courses', EntityType::class, [

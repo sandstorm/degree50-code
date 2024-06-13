@@ -33,7 +33,7 @@ class LiveSyncService
             "iss" => "Degree 5.0 App",
             "iat" => time(), // issued at
             "nbf" => time() - 5 * 60, // not before,
-            "exp" => time() + 30 * 60, // expiration in 30 minutes,
+            "exp" => time() + 60 * 60 * 6, // expiration in 6 hours,
         ];
     }
 
@@ -73,8 +73,10 @@ class LiveSyncService
         ];
 
         $jwt = JWT::encode($payload, $this->jwtPrivateSigningKey, 'HS256');
+        // 6 hours
+        $expirationTime = time() + 6 * 3600;
 
-        return new Cookie('mercureAuthorization', $jwt, time() + 3600, '/', null, $this->secureCookie, true);
+        return new Cookie('mercureAuthorization', $jwt, $expirationTime, '/', null, $this->secureCookie, true);
     }
 
     public function getClientSideLiveSyncConfig(ExercisePhaseTeam $exercisePhaseTeam): array

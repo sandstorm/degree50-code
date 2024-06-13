@@ -73,7 +73,7 @@ class ExercisePhaseController extends AbstractController
         ExercisePhaseTeam $exercisePhaseTeam = null,
     ): Response
     {
-        if (!$exercisePhase || !$exercisePhaseTeam) {
+        if (!($exercisePhase && $exercisePhaseTeam)) {
             return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
@@ -484,11 +484,12 @@ class ExercisePhaseController extends AbstractController
              * @var MaterialPhase $exercisePhase
              **/
             $newSolution = new Solution(
+                $exercisePhaseTeam,
                 null,
                 $exercisePhase->getMaterial()
             );
         } else {
-            $newSolution = new Solution();
+            $newSolution = new Solution($exercisePhaseTeam);
         }
 
         $exercisePhaseTeam->setSolution($newSolution);
