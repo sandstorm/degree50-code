@@ -70,7 +70,6 @@ final class Version20240611090920 extends AbstractMigration
                 exercise_phase_team.id as exercise_phase_team_id
             FROM solution
             JOIN exercise_phase_team ON solution.id = exercise_phase_team.solution_id
-            -- WHERE exercise_phase_team.solution_id IS NOT NULL
             ;
         SQL;
 
@@ -125,8 +124,37 @@ final class Version20240611090920 extends AbstractMigration
                 )',
                 $cutVideo
             );
+
+            // delete VideoFavorites with this CutVideo
+            $this->connection->executeStatement(
+                'DELETE FROM video_favorite where video_id = :cut_video_id',
+                $cutVideo
+            );
+
+            // delete CutVideo from video table
+            $this->connection->executeStatement(
+                'DELETE FROM video where id = :cut_video_id',
+                $cutVideo
+            );
         }
 
+        // clean up video_favorite table
+        $this->connection->executeStatement('
+            DELETE FROM video_favorite
+            WHERE video_id IN (
+                SELECT video.id as id
+                FROM video
+                JOIN video_favorite ON video.id = video_favorite.video_id
+                WHERE video.title LIKE "Cut_video, %" OR video.title LIKE "Video to be cut <%"
+            )
+        ');
+
+        // clean up video table
+        $this->connection->executeStatement(
+            'DELETE FROM video WHERE title LIKE "Cut_video, %" OR title LIKE "Video to be cut <%";'
+        );
+
+        // set exercise_phase_team_id in solution table
         foreach ($this->solutionExercisePhaseTeam as $entry) {
             $this->connection->executeStatement(
                 'UPDATE solution SET exercise_phase_team_id = :exercise_phase_team_id WHERE id = :solution_id',
