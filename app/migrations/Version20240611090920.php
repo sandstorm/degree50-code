@@ -124,8 +124,37 @@ final class Version20240611090920 extends AbstractMigration
                 )',
                 $cutVideo
             );
+
+            // delete VideoFavorites with this CutVideo
+            $this->connection->executeStatement(
+                'DELETE FROM video_favorite where video_id = :cut_video_id',
+                $cutVideo
+            );
+
+            // delete CutVideo from video table
+            $this->connection->executeStatement(
+                'DELETE FROM video where id = :cut_video_id',
+                $cutVideo
+            );
         }
 
+        // clean up video_favorite table
+        $this->connection->executeStatement('
+            DELETE FROM video_favorite
+            WHERE video_id IN (
+                SELECT video.id as id
+                FROM video
+                JOIN video_favorite ON video.id = video_favorite.video_id
+                WHERE video.title LIKE "Cut_video, %" OR video.title LIKE "Video to be cut <%"
+            )
+        ');
+
+        // clean up video table
+        $this->connection->executeStatement(
+            'DELETE FROM video WHERE title LIKE "Cut_video, %" OR title LIKE "Video to be cut <%";'
+        );
+
+        // set exercise_phase_team_id in solution table
         foreach ($this->solutionExercisePhaseTeam as $entry) {
             $this->connection->executeStatement(
                 'UPDATE solution SET exercise_phase_team_id = :exercise_phase_team_id WHERE id = :solution_id',
@@ -133,6 +162,10 @@ final class Version20240611090920 extends AbstractMigration
             );
         }
 
+        // remove all orphaned solutions
+        $this->connection->executeStatement('DELETE FROM solution WHERE exercise_phase_team_id = ""');
+
+        // add foreign key constraint after migration of data
         $this->connection->executeStatement('ALTER TABLE solution ADD CONSTRAINT FK_9F3329DB7B50751B FOREIGN KEY (exercise_phase_team_id) REFERENCES exercise_phase_team (id) ON DELETE CASCADE');
         $this->connection->executeStatement('CREATE UNIQUE INDEX UNIQ_9F3329DB7B50751B ON solution (exercise_phase_team_id)');
     }
