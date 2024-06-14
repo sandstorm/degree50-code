@@ -70,6 +70,7 @@ final class Version20240611090920 extends AbstractMigration
                 exercise_phase_team.id as exercise_phase_team_id
             FROM solution
             JOIN exercise_phase_team ON solution.id = exercise_phase_team.solution_id
+            -- WHERE exercise_phase_team.solution_id IS NOT NULL
             ;
         SQL;
 
@@ -133,6 +134,10 @@ final class Version20240611090920 extends AbstractMigration
             );
         }
 
+        // remove all orphaned solutions
+        $this->connection->executeStatement('DELETE FROM solution WHERE exercise_phase_team_id = ""');
+
+        // add foreign key constraint after migration of data
         $this->connection->executeStatement('ALTER TABLE solution ADD CONSTRAINT FK_9F3329DB7B50751B FOREIGN KEY (exercise_phase_team_id) REFERENCES exercise_phase_team (id) ON DELETE CASCADE');
         $this->connection->executeStatement('CREATE UNIQUE INDEX UNIQ_9F3329DB7B50751B ON solution (exercise_phase_team_id)');
     }
