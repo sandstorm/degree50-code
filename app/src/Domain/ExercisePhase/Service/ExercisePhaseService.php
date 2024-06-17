@@ -360,7 +360,7 @@ readonly class ExercisePhaseService
             'type' => $exercisePhase->getType(),
             'components' => $components,
             'userId' => $user->getId(),
-            'userName' => $user->getEmail(),
+            'userName' => $user->getUsername(),
             'isStudent' => $user->isStudent(),
             'isGroupPhase' => $exercisePhase->isGroupPhase(),
             'dependsOnPreviousPhase' => $dependsOnPreviousPhase,
