@@ -25,6 +25,7 @@ mkdir -p /app/var/data/persistent/videos/original
 mkdir -p /app/public/data
 
 setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX /app/var
+setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX /app/public
 
 # install php dependencies for local development
 if [ "$LOCAL_DEVELOPMENT" == '1' ]; then
