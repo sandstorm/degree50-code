@@ -176,7 +176,7 @@ class ClientSideSolutionDataBuilder implements JsonSerializable
         ExercisePhaseStatus    $status,
     ): string
     {
-        $userName = $solutionCreator->getEmail();
+        $userName = $solutionCreator->getUsername();
         $userId = $solutionCreator->getId();
 
         $serverSideMaterial = $serverSideSolutionData->getMaterial();

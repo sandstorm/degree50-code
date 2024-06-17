@@ -51,7 +51,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         $now = new DateTimeImmutable();
         return $this->createQueryBuilder('user')
-            ->where('user.expirationDate < :now')
+            ->where('user.isAnonymized != TRUE')
+            ->andWhere('user.expirationDate < :now')
             ->setParameter('now', $now->format(User::DB_DATE_FORMAT))
             ->getQuery()
             ->getResult();
@@ -70,7 +71,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         // expiration_date - notice_duration < now
         return $this->createQueryBuilder('user')
-            ->where('user.isVerified != TRUE')
+            ->where('user.isAnonymized != TRUE')
+            ->andWhere('user.isVerified != TRUE')
             ->andWhere('user.createdAt < :verificationDeadline')
             ->setParameter('verificationDeadline', $verificationDeadline->format(User::DB_DATE_FORMAT))
             ->getQuery()
@@ -88,7 +90,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         // expiration_date - notice_duration < now
         return $this->createQueryBuilder('user')
-            ->where('user.expirationNoticeSent != TRUE')
+            ->where('user.isAnonymized != TRUE')
+            ->andWhere('user.expirationNoticeSent != TRUE')
             ->andWhere('user.expirationDate < :notificationTimeWindowStart')
             ->setParameter('notificationTimeWindowStart', $notificationTimeWindowStart->format(User::DB_DATE_FORMAT))
             ->getQuery()

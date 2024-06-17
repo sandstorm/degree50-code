@@ -70,6 +70,7 @@ readonly class UserService
             $this->entityManager->flush();
         } else {
             // anonymize user
+            $user->setIsAnonymized(true);
             $user->setEmail(Uuid::uuid4()->toString());
             $user->setPassword(md5(random_bytes(20)));
             $user->setRoles([]);

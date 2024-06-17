@@ -117,6 +117,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "boolean")]
     private bool $expirationNoticeSent = false;
 
+    #[ORM\Column(type: "boolean")]
+    private bool $isAnonymized = false;
+
     public function __construct(?string $id = null)
     {
         $this->courseRoles = new ArrayCollection();
@@ -156,6 +159,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
+        if ($this->isAnonymized) {
+            return '[Gelöschter Nutzer]';
+        }
+
         return $this->email;
     }
 
@@ -393,6 +400,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCreatedExercises(): Collection
     {
         return $this->createdExercises;
+    }
+
+    public function isAnonymized(): bool
+    {
+        return $this->isAnonymized;
+    }
+
+    public function setIsAnonymized(bool $isAnonymized): void
+    {
+        $this->isAnonymized = $isAnonymized;
     }
 
     private function setRole(string $roleToSet, bool $set): void
