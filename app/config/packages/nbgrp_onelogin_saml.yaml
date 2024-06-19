@@ -98,8 +98,8 @@ nbgrp_onelogin_saml:
           displayname: 'Example'
           url: 'http://example.com'
       compress:
-        requests: false
-        responses: false
+        requests: true
+        responses: true
 
   ##########################################
   # Optional parameters
