@@ -5,6 +5,7 @@ import { getColorName } from 'ntc-ts'
 export default class extends Controller {
     connect() {
         const formSubmitButton = document.getElementById('add-new-video-code')
+        const videoCodeNameInput = document.getElementById('video-code-name')
         const endpoint = this.data.get('endpoint')
         const updateOnSuccess = this.data.get('update')
         const videoCodesList = document.getElementById(updateOnSuccess)
@@ -65,6 +66,17 @@ export default class extends Controller {
             ev.target.setAttribute('aria-label', `Gewählte Farbe: ${getColorName(ev.target.value).name}`)
         })
 
+        // initially disable the submit button
+        formSubmitButton.setAttribute('disabled', '')
+
+        videoCodeNameInput.addEventListener('input', (ev) => {
+            if (ev.target.value === '') {
+                formSubmitButton.setAttribute('disabled', '')
+            } else {
+                formSubmitButton.removeAttribute('disabled')
+            }
+        })
+
         formSubmitButton.onclick = () => {
             const color = document.getElementById('video-code-color').value
             const name = document.getElementById('video-code-name').value
@@ -78,6 +90,7 @@ export default class extends Controller {
                 })
                     .then(function () {
                         updateVideoCodesList(videoCodesList)
+                        videoCodeNameInput.value = ''
                     })
                     .catch(function (e) {
                         console.error('>>>>> add video-code failed', e)
