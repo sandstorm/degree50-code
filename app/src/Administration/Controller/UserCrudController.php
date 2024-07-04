@@ -74,4 +74,11 @@ class UserCrudController extends AbstractCrudController
         }
     }
 
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof User) {
+            $entityInstance->setIsVerified(true);
+            parent::persistEntity($entityManager, $entityInstance);
+        }
+    }
 }
