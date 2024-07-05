@@ -94,8 +94,6 @@ export default class extends Controller {
                     })
                     .catch(function (e) {
                         console.error('>>>>> add video-code failed', e)
-                    })
-                    .finally(function () {
                         formSubmitButton.removeAttribute('disabled')
                     })
             }
