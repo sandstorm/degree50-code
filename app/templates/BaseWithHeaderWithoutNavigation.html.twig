@@ -4,10 +4,8 @@
 
     <main class="main main--with-header {% block layoutCssClass %}{% endblock %}">
         <div class="main-inner">
-            <div class="container">
-                {{ include('Partials/FlashMessages.html.twig') }}
-                {% block body %}{% endblock %}
-            </div>
+            {{ include('Partials/FlashMessages.html.twig') }}
+            {% block body %}{% endblock %}
         </div>
     </main>
 {% endblock %}
