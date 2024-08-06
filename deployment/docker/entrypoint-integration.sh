@@ -17,13 +17,13 @@ echo "####### Waiting for system under test to start"
 # forever.
 counter=0
 until $(curl --output /dev/null --silent --head --fail http://127.0.0.1:9090); do
-    if [ "$counter" -gt 10 ]; then
+    if [ "$counter" -gt 25 ]; then
         echo "FAILED: Waiting for system under test to start took too long!!!"
         exit 1
     fi
-    printf '.'
+    echo "."
     counter=$((counter+1))
-    sleep 5
+    sleep 2
 done
 
 echo "------> SUCCESS starting system under test"

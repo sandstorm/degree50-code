@@ -6,7 +6,7 @@
 {% block body %}
     <div class="container">
         <form method="post" class="login-form" role="form">
-            <img src="{{ asset('build/images/logo.svg') }}" alt="Logo der TU Dortmund" />
+            <img src="{{ asset('build/images/logo.svg') }}" alt="{{ "common.logoAltText"|trans({}, 'DegreeBase') }}" />
             <h1 class="h1 mb-3 font-weight-normal login-form__headline">Video-Lernplattform {{ "common.degree"|trans({}, 'DegreeBase') }}</h1>
 
             {% if error %}

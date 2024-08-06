@@ -96,16 +96,34 @@ integration_test:
         MYSQL_ROOT_PASSWORD: "password"
 
         # System under Test
+        APP_SECRET: test
         APP_ENV: test
         DATABASE_URL: mysql://root:password@mariadb/test_db
 
         MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
         LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
         JWT_KEY: changeme-test
+
+        MAILER_DSN: smtp://mailpit:1025
+        MAILER_SENDER_ADDRESS: no-reply@degree.de
+        MAILER_SENDER_NAME: 'Degree Test System'
+
+        TRUSTED_HOSTS: '^127:0:0:1|localhost|degree|degree40:tu-dortmund:de$'
+
+        SAML_BASE_URL: "https://example.com/saml/"
+        SAML_IDP_ENTITY_ID: "https://sso.example.com/openam/tudo"
+        SAML_IDP_SSO_URL: "https://sso.example.com/openam/SSOPOST/metaAlias/tudo/idp"
+        SAML_IDP_SLS_URL: "https://sso.example.com/openam/IDPSloPOST/metaAlias/tudo/idp"
+        SAML_IDP_CERT: "NOCERT"
+        SAML_SP_ENTITY_ID: "https://example.com/saml/metadata"
+        SAML_SP_ACS_URL: "https://example.com/saml/acs"
+        SAML_SP_SLS_URL: "https://example.com/saml/logout"
+        SAML_CONTACT_NAME: "Tech Contact"
+        SAML_CONTACT_EMAIL: "tech@example.com"
     services:
         -   name: mariadb:10.7
         -   name: redis:6.2
-        -   name: axllent/mailpit:v1.15
+        -   name: axllent/mailpit:v1.19
             alias: mailpit
         # here, we make the e2e-testrunner available
         -   name: $CI_REGISTRY_IMAGE:e2e-testrunner
@@ -138,16 +156,34 @@ e2e_test:
         MYSQL_ROOT_PASSWORD: "password"
 
         # System under Test
+        APP_SECRET: test
         APP_ENV: test
         DATABASE_URL: mysql://root:password@mariadb/test_db
 
         MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
         LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
         JWT_KEY: changeme-test
+
+        MAILER_DSN: smtp://mailpit:1025
+        MAILER_SENDER_ADDRESS: no-reply@degree.de
+        MAILER_SENDER_NAME: 'Degree Test System'
+
+        TRUSTED_HOSTS: '^127:0:0:1|localhost|degree|degree40:tu-dortmund:de$'
+
+        SAML_BASE_URL: "https://example.com/saml/"
+        SAML_IDP_ENTITY_ID: "https://sso.example.com/openam/tudo"
+        SAML_IDP_SSO_URL: "https://sso.example.com/openam/SSOPOST/metaAlias/tudo/idp"
+        SAML_IDP_SLS_URL: "https://sso.example.com/openam/IDPSloPOST/metaAlias/tudo/idp"
+        SAML_IDP_CERT: "NOCERT"
+        SAML_SP_ENTITY_ID: "https://example.com/saml/metadata"
+        SAML_SP_ACS_URL: "https://example.com/saml/acs"
+        SAML_SP_SLS_URL: "https://example.com/saml/logout"
+        SAML_CONTACT_NAME: "Tech Contact"
+        SAML_CONTACT_EMAIL: "tech@example.com"
     services:
         -   name: mariadb:10.7
         -   name: redis:6.2
-        -   name: axllent/mailpit:v1.15
+        -   name: axllent/mailpit:v1.19
             alias: mailpit
         # here, we make the e2e-testrunner available
         -   name: $CI_REGISTRY_IMAGE:e2e-testrunner

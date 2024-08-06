@@ -4,7 +4,7 @@ import { useMenuTrigger } from '@react-aria/menu'
 import { useButton } from '@react-aria/button'
 import DropdownPopup from './DropdownPopup'
 
-// TODO fix typing for children. ReactAria awaits an 'CollectionChildren<T>' but this type is not exposed
+// TODO fix typing for children. ReactAria requires a 'CollectionChildren<T>' but this type is not exposed
 // in the @react-stately/collection library
 type DropdownProps = {
     children: any

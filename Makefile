@@ -2,7 +2,6 @@ help:
 	cat Makefile
 
 build:
-	docker compose pull
 	docker compose build --pull
 
 start:

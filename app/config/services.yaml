@@ -6,7 +6,7 @@
 parameters:
     # manually configure VIPS driver
     liip_imagine.driver_service: 'app.image_processing.vips'
-    app.live_sync.jwt_private_signing_key: '%env(resolve:LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY)%'
+    app.live_sync.jwt_private_signing_key: '%env(LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY)%'
 
 services:
     # default configuration for services in *this* file

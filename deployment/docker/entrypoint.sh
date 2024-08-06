@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 mkdir -p /app/var/cache
 mkdir -p /app/var/log
@@ -24,11 +23,13 @@ mkdir -p /app/var/data/persistent/subtitles/original
 mkdir -p /app/var/data/persistent/videos/original
 mkdir -p /app/public/data
 
-setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX /app/var
-setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX /app/public
+setfacl -R -m u:www-data:rwX, u:"$(whoami)":rwX /app/var
+setfacl -R -m u:www-data:rwX, u:"$(whoami)":rwX /app/public
+
+set -ex
 
 # install php dependencies for local development
-if [ "$LOCAL_DEVELOPMENT" == '1' ]; then
+if [ $LOCAL_DEVELOPMENT == 1 ]; then
 	composer install --prefer-dist --no-progress --no-interaction
 fi
 

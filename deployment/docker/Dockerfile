@@ -53,7 +53,6 @@ ADD deployment/config-files/bash.colorprompt.sh /etc/bash.colorprompt.sh
 RUN echo '. /etc/bash.colorprompt.sh' >>  /etc/bash.bashrc
 
 # application entrypoint
-# TODO why do we use entrypoint.sh for e2e and integration tests?
 ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-e2e.sh /
 ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-integration.sh /
 ADD /deployment/config-files/php.override.ini /usr/local/etc/php/conf.d/php.override.ini
@@ -61,7 +60,12 @@ ADD /deployment/config-files/php.override.ini /usr/local/etc/php/conf.d/php.over
 RUN rm -Rf /usr/local/etc/php-fpm.*
 ADD deployment/config-files/php-fpm.conf /usr/local/etc/php-fpm.conf
 
-ADD /deployment/config-files/nginx.conf /deployment/config-files/nginx-e2e-test-server.conf /etc/nginx/
+# see docker-compose file build args
+ARG NGINX_SELF_SIGNED_CERT_FQDN
+ARG CREATE_NGINX_SELF_SIGNED_CERT
+
+ADD /deployment/config-files/nginx.conf /deployment/config-files/nginx-saml-test.conf /deployment/config-files/nginx-e2e-test-server.conf /etc/nginx/
+RUN [ -z $CREATE_NGINX_SELF_SIGNED_CERT ] || [ ! $CREATE_NGINX_SELF_SIGNED_CERT -eq 1 ] && rm /etc/nginx/nginx-saml-test.conf || true;
 
 RUN mkdir -p /var/lib/nginx /usr/local/var/log/ && \
     chown -R www-data /var/lib/nginx /usr/local/var/log/ /etc/nginx/
@@ -105,10 +109,10 @@ RUN set -eux; \
 VOLUME /app/var
 
 # generate a dummy self-signed SSL certificate; so SAML can be tested locally.
-# TODO: FIXME: Generalize this!
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -subj "/C=DE/ST=Sachsen/L=Dresden/O=Global Security/OU=IT Department/CN=degree40.tu-dortmund.de" \
-  -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+RUN [ ! -z $CREATE_NGINX_SELF_SIGNED_CERT ] && [ $CREATE_NGINX_SELF_SIGNED_CERT -eq 1 ] && openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -subj "/C=DE/ST=Sachsen/L=Dresden/O=Global Security/OU=IT Department/CN=${NGINX_SELF_SIGNED_CERT_FQDN}" \
+    -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt \
+    || true;
 
 COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
 COPY /deployment/docker/degree_crontab /etc/cron.d/degree_crontab
