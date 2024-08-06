@@ -1,6 +1,6 @@
 import { FocusScope } from '@react-aria/focus'
 import { OverlayContainer as AriaOverlayContainer } from '@react-aria/overlays'
-import { actions, selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
+import { selectors, VideoEditorState } from 'Components/VideoEditor/VideoEditorSlice'
 import { FC, memo } from 'react'
 import { connect } from 'react-redux'
 import PickComparedSolutionOverlay from 'Components/MaterialEditor/Overlays/PickComparedSolutionOverlay'
@@ -41,7 +41,6 @@ import { VideoCodeOverlayIds } from 'Components/ToolbarItems/VideoCodesContext/V
 import ZusatzAttachmentOverlay, {
     ZUSATZ_ATTACHMENTS_OVERLAY_ID,
 } from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentOverlay'
-import { AppDispatch } from 'StimulusControllers/ExerciseAndSolutionStore/Store'
 import { MaterialSolutionMenuOverlayIds } from 'Components/ToolbarItems/MaterialSolutionMenu'
 
 const mapOverlayIdToOverlayContent = (id?: string) => {
@@ -53,12 +52,12 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
 
         // Annotations
         case AnnotationOverlayIds.active: {
-            return <ActiveAnnotationsOverlay itemUpdateCondition={true} />
+            return <ActiveAnnotationsOverlay />
         }
         case AnnotationOverlayIds.create:
             return <CreateAnnotationOverlay />
         case AnnotationOverlayIds.all:
-            return <AllAnnotationsOverlay itemUpdateCondition={true} />
+            return <AllAnnotationsOverlay />
         case AnnotationOverlayIds.edit:
             return <EditAnnotationOverlay />
         case AnnotationOverlayIds.remove:
@@ -75,12 +74,12 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
             return <DeleteVideoCodePrototypeOverlay />
         }
         case VideoCodeOverlayIds.active: {
-            return <ActiveVideoCodesOverlay itemUpdateCondition={true} />
+            return <ActiveVideoCodesOverlay />
         }
         case VideoCodeOverlayIds.create:
             return <CreateVideoCodeOverlay />
         case VideoCodeOverlayIds.all:
-            return <AllVideoCodesOverlay itemUpdateCondition={true} />
+            return <AllVideoCodesOverlay />
         case VideoCodeOverlayIds.edit:
             return <EditVideoCodeOverlay />
         case VideoCodeOverlayIds.remove:
@@ -88,16 +87,16 @@ const mapOverlayIdToOverlayContent = (id?: string) => {
 
         // Cuts
         case CutOverlayIds.active: {
-            return <ActiveCutsOverlay itemUpdateCondition={true} />
+            return <ActiveCutsOverlay />
         }
         case CutOverlayIds.create: {
             return <CreateCutOverlay />
         }
         case CutOverlayIds.all: {
-            return <AllCutsOverlay itemUpdateCondition={true} />
+            return <AllCutsOverlay />
         }
         case CutOverlayIds.allByCutOrder: {
-            return <CutlistOverlay itemUpdateCondition={true} />
+            return <CutlistOverlay />
         }
         case CutOverlayIds.edit: {
             return <EditCutOverlay />
@@ -149,11 +148,7 @@ const mapStateToProps = (state: VideoEditorState) => ({
     overlayIds: selectors.overlay.overlayIds(state),
 })
 
-const mapDispatchToProps = (dispatch: AppDispatch) => ({
-    show: () => dispatch(actions.overlay.show()),
-})
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+type Props = ReturnType<typeof mapStateToProps>
 
 const OverlayContainer: FC<Props> = (props) => {
     const isOpen = props.isVisible && props.overlayIds.length > 0
@@ -178,4 +173,4 @@ const OverlayContainer: FC<Props> = (props) => {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(OverlayContainer))
+export default connect(mapStateToProps)(memo(OverlayContainer))

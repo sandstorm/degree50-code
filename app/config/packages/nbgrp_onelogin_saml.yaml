@@ -1,53 +1,27 @@
+# https://github.com/nbgrp/onelogin-saml-bundle?tab=readme-ov-file#configuration
 nbgrp_onelogin_saml:
   onelogin_settings:
-    # https://github:com/onelogin/php-saml
+    # https://github.com/onelogin/php-saml
     default:
       # Mandatory SAML settings
-      # TODO: We have to use external config for this
       idp:
-        entityId: 'https://sso.itmc.tu-dortmund.de/openam/tudo'
+        entityId: '%env(SAML_IDP_ENTITY_ID)%'
         singleSignOnService:
-          url: 'https://sso.itmc.tu-dortmund.de/openam/SSOPOST/metaAlias/tudo/idp'
+          url: '%env(SAML_IDP_SSO_URL)%'
           binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
         singleLogoutService:
-          url: 'https://sso.itmc.tu-dortmund.de/openam/IDPSloPOST/metaAlias/tudo/idp'
+          url: '%env(SAML_IDP_SLS_URL)%'
           binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
-        x509cert:  |
-          MIIE4zCCAsugAwIBAgIEchZQjzANBgkqhkiG9w0BAQwFADAiMSAwHgYDVQQDExdzc28uaXRtYy50
-          dS1kb3J0bXVuZC5kZTAeFw0yMjA1MjcxMjA0MThaFw0zMjA1MjQxMjA0MThaMCIxIDAeBgNVBAMT
-          F3Nzby5pdG1jLnR1LWRvcnRtdW5kLmRlMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA
-          hOC2yO0mCdKy4HQbTwgZTwOCGGv6/LW1+eiTfrKDgVm7qukQbx/YB38jmmZboEPMF/aPmMNpOaeJ
-          zHjNj43EY8GW5Pw6zml+qLKYXb78FH4L2fhTPRzNlbL0xjT4BIKmcwtoSJyP/9wOIkcrz0CNX+EK
-          DazNiMxZd4JEyJmsOZX65qhtvH5Z6jucHfbzja5vpkeMqLX3GTZnIruYRP+glWpgmCuu+fJ8vI3t
-          2uTE6D4IywNLGZe24f26FAVUfPlP0LlAG3uj7FwEDjHNCYFGy9j+QzbRnB0vMQlYO2K6OngIm3rP
-          lPvP8gK0Jij334SEM4PI/T5sdGGrrdwJA41rn7C9rQY913plbkimKImPyThXnDFeiaAfbueyrOgu
-          HlOKvM1hLnYNVunUwy0lTevxf6zRcvOThf6olGAXHVwcf0AC3uDI4SZ3ux7HKqZj42yMmEVdOsDF
-          CNOVcA9GmyiLXhajwhUKonw0hSIknIk3Az0QTdZ//lXnnwTUjFcCzzno4qI0fylDBIuuCRP10QkV
-          8y+ut83LfX1A7FQW34txpXuNbTbsPgRrzpMzJLB8GMYpi5nd2uO7FrafnVRbH0BIzD19+A78ilug
-          cH9UlCBz8OlD4ovUCw3Ho9YHIEnMfzdo9K6v6nYQXdI/wFX7N8Ax3ggjKCJHQ0YqBoMGhPuNL4MC
-          AwEAAaMhMB8wHQYDVR0OBBYEFFNPt6leA0S15MAsp/oFEXvZzOsXMA0GCSqGSIb3DQEBDAUAA4IC
-          AQAZYQw/BBi8njCH81U6NI9wBCoriWSbp2VFmkI0zYPhDXmNplGAo2/otIc3JeAM+AtexMDlo5PQ
-          HTtYbhADWshfxAbFbnIYeW6ZSpUXSus5GvglC5zkt6rMkgMdfwUBQLXnSrCm6RiftyVXXCXveCUQ
-          f4LlYd/J0JXeZYXJ+bkHwUoh3PARband4vqHDROnp+Z6wKA2SYLJCFruVkTp5oXP1qx1+ToV6BAJ
-          /zrfcDhbJ2FMDqPMP6/WigDWzAoa3HDfWi8AZL9AgWeBFr+zvLoWzGiEnaaBB5FiXnaNtXJ5Gnhf
-          JoVryuMAo3G9vbVeqoWmXbRf9m7gk8l4VhFPoAdnqewVLEkUHPUh7FW0nARxWqOGDeFYBkWeG48T
-          JN94t128tKg7uO69p7EKeYFjfyqZB54gVwXBqliTAtxMrYQjbDFv0nFJXtTgyFSHWf8aLq962hrY
-          N8CTI6S9GjMVCp7uIkhCls1mRNnJFr+DFg2aCsdRU8ZDh+QOYWr8Mp+7qtrUhqy9zyIwbh0LWdSM
-          h9lIh49xQhkT1o2w/5QI+ECixd+r6j8tMmVxHkZr+G1aW+TmY1UgWWTvKHOyNcM9ze9cEXFRZ7Nh
-          8IrL3Jg8lEEQB3LcMHdVdbLjEic3KtKGcOWxj/Pr2a6FwXMdTkVFqcLSjDGc9/UP92RO1SNNPVsg
-          rw==
+        x509cert: '%env(SAML_IDP_CERT)%'
 
       sp:
-        entityId: 'https://degree40.tu-dortmund.de/saml/metadata'  #  Default: '<request_scheme_and_host>/saml/metadata'
+        entityId: '%env(SAML_SP_ENTITY_ID)%'  #  Default: '<request_scheme_and_host>/saml/metadata'
         assertionConsumerService:
-          url: 'https://degree40.tu-dortmund.de/saml/acs'  #  Default: '<request_scheme_and_host>/saml/acs'
+          url: '%env(SAML_SP_ACS_URL)%'  #  Default: '<request_scheme_and_host>/saml/acs'
           binding:  'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
         singleLogoutService:
-          url: 'https://degree40.tu-dortmund.de/saml/logout'  #  Default: '<request_scheme_and_host>/saml/logout'
+          url: '%env(SAML_SP_SLS_URL)%'  #  Default: '<request_scheme_and_host>/saml/logout'
           binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'
-        # privateKey: 'MIIE...'
-
-        # discussed with Dennis Stracke / ITMC
         NameIDFormat: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
 
       ##########################################
@@ -55,7 +29,7 @@ nbgrp_onelogin_saml:
 
       # NOTE: we need to configure the base URL for SAML to work, as we are behind a reverse proxy.
       # !!! the URL must be EXACTLY like this, INCLUDING the trailing slash.
-      baseurl: 'https://degree40.tu-dortmund.de/saml/'  #  Default: '<request_scheme_and_host>/saml/'
+      baseurl: '%env(SAML_BASE_URL)%'  #  Default: '<request_scheme_and_host>/saml/'
       strict: true
       debug: false # Default: true
       security:
@@ -81,17 +55,9 @@ nbgrp_onelogin_saml:
         lowercaseUrlencoding: false
       contactPerson:
         technical:
-          givenName: 'Tech User'
-          # TODO env
-          emailAddress: 'technik@sandstorm.de'
-        # support:
-        #   givenName: 'Support User'
-        #   emailAddress: 'supportuser@example.com'
-        # administrative:
-        #   givenName: 'Administrative User'
-        #   emailAddress: 'administrativeuser@example.com'
+          givenName: '%env(SAML_CONTACT_NAME)%'
+          emailAddress: '%env(SAML_CONTACT_EMAIL)%'
 
-      # TODO unused?
       organization:
         en-US:
           name: 'Example'

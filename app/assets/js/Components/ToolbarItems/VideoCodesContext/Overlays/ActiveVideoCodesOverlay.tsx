@@ -14,12 +14,7 @@ const mapDispatchToProps = {
     closeOverlay: actions.videoEditor.overlay.unsetOverlay,
 }
 
-type OwnProps = {
-    // TODO: make readonly property a redux state
-    itemUpdateCondition: boolean
-}
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const ActiveVideoCodesOverlay: FC<Props> = (props) => {
     const close = () => {

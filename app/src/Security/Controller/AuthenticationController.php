@@ -50,7 +50,7 @@ class AuthenticationController extends AbstractController
     /**
      * NOTE: This route must match security.yaml at path `security.firewalls.main.logout.path`
      *
-     * DO NOT TOUCH; the SAML IDP calls /saml/logout (as the URL is part of the public SAML API at https://degree40.tu-dortmund.de/saml/metadata)
+     * DO NOT TOUCH; the SAML IDP calls /saml/logout (as the URL is part of the public SAML API at <request_scheme_and_host>/saml/metadata)
      */
     #[Route("/saml/logout", name: "app_logout")]
     public function logout()
