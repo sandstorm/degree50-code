@@ -16,6 +16,10 @@
 Um eine Instanz der Degree Platform zu konfigurieren, verwenden wir eine `.env`-Datei, um unsere Umgebungsvariablen zu setzen. 
 Erstellen Sie eine `.env`-Datei im Root-Verzeichnis des Projekts. Nutzen Sie die `.env.example`-Datei als Vorlage. 
 
+Wichtig:
+- Für Login via SAML SSO muss ein SAML SP (Service Provider) und IDP (Identity Provider) konfiguriert werden.
+- Für E-Mail-Versand muss ein SMTP-Server konfiguriert werden.
+
 ### Imprint, Privacy Policy and Terms of Use
 Um das Impressum, die Datenschutzerklärung und die Nutzungsbedingungen zu ändern, können Sie die folgenden Dateien bearbeiten:
 - `app/templates/Standard/DataPrivacy.html.twig`
