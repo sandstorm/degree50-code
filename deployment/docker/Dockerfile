@@ -87,7 +87,7 @@ COPY app/.env ./
 COPY app/.env.test ./
 
 # copy only specifically what we need
-
+COPY app/VERSION VERSION
 COPY app/bin bin/
 COPY app/config config/
 COPY app/public public/

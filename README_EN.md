@@ -15,6 +15,10 @@
 To configure your instance of the Degree Platform we use a `.env` file to store our environment variables.
 Create a `.env` file in the root of the project. Use the `.env.example` file as a template.
 
+Important:
+- For SAML SSO login a SAML SP (Service Provider) and IDP (Identity Provider) must be configured.
+- For sending emails an SMTP server must be configured.
+
 ### Imprint, Privacy Policy and Terms of Use
 To configure the Imprint, Privacy Policy and Terms of Use you can edit the following files:
 - `app/templates/Standard/DataPrivacy.html.twig`
