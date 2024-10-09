@@ -12,7 +12,8 @@ class AppRuntime implements RuntimeExtensionInterface
     const string UPLOADED_SUBTITLES = 'uploaded_subtitles';
     const string UPLOADED_AUDIO_DESCRIPTIONS = 'uploaded_audio_descriptions';
     const string ENCODED_VIDEOS = 'encoded_videos';
-    const string UPLOADED_ATTACHMENTS = 'uploaded_attachments';
+    // FIXME: This is a mismatching naming convention (plural vs. singular)
+    const string UPLOADED_ATTACHMENTS = 'uploaded_attachment';
 
     public function __construct()
     {
