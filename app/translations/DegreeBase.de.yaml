@@ -50,6 +50,7 @@ security:
             password: 'Passwort'
         login-sso: 'Login mit Uni-Account (SSO)'
         login-directly: 'Direkter Login'
+        login: 'Login'
         register: 'Registrieren'
 
 registration:

@@ -1,0 +1,44 @@
+##################################################
+##### PRODUCTION ENVIRONMENT           ##########
+##################################################
+
+services:
+    degree:
+        image: docker-hub.sandstorm.de/degree-4.0/code/app:${IMAGE_TAG}
+        restart: unless-stopped
+        env_file:
+            # .env get's used by docker compose itself to parse this yaml file
+            # general env contains db connection, JWT, APP_SECRET and mailer configuration
+            - .general.env
+            # env for original degree for tu-dortmund SSO
+            - .saml.env
+            # this file is put on the server manually and holds global secrets like mail server config
+            - .secrets.env
+        environment:
+            APP_ENV: "prod"
+            SHELL_ENV_DISPLAY: "production"
+        expose:
+            - "8080"
+        volumes:
+            - ./data/app/var/log:/app/var/log
+            - ./data/app/var/data:/app/var/data
+            - ./data/app/public/data:/app/public/data
+            - ./data/app/config/secrets:/app/config/secrets
+        networks:
+            default: {}
+            sharedIngressNetwork:
+                # alias used by caddy to identify the degree service instance
+                aliases:
+                  - ${INSTANCE_NAME}
+
+    redis:
+        image: redis:7
+        restart: unless-stopped
+        networks:
+            default: {}
+
+networks:
+    default:
+        name: ${INSTANCE_NAME}-network
+    sharedIngressNetwork:
+        external: true

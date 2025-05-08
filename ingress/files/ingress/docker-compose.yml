@@ -1,0 +1,45 @@
+services:
+    # caddy is the ingress and reverse proxy handling requests as well as tls termination
+    caddy:
+        image: caddy:2.10-alpine
+        # Caddy ships with HTTP/3 support enabled by default. To improve the performance of this UDP
+        # based protocol, the underlying quic-go library tries to increase the buffer sizes for its socket.
+        # The NET_ADMIN capability allows it to override the low default limits of the operating system without
+        # having to change kernel parameters via sysctl.
+        cap_add:
+            - NET_ADMIN
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        volumes:
+            - ./caddyfiles:/etc/caddy/
+            - ./caddy_data:/data
+            - ./caddy_config:/config
+        restart: unless-stopped
+        networks:
+            sharedIngressNetwork: { }
+        logging:
+            driver: json-file
+            options:
+                max-size: 5m
+                max-file: 3
+
+    # shared db for all instances
+    # each instance gets its own database, user and permissions
+    db:
+        image: mariadb:10.11
+        environment:
+            # configured in ./.env
+            MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+        volumes:
+            - ./db-data:/var/lib/mysql
+            - ./db-sync:/db-sync
+        # use Unicode encoding as default!
+        command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+        networks:
+            sharedIngressNetwork: { }
+
+networks:
+    sharedIngressNetwork:
+        name: sharedIngressNetwork

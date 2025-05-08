@@ -21,18 +21,20 @@
             {% endif %}
 
             <br/>
-            <a
-                class="button button--size-large button--type-primary button--block"
-                role="link"
-                href="{{ path('saml_login') }}"
-                aria-label="Klicken, um dich mit deinem Uni-Account (SSO) einzuloggen."
-            >
-                {{ "security.login.login-sso"|trans({}, 'DegreeBase') }}
-            </a>
+            {% if samlEnabled %}
+                <a
+                    class="button button--size-large button--type-primary button--block"
+                    role="link"
+                    href="{{ path('saml_login') }}"
+                    aria-label="Klicken, um dich mit deinem Uni-Account (SSO) einzuloggen."
+                >
+                    {{ "security.login.login-sso"|trans({}, 'DegreeBase') }}
+                </a>
 
-            <br />
-            <hr role="presentation"/>
-            <br />
+                <br />
+                <hr role="presentation"/>
+                <br />
+            {% endif %}
 
             <div class="form-group">
                 <label for="inputEmail">{{ "security.login.labels.email"|trans({}, 'DegreeBase') }}</label>
@@ -63,13 +65,25 @@
             <input type="hidden" name="_csrf_token"
                    value="{{ csrf_token('authenticate') }}"
             >
-            <button
-                class="button button--size-large button--type-outline-primary button--block"
-                type="submit"
-                role="button"
-            >
-                {{ "security.login.login-directly"|trans({}, 'DegreeBase') }}
-            </button>
+
+            {% if samlEnabled %}
+                <button
+                    class="button button--size-large button--type-outline-primary button--block"
+                    type="submit"
+                    role="button"
+                >
+                    {{ "security.login.login-directly"|trans({}, 'DegreeBase') }}
+                </button>
+            {% else %}
+                <button
+                    class="button button--size-large button--type-primary button--block"
+                    type="submit"
+                    role="button"
+                >
+                    {{ "security.login.login"|trans({}, 'DegreeBase') }}
+                </button>
+            {% endif %}
+
             <hr role="presentation"/>
             <div class="login-form__register">
                 <a href="{{ path('app_register') }}">{{ 'security.login.register'|trans({}, 'DegreeBase') }}</a>

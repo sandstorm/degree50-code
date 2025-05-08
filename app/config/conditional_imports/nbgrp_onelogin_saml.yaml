@@ -1,3 +1,5 @@
+# This saml configuration will be imported by config/packages/nbgrp_onelogin_saml.php if saml is enabled.
+
 # https://github.com/nbgrp/onelogin-saml-bundle?tab=readme-ov-file#configuration
 nbgrp_onelogin_saml:
   onelogin_settings:
@@ -5,10 +7,10 @@ nbgrp_onelogin_saml:
     default:
       # Mandatory SAML settings
       idp:
-        entityId: '%env(SAML_IDP_ENTITY_ID)%'
         singleSignOnService:
           url: '%env(SAML_IDP_SSO_URL)%'
           binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
+        entityId: '%env(SAML_IDP_ENTITY_ID)%'
         singleLogoutService:
           url: '%env(SAML_IDP_SLS_URL)%'
           binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
