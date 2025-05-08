@@ -245,13 +245,13 @@ deploy-test:
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
         - mkdir -p ~/.ssh
         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-        - echo "$SHELL"
+        - echo "$0"
         - |
             ssh $SSH_USER@$SSH_SERVER_URL <<-EOF
 
             set -ex
 
-            echo "$SHELL"
+            echo "$0"
 
             pwd
 
