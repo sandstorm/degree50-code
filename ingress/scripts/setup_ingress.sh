@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 source ./scripts/_setup_util.sh
 
@@ -29,5 +29,6 @@ initRuntime
 copyToTarget ./scripts/setup_ingress_on_target.sh
 copyToTarget ./files/ingress/docker-compose.yml
 copyToTarget ./files/ingress/Caddyfile
+copyToTarget ./scripts/update_deployments.sh
 
 executeOnTarget "./setup_ingress_on_target.sh"
