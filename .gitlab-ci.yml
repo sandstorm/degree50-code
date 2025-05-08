@@ -245,10 +245,14 @@ deploy-test:
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
         - mkdir -p ~/.ssh
         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        - echo "$SHELL"
         - |
-            ssh $SSH_USER@$SSH_SERVER_URL -t bash <<-EOF
+            ssh $SSH_USER@$SSH_SERVER_URL <<-EOF
 
             set -ex
+
+            echo "$SHELL"
+
             pwd
 
             docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
