@@ -244,7 +244,7 @@ deploy-test:
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
         - mkdir -p ~/.ssh
-        - $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         - |
             ssh $SSH_USER@$SSH_SERVER_URL <<-EOF
 
