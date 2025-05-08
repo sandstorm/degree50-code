@@ -246,17 +246,20 @@ deploy-test:
         - mkdir -p ~/.ssh
         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         - |
-            ssh $SSH_USER@$SSH_SERVER_URL <<-EOF
+            ssh $SSH_USER@$SSH_SERVER_URL -t bash <<-EOF
 
-            set -e
+            set -ex
             pwd
 
             docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
             cd deployments
+            ls -l
+
             for dir in */
             do
                 DIR=$(basename $dir)
+
 
                 if [[ "$DIR" == "ingress" ]]
                 then
