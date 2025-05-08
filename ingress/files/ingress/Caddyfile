@@ -1,0 +1,15 @@
+# global ingress
+{
+    # email for ACME
+    # TODO: correct email?
+    email technik@sandstorm.de
+
+    log default {
+        output stdout
+        format json
+        include http.log.access admin.api
+    }
+}
+
+# platform instance caddy files (these will handle the requests for instances with subdomains)
+import /etc/caddy/*.Caddyfile

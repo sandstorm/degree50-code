@@ -60,9 +60,8 @@ package_app:
         # Generate VERSION file (see deployment/docker/Dockerfile)
         - ./scripts/versioning.sh
         # build the degree image for this commit and push it to the registry
-        - docker pull $CI_REGISTRY_IMAGE:main || true
-        - docker build --cache-from $CI_REGISTRY_IMAGE:main -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f deployment/docker/Dockerfile .
-        - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+        - docker build -t $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG -f deployment/docker/Dockerfile .
+        - docker push $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
 
 build_e2e_testrunner:
     stage: build
@@ -74,9 +73,8 @@ build_e2e_testrunner:
         - cd e2e-testrunner
         - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
         # build the test runner image for this commit and push it to the registry
-        - docker pull $CI_REGISTRY_IMAGE:e2e-testrunner || true
-        - docker build --cache-from $CI_REGISTRY_IMAGE:e2e-testrunner -t $CI_REGISTRY_IMAGE:e2e-testrunner .
-        - docker push $CI_REGISTRY_IMAGE:e2e-testrunner
+        - docker build -t $CI_REGISTRY_IMAGE/e2e-testrunner:$CI_COMMIT_REF_SLUG .
+        - docker push $CI_REGISTRY_IMAGE/e2e-testrunner:$CI_COMMIT_REF_SLUG
         - cd ..
 
 integration_test:
@@ -86,7 +84,7 @@ integration_test:
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:
-        name: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+        name: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
         # see `scripts` below
         entrypoint: [""]
 
@@ -111,6 +109,8 @@ integration_test:
 
         TRUSTED_HOSTS: '^127:0:0:1|localhost|degree|degree40:tu-dortmund:de$'
 
+        # SAML
+        SAML_ENABLED: "enabled"
         SAML_BASE_URL: "https://example.com/saml/"
         SAML_IDP_ENTITY_ID: "https://sso.example.com/openam/tudo"
         SAML_IDP_SSO_URL: "https://sso.example.com/openam/SSOPOST/metaAlias/tudo/idp"
@@ -127,7 +127,7 @@ integration_test:
         -   name: axllent/mailpit:v1.19
             alias: mailpit
         # here, we make the e2e-testrunner available
-        -   name: $CI_REGISTRY_IMAGE:e2e-testrunner
+        -   name: $CI_REGISTRY_IMAGE/e2e-testrunner:$CI_COMMIT_REF_SLUG
             alias: e2e-testrunner
     script:
         # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
@@ -148,7 +148,7 @@ e2e_test:
     interruptible: true
     # we're running this job inside the production image we've just built previously
     image:
-        name: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+        name: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
         # see `scripts` below
         entrypoint: [""]
     variables:
@@ -171,6 +171,8 @@ e2e_test:
 
         TRUSTED_HOSTS: '^127:0:0:1|localhost|degree|degree40:tu-dortmund:de$'
 
+        # SAML
+        SAML_ENABLED: "enabled"
         SAML_BASE_URL: "https://example.com/saml/"
         SAML_IDP_ENTITY_ID: "https://sso.example.com/openam/tudo"
         SAML_IDP_SSO_URL: "https://sso.example.com/openam/SSOPOST/metaAlias/tudo/idp"
@@ -187,7 +189,7 @@ e2e_test:
         -   name: axllent/mailpit:v1.19
             alias: mailpit
         # here, we make the e2e-testrunner available
-        -   name: $CI_REGISTRY_IMAGE:e2e-testrunner
+        -   name: $CI_REGISTRY_IMAGE/e2e-testrunner:$CI_COMMIT_REF_SLUG
             alias: e2e-testrunner
     script:
         # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
@@ -205,30 +207,26 @@ e2e_test:
 
 # Add variables $DEGREE_SERVER_URL_PRODUCTION and $DEGREE_SERVER_USER_PRODUCTION to your GitLab project's CI/CD settings.
 deploy-prod:
-    stage: deploy
-    image: docker:dind
-    rules:
-        -   if: '$CI_COMMIT_TAG'
-            when: manual
-    tags:
-        - jumphost
-    script:
-        # pull the image of this branch and tag it as "main"
-        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE:main
-        - docker push $CI_REGISTRY_IMAGE:main
-
-        - eval $(ssh-agent -s)
-        - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
-        - ssh-add $SSH_PRIVATE_DEPLOY_KEY
-        - mkdir -p ~/.ssh
-        - ssh-keyscan -H $DEGREE_SERVER_URL_PRODUCTION >> ~/.ssh/known_hosts
-        - scp docker-compose-prod-tu-dortmund.yml $DEGREE_SERVER_USER_PRODUCTION@$DEGREE_SERVER_URL_PRODUCTION:~/docker-compose.yml
-        - ssh $DEGREE_SERVER_USER_PRODUCTION@$DEGREE_SERVER_URL_PRODUCTION "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker compose pull && docker compose up -d"
+    extends: .deployment_job
+    variables:
+        SSH_KNOWN_HOSTS: $DEGREE_SERVER_URL_PRODUCTION_KNOWN_HOSTS
+        SSH_SERVER_URL: $DEGREE_SERVER_URL_PRODUCTION
+        SSH_USER: $DEGREE_SERVER_USER_PRODUCTION
+    before_script:
+        # WHY: when automatically setting up a new instance, we want the latest version of the app
+        - docker pull $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/app:latest
+        - docker push $CI_REGISTRY_IMAGE/app:latest
 
 # Add variables $DEGREE_SERVER_URL_STAGING and $DEGREE_SERVER_USER_STAGING to your GitLab project's CI/CD settings.
 deploy-test:
+    extends: .deployment_job
+    variables:
+        SSH_KNOWN_HOSTS: $DEGREE_SERVER_URL_STAGING_KNOWN_HOSTS
+        SSH_SERVER_URL: $DEGREE_SERVER_URL_STAGING
+        SSH_USER: $DEGREE_SERVER_USER_STAGING
+
+.deployment_job:
     stage: deploy
     image: docker:dind
     rules:
@@ -236,17 +234,41 @@ deploy-test:
             when: manual
     tags:
         - jumphost
+    variables:
+        IMAGE_TAG: $CI_COMMIT_REF_SLUG
+        SSH_KNOWN_HOSTS: TBD
+        SSH_SERVER_URL: TBD
+        SSH_USER: TBD
     script:
-        # pull the image of this branch and tag it as "test-stage"
-        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-        - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE:test-stage
-        - docker push $CI_REGISTRY_IMAGE:test-stage
-
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
         - mkdir -p ~/.ssh
-        - ssh-keyscan -H $DEGREE_SERVER_URL_STAGING >> ~/.ssh/known_hosts
-        - scp docker-compose-test-tu-dortmund.yml $DEGREE_SERVER_USER_STAGING@$DEGREE_SERVER_URL_STAGING:~/docker-compose.yml
-        - ssh $DEGREE_SERVER_USER_STAGING@$DEGREE_SERVER_URL_STAGING "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY && docker compose pull && docker compose up -d"
+        - $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+        - |
+            ssh $SSH_USER@$SSH_SERVER_URL <<-EOF
+
+            set -ex
+
+            docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+            cd deployments
+            for dir in */; do
+                if [[ "$(basename "$dir")" == "ingress" ]]; then
+                    echo "Skipping ingress directory"
+                    continue
+                fi
+
+                cd $dir
+                echo "=== Updating Instance $(basename "$dir") ==="
+                if [[ ! -f ".env" ]]; then
+                    echo "Missing .env file, SKIPPING!"
+                else
+                    sed -i "s/^IMAGE_TAG='[^']*'/IMAGE_TAG='$IMAGE_TAG'/" .env
+                    docker compose pull
+                    docker compose up -d
+                fi
+                cd ..
+            done
+
+            EOF

@@ -43,6 +43,7 @@ class AuthenticationController extends AbstractController
             [
                 'last_username' => $lastUsername,
                 'error' => $maskedError ?? null,
+                'samlEnabled' => $this->getParameter('saml.enabled'),
             ]
         );
     }
