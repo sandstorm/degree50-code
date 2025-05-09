@@ -28,15 +28,15 @@ if [[ -z $DOMAINS ]]; then
 	exit 1
 fi
 
-# setup instance directory
-mkdir -p "deployments/$INSTANCE_NAME"
-mv docker-compose.yml "deployments/$INSTANCE_NAME/"
-
 # home folder of the deployment user; for local the local-runtime directory
 RUNTIME_ROOT_DIR=$(pwd)
 DEPLOYMENTS_DIR="$RUNTIME_ROOT_DIR/deployments"
 INSTANCE_DIR="$DEPLOYMENTS_DIR/$INSTANCE_NAME"
 INGRESS_DIR="$DEPLOYMENTS_DIR/ingress"
+
+# setup instance directory
+mkdir -p "$INSTANCE_DIR"
+mv docker-compose.yml "$INSTANCE_DIR/"
 
 cd "$INSTANCE_DIR"
 
@@ -48,9 +48,9 @@ GENERAL_ENV_FILE="$INSTANCE_DIR/.general.env"
 function createEnvFile() {
 	echo "  ##           generating environment files ..."
     # copy .secrets.env to instance dir
-    cp $DEPLOYMENTS_DIR/.secrets.env .secrets.env
+    cp "$DEPLOYMENTS_DIR/.secrets.env" .secrets.env
 
-    # load .env file if exists to keep specific settings
+    # load .general.env file if exists to keep specific settings
     if [[ -f $GENERAL_ENV_FILE ]]; then source $GENERAL_ENV_FILE; fi
 
     export MYSQL_USER="$INSTANCE_NAME"
@@ -60,7 +60,8 @@ function createEnvFile() {
     export MYSQL_PASSWORD=${MYSQL_PASSWORD:-$(openssl rand -base64 32)}
     export JWT_KEY=${JWT_KEY:-$(openssl rand -base64 32)}
 
-	envsubst < $RUNTIME_ROOT_DIR/.general.env.template > $GENERAL_ENV_FILE
+    # set env vars in .general.env based on template
+	envsubst < "$RUNTIME_ROOT_DIR/.general.env.template" > "$GENERAL_ENV_FILE"
 
 	# this file is for docker-compose itself
     echo "INSTANCE_NAME=$INSTANCE_NAME" > .env
@@ -81,7 +82,7 @@ function createDataSymlink() {
 
 	echo "  ##           creating data symlink to $INSTANCE_DATA_DIR"
 
-	mkdir -p $INSTANCE_DATA_DIR
+	mkdir -p "$INSTANCE_DATA_DIR"
 	# create soft-link, replacing exiting one, -n to not re-create the symlink inside the target
     ln -sfn "$INSTANCE_DATA_DIR" "$INSTANCE_DIR/data"
 
@@ -100,7 +101,7 @@ function createInitSql() {
     # copy to share db dir
     cp init.sql "$INGRESS_DIR/db-sync/$INSTANCE_NAME-init.sql"
     # create run init.sql in db container
-    (cd $DEPLOYMENTS_DIR/ingress; docker compose exec db bash -c "mysql -u root -p\"\$MYSQL_ROOT_PASSWORD\" < /db-sync/$INSTANCE_NAME-init.sql")
+    (cd "$INGRESS_DIR"; docker compose exec db bash -c "mysql -u root -p\"\$MYSQL_ROOT_PASSWORD\" < /db-sync/$INSTANCE_NAME-init.sql")
 
 	echo "  ##           ... done!"
 	echo "  ##"
@@ -112,9 +113,9 @@ function createCaddyFile() {
 
 	CADDYFILE_NAME="$INSTANCE_NAME.Caddyfile"
 	# remove caddyfile for instance if it already exists
-	rm $CADDYFILE_NAME 2>/dev/null || true
+	rm "$CADDYFILE_NAME" 2>/dev/null || true
 	# then create empty Caddyfile
-	touch $CADDYFILE_NAME
+	touch "$CADDYFILE_NAME"
 
 	# now fill the caddyfile with all configured domains
 	IFS=',' read -ra DOMAIN_ARRAY <<< "$DOMAINS"
@@ -132,7 +133,7 @@ function createCaddyFile() {
 	cp "$CADDYFILE_NAME" "$INGRESS_DIR/caddyfiles/$CADDYFILE_NAME"
 
 	# run caddy reload
-	(cd $INGRESS_DIR; docker compose exec caddy sh -c "caddy reload --config /etc/caddy/Caddyfile")
+	(cd "$INGRESS_DIR"; docker compose exec caddy sh -c "caddy reload --config /etc/caddy/Caddyfile")
 
 	echo "  ##           ... done!"
 	echo "  ##"
@@ -141,7 +142,7 @@ function createCaddyFile() {
 function bootInstance() {
 	echo "  ##           starting degree application!"
 
-    cd $INSTANCE_DIR
+    cd "$INSTANCE_DIR"
     docker compose up -d
 
 	echo "  ##           Application started!"
@@ -157,8 +158,6 @@ function cleanUp() {
 	echo "  ##           ... done!"
 	echo "  ##"
 }
-
-# TODO: create admin user
 
 createEnvFile
 createDataSymlink

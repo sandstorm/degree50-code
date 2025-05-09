@@ -4,6 +4,7 @@ setup_new_instance:
     tags:
         - jumphost
     before_script:
+        #  install needed for DNS validation
         - apt update
         - apt install -y dnsutils
     script:
