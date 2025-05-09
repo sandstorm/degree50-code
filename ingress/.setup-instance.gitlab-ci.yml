@@ -5,9 +5,9 @@ setup_new_instance:
         - jumphost
     script:
         - if [ "$TARGET" == "production" ]; then echo "Do not run for production for now!!!"; exit 1; fi
-        - export SSH_KNOWN_HOSTS=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_URL_STAGING_KNOWN_HOSTS else echo $DEGREE_SERVER_URL_PRODUCTION_KNOWN_HOSTS)
-        - export SSH_SERVER_URL=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_URL_STAGING else echo $DEGREE_SERVER_URL_PRODUCTION)
-        - export SSH_USER=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_USER_STAGING else echo $DEGREE_SERVER_USER_PRODUCTION)
+        - export SSH_KNOWN_HOSTS=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_URL_STAGING_KNOWN_HOSTS; else echo $DEGREE_SERVER_URL_PRODUCTION_KNOWN_HOSTS; fi)
+        - export SSH_SERVER_URL=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_URL_STAGING; else echo $DEGREE_SERVER_URL_PRODUCTION; fi)
+        - export SSH_USER=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_USER_STAGING; else echo $DEGREE_SERVER_USER_PRODUCTION; fi)
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
