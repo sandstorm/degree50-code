@@ -1,0 +1,127 @@
+integration_test:
+    stage: test
+    rules:
+        -   when: always
+    interruptible: true
+    # we're running this job inside the production image we've just built previously
+    image:
+        name: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
+        # see `scripts` below
+        entrypoint: [""]
+
+    dependencies: [] # we do not need any artifacts from prior steps
+    variables:
+        # service mariadb
+        MYSQL_DATABASE: "test_db"
+        MYSQL_ROOT_PASSWORD: "password"
+
+        # System under Test
+        APP_SECRET: test
+        APP_ENV: test
+        DATABASE_URL: mysql://root:password@mariadb/test_db
+
+        MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
+        LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
+        JWT_KEY: changeme-test
+
+        MAILER_DSN: smtp://mailpit:1025
+        MAILER_SENDER_ADDRESS: no-reply@degree.de
+        MAILER_SENDER_NAME: 'Degree Test System'
+
+        TRUSTED_HOSTS: '^127:0:0:1|localhost|degree|degree40:tu-dortmund:de$'
+
+        # SAML
+        SAML_ENABLED: "enabled"
+        SAML_BASE_URL: "https://example.com/saml/"
+        SAML_IDP_ENTITY_ID: "https://sso.example.com/openam/tudo"
+        SAML_IDP_SSO_URL: "https://sso.example.com/openam/SSOPOST/metaAlias/tudo/idp"
+        SAML_IDP_SLS_URL: "https://sso.example.com/openam/IDPSloPOST/metaAlias/tudo/idp"
+        SAML_IDP_CERT: "NOCERT"
+        SAML_SP_ENTITY_ID: "https://example.com/saml/metadata"
+        SAML_SP_ACS_URL: "https://example.com/saml/acs"
+        SAML_SP_SLS_URL: "https://example.com/saml/logout"
+        SAML_CONTACT_NAME: "Tech Contact"
+        SAML_CONTACT_EMAIL: "tech@example.com"
+    services:
+        -   name: mariadb:10.7
+        -   name: redis:6.2
+        -   name: axllent/mailpit:v1.19
+            alias: mailpit
+        # here, we make the e2e-testrunner available
+        -   name: $CI_REGISTRY_IMAGE/e2e-testrunner:$CI_COMMIT_REF_SLUG
+            alias: e2e-testrunner
+    script:
+        # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
+        # entrypoint and run the script here
+        - /entrypoint-integration.sh
+
+e2e_test:
+    stage: test
+    # rules:
+    # - run on merge_requests when triggered manually as part of the pipeline
+    # - always run on main branch pipelines and tag pipelines
+    rules:
+        -   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_OPEN_MERGE_REQUESTS'
+            when: manual
+        -   if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_TAG'
+            when: always
+
+    interruptible: true
+    # we're running this job inside the production image we've just built previously
+    image:
+        name: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
+        # see `scripts` below
+        entrypoint: [""]
+    variables:
+        # service mariadb
+        MYSQL_DATABASE: "test_db"
+        MYSQL_ROOT_PASSWORD: "password"
+
+        # System under Test
+        APP_SECRET: test
+        APP_ENV: test
+        DATABASE_URL: mysql://root:password@mariadb/test_db
+
+        MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
+        LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
+        JWT_KEY: changeme-test
+
+        MAILER_DSN: smtp://mailpit:1025
+        MAILER_SENDER_ADDRESS: no-reply@degree.de
+        MAILER_SENDER_NAME: 'Degree Test System'
+
+        TRUSTED_HOSTS: '^127:0:0:1|localhost|degree|degree40:tu-dortmund:de$'
+
+        # SAML
+        SAML_ENABLED: "enabled"
+        SAML_BASE_URL: "https://example.com/saml/"
+        SAML_IDP_ENTITY_ID: "https://sso.example.com/openam/tudo"
+        SAML_IDP_SSO_URL: "https://sso.example.com/openam/SSOPOST/metaAlias/tudo/idp"
+        SAML_IDP_SLS_URL: "https://sso.example.com/openam/IDPSloPOST/metaAlias/tudo/idp"
+        SAML_IDP_CERT: "NOCERT"
+        SAML_SP_ENTITY_ID: "https://example.com/saml/metadata"
+        SAML_SP_ACS_URL: "https://example.com/saml/acs"
+        SAML_SP_SLS_URL: "https://example.com/saml/logout"
+        SAML_CONTACT_NAME: "Tech Contact"
+        SAML_CONTACT_EMAIL: "tech@example.com"
+    services:
+        -   name: mariadb:10.7
+        -   name: redis:6.2
+        -   name: axllent/mailpit:v1.19
+            alias: mailpit
+        # here, we make the e2e-testrunner available
+        -   name: $CI_REGISTRY_IMAGE/e2e-testrunner:$CI_COMMIT_REF_SLUG
+            alias: e2e-testrunner
+    script:
+        # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
+        # entrypoint and run the script here
+        - /entrypoint-e2e.sh
+    after_script:
+        - cp -R /app/e2e-results $CI_PROJECT_DIR/e2e-results
+    artifacts:
+        expire_in: 1 weeks
+        when: always
+        paths:
+            - e2e-results
+        reports:
+            junit: e2e-results/behat.xml

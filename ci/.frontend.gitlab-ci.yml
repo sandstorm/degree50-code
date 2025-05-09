@@ -1,0 +1,29 @@
+compile_and_test_frontend:
+    stage: compile_resources
+    rules:
+        -   when: always
+    interruptible: true
+    image: node:20.12.2-bookworm-slim
+    script:
+        - yarn config set cache-folder .yarn
+        - cd app
+        # set up FontAwesomePro - CI provides $FONTAWESOME_NPM_AUTH_TOKEN (GitLab->Settings->CI/CD->Variables)
+        - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+        - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_NPM_AUTH_TOKEN
+        # install deps
+        - yarn
+        # run build
+        - yarn encore production || echo 1
+        # run tests directly after building, so we don't have to uplaod huge node_modules dir artifact
+        - yarn lint
+        - yarn test:ci
+    artifacts:
+        expire_in: 1 weeks
+        paths:
+            - app/public/build
+    cache:
+        # Cache node_modules project wide - only change when node version is changed.
+        key: "degree-frontend-node-cache_node-version-20-12-2"
+        paths:
+            - app/node_modules
+            - .yarn

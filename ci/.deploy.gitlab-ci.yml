@@ -1,0 +1,45 @@
+# Add variables $DEGREE_SERVER_URL_PRODUCTION and $DEGREE_SERVER_USER_PRODUCTION to your GitLab project's CI/CD settings.
+deploy-prod:
+    extends: .deployment_job
+    variables:
+        SSH_KNOWN_HOSTS: $DEGREE_SERVER_URL_PRODUCTION_KNOWN_HOSTS
+        SSH_SERVER_URL: $DEGREE_SERVER_URL_PRODUCTION
+        SSH_USER: $DEGREE_SERVER_USER_PRODUCTION
+    before_script:
+        # WHY: when automatically setting up a new instance, we want the latest version of the app
+        - docker pull $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
+        - docker tag $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/app:latest
+        - docker push $CI_REGISTRY_IMAGE/app:latest
+
+# Add variables $DEGREE_SERVER_URL_STAGING and $DEGREE_SERVER_USER_STAGING to your GitLab project's CI/CD settings.
+deploy-test:
+    extends: .deployment_job
+    variables:
+        SSH_KNOWN_HOSTS: $DEGREE_SERVER_URL_STAGING_KNOWN_HOSTS
+        SSH_SERVER_URL: $DEGREE_SERVER_URL_STAGING
+        SSH_USER: $DEGREE_SERVER_USER_STAGING
+
+.deployment_job:
+    stage: deploy
+    image: docker:dind
+    rules:
+        -   if: '$CI_COMMIT_TAG'
+            when: manual
+    tags:
+        - jumphost
+    variables:
+        IMAGE_TAG: $CI_COMMIT_REF_SLUG
+        SSH_KNOWN_HOSTS: TBD
+        SSH_SERVER_URL: TBD
+        SSH_USER: TBD
+    script:
+        - eval $(ssh-agent -s)
+        - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
+        - ssh-add $SSH_PRIVATE_DEPLOY_KEY
+        - mkdir -p ~/.ssh
+        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        # Copy the current update_deployments.sh script to the server
+        - scp ingress/scripts/update_deployments.sh $SSH_USER@$SSH_SERVER_URL:~/update_deployments.sh
+        # Run the update_deployments.sh script on the server
+        - ssh $SSH_USER@$SSH_SERVER_URL "bash -c \"./update_deployments.sh $CI_REGISTRY_USER $CI_REGISTRY_PASSWORD $CI_REGISTRY $IMAGE_TAG\""
+

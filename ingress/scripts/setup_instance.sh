@@ -60,8 +60,4 @@ copyToTarget ./files/instance/.general.env.template
 
 DATA_DIR=$([ "$TARGET" = "localDev" ] && echo "$LOCAL_RUNTIME_DIR/data" || echo '/data')
 
-echo $INSTANCE_NAME
-echo $DATA_DIR
-echo $DOMAINS
-
 executeOnTarget "./setup_instance_on_target.sh $INSTANCE_NAME $DATA_DIR $DOMAINS"
