@@ -46,7 +46,17 @@ include:
     - local: ingress/.setup-instance.gitlab-ci.yml
       rules:
           - if: '$TASK == "setup instance"'
+
     # use default pipeline when no task was specified
-    - local: ci/.gitlab-ci.yml
+    - local: ci/.deploy.gitlab-ci.yml
+      rules:
+          - if: '$TASK == ""'
+    - local: ci/.frontend.gitlab-ci.yml
+      rules:
+          - if: '$TASK == ""'
+    - local: ci/.package.gitlab-ci.yml
+      rules:
+          - if: '$TASK == ""'
+    - local: ci/.test.gitlab-ci.yml
       rules:
           - if: '$TASK == ""'
