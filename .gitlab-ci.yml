@@ -18,7 +18,7 @@ variables:
         value: ""
         description: "The task to run. Can be 'setup instance' or 'update deployments'."
         options:
-            # Empty value enables us to run a pipeline without needing to set up a instance
+            # Empty value enables us to run a pipeline without needing to set up an instance
             - ""
             - "setup instance"
     TARGET:
@@ -44,19 +44,19 @@ stages:
 include:
     # include task execution if required
     - local: ingress/.setup-instance.gitlab-ci.yml
-      #rules:
-       #   - if: '$TASK == "setup instance"'
+      rules:
+          - if: $TASK == "setup instance"
 
     # use default pipeline when no task was specified
     - local: ci/.deploy.gitlab-ci.yml
-      #rules:
-       #   - if: '$TASK == ""'
+      rules:
+          - if: $TASK == null || $TASK == ""
     - local: ci/.frontend.gitlab-ci.yml
-      #rules:
-       #   - if: '$TASK == ""'
+      rules:
+          - if: $TASK == null || $TASK == ""
     - local: ci/.package.gitlab-ci.yml
-      #rules:
-       #   - if: '$TASK == ""'
+      rules:
+          - if: $TASK == null || $TASK == ""
     - local: ci/.test.gitlab-ci.yml
-      #rules:
-       #   - if: '$TASK == ""'
+      rules:
+          - if: $TASK == null || $TASK == ""
