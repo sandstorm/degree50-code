@@ -20,4 +20,6 @@ setup_new_instance:
         - mkdir -p ~/.ssh
         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         - cd ingress
+        # ensure that we can pull the degree latest image for the new instance
+        - ssh $SSH_USER@$SSH_SERVER_URL "bash -c \"docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY\""
         - bash -c "./scripts/setup_instance.sh $TARGET $INSTANCE_NAME $INSTANCE_DOMAIN"
