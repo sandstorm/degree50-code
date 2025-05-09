@@ -3,6 +3,9 @@ setup_new_instance:
     image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.3-v3
     tags:
         - jumphost
+    before_script:
+        - apt update
+        - apt install -y dnsutils
     script:
         - if [ "$TARGET" == "production" ]; then echo "Do not run for production for now!!!"; exit 1; fi
         - export SSH_KNOWN_HOSTS=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_URL_STAGING_KNOWN_HOSTS; else echo $DEGREE_SERVER_URL_PRODUCTION_KNOWN_HOSTS; fi)
@@ -14,6 +17,4 @@ setup_new_instance:
         - mkdir -p ~/.ssh
         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         - cd ingress
-        # check shell
-        - echo $0
         - bash -c "./scripts/setup_instance.sh $TARGET $INSTANCE_NAME $INSTANCE_DOMAIN"
