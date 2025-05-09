@@ -48,6 +48,7 @@ class CreateUserCommand extends Command
             $password
         ));
         $user->setIsAdmin($isAdmin);
+        $user->setIsVerified(true);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
