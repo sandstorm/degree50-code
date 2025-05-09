@@ -49,25 +49,26 @@ COPY --from=dunglas/mercure:legacy-v0.11 /mercure /usr/bin/mercure
 # add colored shell env to distinguish environments properly
 # default value
 ENV SHELL_ENV_DISPLAY=dev
-COPY deployment/config-files/bash.colorprompt.sh /etc/bash.colorprompt.sh
+ADD deployment/config-files/bash.colorprompt.sh /etc/bash.colorprompt.sh
 RUN echo '. /etc/bash.colorprompt.sh' >>  /etc/bash.bashrc
 
 # application entrypoint
-COPY /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-e2e.sh /
-COPY deployment/docker/entrypoint.sh /deployment/docker/entrypoint-integration.sh /
-COPY deployment/config-files/php.override.ini /usr/local/etc/php/conf.d/php.override.ini
+ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-e2e.sh /
+ADD /deployment/docker/entrypoint.sh /deployment/docker/entrypoint-integration.sh /
+ADD /deployment/config-files/php.override.ini /usr/local/etc/php/conf.d/php.override.ini
 
 RUN rm -Rf /usr/local/etc/php-fpm.*
-COPY deployment/config-files/php-fpm.conf /usr/local/etc/php-fpm.conf
+ADD deployment/config-files/php-fpm.conf /usr/local/etc/php-fpm.conf
 
 # see docker-compose file build args
 ARG NGINX_SELF_SIGNED_CERT_FQDN
 ARG CREATE_NGINX_SELF_SIGNED_CERT
 
-COPY /deployment/config-files/nginx.conf /deployment/config-files/nginx-saml-test.conf /deployment/config-files/nginx-e2e-test-server.conf /etc/nginx/
-RUN [ -z $CREATE_NGINX_SELF_SIGNED_CERT ] || [ ! $CREATE_NGINX_SELF_SIGNED_CERT -eq 1 ] && rm /etc/nginx/nginx-saml-test.conf || true; \
-    && mkdir -p /var/lib/nginx /usr/local/var/log/ \
-    && chown -R www-data /var/lib/nginx /usr/local/var/log/ /etc/nginx/
+ADD /deployment/config-files/nginx.conf /deployment/config-files/nginx-saml-test.conf /deployment/config-files/nginx-e2e-test-server.conf /etc/nginx/
+RUN [ -z $CREATE_NGINX_SELF_SIGNED_CERT ] || [ ! $CREATE_NGINX_SELF_SIGNED_CERT -eq 1 ] && rm /etc/nginx/nginx-saml-test.conf || true;
+
+RUN mkdir -p /var/lib/nginx /usr/local/var/log/ && \
+    chown -R www-data /var/lib/nginx /usr/local/var/log/ /etc/nginx/
 
 WORKDIR /app
 
@@ -117,10 +118,9 @@ COPY /deployment/config-files/supervisord.conf /etc/supervisor/supervisord.conf
 COPY /deployment/docker/degree_crontab /etc/cron.d/degree_crontab
 
 # Give execution rights on the cron tab
-RUN chmod 0644 /etc/cron.d/degree_crontab \
-    # Create the log file to be able to run tail
-    && touch /app/var/log/cron.log
-
+RUN chmod 0644 /etc/cron.d/degree_crontab
+# Create the log file to be able to run tail
+RUN touch /app/var/log/cron.log
 
 COPY deployment/docker/entrypoint.sh /entrypoint.sh
 
