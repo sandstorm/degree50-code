@@ -11,9 +11,6 @@ setup_new_instance:
         - export SSH_KNOWN_HOSTS=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_URL_STAGING_KNOWN_HOSTS; else echo $DEGREE_SERVER_URL_PRODUCTION_KNOWN_HOSTS; fi)
         - export SSH_SERVER_URL=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_URL_STAGING; else echo $DEGREE_SERVER_URL_PRODUCTION; fi)
         - export SSH_USER=$(if [ "$TARGET" == "test" ]; then echo $DEGREE_SERVER_USER_STAGING; else echo $DEGREE_SERVER_USER_PRODUCTION; fi)
-        - echo $SSH_KNOWN_HOSTS
-        - echo $SSH_SERVER_URL
-        - echo $SSH_USER
         - eval $(ssh-agent -s)
         - chmod 600 $SSH_PRIVATE_DEPLOY_KEY
         - ssh-add $SSH_PRIVATE_DEPLOY_KEY
@@ -23,3 +20,6 @@ setup_new_instance:
         # ensure that we can pull the degree latest image for the new instance
         - ssh $SSH_USER@$SSH_SERVER_URL "bash -c \"docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY\""
         - bash -c "./scripts/setup_instance.sh $TARGET $INSTANCE_NAME $INSTANCE_DOMAIN"
+        # create admin user
+        - echo "Setting up admin user from Gitlab CI variables."
+        - ssh $SSH_USER@$SSH_SERVER_URL "cd deployments/$INSTANCE_NAME && docker compose exec degree bash -c \"./bin/console app:create-user --admin $DEGREE_INSTANCE_ADMIN_EMAIL $DEGREE_INSTANCE_ADMIN_PASSWORD\""
