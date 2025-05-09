@@ -14,4 +14,6 @@ setup_new_instance:
         - mkdir -p ~/.ssh
         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         - cd ingress
-        - ./scripts/setup_instance.sh $TARGET $INSTANCE_NAME $INSTANCE_DOMAIN
+        - # check shell
+        - echo $0
+        - bash -c "./scripts/setup_instance.sh $TARGET $INSTANCE_NAME $INSTANCE_DOMAIN"

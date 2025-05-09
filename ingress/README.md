@@ -20,6 +20,7 @@ There are two scripts you can execute:
 
 * `openssl`
 * `envsubst`
+* `dig`
 
 ## Script concept
 
@@ -32,6 +33,7 @@ actual working script (`..on_target.sh`) and all required files to the target sy
 
 * `openssl`
 * `envsubst`
+* `dig`
 
 ### Docker Hub Access
 
