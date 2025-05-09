@@ -65,7 +65,7 @@ ARG NGINX_SELF_SIGNED_CERT_FQDN
 ARG CREATE_NGINX_SELF_SIGNED_CERT
 
 COPY /deployment/config-files/nginx.conf /deployment/config-files/nginx-saml-test.conf /deployment/config-files/nginx-e2e-test-server.conf /etc/nginx/
-RUN "[ -z $CREATE_NGINX_SELF_SIGNED_CERT ] || [ ! $CREATE_NGINX_SELF_SIGNED_CERT -eq 1 ] && rm /etc/nginx/nginx-saml-test.conf || true;" \
+RUN [ -z $CREATE_NGINX_SELF_SIGNED_CERT ] || [ ! $CREATE_NGINX_SELF_SIGNED_CERT -eq 1 ] && rm /etc/nginx/nginx-saml-test.conf || true; \
     && mkdir -p /var/lib/nginx /usr/local/var/log/ \
     && chown -R www-data /var/lib/nginx /usr/local/var/log/ /etc/nginx/
 
