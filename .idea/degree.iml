@@ -198,9 +198,11 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/willdurand/negotiation" />
       <excludeFolder url="file://$MODULE_DIR$/app/__mocks__" />
       <excludeFolder url="file://$MODULE_DIR$/app/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/app/public" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/app/var" />
+      <excludeFolder url="file://$MODULE_DIR$/app/public/build" />
+      <excludeFolder url="file://$MODULE_DIR$/app/public/bundles" />
+      <excludeFolder url="file://$MODULE_DIR$/app/public/data" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

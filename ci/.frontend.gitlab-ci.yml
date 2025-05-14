@@ -14,7 +14,7 @@ compile_and_test_frontend:
         - yarn
         # run build
         - yarn encore production || echo 1
-        # run tests directly after building, so we don't have to uplaod huge node_modules dir artifact
+        # run tests directly after building, so we don't have to upload huge node_modules dir artifact
         - yarn lint
         - yarn test:ci
     artifacts:
@@ -22,7 +22,7 @@ compile_and_test_frontend:
         paths:
             - app/public/build
     cache:
-        # Cache node_modules project wide - only change when node version is changed.
+        # Cache node_modules project wide - only change when node version is changed. (see .nvmrc)
         key: "degree-frontend-node-cache_node-version-20-12-2"
         paths:
             - app/node_modules

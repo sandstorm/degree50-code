@@ -7,7 +7,7 @@ services:
         image: docker-hub.sandstorm.de/degree-4.0/code/app:${IMAGE_TAG}
         restart: unless-stopped
         env_file:
-            # .env get's used by docker compose itself to parse this yaml file
+            # .env gets used by docker compose itself to parse this yaml file
             # general env contains db connection, JWT, APP_SECRET and mailer configuration
             - .general.env
             # env for original degree for tu-dortmund SSO
