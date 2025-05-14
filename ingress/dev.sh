@@ -15,41 +15,40 @@ set -e
 ######### TASKS #########
 # prune local runtime dir
 function localPrune() {
-
-  # if local-runtime/deployments does not exist, just return from this function
-  if [ ! -d "local-runtime/deployments" ]; then
-    _log_green "No local runtime dir found ... nothing to remove"
-    return
-  fi
-
-  # Loop through all subdirectories (instances and ingress)
-  cd local-runtime/deployments
-  for dir in */; do
-    # Check if docker-compose.yml exists in this directory
-    if [ -f "${dir}docker-compose.yml" ]; then
-      _log_green "Found docker-compose.yml for ${dir}"
-      # Change to that directory
-      cd "${dir}" || continue
-      # Execute docker compose down -v for each instance + ingress
-      _log_yellow "stopping ${dir} docker compose down -v in ${dir}"
-      docker compose down -v --remove-orphans
-      # Return to the original directory
-      cd ..
+    # if local-runtime/deployments does not exist, just return from this function
+    if [ ! -d "local-runtime/deployments" ]; then
+        _log_green "No local runtime dir found ... nothing to remove"
+        return
     fi
-  done
 
-  cd ../..
-  rm -r local-runtime || true
-  _log_green "removed local runtime dir"
+    # Loop through all subdirectories (instances and ingress)
+    cd local-runtime/deployments
+    for dir in */; do
+        # Check if docker-compose.yml exists in this directory
+        if [ -f "${dir}docker-compose.yml" ]; then
+            _log_green "Found docker-compose.yml for ${dir}"
+            # Change to that directory
+            cd "${dir}" || continue
+            # Execute docker compose down -v for each instance + ingress
+            _log_yellow "stopping ${dir} docker compose down -v in ${dir}"
+            docker compose down -v --remove-orphans
+            # Return to the original directory
+            cd ..
+        fi
+    done
+
+    cd ../..
+    rm -r local-runtime || true
+    _log_green "removed local runtime dir"
 }
 
 function localSetup() {
-  _log_yellow "Pruning runtime for fresh setup"
-  localPrune
-  _log_green "Setting up local runtime"
-  ./scripts/setup_ingress.sh localDev
+    _log_yellow "Pruning runtime for fresh setup"
+    localPrune
+    _log_green "Setting up local runtime"
+    ./scripts/setup_ingress.sh localDev
 
-  _log_green "Local Runtime up and running"
+    _log_green "Local Runtime up and running"
 }
 
 function localContainerLogs() {
@@ -62,19 +61,19 @@ function localSetupInstance() {
 }
 
 function testSetup() {
-	_log_yellow "going to setup the ingress on the degree test server!"
-	_log_yellow "     you got 5 seconds to cancel this!"
-	# sleep 5
-	_log_green "Starting! Touch your YubiKey!"
-	./scripts/setup_ingress.sh test
+    _log_yellow "going to setup the ingress on the degree test server!"
+    _log_yellow "     you got 5 seconds to cancel this!"
+    # sleep 5
+    _log_green "Starting! Touch your YubiKey!"
+    ./scripts/setup_ingress.sh test
 }
 
 function testSetupInstance() {
     _log_yellow "going to setup instance $1 on the degree test server!"
-	_log_yellow "     you got 5 seconds to cancel this!"
-	# sleep 5
-	_log_green "Starting! Touch your YubiKey!"
-	./scripts/setup_instance.sh test "$1" "$2"
+    _log_yellow "     you got 5 seconds to cancel this!"
+    # sleep 5
+    _log_green "Starting! Touch your YubiKey!"
+    ./scripts/setup_instance.sh test "$1" "$2"
 }
 
 _log_green "---------------------------- RUNNING TASK: $1 ----------------------------"

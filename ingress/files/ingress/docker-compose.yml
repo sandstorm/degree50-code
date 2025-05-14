@@ -32,6 +32,8 @@ services:
         environment:
             # configured in ./.env
             MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            # enable auto upgrade
+            MARIADB_AUTO_UPGRADE: 1
         volumes:
             - ./db-data:/var/lib/mysql
             - ./db-sync:/db-sync

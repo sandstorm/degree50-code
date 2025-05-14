@@ -18,10 +18,10 @@ echo "Git describe result: $version"
 
 if [[ $version =~ ^[vV]?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)*$ ]]; then
     echo "Found tag $version"
-	echo $version > ./app/VERSION
+    echo $version > ./app/VERSION
 else
     echo "Found commit hash $version"
 
-	# fallback version, if no tag has been provided
-	echo "0.0.0-fallback-$version" > ./app/VERSION
+    # fallback version, if no tag has been provided
+    echo "0.0.0-fallback-$version" > ./app/VERSION
 fi

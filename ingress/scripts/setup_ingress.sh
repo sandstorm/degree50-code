@@ -6,23 +6,23 @@ source ./scripts/_setup_util.sh
 
 TARGET=$1
 
-checkTargetIsValid $TARGET
+checkTargetIsValid "$TARGET"
 
 LOCAL_RUNTIME_DIR="./local-runtime/"
 
 function initRuntime() {
     if [[ "$TARGET" == "localDev" ]]
-	then
-		mkdir -p $LOCAL_RUNTIME_DIR
-		mkdir -p $LOCAL_RUNTIME_DIR/deployments
+    then
+        mkdir -p $LOCAL_RUNTIME_DIR
+        mkdir -p $LOCAL_RUNTIME_DIR/deployments
 
-		# create local mail config
-		SECRET_ENV_FILE="$LOCAL_RUNTIME_DIR/deployments/.secrets.env"
-		if [ ! -f "$SECRET_ENV_FILE" ]; then
-			echo "MAILER_DSN=smtp://mailpit:1025" > $SECRET_ENV_FILE
+        # create local mail config
+        SECRET_ENV_FILE="$LOCAL_RUNTIME_DIR/deployments/.secrets.env"
+        if [ ! -f "$SECRET_ENV_FILE" ]; then
+            echo "MAILER_DSN=smtp://mailpit:1025" > $SECRET_ENV_FILE
             echo "MAILER_SENDER_ADDRESS=no-reply@degree.de" >> $SECRET_ENV_FILE
-		fi
-	fi
+        fi
+    fi
 }
 
 initRuntime

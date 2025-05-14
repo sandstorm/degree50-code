@@ -7,7 +7,7 @@ integration_test:
     image:
         name: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
         # see `scripts` below
-        entrypoint: [""]
+        entrypoint: ["/init"]
 
     dependencies: [] # we do not need any artifacts from prior steps
     variables:
@@ -20,7 +20,7 @@ integration_test:
         APP_ENV: test
         DATABASE_URL: mysql://root:password@mariadb/test_db
 
-        MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
+        MERCURE_PUBLISH_URL: http://127.0.0.1:8080/.well-known/mercure
         LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
         JWT_KEY: changeme-test
 
@@ -43,8 +43,8 @@ integration_test:
         SAML_CONTACT_NAME: "Tech Contact"
         SAML_CONTACT_EMAIL: "tech@example.com"
     services:
-        -   name: mariadb:10.7
-        -   name: redis:6.2
+        -   name: mariadb:10.11
+        -   name: redis:7
         -   name: axllent/mailpit:v1.19
             alias: mailpit
         # here, we make the e2e-testrunner available
@@ -53,7 +53,36 @@ integration_test:
     script:
         # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
         # entrypoint and run the script here
-        - /entrypoint-integration.sh
+        - |
+            export PLAYWRIGHT_API_URL=http://e2e-testrunner:3000
+            export SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT=http://$(hostname -i):8080
+
+            echo "####### Waiting for system under test to start"
+
+            # We use a counter here so that we can stop the pipeline and not have it run
+            # forever.
+            counter=0
+            until $(curl --output /dev/null --silent --head --fail http://127.0.0.1:8080); do
+              if [ "$counter" -gt 25 ]; then
+                echo "FAILED: Waiting for system under test to start took too long!!!"
+              exit 1
+              fi
+              echo "."
+              counter=$((counter+1))
+              sleep 2
+            done
+
+            echo "------> SUCCESS starting system under test"
+
+            echo "####### Running Unit Tests"
+            cd /app && vendor/bin/phpunit --colors=always
+            echo "------> SUCCESS finished running Unit tests"
+
+            echo "####### Running integration Tests"
+            cd /app && vendor/bin/behat --format pretty --out std --tags integration
+            echo "------> SUCCESS finished running integration tests"
+
+            echo "ALL DONE"
 
 e2e_test:
     stage: test
@@ -71,7 +100,7 @@ e2e_test:
     image:
         name: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
         # see `scripts` below
-        entrypoint: [""]
+        entrypoint: ["/init"]
     variables:
         # service mariadb
         MYSQL_DATABASE: "test_db"
@@ -82,7 +111,7 @@ e2e_test:
         APP_ENV: test
         DATABASE_URL: mysql://root:password@mariadb/test_db
 
-        MERCURE_PUBLISH_URL: http://127.0.0.1:9090/.well-known/mercure
+        MERCURE_PUBLISH_URL: http://127.0.0.1:8080/.well-known/mercure
         LIVE_SYNC_JWT_PRIVATE_SIGNING_KEY: changeme-test
         JWT_KEY: changeme-test
 
@@ -105,8 +134,8 @@ e2e_test:
         SAML_CONTACT_NAME: "Tech Contact"
         SAML_CONTACT_EMAIL: "tech@example.com"
     services:
-        -   name: mariadb:10.7
-        -   name: redis:6.2
+        -   name: mariadb:10.11
+        -   name: redis:7
         -   name: axllent/mailpit:v1.19
             alias: mailpit
         # here, we make the e2e-testrunner available
@@ -115,7 +144,38 @@ e2e_test:
     script:
         # as we need a `script` section to have a valid .gitlab-ci.yml we disabled the
         # entrypoint and run the script here
-        - /entrypoint-e2e.sh
+        - |
+            export PLAYWRIGHT_API_URL=http://e2e-testrunner:3000
+            export SYSTEM_UNDER_TEST_URL_FOR_PLAYWRIGHT=http://$(hostname -i):8080
+
+            env
+
+            echo "####### Waiting for system under test to start"
+
+            # We use a counter here so that we can stop the pipeline and not have it run
+            # forever.
+            counter=0
+            until $(curl --output /dev/null --silent --head --fail http://127.0.0.1:8080); do
+                if [ "$counter" -gt 25 ]; then
+                    echo "FAILED: Waiting for system under test to start took too long!!!"
+                    exit 1
+                fi
+                echo "."
+                counter=$((counter+1))
+                sleep 2
+            done
+
+            echo "------> SUCCESS starting system under test"
+
+            echo "####### Running Unit Tests"
+            cd /app && vendor/bin/phpunit --colors=always
+            echo "------> SUCCESS finished running Unit tests"
+
+            echo "####### Running e2e Tests"
+            cd /app && rm -Rf e2e-results && mkdir e2e-results && vendor/bin/behat --format junit --out e2e-results --format pretty --out std --tags playwright
+            echo "------> SUCCESS finished running e2e tests"
+
+            echo "ALL DONE"
     after_script:
         - cp -R /app/e2e-results $CI_PROJECT_DIR/e2e-results
     artifacts:

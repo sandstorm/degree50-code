@@ -15,34 +15,34 @@ INSTANCE_NAME=$2
 DOMAINS=$3
 
 # check that all parameters are valid
-checkTargetIsValid $TARGET
-checkInstanceNameIsValid $INSTANCE_NAME
+checkTargetIsValid "$TARGET"
+checkInstanceNameIsValid "$INSTANCE_NAME"
 
 # build default domain suffix and target ip address for target
 if [[ "$TARGET" == "localDev" ]]; then
-	DOMAIN_SUFFIX='degree.localhost'
-	TARGET_IP_ADDRESS='127.0.0.1'
+    DOMAIN_SUFFIX='degree.localhost'
+    TARGET_IP_ADDRESS='127.0.0.1'
 elif [[ "$TARGET" == "test" ]]; then
-	DOMAIN_SUFFIX='degree40-test.tu-dortmund.de'
-	TARGET_IP_ADDRESS='192.35.69.41'
+    DOMAIN_SUFFIX='degree40-test.tu-dortmund.de'
+    TARGET_IP_ADDRESS='192.35.69.41'
 elif [[ "$TARGET" == "production" ]]; then
-	DOMAIN_SUFFIX='degree40.tu-dortmund.de'
-	TARGET_IP_ADDRESS='192.35.69.40'
+    DOMAIN_SUFFIX='degree40.tu-dortmund.de'
+    TARGET_IP_ADDRESS='192.35.69.40'
 fi
 
 # set default domain when nothing was specified
 if [[ -z $DOMAINS ]]; then
-	DOMAINS=$INSTANCE_NAME.$DOMAIN_SUFFIX
+    DOMAINS=$INSTANCE_NAME.$DOMAIN_SUFFIX
 fi
 
 if [[ "$TARGET_IP_ADDRESS" != "127.0.0.1" ]]; then
-	# check that all domains are pointing to the target server
+    # check that all domains are pointing to the target server
     IFS=',' read -ra DOMAIN_ARRAY <<< "$DOMAINS"
     for DOMAIN in "${DOMAIN_ARRAY[@]}"; do
-    	# Trim whitespace
-    	DOMAIN=$(echo "$DOMAIN" | xargs)
+        # Trim whitespace
+        DOMAIN=$(echo "$DOMAIN" | xargs)
         echo "Checking that $DOMAIN resolves to $TARGET_IP_ADDRESS..."
-        if dig +short "$DOMAIN" @1.1.1.1 | grep -q $TARGET_IP_ADDRESS; then
+        if dig +short "$DOMAIN" @1.1.1.1 | grep -q "$TARGET_IP_ADDRESS"; then
             echo "$DOMAIN resolves to $TARGET_IP_ADDRESS"
         else
             echo "$DOMAIN does not resolve to $TARGET_IP_ADDRESS, aborting!"

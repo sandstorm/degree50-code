@@ -1,0 +1,14 @@
+#!/command/execlineb -P
+
+####################################
+# start up service
+####################################
+
+# keep original environment
+with-contenv
+
+foreground {
+    sleep 10
+}
+
+php /app/bin/console messenger:consume async -vv

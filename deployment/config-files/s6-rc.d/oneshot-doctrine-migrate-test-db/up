@@ -1,0 +1,11 @@
+#!/command/execlineb -P
+
+####################################
+# start up service
+####################################
+
+# keep original environment
+with-contenv
+
+# This is only for the dev environment
+bash -c "if [ "$APP_ENV" == "dev" ]; then APP_ENV=test php /app/bin/console doctrine:migrations:migrate --no-interaction; fi"

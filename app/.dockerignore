@@ -19,12 +19,5 @@ app/.env.*.local
 app/.env.local
 app/.env.local.php
 app/.php_cs.cache
-app/bin/*
-!app/bin/console
-app/build/
-app/docker/db/data/
-app/helm/
-app/public/bundles/
 app/var/
-app/vendor/
 app/node_modules/

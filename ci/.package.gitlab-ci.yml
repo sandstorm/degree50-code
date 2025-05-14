@@ -3,15 +3,21 @@ package_app:
     rules:
         -   when: always
     interruptible: true
-    image: docker:dind
+    image: docker-hub.sandstorm.de/docker-infrastructure/php-app/build:8.3-v4
+    cache:
+        key: degree__composer
+        paths:
+            - app/.composer-cache
     script:
         - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        # Install bash to run the versioning script
-        - apk add --no-cache bash
-        # Generate VERSION file (see deployment/docker/Dockerfile)
+        # Generate VERSION file
         - ./scripts/versioning.sh
+        - cd app
+        # Install composer dependencies
+        - COMPOSER_CACHE_DIR=.composer-cache composer install --prefer-dist --no-scripts
+        - cd ..
         # build the degree image for this commit and push it to the registry
-        - docker build -t $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG -f deployment/docker/Dockerfile .
+        - docker build -t $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG -f deployment/production/Dockerfile .
         - docker push $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
 
 build_e2e_testrunner:

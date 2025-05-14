@@ -1,3 +1,3 @@
--- USER MUST MATCH THE USER IN ROOT .env FILE
+-- LOCAL DEV ONLY
 CREATE DATABASE degree_test;
 GRANT ALL ON degree_test.* TO 'degree'@'%';

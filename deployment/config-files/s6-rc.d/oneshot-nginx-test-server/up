@@ -1,0 +1,11 @@
+#!/command/execlineb -P
+
+####################################
+# start up service
+####################################
+
+# keep original environment
+with-contenv
+
+# This is only for the dev environment
+bash -c "if [ "$APP_ENV" == "dev" ]; then ln -s -f /etc/nginx/nginx-e2e-test-server.conf /etc/nginx/conf.d/nginx-e2e-test-server.conf; fi"

@@ -6,7 +6,7 @@ services:
     degree:
         build:
             context: ./
-            dockerfile: deployment/docker/Dockerfile
+            dockerfile: deployment/local-dev/Dockerfile
             args:
                 NGINX_SELF_SIGNED_CERT_FQDN: "${NGINX_SELF_SIGNED_CERT_FQDN}"
                 CREATE_NGINX_SELF_SIGNED_CERT: 1
@@ -55,8 +55,7 @@ services:
             SAML_CONTACT_NAME: "${SAML_CONTACT_NAME}"
             SAML_CONTACT_EMAIL: "${SAML_CONTACT_EMAIL}"
         volumes:
-            - ./app:/app:rw,cached
-            - app-var:/app/var
+            - ./app:/app:cached
 
     redis:
         image: redis:7.2-alpine3.19
@@ -81,6 +80,8 @@ services:
             # configured in ./.env
             MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
             MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+            # enable auto upgrade
+            MARIADB_AUTO_UPGRADE: 1
         volumes:
             - db-data:/var/lib/mysql:rw
             - ./deployment/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -96,5 +97,4 @@ services:
             - '8025:8025'
 
 volumes:
-    app-var: { }
     db-data: { }

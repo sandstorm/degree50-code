@@ -1,0 +1,10 @@
+#!/command/execlineb -P
+
+####################################
+# start up service
+####################################
+
+# keep original environment
+with-contenv
+
+/usr/local/bin/supercronic /etc/cron.d/degree_crontab
