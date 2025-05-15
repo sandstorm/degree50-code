@@ -65,6 +65,7 @@ cd ~
 
 # add your yubikey to deployment authorized_keys
 vim .ssh/authorized_keys
+ssh deployment@<server>
 
 # prevent new data from being created
 docker compose stop degree traefik
@@ -81,8 +82,6 @@ less degree_backup.sql
 
 # back to root, back to robert, leave the server
 exit
-exit
-exit
 
 # on your local machine => init caddy and database
 dev testSetup
@@ -92,15 +91,15 @@ ssh deployment@degree40-test.tu-dortmund.de
 cat .env # copy MAILER_DSN and MAILER_SENDER_ADDRESS from old .env file
 cd deployments
 vim .secrets.env # paste values from old env file
+exit
 
+# locally
 # create degree on test server
+# !Make sure you are logged in to sandstorm docker hub
 dev testSetupInstance degree degree40-test.tu-dortmund.de
 
 # ssh and become deployment user
-ssh robert@degree40-test.tu-dortmund.de
-su root
-su deployment
-cd ~
+ssh deployment@degree40-test.tu-dortmund.de
 
 # copy the saml env from the original .env file and paste it into .saml.env
 cat .env # copy the saml block
@@ -120,4 +119,5 @@ cd ~
 docker compose down -v
 cd /data/degree-data
 rm -rf mysql traefik
+# only <instance-name>-data/app should exist
 ```

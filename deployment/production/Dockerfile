@@ -92,6 +92,10 @@ COPY app/VERSION /app/
 COPY app/behat.yml.dist /app/
 COPY app/phpunit.xml.dist /app/
 
+# create /app/var dir to prevent docker compose creating it when mounting volumes in /app/var/
+# which would lead to /app/var being owned by root:root.
+RUN mkdir /app/var
+
 # set permissions to user www-data
 RUN chown -R www-data:www-data /app
 

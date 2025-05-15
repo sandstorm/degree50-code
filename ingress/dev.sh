@@ -63,17 +63,33 @@ function localSetupInstance() {
 function testSetup() {
     _log_yellow "going to setup the ingress on the degree test server!"
     _log_yellow "     you got 5 seconds to cancel this!"
-    # sleep 5
+    sleep 5
     _log_green "Starting! Touch your YubiKey!"
     ./scripts/setup_ingress.sh test
 }
 
 function testSetupInstance() {
-    _log_yellow "going to setup instance $1 on the degree test server!"
+    _log_yellow "going to setup instance '$1' with domain '$2' on the degree test server!"
     _log_yellow "     you got 5 seconds to cancel this!"
-    # sleep 5
+    sleep 5
     _log_green "Starting! Touch your YubiKey!"
     ./scripts/setup_instance.sh test "$1" "$2"
+}
+
+function prodSetup() {
+    _log_yellow "going to setup the ingress on the degree PROD SERVER!"
+    _log_yellow "     you got 5 seconds to cancel this!"
+    sleep 5
+    _log_green "Starting! Touch your YubiKey!"
+    ./scripts/setup_ingress.sh production
+}
+
+function prodSetupInstance() {
+    _log_yellow "going to setup instance '$1' with domain '$2' on the degree PROD SERVER!"
+    _log_yellow "     you got 5 seconds to cancel this!"
+    sleep 5
+    _log_green "Starting! Touch your YubiKey!"
+    ./scripts/setup_instance.sh production "$1" "$2"
 }
 
 _log_green "---------------------------- RUNNING TASK: $1 ----------------------------"
