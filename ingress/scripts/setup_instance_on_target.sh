@@ -57,8 +57,8 @@ function createEnvFile() {
     export MYSQL_DATABASE="$INSTANCE_NAME"
 
     export APP_SECRET=${APP_SECRET:-$(openssl rand -hex 32)}
-    export MYSQL_PASSWORD=${MYSQL_PASSWORD:-$(openssl rand -base64 32)}
-    export JWT_KEY=${JWT_KEY:-$(openssl rand -base64 32)}
+    export MYSQL_PASSWORD=${MYSQL_PASSWORD:-$(openssl rand -hex 32)}
+    export JWT_KEY=${JWT_KEY:-$(openssl rand -hex 32)}
 
     # set env vars in .general.env based on template
     envsubst < "$RUNTIME_ROOT_DIR/.general.env.template" > "$GENERAL_ENV_FILE"

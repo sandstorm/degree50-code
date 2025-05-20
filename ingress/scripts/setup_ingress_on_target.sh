@@ -13,7 +13,7 @@ mv Caddyfile $INGRESS_DIR/caddyfiles/
 if [ ! -f $INGRESS_DIR/.env ]; then
     # generate random mariadb root password
     # TODO: is this the way? => this is the way
-    echo "MYSQL_ROOT_PASSWORD=\"$(openssl rand -base64 32)"\" > $INGRESS_DIR/.env
+    echo "MYSQL_ROOT_PASSWORD=\"$(openssl rand -hex 32)"\" > $INGRESS_DIR/.env
 fi
 
 # start ingress
