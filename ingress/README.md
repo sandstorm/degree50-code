@@ -27,6 +27,13 @@ There are two scripts you can execute:
 Both scripts got two stages. The actual script you execute (`setup_ingress.sh` or `setup_instance.sh`) will copy the
 actual working script (`..on_target.sh`) and all required files to the target system.
 
+## Persistent Data
+The persistent data for the degree instances is stored in the `/data/<instance-name>-data` directory on the server.
+
+Make sure that `/data` is writable!: `chown 777 /data`.
+
+If the user that executes the script is not permitted to write to `/data`, the script will fail.
+
 ## Testing locally
 
 ### Pre-requisites

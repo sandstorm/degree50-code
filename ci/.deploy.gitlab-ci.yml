@@ -6,6 +6,7 @@ deploy-prod:
         SSH_SERVER_URL: $DEGREE_SERVER_URL_PRODUCTION
         SSH_USER: $DEGREE_SERVER_USER_PRODUCTION
     before_script:
+        - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
         # WHY: We tag the latest version as "latest" to ensure we use the latest version when setting up a new instance via ci manual (scheduled) pipeline
         - docker pull $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG
         - docker tag $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/app:latest
