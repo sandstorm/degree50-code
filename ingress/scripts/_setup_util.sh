@@ -12,11 +12,12 @@ function checkTargetIsValid() {
 
 # check that $INSTANCE_NAME follows our naming conventions; when not exit with error
 function checkInstanceNameIsValid() {
-    if [[ ! $INSTANCE_NAME =~ ^[a-z][a-z0-9]*$ ]]; then
-        echo "Error: instance name must be a-z0-9 starting with a-z"
+    echo "Checking instance name '$INSTANCE_NAME' to be a valid subdomain, linux directory and docker-network name..."
+    if [[ ! "$INSTANCE_NAME" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$ ]]; then
+        echo "Error: instance name must match '^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$' i.e. start alphanumeric & end alphanumeric & can have single dashes in between & 1-63 characters."
         exit 1
     elif [[ "$INSTANCE_NAME" == "ingress" ]]; then
-        echo "Error: ingress as INSTANCE_NAME is forbidden!"
+        echo "Error: ingress as INSTANCE_NAME is reserved!"
         exit 1
     fi
 }

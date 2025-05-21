@@ -11,28 +11,29 @@ workflow:
         -   if: '$CI_COMMIT_BRANCH'
         -   if: '$CI_COMMIT_TAG'
 
-# Variables for scheduled pipelines in gitlab frontend
+# Variables for manual pipelines in gitlab frontend
 # This is the API for Degree instance setup personnel
 variables:
     TASK:
         value: ""
-        description: "The task to run. Can be 'setup instance' or 'update deployments'."
+        description: "To set up a new Degree Platform instance, set this to 'setup instance'."
         options:
             # Empty value enables us to run a pipeline without needing to set up an instance
             - ""
+            # Setting this to 'setup instance' will enable the instance setup job
             - "setup instance"
     TARGET:
-        value: "test"
-        description: "The target environment to deploy to. Can be 'test' or 'production'."
+        value: "production"
+        description: "Choose whether to create the instance on the test (staging) or production server."
         options:
             - "test"
             - "production"
     INSTANCE_NAME:
         value: ""
-        description: "The name of the instance to set up. Only used when TASK is 'setup instance'."
+        description: "The name of the instance to set up. It has to be lower case and a valid subdomain name! This will be checked by the setup script."
     INSTANCE_DOMAIN:
         value: ""
-        description: "The domain to set up for the instance. Only used when TASK is 'setup instance'."
+        description: "The domain to set up for the instance. When empty, the instance name will be used as instance subdomain and the domain will be degree40-test.tu-dortmund.de or degree40.tu-dortmund.de when target is 'test' or 'production' respectively. The domain has to exist and will be checked by the setup script! Example: \"zfsl.degree40.tu-dortmund.de\". HINT: If the Production/Staging Server URL changes, the setup script has to be adjusted as well!"
 
 stages:
     - compile_resources
