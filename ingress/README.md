@@ -61,6 +61,56 @@ dev localSetupInstance testinstance
 `dev localSetup` will begin by nuking the local-runtime for the auto ingress-instance-setup. Then setup the deployments
 directory and start the global ingress-caddy and mariadb instance.
 
+### Removing an Instance on Server
+```shell
+# enter the server
+ssh degree40.tu-dortmund.de
+# become root
+sudo su
+# become deployment user
+su - deployment
+# enter the instance directory
+cd deployments/test
+# stop the instance
+docker compose down
+#> [+] Running 3/3
+#> ✔ Container test-degree-1  Removed                                                                                                                                                                                                           10.3s
+#> ✔ Container test-redis-1   Removed                                                                                                                                                                                                            0.2s
+#> ✔ Network test-network     Removed                                                                                                                                                                                                            0.1s
+cd ..
+# remove the instance directory
+rm -r test
+# enter db service
+cd ingress/
+docker compose exec db bash
+# remove database and user of instance
+mysql -u root -p$MYSQL_ROOT_PASSWORD
+
+MariaDB [(none)]> DROP DATABASE test;
+#> Query OK, 20 rows affected (0.029 sec)
+
+MariaDB [(none)]> DROP USER test;
+#> Query OK, 0 rows affected (0.001 sec)
+
+# exit db
+MariaDB [(none)]> exit
+#> Bye
+
+# exit db service
+exit
+# exit deployment user
+exit
+
+# rm instance data directory
+cd /data/
+rm -r test-data/
+
+# exit server
+exit
+exit
+#> Connection to degree40.tu-dortmund.de closed.
+```
+
 ### Migrating old deployment on server to new setup
 
 ```shell
