@@ -135,7 +135,10 @@ function createCaddyFile() {
         # Trim whitespace
         DOMAIN=$(echo "$DOMAIN" | xargs)
         echo "$DOMAIN {" >> "$CADDYFILE_NAME"
-        echo "  reverse_proxy http://$INSTANCE_NAME:8080" >> "$CADDYFILE_NAME"
+        # WHY suffix $INSTANCE_NAME with "-instance":
+        ## Avoid docker internal dns name collision with other running instances in the shared network.
+        ## See instance docker-compose.yml service degree:networks:sharedIngressNetwork:aliases configuration
+        echo "  reverse_proxy http://$INSTANCE_NAME-instance:8080" >> "$CADDYFILE_NAME"
         echo "}" >> "$CADDYFILE_NAME"
         echo "" >> "$CADDYFILE_NAME"
         echo "  ##             - https://$DOMAIN"

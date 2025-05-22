@@ -28,8 +28,19 @@ services:
             default: {}
             sharedIngressNetwork:
                 # alias used by caddy to identify the degree service instance
+                # WHY:
+                ## Short explanation: Avoid docker internal dns name collision with other running instances.
+                ## Long explanation:
+                ## The "-instance" suffix is important, because the container automatically(!) gets other aliases
+                ## (internally created based on service name) by docker compose.
+                ## So the degree service automatically gets the alias "degree" in the sharedIngressNetwork which
+                ## leads to multiple services having the same alias in the same network wich in turn leads to
+                ## problems when docker is resolving the alias to a single container.
+                ## See https://docs.docker.com/reference/compose-file/services/#aliases
+                ## To check configured aliases run: docker inspect <container_name> and look at the aliases configured
+                ## for the sharedIngressNetwork network.
                 aliases:
-                  - ${INSTANCE_NAME}
+                  - ${INSTANCE_NAME}-instance
 
     redis:
         image: redis:7

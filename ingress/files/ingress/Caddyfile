@@ -1,7 +1,6 @@
 # global ingress
 {
     # email for ACME
-    # TODO: correct email?
     email technik@sandstorm.de
 
     log default {
