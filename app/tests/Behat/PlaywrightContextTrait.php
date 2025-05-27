@@ -54,7 +54,7 @@ trait PlaywrightContextTrait
      */
     public function iAmRedirectedToTheLoginPage(): void
     {
-        $this->thePageShouldContainTheText('Login mit Uni-Account (SSO)');
+        $this->thePageShouldContainTheText("Video-Lernplattform");
     }
 
     /**

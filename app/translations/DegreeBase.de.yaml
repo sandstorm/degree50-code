@@ -48,8 +48,8 @@ security:
         labels:
             email: 'E-Mail'
             password: 'Passwort'
-        login-sso: 'Login mit Uni-Account (SSO)'
-        login-directly: 'Direkter Login'
+        login-sso: 'Login mit Uni-Account TU Dortmund'
+        login-external: 'Login für externe Nutzer*innen'
         login: 'Login'
         register: 'Registrieren'
 
