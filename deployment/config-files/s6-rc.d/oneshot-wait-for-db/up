@@ -1,0 +1,5 @@
+#!/command/execlineb -P
+
+with-contenv
+
+bash /etc/s6-overlay/s6-rc.d/oneshot-wait-for-db/wait_for_db.sh

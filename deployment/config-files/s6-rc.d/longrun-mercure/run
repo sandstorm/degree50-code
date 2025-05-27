@@ -7,4 +7,7 @@
 # keep original environment
 with-contenv
 
+# stderr and stdout to log
+fdmove -c 2 1
+
 /usr/bin/mercure -a 127.0.0.1:3000 --subscriptions --compress

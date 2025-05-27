@@ -7,4 +7,7 @@
 # keep original environment
 with-contenv
 
+# stderr and stdout to log
+fdmove -c 2 1
+
 /usr/local/sbin/php-fpm
