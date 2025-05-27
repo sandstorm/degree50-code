@@ -9,7 +9,7 @@ Feature: Users can reset their password.
         Given A User "resetpw@test.de" with the role "ROLE_STUDENT" exists
         And I visit url "/login"
         When I fill the login form with email "resetpw@test.de" and password "wrongpassword"
-        And I click on "Direkter Login"
+        And I click on first element with testId "login-button"
         Then the page should contain the text "Passwort vergessen?"
 
         When I click on "Passwort vergessen?"
@@ -28,7 +28,7 @@ Feature: Users can reset their password.
         Then the page should contain the text "Ihr Passwort wurde erfolgreich zurückgesetzt"
 
         When I fill the login form with email "resetpw@test.de" and password "newpassword123"
-        And I click on "Direkter Login"
+        And I click on first element with testId "login-button"
         Then the page contains all the following texts:
             | resetpw@test.de |
             | Schreibtisch    |

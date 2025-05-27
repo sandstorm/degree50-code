@@ -71,8 +71,9 @@
                     class="button button--size-large button--type-outline-primary button--block"
                     type="submit"
                     role="button"
+                    data-test-id="login-button"
                 >
-                    {{ "security.login.login-directly"|trans({}, 'DegreeBase') }}
+                    {{ "security.login.login-external"|trans({}, 'DegreeBase') }}
                 </button>
             {% else %}
                 <button
