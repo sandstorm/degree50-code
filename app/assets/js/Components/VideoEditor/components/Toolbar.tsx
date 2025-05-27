@@ -1,15 +1,17 @@
+import React, { FC, ReactNode } from 'react'
+import classNames from 'classnames'
+
 import AllMediaItemsMenu from 'Components/ToolbarItems/AllMediaItemsContext/AllMediaItemsMenu'
 import AnnotationsMenu from 'Components/ToolbarItems/AnnotationsContext/AnnotationsMenu'
 import AufgabeMenu from 'Components/ToolbarItems/Aufgabe/AufgabeMenu'
 import CuttingMenu from 'Components/ToolbarItems/CuttingContext/CuttingMenu'
+import FAQButton from 'Components/ToolbarItems/FAQButton/FAQButton'
 import FilterMenu from 'Components/ToolbarItems/FilterContext/FilterMenu'
 import ShortCutsMenu from 'Components/ToolbarItems/ShortCutsContext/ShortCutsMenu'
 import TeamMenu from 'Components/ToolbarItems/Team/TeamMenu'
 import ToggleVideoFavorite from 'Components/ToolbarItems/ToggleVideoFavorite'
 import VideoCodesMenu from 'Components/ToolbarItems/VideoCodesContext/VideoCodesMenu'
 import ZusatzAttachmentMenu from 'Components/ToolbarItems/ZusatzAttachment/ZusatzAttachmentMenu'
-import React, { FC, ReactNode } from 'react'
-import classNames from 'classnames'
 
 type OwnProps = {
     hidden?: boolean
@@ -33,6 +35,7 @@ const Toolbar: FC<OwnProps> = (props) => {
             <FilterMenu />
             <ToggleVideoFavorite />
             <ShortCutsMenu />
+            <FAQButton />
             {props.children}
         </div>
     )
