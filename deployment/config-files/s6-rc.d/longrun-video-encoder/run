@@ -11,4 +11,7 @@ foreground {
     sleep 10
 }
 
+# stderr and stdout to log
+fdmove -c 2 1
+
 php /app/bin/console messenger:consume async -vv

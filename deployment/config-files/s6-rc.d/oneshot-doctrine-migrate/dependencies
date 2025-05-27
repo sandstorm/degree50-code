@@ -2,4 +2,4 @@
 base
 
 # add additional dependencies here
-oneshot-symfony-assets-install
+oneshot-wait-for-db

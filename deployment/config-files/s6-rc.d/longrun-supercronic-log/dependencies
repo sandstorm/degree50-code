@@ -2,4 +2,4 @@
 base
 
 # add additional dependencies here
-oneshot-doctrine-migrate
+oneshot-supercronic-log-prepare

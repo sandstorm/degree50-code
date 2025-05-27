@@ -2,4 +2,4 @@
 base
 
 # add additional dependencies here
-oneshot-symfony-cache-clear
+oneshot-wait-for-db
