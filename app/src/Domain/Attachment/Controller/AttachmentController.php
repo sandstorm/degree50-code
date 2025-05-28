@@ -39,7 +39,7 @@ class AttachmentController extends AbstractController
     {
     }
 
-    #[Route("/attachment/download/{id}", name: "exercise-overview__attachment--download")]
+    #[Route("/attachment/download/{id}", name: "attachment--download")]
     public function download(AppRuntime $appRuntime, Attachment $attachment = null): BinaryFileResponse|Response
     {
         if (!$attachment) {
@@ -56,7 +56,7 @@ class AttachmentController extends AbstractController
         return $response;
     }
 
-    #[Route("/attachment/delete/{id}", name: "exercise-overview__attachment--delete")]
+    #[Route("/attachment/delete/{id}", name: "attachment--delete")]
     public function delete(AppRuntime $appRuntime, Attachment $attachment = null): Response
     {
         if (!$attachment) {
@@ -73,7 +73,7 @@ class AttachmentController extends AbstractController
         return $this->redirectToRoute('exercise-phase__edit', ['id' => $attachment->getExercisePhase()->getBelongsToExercise()->getId(), 'phase_id' => $attachment->getExercisePhase()->getId()]);
     }
 
-    #[Route("/attachment/delete-ajax", name: "exercise-overview__attachment--delete-ajax")]
+    #[Route("/attachment/delete-ajax", name: "attachment--delete-ajax")]
     public function deleteAjax(AppRuntime $appRuntime, Request $request): Response
     {
         $attachmentIdFromJson = json_decode($request->getContent(), true)['attachmentId'];
@@ -91,7 +91,7 @@ class AttachmentController extends AbstractController
         return new Response('OK');
     }
 
-    #[Route("/attachment/list/{id}", name: "exercise-overview__attachment--list")]
+    #[Route("/attachment/list/{id}", name: "attachment--list")]
     public function uploadedAttachment(ExercisePhase $exercisePhase = null): Response
     {
         if (!$exercisePhase) {

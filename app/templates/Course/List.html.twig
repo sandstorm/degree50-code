@@ -1,0 +1,103 @@
+{# Type of courseListDTO: \App\Domain\Course\Model\CourseListDTO #}
+
+{% extends 'Base.html.twig' %}
+{% block title %}{{ "course.list.title"|trans({}, 'DegreeBase') }}{% endblock %}
+{% block body %}
+    {% if is_granted('course_create') %}
+        <a class="button button--type-outline-primary" href="{{ path('course--new') }}">
+            <i class="fas fa-plus"></i> {{ "course.new.title"|trans({}, 'DegreeBase') }}
+        </a>
+
+        <hr/>
+    {% endif %}
+
+    <table class="degree-table">
+        <thead>
+        <tr>
+            <th>
+                <a class="table-header-link" href="{{ url('courses', {orderBy: 'fachbereich', order: order == 'asc' ? 'desc' : 'asc'}) }}">
+                    {{ "course.list.header.fachbereich"|trans({}, 'DegreeBase') }}
+                    {% if orderBy == 'fachbereich' %}
+                        {% if order == 'asc' %}
+                            <i class="fa fa-sort-asc"></i>
+                        {% else %}
+                            <i class="fa fa-sort-desc"></i>
+                        {% endif %}
+                    {% else %}
+                        <i class="far fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a class="table-header-link" href="{{ url('courses', {orderBy: 'name', order: order == 'asc' ? 'desc' : 'asc'}) }}">
+                    {{ "course.list.header.name"|trans({}, 'DegreeBase') }}
+                    {% if orderBy == 'name' %}
+                        {% if order == 'asc' %}
+                            <i class="fa fa-sort-asc"></i>
+                        {% else %}
+                            <i class="fa fa-sort-desc"></i>
+                        {% endif %}
+                    {% else %}
+                        <i class="far fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a class="table-header-link" href="{{ url('courses', {orderBy: 'creationDate', order: order == 'desc' ? 'asc' : 'desc'}) }}">
+                    {{ "course.list.header.creationDate"|trans({}, 'DegreeBase') }}
+                    {% if orderBy == 'creationDate' %}
+                        {% if order == 'asc' %}
+                            <i class="fa fa-sort-asc"></i>
+                        {% else %}
+                            <i class="fa fa-sort-desc"></i>
+                        {% endif %}
+                    {% else %}
+                        <i class="far fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a class="table-header-link" href="{{ url('courses', {orderBy: 'lastModified', order: order == 'desc' ? 'asc' : 'desc'}) }}">
+                    {{ "course.list.header.lastModified"|trans({}, 'DegreeBase') }}
+                    {% if orderBy == 'lastModified' %}
+                        {% if order == 'asc' %}
+                            <i class="fa fa-sort-asc"></i>
+                        {% else %}
+                            <i class="fa fa-sort-desc"></i>
+                        {% endif %}
+                    {% else %}
+                        <i class="far fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>{{ "course.list.header.abgeschlossen"|trans({}, 'DegreeBase') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for courseListDTO in courseListDTOs %}
+            <tr>
+                <td>
+                    {% if courseListDTO.course.fachbereich %}
+                        {{ courseListDTO.course.fachbereich.name }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td><a href="{{ url('course', {id: courseListDTO.course.id}) }}">{{ courseListDTO.course.name }}</a></td>
+                <td>{{ courseListDTO.course.creationDate|date('d.m.Y') }}</td>
+                <td>{{ courseListDTO.lastModifiedDate ? courseListDTO.lastModifiedDate|date('d.m.Y') : "-"}}</td>
+                <td>
+                    {{ include('Partials/Meter.html.twig', {
+                        valueNow: courseListDTO.completedExercisesCount,
+                        valueMax: courseListDTO.totalExercisesCount,
+                        ariaLabel: "course.list.progressLabel"|trans({valueNow: courseListDTO.completedExercisesCount, valueMax: courseListDTO.totalExercisesCount}, 'DegreeBase'),
+                        valueText: "course.list.progressText"|trans({valueNow: courseListDTO.completedExercisesCount, valueMax: courseListDTO.totalExercisesCount}, 'DegreeBase')
+                    }) }}
+                </td>
+            </tr>
+        {% else %}
+            <td class="no-courses" colspan="4">{{ "course.list.no_courses"|trans({}, 'DegreeBase') }}</td>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

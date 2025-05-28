@@ -7,7 +7,10 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ path('exercise-overview', {id: course.id}) }}">
+                    <a href="{{ path('courses') }}">{{ "course.list.title"|trans({}, 'DegreeBase') }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('course', {id: course.id}) }}">
                         {{ course.name}}
                     </a>
                 </li>
@@ -58,13 +61,13 @@
                     <td>{{ "course.labels.student"|trans({}, 'DegreeBase') }} {% if student.name == 'DOZENT' %}({{ "course.editMembers.canCreate"|trans({}, 'DegreeBase') }}){% endif %}</td>
                     <td class="text-right">
                         {% if student.name == 'STUDENT' %}
-                            <a href="{{ path('exercise-overview__course--upgrade-role', {id: course.id, userRole_id: student.id}) }}"
+                            <a href="{{ path('course--upgrade-role', {id: course.id, userRole_id: student.id}) }}"
                                class="button button--type-outline-primary button--size-small">{{ "course.upgradeMember.title"|trans({}, 'DegreeBase') }}</a>
                         {% else %}
-                            <a href="{{ path('exercise-overview__course--downgrade-role', {id: course.id, userRole_id: student.id}) }}"
+                            <a href="{{ path('course--downgrade-role', {id: course.id, userRole_id: student.id}) }}"
                                class="button button--type-outline-primary button--size-small">{{ "course.downgradeMember.title"|trans({}, 'DegreeBase') }}</a>
                         {% endif %}
-                        <a href="{{ path('exercise-overview__course--remove-role', {id: course.id, userRole_id: student.id}) }}"
+                        <a href="{{ path('course--remove-role', {id: course.id, userRole_id: student.id}) }}"
                            class="button button--type-danger button--size-small">{{ "course.removeMember.title"|trans({}, 'DegreeBase') }}</a>
                     </td>
                 </tr>
@@ -74,7 +77,7 @@
 
     <footer class="footer">
         <a class="button button--type-outline-primary"
-           href="{{ path('exercise-overview', {id: course.id}) }}">{{ "course.new.back"|trans({}, 'DegreeBase') }}</a>
+           href="{{ path('course', {id: course.id}) }}">{{ "course.new.back"|trans({}, 'DegreeBase') }}</a>
         {{ form_row(form.save) }}
     </footer>
     {{ form_end(form) }}

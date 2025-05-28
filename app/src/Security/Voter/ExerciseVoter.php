@@ -99,28 +99,7 @@ class ExerciseVoter extends Voter
 
     private function canView(Exercise $exercise, User $user): bool
     {
-        $course = $exercise->getCourse();
-        $hasAccessToCourse = $user->getCourseRoles()->exists(
-            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
-                $courseRole->getUser() === $user
-        );
-
-        if ($hasAccessToCourse) {
-            // Dozent has access
-            if ($user->isDozent()) {
-                return true;
-            }
-
-            // everyone else needs to wait for publication
-            $exercisePublished = $exercise->getStatus() == Exercise::EXERCISE_PUBLISHED;
-            $exerciseNotEmpty = count($exercise->getPhases()) > 0;
-
-            if ($exercisePublished && $exerciseNotEmpty) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->exerciseService->isExerciseVisibleForUser($exercise, $user);
     }
 
     private function canEditOrDelete(Exercise $exercise, User $user): bool

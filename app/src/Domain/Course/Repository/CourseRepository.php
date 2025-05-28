@@ -6,6 +6,7 @@ use App\Domain\Course\Model\Course;
 use App\Domain\User\Model\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -56,11 +57,10 @@ class CourseRepository extends ServiceEntityRepository
      */
     public function findAllForUserWithCriteria(User $user, Criteria $criteria = null): array
     {
-        $criteria = $criteria ?? Criteria::create();
+        $criteria = $criteria ?? Criteria::create()->orderBy(['name' => Order::Ascending]);
 
         $qb = $this
             ->createQueryBuilder('course')
-            ->orderBy('course.name', 'ASC')
             ->addCriteria($criteria);
 
         if (!$user->isAdmin()) {

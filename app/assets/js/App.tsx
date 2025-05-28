@@ -24,7 +24,6 @@ import DeleteEntityController from 'StimulusControllers/DeleteEntityController'
 import SidebarController from 'StimulusControllers/SidebarController'
 import { initColors, ORIGINAL_COLORS } from 'ntc-ts'
 import CKEditorController from 'StimulusControllers/CkeditorController'
-import SchreibtischController from 'StimulusControllers/Schreibtisch/SchreibtischController'
 import SearchableSelectFieldController from 'StimulusControllers/SearchableSelectFieldController'
 import OverviewItemDropdownController from 'StimulusControllers/OverviewItemDropdownController'
 
@@ -50,7 +49,6 @@ application.register('videoCodeForm', VideoCodeFormController)
 application.register('videosForm', VideosFormController)
 application.register('deleteEntity', DeleteEntityController)
 application.register('sidebar', SidebarController)
-application.register('schreibtisch', SchreibtischController)
 application.register('searchableSelectField', SearchableSelectFieldController)
 application.register('overviewItemDropdown', OverviewItemDropdownController)
 

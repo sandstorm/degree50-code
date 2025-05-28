@@ -1,4 +1,4 @@
-@fixtures @playwright
+@fixtures @playwright @debug
 Feature: Redirections to the login if unauthenticated
 
     Background:
@@ -18,31 +18,33 @@ Feature: Redirections to the login if unauthenticated
         And the response status code should be 200
 
         Examples:
-            | route                                   | params                            |
-            | app                                     |                                   |
-            | app_data-privacy                        |                                   |
-            | app_terms-of-use                        |                                   |
-            | mediathek--index                        |                                   |
-            | mediathek__video--player                | {"id": "foo"}                     |
-            | mediathek__video--upload                |                                   |
-            | mediathek__video--edit                  | {"id": "foo"}                     |
-            | mediathek__video--delete                | {"id": "foo"}                     |
-            | exercise__show-phase                    | {"id": "ex"}                      |
-            | exercise__show                          | {"id": "ex"}                      |
-            | exercise__new                           | {"id": "c"}                       |
-            | exercise__edit                          | {"id": "ex"}                      |
-            | exercise-overview                       | {"id": "c"}                       |
-            | exercise-phase__show                    | {"id": "ex", "team_id": "team-1"} |
-            | exercise-phase__test                    | {"id": "ex", "team_id": "team-1"} |
-            | exercise-phase__reset-test              | {"id": "ex", "team_id": "team-1"} |
-            | exercise-phase__new                     | {"id": "ex"}                      |
-            | exercise-phase__set-type                | {"id": "ex"}                      |
-            | exercise-phase__edit                    | {"id": "ex", "phase_id": "ex-p1"} |
-            | exercise-phase__delete                  | {"id": "ex", "phase_id": "ex-p1"} |
-            | exercise-overview__attachment--download | {"id": "m"}                       |
-            | exercise-overview                       |                                   |
-            | exercise-overview                       | {"id": "c"}                       |
-            | exercise-overview__course--members      | {"id": "c"}                       |
-            | exercise-overview__course--new          |                                   |
-            | exercise-overview__course--edit         | {"id": "c"}                       |
-            | exercise-overview__course--delete       | {"id": "c"}                       |
+            | route                      | params                            |
+            | app                        |                                   |
+            | app_data-privacy           |                                   |
+            | app_terms-of-use           |                                   |
+            | mediathek--index           |                                   |
+            | mediathek__video--player   | {"id": "foo"}                     |
+            | mediathek__video--upload   |                                   |
+            | mediathek__video--edit     | {"id": "foo"}                     |
+            | mediathek__video--delete   | {"id": "foo"}                     |
+            | exercise__show-phase       | {"id": "ex"}                      |
+            | exercise__show             | {"id": "ex"}                      |
+            | exercise__new              | {"id": "c"}                       |
+            | exercise__edit             | {"id": "ex"}                      |
+            | courses                    |                                   |
+            | exercise-phase__show       | {"id": "ex", "team_id": "team-1"} |
+            | exercise-phase__test       | {"id": "ex", "team_id": "team-1"} |
+            | exercise-phase__reset-test | {"id": "ex", "team_id": "team-1"} |
+            | exercise-phase__new        | {"id": "ex"}                      |
+            | exercise-phase__set-type   | {"id": "ex"}                      |
+            | exercise-phase__edit       | {"id": "ex", "phase_id": "ex-p1"} |
+            | exercise-phase__delete     | {"id": "ex", "phase_id": "ex-p1"} |
+            | attachment--download       | {"id": "m"}                       |
+            | attachment--delete         | {"id": "m"}                       |
+            | attachment--list           | {"id": "m"}                       |
+            | course                     |                                   |
+            | course                     | {"id": "c"}                       |
+            | course--members            | {"id": "c"}                       |
+            | course--new                |                                   |
+            | course--edit               | {"id": "c"}                       |
+            | course--delete             | {"id": "c"}                       |

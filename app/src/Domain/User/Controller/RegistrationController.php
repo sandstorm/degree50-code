@@ -114,7 +114,7 @@ class RegistrationController extends AbstractController
         $user = $this->getUser();
 
         if ($user->isVerified()) {
-            return $this->redirectToRoute('exercise-overview');
+            return $this->redirectToRoute('app');
         }
 
         return $this->render('Security/VerifyEmail.html.twig');
@@ -128,7 +128,7 @@ class RegistrationController extends AbstractController
         $user = $this->getUser();
 
         if ($user->isVerified()) {
-            return $this->redirectToRoute('exercise-overview');
+            return $this->redirectToRoute('app');
         }
 
         $this->sendConfirmationEmail($user);

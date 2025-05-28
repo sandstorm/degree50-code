@@ -1,4 +1,4 @@
-import { Action, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Video } from 'Components/VideoPlayer/VideoPlayerWrapper'
 import { Attachment } from '../AttachmentViewer/AttachmentViewer'
 import { ComponentTypesEnum, TabsTypesEnum } from 'types'
@@ -29,14 +29,6 @@ export interface ConfigState {
     apiEndpoints: ApiEndpoints
     isSolutionView: boolean
 }
-
-const toggleVideoFavorite = createAsyncThunk('config/toggleVideoFavorite', async (videoId: string) => {
-    await fetch(`/schreibtisch/video-favorites/toggle/${videoId}`, {
-        method: 'POST',
-    })
-
-    return videoId
-})
 
 const initialState: ConfigState = {
     title: '',
@@ -72,24 +64,10 @@ export const configSlice = createSlice({
             isSolutionView: true,
         }),
     },
-    extraReducers: (builder) => {
-        builder.addCase(toggleVideoFavorite.fulfilled, (state, _action) => {
-            return {
-                ...state,
-                videos: [
-                    {
-                        ...state.videos[0],
-                        isFavorite: !state.videos[0]?.isFavorite,
-                    },
-                ],
-            }
-        })
-    },
 })
 
 export const actions = {
     ...configSlice.actions,
-    toggleVideoFavorite,
 }
 
 export type ConfigStateSlice = { config: ConfigState }

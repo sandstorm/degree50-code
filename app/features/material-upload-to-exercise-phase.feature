@@ -11,7 +11,6 @@ Feature: Upload material to exercise phase
             | id         | name       | task                      | isGroupPhase | sorting | otherSolutionsAreAccessible | belongsToExercise | dependsOnPhase | type          | videoAnnotationsActive | videoCodesActive |
             | analysis1  | Analysis1  | Description of Analysis1  | false        | 0       | true                        | e1                | null           | videoAnalysis | true                   | true             |
 
-    @debug
     Scenario: I upload material to phase "analysis1"
         When I am logged in via browser as "test-admin@sandstorm.de"
         And I visit url "/exercise/e1/edit"

@@ -372,7 +372,7 @@ readonly class ExercisePhaseService
                     'id' => $entry->getId(),
                     'name' => $entry->getName(),
                     'type' => $entry->getMimeType(),
-                    'url' => $this->router->generate('exercise-overview__attachment--download', ['id' => $entry->getId()])
+                    'url' => $this->router->generate('attachment--download', ['id' => $entry->getId()])
                 ];
             }, $exercisePhase->getAttachments()->toArray()),
             'videos' => array_map(function (Video $video) use ($user) {

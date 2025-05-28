@@ -9,7 +9,10 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                    <a href="{{ path('courses') }}">{{ "course.list.title"|trans({}, 'DegreeBase') }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('course', {id: exercise.course.id}) }}">
                         {{ exercise.course.name }}
                     </a>
                 </li>
@@ -121,7 +124,7 @@
             </p>
             <div class="dropzone" data-controller="attachmentUpload"
                  data-attachmentUpload-endpoint="{{ oneup_uploader_endpoint('uploaded_attachment') }}"
-                 data-attachmentUpload-remove-endpoint="{{ path('exercise-overview__attachment--delete-ajax') }}"
+                 data-attachmentUpload-remove-endpoint="{{ path('attachment--delete-ajax') }}"
                  data-attachmentUpload-label="{{ "exercisePhase.edit.uploadAttachment"|trans({}, 'DegreeBase') }}"
                  data-attachmentUpload-phase-id="{{ exercisePhase.id }}"
                  data-attachmentUpload-update="attachment-list">
@@ -132,8 +135,8 @@
                 {{ "exercisePhase.edit.attachments"|trans({}, 'DegreeBase') }}:
             </h5>
             <div id="attachment-list"
-                 data-update-endpoint="{{ path('exercise-overview__attachment--list', {id: exercisePhase.id}) }}">
-                {{ render(path('exercise-overview__attachment--list', {id: exercisePhase.id})) }}
+                 data-update-endpoint="{{ path('attachment--list', {id: exercisePhase.id}) }}">
+                {{ render(path('attachment--list', {id: exercisePhase.id})) }}
             </div>
         </div>
     </div>

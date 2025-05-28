@@ -31,6 +31,7 @@ class CourseVoter extends Voter
             return false;
         }
 
+        // only vote on Course objects except for CREATE
         if (!$subject instanceof Course && $attribute !== self::CREATE) {
             return false;
         }

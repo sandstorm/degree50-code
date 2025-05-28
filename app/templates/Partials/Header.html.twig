@@ -9,19 +9,12 @@
         </button>
         <div class="navigation__inner collapse" id="navigation">
             <ul class="navigation__items">
-                {% if app.user.isStudent %}
-                    <li class="navigation__item {{ 'schreibtisch' in route ? 'navigation__item--active' }}">
-                        <a data-test-id="header-menu-schreibtisch" href="{{ path('schreibtisch') }}">
-                            <span>{{ "desk.index.title"|trans({}, 'DegreeBase') }}</span>
-                        </a>
-                    </li>
-                {% endif %}
-
-                <li class="navigation__item {{ 'exercise-overview' in route ? 'navigation__item--active' }}">
-                    <a href="{{ path('exercise-overview') }}">
-                        <span>{{ "course.index.title"|trans({}, 'DegreeBase') }}</span>
+                <li class="navigation__item {{ 'course' in route ? 'navigation__item--active' }}">
+                    <a href="{{ path('courses') }}">
+                        <span>{{ "course.list.title"|trans({}, 'DegreeBase') }}</span>
                     </a>
                 </li>
+
                 <li class="navigation__item {{ 'mediathek' in route ? 'navigation__item--active' }}">
                     <a data-test-id="header-menu-mediathek" href="{{ path('mediathek--index') }}">
                         <span>{{ "video.index.title"|trans({}, 'DegreeBase') }}</span>

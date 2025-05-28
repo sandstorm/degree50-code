@@ -56,10 +56,6 @@ security:
 registration:
     title: 'Registrierung'
 
-desk:
-    index:
-        title: 'Schreibtisch'
-
 administration:
     index:
         title: 'Administration'
@@ -136,6 +132,8 @@ exercise:
         existingGroups: 'Bestehende Gruppen'
         existingGroupsInfo: 'Tritt einer Gruppe bei um die Aufgabe zu bearbeiten oder erstelle eine neue Gruppe.'
         nothing: 'Keine vorhanden'
+    progressLabel: 'valueNow von valueMax Phasen abgeschlossen.'
+    progressText: 'valueNow von valueMax Phasen abgeschlossen'
 
 exerciseOverview:
     index:
@@ -174,7 +172,7 @@ exercisePhase:
             regular: 'Wenn aktiv, können Lernende beim Bearbeiten ihr Ergebnis dieser Phase einsehen und verwenden.'
             reflexion: 'Bestimmt die Phase, welche innerhalb der Vergleichsphase begutachtet wird.'
         otherSolutionsAreAccessible: 'Wenn aktiv, können die Lernenden für diese Phase die Ergebnisse ihrer Mitlernenden einsehen.'
-        reviewRequired: 'Wenn aktiv, dann muss die Dokumentationsphase erst von einer lehrenden Person überprüft werden, bevor die Phase beendet werden kann und das Material auf dem Schreibtisch der Lernenden erscheint.'
+        reviewRequired: 'Wenn aktiv, dann muss die Dokumentationsphase erst von einer lehrenden Person überprüft werden, bevor die Phase beendet werden kann.'
     types:
         videoAnalysis:
             label: 'Videoanalyse'
@@ -396,6 +394,17 @@ course:
         messages:
             success: 'Kurs erfolgreich gelöscht!'
             notPossible: 'Kurs kann nicht gelöscht werden, so lange Aufgaben zugewiesen sind!'
+    list:
+        title: 'Kurse'
+        header:
+            fachbereich: 'Fachbereich'
+            name: 'Kurs'
+            abgeschlossen: 'Aufgaben abgeschlossen'
+            creationDate: 'Erstellt am'
+            lastModified: 'Zuletzt bearbeitet'
+        no_courses: 'Keine Kurse vorhanden'
+        progressLabel: 'valueNow von valueMax Aufgaben abgeschlossen.'
+        progressText: 'valueNow von valueMax'
 mediathek:
     groups:
         ownVideos: 'Selbst erstellte Videos'

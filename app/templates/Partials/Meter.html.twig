@@ -1,0 +1,14 @@
+<div
+    class="meter"
+    aria-label="{{ ariaLabel }}"
+    aria-valuenow="{{ valueNow }}"
+    aria-valuemin="0"
+    aria-valuemax="{{ valueMax }}"
+    aria-valuetext="{{ valueText }}"
+    role="meter progressbar"
+>
+    <div class="meter__label"><span>{{ valueText }}</span></div>
+    <div class="meter__bar">
+        <div style="width:{{ valueMax == 0 ? 0 : (valueNow / valueMax) * 100 }}%"></div>
+    </div>
+</div>

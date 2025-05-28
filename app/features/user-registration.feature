@@ -37,5 +37,5 @@ Feature: Users can register via a registration form.
         When I am logged in via browser as "verified@test.de"
         Then the page contains all the following texts:
             | verified@test.de |
-            | Schreibtisch     |
-            | Meine Aufgaben   |
+            | Kurse            |
+            | Mediathek        |

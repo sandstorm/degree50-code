@@ -1,0 +1,35 @@
+table.degree-table {
+    width: 100%;
+
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    thead th {
+        padding-bottom: $theme__spacing__large;
+        border-bottom: 1px solid $theme__color__grey;
+    }
+
+    th, td {
+        padding: $theme__spacing--small;
+    }
+
+    tr {
+        width: 100%;
+        border-spacing: $theme__spacing--small;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid $theme__color__grey--light;
+    }
+
+    th a {
+        display: flex;
+        align-items: center;
+        gap: $theme__spacing--base;
+        text-decoration: none;
+    }
+
+    td.no-courses {
+        text-align: center;
+    }
+}

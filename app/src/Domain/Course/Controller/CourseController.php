@@ -37,7 +37,7 @@ class CourseController extends AbstractController
     }
 
     #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
-    #[Route("/exercise-overview/{id}/course-members", name: "exercise-overview__course--members")]
+    #[Route("/course/{id}/course-members", name: "course--members")]
     public function editCourseMembers(Request $request, Course $course = null): Response
     {
         if (!$course) {
@@ -66,7 +66,7 @@ class CourseController extends AbstractController
                 $this->translator->trans('course.editMembers.messages.success', [], 'DegreeBase')
             );
 
-            return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+            return $this->redirectToRoute('course--members', ['id' => $course->getId()]);
         }
 
         $studentsArray = $course->getCourseRoles()
@@ -93,7 +93,7 @@ class CourseController extends AbstractController
     }
 
     #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
-    #[Route("/exercise-overview/{id}/course-members/{userRole_id}/remove", name: "exercise-overview__course--remove-role")]
+    #[Route("/course/{id}/course-members/{userRole_id}/remove", name: "course--remove-role")]
     public function removeCourseMember(
         Request    $request,
         Course     $course = null,
@@ -114,21 +114,21 @@ class CourseController extends AbstractController
                 $this->translator->trans('course.removeMember.messages.notPossible', [], 'DegreeBase')
             );
 
-            return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
+            return $this->redirectToRoute('course--edit', ['id' => $course->getId()]);
         }
 
         $this->entityManager->remove($courseRole);
         $this->entityManager->flush();
 
         if ($redirectToEdit) {
-            return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
+            return $this->redirectToRoute('course--edit', ['id' => $course->getId()]);
         } else {
-            return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+            return $this->redirectToRoute('course--members', ['id' => $course->getId()]);
         }
     }
 
     #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
-    #[Route("/exercise-overview/{id}/course-members/{userRole_id}/upgrade", name: "exercise-overview__course--upgrade-role")]
+    #[Route("/course/{id}/course-members/{userRole_id}/upgrade", name: "course--upgrade-role")]
     public function upgradeCourseMember(
         Course     $course = null,
         #[MapEntity(id: "userRole_id")]
@@ -144,11 +144,11 @@ class CourseController extends AbstractController
         $this->entityManager->persist($courseRole);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+        return $this->redirectToRoute('course--members', ['id' => $course->getId()]);
     }
 
     #[IsGranted(CourseVoter::EDIT_MEMBERS, subject: "course")]
-    #[Route("/exercise-overview/{id}/course-members/{userRole_id}/downgrade", name: "exercise-overview__course--downgrade-role")]
+    #[Route("/course/{id}/course-members/{userRole_id}/downgrade", name: "course--downgrade-role")]
     public function downgradeCourseMember(
         Course     $course = null,
         #[MapEntity(id: "userRole_id")]
@@ -164,11 +164,11 @@ class CourseController extends AbstractController
         $this->entityManager->persist($courseRole);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('exercise-overview__course--members', ['id' => $course->getId()]);
+        return $this->redirectToRoute('course--members', ['id' => $course->getId()]);
     }
 
     #[IsGranted(CourseVoter::CREATE)]
-    #[Route("/exercise-overview/course/new", name: "exercise-overview__course--new")]
+    #[Route("/course/new", name: "course--new")]
     public function new(Request $request): Response
     {
         $course = new Course();
@@ -187,7 +187,7 @@ class CourseController extends AbstractController
                     $this->translator->trans('course.new.messages.success', [], 'DegreeBase')
                 );
 
-                return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+                return $this->redirectToRoute('course', ['id' => $course->getId()]);
             }
 
             $this->addFlash(
@@ -203,7 +203,7 @@ class CourseController extends AbstractController
     }
 
     #[IsGranted(CourseVoter::EDIT, subject: "course")]
-    #[Route("/exercise-overview/course/edit/{id}", name: "exercise-overview__course--edit")]
+    #[Route("/course/edit/{id}", name: "course--edit")]
     public function edit(Request $request, Course $course = null): Response
     {
         if (!$course) {
@@ -221,7 +221,7 @@ class CourseController extends AbstractController
                 $this->translator->trans('course.edit.messages.success', [], 'DegreeBase')
             );
 
-            return $this->redirectToRoute('exercise-overview__course--edit', ['id' => $course->getId()]);
+            return $this->redirectToRoute('course--edit', ['id' => $course->getId()]);
         }
 
         $tutorsArray = $course->getCourseRoles()
@@ -245,7 +245,7 @@ class CourseController extends AbstractController
     }
 
     #[IsGranted(CourseVoter::DELETE, subject: "course")]
-    #[Route("/exercise-overview/course/delete/{id}", name: "exercise-overview__course--delete")]
+    #[Route("/course/delete/{id}", name: "course--delete")]
     public function delete(Course $course = null): Response
     {
         if (!$course) {
@@ -258,7 +258,7 @@ class CourseController extends AbstractController
                 $this->translator->trans('course.delete.messages.notPossible', [], 'DegreeBase')
             );
 
-            return $this->redirectToRoute('exercise-overview', ['id' => $course->getId()]);
+            return $this->redirectToRoute('course', ['id' => $course->getId()]);
         }
 
         $this->entityManager->remove($course);
@@ -269,7 +269,7 @@ class CourseController extends AbstractController
             $this->translator->trans('course.delete.messages.success', [], 'DegreeBase')
         );
 
-        return $this->redirectToRoute('exercise-overview');
+        return $this->redirectToRoute('courses');
     }
 
     private function createOrUpdateCourse(FormInterface $form): void
