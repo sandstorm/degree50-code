@@ -65,11 +65,12 @@ Feature: Copy Exercises
             | videoCode2 | VideoCode2 | #000000 |
 
         When I am logged in via browser as 'test-admin@sandstorm.de'
+        And I click on "course1"
         And I click on the button with the aria label 'Aktionen ein/ausblenden'
         And I click on 'Aufgabe kopieren'
         And I click on 'course2'
         And I submit the form
-        And I visit url '/exercise-overview/course2'
+        And I visit url '/course/course2'
 
         Then the page should contain the text 'exercise1'
         And the page should not contain the text 'e1ID'

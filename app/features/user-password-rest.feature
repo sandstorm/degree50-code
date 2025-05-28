@@ -31,8 +31,8 @@ Feature: Users can reset their password.
         And I click on first element with testId "login-button"
         Then the page contains all the following texts:
             | resetpw@test.de |
-            | Schreibtisch    |
-            | Meine Aufgaben  |
+            | Kurse           |
+            | Mediathek       |
 
     @playwright @email
     Scenario: SSO users can not reset their password

@@ -8,7 +8,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="{{ path('exercise-overview') }}">{{ "course.index.title"|trans({}, 'DegreeBase') }}</a>
+                        <a href="{{ path('courses') }}">{{ "course.list.title"|trans({}, 'DegreeBase') }}</a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">{{ "course.new.title"|trans({}, 'DegreeBase') }}</li>
                 </ol>
@@ -46,7 +46,7 @@
 
     <footer class="footer">
         <a class="button button--type-outline-primary footer__left"
-           href="{{ path('exercise-overview') }}">{{ "course.new.back"|trans({}, 'DegreeBase') }}</a>
+           href="{{ path('courses') }}">{{ "course.new.back"|trans({}, 'DegreeBase') }}</a>
         <div class="footer__right">
             {{ form_row(form.save) }}
         </div>

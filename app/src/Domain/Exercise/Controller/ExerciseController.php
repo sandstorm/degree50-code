@@ -341,7 +341,7 @@ class ExerciseController extends AbstractController
             $this->translator->trans('exercise.delete.messages.success', [], 'DegreeBase')
         );
 
-        return $this->redirectToRoute('exercise-overview', ['id' => $exercise->getCourse()->getId()]);
+        return $this->redirectToRoute('course', ['id' => $exercise->getCourse()->getId()]);
     }
 
     #[IsGranted(ExerciseVoter::EDIT, subject: "exercise")]
@@ -419,7 +419,7 @@ class ExerciseController extends AbstractController
                 $this->translator->trans('exerciseOverview.error.exercise-no-phase', [], 'DegreeBase')
             );
 
-            return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('exercise-overview'));
+            return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('course', ['id' => $exercise->getCourse()->getId()]));
         }
 
         $teams = $this->exercisePhaseTeamRepository->findAllByPhaseExcludingTests($exercisePhase);

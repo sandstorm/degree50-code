@@ -1,5 +1,5 @@
 <div class="sidebar__group">
-    {{ _self.sidebarLink(exercise.course.name, false, '', path('exercise-overview', {id: exercise.course.id})) }}
+    {{ _self.sidebarLink(exercise.course.name, false, '', path('course', {id: exercise.course.id})) }}
     {% if testMode %}
         {{ _self.sidebarLink(exercise.name, false, '', path('exercise__test', {id: exercise.id})) }}
     {% else %}

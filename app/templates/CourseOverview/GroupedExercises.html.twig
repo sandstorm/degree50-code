@@ -4,7 +4,7 @@
         <h5>{{ groupIdTransVar | trans({}, 'DegreeBase') }}</h5>
         <ul class="overview">
             {% for exercise in group.exercises %}
-                {{ include('ExerciseOverview/Exercise.html.twig', {exercise: exercise}) }}
+                {{ include('CourseOverview/Exercise.html.twig', {exerciseWithStatusAndProgress: exercise}) }}
             {% endfor %}
         </ul>
     {% endif %}

@@ -1,6 +1,6 @@
 .overview-item {
     display: grid;
-    grid-template-columns: 95px 35px 1fr auto;
+    grid-template-columns: 35px 1fr auto;
     align-items: center;
     gap: $theme__spacing--base;
     padding: $theme__spacing--base 0;
@@ -8,6 +8,10 @@
     text-decoration: none !important;
 
     border-bottom: 1px solid $theme__color__grey--light;
+
+    &.video-overview-item {
+        grid-template-columns: 95px 35px 1fr auto;
+    }
 }
 
 .overview-item__date {

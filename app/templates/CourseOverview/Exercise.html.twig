@@ -1,16 +1,13 @@
-{% if is_granted('exercise_edit', exercise.exercise) %}
-    {% set statusTransVar = 'exercise.labels.status' ~ (exercise.exercise.status) %}
-    {% set statusClassVar = 'overview-item--status-' ~ (exercise.exercise.status) %}
+{# Tyoe of exerciseWithStatusAndProgress: \App\Domain\Exercise\Dto\ExerciseWithReviewStatusAndCompletedPhasesDTO #}
+{% if is_granted('exercise_edit', exerciseWithStatusAndProgress.exercise) %}
+    {% set statusTransVar = 'exercise.labels.status' ~ (exerciseWithStatusAndProgress.exercise.status) %}
+    {% set statusClassVar = 'overview-item--status-' ~ (exerciseWithStatusAndProgress.exercise.status) %}
     <li class="overview-item {{ statusClassVar }}">
-        <div class="overview-item__date">
-            <span class="sr-only">{{ "exercise.labels.createdLabel"|trans({}, 'DegreeBase') }}: </span>
-            {{ exercise.exercise.createdAt|date("d.m.Y") }}
-        </div>
         <div class="overview-item__status">
             <span class="sr-only">{{ "exercise.labels.statusLabel"|trans({}, 'DegreeBase') }}: {{ statusTransVar | trans({}, 'DegreeBase') }}</span>
-            {% if exercise.exercise.status == 0 %}
+            {% if exerciseWithStatusAndProgress.exercise.status == 0 %}
                 <i class="fas fa-eye-slash" aria-hidden="true" title="{{ statusTransVar | trans({}, 'DegreeBase') }}"></i>
-            {% elseif exercise.exercise.status == 1 %}
+            {% elseif exerciseWithStatusAndProgress.exercise.status == 1 %}
                 <i class="fas fa-check" aria-hidden="true" title="{{ statusTransVar | trans({}, 'DegreeBase') }}"></i>
             {% else %}
                 <i class="fas fa-eye" aria-hidden="true" title="{{ statusTransVar | trans({}, 'DegreeBase') }}"></i>
@@ -18,9 +15,9 @@
         </div>
         <div class="overview-item__title">
             <span class="sr-only">{{ "exercise.labels.name"|trans({}, 'DegreeBase') }}: </span>
-            <strong>{{ exercise.exercise.name }}</strong>
-            <em>{{ exercise.exercise.phases|length }} {{ "common.phases"|trans({}, 'DegreeBase') }}</em>
-            {% if exercise.needsReview %}
+            <strong>{{ exerciseWithStatusAndProgress.exercise.name }}</strong>
+            <em>{{ exerciseWithStatusAndProgress.exercise.phases|length }} {{ "common.phases"|trans({}, 'DegreeBase') }}</em>
+            {% if exerciseWithStatusAndProgress.needsReview %}
                 <div>
                     <i aria-hidden="true" class="fa-regular fa-circle-exclamation-check"></i> {{ 'exercise.labels.reviewRequired' | trans({}, 'DegreeBase') }}
                 </div>
@@ -39,30 +36,30 @@
             </button>
             <dialog class="overview-item__actions-dropdown">
                 <div>
-                    {% if is_granted('exercise_showSolution', exercise.exercise) %}
-                        <a href="{{ path('exercise__show-solutions', {id: exercise.exercise.id}) }}">
+                    {% if is_granted('exercise_showSolution', exerciseWithStatusAndProgress.exercise) %}
+                        <a href="{{ path('exercise__show-solutions', {id: exerciseWithStatusAndProgress.exercise.id}) }}">
                             <i class="fas fa-clipboard-check"></i> {{ "exercise.showSolution.title"|trans({}, 'DegreeBase') }}
                         </a>
                     {% endif %}
-                    {% if is_granted('exercise_test', exercise.exercise) %}
-                        <a href="{{ path('exercise__test', {id: exercise.exercise.id}) }}">
+                    {% if is_granted('exercise_test', exerciseWithStatusAndProgress.exercise) %}
+                        <a href="{{ path('exercise__test', {id: exerciseWithStatusAndProgress.exercise.id}) }}">
                             <i class="fas fa-vial"></i> {{ "exercise.test.title"|trans({}, 'DegreeBase') }}
                         </a>
                     {% endif %}
-                    {% if is_granted('exercise_view', exercise.exercise) %}
-                        <a href="{{ path('exercise__show', {id: exercise.exercise.id}) }}">
+                    {% if is_granted('exercise_view', exerciseWithStatusAndProgress.exercise) %}
+                        <a href="{{ path('exercise__show', {id: exerciseWithStatusAndProgress.exercise.id}) }}">
                             <i class="fas fa-play"></i> {{ "exercise.show.title"|trans({}, 'DegreeBase') }}
                         </a>
                     {% endif %}
-                    {% if is_granted('exercise_edit', exercise.exercise) %}
-                        <a href="{{ path('exercise__edit', {id: exercise.exercise.id}) }}">
+                    {% if is_granted('exercise_edit', exerciseWithStatusAndProgress.exercise) %}
+                        <a href="{{ path('exercise__edit', {id: exerciseWithStatusAndProgress.exercise.id}) }}">
                             <i class="fas fa-pencil-alt"></i> {{ "exercise.edit.title"|trans({}, 'DegreeBase') }}
                         </a>
-                        <a href="{{ path('exercise__copy', {id: exercise.exercise.id}) }}">
+                        <a href="{{ path('exercise__copy', {id: exerciseWithStatusAndProgress.exercise.id}) }}">
                             <i class="fas fa-clone"></i> {{ "exercise.copy.title"|trans({}, 'DegreeBase') }}
                         </a>
                         <a
-                            href="{{ path('exercise__delete', {id: exercise.exercise.id}) }}"
+                            href="{{ path('exercise__delete', {id: exerciseWithStatusAndProgress.exercise.id}) }}"
                             class="color-alert"
                             onclick="return confirm('{{ "exercise.delete.confirm"|trans({}, 'DegreeBase') }}');"
                         >
@@ -74,16 +71,13 @@
         </div>
     </li>
 {% else %}
-    {% if is_granted('exercise_view', exercise.exercise) %}
+    {% if is_granted('exercise_view', exerciseWithStatusAndProgress.exercise) %}
         <li class="overview-item">
-            <div class="overview-item__date" aria-label="{{ "exercise.labels.createdLabel"|trans({}, 'DegreeBase') }}: {{ exercise.exercise.createdAt|date("d.m.Y") }}">
-                {{ exercise.exercise.createdAt|date("d.m.Y") }}
-            </div>
-            {% if is_granted('exercise_isFinished', exercise.exercise) %}
+            {% if is_granted('exercise_isFinished', exerciseWithStatusAndProgress.exercise) %}
                 <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'DegreeBase') }}: {{ "exercise.labels.statusFinished"|trans({}, 'DegreeBase') }}">
                     <i class="fas fa-check" title="{{ "exercise.labels.statusFinished"|trans({}, 'DegreeBase') }}"></i>
                 </div>
-            {% elseif is_granted('exercise_isOpened', exercise.exercise) %}
+            {% elseif is_granted('exercise_isOpened', exerciseWithStatusAndProgress.exercise) %}
                 <div class="overview-item__status" aria-label="{{ "exercise.labels.statusLabel"|trans({}, 'DegreeBase') }}: {{ "exercise.labels.statusStarted"|trans({}, 'DegreeBase') }}">
                     <i class="fas fa-user-edit" title="{{ "exercise.labels.statusStarted"|trans({}, 'DegreeBase') }}"></i>
                 </div>
@@ -93,12 +87,18 @@
                 </div>
             {% endif %}
             <a
-                href="{{ path('exercise__show', {id: exercise.exercise.id}) }}"
+                href="{{ path('exercise__show', {id: exerciseWithStatusAndProgress.exercise.id}) }}"
                 class="overview-item__title"
-                aria-label="{{ "exercise.labels.name"|trans({}, 'DegreeBase') }}: {{ exercise.exercise.name }}"
+                aria-label="{{ "exercise.labels.name"|trans({}, 'DegreeBase') }}: {{ exerciseWithStatusAndProgress.exercise.name }}"
             >
-                {{ exercise.exercise.name }}
+                {{ exerciseWithStatusAndProgress.exercise.name }}
             </a>
+            {{ include('Partials/Meter.html.twig', {
+                valueNow: exerciseWithStatusAndProgress.completedPhases,
+                valueMax: exerciseWithStatusAndProgress.exercise.phases.count,
+                ariaLabel: "exercise.progressLabel"|trans({valueNow: exerciseWithStatusAndProgress.completedPhases, valueMax: exerciseWithStatusAndProgress.exercise.phases.count}, 'DegreeBase'),
+                valueText: "exercise.progressText"|trans({valueNow: exerciseWithStatusAndProgress.completedPhases, valueMax: exerciseWithStatusAndProgress.exercise.phases.count}, 'DegreeBase')
+            }) }}
         </li>
     {% endif %}
 {% endif %}

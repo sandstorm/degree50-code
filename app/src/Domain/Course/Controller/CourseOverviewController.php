@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Domain\Exercise\Controller;
+namespace App\Domain\Course\Controller;
 
-use App\Domain\Course\Model\Course;
 use App\Domain\Course\Repository\CourseRepository;
 use App\Domain\Exercise\Dto\GroupedExercisesBuilder;
 use App\Domain\Exercise\Model\Exercise;
@@ -31,12 +30,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted(UserVerifiedVoter::USER_VERIFIED)]
 #[IsGranted(DataPrivacyVoter::ACCEPTED)]
 #[IsGranted(TermsOfUseVoter::ACCEPTED)]
-class ExerciseOverviewController extends AbstractController
+class CourseOverviewController extends AbstractController
 {
-    /**
-     * @param CourseRepository $courseRepository
-     * @param ExerciseRepository $exerciseRepository
-     */
     public function __construct(
         private readonly CourseRepository   $courseRepository,
         private readonly ExerciseRepository $exerciseRepository,
@@ -45,44 +40,28 @@ class ExerciseOverviewController extends AbstractController
     {
     }
 
-    #[Route("/", name: "app")]
-    public function index(): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if ($user->isStudent()) {
-            return $this->redirectToRoute('schreibtisch');
-        } else {
-            return $this->redirectToRoute('exercise-overview');
-        }
-    }
-
-    #[Route("/exercise-overview/{id?}", name: "exercise-overview")]
+    #[Route("/course/{id?}", name: "course")]
     public function overview(Request $request, ?string $id): Response
     {
+        if ($id == null) {
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
-        /* @var Course|null $course */
-        $course = null;
+        $course = $this->courseRepository->findOneForUserWithCriteria(
+            $user,
+            Criteria::create()->andWhere(Criteria::expr()->eq('id', $id))
+        );
 
-        $statusFilter = $request->query->get('status');
-
-        $queryCriteria = Criteria::create();
-        if ($id != null) {
-            $course = $this->courseRepository->findOneForUserWithCriteria(
-                $user,
-                Criteria::create()->andWhere(Criteria::expr()->eq('id', $id))
-            );
-
-            if ($course == null) {
-                return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
-            }
-
-            $queryCriteria->andWhere(Criteria::expr()->eq('course', $course));
+        if ($course == null) {
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
+        $queryCriteria = Criteria::create()->andWhere(Criteria::expr()->eq('course', $course));
+
+        $statusFilter = $request->query->get('status');
         if ($statusFilter != null) {
             $queryCriteria->andWhere(Criteria::expr()->eq('status', intval($statusFilter)));
         }
@@ -91,10 +70,8 @@ class ExerciseOverviewController extends AbstractController
 
         $groupedExercises = $this->getExercisesGrouped($this->exerciseRepository->findAllForUserWithCriteria($user, $queryCriteria));
 
-        return $this->render('ExerciseOverview/Index.html.twig', [
-            'sidebarItems' => $this->getSideBarItems(),
+        return $this->render('CourseOverview/Index.html.twig', [
             'course' => $course,
-            'courseId' => $course?->getId(),
             'activeFilter' => $statusFilter,
             'groupedExercises' => $groupedExercises,
         ]);
@@ -107,41 +84,15 @@ class ExerciseOverviewController extends AbstractController
 
         $groupedExercisesBuilder = new GroupedExercisesBuilder($this->exerciseService);
 
-        foreach ($exercises as $_key => $exercise) {
+        foreach ($exercises as $exercise) {
             /** @var Exercise $exercise */
             if ($exercise->getCreator() === $user) {
-                $groupedExercisesBuilder->addOwnExercise($exercise);
+                $groupedExercisesBuilder->addOwnExercise($exercise, $user);
             } else {
-                $groupedExercisesBuilder->addOtherExercise($exercise);
+                $groupedExercisesBuilder->addOtherExercise($exercise, $user);
             }
         }
 
         return $groupedExercisesBuilder->create();
-    }
-
-    /**
-     * @return array
-     */
-    private function getSideBarItems(): array
-    {
-        /* @var User $user */
-        $user = $this->getUser();
-
-        $courses = $this->courseRepository->findAllForUserWithCriteria($user);
-
-        $sidebarItems = [];
-        foreach ($courses as $course) {
-            $creationDateYear = $course->getCreationDateYear();
-            if (!array_key_exists($creationDateYear, $sidebarItems)) {
-                $sidebarItems[$creationDateYear] = ['label' => $creationDateYear, 'courses' => []];
-            }
-            $sidebarItems[$creationDateYear]['courses'][] = $course;
-        }
-
-        // WHY: We want to sort the years DESC in the sidebar
-        // ! mutation !
-        krsort($sidebarItems, SORT_NUMERIC);
-
-        return $sidebarItems;
     }
 }

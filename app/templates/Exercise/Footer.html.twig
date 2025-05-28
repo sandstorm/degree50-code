@@ -8,7 +8,7 @@
                 {{ "common.previousPhase"|trans({}, 'DegreeBase') }}
             </a>
         {% else %}
-            <a class="button button--type-outline-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+            <a class="button button--type-outline-primary button--size-small" href="{{ path('course', {id: exercise.course.id}) }}">
                 {{ "exercise.new.back"|trans({}, 'DegreeBase') }}
             </a>
         {% endif %}
@@ -50,7 +50,7 @@
                 {% endif %}
             {% endif %}
         {% elseif amountOfPhases == currentPhaseIndex %}
-            <a class="button button--type-primary button--size-small" href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+            <a class="button button--type-primary button--size-small" href="{{ path('course', {id: exercise.course.id}) }}">
                 {{ "exercise.labels.finish"|trans({}, 'DegreeBase') }}
             </a>
         {% endif %}

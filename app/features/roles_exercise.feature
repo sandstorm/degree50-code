@@ -61,36 +61,74 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
     #########################
     ### View
     #########################
-    Scenario: As admin I can see all exercises in exercise overview
+    Scenario: As admin I can see all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
+        When I visit route "courses"
+        Then the page contains all the following texts:
+            | course1 |
+            | course2 |
+            | course3 |
+
+    Scenario: As admin I can see all exercises of course1
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course1"
         Then the page contains all the following texts:
             | c1-exercise-admin             |
             | c1-exercise-admin-unpublished |
-            | c3-exercise-admin             |
             | c1-exercise-dozent            |
-            | c2-exercise-student           |
 
-    Scenario: As dozent I can see my created exercises an exercises of courses I am KursDozent for in exercise overview
+    Scenario: As admin I can see all exercises of course2
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | c2-exercise-student |
+            | c2-exercise-admin   |
+
+    Scenario: As admin I can see all exercises of course3
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course3"
+        Then the page contains all the following texts:
+            | c3-exercise-admin |
+
+    Scenario: As dozent I can see all courses I am Dozent for
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
+        When I visit route "courses"
+        Then the page contains all the following texts:
+            | course1 |
+        And the page contains none of the following texts:
+            | course2 |
+            | course3 |
+
+    Scenario: As dozent I can see all exercises of courses I am KursDozent for
+        Given I am logged in via browser as "test-dozent@sandstorm.de"
+        When I click on "course1"
         Then the page contains all the following texts:
             | c1-exercise-admin             |
             | c1-exercise-admin-unpublished |
             | c1-exercise-dozent            |
+
+    Scenario: As student I can see all courses I am KursStudent or KursDozent of
+        Given I am logged in via browser as "test-student@sandstorm.de"
+        When I visit route "courses"
+        Then the page contains all the following texts:
+            | course1 |
+            | course2 |
         And the page contains none of the following texts:
-            | c3-exercise-admin   |
+            | course3 |
+
+    Scenario: As student I can see my created exercises of courses I am KursDozent for - course2
+        Given I am logged in via browser as "test-student@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
             | c2-exercise-student |
 
-    Scenario: As student I can see my created exercises and published exercises of courses I am KursDozent or KursStudent for in exercise overview
+    Scenario: As student I can see published exercises of courses I am KursStudent for - course1
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit route "exercise-overview"
+        When I click on "course1"
         Then the page contains all the following texts:
-            | c1-exercise-admin   |
-            | c2-exercise-student |
+            | c1-exercise-admin |
         And the page contains none of the following texts:
             | c1-exercise-admin-unpublished |
-            | c3-exercise-admin             |
             # has no phases
             | c1-exercise-dozent            |
 
@@ -99,7 +137,7 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
     #########################
     Scenario Outline: As admin I can create an exercise in all courses
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit url "/exercise-overview/<courseId>"
+        When I visit url "/course/<courseId>"
         And I click on "Neue Aufgabe anlegen"
         And I fill out the exercise form and submit
         Then the response status code should be 200
@@ -114,7 +152,7 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
 
     Scenario: As dozent I can create an exercise in assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit url "/exercise-overview/course1"
+        When I visit url "/course/course1"
         And I click on "Neue Aufgabe anlegen"
         And I fill out the exercise form and submit
         Then the response status code should be 200
@@ -134,7 +172,7 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
 
     Scenario: As student I can create an exercise courses where I am KursDozent
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit url "/exercise-overview/course2"
+        When I visit url "/course/course2"
         And I click on "Neue Aufgabe anlegen"
         And I fill out the exercise form and submit
         Then the response status code should be 200
@@ -155,15 +193,26 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
     #########################
     ### Edit
     #########################
-    Scenario: As admin I can see the option to edit for exercises in all courses
+    Scenario: As admin I can see the option to edit for exercises in all courses - course1
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
+        When I click on "course1"
+        Then the page contains all the following texts:
             | /exercise/c1-exercise-admin/edit             |
             | /exercise/c1-exercise-admin-unpublished/edit |
-            | /exercise/c3-exercise-admin/edit             |
             | /exercise/c1-exercise-dozent/edit            |
-            | /exercise/c2-exercise-student/edit           |
+
+    Scenario: As admin I can see the option to edit for exercises in all courses - course2
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/edit |
+            | /exercise/c2-exercise-admin/edit   |
+
+    Scenario: As admin I can see the option to edit for exercises in all courses - course3
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course3"
+        Then the page contains all the following texts:
+            | /exercise/c3-exercise-admin/edit |
 
     Scenario Outline: As admin I can access the edit page of all exercises
         Given I am logged in via browser as "test-admin@sandstorm.de"
@@ -181,14 +230,11 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
 
     Scenario: As dozent I can see the option to edit for exercises only in assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
+        When I click on "course1"
+        Then the page contains all the following texts:
             | /exercise/c1-exercise-admin/edit             |
             | /exercise/c1-exercise-admin-unpublished/edit |
             | /exercise/c1-exercise-dozent/edit            |
-        And the page contains none of the following texts:
-            | /exercise/c2-exercise-student/edit |
-            | /exercise/c3-exercise-admin/edit   |
 
     Scenario Outline: As dozent I can access the edit page of exercises in assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
@@ -204,16 +250,19 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
             | c2-exercise-student           | 403        | Zugriff verweigert |
             | c3-exercise-admin             | 403        | Zugriff verweigert |
 
-    Scenario: As student I can see the option to edit for my created exercises
+    Scenario: As student I can not see the option to edit exercises I did not create
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
-            | /exercise/c2-exercise-student/edit |
-        And the page contains none of the following texts:
+        When I click on "course1"
+        Then the page contains none of the following texts:
             | /exercise/c1-exercise-admin/edit             |
             | /exercise/c1-exercise-admin-unpublished/edit |
             | /exercise/c1-exercise-dozent/edit            |
-            | /exercise/c3-exercise-admin/edit             |
+
+    Scenario: As student I can see the option to edit for exercises I created
+        Given I am logged in via browser as "test-student@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/edit |
 
     Scenario Outline: As student I can access the edit page of exercises I created
         Given I am logged in via browser as "test-student@sandstorm.de"
@@ -232,15 +281,25 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
     #########################
     ### Delete
     #########################
-    Scenario: As admin I can see the option to delete for exercises in all courses
+    Scenario: As admin I can see the option to delete for exercises in all courses - course1
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
+        When I click on "course1"
+        Then the page contains all the following texts:
             | /exercise/c1-exercise-admin/delete             |
             | /exercise/c1-exercise-admin-unpublished/delete |
-            | /exercise/c3-exercise-admin/delete             |
             | /exercise/c1-exercise-dozent/delete            |
-            | /exercise/c2-exercise-student/delete           |
+
+    Scenario: As admin I can see the option to delete for exercises in all courses - course2
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/delete |
+
+    Scenario: As admin I can see the option to delete for exercises in all courses - course3
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course3"
+        Then the page contains all the following texts:
+            | /exercise/c3-exercise-admin/delete |
 
     Scenario Outline: As admin I can access the delete page of all exercises
         Given I am logged in via browser as "test-admin@sandstorm.de"
@@ -256,16 +315,13 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
             | c1-exercise-dozent            |
             | c2-exercise-student           |
 
-    Scenario: As dozent I can see the option to delete for exercises only in assigned courses
+    Scenario: As dozent I can see the option to delete for exercises only in assigned courses - course1
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
+        When I click on "course1"
+        Then the page contains all the following texts:
             | /exercise/c1-exercise-admin/delete             |
             | /exercise/c1-exercise-admin-unpublished/delete |
             | /exercise/c1-exercise-dozent/delete            |
-        And the page contains none of the following texts:
-            | /exercise/c2-exercise-student/delete |
-            | /exercise/c3-exercise-admin/delete   |
 
     Scenario Outline: As dozent I can access the delete page of exercises in assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
@@ -281,16 +337,19 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
             | c2-exercise-student           | 403        | Zugriff verweigert            |
             | c3-exercise-admin             | 403        | Zugriff verweigert            |
 
-    Scenario: As student I can see the option to delete for my created exercises
+    Scenario: As student I can see the option to delete for my created exercises - course1
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
-            | /exercise/c2-exercise-student/delete |
-        And the page contains none of the following texts:
+        When I click on "course1"
+        Then the page contains none of the following texts:
             | /exercise/c1-exercise-admin/delete             |
             | /exercise/c1-exercise-admin-unpublished/delete |
             | /exercise/c1-exercise-dozent/delete            |
-            | /exercise/c3-exercise-admin/delete             |
+
+    Scenario: As student I can see the option to delete for my created exercises - course2
+        Given I am logged in via browser as "test-student@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/delete |
 
     Scenario Outline: As student I can access the delete page of exercises I created
         Given I am logged in via browser as "test-student@sandstorm.de"
@@ -309,72 +368,95 @@ Feature: Roles and constraints regarding [viewing | creating | editing | deletio
     #########################
     ### Test
     #########################
-    Scenario: As admin I can see the option to test exercises in all courses
+    Scenario: As admin I can see the option to test exercises in all courses - course1
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
+        When I click on "course1"
+        Then the page contains all the following texts:
             | /exercise/c1-exercise-admin/test             |
             | /exercise/c1-exercise-admin-unpublished/test |
             | /exercise/c1-exercise-dozent/test            |
-            | /exercise/c2-exercise-student/test           |
-            | /exercise/c2-exercise-admin/test             |
-            | /exercise/c3-exercise-admin/test             |
 
-    Scenario: As dozent I can see the option to test all exercises in assigned courses he is dozent for
+    Scenario: As admin I can see the option to test exercises in all courses - course2
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/test |
+            | /exercise/c2-exercise-admin/test   |
+
+    Scenario: As admin I can see the option to test exercises in all courses - course3
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course3"
+        Then the page contains all the following texts:
+            | /exercise/c3-exercise-admin/test |
+
+    Scenario: As dozent I can see the option to test all exercises in assigned courses he is dozent for - course1
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
-            | /exercise/c1-exercise-dozent/test            |
+        When I click on "course1"
+        Then the page contains all the following texts:
             | /exercise/c1-exercise-admin/test             |
             | /exercise/c1-exercise-admin-unpublished/test |
-        And the page contains none of the following texts:
-            | /exercise/c2-exercise-student/test           |
-            | /exercise/c2-exercise-admin/test             |
-            | /exercise/c3-exercise-admin/test             |
+            | /exercise/c1-exercise-dozent/test            |
 
-    Scenario: As student I can see the option to test my created exercises in assigned courses
+    Scenario: As student I can see the option to test my created exercises in assigned courses - course1
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
-            | /exercise/c2-exercise-student/test           |
-        And the page contains none of the following texts:
+        When I click on "course1"
+        Then the page contains none of the following texts:
             | /exercise/c1-exercise-dozent/test            |
             | /exercise/c1-exercise-admin/test             |
             | /exercise/c1-exercise-admin-unpublished/test |
-            | /exercise/c2-exercise-admin/test             |
-            | /exercise/c3-exercise-admin/test             |
+
+    Scenario: As student I can see the option to test my created exercises in assigned courses - course2
+        Given I am logged in via browser as "test-student@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/test |
+        And the page contains none of the following texts:
+            | /exercise/c2-exercise-admin/test |
 
     #########################
     ### View Solutions
     #########################
-    Scenario: As admin I can see the option to view solutions of all exercises in all courses
+    Scenario: As admin I can see the option to view solutions of all exercises in all courses - course1
         Given I am logged in via browser as "test-admin@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
+        When I click on "course1"
+        Then the page contains all the following texts:
             | /exercise/c1-exercise-admin/show-solutions             |
             | /exercise/c1-exercise-admin-unpublished/show-solutions |
-            | /exercise/c3-exercise-admin/show-solutions             |
             | /exercise/c1-exercise-dozent/show-solutions            |
-            | /exercise/c2-exercise-student/show-solutions           |
+
+    Scenario: As admin I can see the option to view solutions of all exercises in all courses - course2
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/show-solutions |
+            | /exercise/c2-exercise-admin/show-solutions   |
+
+    Scenario: As admin I can see the option to view solutions of all exercises in all courses - course3
+        Given I am logged in via browser as "test-admin@sandstorm.de"
+        When I click on "course3"
+        Then the page contains all the following texts:
+            | /exercise/c3-exercise-admin/show-solutions |
 
     Scenario: As dozent I can see the option to delete for exercises only in assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
-        When I visit route "exercise-overview"
+        When I click on "course1"
         And the page contains all the following texts:
             | /exercise/c1-exercise-admin/show-solutions             |
             | /exercise/c1-exercise-admin-unpublished/show-solutions |
             | /exercise/c1-exercise-dozent/show-solutions            |
-        And the page contains none of the following texts:
-            | /exercise/c2-exercise-student/show-solutions |
-            | /exercise/c3-exercise-admin/show-solutions   |
 
-    Scenario: As student I can see the option to delete for my created exercises
+    Scenario: As student I can see the option to delete for my created exercises - course1
         Given I am logged in via browser as "test-student@sandstorm.de"
-        When I visit route "exercise-overview"
-        And the page contains all the following texts:
-            | /exercise/c2-exercise-student/show-solutions |
-        And the page contains none of the following texts:
+        When I click on "course1"
+        Then the page contains none of the following texts:
             | /exercise/c1-exercise-admin/show-solutions             |
             | /exercise/c1-exercise-admin-unpublished/show-solutions |
             | /exercise/c1-exercise-dozent/show-solutions            |
-            | /exercise/c3-exercise-admin/show-solutions             |
+
+    Scenario: As student I can see the option to delete for my created exercises - course2
+        Given I am logged in via browser as "test-student@sandstorm.de"
+        When I click on "course2"
+        Then the page contains all the following texts:
+            | /exercise/c2-exercise-student/show-solutions |
+        Then the page contains none of the following texts:
+            | /exercise/c2-exercise-admin/show-solutions |

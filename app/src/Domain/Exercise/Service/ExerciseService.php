@@ -112,8 +112,7 @@ readonly class ExerciseService
     {
         $phases = $exercise->getPhases()->toArray();
 
-        return array_reduce($phases, function ($maybeDate, $phase) use ($user) {
-            /** @var ExercisePhase $phase */
+        return array_reduce($phases, function (?DateTimeImmutable $maybeDate, ExercisePhase $phase) use ($user) {
             $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
 
             if (is_null($team)) {
@@ -189,6 +188,46 @@ readonly class ExerciseService
         foreach ($unpublishedExercisesOfUser as $exercise) {
             $this->deleteExercise($exercise);
         }
+    }
+
+    public function getCompletedPhasesCountForUser(User $user, Exercise $exercise): int
+    {
+        $completedPhases = 0;
+
+        foreach ($exercise->getPhases() as $phase) {
+            $team = $this->exercisePhaseTeamRepository->findByMemberAndExercisePhase($user, $phase);
+            if ($team && $this->exercisePhaseService->getStatusForTeam($team) === ExercisePhaseStatus::BEENDET) {
+                $completedPhases++;
+            }
+        }
+
+        return $completedPhases;
+    }
+
+    public function isExerciseVisibleForUser(Exercise $exercise, User $user): bool
+    {
+        $course = $exercise->getCourse();
+        $hasAccessToCourse = $user->getCourseRoles()->exists(
+            fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
+                $courseRole->getUser() === $user
+        );
+
+        if ($hasAccessToCourse) {
+            // Dozent has access
+            if ($user->isDozent()) {
+                return true;
+            }
+
+            // everyone else needs to wait for publication
+            $exercisePublished = $exercise->getStatus() == Exercise::EXERCISE_PUBLISHED;
+            $exerciseNotEmpty = count($exercise->getPhases()) > 0;
+
+            if ($exercisePublished && $exerciseNotEmpty) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function getPhaseWithStatusMetadataForStudent(ExercisePhase $phase, User $user): array

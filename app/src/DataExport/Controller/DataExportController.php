@@ -29,7 +29,7 @@ class DataExportController extends AbstractController
     }
 
     #[IsGranted(CourseVoter::EXPORT_CSV, subject: "course")]
-    #[Route("/exercise-overview/{id}/export-csv", name: "exercise-overview__course-export-csv")]
+    #[Route("/course/{id}/export-csv", name: "course-export-csv")]
     public function exportData(Course $course = null): Response
     {
         if (!$course) {

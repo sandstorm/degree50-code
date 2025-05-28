@@ -2,10 +2,6 @@ controllers_authentications:
     resource: ../../src/Security/Controller/
     type: attribute
 
-controllers_schreibtisch:
-    resource: ../../src/Schreibtisch/Controller/
-    type: attribute
-
 controllers_mediathek:
     resource: ../../src/Mediathek/Controller/
     type: attribute
@@ -21,7 +17,7 @@ controllers_legal:
 controllers_easy-admin:
     resource: ../../src/Administration/Controller/
     type: attribute
-    
+
 controllers_domain:
     resource: ../../src/Domain/**/Controller/*
     type: attribute

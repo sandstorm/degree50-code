@@ -18,6 +18,7 @@ Feature: Deleting ExercisePhaseTeams
 
     Scenario: Last user can delete ExercisePhaseTeam
         Given I am logged in via browser as "test-student1@sandstorm.de"
+        And I click on "course"
         And I click on "exercise"
         And I click on "Aufgabe Starten"
         And I click on "Neue Gruppe anlegen"
@@ -27,12 +28,14 @@ Feature: Deleting ExercisePhaseTeams
 
     Scenario: User can leave ExercisePhaseTeam
         Given I am logged in via browser as "test-student1@sandstorm.de"
+        And I click on "course"
         And I click on "exercise"
         And I click on "Aufgabe Starten"
         And I click on "Neue Gruppe anlegen"
 
         And I am not logged in
         And I am logged in via browser as "test-student2@sandstorm.de"
+        And I click on "course"
         And I click on "exercise"
         And I click on "Aufgabe Starten"
         And I click on "Gruppe beitreten"

@@ -8,7 +8,10 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ path('exercise-overview', {id: exercise.course.id}) }}">
+                    <a href="{{ path('courses') }}">{{ "course.list.title"|trans({}, 'DegreeBase') }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('course', {id: exercise.course.id}) }}">
                         {{ exercise.course.name }}
                     </a>
                 </li>

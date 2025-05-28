@@ -2,7 +2,9 @@
 
 namespace App\Domain\Exercise\Dto;
 
+use App\Domain\Exercise\Model\Exercise;
 use App\Domain\Exercise\Service\ExerciseService;
+use App\Domain\User\Model\User;
 
 class GroupedExercisesBuilder
 {
@@ -15,21 +17,23 @@ class GroupedExercisesBuilder
     {
     }
 
-    public function addOwnExercise($exercise): static
+    public function addOwnExercise(Exercise $exercise, User $user): static
     {
-        $this->ownExercises[] = new ExerciseWithReviewStatusDTO(
+        $this->ownExercises[] = new ExerciseWithReviewStatusAndCompletedPhasesDTO(
             $exercise,
-            $this->exerciseService->needsReview($exercise)
+            $this->exerciseService->needsReview($exercise),
+            $this->exerciseService->getCompletedPhasesCountForUser($user, $exercise),
         );
 
         return $this;
     }
 
-    public function addOtherExercise($exercise): static
+    public function addOtherExercise(Exercise $exercise, User $user): static
     {
-        $this->otherExercises[] = new ExerciseWithReviewStatusDTO(
+        $this->otherExercises[] = new ExerciseWithReviewStatusAndCompletedPhasesDTO(
             $exercise,
-            $this->exerciseService->needsReview($exercise)
+            $this->exerciseService->needsReview($exercise),
+            $this->exerciseService->getCompletedPhasesCountForUser($user, $exercise),
         );
 
         return $this;
