@@ -33,9 +33,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     const string ROLE_DOZENT = 'ROLE_DOZENT';
     const string ROLE_SSO_USER = 'ROLE_SSO_USER';
 
+    // default expiration options - can be overridden via env
     const string EXPIRATION_DURATION_STRING = '5 years';
-    const string DB_DATE_FORMAT = 'Y-m-d H:i:s';
     const string EXPIRATION_NOTICE_DURATION_STRING = '8 months';
+    const string EXPIRATION_DURATION_INCREASE_AMOUNT = "1 year";
+
+    const string DB_DATE_FORMAT = 'Y-m-d H:i:s';
     const string VERIFICATION_TIMEOUT_DURATION_STRING = '5 days';
 
     const int MIN_PASSWORD_LENGTH = 8;
@@ -128,9 +131,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->favoriteVideos = new ArrayCollection();
         $this->generateOrSetId($id);
         $this->createdAt = new DateTimeImmutable();
-        $this->expirationDate = $this->createdAt->add(
-            DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING)
-        );
+        $this->expirationDate = $this->createdAt->add(self::getConfiguredExpirationDuration());
         $this->createdAttachments = new ArrayCollection();
         $this->materials = new ArrayCollection();
     }
@@ -421,5 +422,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 return $role !== $roleToSet;
             });
         }
+    }
+
+    public static function getConfiguredExpirationDuration(): DateInterval
+    {
+        $fromEnv = getenv('EXPIRATION_DURATION_STRING_OVERRIDE');
+
+        if ($fromEnv) {
+            return DateInterval::createFromDateString($fromEnv);
+        }
+
+        return DateInterval::createFromDateString(self::EXPIRATION_DURATION_STRING);
+    }
+
+    public static function getConfiguredExpirationNoticeDuration(): DateInterval
+    {
+        $fromEnv = getenv('EXPIRATION_NOTICE_DURATION_STRING_OVERRIDE');
+
+        if ($fromEnv) {
+            return DateInterval::createFromDateString($fromEnv);
+        }
+
+        return DateInterval::createFromDateString(self::EXPIRATION_NOTICE_DURATION_STRING);
+    }
+
+    public static function getConfiguredExpirationDurationIncreaseAmount(): DateInterval
+    {
+        $fromEnv = getenv('EXPIRATION_DURATION_INCREASE_AMOUNT_OVERRIDE');
+
+        if ($fromEnv) {
+            return DateInterval::createFromDateString($fromEnv);
+        }
+
+        return DateInterval::createFromDateString(self::EXPIRATION_DURATION_INCREASE_AMOUNT);
     }
 }

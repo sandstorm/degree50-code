@@ -86,7 +86,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         $now = new DateTimeImmutable();
         $notificationTimeWindowStart = $now
-            ->add(DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
+            ->add(User::getConfiguredExpirationNoticeDuration());
 
         // expiration_date - notice_duration < now
         return $this->createQueryBuilder('user')

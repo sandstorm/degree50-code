@@ -77,10 +77,10 @@ readonly class UserExpirationService
         return $expiredStudentIds;
     }
 
-    public function increaseExpirationDateByOneYearForUser(User $user): void
+    public function increaseExpirationDateForUserByConfiguredAmount(User $user): void
     {
         $oldExpirationDate = $user->getExpirationDate();
-        $newExpirationDate = $oldExpirationDate->add(DateInterval::createFromDateString('1 year'));
+        $newExpirationDate = $oldExpirationDate->add(User::getConfiguredExpirationDurationIncreaseAmount());
 
         $user->setExpirationDate($newExpirationDate);
         $user->setExpirationNoticeSent(false);
@@ -96,9 +96,9 @@ readonly class UserExpirationService
     public function userCanUpdateExpirationDate(User $user): bool
     {
         $expirationNotificationWindowStart = (new DateTimeImmutable())
-            ->add(DateInterval::createFromDateString(User::EXPIRATION_NOTICE_DURATION_STRING));
+            ->add(User::getConfiguredExpirationNoticeDuration());
 
-        // For example: Expiration date is smaller than "6 month from now".
+        // For example: Expiration date is smaller than "8 month from now".
         return $user->getExpirationDate() < $expirationNotificationWindowStart;
     }
 

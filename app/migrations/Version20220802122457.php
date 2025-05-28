@@ -30,7 +30,7 @@ final class Version20220802122457 extends AbstractMigration
 
         $this->connection->executeStatement(
             "UPDATE user SET expiration_date = :expiration_date WHERE expiration_date = '0000-00-00 00:00:00'",
-            ['expiration_date' => $defaultCreationDate->add(\DateInterval::createFromDateString(User::EXPIRATION_DURATION_STRING))->format(User::DB_DATE_FORMAT)]
+            ['expiration_date' => $defaultCreationDate->add(User::getConfiguredExpirationDuration())->format(User::DB_DATE_FORMAT)]
         );
     }
 

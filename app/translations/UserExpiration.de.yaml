@@ -3,8 +3,8 @@ form:
     info:
         expiration: 'Ihr Account läuft am deletionDate ab.'
         extend-account: 'Bitte verlängern Sie Ihren Account, um weiterhin Zugriff auf die Plattform zu haben:'
-    submit: 'Account um 1 Jahr verlängern'
-        
+    submit: 'Account verlängern'
+
 email:
     subject: 'Account-Verlängerung'
     title: 'Dein Account läuft bald ab!'
@@ -15,7 +15,7 @@ email:
     no-reply-notice: 'Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht auf diese E-Mail.'
 
 flash-message:
-    success: 'Dein Account wurde erfolgreich verlängert.'
+    success: 'Dein Account wurde erfolgreich bis zum newExpirationDate verlängert.'
     error:
-        not-authenticated: 'Du musst angemeldet sein, um deinen Account zu verlängern.'
-        not-now: 'Dein Account kann vorerst nicht weiter verlängert werden.'
+      not-authenticated: 'Du musst angemeldet sein, um deinen Account zu verlängern.'
+      not-now: 'Dein Account kann vorerst nicht weiter verlängert werden.'

@@ -29,6 +29,12 @@ services:
 
             # configured in ./.env
             APP_SECRET: "${APP_SECRET}"
+
+            # User expiration time overrides
+            # EXPIRATION_DURATION_STRING_OVERRIDE: "2 years"
+            # EXPIRATION_NOTICE_DURATION_STRING_OVERRIDE: "2 months"
+            # EXPIRATION_DURATION_INCREASE_AMOUNT_OVERRIDE: "1 year"
+
             # WHY:
             #   We use a different name for this variable here to be able to override it via .env.test
             #   Because if we use DATABASE_URL here, the variable from docker compose would override the variable

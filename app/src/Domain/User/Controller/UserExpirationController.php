@@ -67,11 +67,20 @@ class UserExpirationController extends AbstractController
             return $this->redirectToRoute('app');
         }
 
-        $this->userExpirationService->increaseExpirationDateByOneYearForUser($user);
+        if ($this->userExpirationService->userCanUpdateExpirationDate($user) === false) {
+            $this->addFlash(
+                'danger',
+                $this->translator->trans('flash-message.error.not-now', [], 'UserExpiration')
+            );
+            return $this->redirectToRoute('app');
+        }
+
+        $this->userExpirationService->increaseExpirationDateForUserByConfiguredAmount($user);
+        $newExpirationDate = $user->getExpirationDate()->format('j. F Y');
 
         $this->addFlash(
             'success',
-            $this->translator->trans('flash-message.success', [], 'UserExpiration')
+            $this->translator->trans('flash-message.success', ['newExpirationDate' => $newExpirationDate], 'UserExpiration')
         );
         return $this->redirectToRoute('app');
     }
