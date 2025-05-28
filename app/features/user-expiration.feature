@@ -36,8 +36,9 @@ Feature: Users expire and are removed automatically. They are notified before ex
         And the expiration date of user "student@test.de" is set to "+8 month -1 day" from now
         And I am logged in via browser as "student@test.de"
         When I visit route "app_increase_user_expiration_date"
-        And I click on "Account um 1 Jahr verlängern"
-        Then the page should contain the text "Dein Account wurde erfolgreich verlängert."
+        And I click on first element with testId "increase-user-expiration-date-button"
+        Then the page should contain the text "Dein Account wurde erfolgreich"
+        # We assume the default expiration date increase (1 year)
         And the expiration date of user "student@test.de" should be set to "+1 yeah +8 month -1 day" from now
         And User "student@test.de" should be marked as not notified
 

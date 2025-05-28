@@ -52,7 +52,7 @@ class RemoveExpiredUsersCommand extends Command
         $io->writeln('Notifying soon to be expired users..');
         $soonToBeExpiredUsers = $this->userExpirationService->notifySoonToBeExpiredUsers();
         if (count($soonToBeExpiredUsers) === 0) {
-            $io->success('No soon to be expired users found');
+            $io->success('No un-notified, soon to be expired users found');
         } else {
             $io->writeln('User ids of notified users:');
             $io->listing($soonToBeExpiredUsers);
