@@ -6,6 +6,7 @@ namespace App\Tests\Behat;
 
 use App\DataExport\Dto\TextFileDto;
 use App\DataExport\Service\DegreeDataToCsvService;
+use App\Domain\Course\Service\CourseService;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\CutVideo\Repository\CutVideoRepository;
 use App\Domain\Exercise\Model\Exercise;
@@ -134,6 +135,7 @@ final class DegreeContext implements Context
         private readonly SolutionRepository $solutionRepository,
         private readonly TokenStorageInterface $tokenStorage,
         private readonly CutVideoRepository $cutVideoRepository,
+        private readonly CourseService $courseService,
     ) {
         $this->setupPlaywright();
     }

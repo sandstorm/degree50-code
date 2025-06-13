@@ -49,10 +49,22 @@
                                     </a>
                                 {% endif %}
 
-                                {% if is_granted('course_delete', course) %}
+                                {% if is_granted('course_delete', course) or is_granted('course_reset', course) %}
                                     <div class="dropdown-divider"></div>
+                                {% endif %}
+                                {% if is_granted('course_reset', course) %}
+                                    <a href="{{ path('course--reset', {id: course.id}) }}"
+                                       class="dropdown-item"
+                                       onclick="return confirm('{{ "course.reset.confirm"|trans({}, 'DegreeBase') }}');"
+                                    >
+                                        <i class="fas fa-undo"></i> {{ "course.reset.title"|trans({}, 'DegreeBase') }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('course_delete', course) %}
                                     <a href="{{ path('course--delete', {id: course.id}) }}"
-                                       class="dropdown-item text-danger">
+                                       class="dropdown-item text-danger"
+                                       onclick="return confirm('{{ "course.delete.confirm"|trans({}, 'DegreeBase') }}');"
+                                    >
                                         <i class="fas fa-trash"></i> {{ "course.delete.title"|trans({}, 'DegreeBase') }}
                                     </a>
                                 {% endif %}

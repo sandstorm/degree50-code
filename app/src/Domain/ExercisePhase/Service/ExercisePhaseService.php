@@ -383,6 +383,15 @@ readonly class ExercisePhaseService
         ];
     }
 
+    public function resetExercisePhase(ExercisePhase $exercisePhase): void
+    {
+        $this->exercisePhaseTeamRepository->removeAllInExercisePhase($exercisePhase);
+        $exercisePhase->getTeams()->clear();
+
+        $this->entityManager->persist($exercisePhase);
+        $this->entityManager->flush();
+    }
+
     private function finishRegularPhase(ExercisePhaseTeam $phaseTeam): void
     {
         $phaseTeam->setStatus(ExercisePhaseStatus::BEENDET);
