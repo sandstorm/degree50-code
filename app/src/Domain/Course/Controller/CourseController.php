@@ -5,6 +5,7 @@ namespace App\Domain\Course\Controller;
 use App\Domain\Course\Form\CourseFormType;
 use App\Domain\Course\Form\CourseMembersType;
 use App\Domain\Course\Model\Course;
+use App\Domain\Course\Service\CourseService;
 use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\User\Model\User;
 use App\Security\Voter\CourseVoter;
@@ -31,7 +32,8 @@ class CourseController extends AbstractController
 {
     public function __construct(
         private readonly TranslatorInterface    $translator,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly CourseService          $courseService,
     )
     {
     }
@@ -270,6 +272,24 @@ class CourseController extends AbstractController
         );
 
         return $this->redirectToRoute('courses');
+    }
+
+    #[IsGranted(CourseVoter::RESET, subject: "course")]
+    #[Route("/course/reset/{id}", name: "course--reset")]
+    public function resetCourse(Course $course = null): Response
+    {
+        if (!$course) {
+            return $this->render('Security/403.html.twig')->setStatusCode(Response::HTTP_FORBIDDEN);
+        }
+
+        $this->courseService->resetCourse($course);
+
+        $this->addFlash(
+            'success',
+            $this->translator->trans("course.reset.messages.success", [], 'DegreeBase'),
+        );
+
+        return $this->redirectToRoute('course', ['id' => $course->getId()]);
     }
 
     private function createOrUpdateCourse(FormInterface $form): void

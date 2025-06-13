@@ -1,4 +1,4 @@
-@fixtures @playwright
+@fixtures @playwright @debug
 Feature: Roles and constraints regarding viewing, creating, editing and deletion of Courses
 
     # role constrains on course entity
@@ -171,7 +171,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Given I am logged in via browser as "test-admin@sandstorm.de"
         When I visit url "/course/<courseId>"
         And I click on "Kurs verwalten"
-        And I click on "Kurs löschen"
+        And I click on "Kurs löschen" and confirm the confirmation dialog
         Then the response status code should be 200
         And the page should contain the text "Kurs erfolgreich gelöscht!"
 
@@ -185,7 +185,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And I am logged in via browser as "test-admin@sandstorm.de"
         When I visit url "/course/course1"
         And I click on "Kurs verwalten"
-        And I click on "Kurs löschen"
+        And I click on "Kurs löschen" and confirm the confirmation dialog
         Then the response status code should be 200
         And the page should contain the text "Kurs kann nicht gelöscht werden, so lange Aufgaben zugewiesen sind!"
         And the page should contain the text "course1"
@@ -238,7 +238,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit url "/course/course1"
         And I click on "Kurs verwalten"
-        And I click on "Kurs löschen"
+        And I click on "Kurs löschen" and confirm the confirmation dialog
         Then the response status code should be 200
         And the page should contain the text "Kurs erfolgreich gelöscht!"
 
@@ -247,7 +247,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         And I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit url "/course/course1"
         And I click on "Kurs verwalten"
-        And I click on "Kurs löschen"
+        And I click on "Kurs löschen" and confirm the confirmation dialog
         Then the response status code should be 200
         And the page should contain the text "Kurs kann nicht gelöscht werden, so lange Aufgaben zugewiesen sind!"
         And the page should contain the text "course1"

@@ -394,6 +394,7 @@ course:
         messages:
             success: 'Kurs erfolgreich gelöscht!'
             notPossible: 'Kurs kann nicht gelöscht werden, so lange Aufgaben zugewiesen sind!'
+        confirm: 'Sind Sie sicher, dass Sie diesen Kurs löschen möchten?'
     list:
         title: 'Kurse'
         header:
@@ -405,6 +406,11 @@ course:
         no_courses: 'Keine Kurse vorhanden'
         progressLabel: 'valueNow von valueMax Aufgaben abgeschlossen.'
         progressText: 'valueNow von valueMax'
+    reset:
+        messages:
+            success: 'Kurs wurde erfolgreich zurückgesetzt!'
+        title: 'Kurs zurücksetzen'
+        confirm: 'Sind Sie sicher, dass Sie diesen Kurs zurücksetzen möchten?'
 mediathek:
     groups:
         ownVideos: 'Selbst erstellte Videos'

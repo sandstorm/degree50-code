@@ -107,7 +107,7 @@ readonly class ExerciseService
      * Checks the most current edit date by one of the users exercisePhaseTeams
      * of the exercise.
      * If no teams are found, null is returned.
-     * */
+     */
     public function getLastEditDateByUser(Exercise $exercise, User $user): ?DateTimeImmutable
     {
         $phases = $exercise->getPhases()->toArray();
@@ -123,6 +123,12 @@ readonly class ExerciseService
         }, null);
     }
 
+    /*
+     * The "needsReview" status is derived from all phases and their teams.
+     * So if there is at least one phase that has the "reviewRequired" flag set to true and
+     * where the ExercisePhaseStatus of the team is "IN_REVIEW" the "needsReview" status of this Dto
+     * will be set to true.
+     */
     public function needsReview(Exercise $exercise): bool
     {
         return $exercise->getPhases()->exists(
@@ -160,13 +166,6 @@ readonly class ExerciseService
         return ExerciseStatus::BEENDET;
     }
 
-    /*
-     * The "needsReview" status is derived from all phases and their teams.
-     * So if there is at least one phase that has the "reviewRequired" flag set to true and
-     * where the ExercisePhaseStatus of the team is "IN_REVIEW" the "needsReview" status of this Dto
-     * will be set to true.
-     */
-
     public function deleteExercise(Exercise $exercise): void
     {
         /**
@@ -175,6 +174,17 @@ readonly class ExerciseService
          *   1. All attached ExercisePhases will be removed @see Exercise::$phases
          */
         $this->entityManager->remove($exercise);
+        $this->entityManager->flush();
+    }
+
+    public function resetExercise(Exercise $exercise): void
+    {
+        // reset Exercise (remove ExercisePhaseTeams and their Solutions, CutVideos etc.)
+        foreach ($exercise->getPhases() as $exercisePhase) {
+            $this->exercisePhaseService->resetExercisePhase($exercisePhase);
+        }
+
+        $this->entityManager->persist($exercise);
         $this->entityManager->flush();
     }
 

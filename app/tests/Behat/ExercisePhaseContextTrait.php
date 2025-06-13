@@ -469,7 +469,7 @@ trait ExercisePhaseContextTrait
     /**
      * @Then The team :teamId is deleted
      */
-    public function theExercisePhaseTeamShouldIsDeleted($teamId): void
+    public function theExercisePhaseTeamIsDeleted($teamId): void
     {
         $exercisePhaseTeam = $this->exercisePhaseTeamRepository->find($teamId);
         assertEquals(null, $exercisePhaseTeam);

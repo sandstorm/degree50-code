@@ -174,10 +174,28 @@ trait PlaywrightContextTrait
         $this->playwrightConnector->execute(
             $this->playwrightContext,
             <<<JS
-
                 await vars.page.click('text=$innerText')
             JS
         );
+    }
+
+    /**
+     * @When I click on :innerText and confirm the confirmation dialog
+     */
+    public function iClickOnAndConfirmTheConfirmationDialog($innerText): void
+    {
+        $this->playwrightConnector->execute(
+            $this->playwrightContext,
+            <<<JS
+                // register dialog handler
+                vars.page.once('dialog', async dialog => {
+                    // accept the dialog
+                    await dialog.accept()
+                })
+            JS
+        );
+
+        $this->iClickOn($innerText);
     }
 
     /**

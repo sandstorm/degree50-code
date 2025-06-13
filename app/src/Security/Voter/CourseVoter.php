@@ -17,6 +17,7 @@ class CourseVoter extends Voter
     const string DELETE = 'course_delete';
     const string NEW_EXERCISE = 'course_newExercise';
     const string EXPORT_CSV = 'course_exportCSV';
+    const string RESET = 'course_reset';
 
     protected function supports(string $attribute, $subject): bool
     {
@@ -27,6 +28,7 @@ class CourseVoter extends Voter
             self::DELETE,
             self::NEW_EXERCISE,
             self::EXPORT_CSV,
+            self::RESET,
         ])) {
             return false;
         }
@@ -53,7 +55,7 @@ class CourseVoter extends Voter
         return match ($attribute) {
             self::CREATE => $this->canCreateCourse($user),
             self::NEW_EXERCISE => $this->canCreateNewExercise($user, $course),
-            self::EDIT, self::DELETE, self::EDIT_MEMBERS, self::EXPORT_CSV => $this->canEdit($user, $course),
+            self::EDIT, self::DELETE, self::EDIT_MEMBERS, self::EXPORT_CSV, self::RESET => $this->canEdit($user, $course),
             default => throw new InvalidArgumentException('Unknown attribute ' . $attribute),
         };
     }
