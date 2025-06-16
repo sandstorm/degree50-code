@@ -48,4 +48,10 @@ readonly class CourseService
         $this->entityManager->persist($course);
         $this->entityManager->flush();
     }
+
+    public function removeCourse($course): void
+    {
+        $this->entityManager->remove($course);
+        $this->entityManager->flush();
+    }
 }

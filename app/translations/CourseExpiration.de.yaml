@@ -1,0 +1,13 @@
+email:
+    subject: 'Kurs-Verlängerung'
+    title: 'Deine Kurse laufen bald ab!'
+    body: 'Folgende Kurse laufen in naher Zukunft ab und werden automatisch gelöscht. Das Ablaufdatum kann auf der Kurs-Bearbeitungsseite verlängert werden:'
+    course: 'Kurs'
+    link: 'Kurs hier verlängern'
+    expiresOn: 'Läuft am expirationDate ab'
+    no-reply-notice: 'Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht auf diese E-Mail.'
+    tableHeader:
+        name: 'Kurs'
+        fachbereich: 'Fachbereich'
+        expirationDate: 'Ablaufdatum'
+        link: 'Link zum Kurs'

@@ -263,8 +263,7 @@ class CourseController extends AbstractController
             return $this->redirectToRoute('course', ['id' => $course->getId()]);
         }
 
-        $this->entityManager->remove($course);
-        $this->entityManager->flush();
+        $this->courseService->removeCourse($course);
 
         $this->addFlash(
             'success',
@@ -296,7 +295,17 @@ class CourseController extends AbstractController
     {
         // $form->getData() holds the submitted values
         // but, the original `$course` variable has also been updated
+        /** @var Course $course */
         $course = $form->getData();
+
+        $uow = $this->entityManager->getUnitOfWork();
+        $uow->computeChangeSets();
+        $changeSet = $uow->getEntityChangeSet($course);
+
+        // reset notificationSent flag when expirationDate is changed
+        if (isset($changeSet['expirationDate'])) {
+            $course->setExpirationNotificationSent(false);
+        }
 
         $newMembers = $form->get('users')->getData();
 

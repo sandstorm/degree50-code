@@ -24,6 +24,7 @@
         {% if is_granted('course_createTutorialCourse') %}
             {{ form_row(form.isTutorialCourse) }}
         {% endif %}
+        {{ form_row(form.expirationDate) }}
         {{ form_row(form.fachbereich) }}
         <div class="searchable-select-field form-group" data-controller="searchableSelectField">
             {{ form_label(form.users) }}

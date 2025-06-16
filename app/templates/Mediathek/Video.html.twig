@@ -52,7 +52,7 @@
     class="overview-item video-overview-item"
 >
     <div class="overview-item__date">
-        <span class="sr-only">{{ "video.labels.createdLabel"|trans({}, 'DegreeBase') }}: </span>{{ videoDto.video.createdAt|date("d.m.Y") }}
+        <span class="sr-only">{{ "video.labels.createdLabel"|trans({}, 'DegreeBase') }}: </span>{{ videoDto.video.createdAt|date('date.short'|trans([], 'DegreeBase')) }}
     </div>
     {% if videoDto.video.courses | length == 0 %}
         <div class="overview-item__status">

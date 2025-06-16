@@ -1,1 +1,2 @@
 0 3 * * * /usr/local/bin/php /app/bin/console app:remove-expired-users
+0 4 * * * /usr/local/bin/php /app/bin/console app:remove-expired-courses

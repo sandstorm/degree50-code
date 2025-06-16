@@ -5,6 +5,8 @@ namespace App\Domain\Course\Repository;
 use App\Domain\Course\Model\Course;
 use App\Domain\User\Model\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,6 +30,18 @@ class CourseRepository extends ServiceEntityRepository
     public function findAll(): array
     {
         return $this->findBy(array(), array('name' => 'ASC'));
+    }
+
+    public function findAllBy(?Criteria $criteria): Collection
+    {
+        $criteria = $criteria ?? Criteria::create();
+
+        $result = $this->createQueryBuilder('course')
+            ->addCriteria($criteria)
+            ->getQuery()
+            ->getResult();
+
+        return new ArrayCollection($result);
     }
 
     public function findOneForUserWithCriteria(User $user, Criteria $criteria = null): ?Course
