@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 class Course
 {
+    const string MAXIMUM_COURSE_LIFE_TIME = '2 years';
+
     use IdentityTrait;
 
     #[Assert\NotBlank]
@@ -26,6 +28,15 @@ class Course
     #[Assert\NotBlank]
     #[ORM\Column(type: "datetime")]
     public DateTime $creationDate;
+
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan('today')]
+    #[Assert\LessThan('now + ' . self::MAXIMUM_COURSE_LIFE_TIME)]
+    #[ORM\Column(type: "datetime")]
+    public DateTime $expirationDate;
+
+    #[ORM\Column(type: "boolean")]
+    public bool $expirationNotificationSent = false;
 
     /**
      * @var Collection<Exercise>
@@ -57,6 +68,7 @@ class Course
         $this->courseRoles = new ArrayCollection();
         $this->exercises = new ArrayCollection();
         $this->creationDate = new DateTime();
+        $this->expirationDate = (new DateTime())->modify('+' . self::MAXIMUM_COURSE_LIFE_TIME);
         $this->videos = new ArrayCollection();
     }
 
@@ -148,6 +160,26 @@ class Course
     public function setFachbereich(?Fachbereich $fachbereich): void
     {
         $this->fachbereich = $fachbereich;
+    }
+
+    public function getExpirationDate(): DateTime
+    {
+        return $this->expirationDate;
+    }
+
+    public function setExpirationDate(DateTime $expirationDate): void
+    {
+        $this->expirationDate = $expirationDate;
+    }
+
+    public function isExpirationNotificationSent(): bool
+    {
+        return $this->expirationNotificationSent;
+    }
+
+    public function setExpirationNotificationSent(bool $expirationNotificationSent): void
+    {
+        $this->expirationNotificationSent = $expirationNotificationSent;
     }
 
     public function isTutorialCourse(): bool

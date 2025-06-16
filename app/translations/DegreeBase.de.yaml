@@ -1,4 +1,7 @@
-# for VichUploaderBundle
+date:
+    short: 'd.m.Y'
+    long: 'd. M Y'
+
 form:
     label:
         delete: 'Löschen'
@@ -359,6 +362,7 @@ course:
         filterStudents: 'Lernende filtern'
         filterStudentsAria: 'Lernende filtern durch Texteingabe'
         fachbereich: 'zu Fachbereich hinzufügen'
+        expirationDate: 'Ablaufdatum'
         isTutorialCourse: 'Ist ein Einführungskurs'
     index:
         title: 'Kurs-Übersicht'
@@ -382,6 +386,7 @@ course:
     help:
         students: 'Hier können Lernende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
         tutors: 'Hier können Lehrende ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
+        expirationDate: 'Maximal 2 Jahre. Der Kurs wird an diesem Datum automatisch gelöscht. Vor Ablauf des Kurses werden alle Dozenten benachrichtigt und können das Ablaufdatum auf der Kurs-Bearbeitungsseite verlängern.'
         isTutorialCourse: 'Einführungskurse sind für alle Nutzer sichtbar und werden auf der Kurse-Seite gesondert angezeigt.'
     upgradeMember:
         title: 'Darf Aufgabe erstellen'
@@ -415,6 +420,10 @@ course:
             success: 'Kurs wurde erfolgreich zurückgesetzt!'
         title: 'Kurs zurücksetzen'
         confirm: 'Sind Sie sicher, dass Sie diesen Kurs zurücksetzen möchten?'
+    error:
+        expirationDateInPast: 'Das Ablaufdatum darf nicht in der Vergangenheit liegen.'
+        expirationDateExceedsMaxLifetime: 'Das Ablaufdatum darf nicht mehr als 2 Jahre in der Zukunft liegen.'
+        expirationDateInvalid: 'Das Ablaufdatum darf nicht in der Vergangenheit und nicht mehr als 2 Jahre in der Zukunft liegen.'
 mediathek:
     groups:
         ownVideos: 'Selbst erstellte Videos'

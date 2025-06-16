@@ -42,7 +42,7 @@ class UserExpirationController extends AbstractController
         if ($this->userExpirationService->userCanUpdateExpirationDate($user)) {
             return $this->render('UserExpiration/IncreaseExpirationDate.html.twig', [
                 'routeName' => 'app_increase_user_expiration_date_process',
-                'deletionDate' => $user->getExpirationDate()->format('j. F Y'),
+                'deletionDate' => $user->getExpirationDate()->format($this->translator->trans('date.long', [], 'DegreeBase')),
             ]);
         } else {
             $this->addFlash(
@@ -76,7 +76,7 @@ class UserExpirationController extends AbstractController
         }
 
         $this->userExpirationService->increaseExpirationDateForUserByConfiguredAmount($user);
-        $newExpirationDate = $user->getExpirationDate()->format('j. F Y');
+        $newExpirationDate = $user->getExpirationDate()->format($this->translator->trans('date.long', [], 'DegreeBase'));
 
         $this->addFlash(
             'success',

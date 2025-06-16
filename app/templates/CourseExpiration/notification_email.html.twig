@@ -1,0 +1,29 @@
+{% trans_default_domain 'CourseExpiration' %}
+
+<h1>{{ 'email.title'|trans }}</h1>
+
+<p>{{ 'email.body'|trans }}</p>
+<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <thead>
+        <tr>
+            <th style="padding: 1em; border-right: 1px solid #9E9E9E;">{{ 'email.tableHeader.name'|trans }}</th>
+            <th style="padding: 1em; border-right: 1px solid #9E9E9E;">{{ 'email.tableHeader.fachbereich'|trans }}</th>
+            <th style="padding: 1em; border-right: 1px solid #9E9E9E;">{{ 'email.tableHeader.expirationDate'|trans }}</th>
+            <th style="padding: 1em;">{{ 'email.tableHeader.link'|trans }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+            <tr style="border-top: 1px solid #9E9E9E;">
+                <td style="padding: 1em; border-right: 1px solid #9E9E9E;overflow-wrap: anywhere;word-break:break-all;">{{ course.name }}</td>
+                <td style="padding: 1em; border-right: 1px solid #9E9E9E;overflow-wrap: anywhere;word-break:break-all;">{% if course.fachbereich %}{{ course.fachbereich.name }}{% else %}-{% endif %}</td>
+                <td style="padding: 1em; border-right: 1px solid #9E9E9E;">{{ course.expirationDate|date('date.long'|trans([], 'DegreeBase')) }}</td>
+                <td style="padding: 1em; overflow-wrap: anywhere;word-break:break-all;">
+                    <a href="{{ url('course--edit', {id: course.id}) }}">{{ 'email.link'|trans }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br/>
+<p>{{ 'email.no-reply-notice'|trans }}</p>

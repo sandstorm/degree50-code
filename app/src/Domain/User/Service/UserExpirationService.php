@@ -4,7 +4,6 @@ namespace App\Domain\User\Service;
 
 use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
-use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -114,7 +113,7 @@ readonly class UserExpirationService
             ->htmlTemplate('UserExpiration/notification_email.html.twig')
             ->context([
                 'routeName' => 'app_increase_user_expiration_date',
-                'deletionDate' => $user->getExpirationDate()->format('j. F Y'),
+                'deletionDate' => $user->getExpirationDate()->format($this->translator->trans('date.long', [], 'DegreeBase')),
             ]);
 
         try {

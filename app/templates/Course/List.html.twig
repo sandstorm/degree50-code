@@ -87,11 +87,11 @@
                         -
                     {% endif %}
                 </td>
-                <td>
+                <td style="overflow-wrap: anywhere">
                     <a href="{{ url('course', {id: courseListDTO.course.id}) }}">{{ courseListDTO.course.name }}</a>
                 </td>
-                <td>{{ courseListDTO.course.creationDate|date('d.m.Y') }}</td>
-                <td>{{ courseListDTO.lastModifiedDate ? courseListDTO.lastModifiedDate|date('d.m.Y') : "-" }}</td>
+                <td>{{ courseListDTO.course.creationDate|date('date.short'|trans([], 'DegreeBase')) }}</td>
+                <td>{{ courseListDTO.lastModifiedDate ? courseListDTO.lastModifiedDate|date('date.short'|trans([], 'DegreeBase')) : "-" }}</td>
                 <td>
                     {{ include('Partials/Meter.html.twig', {
                         valueNow: courseListDTO.completedExercisesCount,
@@ -122,8 +122,8 @@
             <td>
                 <a href="{{ url('course', {id: tutorialCourseDTO.course.id}) }}">{{ tutorialCourseDTO.course.name }}</a>
             </td>
-            <td>{{ tutorialCourseDTO.course.creationDate|date('d.m.Y') }}</td>
-            <td>{{ tutorialCourseDTO.lastModifiedDate ? tutorialCourseDTO.lastModifiedDate|date('d.m.Y') : "-" }}</td>
+            <td>{{ tutorialCourseDTO.course.creationDate|date('date.short'|trans([], 'DegreeBase')) }}</td>
+            <td>{{ tutorialCourseDTO.lastModifiedDate ? tutorialCourseDTO.lastModifiedDate|date('date.short'|trans([], 'DegreeBase')) : "-" }}</td>
             <td>
                 {{ include('Partials/Meter.html.twig', {
                     valueNow: tutorialCourseDTO.completedExercisesCount,

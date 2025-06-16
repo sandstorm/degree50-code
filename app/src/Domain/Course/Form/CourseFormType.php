@@ -11,6 +11,7 @@ use App\Security\Voter\CourseVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -45,6 +46,17 @@ class CourseFormType extends AbstractType
 
         $builder
             ->add('name', TextType::class, ['label' => "course.labels.name", 'translation_domain' => 'DegreeBase'])
+            ->add('expirationDate', DateType::class, [
+                'label' => 'course.labels.expirationDate',
+                'translation_domain' => 'DegreeBase',
+                'widget' => 'single_text',
+                'attr' => [
+                    'min' => (new \DateTime())->modify('+ 1 day')->format('Y-m-d'),
+                    'max' => (new \DateTime())->modify('+ ' . Course::MAXIMUM_COURSE_LIFE_TIME)->format('Y-m-d'),
+                ],
+                'required' => true,
+                'help' => 'course.help.expirationDate',
+            ])
             ->add('fachbereich', EntityType::class, [
                 'label' => 'course.labels.fachbereich',
                 'translation_domain' => 'DegreeBase',
