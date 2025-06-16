@@ -43,7 +43,7 @@ class CourseRepository extends ServiceEntityRepository
 
             $qb
                 // current user is in a course that the course is assigned to
-                ->andWhere('course.id IN (:userCourses)')
+                ->andWhere('course.id IN (:userCourses) OR course.isTutorialCourse = true')
                 ->setParameter('userCourses', $userCourses);
         }
 
@@ -69,7 +69,9 @@ class CourseRepository extends ServiceEntityRepository
             $qb
                 // current user is in a course that the course is assigned to
                 ->orWhere('course.id IN (:userCourses)')
-                ->setParameter('userCourses', $userCourses);
+                ->setParameter('userCourses', $userCourses)
+                // everyone can see totorial courses
+                ->orWhere('course.isTutorialCourse = true');
         }
 
         return $qb

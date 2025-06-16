@@ -81,7 +81,7 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function removeAllInExercisePhase(ExercisePhase $exercisePhase): void
+    public function removeAllTeamsInExercisePhase(ExercisePhase $exercisePhase): void
     {
         $qb = $this->createQueryBuilder('team')
             ->delete()

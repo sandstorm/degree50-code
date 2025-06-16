@@ -385,7 +385,7 @@ readonly class ExercisePhaseService
 
     public function resetExercisePhase(ExercisePhase $exercisePhase): void
     {
-        $this->exercisePhaseTeamRepository->removeAllInExercisePhase($exercisePhase);
+        $this->exercisePhaseTeamRepository->removeAllTeamsInExercisePhase($exercisePhase);
         $exercisePhase->getTeams()->clear();
 
         $this->entityManager->persist($exercisePhase);

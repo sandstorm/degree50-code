@@ -35,7 +35,6 @@ class CourseListController extends AbstractController
     {
     }
 
-    // TODO: I think with Symfony 7 we can directly map query parameters to ValueObjects.
     #[Route("/courses", name: "courses")]
     public function index(
         #[MapQueryParameter(name: 'orderBy', filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '/^(name|creationDate|lastModified|fachbereich)$/'])] string $orderByParam = 'lastModified',
@@ -50,7 +49,7 @@ class CourseListController extends AbstractController
             'desc' => Order::Descending,
         };
 
-        $orderByCriteria = match ($orderByParam) {
+        $criteria = match ($orderByParam) {
             'name' => Criteria::create()->orderBy(['name' => $orderParsed]),
             'creationDate' => Criteria::create()->orderBy(['creationDate' => $orderParsed, 'name' => 'asc']),
             // We always order by name asc and then creation date if not specified otherwise.
@@ -59,7 +58,7 @@ class CourseListController extends AbstractController
         };
 
         // Fetch courses for the user and order them
-        $courses = $this->courseRepository->findAllForUserWithCriteria($user, $orderByCriteria);
+        $courses = $this->courseRepository->findAllForUserWithCriteria($user, $criteria);
 
         // If ordered by fachbereich, we sort the courses by fachbereich name
         // WHY like this? Because the fachbereich is not a direct field in the Course entity and I could not
@@ -84,18 +83,30 @@ class CourseListController extends AbstractController
             });
         }
 
-        $coursesWithProgress = [];
+        $courseDTOs = [];
+        $tutorialCourseDTOs = [];
+
         foreach ($courses as $course) {
-            $coursesWithProgress[] = new CourseListDTO(
-                course: $course,
-                completedExercisesCount: $this->getCompletedExercisesForUser($course, $user)->count(),
-                totalExercisesCount: $this->getVisibleExercisesForUser($course, $user)->count(),
-                lastModifiedDate: $this->getLastModifiedDateByUser($course, $user),
-            );
+            if ($course->isTutorialCourse()) {
+               $tutorialCourseDTOs[] = new CourseListDTO(
+                    course: $course,
+                    completedExercisesCount: $this->getCompletedExercisesForUser($course, $user)->count(),
+                    totalExercisesCount: $this->getVisibleExercisesForUser($course, $user)->count(),
+                    lastModifiedDate: $this->getLastModifiedDateByUser($course, $user),
+                );
+            } else {
+                $courseDTOs[] = new CourseListDTO(
+                    course: $course,
+                    completedExercisesCount: $this->getCompletedExercisesForUser($course, $user)->count(),
+                    totalExercisesCount: $this->getVisibleExercisesForUser($course, $user)->count(),
+                    lastModifiedDate: $this->getLastModifiedDateByUser($course, $user),
+                );
+            }
         }
 
         return $this->render('Course/List.html.twig', [
-            'courseListDTOs' => $coursesWithProgress,
+            'courseListDTOs' => $courseDTOs,
+            'tutorialCourseListDTOs' => $tutorialCourseDTOs,
             'orderBy' => $orderByParam,
             'order' => $orderDirectionParam,
         ]);

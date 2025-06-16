@@ -48,6 +48,9 @@ class Course
     #[ORM\ManyToOne(targetEntity: Fachbereich::class)]
     private ?Fachbereich $fachbereich;
 
+    #[ORM\Column(type: "boolean")]
+    private bool $isTutorialCourse = false;
+
     public function __construct($id = null)
     {
         $this->generateOrSetId($id);
@@ -145,6 +148,16 @@ class Course
     public function setFachbereich(?Fachbereich $fachbereich): void
     {
         $this->fachbereich = $fachbereich;
+    }
+
+    public function isTutorialCourse(): bool
+    {
+        return $this->isTutorialCourse;
+    }
+
+    public function setIsTutorialCourse(bool $isTutorialCourse): void
+    {
+        $this->isTutorialCourse = $isTutorialCourse;
     }
 
     /**

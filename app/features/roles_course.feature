@@ -1,4 +1,4 @@
-@fixtures @playwright @debug
+@fixtures @playwright
 Feature: Roles and constraints regarding viewing, creating, editing and deletion of Courses
 
     # role constrains on course entity

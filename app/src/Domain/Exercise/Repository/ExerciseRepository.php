@@ -2,6 +2,7 @@
 
 namespace App\Domain\Exercise\Repository;
 
+use App\Domain\Course\Repository\CourseRepository;
 use App\Domain\Exercise\Model\Exercise;
 use App\Domain\User\Model\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -16,7 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ExerciseRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly CourseRepository $courseRepository
+    )
     {
         parent::__construct($registry, Exercise::class);
     }
@@ -34,10 +39,12 @@ class ExerciseRepository extends ServiceEntityRepository
 
         if (!$user->isAdmin()) {
             $userCourses = $user->getCourses();
+            $tutorialCourses = $this->courseRepository->findAllForUserWithCriteria($user);
 
             $qb
-                ->andWhere('exercise.course IN (:userCourses)')
-                ->setParameter('userCourses', $userCourses);
+                ->andWhere('exercise.course IN (:userCourses) OR exercise.course IN (:tutorialCourses)')
+                ->setParameter('userCourses', $userCourses)
+                ->setParameter('tutorialCourses', $tutorialCourses);
         }
 
         return $qb

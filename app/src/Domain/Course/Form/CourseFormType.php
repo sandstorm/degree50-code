@@ -7,17 +7,23 @@ use App\Domain\CourseRole\Model\CourseRole;
 use App\Domain\Fachbereich\Model\Fachbereich;
 use App\Domain\User\Model\User;
 use App\Domain\User\Repository\UserRepository;
+use App\Security\Voter\CourseVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class CourseFormType extends AbstractType
 {
     public function __construct(
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly Security       $security,
+        private readonly CourseVoter    $courseVoter,
     )
     {
     }
@@ -60,6 +66,17 @@ class CourseFormType extends AbstractType
                 'mapped' => false
             ])
             ->add('save', SubmitType::class, ['label' => 'course.labels.submit', 'translation_domain' => 'DegreeBase']);
+
+        $canCreateTutorialCourse = $this->courseVoter->vote($this->security->getToken(), null, [CourseVoter::CREATE_TUTORIAL_COURSE]) === VoterInterface::ACCESS_GRANTED;
+
+        if ($canCreateTutorialCourse) {
+            $builder->add('isTutorialCourse', CheckboxType::class, [
+                'label' => 'course.labels.isTutorialCourse',
+                'translation_domain' => 'DegreeBase',
+                'required' => false,
+                'help' => 'course.help.isTutorialCourse',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

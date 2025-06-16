@@ -31,7 +31,7 @@ Feature: Courses can be reset - removing all Students, Teams and Solutions
         And The ExercisePhaseTeam "team2" has a Solution "solution2"
 
     @integration
-    Scenario: Reset Course
+    Scenario: Reset Course as Dozent
         Given I am logged in as "dozent@test.de"
         When I reset the Course "course1"
         Then The team "team1" is deleted
@@ -57,3 +57,15 @@ Feature: Courses can be reset - removing all Students, Teams and Solutions
         And I click on "Lernende verwalten"
         Then the page contains all the following texts:
             | 0 Lernende |
+
+    @playwright
+    Scenario: Reset Course should not be available for Students
+        Given I am logged in via browser as "student1@test.de"
+        When I click on "course1"
+        Then the page should not contain the text "Kurs zurücksetzen"
+
+    @playwright
+    Scenario: Reset Course should fail for Students
+        Given I am logged in via browser as "student1@test.de"
+        When I visit url "/course/reset/course1"
+        Then the page should contain the text "Zugriff verweigert"

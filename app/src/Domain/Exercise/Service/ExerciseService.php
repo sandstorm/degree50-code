@@ -216,13 +216,18 @@ readonly class ExerciseService
 
     public function isExerciseVisibleForUser(Exercise $exercise, User $user): bool
     {
+        if ($user->isAdmin()) {
+            // Admins have access to all exercises
+            return true;
+        }
+
         $course = $exercise->getCourse();
-        $hasAccessToCourse = $user->getCourseRoles()->exists(
+        $userIsAssignedToCourse = $user->getCourseRoles()->exists(
             fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
                 $courseRole->getUser() === $user
         );
 
-        if ($hasAccessToCourse) {
+        if ($userIsAssignedToCourse || $course->isTutorialCourse()) {
             // Dozent has access
             if ($user->isDozent()) {
                 return true;
