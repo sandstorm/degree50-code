@@ -47,7 +47,9 @@ readonly class CourseExpirationService
     public function getExpiredCourses(): Collection
     {
         $criteria = Criteria::create()
-            ->where(Criteria::expr()->lt('expirationDate', new \DateTime()));
+            ->where(Criteria::expr()->lt('expirationDate', new \DateTime()))
+            // Tutorial courses do not expire
+            ->andWhere(Criteria::expr()->eq('isTutorialCourse', 'false'));
 
         return $this->courseRepository->findAllBy($criteria);
     }
