@@ -27,9 +27,15 @@ table.degree-table {
         align-items: center;
         gap: $theme__spacing--base;
         text-decoration: none;
+        color: inherit;
     }
 
     td.no-courses {
         text-align: center;
+    }
+
+    td.subheading {
+        padding-top: $theme__spacing--large;
+        font-weight: bold;
     }
 }

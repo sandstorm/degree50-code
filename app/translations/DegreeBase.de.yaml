@@ -359,6 +359,7 @@ course:
         filterStudents: 'Lernende filtern'
         filterStudentsAria: 'Lernende filtern durch Texteingabe'
         fachbereich: 'zu Fachbereich hinzufügen'
+        isTutorialCourse: 'Ist ein Einführungskurs'
     index:
         title: 'Kurs-Übersicht'
     new:
@@ -381,6 +382,7 @@ course:
     help:
         students: 'Hier können Lernende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
         tutors: 'Hier können Lehrende ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
+        isTutorialCourse: 'Einführungskurse sind für alle Nutzer sichtbar und werden auf der Kurse-Seite gesondert angezeigt.'
     upgradeMember:
         title: 'Darf Aufgabe erstellen'
     downgradeMember:
@@ -403,9 +405,11 @@ course:
             abgeschlossen: 'Aufgaben abgeschlossen'
             creationDate: 'Erstellt am'
             lastModified: 'Zuletzt bearbeitet'
-        no_courses: 'Keine Kurse vorhanden'
+        noCourses: 'Keine Kurse vorhanden'
         progressLabel: 'valueNow von valueMax Aufgaben abgeschlossen.'
         progressText: 'valueNow von valueMax'
+        tutorialSubheading: 'Einführungskurse'
+        noTutorialCourses: 'Keine Einführungskurse vorhanden'
     reset:
         messages:
             success: 'Kurs wurde erfolgreich zurückgesetzt!'
