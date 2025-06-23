@@ -26,7 +26,7 @@ class AutosavedSolution
     private ?User $owner;
 
     #[ORM\ManyToOne(targetEntity: ExercisePhaseTeam::class, inversedBy: "autosavedSolutions")]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ExercisePhaseTeam $team;
 
     public function getSolution(): ?ServerSideSolutionData

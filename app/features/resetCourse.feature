@@ -29,6 +29,26 @@ Feature: Courses can be reset - removing all Students, Teams and Solutions
         And An ExercisePhaseTeam "team2" belonging to exercise phase "exercisePhase2" created by "student1@test.de" exists
         And The User "student2@test.de" is member of ExercisePhaseTeam "team2"
         And The ExercisePhaseTeam "team2" has a Solution "solution2"
+        And I am logged in as "student2@test.de"
+        And I have an auto saved solution with ID "autosavedSolution" belonging to team "team2" with solutionData as JSON
+        """
+            {
+              "annotations": [],
+              "videoCodes": [],
+              "customVideoCodesPool": [],
+              "cutList": [
+                  {
+                      "start": "00:01:03.315",
+                      "end": "00:01:30.000",
+                      "text": "Cut 1",
+                      "memo": "",
+                      "color": null,
+                      "offset": 0,
+                      "playbackRate": "1"
+                  }
+              ]
+            }
+        """
 
     @integration
     Scenario: Reset Course as Dozent

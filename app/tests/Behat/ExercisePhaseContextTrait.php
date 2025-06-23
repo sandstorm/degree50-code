@@ -13,12 +13,10 @@ use App\Domain\Solution\Dto\ServerSideSolutionData\ServerSideSolutionData;
 use App\Domain\Solution\Model\Solution;
 use App\Domain\User\Model\User;
 use App\Domain\VideoCode\Model\VideoCode;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
-use function PHPUnit\Framework\assertJsonFileEqualsJsonFile;
 use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertNotNull;
 
@@ -173,6 +171,8 @@ trait ExercisePhaseContextTrait
 
         $loggedInUser = $this->tokenStorage->getToken()->getUser();
         $autosaveSolution->setOwner($loggedInUser);
+
+        $exercisePhaseTeam->addAutosavedSolution($autosaveSolution);
 
         $this->entityManager->persist($autosaveSolution);
         $this->entityManager->persist($exercisePhaseTeam);
@@ -655,5 +655,23 @@ trait ExercisePhaseContextTrait
     {
         $solution = $this->solutionRepository->find($solutionId);
         assertEquals(null, $solution);
+    }
+
+    /**
+     * @Given No AutosavedSolution of ExerciseTeam :teamId should exist
+     */
+    public function noAutosavedSolutionOfExerciseTeamShouldExist(string $teamId): void
+    {
+        $autosavedSolutions = $this->autosavedSolutionRepository->findBy(['team' => $teamId]);
+        assertEquals(0, count($autosavedSolutions), 'There are still AutosavedSolutions for ExercisePhaseTeam ' . $teamId);
+    }
+
+    /**
+     * @Given No ExercisePhaseTeam for Exercise :exerciseId exists
+     */
+    public function noExercisePhaseTeamForExerciseExists(string $exerciseId): void
+    {
+        $exercisePhaseTeams = $this->exercisePhaseTeamRepository->findBy(['exercisePhase' => $exerciseId]);
+        assertEquals(0, count($exercisePhaseTeams), 'There are still ExercisePhaseTeams for Exercise ' . $exerciseId);
     }
 }

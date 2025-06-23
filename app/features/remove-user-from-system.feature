@@ -37,6 +37,26 @@ Feature: Degree User is removed completely from system
               ]
             }
         """
+        And I am logged in as "student1@test.de"
+        And I have an auto saved solution with ID "autosavedSolution" belonging to team "team" with solutionData as JSON
+        """
+            {
+              "annotations": [],
+              "videoCodes": [],
+              "customVideoCodesPool": [],
+              "cutList": [
+                  {
+                      "start": "00:01:03.315",
+                      "end": "00:01:30.000",
+                      "text": "Cut 1",
+                      "memo": "",
+                      "color": null,
+                      "offset": 0,
+                      "playbackRate": "1"
+                  }
+              ]
+            }
+        """
         And A CutVideo with Id "cutVideo" of Video "video1" belonging to Solution "solution" exists
 
         # Why only an admin can delete a user
@@ -45,6 +65,8 @@ Feature: Degree User is removed completely from system
 
         Then No User with Username "student1@test.de" does exist
         And No Exercise created by User "student1@test.de" should exist
+        And No AutosavedSolution of ExerciseTeam "team" should exist
+        And No ExercisePhaseTeam for Exercise "exercisePhase" exists
         And No Video created by User "student1@test.de" should exist
         And No CutVideo of original "video1" exists
         And The Solution with ID "solution" does not exist
