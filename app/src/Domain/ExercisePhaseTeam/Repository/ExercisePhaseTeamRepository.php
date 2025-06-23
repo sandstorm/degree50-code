@@ -83,11 +83,11 @@ class ExercisePhaseTeamRepository extends ServiceEntityRepository
 
     public function removeAllTeamsInExercisePhase(ExercisePhase $exercisePhase): void
     {
-        $qb = $this->createQueryBuilder('team')
+        $this->createQueryBuilder('team')
             ->delete()
             ->where('team.exercisePhase = :exercisePhase')
-            ->setParameter('exercisePhase', $exercisePhase);
-
-        $qb->getQuery()->execute();
+            ->setParameter('exercisePhase', $exercisePhase)
+            ->getQuery()
+            ->execute();
     }
 }
