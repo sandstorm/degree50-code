@@ -296,7 +296,7 @@ class ExerciseController extends AbstractController
             'exercise' => $exercise,
             'exercisePhases' => $phasesWithAllowedSortingIndication,
             'exerciseHasSolutions' => $exerciseHasSolutions,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 

@@ -82,25 +82,31 @@ class VideoVoter extends Voter
             return true;
         }
 
+        // students can only view their own videos
         if ($user === $video->getCreator()) {
             return true;
         }
 
-        // Check if the video is assigned to courses and if the user is in any of those assigned courses
-        $videoCourses = $video->getCourses();
-        $userCourseRoles = $user->getCourseRoles();
+        if ($user->isDozent()) {
 
-        if ($videoCourses->count() < 1 || $userCourseRoles->count() < 1) {
-            return false;
+            // Check if the video is assigned to courses and if the user is in any of those assigned courses
+            $videoCourses = $video->getCourses();
+            $userCourseRoles = $user->getCourseRoles();
+
+            if ($videoCourses->count() < 1 || $userCourseRoles->count() < 1) {
+                return false;
+            }
+
+            $userCourses = $user->getCourseRoles()->map(function (CourseRole $courseRole) {
+                return $courseRole->getCourse();
+            });
+
+            return $videoCourses->exists(function ($_, Course $course) use ($userCourses) {
+                return $userCourses->contains($course);
+            });
         }
 
-        $userCourses = $user->getCourseRoles()->map(function (CourseRole $courseRole) {
-            return $courseRole->getCourse();
-        });
-
-        return $videoCourses->exists(function ($_, Course $course) use ($userCourses) {
-            return $userCourses->contains($course);
-        });
+        return false;
     }
 
     private function canEditOrDelete(Video $video, User $user): bool

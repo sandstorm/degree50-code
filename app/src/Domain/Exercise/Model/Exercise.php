@@ -60,9 +60,17 @@ class Exercise
     #[ORM\Column(type: "integer")]
     private int $status = self::EXERCISE_CREATED;
 
+    /**
+     * @var Collection<User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: "privateExercises")]
+    #[ORM\JoinTable()]
+    private Collection $users;
+
     public function __construct(string $id = null)
     {
         $this->phases = new ArrayCollection();
+        $this->users = new ArrayCollection();
         $this->generateOrSetId($id);
     }
 
@@ -172,5 +180,15 @@ class Exercise
                 }
             )
             ->first();
+    }
+
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): void
+    {
+        $this->users->add($user);
     }
 }

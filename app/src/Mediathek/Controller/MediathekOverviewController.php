@@ -44,7 +44,16 @@ class MediathekOverviewController extends AbstractController
         $user = $this->security->getUser();
 
         if ($course) {
-            $videos = $this->videoRepository->findAllForCourse($course);
+            if (!$user->isAdmin() && !$user->getCourses()->contains($course)) {
+                // user is not enrolled in the course, so we redirect to the mediathek overview
+                // show 403 page
+                return $this->render("Security/403.html.twig");
+            }
+
+            $videos = $this->videoRepository->findAllForUserAndCourse(
+                $user,
+                $course,
+            );
         } else {
             $videos = $this->videoRepository->findAllForUser($user);
         }

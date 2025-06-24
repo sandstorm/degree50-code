@@ -1,4 +1,4 @@
-@fixtures @playwright
+@fixtures @playwright @debug
 Feature: Roles and constraints regarding viewing, creating, editing and deletion of videos
 
     # role constrains on video entity
@@ -21,7 +21,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     #   ├──────────┼────────────────────┼────────────────────┼───────────┼────────────────────┤
     #   │  dozent  │  Created | course  │  Assigned courses  │  Created  │  Created | course  │
     #   ├──────────┼────────────────────┼────────────────────┼───────────┼────────────────────┤
-    #   │  student │  Created | course  │  Assigned courses  │  Created  │  Created           │
+    #   │  student │  Created           │  Assigned courses  │  Created  │  Created           │
     #   └──────────┴────────────────────┴────────────────────┴───────────┴────────────────────┘
     #
 
@@ -115,13 +115,13 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Given I am logged in via browser as "test-student@sandstorm.de"
         When I visit route "mediathek--index"
         Then the page contains all the following texts:
-            | /video/play/admin_video_course1     |
-            | /video/play/dozent_video_course1    |
             | /video/play/student_video_no_course |
             | /video/play/student_video_course1   |
         And the page contains none of the following texts:
-            | /video/play/admin_video_no_course  |
+            | /video/play/admin_video_course1    |
             | /video/play/admin_video_course2    |
+            | /video/play/admin_video_no_course  |
+            | /video/play/dozent_video_course1   |
             | /video/play/dozent_video_no_course |
 
     Scenario Outline: As student I can view only my videos and videos of assigned courses
@@ -132,12 +132,12 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
 
         Examples:
             | url                                 | statusCode | text                    |
-            | /video/play/admin_video_course1     | 200        | admin_video_course1     |
             | /video/play/student_video_course1   | 200        | student_video_course1   |
             | /video/play/student_video_no_course | 200        | student_video_no_course |
-            | /video/play/dozent_video_course1    | 200        | dozent_video_course1    |
+            | /video/play/admin_video_course1     | 403        | Zugriff verweigert      |
             | /video/play/admin_video_no_course   | 403        | Zugriff verweigert      |
             | /video/play/admin_video_course2     | 403        | Zugriff verweigert      |
+            | /video/play/dozent_video_course1    | 403        | Zugriff verweigert      |
             | /video/play/dozent_video_no_course  | 403        | Zugriff verweigert      |
 
     #########################

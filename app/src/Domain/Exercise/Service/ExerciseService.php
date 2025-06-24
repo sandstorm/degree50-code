@@ -184,6 +184,8 @@ readonly class ExerciseService
             $this->exercisePhaseService->resetExercisePhase($exercisePhase);
         }
 
+        $exercise->getUsers()->clear();
+
         $this->entityManager->persist($exercise);
         $this->entityManager->flush();
     }
@@ -221,6 +223,11 @@ readonly class ExerciseService
             return true;
         }
 
+        if ($exercise->getCreator() === $user) {
+            // Creator has access to their own exercises
+            return true;
+        }
+
         $course = $exercise->getCourse();
         $userIsAssignedToCourse = $user->getCourseRoles()->exists(
             fn($i, CourseRole $courseRole) => $courseRole->getCourse() === $course &&
@@ -237,7 +244,11 @@ readonly class ExerciseService
             $exercisePublished = $exercise->getStatus() == Exercise::EXERCISE_PUBLISHED;
             $exerciseNotEmpty = count($exercise->getPhases()) > 0;
 
-            if ($exercisePublished && $exerciseNotEmpty) {
+            // private exercises are only visible if the user is in the user list of the exercise
+            $exerciseIsPublicInCourse = $exercise->getUsers()->isEmpty();
+            $userIsAssignedToExercise = $exercise->getUsers()->contains($user);
+
+            if ($exercisePublished && $exerciseNotEmpty && ($exerciseIsPublicInCourse || $userIsAssignedToExercise)) {
                 return true;
             }
         }

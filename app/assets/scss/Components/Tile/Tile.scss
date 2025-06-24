@@ -106,6 +106,17 @@ $tileHeight--small: 150px;
     overflow: hidden;
 }
 
+.tile__subtitle {
+    display: inline-block;
+    width: 100%;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    overflow: hidden;
+    font-size: $base__fontSize--tiny;
+}
+
 .tile__date {
     display: inline-block;
     width: 100%;

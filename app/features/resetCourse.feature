@@ -13,6 +13,9 @@ Feature: Courses can be reset - removing all Students, Teams and Solutions
         And The User "student1@test.de" has CourseRole "DOZENT" in Course "course1"
 
         And An Exercise with ID "exercise1" created by User "dozent@test.de" in Course "course1" exists
+        And The Exercise with ID "exercise1" has assigned Users:
+            | student1@test.de |
+            | student2@test.de |
         And An ExercisePhase with the following data exists:
             | id             | name  | task                          | isGroupPhase | sorting | otherSolutionsAreAccessible | belongsToExercise | dependsOnPhase | type          | videoAnnotationsActive | videoCodesActive |
             | exercisePhase1 | Test1 | Description of ExercisePhase1 | true         | 0       | true                        | exercise1         | null           | videoAnalysis | true                   | true             |
@@ -63,6 +66,7 @@ Feature: Courses can be reset - removing all Students, Teams and Solutions
         And The User "student2@test.de" is not assigned to Course "course1"
         And The Exercise "exerciseByStudent1" does not exist
         And The Exercise "exercise1" exists
+        And The Exercise "exercise1" should not have any assigned users
 
     @playwright
     Scenario: Reset Course as Admin

@@ -159,6 +159,27 @@
                     </tr>
                 {% endfor %}
             </table>
+
+            <hr />
+            <div class="searchable-select-field form-group" data-controller="searchableSelectField">
+                {{ form_label(form.users) }}
+                {{ form_help(form.users) }}
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa fa-search"></i></div>
+                    </div>
+                    <input
+                        type="search"
+                        class="form-control searchable-select-field__input"
+                        aria-label="{{ "course.labels.filterStudentsAria"|trans({}, 'DegreeBase') }}"
+                        placeholder="{{ "course.labels.filterStudents"|trans({}, 'DegreeBase') }}"
+                    />
+                </div>
+                {{ form_errors(form.users) }}
+                <div class="searchable-select-field__list">
+                    {{ form_widget(form.users) }}
+                </div>
+            </div>
         </div>
     </div>
 
