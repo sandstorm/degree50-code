@@ -9,7 +9,9 @@ use App\Domain\Exercise\Model\Exercise;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotNull;
 use function PHPUnit\Framework\assertSame;
+use function PHPUnit\Framework\assertTrue;
 
 trait ExerciseContextTrait
 {
@@ -206,5 +208,38 @@ trait ExerciseContextTrait
     {
         $exercise = $this->exerciseRepository->find($exerciseId);
         assertEquals(null, $exercise);
+    }
+
+    /**
+     * @Then The Exercise :exerciseId should not have any assigned users
+     */
+    public function theExerciseShouldNotHaveAnyAssignedUsers(string $exerciseId)
+    {
+        $exercise = $this->exerciseRepository->find($exerciseId);
+
+        assertTrue($exercise->getUsers()->isEmpty(), 'There should be no users assigned to exercise!');
+    }
+
+    /**
+     * @Given The Exercise with ID :exerciseId has assigned Users:
+     */
+    public function theExerciseWithIDHasAssignedUsers(string $exerciseId, TableNode $tableNode): void
+    {
+        $exercise = $this->exerciseRepository->find($exerciseId);
+
+        foreach ($tableNode->getRows() as $row) {
+            $userId = $row[0];
+            $user = $this->userRepository->find($userId);
+            assertNotNull($user, "User with ID $userId does not exist");
+
+            $exercise->addUser($user);
+        }
+
+        $this->entityManager->persist($exercise);
+
+        foreach ($tableNode->getRows() as $row) {
+            $userId = $row[0];
+            assertTrue($exercise->getUsers()->contains($this->userRepository->find($userId)), "User with ID $userId should be assigned to exercise $exerciseId");
+        }
     }
 }

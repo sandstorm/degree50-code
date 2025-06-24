@@ -1,4 +1,5 @@
-$tileHeight: 200px;
+$tileHeight: 230px;
+$tileWidth: 200px;
 
 .video-checkbox {
     position: relative;
@@ -28,7 +29,7 @@ $tileHeight: 200px;
 
 .video-checkbox__label {
     height: $tileHeight;
-    width: $tileHeight;
+    width: $tileWidth;
     display: block;
     margin: 0;
     padding: 10px;
@@ -48,7 +49,7 @@ $tileHeight: 200px;
 }
 
 .video-checkbox__image {
-    height: $tileHeight * 0.6;
+    height: $tileWidth * 0.6;
     width: 100%;
     object-fit: cover;
     margin-bottom: 10px;

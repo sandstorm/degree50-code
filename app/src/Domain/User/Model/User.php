@@ -123,6 +123,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "boolean")]
     private bool $isAnonymized = false;
 
+    /**
+     * @var Collection<Exercise>
+     */
+    private Collection $privateExercises;
+
     public function __construct(?string $id = null)
     {
         $this->courseRoles = new ArrayCollection();
@@ -134,6 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->expirationDate = $this->createdAt->add(self::getConfiguredExpirationDuration());
         $this->createdAttachments = new ArrayCollection();
         $this->materials = new ArrayCollection();
+        $this->privateExercises = new ArrayCollection();
     }
 
     public function getUserIdentifier(): string

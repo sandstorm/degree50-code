@@ -26,18 +26,24 @@ class VideoRepository extends ServiceEntityRepository
 
 
         if (!$user->isAdmin()) {
-            $videosInUserCourses = $user->getCourses()->reduce(
-                fn($videos, Course $course) => [...$videos, ...$course->getVideos()->toArray()],
-                []
-            );
+            if ($user->isDozent()) {
+                $videosInUserCourses = $user->getCourses()->reduce(
+                    fn($videos, Course $course) => [...$videos, ...$course->getVideos()->toArray()],
+                    []
+                );
 
-            $qb
-                // current user is the creator of the video
-                ->orWhere('video.creator = :user')
-                // current user is in a course that the video is assigned to
-                ->orWhere('video.id IN (:videosInUserCourses)')
-                ->setParameter('user', $user)
-                ->setParameter('videosInUserCourses', $videosInUserCourses);
+                $qb
+                    // dozent can see all videos in his courses or created videos
+                    ->orWhere('video.creator = :user')
+                    ->setParameter('user', $user)
+                    ->orWhere('video.id IN (:videosInUserCourses)')
+                    ->setParameter('videosInUserCourses', $videosInUserCourses);
+            } else {
+                $qb
+                    // current user is the creator of the video
+                    ->andWhere('video.creator = :user')
+                    ->setParameter('user', $user);
+            }
         }
 
         return $qb
@@ -45,12 +51,18 @@ class VideoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllForCourse(Course $course): array
+    public function findAllForUserAndCourse(User $user, Course $course): array
     {
         $qb = $this
             ->createQueryBuilder('video')
             ->orderBy('video.createdAt', 'DESC');
 
+        if (!$user->isAdmin() && !$user->isDozent()) {
+            $qb
+                // students can only see videos they created
+                ->andWhere('video.creator = :user')
+                ->setParameter('user', $user);
+        }
 
         $qb
             ->andWhere(':course MEMBER OF video.courses')

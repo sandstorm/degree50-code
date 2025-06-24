@@ -6,9 +6,11 @@ use App\Domain\ExercisePhase\Model\ExercisePhase;
 use App\Domain\ExercisePhase\Model\VideoCutPhase;
 use App\Domain\ExercisePhase\Repository\ExercisePhaseRepository;
 use App\Domain\ExercisePhase\Service\ExercisePhaseService;
+use App\Domain\User\Model\User;
 use App\Domain\Video\Model\Video;
 use App\Domain\Video\Repository\VideoRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,6 +21,7 @@ class VideoCutPhaseFormFormType extends ExercisePhaseFormType
         ExercisePhaseRepository          $exercisePhaseRepository,
         ExercisePhaseService             $exercisePhaseService,
         private readonly VideoRepository $videoRepository,
+        private readonly Security        $security,
     )
     {
         parent::__construct($exercisePhaseRepository, $exercisePhaseService);
@@ -31,7 +34,10 @@ class VideoCutPhaseFormFormType extends ExercisePhaseFormType
         /** @var ExercisePhase $exercisePhase */
         $exercisePhase = $options['data'];
 
-        $videoChoices = $this->videoRepository->findByCourse($exercisePhase->getBelongsToExercise()->getCourse());
+        /** @var User $user */
+        $user = $this->security->getUser();
+
+        $videoChoices = $this->videoRepository->findAllForUserAndCourse($user, $exercisePhase->getBelongsToExercise()->getCourse());
 
         $phaseHasVideoConfigured = $exercisePhase->getVideos()->count() > 0;
 

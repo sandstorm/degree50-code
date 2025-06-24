@@ -84,6 +84,9 @@ exercise:
         actionsLabel: 'Aktionen'
         toggleActions: 'Aktionen ein/ausblenden'
         testInfo: 'Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.'
+        users: 'Nur für folgende Nutzer sichtbar'
+    help:
+        users: 'Diese Aufgabe ist nur für die folgenden Nutzer sichtbar! (Leere Auswahl bedeutet, dass die Aufgabe für alle Nutzer im Kurs sichtbar ist.)'
     show:
         title: 'Aufgabe starten'
         overview: 'Übersicht der Phasen'
