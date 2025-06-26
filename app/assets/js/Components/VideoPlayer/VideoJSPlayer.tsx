@@ -50,6 +50,11 @@ function getVideoSources(video?: Video): VideoJsPlayerOptions['sources'] {
     }
 }
 
+/**
+ * WHY: Change "Audio Track" from "Tonspur" to "Audiodeskription" in the Video.js language file
+ */
+const patchedVideoJsLanguageDE = { ...videojsDE, 'Audio Track': 'Audiodeskription' }
+
 const VideoJSPlayer: React.FC<Props> = (props) => {
     const [player, setPlayer] = useState<VideoJsPlayer | undefined>(undefined)
     const videoRef: React.RefObject<HTMLVideoElement> = useRef(null)
@@ -60,7 +65,7 @@ const VideoJSPlayer: React.FC<Props> = (props) => {
 
     useEffect(() => {
         if (videoRef.current !== null) {
-            videojs.addLanguage('de', videojsDE)
+            videojs.addLanguage('de', patchedVideoJsLanguageDE)
             setPlayer(
                 videojs(videoRef.current, {
                     ...defaultVideoJsOptions,
