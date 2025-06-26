@@ -84,9 +84,9 @@ exercise:
         actionsLabel: 'Aktionen'
         toggleActions: 'Aktionen ein/ausblenden'
         testInfo: 'Achtung: Aufgabe wird getestet. Bearbeitung ist für andere nicht sichtbar.'
-        users: 'Nur für folgende Nutzer sichtbar'
+        users: 'Nur für folgende Lernende sichtbar'
     help:
-        users: 'Diese Aufgabe ist nur für die folgenden Nutzer sichtbar! (Leere Auswahl bedeutet, dass die Aufgabe für alle Nutzer im Kurs sichtbar ist.)'
+        users: 'Diese Aufgabe ist nur für die folgenden Lernenden sichtbar! (Leere Auswahl bedeutet, dass die Aufgabe für alle Lernenden im Kurs sichtbar ist.)'
     show:
         title: 'Aufgabe starten'
         overview: 'Übersicht der Phasen'
@@ -232,7 +232,7 @@ exercisePhase:
         deleteAttachment: 'Datei löschen'
         alreadyStarted: 'Achtung: Phase wird/wurde schon von Lernenden bearbeitet.'
         componentsInfo: 'Aktive Komponenten zur Lösung der Aufgabe:'
-        videoCodesInfo: 'Stehen dem Nutzer zur Auswahl während der Aufgabe'
+        videoCodesInfo: 'Stehen den Lernenden zur Auswahl während der Aufgabe'
         videoCodeColor: 'Farbe des Video-Codes'
         videoCodeName: 'Name des Video-Codes'
         addVideoCode: 'Video-Code hinzufügen'
@@ -390,7 +390,7 @@ course:
         students: 'Hier können Lernende ausgewählt werden (mehrfach-Auswahl) die Aufgaben dieses Kurses bearbeiten können.'
         tutors: 'Hier können Lehrende ausgewählt werden (mehrfach-Auswahl) die Aufgaben für diesen Kurs erstellen können.'
         expirationDate: 'Maximal 2 Jahre. Der Kurs wird an diesem Datum automatisch gelöscht. Vor Ablauf des Kurses werden alle Dozenten benachrichtigt und können das Ablaufdatum auf der Kurs-Bearbeitungsseite verlängern.'
-        isTutorialCourse: 'Einführungskurse sind für alle Nutzer sichtbar und werden auf der Kurse-Seite gesondert angezeigt.'
+        isTutorialCourse: 'Einführungskurse sind für alle Lernenden sichtbar und werden auf der Kurse-Seite gesondert angezeigt.'
     upgradeMember:
         title: 'Darf Aufgabe erstellen'
     downgradeMember:
