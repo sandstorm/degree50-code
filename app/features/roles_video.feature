@@ -1,4 +1,4 @@
-@fixtures @playwright @debug
+@fixtures @playwright
 Feature: Roles and constraints regarding viewing, creating, editing and deletion of videos
 
     # role constrains on video entity
@@ -143,6 +143,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
     #########################
     ### Create
     #########################
+    @debug
     Scenario: As admin I can create videos for every course
         Given I am logged in via browser as "test-admin@sandstorm.de"
         When I visit route "mediathek__video--upload"
@@ -151,6 +152,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
             | course1 |
             | course2 |
 
+    @debug
     Scenario: As dozent I can create videos for myself and assigned courses
         Given I am logged in via browser as "test-dozent@sandstorm.de"
         When I visit route "mediathek__video--upload"
@@ -158,6 +160,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Then the page contains all the following texts:
             | course1 |
 
+    @debug
     Scenario: As student I can create videos for myself and assigned courses
         Given I am logged in via browser as "test-student@sandstorm.de"
         When I visit route "mediathek__video--upload"
@@ -165,6 +168,7 @@ Feature: Roles and constraints regarding viewing, creating, editing and deletion
         Then the page contains all the following texts:
             | course1 |
 
+    @debug
     Scenario: As student without any assigned courses I can not create videos
         Given I am logged in via browser as "student-without-course@sandstorm.de"
         When I visit route "mediathek__video--upload"
