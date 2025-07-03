@@ -131,12 +131,13 @@ readonly class UserService
             return true;
         }
 
-        // check if student is assigned to a course
-        $userCourses = $user->getCourseRoles()->map(function (CourseRole $courseRole) {
-            return $courseRole->getCourse();
-        });
-
-        return $userCourses->count() > 0;
+        // check if student is assigned to a course that is not a tutorial course
+        return $user
+            ->getCourseRoles()
+            ->filter(function (CourseRole $courseRole) {
+                return $courseRole->getCourse()->isTutorialCourse() === false;
+            })
+            ->count() > 0;
     }
 
     private function deleteDozent(User $user): void

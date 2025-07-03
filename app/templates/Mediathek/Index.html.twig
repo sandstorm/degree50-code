@@ -9,7 +9,7 @@
 {% block body %}
     <header class="content-header">
         <h3>{{ "video.index.allVideos"|trans({}, 'DegreeBase') }} {{ course ? "common.for"|trans({}, 'DegreeBase')~' '~course.name : '' }}</h3>
-        {% if userService.userCanUploadVideo() %}
+        {% if is_granted('video_create') %}
             <a href="{{ path('mediathek__video--upload', {id: course ? course.id : null}) }}" class="button button--type-primary">
                 <i class="fas fa-plus-circle"></i>
                 {{ "video.new.title"|trans({}, 'DegreeBase') }}
