@@ -19,7 +19,6 @@ Feature: Redirections to the login if unauthenticated
 
         Examples:
             | route                      | params                            |
-            | app                        |                                   |
             | app_data-privacy           |                                   |
             | app_terms-of-use           |                                   |
             | mediathek--index           |                                   |

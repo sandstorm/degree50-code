@@ -125,7 +125,7 @@ class ResetPasswordController extends AbstractController
 
             $this->addFlash('success', $this->translator->trans('process.success', [], 'UserPasswordReset'));
 
-            return $this->redirectToRoute('app');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('reset_password/reset.html.twig', [

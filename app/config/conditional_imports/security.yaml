@@ -29,6 +29,7 @@ security:
                 password_parameter: password
                 login_path: app_login
                 check_path: app_login
+                default_target_path: courses
                 always_use_default_target_path: true
             logout:
                 # this URL must match the `app_logout` route.

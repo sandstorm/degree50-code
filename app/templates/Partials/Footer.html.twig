@@ -1,0 +1,34 @@
+<footer class="footer footer--right{{ isPrimary ? ' footer--primary' : ''}}">
+    {{ include('Version.html.twig') }}
+    <a class="button button--type-link" href="{{ path('imprint') }}" role="link">{{ "common.imprint"|trans({}, 'DegreeBase') }}</a>
+    <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">{{ "common.dataPrivacy"|trans({}, 'DegreeBase') }}</a>
+    <a class="button button--type-link" href="{{ path('terms-of-use') }}" role="link">{{ "common.termsOfUse"|trans({}, 'DegreeBase') }}</a>
+</footer>
+
+{# show notification when browser is out of date (https://browser-update.org/) #}
+<script>
+    const $buoop = {
+        {# browser: required version (0 is latest) #}
+        required: {
+            e: 0,
+            f: 0,
+            o: 0,
+            s: 0,
+            c: 0
+        },
+        {# test for insecure browsers #}
+        insecure: true,
+        api: 2024.03,
+        nostatistics: true,
+        shift_page_down: false,
+        {# test the notification - even if browser is up-to-date #}
+        {# test: true, #}
+    };
+    function $buo_f(){
+        const e = document.createElement("script");
+        e.src = "//browser-update.org/update.min.js";
+        document.body.appendChild(e);
+    }
+    try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
+    catch(e){window.attachEvent("onload", $buo_f)}
+</script>
