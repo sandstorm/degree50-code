@@ -1,0 +1,35 @@
+<nav class="navigation navigation--{{type}}" role="navigation">
+    {% if type is same as('mobile') %}
+        <a class="navigation__brand" href="/"><img src="{{ asset('build/images/logo.svg') }}" alt="{{ "common.logoAltText"|trans({}, 'DegreeBase') }}" /></a>
+        <button class="navigation__toggler" type="button" data-toggle="collapse" data-target="#navigation"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="{{ "common.toggleNavigation"|trans({}, 'DegreeBase') }}">
+            <i class="fas fa-bars"></i>
+        </button>
+    {% endif %}
+    <div class="navigation__inner{{type is same as('desktop') ? '' : ' collapse'}}" id="{{type is same as('mobile') ? 'navigation' : 'navigationDesktop'}}">
+        <ul class="navigation__items">
+            <li class="navigation__item {{ 'course' in route ? 'navigation__item--active' }}">
+                <a href="{{ path('courses') }}">
+                    <span>{{ "course.list.title"|trans({}, 'DegreeBase') }}</span>
+                </a>
+            </li>
+
+            <li class="navigation__item {{ 'mediathek' in route ? 'navigation__item--active' }}">
+                <a data-test-id="header-menu-mediathek" href="{{ path('mediathek--index') }}">
+                    <span>{{ "video.index.title"|trans({}, 'DegreeBase') }}</span>
+                </a>
+            </li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="navigation__item">
+                    <a href="/admin"><span>{{ "administration.index.title"|trans({}, 'DegreeBase') }}</span></a>
+                </li>
+            {% endif %}
+        </ul>
+        {% if type is same as('mobile') %}
+            <div class="navigation__user">
+                <i class="fas fa-user"></i> {{ app.user.username }}
+                <a href="{{ path('app_logout') }}">{{ "common.logout"|trans({}, 'DegreeBase') }}</a>
+            </div>
+        {% endif %}
+    </div>
+</nav>
