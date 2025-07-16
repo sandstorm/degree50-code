@@ -7,6 +7,17 @@ form:
         delete: 'Löschen'
         download: 'Datei herunterladen'
 
+startpage:
+    headline: 'Degree 4.0 – Barrierefreie Lernplattform zur Analyse eigener Unterrichtsvideos'
+    loginButton:
+        label: 'Zum Login'
+    usp:
+        headline: 'Intuitive und flexible Videobearbeitung'
+        usp1: 'Orts- und zeitunabhängig'
+        usp2: 'Geschützte Videos – kein Download möglich'
+        usp3: 'Synchron und asynchron zusammenarbeiten'
+        usp4: 'Keine zusätzliche Softwareinstallation'
+
 common:
     degree: 'Degree 4.0'
     logoAltText: 'Logo der TU Dortmund'

@@ -1,0 +1,47 @@
+{% extends 'BaseNoHeader.html.twig' %}
+{% block layoutCssClass %}main--with-footer main--startpage{% endblock %}
+
+{% block title %}{{ "common.degree"|trans({}, 'DegreeBase') }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <header>
+            <img class="startpage__logo" src="{{ asset('build/images/logo.svg') }}" alt="{{ "common.logoAltText"|trans({}, 'DegreeBase') }}" />
+        </header>
+        <div class="startpage__content">
+            <div>
+                <h1 class="h1">{{ "startpage.headline"|trans({}, 'DegreeBase') }}</h1>
+                <a href="{{ path('app_login') }}" class="button button--type-primary">{{ "startpage.loginButton.label"|trans({}, 'DegreeBase') }}</a>
+            </div>
+            <div class="startpage__content__image-container">
+                <img class="startpage__content__image--background" src="{{ asset('build/images/maskedImageBackground.svg') }}" alt="" />
+                <img src="{{ asset('build/images/maskedImage.png') }}" alt="" />
+            </div>
+        </div>
+
+        <div class="usp__container">
+            <h2 class="usp__headline">{{ "startpage.usp.headline"|trans({}, 'DegreeBase') }}</h2>
+            <ul class="usp__list">
+                <li class="usp__list-item">
+                    <span class="usp__list-item__icon fal fa-clock" aria-hidden="true"></span>
+                    <span>{{ "startpage.usp.usp1"|trans({}, 'DegreeBase') }}</span>
+                </li>
+                <li class="usp__list-item">
+                    <span class="usp__list-item__icon fal fa-lock" aria-hidden="true"></span>
+                    <span>{{ "startpage.usp.usp2"|trans({}, 'DegreeBase') }}</span>
+                </li>
+                <li class="usp__list-item">
+                    <span class="usp__list-item__icon fal fa-desktop" aria-hidden="true"></span>
+                    <span>{{ "startpage.usp.usp3"|trans({}, 'DegreeBase') }}</span>
+                </li>
+                <li class="usp__list-item">
+                    <span class="usp__list-item__icon fal fa-bullseye-pointer" aria-hidden="true"></span>
+                    <span>{{ "startpage.usp.usp4"|trans({}, 'DegreeBase') }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {{ include('Partials/Footer.html.twig', {
+        isPrimary: true
+    })}}
+{% endblock %}

@@ -6,7 +6,7 @@
     grid-template-columns: minmax(min-content, max-content) auto minmax(min-content, max-content);
     grid-template-rows: 100%;
     grid-template-areas: 'left center right';
-    grid-gap: 20px;
+    grid-gap: $theme__spacing--huge;
     align-items: center;
     padding: $theme__spacing--base;
     min-height: 57px;
@@ -18,6 +18,10 @@
 
     @include mq(xmedium) {
         padding: $theme__spacing--small $theme__spacing--base;
+        grid-gap: $theme__spacing--large;
+    }
+
+    @include mq(small) {
         grid-gap: $theme__spacing--base;
     }
 
@@ -31,6 +35,25 @@
 
     &--center {
         justify-content: center;
+    }
+
+    &--right {
+        justify-content: flex-end;
+    }
+
+    &--primary {
+        background-color: $theme__color__primary;
+        border-top-color: $theme__color__primary;
+
+        a {
+            color: $theme__color__white;
+
+            &:hover,
+            &:focus-visible {
+                color: $theme__color__white;
+                text-decoration: underline;
+            }
+        }
     }
 }
 

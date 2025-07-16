@@ -3,6 +3,7 @@
 @import '@fortawesome/fontawesome-pro/scss/fontawesome.scss';
 @import '@fortawesome/fontawesome-pro/scss/regular.scss';
 @import '@fortawesome/fontawesome-pro/scss/solid.scss';
+@import '@fortawesome/fontawesome-pro/scss/light.scss';
 @import '@fortawesome/fontawesome-pro/scss/brands.scss';
 
 @import 'GeneralStyles/Variables';
@@ -59,6 +60,7 @@
 @import 'Composites/Presence/Presence';
 @import 'Composites/Sidebar/Sidebar';
 @import 'Composites/Solutions/Solutions';
+@import 'Composites/Startpage/Startpage.scss';
 @import 'Composites/Teams/Team';
 @import 'Composites/Teams/Teams';
 @import 'Composites/Tiles/Tiles';
