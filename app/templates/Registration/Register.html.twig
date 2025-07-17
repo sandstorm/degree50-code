@@ -5,10 +5,15 @@
 {% block title %}{{ "common.degree"|trans({}, 'DegreeBase') }} - {{ "registration.title"|trans({}, 'DegreeBase') }}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="registration-form">
+    <img class="registration-form__background-image" src="{{ asset('build/images/background.png') }}" alt="" />
+    <div class="container container--logo">
+        <a href="{{ path('app') }}">
             <img src="{{ asset('build/images/logo.svg') }}" alt="{{ "common.logoAltText"|trans({}, 'DegreeBase') }}" />
-            <h1 class="h1 mb-3 font-weight-normal login-form__headline">{{ "common.videoLearningPlatform"|trans({}, 'DegreeBase') }} {{ "common.degree"|trans({}, 'DegreeBase') }}</h1>
+        </a>
+    </div>
+    <div class="container container--form">
+        <div class="registration-form">
+            <h1 class="h2 mb-3 login-form__headline">{{ "common.videoLearningPlatform"|trans({}, 'DegreeBase') }} {{ "common.degree"|trans({}, 'DegreeBase') }}</h1>
 
             <hr role="presentation"/>
 
@@ -22,10 +27,7 @@
         </div>
     </div>
 
-    <footer class="footer footer--center">
-        {{ include('Version.html.twig') }}
-        <a class="button button--type-link" href="{{ path('imprint') }}">{{ "common.imprint"|trans({}, 'DegreeBase') }}</a>
-        <a class="button button--type-link" href="{{ path('data-privacy') }}">{{ "common.dataPrivacy"|trans({}, 'DegreeBase') }}</a>
-        <a class="button button--type-link" href="{{ path('terms-of-use') }}">{{ "common.termsOfUse"|trans({}, 'DegreeBase') }}</a>
-    </footer>
+    {{ include('Partials/Footer.html.twig', {
+        isPrimary: false
+    })}}
 {% endblock %}

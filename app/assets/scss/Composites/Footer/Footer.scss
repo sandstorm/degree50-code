@@ -11,8 +11,7 @@
     padding: $theme__spacing--base;
     min-height: 57px;
 
-    background-color: $theme__color__grey--lighter;
-    border-top: 1px solid $theme__color__grey--light;
+    background-color: $theme__color__white;
 
     z-index: $theme__z-index--footer;
 
@@ -33,6 +32,16 @@
         margin-bottom: 0;
     }
 
+    a {
+        color: $theme__color__black;
+
+        &:hover,
+        &:focus-visible {
+            color: $theme__color__black;
+            text-decoration: underline;
+        }
+    }
+
     &--center {
         justify-content: center;
     }
@@ -43,7 +52,6 @@
 
     &--primary {
         background-color: $theme__color__primary;
-        border-top-color: $theme__color__primary;
 
         a {
             color: $theme__color__white;
@@ -51,7 +59,6 @@
             &:hover,
             &:focus-visible {
                 color: $theme__color__white;
-                text-decoration: underline;
             }
         }
     }
