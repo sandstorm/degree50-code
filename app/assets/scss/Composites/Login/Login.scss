@@ -17,6 +17,56 @@
 
     &__register {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
+    }
+
+    &__background-image {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        height: 100%;
+        width: 100%;
+
+        object-fit: cover;
+        object-position: right center;
+
+        @include mq(medium) {
+            object-position: calc(100% + 100px) center;
+        }
+
+        @include mq(small) {
+            object-position: calc(100% + 200px) center;
+        }
+    }
+
+}
+
+.container--logo {
+    position: relative;
+    top: 0;
+
+    background: $theme__color__white;
+
+    a {
+        display: block;
+        margin: auto;
+        max-width: 500px;
+    }
+
+    img {
+        height: 65px;
+    }
+}
+
+.container--form {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+
+    background: $theme__color__white;
+
+    h1 {
+        font-weight: bold;
     }
 }

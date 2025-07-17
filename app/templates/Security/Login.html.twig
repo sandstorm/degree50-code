@@ -4,12 +4,15 @@
 {% block title %}{{ "common.degree"|trans({}, 'DegreeBase') }}{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <img class="login-form__background-image" src="{{ asset('build/images/background.png') }}" alt="" />
+    <div class="container container--logo">
+        <a href="{{ path('app') }}">
+            <img src="{{ asset('build/images/logo.svg') }}" alt="{{ "common.logoAltText"|trans({}, 'DegreeBase') }}" />
+        </a>
+    </div>
+    <div class="container container--form">
         <form method="post" class="login-form" role="form">
-            <a href="{{ path('app') }}">
-                <img src="{{ asset('build/images/logo.svg') }}" alt="{{ "common.logoAltText"|trans({}, 'DegreeBase') }}" />
-            </a>
-            <h1 class="h1 mb-3 font-weight-normal login-form__headline">Video-Lernplattform {{ "common.degree"|trans({}, 'DegreeBase') }}</h1>
+            <h1 class="h2 mb-3 login-form__headline">Video-Lernplattform {{ "common.degree"|trans({}, 'DegreeBase') }}</h1>
 
             {% if error %}
                 <div class="alert alert-danger">
