@@ -2,13 +2,55 @@
     width: 100%;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-start;
+
     align-items: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
     min-height: 46px;
 
     background-color: $theme__color__white;
+
+    &--desktop {
+        position: sticky;
+        top: 46px;
+        z-index: 10;
+
+        justify-content: center;
+        margin: 0 auto;
+
+        border-bottom: 4px solid $theme__color__primary;
+
+        .navigation__inner {
+            max-width: 1400px;
+        }
+
+        @include mq(medium) {
+            display: none;
+        }
+
+        .sidebar & {
+            display: none;
+        }
+    }
+
+    &--mobile {
+        justify-content: flex-start;
+        max-width: 1400px;
+
+        .navigation__inner {
+            justify-content: flex-end;
+
+            @include mq(medium) {
+                justify-content: space-between;
+            }
+        }
+
+        .navigation__items {
+            display: none;
+
+            @include mq(medium) {
+                display: block;
+            }
+        }
+    }
 
     @include mq(medium) {
         flex-wrap: wrap;
@@ -25,6 +67,10 @@
         height: 40px;
         max-width: none;
         padding: 2px;
+    }
+
+    @include mq(large) {
+        padding-left: 1rem;
     }
 }
 
@@ -120,7 +166,12 @@
 
 .navigation__user {
     display: block;
-    padding: 0.7rem 1rem;
+    padding-block: 0.7rem;
+    padding-left: 1rem;
+
+    @include mq(large) {
+        padding-right: 1rem;
+    }
 
     @include mq(medium) {
         border-top: 1px solid $theme__color__grey--dark;
@@ -128,5 +179,55 @@
         a {
             float: right;
         }
+    }
+}
+
+.navigation__image__container {
+    display: flex;
+    justify-content: center;
+    height: 340px;
+    overflow: hidden;
+    padding-top: 46px;
+
+    @include mq(medium) {
+        padding-top: 50px;
+    }
+
+    @include mq(xmedium) {
+        height: 300px;
+    }
+
+    @include mq(xsmall) {
+        height: 200px;
+    }
+
+    .sidebar & {
+        display: none;
+    }
+}
+
+.navigation__image {
+    max-width: 1400px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center -240px;
+
+    @include mq(large) {
+        object-position: right -190px;
+    }
+
+    @include mq(xmedium) {
+        object-position: right -170px;
+    }
+
+    @include mq(medium) {
+        height: auto;
+        object-position: right -130px;
+    }
+
+    @include mq(small) {
+        object-position: center;
+        height: 100%;
     }
 }
