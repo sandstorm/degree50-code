@@ -32,7 +32,7 @@
         margin-bottom: 0;
     }
 
-    a {
+    .main:not(.solution-fullscreen) a {
         color: $theme__color__black;
 
         &:hover,
