@@ -21,6 +21,22 @@ body {
     height: 100%;
     width: 100vw;
 
+    &--with-header {
+        padding-top: 390px;
+
+        @include mq(xmedium) {
+            padding-top: 350px;
+        }
+
+        @include mq(medium) {
+            padding-top: 300px;
+        }
+
+        @include mq(xsmall) {
+            padding-top: 200px;
+        }
+    }
+
     &--with-footer {
         padding-bottom: 57px;
     }
