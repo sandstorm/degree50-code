@@ -1,4 +1,4 @@
-<footer class="footer footer--right{{ isPrimary ? ' footer--primary' : ''}}">
+<footer class="footer footer--right{% if type is defined and type is not null %} footer--{{ type }}{% endif %}">
     {{ include('Version.html.twig') }}
     <a class="button button--type-link" href="{{ path('imprint') }}" role="link">{{ "common.imprint"|trans({}, 'DegreeBase') }}</a>
     <a class="button button--type-link" href="{{ path('data-privacy') }}" role="link">{{ "common.dataPrivacy"|trans({}, 'DegreeBase') }}</a>

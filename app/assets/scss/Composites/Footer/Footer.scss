@@ -11,7 +11,8 @@
     padding: $theme__spacing--base;
     min-height: 57px;
 
-    background-color: $theme__color__white;
+    background-color: $theme__color__grey--lighter;
+    border-top: 1px solid $theme__color__grey--light;
 
     z-index: $theme__z-index--footer;
 
@@ -32,22 +33,22 @@
         margin-bottom: 0;
     }
 
-    .main:not(.solution-fullscreen) a {
-        color: $theme__color__black;
-
-        &:hover,
-        &:focus-visible {
-            color: $theme__color__black;
-            text-decoration: underline;
-        }
-    }
-
     &--center {
         justify-content: center;
     }
 
     &--right {
         justify-content: flex-end;
+    }
+
+    &--primary,
+    &--secondary {
+        a {
+            &:hover,
+            &:focus-visible {
+                text-decoration: underline;
+            }
+        }
     }
 
     &--primary {
@@ -59,6 +60,19 @@
             &:hover,
             &:focus-visible {
                 color: $theme__color__white;
+            }
+        }
+    }
+
+    &--secondary {
+        background-color: $theme__color__white;
+
+        a {
+            color: $theme__color__black;
+
+            &:hover,
+            &:focus-visible {
+                color: $theme__color__black;
             }
         }
     }
