@@ -9,9 +9,11 @@
     background-color: $theme__color__white;
 
     &--desktop {
-        position: sticky;
-        top: 46px;
+        position: fixed;
+        top: 340px;
+        left: 0;
         z-index: 10;
+        width: 100%;
 
         justify-content: center;
         margin: 0 auto;
@@ -20,6 +22,10 @@
 
         .navigation__inner {
             max-width: 1400px;
+        }
+
+        @include mq(xmedium) {
+            top: 300px;
         }
 
         @include mq(medium) {
@@ -183,6 +189,12 @@
 }
 
 .navigation__image__container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+
     display: flex;
     justify-content: center;
     height: 340px;
