@@ -1,0 +1,26 @@
+<div class="contact-tiles">
+    <ul class="contact-tiles__list">
+        <li>
+            <div class="contact-tile">
+                <span class="fal fa-comment-dots contact-tile__icon" aria-hidden="true"></span>
+                <p>
+                    {{ "course.list.contact.email.text"|trans({}, 'DegreeBase') }}
+                </p>
+                <a class="button button--type-primary" href="mailto:{{ 'course.list.contact.email.address'|trans({}, 'DegreeBase') }}">
+                    {{ "course.list.contact.email.buttonLabel"|trans({}, 'DegreeBase') }}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="contact-tile">
+                <span class="fal fa-circle-info contact-tile__icon" aria-hidden="true"></span>
+                <p>
+                    {{ "course.list.contact.website.text"|trans({}, 'DegreeBase') }}
+                </p>
+                <a class="button button--type-primary" href={{ "course.list.contact.website.url"|trans({}, 'DegreeBase') }} target="_blank" rel="noopener noreferrer">
+                    {{ "course.list.contact.website.buttonLabel"|trans({}, 'DegreeBase') }}
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>

@@ -429,6 +429,15 @@ course:
         progressText: 'valueNow von valueMax'
         tutorialSubheading: 'Einführungskurse'
         noTutorialCourses: 'Keine Einführungskurse vorhanden'
+        contact:
+            email:
+                text: 'Wenn Sie Fragen zur Nutzung der Lernplattform haben, melden Sie sich gern per E-Mail.'
+                buttonLabel: 'E-Mail schreiben'
+                address: 'degree50.projekt@tu-dortmund.de'
+            website:
+                text: 'Hilfe finden Sie außerdem auf unserer Webseite www.degree.tu-dortmund.de.'
+                buttonLabel: 'Zur Webseite'
+                url: 'https://degree.tu-dortmund.de'
     reset:
         messages:
             success: 'Kurs wurde erfolgreich zurückgesetzt!'

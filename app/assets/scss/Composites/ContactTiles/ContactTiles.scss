@@ -1,0 +1,36 @@
+.contact-tiles {
+    margin-block: $theme__spacing--huge;
+}
+
+.contact-tiles__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $theme__spacing--large;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include mq(small) {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.contact-tile {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 100%;
+
+    padding: calc($theme__spacing--huge + 24px) $theme__spacing--large $theme__spacing--large;
+    background: $theme__color__grey--lighter;
+}
+
+.contact-tile__icon {
+    position: absolute;
+    right: $theme__spacing--large;
+    top: $theme__spacing--large;
+    font-size: 24px;
+}
