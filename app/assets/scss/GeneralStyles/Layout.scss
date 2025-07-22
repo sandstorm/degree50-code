@@ -22,18 +22,11 @@ body {
     width: 100vw;
 
     &--with-header {
-        padding-top: 390px;
+        height: auto;
 
-        @include mq(xmedium) {
-            padding-top: 350px;
-        }
-
-        @include mq(medium) {
-            padding-top: 300px;
-        }
-
-        @include mq(xsmall) {
-            padding-top: 200px;
+        .main-inner {
+            position: static;
+            overflow: unset;
         }
     }
 
