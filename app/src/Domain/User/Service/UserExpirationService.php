@@ -50,6 +50,9 @@ readonly class UserExpirationService
 
                 $soonToBeExpiredStudentIds[] = $user->getId();
             }
+
+            // WHY: Avoid rate limiting issues with the mailer service
+            sleep(1);
         }
 
         return $soonToBeExpiredStudentIds;
