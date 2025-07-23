@@ -4,7 +4,6 @@ namespace App\Command;
 
 use App\Domain\Course\Model\Course;
 use App\Domain\Course\Service\CourseExpirationService;
-use App\Domain\Course\Service\CourseService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +14,7 @@ class RemoveExpiredCoursesCommand extends Command
     protected static $defaultName = 'app:remove-expired-courses';
 
     public function __construct(
-        private readonly CourseExpirationService $courseExpirationService, private readonly CourseService $courseService,
+        private readonly CourseExpirationService $courseExpirationService,
     )
     {
         parent::__construct();

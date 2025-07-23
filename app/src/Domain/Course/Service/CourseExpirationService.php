@@ -86,6 +86,9 @@ readonly class CourseExpirationService
             }
 
             $this->entityManager->flush();
+
+            // WHY: Avoid rate limiting issues with the mailer service
+            sleep(1);
         }
     }
 
@@ -103,10 +106,10 @@ readonly class CourseExpirationService
             $this->mailer->send($email);
             return true;
         } catch (TransportExceptionInterface $e) {
-            $this->logger->error('Failed to send course expiration notice for course to email', [
+            $this->logger->error('Failed to send course expiration notice for courses to email', [
                 'email' => $email,
-                'courses' => $courses,
-                'exception' => $e,
+                'courses' => array_map(fn (Course $course) => $course->getId(), $courses),
+                'exception' => $e->getMessage(),
             ]);
         }
 
