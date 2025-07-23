@@ -30,7 +30,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 default_target_path: courses
-                always_use_default_target_path: true
+                always_use_default_target_path: false
             logout:
                 # this URL must match the `app_logout` route.
                 # DO NOT CHANGE THE URL, as the SAML IDP calls /saml/logout. This is part of the public SAML API at https://<domain>/saml/metadata

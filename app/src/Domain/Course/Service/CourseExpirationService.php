@@ -88,14 +88,14 @@ readonly class CourseExpirationService
             $this->entityManager->flush();
 
             // WHY: Avoid rate limiting issues with the mailer service
-            sleep(1);
+            sleep(2);
         }
     }
 
-    private function sendExpirationNotice(string $email, array $courses): bool
+    private function sendExpirationNotice(string $emailAddress, array $courses): bool
     {
         $email = (new TemplatedEmail())
-            ->to($email)
+            ->to($emailAddress)
             ->subject($this->translator->trans('email.subject', [], 'CourseExpiration'))
             ->htmlTemplate('CourseExpiration/notification_email.html.twig')
             ->context([
@@ -107,7 +107,7 @@ readonly class CourseExpirationService
             return true;
         } catch (TransportExceptionInterface $e) {
             $this->logger->error('Failed to send course expiration notice for courses to email', [
-                'email' => $email,
+                'email' => $emailAddress,
                 'courses' => array_map(fn (Course $course) => $course->getId(), $courses),
                 'exception' => $e->getMessage(),
             ]);
