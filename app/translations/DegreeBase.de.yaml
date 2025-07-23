@@ -17,6 +17,8 @@ startpage:
         usp2: 'Geschützte Videos – kein Download möglich'
         usp3: 'Synchron und asynchron zusammenarbeiten'
         usp4: 'Keine zusätzliche Softwareinstallation'
+    enter:
+        label: 'Zur Kursübersicht'
 
 common:
     degree: 'Degree 4.0'

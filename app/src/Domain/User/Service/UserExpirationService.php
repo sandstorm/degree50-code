@@ -52,7 +52,7 @@ readonly class UserExpirationService
             }
 
             // WHY: Avoid rate limiting issues with the mailer service
-            sleep(1);
+            sleep(2);
         }
 
         return $soonToBeExpiredStudentIds;

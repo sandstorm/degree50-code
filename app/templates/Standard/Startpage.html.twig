@@ -11,7 +11,11 @@
         <div class="startpage__content">
             <div>
                 <h1 class="h1">{{ "startpage.headline"|trans({}, 'DegreeBase') }}</h1>
-                <a href="{{ path('app_login') }}" class="button button--type-primary">{{ "startpage.loginButton.label"|trans({}, 'DegreeBase') }}</a>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a href="{{ path('courses') }}" class="button button--type-primary">{{ "startpage.enter.label"|trans({}, 'DegreeBase') }}</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="button button--type-primary">{{ "startpage.loginButton.label"|trans({}, 'DegreeBase') }}</a>
+                {% endif %}
             </div>
             <div class="startpage__content__image-container">
                 <img class="startpage__content__image--background" src="{{ asset('build/images/maskedImageBackground.svg') }}" alt="" />

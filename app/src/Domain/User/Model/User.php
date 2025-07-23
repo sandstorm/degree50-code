@@ -126,6 +126,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<Exercise>
      */
+    #[ORM\ManyToMany(targetEntity: Exercise::class, mappedBy: "users")]
     private Collection $privateExercises;
 
     public function __construct(?string $id = null)
