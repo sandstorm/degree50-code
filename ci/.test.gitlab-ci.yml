@@ -17,6 +17,7 @@ integration_test:
 
         # System under Test
         APP_SECRET: test
+        APP_BASE_URL: http://127.0.0.1:8080/
         APP_ENV: test
         DATABASE_URL: mysql://root:password@mariadb/test_db
 
@@ -108,6 +109,7 @@ e2e_test:
 
         # System under Test
         APP_SECRET: test
+        APP_BASE_URL: http://127.0.0.1:8080/
         APP_ENV: test
         DATABASE_URL: mysql://root:password@mariadb/test_db
 
