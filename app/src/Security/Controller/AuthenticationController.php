@@ -74,7 +74,7 @@ class AuthenticationController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app');
+            return $this->redirectToRoute('courses');
         }
 
         return $this->render('Security/DataPrivacy.html.twig');
@@ -95,7 +95,7 @@ class AuthenticationController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app');
+            return $this->redirectToRoute('courses');
         }
 
         return $this->render('Security/TermsOfUse.html.twig');

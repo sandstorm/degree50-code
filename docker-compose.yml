@@ -29,6 +29,7 @@ services:
 
             # configured in ./.env
             APP_SECRET: "${APP_SECRET}"
+            APP_BASE_URL: "${APP_BASE_URL}"
 
             # User expiration time overrides
             # EXPIRATION_DURATION_STRING_OVERRIDE: "2 years"
