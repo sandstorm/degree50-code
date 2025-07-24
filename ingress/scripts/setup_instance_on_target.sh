@@ -7,12 +7,12 @@ INSTANCE_NAME=$1
 # directory to mount large files to (used on prod for more disk space)
 GLOBAL_DATA_DIR=$2
 # comma separated list of domains to be configured
-DOMAINS=$3
+DOMAIN=$3
 
 echo "  ##"
 echo "  ##"
 echo "  ##       Creating or updating instance $INSTANCE_NAME"
-echo "  ##       DOMAINS: $DOMAINS"
+echo "  ##       DOMAIN: $DOMAIN"
 echo "  ##"
 echo "  ###########################################################"
 echo "  ##"
@@ -27,8 +27,8 @@ elif [[ "$INSTANCE_NAME" == "ingress" ]]; then
     exit 1
 fi
 
-if [[ -z $DOMAINS ]]; then
-    echo "Error: no domains supplied!"
+if [[ -z $DOMAIN ]]; then
+    echo "Error: no domain supplied!"
     exit 1
 fi
 
@@ -63,6 +63,8 @@ function createEnvFile() {
     export APP_SECRET=${APP_SECRET:-$(openssl rand -hex 32)}
     export MYSQL_PASSWORD=${MYSQL_PASSWORD:-$(openssl rand -hex 32)}
     export JWT_KEY=${JWT_KEY:-$(openssl rand -hex 32)}
+
+    export APP_BASE_URL="https://$DOMAIN"
 
     # set env vars in .general.env based on template
     envsubst < "$RUNTIME_ROOT_DIR/.general.env.template" > "$GENERAL_ENV_FILE"
@@ -128,21 +130,17 @@ function createCaddyFile() {
     # then create empty Caddyfile
     touch "$CADDYFILE_NAME"
 
-    # now fill the caddyfile with all configured domains
-    IFS=',' read -ra DOMAIN_ARRAY <<< "$DOMAINS"
-    for DOMAIN in "${DOMAIN_ARRAY[@]}"; do
-        # TODO: use caddy file template and envsubst?
-        # Trim whitespace
-        DOMAIN=$(echo "$DOMAIN" | xargs)
-        echo "$DOMAIN {" >> "$CADDYFILE_NAME"
-        # WHY suffix $INSTANCE_NAME with "-instance":
-        ## Avoid docker internal dns name collision with other running instances in the shared network.
-        ## See instance docker-compose.yml service degree:networks:sharedIngressNetwork:aliases configuration
-        echo "  reverse_proxy http://$INSTANCE_NAME-instance:8080" >> "$CADDYFILE_NAME"
-        echo "}" >> "$CADDYFILE_NAME"
-        echo "" >> "$CADDYFILE_NAME"
-        echo "  ##             - https://$DOMAIN"
-    done
+    # create caddy configuration for the instance
+    # Trim whitespace
+    DOMAIN=$(echo "$DOMAIN" | xargs)
+    echo "$DOMAIN {" >> "$CADDYFILE_NAME"
+    # WHY suffix $INSTANCE_NAME with "-instance":
+    ## Avoid docker internal dns name collision with other running instances in the shared network.
+    ## See instance docker-compose.yml service degree:networks:sharedIngressNetwork:aliases configuration
+    echo "  reverse_proxy http://$INSTANCE_NAME-instance:8080" >> "$CADDYFILE_NAME"
+    echo "}" >> "$CADDYFILE_NAME"
+    echo "" >> "$CADDYFILE_NAME"
+    echo "  ##             - https://$DOMAIN"
 
     # copy to share caddy dir
     cp "$CADDYFILE_NAME" "$INGRESS_DIR/caddyfiles/$CADDYFILE_NAME"
